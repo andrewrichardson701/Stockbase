@@ -23,7 +23,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title>Inventory</title>
+    <title>Inventory - Login</title>
 </head>
 <body>
 

@@ -1,4 +1,6 @@
 <?php
+// GET GLOBAL CONFIG OPTIONS TO BE APPLIED TO NAV AND OTHER OPTIONS ON THE PAGE
+// CALLED FROM THE HEAD.PHP PAGE DIRECTLY
 
 $predfined_config_banner_color = '#E1B12C';
 $predfined_config_logo_image = 'default/default-logo.png';

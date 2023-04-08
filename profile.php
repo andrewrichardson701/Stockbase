@@ -1,4 +1,6 @@
 <?php 
+// USER PROFILE PAGE
+// SEE USER INFO FROM THE DATABASE BUT NOT MODIFY ANY (YET ATLEAST)
 include 'session.php'; // Session setup and redirect if the session is not active 
 include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 ?> 

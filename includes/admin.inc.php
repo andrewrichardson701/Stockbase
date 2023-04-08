@@ -1,4 +1,7 @@
 <?php
+// SUBMITTING THE ADMIN CONFIG CHANGES. WILL UPDATE THE INFO IN THE CONFIG TABLE ONLY 
+// LEAVING THE CONFIG_DEFAULT TABLE UNTOUCHED
+
 if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults'])) {
     header("Location: ../admin.php?error=noSubmit");
     exit();

@@ -1,4 +1,5 @@
 <?php 
+// ADMIN PAGE - SHOWS CONFIGURATION OPTIONS AND ONLY VISIBLE TO ADMIN USERS
 include 'session.php'; // Session setup and redirect if the session is not active 
 include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 

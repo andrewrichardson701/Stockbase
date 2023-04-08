@@ -1,4 +1,5 @@
 <?php
+// DB CONNECTION INFO AND CREDENTIALS 
 
 $servername = "localhost";
 $dBUsername = 'admin';

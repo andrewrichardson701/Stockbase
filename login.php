@@ -1,4 +1,6 @@
 <?php 
+// DEFAULT LANDING PAGE IF NOT LOGGED IN. 
+// ALLOWS USERS TO LOGIN TO THE SYSTEM TO VIEW AND MODIFY CONTENT
 session_start();
 // if session not set, go to login page
 if (session_status() !== PHP_SESSION_ACTIVE) {

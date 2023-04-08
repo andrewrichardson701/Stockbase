@@ -190,8 +190,9 @@ input[type=color]:after {
     scale:1;
     margin: auto;
     display: block;
-    width: 250px;
-    max-width: 700px;
+    min-width: 400px;
+    width: max-content;
+    max-width: 1000px
 }
 /* Caption of Modal Image */
 .modal-caption {

@@ -1,3 +1,4 @@
+<!-- Navigation Bar for the top of the page, using the config settings for logo and colour -->
 <div class="nav inv-nav">
     <div id="nav-row" class="nav-row">
         <div class="logo-div">
@@ -35,13 +36,13 @@
                         echo ('
                         <div id="site-dropdown-div" class="nav-div">
                             <select id="site-dropdown" name="site" class="nav-trans form-control nav-v-c cw" style="margin:0" onchange="siteChange(\'site-dropdown\')">
-                            <option value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
+                            <option style="color:black" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
                         ');
                         while( $row = $result_site->fetch_assoc() ) {
                             $site_id = $row['id'];
                             $site_name = $row['name'];
                             $site_description = $row['description'];
-                            echo('<option value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
+                            echo('<option style="color:black" value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
                         }
                         echo('
                             </select>
@@ -67,14 +68,14 @@
                                 echo ('
                                 <div id="area-dropdown-div" class="nav-div">
                                     <select id="area-dropdown" name="area" class="nav-trans form-control nav-v-c cw" style="margin:0" onchange="areaChange(\'area-dropdown\')">
-                                    <option value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
+                                    <option style="color:black" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
                                 ');
                                 while( $row = $result_area->fetch_assoc() ) {
                                     $area_id = $row['id'];
                                     $area_name = $row['name'];
                                     $area_description = $row['description'];
                                     $area_names_array[$area_id] = $area_name;
-                                    echo('<option value="'.$area_id.'"'); if ($area == $area_id) { echo('selected'); } echo('>'.$area_name.'</option>');
+                                    echo('<option style="color:black" value="'.$area_id.'"'); if ($area == $area_id) { echo('selected'); } echo('>'.$area_name.'</option>');
                                 }
                                 echo($area);
                                 echo('

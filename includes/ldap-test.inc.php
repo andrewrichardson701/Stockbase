@@ -1,5 +1,5 @@
 <?php
-
+// TEST LDAP CONFIGURATION. THIS IS DONE VIA AN AJAX REQUEST ON THE ADMIN.PHP PAGE
 
 
 // $ldap_username = "CN=ldapauth,CN=Users,DC=ajrich,DC=co,DC=uk";

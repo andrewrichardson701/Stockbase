@@ -1,4 +1,6 @@
 <?php
+// LOGIN BACKEND - CHECKS IF THE USER SELECTED LOCAL OR NOT AND LOGS IN VIA EITHER LDAP OR LOCAL USER.
+
 
 // C:\Users\Administrator>dsquery user -samid *
 // "CN=Administrator,CN=Users,DC=ajrich,DC=co,DC=uk"
@@ -57,7 +59,11 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['role'] = $row['role'];
                                 $_SESSION['auth'] = $row['auth'];
                                 if (isset($_SESSION['redirect_url'])) {
-                                    header("Location: ../".$_SESSION['redirect_url']."?login=success");
+                                    if (str_contains($_SESSION['redirect_url'], "?")) {
+                                        header("Location: ../".$_SESSION['redirect_url']."&login=success");
+                                    } else {
+                                        header("Location: ../".$_SESSION['redirect_url']."?login=success");
+                                    }
                                     exit();
                                 } else {
                                     header("Location: ../?login=success");
@@ -218,7 +224,11 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['role'] = $default_role;
                                 $_SESSION['auth'] = $auth;
                                 if (isset($_SESSION['redirect_url'])) {
-                                    header("Location: ../".$_SESSION['redirect_url']."?login=success");
+                                    if (str_contains($_SESSION['redirect_url'], "?")) {
+                                        header("Location: ../".$_SESSION['redirect_url']."&login=success");
+                                    } else {
+                                        header("Location: ../".$_SESSION['redirect_url']."?login=success");
+                                    }
                                     exit();
                                 } else {
                                     header("Location: ../?login=success");
@@ -235,7 +245,11 @@ if (isset($_POST['submit'])) {
                                     $_SESSION['role'] = $row['role'];
                                     $_SESSION['auth'] = $row['auth'];
                                     if (isset($_SESSION['redirect_url'])) {
-                                        header("Location: ../".$_SESSION['redirect_url']."?login=success");
+                                        if (str_contains($_SESSION['redirect_url'], "?")) {
+                                            header("Location: ../".$_SESSION['redirect_url']."&login=success");
+                                        } else {
+                                            header("Location: ../".$_SESSION['redirect_url']."?login=success");
+                                        }
                                         exit();
                                     } else {
                                         header("Location: ../?login=success");

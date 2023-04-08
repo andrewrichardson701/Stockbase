@@ -1,4 +1,5 @@
 <?php
+// SETUP THE SESSION FOR ALL PAGES - THIS WILL CONFIRM IF THERE IS A LOGGED IN USER OR NOT.
 session_start();
 // if session not set, go to login page
 if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username'])) || ($_SESSION['username'] === '')) {

@@ -1,4 +1,5 @@
 <?php 
+// INVENTORY VIEW PAGE. SHOWS ALL INVENTORY ONCE LOGGED IN AND SHOWS FILTERS IN THE NAV
 include 'session.php'; // Session setup and redirect if the session is not active 
 include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
@@ -154,14 +155,14 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         </span>
                         <input type="submit" value="submit" hidden>
                     </form>
-                    <div id="add-div" class="nav-div" style="margin-left:0px;margin-right:5px">
+                    <div id="add-div" class="nav-div nav-right" style="margin-right:5px">
                         <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px">
-                            <i class="fa fa-plus"></i> add 
+                            <i class="fa fa-plus"></i> Add 
                         </button>
                     </div> 
-                    <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                        <button id="add-stock" class="btn btn-danger cw nav-v-b" style="width:110px">
-                            <i class="fa fa-minus"></i> remove 
+                    <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:0">
+                        <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px">
+                            <i class="fa fa-minus"></i> Remove 
                         </button>
                     </div> 
                 </div>

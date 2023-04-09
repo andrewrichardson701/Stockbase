@@ -118,10 +118,21 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
     $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                     area.id AS area_id, area.name AS area_name,
-                    shelf.id AS shelf_id, shelf.name AS shelf_name,
-                    site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                    SUM(item.quantity) AS item_quantity,
-                    manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name
+                    shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                    (SELECT SUM(quantity) 
+                        FROM item 
+                        WHERE item.stock_id = stock.id AND item.shelf_id = shelf.id
+                    ) AS item_quantity,
+                    manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+                    (SELECT GROUP_CONCAT(DISTINCT label.name SEPARATOR ', ') 
+                        FROM stock_label 
+                        INNER JOIN label ON stock_label.label_id = label.id 
+                        WHERE stock_label.stock_id = stock.id
+                    ) AS label_names,
+                    (SELECT GROUP_CONCAT(DISTINCT label_id SEPARATOR ', ') 
+                        FROM stock_label
+                        WHERE stock_label.stock_id = stock.id
+                    ) AS label_ids
                 FROM stock
                 INNER JOIN item ON stock.id=item.stock_id
                 INNER JOIN shelf ON item.shelf_id=shelf.id 
@@ -129,11 +140,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 INNER JOIN site ON area.site_id=site.id
                 LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
                 WHERE stock.id=?
-                GROUP BY stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                site_id, site_name, site_description, 
-                area_id, area_name, 
-                shelf_id, shelf_name,
-                manufacturer_id, manufacturer_name
+                GROUP BY 
+                    stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                    site_id, site_name, site_description, 
+                    area_id, area_name, 
+                    shelf_id, shelf_name,
+                    manufacturer_id, manufacturer_name
                 ORDER BY area.name;";
     $stmt_stock = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
@@ -161,7 +173,20 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 $stock_site_name = $row['site_name'];
                 $stock_manufacturer_id = $row['manufacturer_id'];
                 $stock_manufacturer_name = $row['manufacturer_name'];
-               
+                $stock_label_ids = $row['label_ids'];
+                $stock_label_names = $row['label_names'];
+                
+                $stock_label_data = [];
+
+                if ($stock_label_ids !== null) {
+                    for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
+                        $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
+                                                            'name' => explode(", ", $stock_label_names)[$n]);
+                    }
+                } else {
+                    $stock_label_data = '';
+                }
+                
 
                 $stock_inv_data[] = array('id' => $stock_id,
                                         'name' => $stock_name,
@@ -174,9 +199,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         'site_id' => $stock_site_id,
                                         'site_name' => $stock_site_name,
                                         'manufacturer_id' => $stock_manufacturer_id,
-                                        'manufacturer_name' => $stock_manufacturer_name);
+                                        'manufacturer_name' => $stock_manufacturer_name,
+                                        'label' => $stock_label_data);
             }
-            
+            print_r('<pre>');
+            print_r($stock_inv_data);
+            print_r('</pre>');
             
             // Inventory Rows
             echo ('
@@ -186,22 +214,30 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <p id="locations-head"><strong>Locations</strong></p>
                         <p id="locations">');
                             for ($l=0; $l < count($stock_inv_data); $l++) {
-                                echo($stock_inv_data[$l]['area_name'].' <a class="btn btn-dark cw" style="padding: 0px 3px 0px 3px;cursor:auto">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a>, ');
+                                if ($l == 0 && $l < count($stock_inv_data)-1) { $divider = ', '; } else { $divider = ''; }
+                                echo($stock_inv_data[$l]['area_name'].' <a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a>'.$divider);
                             }
                         echo('</p>
                         <p id="labels-head"><strong>Labels</strong></p>
-                        <p id="labels">***label***</p>
+                        <p id="labels">');
+                        if ( is_array($stock_inv_data[0]['label'])) {
+                            for ($l=0; $l < count($stock_inv_data[0]['label']); $l++) {
+                                echo('<button class="btn btn-dark btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['id'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
+                            }
+                        } else {
+                            echo('None');
+                        }
+                        echo('</p>
                         <p id="sku-head"><strong>SKU</strong></p>
                         <p id="sku">'.$stock_sku.'</p>
                         <p id="shelf-head"><strong>Shelf</strong></p>
                         <p id="shelf">');
                             for ($l=0; $l < count($stock_inv_data); $l++) {
-                                if ($l == 0 && $l < count($stock_inv_data)-1) { $divider = ', <br>'; } else { $divider = ''; }
-                                echo($stock_inv_data[$l]['area_name'].': <or class="gold">'.$stock_inv_data[$l]['shelf_name'].'</or>'.$divider);
-                            }
+                                if ($l == 0 && $l < count($stock_inv_data)-1) { $divider = ', '; } else { $divider = ''; }
+                                echo($stock_inv_data[$l]['area_name'].': <button class="btn btn-dark btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$l]['shelf_name']).'\'">'.$stock_inv_data[$l]['shelf_name'].'</button>'.$divider);
+                            }                            
                         echo('</p>
-                        <p id="manufacturer-head"><strong>Manufacturer</strong></p>
-                        <p id="manufacturer" class="gold">'.$stock_manufacturer_name.'</p>
+                        <p id="manufacturer-head"><strong>Manufacturer</strong></p><p><a class="btn btn-dark btn-stock gold" id="manufacturer">'.$stock_manufacturer_name.'</a></p>
                     </div>
                     <div class="col-sm text-center" id="stock-info-middle">
                     </div>

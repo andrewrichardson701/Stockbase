@@ -57,7 +57,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 if ($fileSize > 10000000)                             { $errors[] = "above10MB";            } // Within Filesize limits?
                 
                 if (empty($errors)) { // IF file is existing and all fields exist:
-                    $moveName = $fileNameShort.'-'.$timedate.'.'.$fileExtension;
+                    $moveName = $timedate.'-'.$fileNameShort.'.'.$fileExtension;
                     $uploadPath = $uploadDirectory.$moveName;
                     $uploadFileName = 'custom/'.$moveName;
                     $didUpload = move_uploaded_file($fileTmpName, $uploadPath);

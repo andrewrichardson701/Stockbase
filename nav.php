@@ -13,8 +13,9 @@
                 $area = isset($_GET['area']) ? $_GET['area'] : "0";
                 $name = isset($_GET['name']) ? $_GET['name'] : "";
                 $sku = isset($_GET['sku']) ? $_GET['sku'] : "";
-                $location = isset($_GET['shelf']) ? $_GET['location'] : "";
+                $location = isset($_GET['location']) ? $_GET['location'] : "";
                 $shelf = isset($_GET['shelf']) ? $_GET['shelf'] : "";
+                $label = isset($_GET['label']) ? $_GET['label'] : "";
                 $area_names_array = [];
                 
                 include 'includes/dbh.inc.php';

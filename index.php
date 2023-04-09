@@ -24,6 +24,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <!-- Get Inventory -->
     <?php
     include 'includes/dbh.inc.php';
+    $s = 0;
     // $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
     //             shelf.id AS shelf_id, shelf.name AS shelf_name, area.id AS area_id, area.name AS area_name, area.description AS area_description, 
     //             area.parent_id as area_parent_id, site.id AS site_id, site.name AS site_name, site.description AS site_description 
@@ -32,28 +33,60 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     //             INNER JOIN area ON shelf.area_id=area.id 
     //             INNER JOIN site ON area.site_id=site.id 
     //             WHERE site.id=?";
+    // $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+    //             GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names,
+    //             site.id AS site_id, site.name AS site_name, site.description AS site_description,
+    //             SUM(item.quantity) AS item_quantity
+    //             FROM stock
+    //             INNER JOIN item ON stock.id=item.stock_id
+    //             INNER JOIN shelf ON item.shelf_id=shelf.id 
+    //             INNER JOIN area ON shelf.area_id=area.id 
+    //             INNER JOIN site ON area.site_id=site.id";
     $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
-                GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names,
-                site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                SUM(item.quantity) AS item_quantity
+                    GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names,
+                    site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                    (SELECT SUM(quantity) 
+                        FROM item 
+                        WHERE item.stock_id = stock.id
+                    ) AS item_quantity,
+                    manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+                    label_names.label_names AS label_names,
+                    label_ids.label_ids AS label_ids,
+                    stock_img_image
                 FROM stock
                 INNER JOIN item ON stock.id=item.stock_id
                 INNER JOIN shelf ON item.shelf_id=shelf.id 
                 INNER JOIN area ON shelf.area_id=area.id 
-                INNER JOIN site ON area.site_id=site.id";
-    $s = 0;
+                INNER JOIN site ON area.site_id=site.id
+                LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
+                LEFT JOIN (SELECT stock_img.stock_id, stock_img.image AS stock_img_image
+                        FROM stock_img
+                        ORDER BY stock_img.stock_id
+                        LIMIT 1) AS stock_img_image
+                    ON stock_img_image.stock_id = stock.id
+                LEFT JOIN (SELECT stock_label.stock_id, GROUP_CONCAT(DISTINCT label.name SEPARATOR ', ') AS label_names
+                        FROM stock_label 
+                        INNER JOIN label ON stock_label.label_id = label.id
+                        GROUP BY stock_label.stock_id) AS label_names
+                    ON label_names.stock_id = stock.id
+                LEFT JOIN (SELECT stock_label.stock_id, GROUP_CONCAT(DISTINCT label_id SEPARATOR ', ') AS label_ids
+                        FROM stock_label
+                        GROUP BY stock_label.stock_id) AS label_ids
+                    ON label_ids.stock_id = stock.id";
     $sql_inv_add = '';
-    if ($site !== '0') { $sql_inv_add  .= " AND site.id=?"; $s++; 
-        $value1 = $site; 
+    if ($site !== '0') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." site.id=?"; $s++; 
+        if (!isset($value1)) {
+            $value1 = $site;
+        }
     } 
-    if ($area !== '0') { $sql_inv_add  .= " AND area.id=?"; $s++; 
+    if ($area !== '0') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." area.id=?"; $s++; 
         if (!isset($value1)) {
             $value1 = $area;
         } else {
             $value2 = $area;
-        }
+        } 
     } 
-    if ($name !== '') { $sql_inv_add  .= " AND stock.name LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($name !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." stock.name LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $name;
         } elseif (!isset($value2)) {
@@ -62,7 +95,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value3 = $name;
         }
     }
-    if ($sku !== '') { $sql_inv_add  .= " AND stock.sku LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($sku !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." stock.sku LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $sku;
         } elseif (!isset($value2)) {
@@ -71,9 +104,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value3 = $sku;
         } else {
             $value4 = $sku;
-        }
+        } 
     }
-    if ($location !== '') { $sql_inv_add  .= " AND area.name LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($location !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." area.name LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $location;
         } elseif (!isset($value2)) {
@@ -84,9 +117,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value4 = $location;
         } else {
             $value5 = $location;
-        }
+        } 
     }
-    if ($shelf !== '') { $sql_inv_add  .= " AND shelf.name LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($shelf !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." shelf.name LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $shelf;
         } elseif (!isset($value2)) {
@@ -99,13 +132,32 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value5 = $shelf;
         } else {
             $value6 = $shelf;
-        }
+        } 
+    }
+    if ($label !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." label_names LIKE CONCAT('%', ?, '%')"; $s++; 
+        if (!isset($value1)) {
+            $value1 = $label;
+        } elseif (!isset($value2)) {
+            $value2 = $label;
+        } elseif (!isset($value3)) {
+            $value3 = $label;
+        } elseif (!isset($value4)) {
+            $value4 = $label;
+        } elseif (!isset($value5)) {
+            $value5 = $label;
+        } elseif (!isset($value6)) {
+            $value6 = $label;
+        } else {
+            $value7 = $label;
+        } 
     }
     if ($s !== 0) { $sql_inv .= $sql_inv_add; }
     // $sql_inv .= " ORDER BY stock.name;";
-    $sql_inv .= " GROUP BY stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                site_id, site_name, site_description
-                ORDER BY stock.name;";
+    $sql_inv .= " GROUP BY 
+                stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                site_id, site_name, site_description, stock_img_image,
+                manufacturer_id, manufacturer_name;";
+    // echo '<pre>'.$sql_inv.'</pre>';
     $stmt_inv = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {
         echo("ERROR getting entries");
@@ -121,6 +173,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         elseif ($s == 4) { mysqli_stmt_bind_param($stmt_inv, "ssss", $value1, $value2, $value3, $value4); }
         elseif ($s == 5) { mysqli_stmt_bind_param($stmt_inv, "sssss", $value1, $value2, $value3, $value4, $value5); }
         elseif ($s == 6) { mysqli_stmt_bind_param($stmt_inv, "ssssss", $value1, $value2, $value3, $value4, $value5, $value6); }
+        elseif ($s == 7) { mysqli_stmt_bind_param($stmt_inv, "sssssss", $value1, $value2, $value3, $value4, $value5, $value6, $value7); }
         mysqli_stmt_execute($stmt_inv);
         $result_inv = mysqli_stmt_get_result($stmt_inv);
         $rowCount_inv = $result_inv->num_rows;
@@ -145,13 +198,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <label for="search-input-sku">SKU</label><br>
                             <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:180px;display:inline-block" placeholder="Search by SKU" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
                         </span>
-                        <span id="search-input-location-span" style="margin-right: 10px">
-                            <label for="search-input-location">Location</label><br>
-                            <input id="search-input-location" type="text" name="location" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Location" value="'); echo(isset($_GET['location']) ? $_GET['location'] : ''); echo('" />
-                        </span>
                         <span id="search-input-shelf-span" style="margin-right: 10px">
                             <label for="search-input-shelf">Shelf</label><br>
                             <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
+                        </span>
+                        <span id="search-input-label-span" style="margin-right: 10px">
+                            <label for="search-input-label">Label</label><br>
+                            <input id="search-input-label" type="text" name="label" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Label" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
                         </span>
                         <input type="submit" value="submit" hidden>
                     </form>
@@ -193,44 +246,51 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <th class="clickable sorting" id="sku" onclick="sortTable(3, this)">SKU</th>
                             <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>');
             if ($site == 0) { echo('<th class="clickable sorting" id="site" onclick="sortTable(5, this)">Site</th>'); }
-                        echo('<th id="location">Location(s)</th>
+                        echo('<th id="lables">Labels</th>
+                        <th id="location">Location(s)</th>
                         </tr>
                     </thead>
                     <tbody class="align-middle" style="text-align: center; white-space: nowrap;">
             ');
             // Inventory Rows
             while ( $row = $result_inv->fetch_assoc() ) {
-                //TEMP DATA
-                $img_directory = "assets/img/"; //not correct.
-                $stock_id = "1";
-                $stock_img_file_name = "Logo";
-                $stock_img_file_type = ".png";
-                $stock_name = "temp stock name";
-                $stock_sku = "TEMP-SKU-001";
-                $stock_quantity_total = 69;
-                $stock_locations = "DF3 Store, Store 50";
+                print_r('<pre>'); print_r($row); print_r('</pre>');
+                $img_directory = "assets/img/stock/"; 
 
                 $stock_id = $row['stock_id'];
-                // $stock_img_file_name =
-                // $stock_img_file_type
+                $stock_img_file_name = $row['stock_img_image'];
                 $stock_name = $row['stock_name'];
                 $stock_sku = $row['stock_sku'];
                 $stock_quantity_total = $row['item_quantity'];
                 $stock_locations = $row['area_names'];
                 $stock_site_id = $row['site_id'];
                 $stock_site_name = $row['site_name'];
+                $stock_label_names = ($row['label_names'] !== null) ? explode(", ", $row['label_names']) : '---';
                 
 
                 // Echo each row (inside of SQL results)
                 echo('
                             <tr class="vertical-align align-middle"id="'.$stock_id.'">
                                 <td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>
-                                <td class="align-middle" id="'.$stock_id.'-img-td"><img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.$stock_img_file_type.'" alt="'.$stock_name.'" onclick="modalLoad(this)" /></td>
+                                <td class="align-middle" id="'.$stock_id.'-img-td">
+                                ');
+                                if (!is_null($stock_img_file_name)) {
+                                    echo('<img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
+                                }
+                                echo('</td>
                                 <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?id='.$stock_id.'\')">'.$stock_name.'</td>
                                 <td class="align-middle" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
                                 <td class="align-middle" id="'.$stock_id.'-quantity">'.$stock_quantity_total.'</td>');
                 if ($site == 0) { echo ('<td class="align-middle link gold" id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'); }
-                            echo('<td class="align-middle" id="'.$stock_id.'-location">'.$stock_locations.'</td>
+                            echo('<td class="align-middle" id="'.$stock_id.'-label">');
+                            if (is_array($stock_label_names)) {
+                                for ($o=0; $o < count($stock_label_names); $o++) {
+                                    $divider = $o < count($stock_label_names)-1 ? ', ' : '';
+                                    echo('<or class="gold link" onclick="navPage(updateQueryParameter(\'\', \'label\', \''.$stock_label_names[$o].'\'))">'.$stock_label_names[$o].'</or>'.$divider);
+                                }
+                            } 
+                            echo('</td>
+                            <td class="align-middle" id="'.$stock_id.'-location">'.$stock_locations.'</td>
                             </tr>
                 ');
             }

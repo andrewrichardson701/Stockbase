@@ -29,11 +29,22 @@
 }
 
 .inv-img {
-    max-width: 40px;
+    max-width: 50px;
+    max-height: 50px;
 }
 .inv-nav {
     background-color: #72BE2A;
     z-index:0;
+    height:60px;
+}
+
+.btn-stock {
+    padding: 0px 3px 0px 3px;
+    cursor: auto !important;
+}
+.btn-stock-click {
+    padding: 0px 3px 0px 3px;
+    cursor: pointer;
 }
 
 .link {

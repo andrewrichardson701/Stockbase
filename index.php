@@ -52,17 +52,18 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                     label_names.label_names AS label_names,
                     label_ids.label_ids AS label_ids,
-                    stock_img_image
+                    stock_img_image.stock_img_image
                 FROM stock
                 INNER JOIN item ON stock.id=item.stock_id
                 INNER JOIN shelf ON item.shelf_id=shelf.id 
                 INNER JOIN area ON shelf.area_id=area.id 
                 INNER JOIN site ON area.site_id=site.id
                 LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                LEFT JOIN (SELECT stock_img.stock_id, stock_img.image AS stock_img_image
-                        FROM stock_img
-                        ORDER BY stock_img.stock_id
-                        LIMIT 1) AS stock_img_image
+                LEFT JOIN (
+                    SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
+                    FROM stock_img
+                    GROUP BY stock_img.stock_id
+                ) AS stock_img_image
                     ON stock_img_image.stock_id = stock.id
                 LEFT JOIN (SELECT stock_label.stock_id, GROUP_CONCAT(DISTINCT label.name SEPARATOR ', ') AS label_names
                         FROM stock_label 
@@ -151,12 +152,32 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value7 = $label;
         } 
     }
+    if ($manufacturer !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." manufacturer.name LIKE CONCAT('%', ?, '%')"; $s++; 
+        if (!isset($value1)) {
+            $value1 = $manufacturer;
+        } elseif (!isset($value2)) {
+            $value2 = $manufacturer;
+        } elseif (!isset($value3)) {
+            $value3 = $manufacturer;
+        } elseif (!isset($value4)) {
+            $value4 = $manufacturer;
+        } elseif (!isset($value5)) {
+            $value5 = $manufacturer;
+        } elseif (!isset($value6)) {
+            $value6 = $manufacturer;
+        } elseif (!isset($value7)) {
+            $value7 = $manufacturer;
+        } else {
+            $value8 = $manufacturer;
+        } 
+    }
     if ($s !== 0) { $sql_inv .= $sql_inv_add; }
     // $sql_inv .= " ORDER BY stock.name;";
     $sql_inv .= " GROUP BY 
-                stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                site_id, site_name, site_description, stock_img_image,
-                manufacturer_id, manufacturer_name;";
+                    stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                    site_id, site_name, site_description, stock_img_image.stock_img_image,
+                    manufacturer_id, manufacturer_name
+                ORDER BY stock.name;";
     // echo '<pre>'.$sql_inv.'</pre>';
     $stmt_inv = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {
@@ -174,6 +195,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         elseif ($s == 5) { mysqli_stmt_bind_param($stmt_inv, "sssss", $value1, $value2, $value3, $value4, $value5); }
         elseif ($s == 6) { mysqli_stmt_bind_param($stmt_inv, "ssssss", $value1, $value2, $value3, $value4, $value5, $value6); }
         elseif ($s == 7) { mysqli_stmt_bind_param($stmt_inv, "sssssss", $value1, $value2, $value3, $value4, $value5, $value6, $value7); }
+        elseif ($s == 8) { mysqli_stmt_bind_param($stmt_inv, "ssssssss", $value1, $value2, $value3, $value4, $value5, $value6, $value7, $value8); }
         mysqli_stmt_execute($stmt_inv);
         $result_inv = mysqli_stmt_get_result($stmt_inv);
         $rowCount_inv = $result_inv->num_rows;
@@ -185,7 +207,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
             </div>
 
-            <div class="container" id="search-fields" style="margin-bottom:20px">
+            <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
                 <div class="nav-row">
                     <form action="./" method="get" class="nav-row" style="max-width:max-content">
                         <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
@@ -202,6 +224,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <label for="search-input-shelf">Shelf</label><br>
                             <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
                         </span>
+                        <span id="search-input-manufacturer-span" style="margin-right: 10px">
+                            <label for="search-input-manufacturer">Manufacturer</label><br>
+                            <input id="search-input-manufacturer" type="text" name="manufacturer" class="form-control" style="width:180px;display:inline-block" placeholder="Manufacturer" value="'); echo(isset($_GET['manufacturer']) ? $_GET['manufacturer'] : ''); echo('" />
+                        </span>
                         <span id="search-input-label-span" style="margin-right: 10px">
                             <label for="search-input-label">Label</label><br>
                             <input id="search-input-label" type="text" name="label" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Label" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
@@ -209,12 +235,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <input type="submit" value="submit" hidden>
                     </form>
                     <div id="add-div" class="nav-div nav-right" style="margin-right:5px">
-                        <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px">
+                        <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'add\'))">
                             <i class="fa fa-plus"></i> Add 
                         </button>
                     </div> 
                     <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:0">
-                        <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px">
+                        <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'remove\'))">
                             <i class="fa fa-minus"></i> Remove 
                         </button>
                     </div> 
@@ -254,7 +280,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             ');
             // Inventory Rows
             while ( $row = $result_inv->fetch_assoc() ) {
-                print_r('<pre>'); print_r($row); print_r('</pre>');
+                // print_r('<pre>'); print_r($row); print_r('</pre>');
                 $img_directory = "assets/img/stock/"; 
 
                 $stock_id = $row['stock_id'];
@@ -278,7 +304,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     echo('<img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
                                 }
                                 echo('</td>
-                                <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?id='.$stock_id.'\')">'.$stock_name.'</td>
+                                <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>
                                 <td class="align-middle" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
                                 <td class="align-middle" id="'.$stock_id.'-quantity">'.$stock_quantity_total.'</td>');
                 if ($site == 0) { echo ('<td class="align-middle link gold" id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'); }
@@ -307,159 +333,5 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     }
 
     ?>
-
-
-    <script> // MODAL SCRIPT
-        // Get the modal
-        function modalLoad(element) {
-            var modal = document.getElementById("modalDiv");
-
-            // Get the image and insert it inside the modal - use its "alt" text as a caption
-            var img = document.getElementById(element);
-            var modalImg = document.getElementById("modalImg");
-            var captionText = document.getElementById("caption");
-            modal.style.display = "block";
-            modalImg.src = element.src;
-            captionText.innerHTML = element.alt;
-
-            
-            
-        }
-
-        // When the user clicks on <span> (x), close the modal or if they click the image.
-        modalClose = function() { 
-            var modal = document.getElementById("modalDiv");
-            modal.style.display = "none";
-        }
-    </script>
-    <script> // site selection <select> page navigation (area one below)
-        function siteChange(element) {
-            var selectElement = document.getElementById(element);
-            var newSiteValue = selectElement.value;
-
-            if (newSiteValue) {
-                var updatedUrl = updateQueryParameter('', 'site', newSiteValue);
-                updatedUrl = updateQueryParameter(updatedUrl, 'area', '0');
-                window.location.href = updatedUrl;
-            }
-        }
-        function areaChange(element) {
-            var selectElement = document.getElementById(element);
-            var newAreaValue = selectElement.value;
-
-            if (newAreaValue) {
-                var updatedUrl = updateQueryParameter('', 'area', newAreaValue);
-                window.location.href = updatedUrl;
-            }
-        }
-    </script>
-    <script>
-        function updateQueryParameter(url, query, newQueryValue) {
-            // Get the current URL
-            if (url === '') {
-                var currentUrl = window.location.href;
-            } else {
-                var currentUrl = url;
-            }
-            
-            // Get the index of the "?" character in the URL
-            var queryStringIndex = currentUrl.indexOf('?');
-
-            // If there is no "?" character in the URL, return the URL with the new $query query parameter value
-            if (queryStringIndex === -1) {
-                return currentUrl + '?' + query + '=' + newQueryValue;
-            }
-
-            // Get the query string portion of the URL
-            var queryString = currentUrl.slice(queryStringIndex + 1);
-
-            // Split the query string into an array of key-value pairs
-            var queryParams = queryString.split('&');
-
-            // Create a new array to hold the updated query parameters
-            var updatedQueryParams = [];
-
-            // Loop through the query parameters and update the query parameter if it exists
-            for (var i = 0; i < queryParams.length; i++) {
-                var keyValue = queryParams[i].split('=');
-                if (keyValue[0] === query) {
-                updatedQueryParams.push(query + '=' + newQueryValue);
-                } else {
-                updatedQueryParams.push(queryParams[i]);
-                }
-            }
-
-            // If the query parameter does not exist, add it to the array of query parameters
-            if (updatedQueryParams.indexOf(query + '=' + newQueryValue) === -1) {
-                updatedQueryParams.push(query + '=' + newQueryValue);
-            }
-
-            // Join the updated query parameters into a string and append them to the original URL
-            var updatedQueryString = updatedQueryParams.join('&');
-            return currentUrl.slice(0, queryStringIndex + 1) + updatedQueryString;
-        }
-    </script>
-    <script>
-        function sortTable(n, header) {
-        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-        table = document.getElementById("inventoryTable");
-        switching = true;
-        //Set the sorting direction to ascending:
-        dir = "asc";
-        /*Make a loop that will continue until no switching has been done:*/
-        while (switching) {
-            //start by saying: no switching is done:
-            switching = false;
-            rows = table.rows;
-            /*Loop through all table rows (except the first, which contains table headers):*/
-            for (i = 1; i < (rows.length - 1); i++) {
-            //start by saying there should be no switching:
-            shouldSwitch = false;
-            /*Get the two elements you want to compare, one from current row and one from the next:*/
-            x = rows[i].getElementsByTagName("TD")[n];
-            y = rows[i + 1].getElementsByTagName("TD")[n];
-            /*check if the two rows should switch place, based on the direction, asc or desc:*/
-            if (dir == "asc") {
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                //if so, mark as a switch and break the loop:
-                shouldSwitch = true;
-                break;
-                }
-            } else if (dir == "desc") {
-                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                //if so, mark as a switch and break the loop:
-                shouldSwitch = true;
-                break;
-                }
-            }
-            }
-            if (shouldSwitch) {
-            /*If a switch has been marked, make the switch and mark that a switch has been done:*/
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-            //Each time a switch is done, increase this count by 1:
-            switchcount++;
-            } else {
-            /*If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again.*/
-            if (switchcount == 0 && dir == "asc") {
-                dir = "desc";
-                switching = true;
-            }
-            }
-        }
-
-        // update the header class to indicate sorting direction and show arrow
-        var headers = document.getElementsByTagName("th");
-        for (var i = 0; i < headers.length; i++) {
-            headers[i].classList.remove("sorting-asc", "sorting-desc");
-        }
-        header.classList.add("sorting-" + dir);
-        }
-    </script>
-    <script>
-        function navPage(url) {
-            window.location.href = url;
-        }
-    </script>
 
 </body>

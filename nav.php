@@ -16,6 +16,7 @@
                 $location = isset($_GET['location']) ? $_GET['location'] : "";
                 $shelf = isset($_GET['shelf']) ? $_GET['shelf'] : "";
                 $label = isset($_GET['label']) ? $_GET['label'] : "";
+                $manufacturer = isset($_GET['manufacturer']) ? $_GET['manufacturer'] : "";
                 $area_names_array = [];
                 
                 include 'includes/dbh.inc.php';
@@ -95,7 +96,16 @@
         <?php
         $nav_right_set = 0;
         $nav_right = 'nav-right';
-
+        if (isset($_SERVER['HTTP_REFERER']) && !str_contains($_SERVER['HTTP_REFERER'], "login.") && !str_contains($_SERVER['HTTP_REFERER'], "logout.") && !str_contains($_SERVER['PHP_SELF'], "index.php") && !str_contains($_SERVER['PHP_SELF'], "login.php")) {
+            echo('
+            <div id="profile-div" style="margin-left:25px">
+                <button id="add-stock" class="btn btn-secondary cw nav-v-c" style="padding: 3px 6px 3px 6px" onclick="navPage(\''.$_SERVER['HTTP_REFERER'].'\');">
+                    <i class="fa fa-arrow-left fa-2xs"></i> Back 
+                </button>
+            </div> 
+            ');
+        }
+        
         if (isset($profile_name)) {
             echo('
             <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">

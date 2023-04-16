@@ -178,7 +178,11 @@ input[type=color]:after {
     color: #666;
 }
 
-
+select[disabled] {
+    color: #a0a0a0;
+    background-color: #585858f5;
+    cursor: not-allowed;
+  }
 
 /* MODAL CSS FROM W3SCHOOLS */ 
 /* The Modal (background) */

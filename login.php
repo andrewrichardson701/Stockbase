@@ -92,10 +92,4 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         </div>
 	</div>
 
-    <script>
-        function navPage(url) {
-            window.location.href = url;
-        }
-    </script>
-
 </body>

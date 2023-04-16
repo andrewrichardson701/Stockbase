@@ -334,6 +334,7 @@ if ($_SESSION['role'] !== "admin") {
         <div id="caption" class="modal-caption"></div>
     </div>
     <!-- End of Modal Image Div -->
+    
     <script>
     function testLDAP() {
         var ldap_username = $('#auth-username').val();
@@ -389,7 +390,7 @@ if ($_SESSION['role'] !== "admin") {
         });
     }
     </script>
-    <script> // color-picker box json
+    <script> // color-picker box json - for Admin.php
         $("input.color").each(function() {
             var that = this;
             $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {
@@ -399,98 +400,6 @@ if ($_SESSION['role'] !== "admin") {
             $(this).attr("data-value", this.value);
             this.type = "text";
         });
-    </script>
-    <script> // MODAL SCRIPT
-        // Get the modal
-        function modalLoad(element) {
-            var modal = document.getElementById("modalDiv");
-
-            // Get the image and insert it inside the modal - use its "alt" text as a caption
-            var img = document.getElementById(element);
-            var modalImg = document.getElementById("modalImg");
-            var captionText = document.getElementById("caption");
-            modal.style.display = "block";
-            modalImg.src = element.src;
-            captionText.innerHTML = element.alt;
-        }
-
-        // When the user clicks on <span> (x), close the modal or if they click the image.
-        modalClose = function() { 
-            var modal = document.getElementById("modalDiv");
-            modal.style.display = "none";
-        }
-    </script>
-    <script> // site selection <select> page navigation (area one below)
-        function siteChange(element) {
-            var selectElement = document.getElementById(element);
-            var newSiteValue = selectElement.value;
-
-            if (newSiteValue) {
-                var updatedUrl = updateQueryParameter('', 'site', newSiteValue);
-                updatedUrl = updateQueryParameter(updatedUrl, 'area', '0');
-                window.location.href = updatedUrl;
-            }
-        }
-        function areaChange(element) {
-            var selectElement = document.getElementById(element);
-            var newAreaValue = selectElement.value;
-
-            if (newAreaValue) {
-                var updatedUrl = updateQueryParameter('', 'area', newAreaValue);
-                window.location.href = updatedUrl;
-            }
-        }
-    </script>
-    <script>
-        function updateQueryParameter(url, query, newQueryValue) {
-            // Get the current URL
-            if (url === '') {
-                var currentUrl = window.location.href;
-            } else {
-                var currentUrl = url;
-            }
-            
-            // Get the index of the "?" character in the URL
-            var queryStringIndex = currentUrl.indexOf('?');
-
-            // If there is no "?" character in the URL, return the URL with the new $query query parameter value
-            if (queryStringIndex === -1) {
-                return currentUrl + '?' + query + '=' + newQueryValue;
-            }
-
-            // Get the query string portion of the URL
-            var queryString = currentUrl.slice(queryStringIndex + 1);
-
-            // Split the query string into an array of key-value pairs
-            var queryParams = queryString.split('&');
-
-            // Create a new array to hold the updated query parameters
-            var updatedQueryParams = [];
-
-            // Loop through the query parameters and update the query parameter if it exists
-            for (var i = 0; i < queryParams.length; i++) {
-                var keyValue = queryParams[i].split('=');
-                if (keyValue[0] === query) {
-                updatedQueryParams.push(query + '=' + newQueryValue);
-                } else {
-                updatedQueryParams.push(queryParams[i]);
-                }
-            }
-
-            // If the query parameter does not exist, add it to the array of query parameters
-            if (updatedQueryParams.indexOf(query + '=' + newQueryValue) === -1) {
-                updatedQueryParams.push(query + '=' + newQueryValue);
-            }
-
-            // Join the updated query parameters into a string and append them to the original URL
-            var updatedQueryString = updatedQueryParams.join('&');
-            return currentUrl.slice(0, queryStringIndex + 1) + updatedQueryString;
-        }
-    </script>
-    <script>
-        function navPage(url) {
-            window.location.href = url;
-        }
-    </script>
+</script>
 
 </body>

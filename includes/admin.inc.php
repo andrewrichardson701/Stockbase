@@ -141,7 +141,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         } else {
             $queryString = '';
         }
-        header("Location: ../admin.php$queryStringid#global-settings");
+        header("Location: ../admin.php$queryString#global-settings");
         exit();
 
     } elseif (isset($_POST['global-restore-defaults'])) {

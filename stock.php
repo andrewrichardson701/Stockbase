@@ -264,7 +264,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <div class="col-sm text-right"  id="stock-info-right">');  
                         if (!empty($stock_img_data)) {
                             echo('<div class="well-nopad bg-dark nav-right" style="margin:20px;padding:0px;width:max-content">
-                            <div class="nav-row">');
+                            <div class="nav-row" style="width:315px">');
                             for ($i=0; $i < count($stock_img_data); $i++) {
                                 $ii = $i+1;
                                 if ($i == 0) {

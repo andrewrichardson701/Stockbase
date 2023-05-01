@@ -13,7 +13,8 @@ if (isset($_GET['stock_id'])) {
                         INNER JOIN shelf AS s ON i.shelf_id=s.id
                         INNER JOIN area AS a ON s.area_id=a.id
                         WHERE t.stock_id=?
-                        ORDER BY t_date DESC";
+                        ORDER BY t_date DESC
+                        LIMIT 5";
             $stmt_tran = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_tran, $sql_tran)) {
                 echo("ERROR getting entries");
@@ -64,8 +65,21 @@ if (isset($_GET['stock_id'])) {
                         $t_username = $row_tran['t_username'];
                         $s_name = $row_tran['s_name'];
                         $a_name = $row_tran['a_name'];
+                        switch ($t_type) {
+                            case 'add':
+                                $t_type_color = 'lime';
+                                break;
+                            case 'remove':
+                                $t_type_color = 'red';
+                                break;
+                            case 'delete':
+                                $t_type_color = 'brown';
+                                break;
+                            default:
+                                $t_type_color = '';
+                        }
                             echo('
-                            <tr>
+                            <tr style="color:'.$t_type_color.'">
                                 <td id="t_id" hidden>'.$t_id.'</td>
                                 <td hidden>'.$t_stock_id.'</td>
                                 <td hidden>'.$t_item_id.'</td>

@@ -233,10 +233,22 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <div class="col-sm text-left" id="stock-info-left">
                             <p id="locations-head"><strong>Locations</strong></p>
                             <p id="locations">');
+                                $locationsArray = [];
                                 for ($l=0; $l < count($stock_inv_data); $l++) {
-                                    if ($l == 0 && $l < count($stock_inv_data)-1) { $divider = ', '; } else { $divider = ''; }
-                                    echo($stock_inv_data[$l]['area_name'].' <a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a>'.$divider);
+                                    // if ($l == 0 && $l < count($stock_inv_data)-1) { $divider = ', '; } else { $divider = ''; }
+                                    if (!in_array($stock_inv_data[$l]['area_name'], array_keys($locationsArray))) {
+                                        $locationsArray[$stock_inv_data[$l]['area_name']]['quantity'] = $stock_inv_data[$l]['quantity'];
+                                    } else {
+                                        $locationsArray[$stock_inv_data[$l]['area_name']]['quantity'] = (int)$locationsArray[$stock_inv_data[$l]['area_name']]['quantity']+(int)$stock_inv_data[$l]['quantity'];
+                                    }
+                                    // echo($stock_inv_data[$l]['area_name'].' <a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a>'.$divider);
                                 }
+                                $locKeys = array_keys($locationsArray);
+                                for ($l=0; $l < count($locKeys); $l++) {
+                                    if ($l == 0 && $l < count($locKeys)-1) { $divider = ', '; } else { $divider = ''; }
+                                    echo($locKeys[$l].' <a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$locationsArray[$locKeys[$l]]['quantity'] .'</or></a>'.$divider);
+                                }
+
                             echo('</p>
                             <p id="labels-head"><strong>Labels</strong></p>
                             <p id="labels">');

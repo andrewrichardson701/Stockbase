@@ -55,9 +55,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     stock_img_image.stock_img_image
                 FROM stock
                 INNER JOIN item ON stock.id=item.stock_id
-                INNER JOIN shelf ON item.shelf_id=shelf.id 
-                INNER JOIN area ON shelf.area_id=area.id 
-                INNER JOIN site ON area.site_id=site.id
+                LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                LEFT JOIN area ON shelf.area_id=area.id 
+                LEFT JOIN site ON area.site_id=site.id
                 LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
                 LEFT JOIN (
                     SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image

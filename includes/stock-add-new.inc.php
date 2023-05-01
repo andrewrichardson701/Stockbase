@@ -59,9 +59,9 @@ function image_upload($field, $stock_id, $reditect_irl, $redirect_queries) {
 }
 
 if (isset($_POST['submit'])) {
-
+    session_start();
+    
     if ($_POST['submit'] == 'Add Stock') {
-        session_start();
 
         // print_r('<pre>');
         // print_r($_POST);

@@ -157,7 +157,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                 <div>
-                                    <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px">
+                                    <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" required>
                                         <option value="" selected disabled hidden>Select Manufacturer</option>');
                                         include 'includes/dbh.inc.php';
                                             $sql = "SELECT id, name

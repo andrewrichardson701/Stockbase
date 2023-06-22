@@ -1,9 +1,10 @@
 <?php
-// INCLUDED IN THE STOCK PAGE FOR NEW STOCK OR INVENTORY TO CURRENT STOCK
+// INCLUDED IN THE STOCK PAGE FOR REMOVING STOCK OR INVENTORY TO CURRENT STOCK
 
 // Query string bits
 $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
 
+// Redirect using javascript or if they have disabled it, using meta tag.
 if ($stock_id == 0 || $stock_id == '0') {
     $url = "../stock.php?modify=remove&error=stock_id not set";
     echo '<script type="text/javascript">';
@@ -13,7 +14,6 @@ if ($stock_id == 0 || $stock_id == '0') {
     echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
     echo '</noscript>'; 
     exit();
-
 }
 
 // include 'head.php';
@@ -165,14 +165,20 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
                                             <p id="sku"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
                                             <p id="locations" style="margin-bottom:0"><strong>Locations:</strong><br>');
+                                            if (empty($stock_inv_data)) {
+                                                echo("No locations linked.");
+                                            } else {
+                                                echo('<table><tbody>');
                                                 for ($l=0; $l < count($stock_inv_data); $l++) {
-                                                    if ($l == 0 && $l < count($stock_inv_data)-1) { $divider = '<br>'; } else { $divider = ''; }
-                                                    echo('<or>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].' <a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or>'.$divider);
+                                                    // if ($l == 0 || $l < count($stock_inv_data)-1) { $divider = '<br>'; } else { $divider = ''; }
+                                                    echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
                                                 }
+                                                echo('</tbody></table>');
+                                            }
                                             echo('</p>
                                         </div>
                                     </div>
-                                    </div>
+                                </div>
                                 <div class="container well-nopad bg-dark">
                                     <div class="row">
                                         <div class="text-left" id="stock-info-left" style="padding-left:15px">
@@ -213,7 +219,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 </div>
                                                 <div class="nav-row" id="price-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price (£)</label></div>
-                                                    <div><input type="text" name="price" placeholder="0" id="price" class="form-control nav-v-c" style="width:300px" value="0" value="'.$input_cost.'" required></input></div>
+                                                    <div><input type="number" name="price" placeholder="0" id="price" class="form-control nav-v-c" style="width:300px" value="0" value="'.$input_cost.'" required></input></div>
                                                 </div>
                                             </div>
                                             <hr style="border-color: gray; margin-right:15px">
@@ -224,7 +230,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 </div>
                                                 <div class="nav-row" id="quantity-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
-                                                    <div><input type="text" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
+                                                    <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
                                                 </div>
                                                 <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
@@ -342,4 +348,4 @@ if ($stock_id == 0 || $stock_id == '0') {
             window.location.href = url;
         }
     }
-    </script>
+</script>

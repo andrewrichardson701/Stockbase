@@ -35,10 +35,10 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             //<input type="text" name="labels" placeholder="Labels - allow multiple" id="labels" class="form-control nav-v-c" style="width:300px" value="'.$input_labels.'"></input>
             echo('
             <div class="container well-nopad bg-dark" style="margin-bottom:5px">
-                <h3 style="font-size:22px; margin-left:25pxq">Add New Stock</h3>
+                <h3 style="font-size:22px; margin-left:25px">Add New Stock</h3>
                 <div class="row">
                     <div class="col-sm text-left" id="stock-info-left">
-                        <div class="nav-row" style="margin-bottom:25px">
+                        <div class="nav-row">
                             <div class="nav-row" id="name-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
                                 <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c" style="width:300px" value="'.$input_name.'" required></input></div>
@@ -53,85 +53,99 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             </div>
                             <div class="nav-row" id="min-stock-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
-                                <div><input type="text" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c" style="width:300px" value="'.$input_min_stock.'"></input></div>
-                            </div>
-                            <div class="nav-row" id="labels-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
-                                <div>
-                                    <select class="form-control" id="labels-init" name="labels-init" style="width:300px"">
-                                        <option value="" selected disabled hidden>-- Select a label if needed --</option>');
-                                        include 'includes/dbh.inc.php';
-                                        $sql = "SELECT id, name
-                                                FROM label
-                                                ORDER BY id";
-                                        $stmt = mysqli_stmt_init($conn);
-                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                            // fails to connect
-                                        } else {
-                                            mysqli_stmt_execute($stmt);
-                                            $result = mysqli_stmt_get_result($stmt);
-                                            $rowCount = $result->num_rows;
-                                            if ($rowCount < 1) {
-                                                echo('<option value="0">No Manufacturers Found...</option>');
-                                            } else {
-                                                // rows found
-                                                while ($row = $result->fetch_assoc()) {
-                                                    $label_id = $row['id'];
-                                                    $label_name = $row['name'];
-                                                    echo('<option value="'.$label_id.'">'.$label_name.'</option>');
-                                                }
-                                            }
-                                        }
-                                    echo('
-                                    </select>
-
-                                    <select id="labels" name="labels[]" multiple class="form-control" style="margin-top:2px;display: inline-block;width:300px;height:40px"></select>
-                                    <style>
-                                      #labels {
-                                        display: inline-block;
-                                        padding-top:2px;
-                                        padding-bottom:2px;
-                                        width: auto;
-                                      }
-                                      
-                                      #labels option {
-                                        display: inline-block;
-                                        padding: 3px;
-                                        margin-right: 10px;
-                                        background-color: #f1f1f1;
-                                        border: 1px solid #ccc;
-                                        border-radius: 5px;
-                                      }
-                                    </style>
-                                    <script>
-                                    var selectBox = document.getElementById("labels-init");
-                                    var selectedBox = document.getElementById("labels");
-
-                                    selectBox.addEventListener("change", function() {
-                                    var selectedOption = selectBox.options[selectBox.selectedIndex];
-                                    if (selectedOption.value !== "") {
-                                        selectedBox.add(selectedOption);
-                                    }
-                                    });
-
-                                    selectedBox.addEventListener("change", function() {
-                                    var removedOption = selectedBox.options[selectedBox.selectedIndex];
-                                    if (removedOption.value !== "") {
-                                        selectBox.add(removedOption);
-                                        selectedBox.remove(selectedBox.selectedIndex);
-                                    }
-                                    });
-                                    </script>
-                                </div>
+                                <div><input type="number" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c" style="width:300px" value="'.$input_min_stock.'"></input></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-sm text-right"  id="stock-info-right"> 
-                        <div id="image-preview" style="height:150px"></div>
+                    <div class="col-sm"  id="stock-info-right"> 
+                        <div id="image-preview" style="height:150px;margin:auto;text-align:center">
+                            <img class="nav-v-c" id="upload-img-pre" style="max-width:150px;max-height:150px" />
+                        </div>
                         <div class="nav-row"  id="labels-row" style="margin-top:25px">
                             <div class="nav-right" style="margin-right:25px"><label class="nav-v-c" style="width:100%" for="labels" id="labels-label">Image:</label></div>
-                            <div><input class="nav-v-c" type="file" style="width: 350px" id="image" name="image"></div>
+                            <div><input class="nav-v-c text-center" type="file" accept="image/*" style="width: 350px" id="image" name="image" onchange="loadImage(event)"></div>
+                        </div>
+                        <script>
+                        var loadImage = function(event) {
+                            var preview = document.getElementById(\'upload-img-pre\');
+                            preview.src = URL.createObjectURL(event.target.files[0]);
+                            preview.onload = function() {
+                            URL.revokeObjectURL(preview.src) // free memory
+                            }
+                        };
+                        </script>
+                    </div>
+                    <div class="nav-row" id="labels-row" style="margin-top:25px;padding-left:15px;padding-right:15px">
+                        <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
+                        <div>
+                            <select class="form-control" id="labels-init" name="labels-init" style="width:300px"">
+                                <option value="" selected disabled hidden>-- Select a label if needed --</option>');
+                                include 'includes/dbh.inc.php';
+                                $sql = "SELECT id, name
+                                        FROM label
+                                        ORDER BY id";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    // fails to connect
+                                } else {
+                                    mysqli_stmt_execute($stmt);
+                                    $result = mysqli_stmt_get_result($stmt);
+                                    $rowCount = $result->num_rows;
+                                    if ($rowCount < 1) {
+                                        echo('<option value="0">No Manufacturers Found...</option>');
+                                    } else {
+                                        // rows found
+                                        while ($row = $result->fetch_assoc()) {
+                                            $label_id = $row['id'];
+                                            $label_name = $row['name'];
+                                            echo('<option value="'.$label_id.'">'.$label_name.'</option>');
+                                        }
+                                    }
+                                }
+                            echo('
+                            </select>
+
+                            <select id="labels" name="labels[]" multiple class="form-control" style="margin-top:2px;display: inline-block;width:300px;height:40px"></select>
+                            <style>
+                                #labels {
+                                display: inline-block;
+                                padding-top:2px;
+                                padding-bottom:2px;
+                                width: auto;
+                                }
+                                
+                                #labels option {
+                                display: inline-block;
+                                padding: 3px;
+                                margin-right: 10px;
+                                background-color: #f1f1f1;
+                                border: 1px solid #ccc;
+                                border-radius: 5px;
+                                }
+                            </style>
+                            <script>
+                            var selectBox = document.getElementById("labels-init");
+                            var selectedBox = document.getElementById("labels");
+
+                            selectBox.addEventListener("change", function() {
+                            var selectedOption = selectBox.options[selectBox.selectedIndex];
+                            if (selectedOption.value !== "") {
+                                selectedBox.add(selectedOption);
+                            }
+                            });
+
+                            selectedBox.addEventListener("change", function() {
+                            var removedOption = selectedBox.options[selectedBox.selectedIndex];
+                            if (removedOption.value !== "") {
+                                selectBox.add(removedOption);
+                                selectedBox.remove(selectedBox.selectedIndex);
+                            }
+                            });
+                            </script>
+                        </div>
+                        <div>
+                            <label class="text-right" style="margin-left: 25px;margin-top:5px;font-size:14"><a href="#" class="link">Add New</a></label>
                         </div>
                     </div>
                 </div>
@@ -140,6 +154,119 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         } else {
             // Adding exisiting stock for item
             echo('<input type="hidden" name="id" value="'.$_GET['stock_id'].'" />');
+            $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                            area.id AS area_id, area.name AS area_name,
+                            shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                            (SELECT SUM(quantity) 
+                                FROM item 
+                                WHERE item.stock_id = stock.id AND item.shelf_id = shelf.id
+                            ) AS item_quantity,
+                            manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+                            (SELECT GROUP_CONCAT(DISTINCT label.name SEPARATOR ', ') 
+                                FROM stock_label 
+                                INNER JOIN label ON stock_label.label_id = label.id 
+                                WHERE stock_label.stock_id = stock.id
+                            ) AS label_names,
+                            (SELECT GROUP_CONCAT(DISTINCT label_id SEPARATOR ', ') 
+                                FROM stock_label
+                                WHERE stock_label.stock_id = stock.id
+                            ) AS label_ids
+                        FROM stock
+                        LEFT JOIN item ON stock.id=item.stock_id
+                        LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                        LEFT JOIN area ON shelf.area_id=area.id 
+                        LEFT JOIN site ON area.site_id=site.id
+                        LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
+                        WHERE stock.id=?
+                        GROUP BY 
+                            stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                            site_id, site_name, site_description, 
+                            area_id, area_name, 
+                            shelf_id, shelf_name,
+                            manufacturer_id, manufacturer_name
+                        ORDER BY area.name;";
+            $stmt_stock = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_bind_param($stmt_stock, "s", $stock_id);
+                mysqli_stmt_execute($stmt_stock);
+                $result_stock = mysqli_stmt_get_result($stmt_stock);
+                $rowCount_stock = $result_stock->num_rows;
+
+                if ($rowCount_stock < 1) {
+                    echo ('<div class="container" id="no-stock-found">No Stock Found</div>');
+                } else {
+                    $stock_inv_data = [];
+                    while ( $row = $result_stock->fetch_assoc() ) {
+                        $stock_id = $row['stock_id'];
+                        $stock_name = $row['stock_name'];
+                        $stock_sku = $row['stock_sku'];
+                        $stock_quantity_total = $row['item_quantity'];
+                        $stock_shelf_id = $row['shelf_id'];
+                        $stock_shelf_name = $row['shelf_name'];
+                        $stock_area_id = $row['area_id'];
+                        $stock_area_name = $row['area_name'];
+                        $stock_site_id = $row['site_id'];
+                        $stock_site_name = $row['site_name'];
+                        $stock_manufacturer_id = $row['manufacturer_id'];
+                        $stock_manufacturer_name = $row['manufacturer_name'];
+                        $stock_label_ids = $row['label_ids'];
+                        $stock_label_names = $row['label_names'];
+                        
+                        $stock_label_data = [];
+
+                        if ($stock_label_ids !== null) {
+                            for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
+                                $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
+                                                                    'name' => explode(", ", $stock_label_names)[$n]);
+                            }
+                        } else {
+                            $stock_label_data = '';
+                        }
+                        
+
+                        $stock_inv_data[] = array('id' => $stock_id,
+                                                'name' => $stock_name,
+                                                'sku' => $stock_sku,
+                                                'quantity' => $stock_quantity_total,
+                                                'shelf_id' => $stock_shelf_id,
+                                                'shelf_name' => $stock_shelf_name,
+                                                'area_id' => $stock_area_id,
+                                                'area_name' => $stock_area_name,
+                                                'site_id' => $stock_site_id,
+                                                'site_name' => $stock_site_name,
+                                                'manufacturer_id' => $stock_manufacturer_id,
+                                                'manufacturer_name' => $stock_manufacturer_name,
+                                                'label' => $stock_label_data);
+                    }
+                    
+                    $stock_id = $_GET['stock_id'];
+                    echo('<form action="includes/stock-remove-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                        <div class="nav-row" style="margin-bottom:10px">
+                            <div class="nav-row" id="heading-row" style="margin-top:10px">
+                                <div style="width:200px;margin-right:25px"></div>
+                                <div id="heading-heading">
+                                    <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$stock_inv_data[0]['name'].'</h2></a>
+                                    <p id="sku"><strong>SKU:</strong> <or class="blue">'.$stock_inv_data[0]['sku'].'</or></p>
+                                    <p id="locations" style="margin-bottom:0"><strong>Locations:</strong><br>');
+                                        if (empty($stock_inv_data)) {
+                                            echo("No locations linked.");
+                                        } else {
+                                            echo('<table><tbody>');
+                                            for ($l=0; $l < count($stock_inv_data); $l++) {
+                                                // if ($l == 0 || $l < count($stock_inv_data)-1) { $divider = '<br>'; } else { $divider = ''; }
+                                                echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
+                                            }
+                                            echo('</tbody></table>');
+                                        }
+                                        
+                                    echo('</p>
+                                </div>
+                            </div>
+                        </div>');
+                }
+            }
         }
         // <input type="text" name="manufacturer" placeholder="Manufacturer - make drop down" id="manufacturer" class="form-control nav-v-c" style="width:300px" value="'.$input_manufacturer.'"></input>
         // <input type="text" name="site" placeholder="Site - make drop down" id="site" class="form-control nav-v-c" style="width:300px" value="'.$input_site.'"></input>
@@ -184,6 +311,9 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     echo('
                                     </select>
                                 </div>
+                                <div>
+                                    <label class="nav-v-c text-right" style="margin-left: 25px;font-size:14"><a href="#" class="link">Add New</a></label>
+                                </div>
                             </div>
                             <div class="nav-row" id="site-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site</label></div>
@@ -222,7 +352,10 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     <select class="form-control" id="area" name="area" style="width:300px" disabled required>
                                         <option value="" selected disabled hidden>Select Area</option>
                                     </select>
-                               </div>
+                                </div>
+                                <div>
+                                    <label class="nav-v-c text-right" style="margin-left: 25px;font-size:14"><a href="#" class="link">Add New</a></label>
+                                </div>
                             </div>
                             <div class="nav-row" id="shelf-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
@@ -231,10 +364,13 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         <option value="" selected disabled hidden>Select Shelf</option>
                                     </select>
                                 </div>
+                                <div>
+                                    <label class="nav-v-c text-right" style="margin-left: 25px;font-size:14"><a href="#" class="link">Add New</a></label>
+                                </div>
                             </div>
                             <div class="nav-row" id="cost-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost (£)</label></div>
-                                <div><input type="text" name="cost" placeholder="0" id="cost" class="form-control nav-v-c" style="width:300px" value="0" value="'.$input_cost.'" required></input></div>
+                                <div><input type="number" name="cost" placeholder="0" id="cost" class="form-control nav-v-c" style="width:300px" value="0" value="'.$input_cost.'" required></input></div>
                             </div>');
                             // <div class="nav-row" id="comments-row" style="margin-top:25px">
                             //     <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="comments" id="comments-label">Comments</label></div>
@@ -246,7 +382,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         <div class="nav-row" style="margin-bottom:25px">
                             <div class="nav-row" id="quantity-row" style="margin-top:10px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
-                                <div><input type="text" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
+                                <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
                             </div>
                             <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
@@ -256,7 +392,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
                                 <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c" style="width:300px" value="New Stock" value="'.$input_reason.'"></input></div>
                             </div>
-                            <div class="nav-row" id="reason-row" style="margin-top:25px">
+                            <div class="nav-row" id="submit-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"></div>
                                 <div><input type="submit" value="Add Stock" name="submit" class="nav-v-c btn btn-success" /></div>
                             </div>

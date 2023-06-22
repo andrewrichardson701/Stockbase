@@ -175,7 +175,7 @@ if ($_SESSION['role'] !== "admin") {
                         </tr>
                         <tr class="nav-row" style="margin-top:20px">
                             <td style="width:250px">
-                                <input id="global-submit" type="submit" name="global-submit" class="btn btn-secondary" style="margin-left:25px" value="Save" />
+                                <input id="global-submit" type="submit" name="global-submit" class="btn btn-success" style="margin-left:25px" value="Save" />
                             </td>
                             <td style="width:250px">
                             </td>
@@ -271,7 +271,7 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-port">Port:</p>
                             </td>
                             <td id="ldap-auth-port-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-port" name="auth-port" value="<?php echo(isset($_GET['auth-port']) ? $_GET['auth-port'] : $current_ldap_port); ?>" required>
+                                <input class="form-control nav-v-c" type="number" style="width: 250px" id="auth-port" name="auth-port" value="<?php echo(isset($_GET['auth-port']) ? $_GET['auth-port'] : $current_ldap_port); ?>" required>
                             </td>
                             <td id="ldap-auth-port-default-cell" style="margin-left:25px">
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-port-default"><?php echo($default_ldap_port); ?></p>
@@ -312,7 +312,7 @@ if ($_SESSION['role'] !== "admin") {
                         </tr>
                         <tr class="nav-row" style="margin-top:20px">
                             <td style="width:250px">
-                                <input id="ldap-submit" type="submit" name="ldap-submit" class="btn btn-secondary" style="margin-left:25px" value="Save" />
+                                <input id="ldap-submit" type="submit" name="ldap-submit" class="btn btn-success" style="margin-left:25px" value="Save" />
                             </td>
                             <td style="width:250px">
                                 <a id="test-config" name="test-config" class="btn btn-info" style="margin-left:25px;color:white !important" onclick="testLDAP()">Test config</a>

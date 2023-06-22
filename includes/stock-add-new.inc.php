@@ -47,13 +47,13 @@ function image_upload($field, $stock_id, $reditect_irl, $redirect_queries) {
                 print_r($errors);
                 // header("Location: ".$reditect_irl.$redirect_queries."&error=imageUpload");
                 exit();
-                return $errors;
+                // return $errors;
             }
         } else {
             print_r($errors);
             // header("Location: ".$reditect_irl.$redirect_queries."&error=imageUpload");
             exit();
-            return $errors;
+            // return $errors;
         } 
     }
 }
@@ -91,7 +91,7 @@ if (isset($_POST['submit'])) {
         $redirect_queries = "&manufacturer=$manufacturer&site=$site&area=$area&shelf=$shelf&quantity=$quantity&serial-number=$serial_number&reason=$reason";
         
         if (!isset($_POST['shelf']) || $_POST['shelf'] == '' || $_POST['shelf'] == 0 || $_POST['shelf'] == '0') {
-            header("Location: ../$redirect_url.$reditect_queies&error=shelfRequired");
+            header("Location: ../$redirect_url.$redirect_queries&error=shelfRequired");
             exit();
         }
 
@@ -124,7 +124,7 @@ if (isset($_POST['submit'])) {
                         ORDER BY sku";
             $stmt_sku = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_sku, $sql_sku)) {
-                header("Location: ../$redirect_url.$reditect_queies&error=stockTableSQLConnection");
+                header("Location: ../$redirect_url.$redirect_queries&error=stockTableSQLConnection");
                 exit();
             } else {
                 mysqli_stmt_execute($stmt_sku);

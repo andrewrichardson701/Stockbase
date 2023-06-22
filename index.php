@@ -23,6 +23,18 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     
     <!-- Get Inventory -->
     <?php
+    $showOOS = isset($_GET['oos']) ? (int)$_GET['oos'] : 0;
+    $site = isset($_GET['site']) ? $_GET['site'] : "0";
+    $area = isset($_GET['area']) ? $_GET['area'] : "0";
+    $name = isset($_GET['name']) ? $_GET['name'] : "";
+    $sku = isset($_GET['sku']) ? $_GET['sku'] : "";
+    $location = isset($_GET['location']) ? $_GET['location'] : "";
+    $shelf = isset($_GET['shelf']) ? $_GET['shelf'] : "";
+    $label = isset($_GET['label']) ? $_GET['label'] : "";
+    $manufacturer = isset($_GET['manufacturer']) ? $_GET['manufacturer'] : "";
+    $site_names_array = [];
+    $area_names_array = [];
+
     include 'includes/dbh.inc.php';
     $s = 0;
     // $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
@@ -47,14 +59,16 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     site.id AS site_id, site.name AS site_name, site.description AS site_description,
                     (SELECT SUM(quantity) 
                         FROM item 
-                        WHERE item.stock_id = stock.id
+                        INNER JOIN shelf ON item.shelf_id=shelf.id
+                        INNER JOIN area ON shelf.area_id=area.id
+                        WHERE item.stock_id=stock.id AND area.site_id=site.id
                     ) AS item_quantity,
-                    manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+
                     label_names.label_names AS label_names,
                     label_ids.label_ids AS label_ids,
                     stock_img_image.stock_img_image
                 FROM stock
-                INNER JOIN item ON stock.id=item.stock_id
+                LEFT JOIN item ON stock.id=item.stock_id
                 LEFT JOIN shelf ON item.shelf_id=shelf.id 
                 LEFT JOIN area ON shelf.area_id=area.id 
                 LEFT JOIN site ON area.site_id=site.id
@@ -171,23 +185,27 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value8 = $manufacturer;
         } 
     }
-    if ($s !== 0) { $sql_inv .= $sql_inv_add; }
+    if ($showOOS == 0) { 
+        $qType = ($s < 1) ? 'WHERE' : 'AND'; 
+        $sql_inv_add  .= " ".$qType." 
+            (SELECT SUM(quantity) 
+                FROM item 
+                INNER JOIN shelf ON item.shelf_id=shelf.id
+                INNER JOIN area ON shelf.area_id=area.id
+                WHERE item.stock_id=stock.id AND area.site_id=site.id
+            )!='null'";
+    } 
+    $sql_inv .= $sql_inv_add;
     // $sql_inv .= " ORDER BY stock.name;";
     $sql_inv .= " GROUP BY 
                     stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                    site_id, site_name, site_description, stock_img_image.stock_img_image,
-                    manufacturer_id, manufacturer_name
+                    site_id, site_name, site_description, stock_img_image.stock_img_image
                 ORDER BY stock.name;";
     // echo '<pre>'.$sql_inv.'</pre>';
     $stmt_inv = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {
         echo("ERROR getting entries");
     } else {
-        if ($area != 0) {
-            $area_name = $area_names_array[$area];
-        } else {
-            $area_name = "All";
-        }
         if ($s == 1) { mysqli_stmt_bind_param($stmt_inv, "s", $value1); }
         elseif ($s == 2) { mysqli_stmt_bind_param($stmt_inv, "ss", $value1, $value2); }
         elseif ($s == 3) { mysqli_stmt_bind_param($stmt_inv, "sss", $value1, $value2, $value3); }
@@ -199,10 +217,71 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         mysqli_stmt_execute($stmt_inv);
         $result_inv = mysqli_stmt_get_result($stmt_inv);
         $rowCount_inv = $result_inv->num_rows;
+
+        // GET SITE AND AREA VALUES
+        //site
+        include 'includes/dbh.inc.php';
+
+        $sql_site = "SELECT DISTINCT site.id, site.name, site.description
+                    FROM site 
+                    ORDER BY site.id";
+        $stmt_site = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+            echo("ERROR getting entries");
+        } else {
+            mysqli_stmt_execute($stmt_site);
+            $result_site = mysqli_stmt_get_result($stmt_site);
+            $rowCount_site = $result_site->num_rows;
+            if ($rowCount_site < 1) {
+                echo ("No sites found");
+                exit();
+            } else {
+                
+                while( $row = $result_site->fetch_assoc() ) {
+                    $site_id = $row['id'];
+                    $site_name = $row['name'];
+                    $site_description = $row['description'];
+                    $site_names_array[$site_id] = $site_name;
+                    // echo('<option style="color:black" value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
+                }          
+            }
+        }
+
+        //area
+        if (isset($_GET['site']) && $_GET['site'] !==0) {
+            $sql_area = "SELECT DISTINCT area.id, area.name, area.description, area.site_id
+                        FROM area 
+                        INNER JOIN site ON site.id=area.site_id
+                        WHERE site.id=?
+                        ORDER BY area.id";
+            $stmt_area = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_bind_param($stmt_area, "s", $site);
+                mysqli_stmt_execute($stmt_area);
+                $result_area = mysqli_stmt_get_result($stmt_area);
+                $rowCount_area = $result_area->num_rows;
+                if ($rowCount_area < 1) {
+                    // echo ("No areas found");
+                    // exit();
+                } else {
+                    while( $row = $result_area->fetch_assoc() ) {
+                        $area_id = $row['id'];
+                        $area_name = $row['name'];
+                        $area_description = $row['description'];
+                        $area_names_array[$area_id] = $area_name;
+                        // echo('<option style="color:black" value="'.$area_id.'"'); if ($area == $area_id) { echo('selected'); } echo('>'.$area_name.'</option>');
+                    }
+                    // echo($area);
+                }
+            }
+        }
+
         echo('
             <div class="container" style="padding-bottom:25px">
                 <h2 class="header-small" style="padding-bottom:10px">Inventory');
-                if ($site !== '0') { echo(' - '.$area_name);}
+                if ($site !== '0') { $area_name = $_GET['area'] == 0 ? "All" : $area_names_array[$_GET['area']]; echo(' - '.$area_name);}
             echo('</h2>
             <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
             </div>
@@ -211,8 +290,44 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 <div class="nav-row">
                     <form action="./" method="get" class="nav-row" style="max-width:max-content">
                         <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
-                        <input id="query-area" type="hidden" name="area" value="'.$area.'" />
-                        <span id="search-input-name-span" style="margin-right: 10px">
+                        <input id="query-area" type="hidden" name="area" value="'.$area.'" />');
+                        echo ('
+                        <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
+                            <label for="search-input-site">Site</label><br>
+                            <select id="site-dropdown" name="site" class="form-control nav-v-b cw" style="background-color:484848;border-color:black;margin:0;padding-left:0" onchange="siteChange(\'site-dropdown\')">
+                            <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
+                        ');
+                        if (!empty($site_names_array)) {
+                            foreach (array_keys($site_names_array) as $site_id) {
+                                $site_name = $site_names_array[$site_id];
+                                echo('<option style="color:white" value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
+                            }
+                        }
+                        
+                        echo('
+                            </select>
+                        </span>
+                        ');  
+                        echo ('
+                        <span id="search-input-area-span" style="margin-right: 10px; padding-left:12px">
+                            <label for="search-input-manufacturer">Area</label><br>
+                                <select id="area-dropdown" name="area" class="form-control nav-v-b cw" style="background-color:#484848;border-color:black;margin:0;padding-left:0" onchange="areaChange(\'area-dropdown\')">
+                                <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
+                            ');
+                            if (!empty($area_names_array)) {
+                                foreach (array_keys($area_names_array) as $area_id) {
+                                    $area_name = $area_names_array[$area_id];
+                                    echo('<option style="color:white" value="'.$area_id.'"'); if ($area == $area_id) { echo('selected'); } echo('>'.$area_name.'</option>');
+                                }
+                            }
+                            
+                        
+                        echo('
+                            </select>
+                        </span>
+                        ');
+                        echo('
+                        <span id="search-input-name-span" style="margin-right: 10px;margin-left:10px">
                             <label for="search-input-name">Name</label><br>
                             <input id="search-input-name" type="text" name="name" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
                         </span>
@@ -220,7 +335,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <label for="search-input-sku">SKU</label><br>
                             <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:180px;display:inline-block" placeholder="Search by SKU" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
                         </span>
-                        <span id="search-input-shelf-span" style="margin-right: 10px">
+                        <span id="search-input-shelf-span" style="margin-right: 10px" hidden>
                             <label for="search-input-shelf">Shelf</label><br>
                             <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
                         </span>
@@ -233,17 +348,42 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <input id="search-input-label" type="text" name="label" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Label" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
                         </span>
                         <input type="submit" value="submit" hidden>
-                    </form>
-                    <div id="add-div" class="nav-div nav-right" style="margin-right:5px">
-                        <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'add\'))">
-                            <i class="fa fa-plus"></i> Add 
+                    </form>');
+
+                    // these are now moved to the nav bar
+
+                    // echo('
+                    // <div id="add-div" class="nav-div nav-right" style="margin-right:5px" hidden>
+                    //     <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'add\'))">
+                    //         <i class="fa fa-plus"></i> Add 
+                    //     </button>
+                    // </div>
+                    // <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:0" hidden>
+                    //     <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'remove\'))">
+                    //         <i class="fa fa-minus"></i> Remove 
+                    //     </button>
+                    // </div>');
+
+                    echo('
+                    <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
+                        <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="navPage(\'/\')">
+                            <i class="fa fa-rotate-right" style="height:24px;padding-top:4px"></i>
                         </button>
-                    </div> 
-                    <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:0">
-                        <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'remove\'))">
-                            <i class="fa fa-minus"></i> Remove 
+                    </div>
+                    <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">');
+                    if ($showOOS == 0) {
+                        echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
+                    } else {
+                        echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
+                    }
+                            echo('
+                            <span>
+                                <p style="margin:0;padding:0;font-size:12">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
+                                <p style="margin:0;padding:0;font-size:12">0 Stock</p>
                         </button>
-                    </div> 
+                    </div>');
+                    
+                    echo('
                 </div>
             </div>
 
@@ -306,7 +446,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 echo('</td>
                                 <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>
                                 <td class="align-middle" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
-                                <td class="align-middle" id="'.$stock_id.'-quantity">'.$stock_quantity_total.'</td>');
+                                <td class="align-middle" id="'.$stock_id.'-quantity">'); 
+                                if ($stock_quantity_total == 0) {
+                                    echo('<or class="red" title="Out of Stock">0 <i class="fa fa-warning" /></or>');
+                                } else {
+                                     echo($stock_quantity_total);
+                                }
+                                echo('</td>');
                 if ($site == 0) { echo ('<td class="align-middle link gold" id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'); }
                             echo('<td class="align-middle" id="'.$stock_id.'-label">');
                             if (is_array($stock_label_names)) {

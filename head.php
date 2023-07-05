@@ -69,9 +69,6 @@ include './includes/get-config.inc.php'; // get config options
         modal.style.display = "block";
         modalImg.src = element.src;
         captionText.innerHTML = element.alt;
-
-        
-        
     }
 
     // When the user clicks on <span> (x), close the modal or if they click the image.

@@ -281,7 +281,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         echo('
             <div class="container" style="padding-bottom:25px">
                 <h2 class="header-small" style="padding-bottom:10px">Inventory');
-                if ($site !== '0') { $area_name = $_GET['area'] == 0 ? "All" : $area_names_array[$_GET['area']]; echo(' - '.$area_name);}
+                if ($site !== '0') { $area_name = $area == 0 ? "All" : $area_names_array[$area]; echo(' - '.$area_name);}
             echo('</h2>
             <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
             </div>

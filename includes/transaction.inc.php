@@ -3,6 +3,8 @@ if (isset($_GET['stock_id'])) {
     if (is_numeric($_GET['stock_id'])) {
         if ($_GET['stock_id'] !== '') {
             $stock_id = $_GET['stock_id'];
+            $currency_symbol = $config_currency;
+            
             include 'dbh.inc.php';
 
             // Pagination variables
@@ -12,14 +14,13 @@ if (isset($_GET['stock_id'])) {
 
             $sql_tran = "SELECT t.id AS t_id, t.stock_id AS t_stock_id, t.item_id AS t_item_id, t.type AS t_type, t.quantity AS t_quantity,
                             t.price AS t_price, t.serial_number AS t_serial_number, t.reason AS t_reason, t.comments AS t_comments,
-                            t.date AS t_date, t.time AS t_time, t.username as t_username,
+                            t.date AS t_date, t.time AS t_time, t.username as t_username, t.shelf_id AS t_shelf_id,
                             s.name AS s_name, a.name AS a_name
                         FROM transaction AS t
-                        LEFT JOIN item AS i ON t.item_id=i.id
-                        LEFT JOIN shelf AS s ON i.shelf_id=s.id
+                        LEFT JOIN shelf AS s ON t.shelf_id=s.id
                         LEFT JOIN area AS a ON s.area_id=a.id
                         WHERE t.stock_id=?
-                        ORDER BY t_date DESC, t_time DESC
+                        ORDER BY t.id DESC
                         LIMIT ?, ?";
             
             $stmt_tran = mysqli_stmt_init($conn);
@@ -48,8 +49,8 @@ if (isset($_GET['stock_id'])) {
                                 <th>Location</th>
                                 <th>Username</th>
                                 <th>Quantity</th>
+                                <th>Price</th>
                                 <th>Reason</th>
-                                <th hidden>Price</th>
                                 <th hidden>Serial Number</th>
                                 <th hidden>Comments</th>
                             </tr>
@@ -63,8 +64,10 @@ if (isset($_GET['stock_id'])) {
                         $t_stock_id = $row_tran['t_stock_id'];
                         $t_item_id = $row_tran['t_item_id'];
                         $t_type = $row_tran['t_type'];
+                        $t_shelf_id = $row_tran['t_shelf_id'];
                         $t_quantity = $row_tran['t_quantity'];
                         $t_price = $row_tran['t_price'];
+                        if ($t_price == '' || $t_price == null) { $t_price = 0;}
                         $t_serial_number = $row_tran['t_serial_number'];
                         $t_reason = $row_tran['t_reason'];
                         $t_comments = $row_tran['t_comments'];
@@ -101,8 +104,8 @@ if (isset($_GET['stock_id'])) {
                                 <td id="a_name">' . $a_name . '</td>
                                 <td id="t_username">' . $t_username . '</td>
                                 <td id="t_quantity">' . $t_quantity . '</td>
+                                <td>' . $currency_symbol . $t_price . '</td>
                                 <td id="t_reason">' . $t_reason . '</td>
-                                <td hidden>' . $t_price . '</td>
                                 <td hidden>' . $t_serial_number . '</td>
                                 <td hidden>' . $t_comments . '</td>
                             </tr>
@@ -139,7 +142,7 @@ if (isset($_GET['stock_id'])) {
                         if ($current_page < $total_pages) {
                             echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
                         }
-                        echo('&nbsp;&nbsp;<or class="blue clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>');
+                        if ($total_pages > 1) { echo('&nbsp;&nbsp;<or class="blue clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>'); }
                     }
                     echo('</div>');
                 }

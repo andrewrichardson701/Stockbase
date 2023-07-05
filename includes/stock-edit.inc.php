@@ -55,6 +55,7 @@ if (isset($_GET['stock_id'])) {
                     $rowCount_label = $result_label->num_rows;
                     if ($rowCount_label < 1) {
                         //no images
+                        $stock_label_data = '';
                     } else {
                         while ($row_label = $result_label->fetch_assoc()) {
                             $stock_label_data[] = array('id' => $row_label['label_id'], 'name' => $row_label['label_name'], 'stock_id' => $row_label['stock_label_stock_id']);
@@ -72,7 +73,7 @@ if (isset($_GET['stock_id'])) {
                     <h3 style="font-size:22px; margin-left:25pxq">Edit Existing Stock</h3>
                     <div class="row">
                         <div class="col-sm-7 text-left" id="stock-info-left">
-                            <form action="includes/stock-edit-action.inc.php" method="POST" enctype="multipart/form-data">
+                            <form id="edit-form" action="includes/stock-edit-action.inc.php" method="POST" enctype="multipart/form-data">
                                 <div class="nav-row" style="margin-bottom:25px">
                                     <div class="nav-row" id="id-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="id" id="id-label">ID</label></div>
@@ -93,20 +94,21 @@ if (isset($_GET['stock_id'])) {
                                     </div>
                                     <div class="nav-row" id="labels-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
-                                        <div id="labels-group">');
-                                        echo('
+                                        <div id="labels-group">
+                                        <input id="labels-selected" name="labels-selected" type="hidden" />
                                         <select id="labels" name="labels[]" multiple class="form-control nav-trans" style="border: 1px solid grey;display: inline-block;width:300px;height:40px">');
                                             if (is_array($stock_label_data)) {
                                                 for ($l=0; $l<count($stock_label_data); $l++) {
-                                                    echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'">'.$stock_label_data[$l]['name'].' &#xf057;</option> ');
+                                                    // echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'">'.$stock_label_data[$l]['name'].' &#xf057;</option> ');
+                                                    echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'" selected>'.$stock_label_data[$l]['name'].'</option> ');
                                                 }
                                             } else {
-                                                echo('None');
+                                                //echo('None');
                                             }
                                         echo('
                                         </select>
                                         <select class="form-control" id="labels-init" name="labels-init" style="width:300px;margin-top:2px">
-                                            <option value="" selected disabled hidden>-- Add Labels --</option>');
+                                            <option value="" selected>-- Add Labels --</option>');
                                             include 'includes/dbh.inc.php';
                                             $sql = "SELECT id, name
                                                     FROM label
@@ -120,20 +122,33 @@ if (isset($_GET['stock_id'])) {
                                                 $result = mysqli_stmt_get_result($stmt);
                                                 $rowCount = $result->num_rows;
                                                 if ($rowCount < 1) {
-                                                    echo('<option value="0">No Manufacturers Found...</option>');
+                                                    echo('<option value="0" selected>No Manufacturers Found...</option>');
                                                 } else {
                                                     // rows found
                                                     while ($row = $result->fetch_assoc()) {
                                                         $label_id = $row['id'];
                                                         $label_name = $row['name'];
-                                                        echo('<option value="'.$label_id.'">'.$label_name.'</option>');
+                                                        echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$label_id.'">'.$label_name.'</option>');
                                                     }
                                                 }
                                             }
                                         echo('
                                         </select>
-
-                                        <style>
+                                        </div>
+                                        <div>
+                                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
+                                        </div>
+                                    </div>');
+                                    echo('
+                                    <div class="nav-row" id="min-stock-row" style="margin-top:25px">
+                                        <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
+                                        <div><input type="number" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c" style="width:300px" value="'.$stock['min_stock'].'"></input></div>
+                                    </div>
+                                    <div class="nav-row" id="submit-row" style="margin-top:25px">
+                                        <div style="width:200px;margin-right:25px"></div>
+                                        <div><input id="form-submit" type="submit" value="Save" name="submit" class="nav-v-c btn btn-success" /></div>
+                                    </div>
+                                    <style>
                                             #labels {
                                             display: inline-block;
                                             padding-top:2px;
@@ -153,40 +168,53 @@ if (isset($_GET['stock_id'])) {
                                         <script>
                                         var selectBox = document.getElementById("labels-init");
                                         var selectedBox = document.getElementById("labels");
-
+                                        var labelsSelected = document.getElementById("labels-selected");
+                                        
                                         selectBox.addEventListener("change", function() {
-                                        var selectedOption = selectBox.options[selectBox.selectedIndex];
-                                        if (selectedOption.value !== "") {
-                                            selectedBox.add(selectedOption);
-                                        }
+                                            var selectedOption = selectBox.options[selectBox.selectedIndex];
+                                            if (selectedOption.value !== "") {
+                                                selectedBox.add(selectedOption);
+                                            }
                                         });
 
                                         selectedBox.addEventListener("change", function() {
-                                        var removedOption = selectedBox.options[selectedBox.selectedIndex];
-                                        if (removedOption.value !== "") {
-                                            selectBox.add(removedOption);
-                                            selectedBox.remove(selectedBox.selectedIndex);
-                                        }
+                                            var removedOption = selectedBox.options[selectedBox.selectedIndex];
+                                            if (removedOption.value !== "") {
+                                                selectBox.add(removedOption);
+                                                selectedBox.remove(selectedBox.selectedIndex);
+                                            }
                                         });
-                                        </script>');
+                                        
+                                        selectedBox.addEventListener("change", function() {
+                                            // Reset the selected values array
+                                            selectedValues = [];
+
+                                            // Iterate over the selected options and collect their values
+                                            var selectedOptions = Array.from(selectedBox.options);
+                                            selectedOptions.forEach(function(option) {
+                                                selectedValues.push(option.value);
+                                            });
+
+                                            // Assign the selected values to the input field
+                                            labelsSelected.value = selectedValues.join(", "); // Use desired separator if needed
+                                        });
+
+                                        selectBox.addEventListener("change", function() {
+                                            // Reset the selected values array
+                                            selectedValues = [];
+
+                                            // Iterate over the selected options and collect their values
+                                            var selectedOptions = Array.from(selectedBox.options);
+                                            selectedOptions.forEach(function(option) {
+                                                selectedValues.push(option.value);
+                                            });
+
+                                            // Assign the selected values to the input field
+                                            labelsSelected.value = selectedValues.join(", "); // Use desired separator if needed
+                                        });
 
 
-
-
-
-
-
-                                    echo('</div>
-                                    </div>');
-                                    echo('
-                                    <div class="nav-row" id="min-stock-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
-                                        <div><input type="number" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c" style="width:300px" value="'.$stock['min_stock'].'"></input></div>
-                                    </div>
-                                    <div class="nav-row" id="submit-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"></div>
-                                        <div><input type="submit" value="Save" name="submit" class="nav-v-c btn btn-success" /></div>
-                                    </div>
+                                        </script>
                                 </div>
                             </form>
                         </div>
@@ -427,3 +455,5 @@ if (isset($_GET['stock_id'])) {
         modal.style.display = "none";
     }
 </script>
+
+<?php include 'includes/stock-new-properties.inc.php'; ?>

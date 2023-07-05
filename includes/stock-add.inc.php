@@ -145,7 +145,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             </script>
                         </div>
                         <div>
-                            <label class="text-right" style="margin-left: 25px;margin-top:5px;font-size:14"><a href="#" class="link">Add New</a></label>
+                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             area_id, area_name, 
                             shelf_id, shelf_name,
                             manufacturer_id, manufacturer_name
-                        ORDER BY area.name;";
+                        ORDER BY site.name DESC, area.name ASC, shelf.name ASC;";
             $stmt_stock = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                 echo("ERROR getting entries");
@@ -312,7 +312,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="nav-v-c text-right" style="margin-left: 25px;font-size:14"><a href="#" class="link">Add New</a></label>
+                                    <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'manufacturer\')">Add New</label>
                                 </div>
                             </div>
                             <div class="nav-row" id="site-row" style="margin-top:25px">
@@ -344,7 +344,13 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                             }
                                     echo('
                                     </select>
-                                </div>
+                                </div>');
+                                if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                                    echo('<div>
+                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
+                                    </div>');
+                                }
+                            echo('
                             </div>
                             <div class="nav-row" id="area-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area</label></div>
@@ -352,11 +358,13 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     <select class="form-control" id="area" name="area" style="width:300px" disabled required>
                                         <option value="" selected disabled hidden>Select Area</option>
                                     </select>
-                                </div>
-                                <div>
-                                    <label class="nav-v-c text-right" style="margin-left: 25px;font-size:14"><a href="#" class="link">Add New</a></label>
-                                </div>
-                            </div>
+                                </div>');
+                                if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                                    echo('<div>
+                                    <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
+                                </div>');
+                                }
+                            echo('</div>
                             <div class="nav-row" id="shelf-row" style="margin-top:25px">
                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
                                 <div>
@@ -365,7 +373,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="nav-v-c text-right" style="margin-left: 25px;font-size:14"><a href="#" class="link">Add New</a></label>
+                                    <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'shelf\')">Add New</label>
                                 </div>
                             </div>
                             <div class="nav-row" id="cost-row" style="margin-top:25px">
@@ -474,7 +482,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
     }
     
     ?>
-    
+    <?php include 'includes/stock-new-properties.inc.php'; ?>
 </div>
 
 <script> // for the select boxes

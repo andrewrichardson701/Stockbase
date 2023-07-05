@@ -1,7 +1,5 @@
 <?php
 // INCLUDED IN THE STOCK PAGE FOR MOVING STOCK OR INVENTORY TO CURRENT STOCK
-echo('<h1>WIP page</h1>');
-echo('<p>Logic for the serial numbers still to go. <br>Check comments at top of stock-move-existsing.inc.php for next steps,/p>');
 
 // Query string bits
 $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
@@ -17,12 +15,12 @@ if ($stock_id == 0 || $stock_id == '0') {
     echo '</noscript>'; 
     exit();
 }
+$currency_symbol = '£';
 
 // include 'head.php';
 ?>
 <!-- <div style="margin-bottom:200px"></div> -->
 
-<!-- NEW STOCK -->
 <div class="container well-nopad bg-dark">
     
     <?php
@@ -74,7 +72,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                     $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                         area.id AS area_id, area.name AS area_name,
                                         shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                                        item.serial_number AS item_serial_number, item.upc AS item_upc, item.id AS item_id,
+                                        item.serial_number AS item_serial_number, item.upc AS item_upc, item.id AS item_id, item.cost AS item_cost, item.comments AS item_comments, 
                                         (SELECT SUM(quantity) 
                                             FROM item 
                                             WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
@@ -106,7 +104,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                         area_id, area_name, 
                                         shelf_id, shelf_name,
                                         manufacturer_name, manufacturer_id,
-                                        item_serial_number, item_upc, item_id
+                                        item_serial_number, item_upc, item_id, item_comments, item_cost
                                     ORDER BY site.id, area.name, shelf.name;";
                     $stmt_stock = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
@@ -136,6 +134,8 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 $stock_manufacturer_name = $row['manufacturer_name'];
                                 $item_id = $row['item_id'];
                                 $item_upc = $row['item_upc'];
+                                $item_cost = $row['item_cost'];
+                                $item_comments = $row['item_comments'];
                                 $item_serial_number = $row['item_serial_number'];
                                 $stock_label_ids = $row['label_ids'];
                                 $stock_label_names = $row['label_names'];
@@ -166,250 +166,161 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                         'manufacturer_name' => $stock_manufacturer_name,
                                                         'item_id' => $item_id,
                                                         'upc' => $item_upc,
+                                                        'cost' => $item_cost,
+                                                        'comments' => $item_comments,
                                                         'serial_number' => $item_serial_number,
                                                         'label' => $stock_label_data);
                             }
                             
                             $stock_id = $_GET['stock_id'];
-                            echo('<form action="includes/stock-move-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
-                                <div class="nav-row" style="margin-bottom:10px">
+                            echo('<div class="nav-row" style="margin-top: 2px; margin-bottom:5px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
-                                        <div id="heading-heading" style="margin-left:225px">
+                                        <div id="heading-heading" style="margin-left:225px;">
                                             <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
-                                            <p id="sku"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>');
-                                            // TEST TABLE
-                                        echo('
+                                            <p id="sku" style="margin-bottom:0px;padding-bottom:0px"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
+                                            <p class="green"');
+                                                if (isset($_GET['success']) && $_GET['success'] == 'stockMoved') {
+                                                    echo (' style="margin-bottom:0">Stock Moved!');
+                                                } else{
+                                                    echo(' style="margin-bottom:24px">');
+                                                }
+                                        echo('</p>
                                         </div>
-                                    </div>');
+                                    </div>
+                                </div>');
+                                    echo('
+                                <div style="width:100%">
+                                    <table class="table table-dark centertable" style="max-width:max-content">
+                                        <thead>
+                                            <tr>
+                                                <th hidden>ID</th>
+                                                <th>Site</th>
+                                                <th>Location</th>
+                                                <th>Shelf</th>
+                                                <th>Manufacturer</th>
+                                                <th>UPC</th>
+                                                <th title="Serial Numbers">SNs</th>
+                                                <th>Cost</th>
+                                                <th>Comments</th>
+                                                <th>Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                           
+                                    ');
+                                    for ($i=0; $i<count($stock_inv_data); $i++) {
                                         echo('
-                                    <div style="width:100%">
-                                        <table class="table table-dark centertable" style="max-width:max-content">
-                                            <thead>
-                                                <tr>
-                                                    <th hidden>ID</th>
-                                                    <th>Site</th>
-                                                    <th>Location</th>
-                                                    <th>Shelf</th>
-                                                    <th>Manufacturer</th>
-                                                    <th>UPC</th>
-                                                    <th title="Serial Numbers">SNs</th>
-                                                    <th>Stock</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>                           
-                                        ');
-                                        for ($i=0; $i<count($stock_inv_data); $i++) {
-                                            echo('
-                                                <tr id="item-'.$stock_inv_data[$i]['item_id'].'" class="clickable" onclick="toggleHidden(\''.$stock_inv_data[$i]['item_id'].'\')">
-                                                    <td hidden>'.$stock_inv_data[$i]['item_id'].'</td>
-                                                    <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
-                                                    <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
-                                                    <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
-                                                    <td id="item-'.$stock_inv_data[$i]['item_id'].'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
-                                                    <td id="item-'.$stock_inv_data[$i]['item_id'].'-manu">'.$stock_inv_data[$i]['upc'].'</td>
-                                                    <td id="item-'.$stock_inv_data[$i]['item_id'].'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                    <td id="item-'.$stock_inv_data[$i]['item_id'].'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
-                                                </tr>
-                                                <tr class="move-hide" id="item-'.$stock_inv_data[$i]['item_id'].'-edit" hidden>
-                                                    <td colspan=7>
-                                                        <div class="container">
-                                                            <form action="includes/stock-move-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-stock" name="current_stock" value="'.$stock_id.'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-item" name="current_item" value="'.$stock_inv_data[$i]['item_id'].'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
-                                                                <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
-                                                                <table style="border: 1px solid #454d55;">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <label style="padding-top:5px">To:</label>
-                                                                            </td>
-                                                                            <td>
-                                                                                <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-site" name="site" style="min-width:100px" required onchange="populateAreas(\''.$stock_inv_data[$i]['item_id'].'\')">
-                                                                                    <option value="" selected disabled hidden>Select Site</option>');
-                                                                                        include 'includes/dbh.inc.php';
-                                                                                        $sql = "SELECT id, name
-                                                                                                FROM site
-                                                                                                ORDER BY id";
-                                                                                        $stmt = mysqli_stmt_init($conn);
-                                                                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                                                                            // fails to connect
+                                            <tr id="item-'.$stock_inv_data[$i]['item_id'].'" class="clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $stock_inv_data[$i]['item_id']) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$stock_inv_data[$i]['item_id'].'\')">
+                                                <td hidden>'.$stock_inv_data[$i]['item_id'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-manu">'.$stock_inv_data[$i]['upc'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-cost">'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-comments">'.$stock_inv_data[$i]['comments'].'</td>
+                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
+                                            </tr>
+                                            <tr class="move-hide" id="item-'.$stock_inv_data[$i]['item_id'].'-edit" hidden>
+                                                <td colspan=7>
+                                                    <div class="container">
+                                                        <form action="includes/stock-move-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-stock" name="current_stock" value="'.$stock_id.'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-item" name="current_item" value="'.$stock_inv_data[$i]['item_id'].'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
+                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
+                                                            <table style="border: 1px solid #454d55;">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <label style="padding-top:5px">To:</label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-site" name="site" style="min-width:100px" required onchange="populateAreas(\''.$stock_inv_data[$i]['item_id'].'\')">
+                                                                                <option value="" selected disabled hidden>Select Site</option>');
+                                                                                    include 'includes/dbh.inc.php';
+                                                                                    $sql = "SELECT id, name
+                                                                                            FROM site
+                                                                                            ORDER BY id";
+                                                                                    $stmt = mysqli_stmt_init($conn);
+                                                                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                                                                        // fails to connect
+                                                                                    } else {
+                                                                                        mysqli_stmt_execute($stmt);
+                                                                                        $result = mysqli_stmt_get_result($stmt);
+                                                                                        $rowCount = $result->num_rows;
+                                                                                        if ($rowCount < 1) {
+                                                                                            echo('<option value="0">No Sites Found...</option>');
                                                                                         } else {
-                                                                                            mysqli_stmt_execute($stmt);
-                                                                                            $result = mysqli_stmt_get_result($stmt);
-                                                                                            $rowCount = $result->num_rows;
-                                                                                            if ($rowCount < 1) {
-                                                                                                echo('<option value="0">No Sites Found...</option>');
-                                                                                            } else {
-                                                                                                // rows found
-                                                                                                while ($row = $result->fetch_assoc()) {
-                                                                                                    $sites_id = $row['id'];
-                                                                                                    $sites_name = $row['name'];
-                                                                                                    echo('<option value="'.$sites_id.'">'.$sites_name.'</option>');
-                                                                                                }
+                                                                                            // rows found
+                                                                                            while ($row = $result->fetch_assoc()) {
+                                                                                                $sites_id = $row['id'];
+                                                                                                $sites_name = $row['name'];
+                                                                                                echo('<option value="'.$sites_id.'">'.$sites_name.'</option>');
                                                                                             }
                                                                                         }
-                                                                                echo('
-                                                                                </select>
-                                                                            </td>
-                                                                            <td>
-                                                                                <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-area" name="area" style="min-width:100px" disabled required onchange="populateShelves(\''.$stock_inv_data[$i]['item_id'].'\')">
-                                                                                    <option value="" selected disabled hidden>Select Area</option>
-                                                                                </select>
-                                                                            </td>
-                                                                            <td>
-                                                                                <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-shelf" name="shelf" style="min-width:100px" disabled required>
-                                                                                    <option value="" selected disabled hidden>Select Shelf</option>
-                                                                                </select>
-                                                                            </td>
-                                                                            <td>
-                                                                                <label style="padding-top:5px" for="'.$stock_inv_data[$i]['item_id'].'-n-quantity">Quantity: </label>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input type="number" class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-quantity" name="quantity" style="min-width: 50px; max-width:70px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
-                                                                            </td>
-                                                                            ');
-                                                                            if ($stock_inv_data[$i]['serial_number'] != '') {
-                                                                                $serials = explode(', ', $stock_inv_data[$i]['serial_number']);
-                                                                                echo('<td>
-                                                                                    <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-serial" name="serial" style="min-width:100px" required>
-                                                                                        <option value="" selected disabled hidden>Serial #</option>
-                                                                                        ');
-                                                                                        foreach ($serials as $serial) {
-                                                                                            echo('<option value="'.$serial.'">'.$serial.'</option>');
-                                                                                        }
-                                                                                        echo('
-                                                                                    </select>
-                                                                                </td>');
-                                                                            }
+                                                                                    }
                                                                             echo('
-                                                                            <td>
-                                                                                <input type="submit" class="btn btn-warning" id="'.$stock_inv_data[$i]['item_id'].'-n-submit" value="Move" style="opacity:80%" required />
-                                                                            </td>
-
-
-
-
-
-
-
-
-
-
-                                                                            
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </form>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ');
-                                        }
-                                        echo('
-                                            </tbody>
-                                        </table>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-area" name="area" style="min-width:100px" disabled required onchange="populateShelves(\''.$stock_inv_data[$i]['item_id'].'\')">
+                                                                                <option value="" selected disabled hidden>Select Area</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-shelf" name="shelf" style="min-width:100px" disabled required>
+                                                                                <option value="" selected disabled hidden>Select Shelf</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label style="padding-top:5px" for="'.$stock_inv_data[$i]['item_id'].'-n-quantity">Quantity: </label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="number" class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-quantity" name="quantity" style="min-width: 50px; max-width:70px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
+                                                                        </td>
+                                                                        ');
+                                                                        if ($stock_inv_data[$i]['serial_number'] != '') {
+                                                                            $serials = explode(', ', $stock_inv_data[$i]['serial_number']);
+                                                                            echo('<td>
+                                                                                <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-serial" name="serial" style="min-width:100px" onchange="serialInputCheck(\''.$stock_inv_data[$i]['item_id'].'\')" required>
+                                                                                    <option value="" selected disabled hidden>Serial #</option>
+                                                                                    <option value=""></option>
+                                                                                    ');
+                                                                                    foreach ($serials as $serial) {
+                                                                                        echo('<option value="'.$serial.'">'.$serial.'</option>');
+                                                                                    }
+                                                                                    echo('
+                                                                                </select>
+                                                                            </td>');
+                                                                        }
+                                                                        echo('
+                                                                        <td>
+                                                                            <input type="submit" class="btn btn-warning" id="'.$stock_inv_data[$i]['item_id'].'-n-submit" value="Move" style="opacity:80%" name="submit" required />
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         ');
-
-                                        //
-                                echo('
-                                    </div>
+                                    }
+                                    echo('
+                                        </tbody>
+                                    </table>
                                 </div>
-                                ');
-                            // echo('
-                            //     <div class="container well-nopad bg-dark">
-                            //         <div class="row">
-                            //             <div class="text-left" id="stock-info-left" style="padding-left:15px">
-                            //                 <div class="nav-row" style="margin-bottom:25px">
-                            //                     <input type="hidden" value="'.$stock_id.'" name="stock_id" />
-                            //                     <input type="hidden" value="'.$stock_sku.'" name="stock_sku" />
-                            //                     <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
-                            //                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
-                            //                         <div>
-                            //                             <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" required>
-                            //                                 <option value="" selected disabled hidden>Select Manufacturer</option>');
-                            //                                 $temp_manu_id = '';
-                            //                                 foreach ($stock_inv_data as $temp_data) {
-                            //                                     if ($temp_data['manufacturer_id'] !== $temp_manu_id) {
-                            //                                         echo('<option value='.$temp_data['manufacturer_id'].'>'.$temp_data['manufacturer_name'].'</option>');
-                            //                                     }
-                            //                                     $temp_manu_id = $temp_data['manufacturer_id'];
-                            //                                 }
-                            //                             echo('
-                            //                             </select>
-                            //                         </div>
-                            //                     </div>
-                            //                     <div class="nav-row" id="shelf-row" style="margin-top:25px">
-                            //                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
-                            //                         <div>
-                            //                             <select class="form-control" id="shelf" name="shelf" style="width:300px" required>
-                            //                                 <option value="" selected disabled hidden>Select Location</option>');
-                            //                                 $temp_site_id = '';
-                            //                                 foreach ($stock_inv_data as $temp_data) {
-                            //                                     if ($temp_data['shelf_id'] !== $temp_site_id) {
-                            //                                         echo('<option value='.$temp_data['shelf_id'].'>'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'</option>');
-                            //                                     }
-                            //                                     $temp_site_id = $temp_data['shelf_id'];
-                            //                                 }
-                            //                             echo('
-                            //                             </select>
-                            //                         </div>
-                            //                     </div>
-                            //                     <div class="nav-row" id="price-row" style="margin-top:25px">
-                            //                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price (£)</label></div>
-                            //                         <div><input type="number" name="price" placeholder="0" id="price" class="form-control nav-v-c" style="width:300px" value="0" value="'.$input_cost.'" required></input></div>
-                            //                     </div>
-                            //                 </div>
-                            //                 <hr style="border-color: gray; margin-right:15px">
-                            //                 <div class="nav-row" style="margin-bottom:0">
-                            //                     <div class="nav-row" id="date-row" style="margin-top:10px">
-                            //                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="transaction_date" id="date-label">Transaction Date</label></div>
-                            //                         <div><input type="date" value="'.date('Y-m-d').'" name="transaction_date" id="transaction_date" class="form-control" style="width:150px"/></div>
-                            //                     </div>
-                            //                     <div class="nav-row" id="quantity-row" style="margin-top:25px">
-                            //                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
-                            //                         <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
-                            //                     </div>
-                            //                     <div class="nav-row" id="serial-number-row" style="margin-top:25px">
-                            //                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
-                            //                         <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c" style="width:300px" value="'.$input_serial_number.'"></input></div>
-                            //                     </div>
-                            //                     <div class="nav-row" id="reason-row" style="margin-top:25px">
-                            //                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
-                            //                         <div><input type="text" name="reason" placeholder="Customer sale [CDC-ID: #XXXXXX]" id="reason" class="form-control nav-v-c" style="width:300px" value="'.$input_reason.'" required></input></div>
-                            //                     </div>
-                            //                     <div class="nav-row" id="reason-row" style="margin-top:25px">
-                            //                         <div style="width:200px;margin-right:25px"></div>
-                            //                         <div>');
-                                                        
-                            //                             $stock_quantity_total = 0;
-                            //                             foreach ($stock_inv_data as $d) {
-                            //                                 $stock_quantity_total += $d['quantity'];
-                            //                             }
-                            //                             if ($stock_quantity_total !== 0){
-                            //                                 echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" />');
-                            //                             } else {
-                            //                                 echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />');
-                            //                                 echo('<a href="#" onclick="confirmAction(\''.$stock_name.'\', \''.$stock_sku.'\', \'includes/stock-remove-existing.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
-                            //                             }
-                            //                         echo('
-                            //                         </div>
-                            //                     </div>
-                            //                 </div>
-                            //             </div>
-                            //         </div>
-                            //     </div>
-                            // ');
-                            echo('</form>');
-                        echo('
+                            </div>
+                            
                             <div class="container well-nopad bg-dark" style="margin-top:5px">
                                 <h2 style="font-size:22px">Transactions</h2>');
-                            include 'includes/transaction.inc.php';
+                                include 'includes/transaction.inc.php';
                         echo('</div>');
                         }
                     }
@@ -487,16 +398,8 @@ if ($stock_id == 0 || $stock_id == '0') {
     }
     
     ?>
-    
 </div>
-<script>
-    function confirmAction(stock_name, stock_sku, url) {
-        var confirmed = confirm('Are you sure you want to proceed? \nThis will ALL entries for '+stock_name+' ('+stock_sku+').');
-        if (confirmed) {
-            window.location.href = url;
-        }
-    }
-</script>
+
 <script> // for the select boxes
 function populateAreas(id) {
     console.log(id);
@@ -543,9 +446,8 @@ function populateShelves(id) {
   };
   xhr.send();
 }
-
 </script>
-<script>
+<script> // toggle hidden row below current
 function toggleHidden(id) {
     var hiddenID = 'item-'+id+'-edit';
     var hiddenRow = document.getElementById(hiddenID);
@@ -558,9 +460,22 @@ function toggleHidden(id) {
         }   
         hiddenRow.hidden=false;
     }
-    
-    
-    
+}
+</script>
+<script> // function to force the quantity input box to 1 with a max of 1 if a serial number is selected
+function serialInputCheck(id) {
+  var selectBox = document.getElementById(id+'-n-serial')
+  var inputBox = document.getElementById(id+'-n-quantity');
+  var currentValue = inputBox.value;
+    // console.log(currentValue);
+  var currentMaxQuantity = document.getElementById(id+'-c-quantity').value;
 
+  if (selectBox.value !== '') {
+    inputBox.value = '1';
+    inputBox.setAttribute('max', '1');
+  } else {
+    inputBox.value = currentValue;
+    inputBox.setAttribute('max', currentMaxQuantity);
+  }
 }
 </script>

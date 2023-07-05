@@ -221,11 +221,13 @@ DROP TABLE IF EXISTS `transaction`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `transaction` (
+  CREATE TABLE `transaction` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `stock_id` bigint NOT NULL,
   `item_id` bigint NOT NULL,
   `type` text COLLATE utf8mb3_unicode_ci NOT NULL,
   `quantity` int NOT NULL,
+  `shelf_id` int NOT NULL,
   `price` decimal(10,0) DEFAULT NULL,
   `serial_number` text COLLATE utf8mb3_unicode_ci,
   `reason` text COLLATE utf8mb3_unicode_ci NOT NULL,

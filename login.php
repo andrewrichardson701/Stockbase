@@ -60,7 +60,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <div style="margin-left:25px">
                             <label class="switch" style="margin-bottom: 0px">
                                 <input type="checkbox" name="local" id="local-toggle" value="on">
-                                <span class="sliderBlue round" style="transform: scale(0.6, 0.6)"></span>
+                                <span class="sliderBlue round" id="local-span" style="transform: scale(0.6, 0.6)"></span>
                             </label>
                         </div>
                         <label class="nav-div" style="margin-left:0">Local Login</p>
@@ -87,9 +87,25 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         echo '<p class="red">SQL error. Check URL!</p>';
                     }
                 ?>
-                <p><a href="reset-password.php">Forgot password?</a>
+                <p><a href="reset-password.php" id="password-reset">Forgot password?</a>
             </div>
         </div>
 	</div>
-
+<script>
+var toggle = document.getElementById("local-toggle");
+var reset = document.getElementById("password-reset");
+if (toggle.checked) {
+    reset.hidden=false;
+} else {
+    reset.hidden=true;
+}
+toggle.addEventListener('change', (event) => {
+    var reset = document.getElementById("password-reset");
+    if (event.currentTarget.checked) {
+        reset.hidden=false;
+    } else {
+        reset.hidden=true;
+    }
+})
+</script>
 </body>

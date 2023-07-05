@@ -8,7 +8,7 @@ $predfined_config_favicon_image = 'default/default-favicon.png';
 
 include 'dbh.inc.php';
 
-$sql_config = "SELECT banner_color, logo_image, favicon_image FROM config ORDER BY id LIMIT 1";
+$sql_config = "SELECT banner_color, logo_image, favicon_image, currency, sku_prefix FROM config ORDER BY id LIMIT 1";
 $stmt_config = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
     echo("ERROR getting entries");
@@ -23,11 +23,13 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_banner_color = $config['banner_color'];
             $config_logo_image = $config['logo_image'];
             $config_favicon_image = $config['favicon_image'];
+            $config_currency = $config['currency'];
+            $config_sku_prefix = $config['sku_prefix'];
         }
     }
 }
 
-$sql_config_d = "SELECT banner_color, logo_image, favicon_image FROM config_default ORDER BY id LIMIT 1";
+$sql_config_d = "SELECT banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
 $stmt_config_d = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
     echo("ERROR getting entries");
@@ -42,6 +44,8 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_banner_color = $config_d['banner_color'];
             $config_d_logo_image = $config_d['logo_image'];
             $config_d_favicon_image = $config_d['favicon_image'];
+            $config_d_currency = $config_d['currency'];
+            $config_d_sku_prefix = $config_d['sku_prefix'];
         }
     }
 }
@@ -49,9 +53,13 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
 if ($config_d_banner_color  === '') { $config_d_banner_color  = $predfined_config_banner_color;  }
 if ($config_d_logo_image    === '') { $config_d_logo_image    = $predfined_config_logo_image;    }
 if ($config_d_favicon_image === '') { $config_d_favicon_image = $predfined_config_favicon_image; }
+if ($config_d_currency      === '') { $config_d_currency      = $predfined_config_currency;      }
+if ($config_d_sku_prefix    === '') { $config_d_sku_prefix    = $predfined_sku_prefix;           }
 
 if ($config_banner_color  === '') { $config_banner_color  = $config_d_banner_color;  }
 if ($config_logo_image    === '') { $config_logo_image    = $config_d_logo_image;    }
 if ($config_favicon_image === '') { $config_favicon_image = $config_d_favicon_image; }
+if ($config_currency      === '') { $config_currency      = $config_d_currency;      }
+if ($config_sku_prefix    === '') { $config_sku_prefix    = $config_d_sku_prefix;    }
 
 ?>

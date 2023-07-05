@@ -10,12 +10,14 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     if (isset($_POST['global-submit'])) { // GLOBAL saving
         $errors = [];
         
-        if (isset($_POST['banner_color']))   { $config_banner_color  = $_POST['banner_color'];  }
-        if (isset($_FILES['logo_image']) )   { $config_logo_image    = $_FILES['logo_image'];   }
-        if (isset($_FILES['favicon_image'])) { $config_favicon_image = $_FILES['favicon_image']; }
+        $config_banner_color  = isset($_POST['banner_color'])       ? $_POST['banner_color']       : '';
+        $config_logo_image    = isset($_FILES['logo_image'])        ? $_FILES['logo_image']        : '';
+        $config_favicon_image = isset($_FILES['favicon_image'])     ? $_FILES['favicon_image']     : '';
+        $config_currency      = isset($_POST['currency_selection']) ? $_POST['currency_selection'] : '';
+        $config_sku_prefix    = isset($_POST['sku_prefix'])         ? $_POST['sku_prefix']         : '';
 
-        if ( isset($_POST['banner_color'])) {
-            $post_banner_color = $_POST['banner_color'];
+        if ( isset($_POST['banner_color']) && $config_banner_color !== '') {
+            $post_banner_color = $config_banner_color;
             if (preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $post_banner_color)) {
                 include 'dbh.inc.php';
                 $sql_upload = "UPDATE config SET banner_color=? WHERE id=1";
@@ -74,7 +76,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         // LOGO IMAGE UPLOAD
-        if (isset($_FILES['logo_image'])) {
+        if (isset($_FILES['logo_image']) && $config_logo_image !== '') {
             if ($_FILES['logo_image']['name'] !== '') {
                 $logo_image_name = image_upload('logo_image');
             
@@ -105,7 +107,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         
 
         // FAVICON IMAGE UPLOAD
-        if (isset($_FILES['favicon_image'])) {
+        if (isset($_FILES['favicon_image']) && $config_favicon_image !== '') {
             if ($_FILES['favicon_image']['name'] !== '') {
                 $favicon_image_name = image_upload('favicon_image');
 
@@ -131,6 +133,34 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     }
                     $errors[] = "FAVICON ERROR END";
                 }
+            }
+        }
+
+        if (isset($_POST['currency_selection']) && $config_currency !== '') {
+            $post_currency = $_POST['currency_selection'];
+            include 'dbh.inc.php';
+            $sql_upload = "UPDATE config SET currency=? WHERE id=1";
+            $stmt_upload = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                $errors[] = "currencySqlError";
+            } else {
+                mysqli_stmt_bind_param($stmt_upload, "s", $post_currency);
+                mysqli_stmt_execute($stmt_upload);
+                $queryStrings[] = "currencyUpload=success";
+            }
+        }
+
+        if (isset($_POST['sku_prefix']) && $config_sku_prefix !== '') {
+            $post_sku_prefix = $_POST['sku_prefix'];
+            include 'dbh.inc.php';
+            $sql_upload = "UPDATE config SET sku_prefix=? WHERE id=1";
+            $stmt_upload = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                $errors[] = "SKU_prefixSqlError";
+            } else {
+                mysqli_stmt_bind_param($stmt_upload, "s", $post_sku_prefix);
+                mysqli_stmt_execute($stmt_upload);
+                $queryStrings[] = "SKU_prefixUpload=success";
             }
         }
 

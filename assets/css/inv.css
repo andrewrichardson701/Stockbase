@@ -16,6 +16,26 @@
     padding-bottom: 30px;
 }
 
+.last-edit {
+    background-color: #343a40;
+    color: #fff;
+    animation: flashAnimation 2s;
+}
+
+@keyframes flashAnimation {
+    0% {
+        background-color: grey;
+        /* color: black; */
+    }
+    20% {
+        background-color: grey;
+        /* color: black; */
+    }
+    100% {
+        background-color: transparent;
+        /* color: #fff; */
+    }
+}
 
 
 .cw {

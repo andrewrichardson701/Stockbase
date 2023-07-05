@@ -34,14 +34,11 @@ if (isset($_GET['type'])) {
                     } elseif ($rowCount_checkID == 1) { 
                         $row_checkID = $result_checkID->fetch_assoc();
 
-                        echo '<br>ID = '.$checkID_id = $row_checkID['id'];
-                        echo '<br>NAME = '.$checkID_name = $row_checkID['name'];
-                        echo '<br>DESCRIPTION = '.$checkID_description = $row_checkID['description'];
-                        echo '<br>SKU = '.$checkID_sku = $row_checkID['sku'];
-                        echo '<br>MIN_STOCK = '.$checkID_min_stock = $row_checkID['min_stock'];
-
-   
-
+                        $checkID_id = $row_checkID['id'];
+                        $checkID_name = $row_checkID['name'];
+                        $checkID_description = $row_checkID['description'];
+                        $checkID_sku = $row_checkID['sku'];
+                        $checkID_min_stock = $row_checkID['min_stock'];
 
                         // GET TOTAL ITEM COUNT BEFORE DELETE
                         $sql_totalItemCount = "SELECT sum(quantity) AS quantity FROM item
@@ -65,8 +62,6 @@ if (isset($_GET['type'])) {
                                 $itemCountTotal = $result_totalItemCount->fetch_assoc()['quantity'];
                             }
                         }
-
-
 
                         // CLEAR ITEM TABLE
                         $sql_delete_item = "DELETE FROM item WHERE stock_id=?";
@@ -160,14 +155,14 @@ if (isset($_GET['type'])) {
                         $date = date('Y-m-d'); // current date in YYY-MM-DD format
                         $time = date('H:i:s'); // current time in HH:MM:SS format
                         $username = $_SESSION['username'];
-                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username) 
-                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
+                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt_trans = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                             header("Location: ".$_SESSION['redirect_URL']."&error=TransactionConnectionIssue");
                             exit();
                         } else {
-                            mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $stock_id, $empty_item_id, $type, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
+                            mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $empty_item_id, $type, $stock_shelf, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
                             mysqli_stmt_execute($stmt_trans);
                         } 
 
@@ -212,11 +207,54 @@ if (isset($_POST['submit'])) {
         $stock_serial_number      = isset($_POST['serial-number'])    ? $_POST['serial-number']    : '' ;
         $stock_transaction_reason = isset($_POST['reason'])           ? $_POST['reason']           : '' ;
 
+        // function to check the current row and if 0 quantity, remove it.
+        function checkDeleteCurrentRow($item_id) {
+            global $redirect_url;
+            include 'dbh.inc.php';
+        
+            $sql = "SELECT * FROM item WHERE id=?";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ".$redirect_url."&error=itemTableSQLConnectionCurrentRowCheck");
+                exit();
+            } else {
+                mysqli_stmt_bind_param($stmt, "s", $item_id);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount < 1) {
+                    // No Rows found
+                    // continue.
+                } else {
+                    // Row found
+                    $row = $result->fetch_assoc();
+                    $quantity = $row['quantity'];
+                    if ($quantity == 0 || $quantity == '0') {
+                        // Row has no quantity
+                        // Delete the row
+
+                        $sql_delete = "DELETE FROM item WHERE id=?";
+                        $stmt_delete = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_delete, $sql_delete)) {
+                            echo("<br>issue at line: ".__LINE__."<br>");
+                            header("Location: $redirect_url&error=itemTableSQLConnectionUpdateCurrent");
+                            exit();
+                        } else {
+                            mysqli_stmt_bind_param($stmt_delete, "s", $item_id);
+                            mysqli_stmt_execute($stmt_delete);
+                            header("Location: ".$redirect_url."&success=stockRemoved&row=deleted");
+                            exit();
+                        }
+                    } else {
+                        // something went wrong here -> should not get here
+                        echo ('something went wrong here... line: '.__LINE__);
+                    }
+                }
+            }
+        }
+
         if ($stock_id !== '' && $stock_sku !== '' && $stock_manufacturer !== '' && $stock_shelf !== '' && $stock_price !== '' && $stock_transaction_date !== '' && $stock_quantity !== '' && $stock_transaction_reason !== '') {
             // all info is as expected - serial_number is not needed to be checked.
-
-
-            
 
             include 'dbh.inc.php';
             $sql_checkID = "SELECT * FROM stock
@@ -350,37 +388,21 @@ if (isset($_POST['submit'])) {
                                                         $time = date('H:i:s'); // current time in HH:MM:SS format
                                                         $username = $_SESSION['username'];
                                                         $neg_stock_quantity = $stock_quantity * -1;
-                                                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username) 
-                                                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
+                                                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                                         $stmt_trans = mysqli_stmt_init($conn);
                                                         if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                                                             $errors[] = 'trans transaction table error - SQL connection';
                                                             header("Location: ".$_SESSION['redirect_URL']."&error=TransactionConnectionIssue");
                                                             exit();
                                                         } else {
-                                                            mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $stock_id, $stock_itemSelectID_id, $type, $neg_stock_quantity, $stock_cost, $stock_serial_number, $stock_transaction_reason, $date, $time, $username);
+                                                            mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $stock_itemSelectID_id, $type, $stock_shelf, $neg_stock_quantity, $stock_price, $stock_serial_number, $stock_transaction_reason, $date, $time, $username);
                                                             mysqli_stmt_execute($stmt_trans);
                                                             echo("Transaction Added");
 
                                                             // Remove any 0 quantity entries from DB
+                                                            checkDeleteCurrentRow($stock_itemSelectID_id);
                                                             
-                                                            // $sql_delete_item = "DELETE FROM item WHERE stock_id=? AND quantity=0";
-                                                            // $stmt_delete_item = mysqli_stmt_init($conn);
-                                                            // if (!mysqli_stmt_prepare($stmt_delete_item, $sql_delete_item)) {
-                                                            //     $errors[] = 'delete item table error - SQL connection';
-                                                            //     // header("Location: ".$redirect_url."&error=itemTableSQLConnection");
-                                                            //     // exit();
-                                                            // } else {
-                                                            //     mysqli_stmt_bind_param($stmt_delete_item, "s", $stock_id);
-                                                            //     mysqli_stmt_execute($stmt_delete_item);
-                                                            //     $rows_delete_item = $conn->affected_rows;
-                                                            //     if ($rows_delete_item > 0) {
-                                                            //         echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
-                                                            //     } else {
-                                                            //         echo("<br>No Items Deleted for stock_id: $stock_id... <br>");
-                                                            //     }
-                                                                
-                                                            // }
                                                             header("Location: ".$redirect_url."&success=stockRemoved");
                                                             exit();
                                                         } 

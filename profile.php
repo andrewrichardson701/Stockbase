@@ -135,6 +135,4 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <div id="caption" class="modal-caption"></div>
     </div>
     <!-- End of Modal Image Div -->
-
-    
 </body>

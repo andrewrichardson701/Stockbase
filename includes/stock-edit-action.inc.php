@@ -44,27 +44,33 @@ function image_upload($field, $stock_id, $redirect_url) {
                 print_r($errors);
                 header("Location: ".$redirect_url."&error=imageUpload");
                 exit();
-                return $errors;
+                // return $errors;
             }
         } else {
             print_r($errors);
             header("Location: ".$redirect_url."&error=imageUpload");
             exit();
-            return $errors;
+            // return $errors;
         } 
     }
 }
 
-
+// Main Info Form - id, name, description sku etc.
 if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     session_start();
-    // print_r($_POST);
+    print_r($_POST);
+    // exit();
     if (isset($_POST['id']) && isset($_POST['name']) && isset($_POST['sku'])) {
         $stock_id = $_POST['id'];
         $stock_name = $_POST['name'];
         $stock_sku = $_POST['sku'];
         $stock_description = isset($_POST['description'])? $_POST['description'] : '';
+        $stock_labels = isset($_POST['labels'])? $_POST['labels'] : '';
+        $stock_labels_init = isset($_POST['labels-init'])? $_POST['labels-init'] : '';
+        $stock_labels_selected = isset($_POST['labels-selected'])? $_POST['labels-selected'] : '';
         $stock_min_stock = isset($_POST['min_stock'])? $_POST['min_stock'] : 0;
+        
+        $stock_labels_selected = explode(', ', $stock_labels_selected);
 
         // echo ("<br>id: $stock_id<br>name: $stock_name<br>sku: $stock_sku<br>description: $stock_description<br>min stock: $stock_min_stock<br>");
         
@@ -96,6 +102,43 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
                 } else {
                     mysqli_stmt_bind_param($stmt_update, "sssss", $stock_name, $stock_description, $stock_sku, $stock_min_stock, $stock_id);
                     mysqli_stmt_execute($stmt_update);
+
+                    // add labels to the stock_labels table
+                    function addLabel($stock_id, $label_id) {
+                        include 'dbh.inc.php';
+                        $sql_add = "INSERT INTO stock_label (stock_id, label_id) VALUES (?, ?)";
+                        $stmt_add = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_add, $sql_add)) {
+                            echo ("error");
+                        } else {
+                            mysqli_stmt_bind_param($stmt_add, "ss", $stock_id, $label_id);
+                            mysqli_stmt_execute($stmt_add);
+                        }
+                    }
+                    function cleanupLabels($stock_id) {
+                        include 'dbh.inc.php';
+                        $sql_clean = "DELETE FROM stock_label WHERE stock_id=$stock_id";
+                        $stmt_clean = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_clean, $sql_clean)) {
+                            echo ("error");
+                        } else {
+                            mysqli_stmt_execute($stmt_clean);
+                        }
+                    }
+
+                    cleanupLabels($stock_id);
+
+                    if ($stock_labels_selected != '') {
+                        if (is_array($stock_labels_selected)) {
+                            foreach ($stock_labels_selected as $label) {
+                                addLabel($stock_id, $label);
+                            }
+                        } else {
+                            addLabel($stock_id, $stock_labels_selected);
+                        }
+                    }
+                    
+                    
                     header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
                     exit();
                 }

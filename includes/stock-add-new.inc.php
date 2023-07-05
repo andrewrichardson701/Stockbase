@@ -257,7 +257,7 @@ if (isset($_POST['submit'])) {
                 // rows exist, add to existing
                 $row_item = $result_item->fetch_assoc();
                 $item_id = $row_item['id'];
-                $item_quantity = $row['quantity'];
+                $item_quantity = $row_item['quantity'];
 
                 $new_quantity = (int)$item_quantity + (int)$quantity;
                 
@@ -272,14 +272,14 @@ if (isset($_POST['submit'])) {
                     mysqli_stmt_execute($stmt);
                     // Transaction update
                     $type = 'add';
-                    $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username) 
-                                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
+                                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt_trans = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                         header("Location: ".$redirect_url.$reditect_queies."&error=transactionConnectionSQL");
                         exit();
                     } else {
-                        mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $id, $item_id, $type, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
+                        mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $id, $item_id, $type, $shelf, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
                         mysqli_stmt_execute($stmt_trans);
                         header("Location: ../stock.php?stock_id=$id&item_id=$item_id&success=stockQuantityAdded");
                         exit();

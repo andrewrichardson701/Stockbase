@@ -99,7 +99,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                     area_id, area_name, 
                                     shelf_id, shelf_name,
                                     manufacturer_id, manufacturer_name
-                                ORDER BY area.name;";
+                                    ORDER BY site.name DESC, area.name ASC, shelf.name ASC;";
                     $stmt_stock = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                         echo("ERROR getting entries");
@@ -343,7 +343,7 @@ if ($stock_id == 0 || $stock_id == '0') {
 </div>
 <script>
     function confirmAction(stock_name, stock_sku, url) {
-        var confirmed = confirm('Are you sure you want to proceed? \nThis will ALL entries for '+stock_name+' ('+stock_sku+').');
+        var confirmed = confirm('Are you sure you want to proceed? \nThis will remove ALL entries for '+stock_name+' ('+stock_sku+').');
         if (confirmed) {
             window.location.href = url;
         }

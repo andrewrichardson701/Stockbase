@@ -7,7 +7,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title>Inventory</title>
+    <title><?php echo ucwords($current_system_name);?></title>
 </head>
 <body>
     <?php // dependency PHP
@@ -280,7 +280,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         echo('
             <div class="container" style="padding-bottom:25px">
-                <h2 class="header-small" style="padding-bottom:10px">Inventory');
+                <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name));
                 if ($site !== '0') { $area_name = $area == 0 ? "All" : $area_names_array[$area]; echo(' - '.$area_name);}
             echo('</h2>
             <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>

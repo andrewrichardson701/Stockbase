@@ -3,7 +3,7 @@
 include 'session.php'; // Session setup and redirect if the session is not active 
 include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 
-if ($_SESSION['role'] !== "admin") {
+if ($_SESSION['role'] !== "Admin") {
     header("Location: ./login.php");
     exit();
 }
@@ -12,8 +12,7 @@ if ($_SESSION['role'] !== "admin") {
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.4.0/css/all.css">
-    <title>Inventory - Admin</title>
+    <title><?php echo ucwords($current_system_name);?> - Admin</title>
 </head>
 <body>
     <?php // dependency PHP
@@ -35,96 +34,14 @@ if ($_SESSION['role'] !== "admin") {
     <div class="container">
         <h2 class="header-small">Admin</h2>
     </div>
+
     <?php
-    include 'includes/dbh.inc.php';
 
-    $sql_config = "SELECT * FROM config ORDER BY id LIMIT 1";
-    $stmt_config = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
-        echo("ERROR getting entries");
-    } else {
-        mysqli_stmt_execute($stmt_config);
-        $result_config = mysqli_stmt_get_result($stmt_config);
-        $rowCount_config = $result_config->num_rows;
-        if ($rowCount_config < 1) {
-            echo ("No cutstom config found");
-        } else {
-            while ( $config = $result_config->fetch_assoc() ) {
-                $config_banner_color = $config['banner_color'];
-                $config_logo_image = $config['logo_image'];
-                $config_favicon_image = $config['favicon_image'];
-                $config_currency = $config['currency'];
-                $config_sku_prefix = $config['sku_prefix'];
-                $config_ldap_username  = $config['ldap_username'];
-                // $config_ldap_password = base64_decode($config['ldap_password']);
-                $config_ldap_domain = $config['ldap_domain'];
-                $config_ldap_host = $config['ldap_host'];
-                $config_ldap_port = $config['ldap_port'];
-                $config_ldap_basedn = $config['ldap_basedn'];
-                $config_ldap_usergroup = $config['ldap_usergroup'];
-                $config_ldap_userfilter = $config['ldap_userfilter'];
-            }
-        }
-    }
-    $sql_config_d = "SELECT * FROM config_default ORDER BY id LIMIT 1";
-    $stmt_config_d = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
-        echo("ERROR getting entries");
-    } else {
-        mysqli_stmt_execute($stmt_config_d);
-        $result_config_d = mysqli_stmt_get_result($stmt_config_d);
-        $rowCount_config_d = $result_config_d->num_rows;
-        if ($rowCount_config_d < 1) {
-            echo ("No default config found");
-        } else {
-            while ( $config_d = $result_config_d->fetch_assoc() ) {
-                $config_d_banner_color = $config_d['banner_color'];
-                $config_d_logo_image = $config_d['logo_image'];
-                $config_d_favicon_image = $config_d['favicon_image'];
-                $config_d_currency = $config_d['currency'];
-                $config_d_sku_prefix = $config_d['sku_prefix'];
-                $config_d_ldap_username  = $config_d['ldap_username'];
-                $config_d_ldap_password = $config_d['ldap_password'];
-                $config_d_ldap_domain = $config_d['ldap_domain'];
-                $config_d_ldap_host = $config_d['ldap_host'];
-                $config_d_ldap_port = $config_d['ldap_port'];
-                $config_d_ldap_basedn = $config_d['ldap_basedn'];
-                $config_d_ldap_usergroup = $config_d['ldap_usergroup'];
-                $config_d_ldap_userfilter = $config_d['ldap_userfilter'];
-            }
-        }
-    }
-    $current_banner_color    = ($config_banner_color      !== '' ? $config_banner_color                  : $config_d_banner_color);
-    $current_logo_image      = ($config_logo_image        !== '' ? $config_logo_image                    : $config_d_logo_image);
-    $current_favicon_image   = ($config_favicon_image     !== '' ? $config_favicon_image                 : $config_d_favicon_image);
-    $current_currency        = ($config_currency          !== '' ? $config_currency                      : $config_d_currency );
-    $current_sku_prefix      = ($config_sku_prefix        !== '' ? $config_sku_prefix                    : $config_d_sku_prefix);
-
-    $default_banner_color    = ($config_d_banner_color    !== '' ? $config_d_banner_color                : 'MISSING - PLEASE FIX');
-    $default_logo_image      = ($config_d_logo_image      !== '' ? $config_d_logo_image                  : 'MISSING - PLEASE FIX');
-    $default_favicon_image   = ($config_d_favicon_image   !== '' ? $config_d_favicon_image               : 'MISSING - PLEASE FIX');
-    $default_currency        = ($config_d_currency        !== '' ? $config_d_currency                    : 'MISSING - PLEASE FIX');
-    $default_sku_prefix      = ($config_d_sku_prefix      !== '' ? $config_d_sku_prefix                    : 'MISSING - PLEASE FIX');
-
-    $current_ldap_username   = ($config_ldap_username     !== '' ? $config_ldap_username                 : $config_d_ldap_username);
-    // $current_ldap_password   = ($config_ldap_password     !== '' ? $config_ldap_password                 : $config_d_ldap_password);
-    $current_ldap_domain     = ($config_ldap_domain       !== '' ? $config_ldap_domain                   : $config_d_ldap_domain);
-    $current_ldap_host       = ($config_ldap_host         !== '' ? $config_ldap_host                     : $config_d_ldap_host);
-    $current_ldap_port       = ($config_ldap_port         !== '' ? $config_ldap_port                     : $config_d_ldap_port);
-    $current_ldap_basedn     = ($config_ldap_basedn       !== '' ? $config_ldap_basedn                   : $config_d_ldap_basedn);    
-    $current_ldap_usergroup  = ($config_ldap_usergroup    !== '' ? $config_ldap_usergroup                : $config_d_ldap_usergroup);    
-    $current_ldap_userfilter = ($config_ldap_userfilter   !== '' ? $config_ldap_userfilter               : $config_d_ldap_userfilter);    
-    
-    $default_ldap_username   = ($config_d_ldap_username   !== '' ? $config_d_ldap_username               : 'MISSING - PLEASE FIX');
-    $default_ldap_password   = ($config_d_ldap_password   !== '' ? '<or class="green">Password Set</or>' : 'MISSING - PLEASE FIX');
-    $default_ldap_domain     = ($config_d_ldap_domain     !== '' ? $config_d_ldap_domain                 : 'MISSING - PLEASE FIX');
-    $default_ldap_host       = ($config_d_ldap_host       !== '' ? $config_d_ldap_host                   : 'MISSING - PLEASE FIX');
-    $default_ldap_port       = ($config_d_ldap_port       !== '' ? $config_d_ldap_port                   : 'MISSING - PLEASE FIX');
-    $default_ldap_basedn     = ($config_d_ldap_basedn     !== '' ? $config_d_ldap_basedn                 : 'MISSING - PLEASE FIX');    
-    $default_ldap_usergroup  = ($config_d_ldap_usergroup  !== '' ? $config_d_ldap_usergroup              : 'MISSING - PLEASE FIX');    
-    $default_ldap_userfilter = ($config_d_ldap_userfilter !== '' ? $config_d_ldap_userfilter             : 'MISSING - PLEASE FIX');  
+    // Get all properties
+    include 'includes/get-config.inc.php'; 
 
     ?>
+
     <script> // Toggle hide/show section
         function toggleSection(element, section) {
             var div = document.getElementById(section);
@@ -153,7 +70,21 @@ if ($_SESSION['role'] !== "admin") {
                             <th style="width:170px;margin-left:25px">Custom</th>
                             <th style="width:120px;margin-left:25px">Default</th>
                         </tr>
-                        <tr class="nav-row" id="banner-color">
+                        <tr class="nav-row">
+                            <td id="system_name-label" style="width:250px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="system_name">System Name:</p>
+                            </td>
+                            <td id="system_name-set" style="width:250px">
+                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="system_name" name="system_name">
+                            </td>
+                            <td style="width:170px;margin-left:10px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($current_system_name); ?></span></label>
+                            </td>
+                            <td style="width:200px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($default_system_name); ?></span></label>
+                            </td>
+                        </tr>
+                        <tr class="nav-row" id="banner-color" style="margin-top:20px">
                             <td id="banner-color-label" style="width:250px;margin-left:25px">
                                 <!-- Custodian Colour: #72BE2A -->
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="banner_color">Banner Colour:</p>
@@ -256,6 +187,268 @@ if ($_SESSION['role'] !== "admin") {
                 </table>
             </form>
         </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" onclick="toggleSection(this, 'users')">Users <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Users Settings -->
+        <div style="padding-top: 20px" id="users" hidden>
+            <table id="usersTable" class="table table-dark" style="max-width:max-content">
+                <thead>
+                    <tr id="users_table_info_tr" hidden>
+                        <td colspan=8 id="users_table_info_td"></td>
+                    </tr>
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Auth</th>
+                        <th>Enabled</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        // GET users from table
+
+                        $sql_users = "SELECT users.id as id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled FROM users 
+                                        INNER JOIN users_roles ON users.role_id = users_roles.id";
+                        $stmt_users = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
+                            echo('<td colspan=7><or class="red">SQL Issue with `users` table.</or></td>');
+                        } else {
+                            mysqli_stmt_execute($stmt_users);
+                            $result_users = mysqli_stmt_get_result($stmt_users);
+                            $rowCount_users = $result_users->num_rows;
+                            if ($rowCount_users < 1) {
+                                echo ('<td colspan=7><or class="red">No Users in table: `users`.</or></td>');
+                            } else {
+                                while($row_users = $result_users->fetch_assoc()) {
+                                    $user_id = $row_users['id'];
+                                    $user_username = $row_users['username'];
+                                    $user_first_name = $row_users['first_name'];
+                                    $user_last_name = $row_users['last_name'];
+                                    $user_email = $row_users['email'];
+                                    $user_role = $row_users['role'];
+                                    $user_auth = $row_users['auth'];
+                                    $user_enabled = $row_users['enabled'];
+                                    $user_roles = [];
+
+                                    $sql_roles = "SELECT * FROM users_roles";
+                                    $stmt_roles = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_roles, $sql_roles)) {
+                                        echo('<td colspan=7><or class="red">SQL Issue with `users` table.</or></td>');
+                                    } else {
+                                        mysqli_stmt_execute($stmt_roles);
+                                        $result_roles = mysqli_stmt_get_result($stmt_roles);
+                                        $rowCount_roles = $result_roles->num_rows;
+                                        if ($rowCount_roles < 1) {
+                                            echo ('<td colspan=7><or class="red">No Roles in table: `users`.</or></td>');
+                                        } else {
+                                            $i = 0;
+                                            while ($row_roles = $result_roles->fetch_assoc()) {
+                                                $user_roles[$i]['id'] = $row_roles['id'];
+                                                $user_roles[$i]['name'] = $row_roles['name'];
+                                                $i++;
+                                            }
+                                        }
+                                    }
+
+
+                                    
+                                    echo('<tr class="text-center" style="vertical-align: middle;">
+                                        <td id="user_'.$user_id.'_id" style="vertical-align: middle;">'.$user_id.'</td>
+                                        <td id="user_'.$user_id.'_username" style="vertical-align: middle;">'.$user_username.'</td>
+                                        <td id="user_'.$user_id.'_first_name" style="vertical-align: middle;">'.$user_first_name.'</td>
+                                        <td id="user_'.$user_id.'_last_name" style="vertical-align: middle;">'.$user_last_name.'</td>
+                                        <td id="user_'.$user_id.'_email" style="vertical-align: middle;">'.$user_email.'</td>
+                                        <td id="user_'.$user_id.'_role" style="vertical-align: middle;">
+                                            <select class="form-control" id="user_'.$user_id.'_role_select" style="padding-top:0px; padding-bottom:0px" onchange="userRoleChange(\''.$user_id.'\')">');
+                                            foreach ($user_roles as $role) {
+                                                echo('<option value="'.$role['id'].'"');
+                                                if ($role['name'] == $user_role) {
+                                                    echo ('selected');
+                                                }
+                                                echo('>'.ucwords($role['name']).'</option>');
+                                            }
+                                            echo('
+                                            </select>
+                                        </td>
+                                        <td id="user_'.$user_id.'_auth" style="vertical-align: middle;">'.$user_auth.'</td>
+                                        <td style="vertical-align: middle;"><input type="checkbox" id="user_'.$user_id.'_enabled_checkbox"');
+                                        if ($user_enabled == 1) {
+                                            echo('checked');
+                                        }
+                                        echo(' onchange="usersEnabledChange(\''.$user_id.'\')"/></td>
+                                    ');
+                                }
+                            }
+                        }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stock-locations-settings" onclick="toggleSection(this, 'stock-locations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+
+        <!-- Stock Location Settings -->
+        <div style="padding-top: 20px" id="stock-locations" hidden>
+            <p class="red">Still needs sorting... This will show all stock sites, areas, shelves - Need to make all of the cells (except ids) input boxes and forms for submitting on saving.</p>
+
+
+            <?php
+            $locations = [];
+            $sql_locations = "SELECT site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                    area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.parent_id AS area_parent_id,
+                                    shelf.id AS shelf_id, shelf.name AS shelf_name, shelf.area_id AS shelf_area_id
+                                FROM site
+                                INNER JOIN area ON site.id = area.site_id
+                                INNER JOIN shelf ON area.id = shelf.area_id
+                                ORDER BY site.id, area.id, shelf.id";
+            $stmt_locations = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_locations, $sql_locations)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_locations);
+                $result_locations = mysqli_stmt_get_result($stmt_locations);
+                $rowCount_locations = $result_locations->num_rows;
+                if ($rowCount_locations < 1) {
+                    echo ("No sites found");
+                    exit();
+                } else {
+                    while( $row_locations = $result_locations->fetch_assoc() ) {  
+                        $locations[$row_locations['site_id']]['site_id'] = $row_locations['site_id'];
+                        $locations[$row_locations['site_id']]['site_name'] = $row_locations['site_name'];
+                        $locations[$row_locations['site_id']]['site_description'] = $row_locations['site_description'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_id'] = $row_locations['area_id'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_name'] = $row_locations['area_name'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_description'] = $row_locations['area_description'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_site_id'] = $row_locations['area_site_id'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_parent_id'] = $row_locations['area_parent_id'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_id'] = $row_locations['shelf_id'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_name'] = $row_locations['shelf_name'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_area_id'] = $row_locations['shelf_area_id'];
+                    }
+                    // print_r('<pre>');
+                    // print_r($locations);
+                    // print_r('</pre>');
+                    $l = 0;
+                    echo('<table class="table table-dark text-center" style="max-width:max-content; vertical-align: middle;">
+                            <tbody>
+                                <tr>
+                                    <th>site_id</th>
+                                    <th>site_name</th>
+                                    <th hidden>site_description</th>
+                                    <th style="border-left:2px solid #95999c">area_id</th>
+                                    <th>area_name</th>
+                                    <th hidden>area_description</th>
+                                    <th hidden>area_site_id</th>
+                                    <th hidden>area_parent_id</th>
+                                    <th style="border-left:2px solid #95999c">shelf_id</th>
+                                    <th>shelf_name</th>
+                                    <th hidden>shelf_area_id</th>
+                                    <th style="border-left:2px solid #95999c"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>');
+                            foreach ($locations as $site) {
+                                $l++;
+                                if ($l % 2 == 0) {
+                                    $color1 = '#F4BB44';
+                                    $color2 = '#ffe47a';
+                                    $color3 = '#FFDEAD';
+                                } else {
+                                    // $color1 = '#79a8b8';
+                                    // $color2 = '#95cbe4';
+                                    // $color3 = '#a8d8db';
+                                    $color1 = '#6abad6';
+                                    $color2 = '#99d4ef';
+                                    $color3 = '#c1e9fc';
+                                    
+                                }
+                                if ($l > 1) {
+                                    echo('<tr style="background-color:#343a40"><td colspan=8></td></tr>');
+                                }
+                                echo('<tr style="background-color:'.$color1.' !important; color:black">
+                                        <td style="vertical-align: middle;">'.$site['site_id'].'</td>
+                                        <td style="vertical-align: middle;"><input class="form-control" type="text" value="'.$site['site_name'].'" style="width:150px"/></td>
+                                        <td hidden>'.$site['site_description'].'</td>
+                                        <td style="border-left:2px solid #454d55; vertical-align: middle;"></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
+                                        <td style="border-left:2px solid #454d55; vertical-align: middle;"></td> <td></td> <td hidden></td>
+                                        <td style="background-color:#21272b; border-left:2px solid #454d55; vertical-align: middle;">
+                                            <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                        </td>
+                                        <td style="background-color:#21272b; vertical-align: middle;">
+                                            <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>');
+                                foreach ($site['areas'] as $area) {
+                                    echo('<tr style="background-color:'.$color2.' !important; color:black">
+                                            <td style="vertical-align: middle; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
+                                            <td style="border-left:2px solid #454d55; vertical-align: middle;">'.$area['area_id'].'</td>
+                                            <td style="vertical-align: middle;"><input class="form-control" type="text" value="'.$area['area_name'].'" style="width:150px"/></td>
+                                            <td style="vertical-align: middle;" hidden>'.$area['area_description'].'</td>
+                                            <td style="vertical-align: middle;" hidden>'.$area['area_site_id'].'</td>
+                                            <td style="vertical-align: middle;" hidden>'.$area['area_parent_id'].'</td>
+                                            <td style="border-left:2px solid #454d55; vertical-align: middle;"></td> <td></td> <td hidden></td>
+                                            <td style="background-color:#21272b; border-left:2px solid #454d55; vertical-align: middle;">
+                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                            </td>
+                                            <td style="background-color:#21272b; vertical-align: middle;">
+                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>');
+                                    foreach ($area['shelves'] as $shelf) {
+                                        echo('<tr style="background-color:'.$color3.' !important; color:black">
+                                                <td style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
+                                                <td style="border-left:2px solid #454d55; vertical-align: middle;background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
+                                                <td style="border-left:2px solid #454d55; vertical-align: middle;">'.$shelf['shelf_id'].'</td>
+                                                <td style="vertical-align: middle;"><input class="form-control" type="text" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
+                                                <td style="vertical-align: middle;" hidden>'.$shelf['shelf_area_id'].'</td>
+                                                <td style="background-color:#21272b; border-left:2px solid #454d55; vertical-align: middle;">
+                                                    <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                </td>
+                                                <td style="background-color:#21272b; vertical-align: middle;">
+                                                    <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>');
+                                    }
+                                }
+                            }
+                            // echo('<tr style="background-color:#21272b">
+                            //         <td></td> <td></td> <td hidden></td> <td></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> <td></td> <td></td> <td hidden></td>
+                            //             <td>
+                            //                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                            //                     <i class="fa fa-plus"></i>
+                            //                 </button>
+                            //             </td>
+                            //         </tr>');
+                    echo('  </tbody>
+                        </table>');
+                }
+            }   
+
+
+
+
+
+            ?>
+
+        </div>
+
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="ldap-settings" onclick="toggleSection(this, 'ldap')">LDAP Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
 
         <!-- LDAP Settings -->
@@ -335,6 +528,17 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-host-default"><?php echo($default_ldap_host); ?></p>
                             </td>
                         </tr>
+                        <tr class="nav-row" style="margin-top:20px" id="ldap-auth-host">
+                            <td id="ldap-auth-host-secondary-label" style="width:250px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-host-secondary">Secondary Host:</p>
+                            </td>
+                            <td id="ldap-auth-host-secondary-input">
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-host-secondary" name="auth-host-secondary" value="<?php echo(isset($_GET['auth-host-secondary']) ? $_GET['auth-host-secondary'] : $current_ldap_host_secondary); ?>">
+                            </td>
+                            <td id="ldap-auth-host-secondary-default-cell" style="margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-host-secondary-default"><?php echo($default_ldap_host_secondary); ?></p>
+                            </td>
+                        </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-port">
                             <td id="ldap-auth-port-label" style="width:250px;margin-left:25px">
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-port">Port:</p>
@@ -411,10 +615,10 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-host">SMTP Host:</p>
                             </td>
                             <td id="smtp-host-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-host" name="smtp-host" value="mail.ajrich.co.uk" required>
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-host" name="smtp-host" value="<?php echo $current_smtp_host; ?>" required>
                             </td>
                             <td id="smtp-host-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-host-default">mail.ajrich.co.uk</p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-host-default"><?php echo $default_smtp_host; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-port-row" style="margin-top:20px">
@@ -422,10 +626,10 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-port">SMTP Port:</p>
                             </td>
                             <td id="smtp-port-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-port" name="smtp-port" value="587" required>
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-port" name="smtp-port" value="<?php echo $current_smtp_port; ?>" required>
                             </td>
                             <td id="smtp-port-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-port-default">587</p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-port-default"><?php echo $default_smtp_port; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-encryption-row" style="margin-top:20px">
@@ -434,14 +638,35 @@ if ($_SESSION['role'] !== "admin") {
                             </td>
                             <td id="smtp-encryption-input">
                                 <select id="smtp-encryption" name="smtp-encryption" style="width:250px" class="form-control nav-v-c" required>
-                                    <option value="none">None</option>
-                                    <option value="starttls" selected>STARTTLS</option>
-                                    <option value="tls">Transport Layer Security (TLS)</option>
-                                    <option value="ssl">Secure Sockets Layer (SSL)</option>
+                                    <option value="none" <?php if ($current_smtp_encryption == 'starttls' || $current_smtp_encryption == '' || $current_smtp_encryption == null) { echo 'selected'; } ?>>None</option>
+                                    <option value="starttls" <?php if ($current_smtp_encryption == 'starttls') { echo 'selected'; } ?>>STARTTLS</option>
+                                    <option value="tls" <?php if ($current_smtp_encryption == 'tls') { echo 'selected'; } ?>>Transport Layer Security (TLS)</option>
+                                    <option value="ssl" <?php if ($current_smtp_encryption == 'ssl') { echo 'selected'; } ?>>Secure Sockets Layer (SSL)</option>
                                 </select>
                             </td>
                             <td id="smtp-encryption-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-encryption-default">STARTTLS</p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-encryption-default">
+                                    <?php 
+                                        switch ($default_smtp_encryption) {
+                                            case 'none':
+                                            case '':
+                                            case null:
+                                                echo 'None';
+                                                break;
+                                            case 'starttls':
+                                                echo 'STARTTLS';
+                                                break;
+                                            case 'tls':
+                                                echo 'Transport Layer Security (TLS)';
+                                                break;
+                                            case 'ssl':
+                                                echo 'Secure Sockets Layer (SSL)';
+                                                break;
+                                            default:
+                                                echo 'None';
+                                        }
+                                    ?>
+                                </p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-username-row" style="margin-top:20px">
@@ -449,10 +674,10 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-username">SMTP Username:</p>
                             </td>
                             <td id="smtp-username-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-username" name="smtp-username" value="inventory@ajrich.co.uk" required>
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-username" name="smtp-username" value="<?php echo $current_smtp_username; ?>" required>
                             </td>
                             <td id="smtp-username-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-username-default">inventory@ajrich.co.uk</p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-username-default"><?php echo $default_smtp_username; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-password-row" style="margin-top:20px">
@@ -460,10 +685,10 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-password">SMTP Password:</p>
                             </td>
                             <td id="smtp-password-input">
-                                <input class="form-control nav-v-c" type="password" style="width: 250px" id="smtp-password" name="smtp-password" value="DemoPass1!" required>
+                                <input class="form-control nav-v-c" type="password" style="width: 250px" id="smtp-password" name="smtp-password" value="password" required>
                             </td>
                             <td id="smtp-password-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-password-default"><or class="green">Password Set</or></p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-password-default"><or class="green"><?php echo $default_smtp_password; ?></or></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-from-email-row" style="margin-top:20px">
@@ -471,10 +696,10 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-from-email">SMTP From Email:</p>
                             </td>
                             <td id="smtp-from-email-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-from-email" name="smtp-from-email" value="inventory@ajrich.co.uk" required>
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-from-email" name="smtp-from-email" value="<?php echo $current_smtp_from_email; ?>" required>
                             </td>
                             <td id="smtp-from-email-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-from-email-default">inventory@ajrich.co.uk</p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-from-email-default"><?php echo $default_smtp_from_email; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-from-name-row" style="margin-top:20px">
@@ -482,10 +707,10 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-from-name">SMTP From Name:</p>
                             </td>
                             <td id="smtp-from-name-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-from-name" name="smtp-from-name" value="Inventory System" required>
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-from-name" name="smtp-from-name" value="<?php echo $current_smtp_from_name; ?>" required>
                             </td>
                             <td id="smtp-from-name-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-from-name-default">Inventory System</p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-from-name-default"><?php echo $default_smtp_from_name; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-backup-to-row" style="margin-top:20px">
@@ -493,10 +718,10 @@ if ($_SESSION['role'] !== "admin") {
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-backup-to">SMTP To Email (Backup):</p>
                             </td>
                             <td id="smtp-backup-to-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-backup-to" name="smtp-backup-to" value="inventory@ajrich.co.uk" required>
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-backup-to" name="smtp-backup-to" value="<?php echo $current_smtp_to_email; ?>" required>
                             </td>
                             <td id="smtp-backup-to-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-backup-to-default">inventory@ajrich.co.uk</p>
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-backup-to-default"><?php echo $default_smtp_to_email; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px">
@@ -632,6 +857,7 @@ if ($_SESSION['role'] !== "admin") {
 
                 // Continue with the rest of the code once the AJAX request is complete
                 processLastLine();
+                newOutputPre.scrollIntoView();
             },
             async: true
         });
@@ -672,6 +898,69 @@ if ($_SESSION['role'] !== "admin") {
             $(this).attr("data-value", this.value);
             this.type = "text";
         });
-</script>
+    </script>
+
+    <script> // script for users modifications
+        function userRoleChange(id) {
+            var select = document.getElementById("user_"+id+"_role_select");
+            var selectedValue = select.value;
+
+            $.ajax({
+                type: "POST",
+                url: "./includes/admin.inc.php",
+                data: {
+                    user_id: id,
+                    user_new_role: selectedValue,
+                    user_role_submit: 'yes'
+                },
+                dataType: "html",
+                success: function(response) {
+                    var tr = document.getElementById('users_table_info_tr');
+                    var td = document.getElementById('users_table_info_td');
+                    tr.hidden = false;
+                    var result = response;
+                    if (result.startsWith("Error:")) {
+                        td.classList.add("red");
+                    } else {
+                        td.classList.add("green");
+                    }
+                    td.textContent = result;
+                },
+                async: true
+            });
+        }
+        function usersEnabledChange(id) {
+            var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
+            if (checkbox.checked == true) {
+                var checkboxValue = 1;
+            } else {
+                var checkboxValue = 0;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "./includes/admin.inc.php",
+                data: {
+                    user_id: id,
+                    user_new_enabled: checkboxValue,
+                    user_enabled_submit: 'yes'
+                },
+                dataType: "html",
+                success: function(response) {
+                    var tr = document.getElementById('users_table_info_tr');
+                    var td = document.getElementById('users_table_info_td');
+                    tr.hidden = false;
+                    var result = response;
+                    if (result.startsWith("Error:")) {
+                        td.classList.add("red");
+                    } else {
+                        td.classList.add("green");
+                    }
+                    td.textContent = result;
+                },
+                async: true
+            });
+        }
+    </script>
 
 </body>

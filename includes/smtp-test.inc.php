@@ -2,9 +2,9 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
+require_once 'PHPMailer/src/Exception.php';
+require_once 'PHPMailer/src/PHPMailer.php';
+require_once 'PHPMailer/src/SMTP.php';
 
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
@@ -136,9 +136,10 @@ if (isset($_POST['smtp_host']) && isset($_POST['smtp_port']) && isset($_POST['sm
 
 
     if (isset($_POST['smtp_username']) && isset($_POST['smtp_password']) && isset($_POST['smtp_from_email']) && isset($_POST['smtp_from_name']) && isset($_POST['smtp_to_email'])) {
-        function send_email($to, $toName, $from, $fromName, $subject, $body, $host, $port, $encryption, $username, $password) {
-
-
+        include 'smtp.inc.php';
+        $email_content_test = "<p>This is a test of the Inventory mail system. <br>You're all set!</p>";
+        function send_test_email($to, $toName, $from, $fromName, $subject, $body, $host, $port, $encryption, $username, $password) {
+            
             // Create a new PHPMailer instance
             $mail = new PHPMailer();
 
@@ -174,15 +175,19 @@ if (isset($_POST['smtp_host']) && isset($_POST['smtp_port']) && isset($_POST['sm
             $mail->addAddress($to, $toName);
             $mail->Subject = $subject;
             $mail->Body = $body;
+            $mail->IsHTML(true);
 
             // Send the email
             if ($mail->send()) {
-                echo "221 - Test email sent successfully to $to!";
+                echo "\n221 - Test email sent successfully to $to!";
             } else {
-                echo 'Test email could not be sent. Error: ' . $mail->ErrorInfo;
+                echo "\nTest email could not be sent. Error: " . $mail->ErrorInfo;
             }
         }
-        send_email($smtp_to_email, $smtp_to_email, $smtp_from_email, $smtp_from_name, 'Inventory SMTP Test', 'Test email from Inventory', $smtp_host, $smtp_port, $smtp_encryption, $smtp_username, $smtp_password);
+
+        $testBody = $email_template_start.$email_content_test.$email_template_end;
+
+        send_test_email($smtp_to_email, $smtp_to_email, $smtp_from_email, $smtp_from_name, ucwords($current_system_name).' SMTP Test', $testBody, $smtp_host, $smtp_port, $smtp_encryption, $smtp_username, $smtp_password);
         // send_email($smtp_to_email, $smtp_from_email, $smtp_from_name, 'Inventory SMTP Test', 'email test body');
     }
 

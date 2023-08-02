@@ -229,6 +229,7 @@ if (isset($_POST['submit'])) {
                     // Row found
                     $row = $result->fetch_assoc();
                     $quantity = $row['quantity'];
+                    $stock_id = $row['stock_id'];
                     if ($quantity == 0 || $quantity == '0') {
                         // Row has no quantity
                         // Delete the row
@@ -242,6 +243,9 @@ if (isset($_POST['submit'])) {
                         } else {
                             mysqli_stmt_bind_param($stmt_delete, "s", $item_id);
                             mysqli_stmt_execute($stmt_delete);
+                            $email_subject = ucwords($current_system_name)." - Stock inventory deleted.";
+                            $email_body = "<p>Stock inventory deleted to stock ID: $stock_id, with item ID: <strong>$item_id</strong>!</p>";
+                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                             header("Location: ".$redirect_url."&success=stockRemoved&row=deleted");
                             exit();
                         }
@@ -400,9 +404,39 @@ if (isset($_POST['submit'])) {
                                                             mysqli_stmt_execute($stmt_trans);
                                                             echo("Transaction Added");
 
+                                                            // Check if new stock quantity is less than the minimum stock quantity
+                                                            $sql_min_stock = "SELECT * FROM stock WHERE id=?";
+                                                            $stmt_min_stock = mysqli_stmt_init($conn);
+                                                            if (!mysqli_stmt_prepare($stmt_min_stock, $sql_min_stock)) {
+                                                                $errors[] = 'min_stock stock table error - SQL connection';
+                                                                header("Location: ".$redirect_url."&error=stockTableSQLConnection");
+                                                                exit();
+                                                            } else {
+                                                                mysqli_stmt_bind_param($stmt_min_stock, "s", $stock_id);
+                                                                mysqli_stmt_execute($stmt_min_stock);
+                                                                $result_min_stock = mysqli_stmt_get_result($stmt_min_stock);
+                                                                $rowCount_min_stock = $result_min_stock->num_rows;
+                                                                if ($rowCount_min_stock < 1) {
+                                                                    $errors[] = 'min_stock stock table error - no row found';
+                                                                    header("Location: ".$_SESSION['redirect_URL']."&error=noIDInTable");
+                                                                    exit();
+                                                                } elseif ($rowCount_min_stock == 1) { 
+                                                                    $row_min_stock = $result_min_stock->fetch_assoc();
+                                                                    $stock_name = $row_min_stock['name'];
+                                                                    $stock_min_stock = $row_min_stock['min_stock'];
+                                                                    if ($stock_min_stock > $new_quantity) {
+                                                                        $email_subject = ucwords($current_system_name)." - Stock Needs Re-ordering.";
+                                                                        $email_body = "<p>Stock count for stock: <strong>$stock_name</strong> with ID: <strong>$stock_id</strong>, with item ID: <strong>$stock_itemSelectID_id</strong> is below the minimum stock count: <stong>$stock_min_stock</strong> with <strong>$new_quantity</strong>!<br>Please order more.</p>";
+                                                                        send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                                                    }
+                                                                }
+                                                            }
+                                                        
                                                             // Remove any 0 quantity entries from DB
                                                             checkDeleteCurrentRow($stock_itemSelectID_id);
-                                                            
+                                                            $email_subject = ucwords($current_system_name)." - Stock inventory removed.";
+                                                            $email_body = "<p>Stock inventory added to stock ID: $stock_id, with item ID: <strong>$stock_itemSelectID_id</strong>!</p>";
+                                                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                                                             header("Location: ".$redirect_url."&success=stockRemoved");
                                                             exit();
                                                         } 

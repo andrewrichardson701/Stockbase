@@ -35,6 +35,7 @@ include './includes/get-config.inc.php'; // get config options
 <link rel="stylesheet" type="text/css" href="https://adobe-fonts.github.io/source-code-pro/source-code-pro.css">
 <!-- below for colour picker -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet" />
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v6.4.0/css/all.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <style>

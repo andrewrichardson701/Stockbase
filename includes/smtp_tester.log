@@ -1,0 +1,5 @@
+22.07.2023 17:58:38 ERROR 0 
+22.07.2023 17:59:41 ERROR 0 
+22.07.2023 18:04:32 ERROR 22098 Unable to find the socket transport "none" - did you forget to enable it when you configured PHP?
+22.07.2023 18:04:39 ERROR 22098 Unable to find the socket transport "none" - did you forget to enable it when you configured PHP?
+22.07.2023 18:08:25 ERROR 0 

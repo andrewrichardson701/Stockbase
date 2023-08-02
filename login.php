@@ -25,7 +25,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title>Inventory - Login</title>
+    <title><?php echo ucwords($current_system_name);?> - Login</title>
 </head>
 <body>
 
@@ -36,7 +36,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <!-- End of Header and Nav -->
 
     <div class="container">
-        <h2 class="header-small">Inventory</h2>
+        <h2 class="header-small"><?php echo ucwords($current_system_name);?></h2>
     </div>
     <div class="container" style="margin-top:20px">
         <div class="row">
@@ -87,11 +87,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         echo '<p class="red">SQL error. Check URL!</p>';
                     }
                 ?>
-                <p><a href="reset-password.php" id="password-reset">Forgot password?</a>
+                <!-- <p><a href="reset-password.php" id="password-reset">Forgot password?</a> -->
             </div>
         </div>
 	</div>
-<script>
+<!-- <script>
 var toggle = document.getElementById("local-toggle");
 var reset = document.getElementById("password-reset");
 if (toggle.checked) {
@@ -107,5 +107,5 @@ toggle.addEventListener('change', (event) => {
         reset.hidden=true;
     }
 })
-</script>
+</script> -->
 </body>

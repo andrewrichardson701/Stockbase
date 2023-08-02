@@ -18,6 +18,12 @@ if (isset($_POST['submit'])) {
     if ($_POST['submit'] == 'Move' && isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
         // print_r($_POST);
 
+        include 'smtp.inc.php';
+        
+        $to = 'inventory@ajrich.co.uk';
+        $toName = 'Andrew';
+        $fromName = 'Inventory';
+
         $current_date = date('Y-m-d'); // current date in YYY-MM-DD format
         $current_time = date('H:i:s'); // current time in HH:MM:SS format
 
@@ -91,8 +97,7 @@ if (isset($_POST['submit'])) {
                             mysqli_stmt_execute($stmt_delete);
                         }
                     } else {
-                        // something went wrong here -> should not get here
-                        echo ('something went wrong here... line: '.__LINE__);
+                        // no need to do anything, there is still quantity.
                     }
                 }
             }
@@ -120,11 +125,11 @@ if (isset($_POST['submit'])) {
                 // No Rows found
                 if ($current_serial_number !== '' && !empty($current_serial_number)) {
                     echo("<br>issue at line: ".__LINE__."<br>");
-                    // header("Location: ".$redirect_url."&error=noMatchInItemTableWithSerial");
+                    header("Location: ".$redirect_url."&error=noMatchInItemTableWithSerial");
                     exit();
                 } else {
                     echo("<br>issue at line: ".__LINE__."<br>");
-                    // header("Location: ".$redirect_url."&error=noMatchInItemTable");
+                    header("Location: ".$redirect_url."&error=noMatchInItemTable");
                     exit();
                 }
             } else {
@@ -192,6 +197,11 @@ if (isset($_POST['submit'])) {
                                 // check and delete old row if the quantity is now 0
                                 checkDeleteCurrentRow($current_item_id);
 
+
+                                                // send email - testing 
+                                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail("<p>Item ID: $stock_id stock moved - $move_quantity moved from </p>"));
+
+
                                 header("Location: $redirect_url&success=stockMoved&edited=$new_item_id"); // Final redirect - for success and stock is moved.
                                 exit();
                             }
@@ -257,6 +267,11 @@ if (isset($_POST['submit'])) {
                                 updateTransactions($stock_id, $current_item_id, 'move', $neg_move_quantity, $current_shelf_id, $current_serial_number, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
                                 // Transaction update - new row
                                 updateTransactions($stock_id, $new_item_id, 'move', $move_quantity, $new_shelf_id, $new_serial_number, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
+
+
+                                                // send email - testing 
+                                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail("<p>Item ID: $stock_id stock moved - quantity: $move_quantity.</p>"));
+
 
                                 header("Location: $redirect_url&success=stockMoved&edited=$new_item_id"); // Final redirect - for success and stock is moved.
                                 exit();

@@ -8,7 +8,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title>Inventory - Stock</title>
+    <title><?php echo ucwords($current_system_name);?> - Stock</title>
 </head>
 <body>
     <a href="links.php" class="skip-nav-link-inv">show links</a>
@@ -202,6 +202,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     $stock_id = $row['stock_id'];
                     $stock_name = $row['stock_name'];
                     $stock_sku = $row['stock_sku'];
+                    $stock_min_stock = $row['stock_min_stock'];
                     $stock_quantity_total = $row['item_quantity'];
                     $stock_shelf_id = $row['shelf_id'];
                     $stock_shelf_name = $row['shelf_name'];
@@ -285,38 +286,15 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 echo('</tbody>
                                 </table>
                             ');
-                            // echo('
-                            //     <p id="locations">');
-                            //     $locationsArray = [];
-                            //     for ($l=0; $l < count($stock_inv_data); $l++) {
-                            //         // if ($l == 0 && $l < count($stock_inv_data)-1) { $divider = ', '; } else { $divider = ''; }
-                            //         if (!in_array($stock_inv_data[$l]['area_name'], array_keys($locationsArray))) {
-                            //             if ($stock_inv_data[$l]['quantity'] !== 0 || $stock_inv_data[$l]['quantity'] !== '0') {
-                            //                 $locationsArray[$stock_inv_data[$l]['area_name']]['quantity'] = $stock_inv_data[$l]['quantity'];
-                            //             }
-                            //         } else {
-                            //             if ((int)$locationsArray[$stock_inv_data[$l]['area_name']]['quantity']+(int)$stock_inv_data[$l]['quantity'] !== 0 || (int)$locationsArray[$stock_inv_data[$l]['area_name']]['quantity']+(int)$stock_inv_data[$l]['quantity'] !== '0') {
-                            //                 $locationsArray[$stock_inv_data[$l]['area_name']]['quantity'] = (int)$locationsArray[$stock_inv_data[$l]['area_name']]['quantity']+(int)$stock_inv_data[$l]['quantity'];
-                            //             }
-                            //         }
-                            //         // echo($stock_inv_data[$l]['area_name'].' <a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a>'.$divider);
-                            //     }
-                            //     $locKeys = array_keys($locationsArray);
-                            //     for ($l=0; $l < count($locKeys); $l++) {
-                            //         if (!isset($locKeys[$l]) || $locKeys[$l] == null || $locKeys[$l] == '') {
-                            //              echo('No Stock');
-                            //         } else { 
-                            //             if ($l == 0 || $l < count($locKeys)-1) { $divider = ', '; } else { $divider = ''; }
-                            //             if ($locationsArray[$locKeys[$l]]['quantity'] !== '0') {
-                            //                 echo($locKeys[$l].' <a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$locationsArray[$locKeys[$l]]['quantity'] .'</or></a>'.$divider);
-                            //             }
-                            //         }
-                            //     }
+
                             echo('</p>');
 
+                            // echo('
+                            // <p id="sku-head"><strong>SKU</strong></p>
+                            // <p id="sku">'.$stock_sku.'</p>');
                             echo('
-                            <p id="sku-head"><strong>SKU</strong></p>
-                            <p id="sku">'.$stock_sku.'</p>');
+                                <p id="min-stock"><strong>Minimum Stock Count:</strong> <or class="gold">'.$stock_min_stock.'</or></p>
+                            ');
 
                             echo('
                             <p id="labels-head"><strong>Labels</strong></p>
@@ -329,30 +307,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 echo('None');
                             }
                             
-                            // echo('<p id="shelf-head"><strong>Shelf</strong></p>
-                            // echo('
-                            // <p id="shelf">');
-                            //     $shelf_data = [];
-                            //     for ($l=0; $l < count($stock_inv_data); $l++) {
-                            //         if ($stock_inv_data[$l]['quantity'] !== 0 && $stock_inv_data[$l]['quantity'] !== '0') {
-                            //             $shelf_data[] = array('area_name' => $stock_inv_data[$l]['area_name'], 'shelf_name' => $stock_inv_data[$l]['shelf_name'], 'quantity' => $stock_inv_data[$l]['quantity']);
-                            //         }
-                            //     }
-                            //     if (empty($shelf_data)) {
-                            //         echo('No Stock');
-                            //     } else {
-                            //         echo('<table><tbody>');
-                            //         for ($l=0; $l < count($shelf_data); $l++) {
-                            //             if (!isset($shelf_data[$l]['area_name']) || $shelf_data[$l]['area_name'] == null || $shelf_data[$l]['area_name'] == '') {
-                            //                 echo('No Stock');
-                            //             } else {
-                            //                 // if ($l == 0 || $l < count($shelf_data)-1) { $divider = '<br>'; } else { $divider = ''; }
-                            //                 echo('<tr><td>'.$shelf_data[$l]['area_name'].':</td><td style="padding-left:5px"><button class="btn btn-dark btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $shelf_data[$l]['shelf_name']).'\'">'.$shelf_data[$l]['shelf_name'].'</button></td></tr>');
-                            //             }
-                            //         } 
-                            //         echo('<tbody></table>'); 
-                            //     }                        
-                            // echo('</p>');
                             echo('
                             <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
                             if ( is_array($stock_inv_data[0]['manufacturer'])) {

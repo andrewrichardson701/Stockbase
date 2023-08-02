@@ -60,7 +60,8 @@ function image_upload($field, $stock_id, $reditect_irl, $redirect_queries) {
 
 if (isset($_POST['submit'])) {
     session_start();
-    
+    include 'smtp.inc.php';
+
     if ($_POST['submit'] == 'Add Stock') {
 
         // print_r('<pre>');
@@ -140,8 +141,8 @@ if (isset($_POST['submit'])) {
                 }
             }
 
-            $regex = '/^CDC-\d{5}$/';
-            $CDCskus = preg_grep($regex, $skus);
+            $regex = '/^###\d{5}$/';
+            $PRE_skus = preg_grep($regex, $skus);
             if ($sku !== '') {
                 // SKU is not blank
                 if (in_array($sku, $skus)) {
@@ -150,12 +151,12 @@ if (isset($_POST['submit'])) {
                     exit();
                 }
             } else {
-                usort($CDCskus, function($a, $b) { // sort the array 
+                usort($PRE_skus, function($a, $b) { // sort the array 
                     return strnatcmp($a, $b);
                 });
-                $new_CDCsku_number = ((int)substr(end($CDCskus), 4) +1);
-                $newCDCsku = 'CDC-' . str_pad($new_CDCsku_number, 5, '0', STR_PAD_LEFT);
-                $sku = $newCDCsku;
+                $new_PRE_sku_number = ((int)substr(end($PRE_skus), 3) +1);
+                $new_PRE_skus = '###' . str_pad($new_PRE_sku_number, 5, '0', STR_PAD_LEFT);
+                $sku = $new_PRE_skus;
             }
             
             // echo("To be added:<br>name = $name<br>description = $description<br>sku = $sku<br>min_stock = $min_stock");
@@ -249,6 +250,9 @@ if (isset($_POST['submit'])) {
                     } else {
                         mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $id, $item_id, $type, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
                         mysqli_stmt_execute($stmt_trans);
+                        $email_subject = ucwords($current_system_name)." - Stock inventory added";
+                        $email_body = "<p>Stock inventory added, with ID: <strong>$id</strong>!</p>";
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                         header("Location: ../stock.php?stock_id=$id&item_id=$item_id&success=stockAdded");
                         exit();
                     } 
@@ -281,6 +285,9 @@ if (isset($_POST['submit'])) {
                     } else {
                         mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $id, $item_id, $type, $shelf, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
                         mysqli_stmt_execute($stmt_trans);
+                        $email_subject = ucwords($current_system_name)." - Stock inventory added";
+                        $email_body = "<p>Stock inventory added, with ID: <strong>$id</strong>!</p>";
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                         header("Location: ../stock.php?stock_id=$id&item_id=$item_id&success=stockQuantityAdded");
                         exit();
                     }  

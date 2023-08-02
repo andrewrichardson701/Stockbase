@@ -58,8 +58,11 @@ function image_upload($field, $stock_id, $redirect_url) {
 // Main Info Form - id, name, description sku etc.
 if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     session_start();
-    print_r($_POST);
+    include 'smtp.inc.php';
+
+    // print_r($_POST);
     // exit();
+
     if (isset($_POST['id']) && isset($_POST['name']) && isset($_POST['sku'])) {
         $stock_id = $_POST['id'];
         $stock_name = $_POST['name'];
@@ -71,6 +74,27 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
         $stock_min_stock = isset($_POST['min_stock'])? $_POST['min_stock'] : 0;
         
         $stock_labels_selected = explode(', ', $stock_labels_selected);
+
+        $labels_temp_array = [];
+        $labels_selected_temp_array = [];
+
+        if (is_array($stock_labels_selected)) {
+            foreach ($stock_labels_selected as $l) {
+                array_push($labels_temp_array, $l);
+            }
+        } else {
+            array_push($labels_temp_array, $stock_labels_selected);
+        }
+
+        if (is_array($stock_labels)) {
+            foreach ($stock_labels as $ll) {
+                array_push($labels_temp_array, $ll);
+            }
+        } else {
+            array_push($labels_temp_array, $stock_labels);
+        }
+
+        $stock_labels_selected = array_unique(array_merge($labels_selected_temp_array, $labels_temp_array), SORT_REGULAR);
 
         // echo ("<br>id: $stock_id<br>name: $stock_name<br>sku: $stock_sku<br>description: $stock_description<br>min stock: $stock_min_stock<br>");
         
@@ -126,19 +150,26 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
                         }
                     }
 
-                    cleanupLabels($stock_id);
+                   
 
-                    if ($stock_labels_selected != '') {
-                        if (is_array($stock_labels_selected)) {
+                    if ($stock_labels_selected != '') { 
+                        cleanupLabels($stock_id);
+                        if (is_array($stock_labels_selected) && !empty($stock_labels_selected)) {
                             foreach ($stock_labels_selected as $label) {
-                                addLabel($stock_id, $label);
+                                if ($label != '' && $label != null) {
+                                    addLabel($stock_id, $label);
+                                }
                             }
                         } else {
-                            addLabel($stock_id, $stock_labels_selected);
+                            if ($stock_labels_selected != '' && $stock_labels_selected != null) {
+                                addLabel($stock_id, $stock_labels_selected);
+                            }
                         }
                     }
                     
-                    
+                    $email_subject = ucwords($current_system_name)." - Stock information edited";
+                    $email_body = "<p>Stock with ID: <strong>$stock_id</strong> edited and successfully saved!</p>";
+                        send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                     header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
                     exit();
                 }
@@ -149,8 +180,11 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     
     
 } elseif (isset($_POST['submit']) && ($_POST['submit'] == 'image-delete')) {
-    echo('Delete<br>');
-    print_r($_POST);
+    session_start();
+    include 'smtp.inc.php'; 
+    
+    // echo('Delete<br>');
+    // print_r($_POST);
 
     $redi_url = 'https://inventory.arpco.xyz/stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
 
@@ -175,6 +209,9 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
                     exit();
                 } else {
                     // Rows Deleted.
+                    $email_subject = ucwords($current_system_name)." - Image unlinked from stock";
+                    $email_body = "<p>Image with ID: <strong>$img_id</strong> unlinked from stock item with ID: <strong>$stock_id</strong>.</p>";
+                        send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                     header("Location: ".$redi_url."&success=ImgRemoved&count=".$rows_delete_stock_img);
                     exit();
                 }
@@ -191,10 +228,12 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
         exit();
     }
 } elseif (isset($_POST['submit']) && ($_POST['submit'] == 'Add Image')) {
-    echo('Add<br>');
-    print_r($_POST);
-
     session_start();
+    include 'smtp.inc.php'; 
+    
+    // echo('Add<br>');
+    // print_r($_POST);
+
     $redi_url = 'https://inventory.arpco.xyz/stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
 
     if (isset($_POST['img-file-name'])) {
@@ -234,6 +273,9 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
                             exit();
                         } else if ($modified_rows == 1) {
                             // correct number of rows change - success
+                            $email_subject = ucwords($current_system_name)." - Stock image added";
+                            $email_body = "<p>Image successfully added to stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
+                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                             header("Location: ".$redi_url."&success=stock_imgAdded");
                             exit();
                         } else {
@@ -260,16 +302,20 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     }
 
 } elseif (isset($_POST['submit']) && ($_POST['submit'] == 'Upload')) {
-    echo('Upload<br>');
-    print_r($_POST);
-    print_r($_FILES);
-
     session_start();
+    include 'smtp.inc.php'; 
+
+    // echo('Upload<br>');
+    // print_r($_POST);
+    // print_r($_FILES);
 
     $redi_url = 'https://inventory.arpco.xyz/stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
     if (isset($_POST['stock_id'])) {
         if (isset($_FILES['image'])) {
             image_upload('image', $_POST['stock_id'], $redi_url);
+            $email_subject = ucwords($current_system_name)." - Stock image uploaded";
+            $email_body = "<p>Image successfully uploaded for stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
+                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
             header("Location: ".$redi_url."&success=fileUploaded");
             exit();
         } else {

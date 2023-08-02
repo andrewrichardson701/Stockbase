@@ -23,6 +23,7 @@ if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username']))
 $loggedin_username = $_SESSION['username'];
 $loggedin_firstname = $_SESSION['first_name'];
 $loggedin_lastname = $_SESSION['last_name'];
+$loggedin_fullname = ucwords($loggedin_firstname).' '.ucwords($loggedin_lastname);
 $loggedin_email = $_SESSION['email'];
 $loggedin_role = $_SESSION['role'];
 $loggedin_auth = $_SESSION['auth'];

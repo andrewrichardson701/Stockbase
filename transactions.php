@@ -8,7 +8,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title>Inventory - Stock</title>
+    <title><?php echo ucwords($current_system_name);?> - Transactions</title>
 </head>
 <body>
     <a href="links.php" class="skip-nav-link-inv">show links</a>

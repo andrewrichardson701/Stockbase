@@ -119,7 +119,7 @@
             echo('
             <div id="profile-div" style="margin-left:25px">
                 <button id="back-button" class="btn btn-secondary cw nav-v-c" style="padding: 3px 6px 3px 6px" onclick="navPage(\''.$_SERVER['HTTP_REFERER'].'\');">
-                    <i class="fa fa-arrow-left fa-2xs"></i> Back 
+                    <i class="fa fa-arrow-left"></i> Back 
                 </button>
             </div> 
             ');
@@ -133,7 +133,7 @@
             ');
         }
         if (isset($loggedin_role)) {
-            if ($loggedin_role == "admin") {
+            if ($loggedin_role == "Admin") {
                 echo('
                 <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
                     <button id="admin" class="nav-v-c nav-trans cw" onclick="window.location=\'./admin.php\';">Admin</button>

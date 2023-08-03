@@ -56,14 +56,19 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     //             INNER JOIN site ON area.site_id=site.id";
     $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                     GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names,
-                    site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                    (SELECT SUM(quantity) 
+                    site.id AS site_id, site.name AS site_name, site.description AS site_description,";
+    if ($area != 0) {
+        $sql_inv .=" area.id as area_id_global,";
+    }
+    $sql_inv .=   " (SELECT SUM(quantity) 
                         FROM item 
                         INNER JOIN shelf ON item.shelf_id=shelf.id
                         INNER JOIN area ON shelf.area_id=area.id
-                        WHERE item.stock_id=stock.id AND area.site_id=site.id
-                    ) AS item_quantity,
-
+                        WHERE item.stock_id=stock.id AND area.site_id=site.id";
+    if ($area != 0) {
+        $sql_inv .=       " AND shelf.area_id=area_id_global";
+    }
+    $sql_inv .=   " ) AS item_quantity,
                     label_names.label_names AS label_names,
                     label_ids.label_ids AS label_ids,
                     stock_img_image.stock_img_image
@@ -199,8 +204,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     // $sql_inv .= " ORDER BY stock.name;";
     $sql_inv .= " GROUP BY 
                     stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                    site_id, site_name, site_description, stock_img_image.stock_img_image
-                ORDER BY stock.name;";
+                    site_id, site_name, site_description, stock_img_image.stock_img_image";
+    if ($area != 0) {
+        $sql_inv .= ", area.id";
+    }
+    $sql_inv .= " ORDER BY stock.name;";
     // echo '<pre>'.$sql_inv.'</pre>';
     $stmt_inv = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {

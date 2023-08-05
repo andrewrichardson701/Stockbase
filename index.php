@@ -11,7 +11,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 </head>
 <body>
     <?php // dependency PHP
-    $show_inventory = 1; // for nav.php to show the site and area on the banner
+    // $show_inventory = 1; // for nav.php to show the site and area on the banner - no longer used.
     ?>
 
     <a href="links.php" class="skip-nav-link-inv">show links</a>
@@ -54,7 +54,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     //             INNER JOIN shelf ON item.shelf_id=shelf.id 
     //             INNER JOIN area ON shelf.area_id=area.id 
     //             INNER JOIN site ON area.site_id=site.id";
-    $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+    $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
+                        stock.min_stock AS stock_min_stock, stock.is_cable AS stock_is_cable,
                     GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names,
                     site.id AS site_id, site.name AS site_name, site.description AS site_description,";
     if ($area != 0) {
@@ -92,21 +93,22 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 LEFT JOIN (SELECT stock_label.stock_id, GROUP_CONCAT(DISTINCT label_id SEPARATOR ', ') AS label_ids
                         FROM stock_label
                         GROUP BY stock_label.stock_id) AS label_ids
-                    ON label_ids.stock_id = stock.id";
+                    ON label_ids.stock_id = stock.id
+                    WHERE stock.is_cable=0";
     $sql_inv_add = '';
-    if ($site !== '0') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." site.id=?"; $s++; 
+    if ($site !== '0') { $sql_inv_add  .= " AND site.id=?"; $s++; 
         if (!isset($value1)) {
             $value1 = $site;
         }
     } 
-    if ($area !== '0') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." area.id=?"; $s++; 
+    if ($area !== '0') { $sql_inv_add  .= " AND area.id=?"; $s++; 
         if (!isset($value1)) {
             $value1 = $area;
         } else {
             $value2 = $area;
         } 
     } 
-    if ($name !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." stock.name LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($name !== '') { $sql_inv_add  .= " AND stock.name LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $name;
         } elseif (!isset($value2)) {
@@ -115,7 +117,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value3 = $name;
         }
     }
-    if ($sku !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." stock.sku LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($sku !== '') { $sql_inv_add  .= " AND stock.sku LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $sku;
         } elseif (!isset($value2)) {
@@ -126,7 +128,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value4 = $sku;
         } 
     }
-    if ($location !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." area.name LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($location !== '') { $sql_inv_add  .= " AND area.name LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $location;
         } elseif (!isset($value2)) {
@@ -139,7 +141,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value5 = $location;
         } 
     }
-    if ($shelf !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." shelf.name LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($shelf !== '') { $sql_inv_add  .= " AND shelf.name LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $shelf;
         } elseif (!isset($value2)) {
@@ -154,7 +156,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value6 = $shelf;
         } 
     }
-    if ($label !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." label_names LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($label !== '') { $sql_inv_add  .= " AND label_names LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $label;
         } elseif (!isset($value2)) {
@@ -171,7 +173,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $value7 = $label;
         } 
     }
-    if ($manufacturer !== '') { $qType = ($s < 1) ? 'WHERE' : 'AND'; $sql_inv_add  .= " ".$qType." manufacturer.name LIKE CONCAT('%', ?, '%')"; $s++; 
+    if ($manufacturer !== '') { $sql_inv_add  .= " AND manufacturer.name LIKE CONCAT('%', ?, '%')"; $s++; 
         if (!isset($value1)) {
             $value1 = $manufacturer;
         } elseif (!isset($value2)) {
@@ -191,8 +193,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         } 
     }
     if ($showOOS == 0) { 
-        $qType = ($s < 1) ? 'WHERE' : 'AND'; 
-        $sql_inv_add  .= " ".$qType." 
+        $sql_inv_add  .= " AND 
             (SELECT SUM(quantity) 
                 FROM item 
                 INNER JOIN shelf ON item.shelf_id=shelf.id
@@ -203,13 +204,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     $sql_inv .= $sql_inv_add;
     // $sql_inv .= " ORDER BY stock.name;";
     $sql_inv .= " GROUP BY 
-                    stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                    stock.id, stock_name, stock_description, stock_sku, stock_min_stock, stock_is_cable, 
                     site_id, site_name, site_description, stock_img_image.stock_img_image";
     if ($area != 0) {
         $sql_inv .= ", area.id";
     }
     $sql_inv .= " ORDER BY stock.name;";
-    // echo '<pre>'.$sql_inv.'</pre>';
+    echo '<pre hidden>'.$sql_inv.'</pre>';
     $stmt_inv = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {
         echo("ERROR getting entries");

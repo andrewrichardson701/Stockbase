@@ -3,10 +3,6 @@
 include 'session.php'; // Session setup and redirect if the session is not active 
 include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 
-if ($_SESSION['role'] !== "Admin") {
-    header("Location: ./login.php");
-    exit();
-}
 ?>
 
 <html lang="en">
@@ -23,7 +19,15 @@ if ($_SESSION['role'] !== "Admin") {
         $complementHex = sprintf("%02x%02x%02x", $complement[0], $complement[1], $complement[2]);
         return '#' . $complementHex;
     }
+    
+    // Redirect if the user is not in the admin list in the get-config.inc.php page. - this needs to be after the "include head.php" 
+    if (!in_array($_SESSION['role'], $config_admin_roles_array)) {
+        header("Location: ./login.php");
+        exit();
+    }
     ?>
+
+
     
     <a href="links.php" class="skip-nav-link-inv">show links</a>
 
@@ -263,11 +267,16 @@ if ($_SESSION['role'] !== "Admin") {
                                         <td id="user_'.$user_id.'_last_name" style="vertical-align: middle;">'.$user_last_name.'</td>
                                         <td id="user_'.$user_id.'_email" style="vertical-align: middle;">'.$user_email.'</td>
                                         <td id="user_'.$user_id.'_role" style="vertical-align: middle;">
-                                            <select class="form-control" id="user_'.$user_id.'_role_select" style="padding-top:0px; padding-bottom:0px" onchange="userRoleChange(\''.$user_id.'\')">');
+                                            <select class="form-control" id="user_'.$user_id.'_role_select" style="padding-top:0px; padding-bottom:0px" onchange="userRoleChange(\''.$user_id.'\') "'); if ($user_id == 0 || $user_id == '0') { echo("disabled"); } echo('>');
                                             foreach ($user_roles as $role) {
                                                 echo('<option value="'.$role['id'].'"');
+                                                // check if the user role matches or not, and mark it as selected
                                                 if ($role['name'] == $user_role) {
-                                                    echo ('selected');
+                                                    echo (' selected');
+                                                }
+                                                // check if the user role is the root user role (0), if it is, disable it so that it cannot be selected.
+                                                if ($role['id'] == 0 || $role['id'] == '0') {
+                                                    echo(' disabled');
                                                 }
                                                 echo('>'.ucwords($role['name']).'</option>');
                                             }
@@ -276,11 +285,56 @@ if ($_SESSION['role'] !== "Admin") {
                                         </td>
                                         <td id="user_'.$user_id.'_auth" style="vertical-align: middle;">'.$user_auth.'</td>
                                         <td style="vertical-align: middle;"><input type="checkbox" id="user_'.$user_id.'_enabled_checkbox"');
-                                        if ($user_enabled == 1) {
-                                            echo('checked');
-                                        }
+                                            if ($user_enabled == 1) {
+                                                echo('checked');
+                                            }
                                         echo(' onchange="usersEnabledChange(\''.$user_id.'\')"/></td>
                                     ');
+                                }
+                            }
+                        }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-roles-settings" onclick="toggleSection(this, 'users-roles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Users Settings -->
+        <div style="padding-top: 20px" id="users-roles" hidden>
+            <table id="usersTable" class="table table-dark" style="max-width:max-content">
+                <thead>
+                    <tr id="users_table_info_tr" hidden>
+                        <td colspan=8 id="users_table_info_td"></td>
+                    </tr>
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Administrator</th>
+                        <th>Root</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        $sql_roles = "SELECT * FROM users_roles";
+                        $stmt_roles = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_roles, $sql_roles)) {
+                            echo('<td colspan=7><or class="red">SQL Issue with `users` table.</or></td>');
+                        } else {
+                            mysqli_stmt_execute($stmt_roles);
+                            $result_roles = mysqli_stmt_get_result($stmt_roles);
+                            $rowCount_roles = $result_roles->num_rows;
+                            if ($rowCount_roles < 1) {
+                                echo ('<td colspan=7><or class="red">No Roles in table: `users`.</or></td>');
+                            } else {
+                                while ($row_roles = $result_roles->fetch_assoc()) {
+                                    echo('<tr class="text-center">
+                                    <td>'.$row_roles['id'].'</td>
+                                    <td>'.$row_roles['name'].'</td>
+                                    <td>'.$row_roles['description'].'</td>
+                                    <td style="vertical-align: middle;">'); if ($row_roles['is_admin'] == 1) { echo('<i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i>'); } else { echo('<i class="fa-solid fa-xmark" style="color: #ff0000;"></i>'); } echo ('</td>
+                                    <td style="vertical-align: middle;">'); if ($row_roles['is_root'] == 1) { echo('<i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i>'); } else { echo('<i class="fa-solid fa-xmark" style="color: #ff0000;"></i>'); } echo ('</td>
+                                    </tr>');
                                 }
                             }
                         }

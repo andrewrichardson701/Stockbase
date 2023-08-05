@@ -279,7 +279,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             echo('<img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
                                         }
                                         echo('</td>
-                                        <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>
+                                        <td class="align-middle" id="'.$stock_id.'-name">'.$stock_name.'</td>
                                         <td class="align-middle" id="'.$stock_id.'-type-id" hidden>'.$cable_types_id.'</td>
                                         <td class="align-middle" id="'.$stock_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
                                         <td class="align-middle" id="'.$stock_id.'-quantity">'); 

@@ -22,6 +22,13 @@
                 <button id="transfer-stock" class="btn btn-warning nav-v-c" style="width:110px;opacity:80%;color:black" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'move\'))">
                     <i class="fa fa-arrows-h"></i> Move 
                 </button>
+            </div>
+
+            <!-- remove the below -->
+            <div id="cable-stock-div" class="nav-div" style="margin-left:50px;margin-right:0px">
+                <button id="cable-stock" class="btn btn-dark nav-v-c" style="opacity:80%;color:white" onclick="navPage(\'cablestock.php\')">
+                    Cable Stock (temporary)
+                </button>
             </div>');
         }
         
@@ -133,7 +140,7 @@
             ');
         }
         if (isset($loggedin_role)) {
-            if ($loggedin_role == "Admin") {
+            if (in_array($loggedin_role, $config_admin_roles_array)) {
                 echo('
                 <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
                     <button id="admin" class="nav-v-c nav-trans cw" onclick="window.location=\'./admin.php\';">Admin</button>

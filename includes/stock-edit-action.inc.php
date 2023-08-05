@@ -71,7 +71,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
         $stock_labels = isset($_POST['labels'])? $_POST['labels'] : '';
         $stock_labels_init = isset($_POST['labels-init'])? $_POST['labels-init'] : '';
         $stock_labels_selected = isset($_POST['labels-selected'])? $_POST['labels-selected'] : '';
-        $stock_min_stock = isset($_POST['min_stock'])? $_POST['min_stock'] : 0;
+        $stock_min_stock = isset($_POST['min-stock'])? $_POST['min-stock'] : 0;
         
         $stock_labels_selected = explode(', ', $stock_labels_selected);
 

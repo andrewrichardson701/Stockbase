@@ -8,6 +8,8 @@ $predfined_config_favicon_image = 'default/default-favicon.png';
 $predfined_config_currency = '£';
 $predfined_sku_prefix = 'ITEM-';
 
+$config_admin_roles_array = ["Root", "Admin"];
+
 include 'dbh.inc.php';
 
 $sql_config = "SELECT * FROM config ORDER BY id LIMIT 1";

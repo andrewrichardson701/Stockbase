@@ -53,18 +53,28 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <label>Password</label>
                         <input type="password" name="password" class="form-control" placeholder="Password" required>
                     </div>
-                    <div class="nav-row">
-                        <div class="form-group">
-                            <input type="submit" name="submit" class="btn btn-primary" value="Login">
+                    
+                        <div class="nav-row">
+                            <div class="form-group">
+                                <input type="submit" name="submit" class="btn btn-primary" value="Login">
+                            </div>
+                            <?php 
+                            if ($current_ldap_enabled == 1) {
+                                echo('
+                                    <div style="margin-left:25px">
+                                        <label class="switch" style="margin-bottom: 0px">
+                                            <input type="checkbox" name="local" id="local-toggle" value="on">
+                                            <span class="sliderBlue round" id="local-span" style="transform: scale(0.6, 0.6)"></span>
+                                        </label>
+                                    </div>
+                                    <label class="nav-div" style="margin-left:0">Local Login<p></p></label>
+                                ');
+                            } else {
+                                echo('<input type="hidden" name="local" value="on" />');
+                            }
+                            ?>
                         </div>
-                        <div style="margin-left:25px">
-                            <label class="switch" style="margin-bottom: 0px">
-                                <input type="checkbox" name="local" id="local-toggle" value="on">
-                                <span class="sliderBlue round" id="local-span" style="transform: scale(0.6, 0.6)"></span>
-                            </label>
-                        </div>
-                        <label class="nav-div" style="margin-left:0">Local Login</p>
-                    </div>
+                        
                 </form>
                 <?php
                     if (isset($_GET["newpwd"])) {
@@ -88,6 +98,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     }
                 ?>
                 <!-- <p><a href="reset-password.php" id="password-reset">Forgot password?</a> -->
+                <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p>
             </div>
         </div>
 	</div>

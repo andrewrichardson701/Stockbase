@@ -520,10 +520,30 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 echo('</p>');
             }
             ?>
-            <form id="ldapForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                <table id="ldapTable">
+            <form id="ldapToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                <input type="hidden" name="ldap-toggle-submit" value="set" />
+                <table id="ldapToggleTable">
                     <tbody>
                         <tr class="nav-row" id="ldap-headings" style="margin-bottom:10px">
+                            <td style="width:150px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-username">Enable LDAP</p>
+                                </td>
+                            <td class="align-middle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                    <input type="checkbox" name="ldap-enabled" id="ldap-enabled-toggle" <?php if($current_ldap_enabled == 1) { echo("checked"); } ?> >
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+            
+            <form id="ldapForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" <?php if($current_ldap_enabled == 0) { echo("hidden"); } ?>>
+                <hr style="border-color:white; margin-left:10px">
+                <table id="ldapTable">
+                    <tbody>
+                        <tr class="nav-row" id="ldap-headings" style="margin-bottom:10px; margin-right:10px">
                             <th style="width:250px;margin-left:25px"></th>
                             <th style="width: 250px">Custom</th>
                             <th style="margin-left:25px">Default</th>
@@ -652,7 +672,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 </table>
             </form>
         </div>
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="ldap-settings" onclick="toggleSection(this, 'smtp')">SMTP Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="smtp-settings" onclick="toggleSection(this, 'smtp')">SMTP Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
 
         <!-- SMTP Settings -->
         <div style="padding-top: 20px" id="smtp" hidden>
@@ -1015,6 +1035,63 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 async: true
             });
         }
-    </script>
+        // Function to extract the anchor and split it before the first hyphen
+        function extractParamsFromAnchor(anchor) {
+            const params = anchor.split('-');
+            return {
+                param1: anchor,
+                param2: params[0],
+            };
+        }
 
+        // Check for anchors in the URL and call toggleSection function if present
+        window.onload = function () {
+            const anchor = window.location.hash.substring(1); // Remove the leading '#'
+            if (anchor) {
+                const { param1, param2 } = extractParamsFromAnchor(anchor);
+                console.log(param1);
+                console.log(param2);
+                toggleSection(document.getElementById(param1), param2);
+
+                // Scroll to the anchor ID after the toggleSection function is done
+                const anchorElement = document.getElementById(anchor);
+                if (anchorElement) {
+                    anchorElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        };
+
+        
+        // LDAP TOGGLE ENABLE STUFF
+
+        // Get the initial state of the LDAP enable toggle checkbox
+        let isCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
+
+        // Add an event listener to the checkbox
+        document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
+            // Check if the checkbox is being unchecked
+            const isUncheck = !this.checked;
+
+            // If the checkbox is being unchecked, display the confirmation popup
+            if (isUncheck) {
+                const confirmed = confirm(
+                    'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
+                );
+
+                // If the user cancels, revert the checkbox back to its previous state
+                if (!confirmed) {
+                    this.checked = true; // Revert the checkbox back to checked state
+                    return;
+                }
+            }
+
+            // Update the initial state of the checkbox for the next change event
+            isCheckboxChecked = this.checked;
+
+            // If the checkbox is not being unchecked or the user confirmed, submit the form
+            document.getElementById("ldapToggleForm").submit();
+        });
+
+    </script>
+    
 </body>

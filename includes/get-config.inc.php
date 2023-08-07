@@ -31,6 +31,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_currency            = $config['currency'];
             $config_sku_prefix          = $config['sku_prefix'];
 
+            $config_ldap_enabled        = $config['ldap_enabled'];
             $config_ldap_username       = $config['ldap_username'];
             // $config_ldap_password     = base64_decode($config['ldap_password']);
             $config_ldap_domain         = $config['ldap_domain'];
@@ -71,6 +72,7 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_currency            = $config_d['currency'];
             $config_d_sku_prefix          = $config_d['sku_prefix'];
 
+            $config_d_ldap_enabled        = $config_d['ldap_enabled'];
             $config_d_ldap_username       = $config_d['ldap_username'];
             $config_d_ldap_password       = $config_d['ldap_password'];
             $config_d_ldap_domain         = $config_d['ldap_domain'];
@@ -106,6 +108,7 @@ $default_favicon_image       = ($config_d_favicon_image       !== '' ? $config_d
 $default_currency            = ($config_d_currency            !== '' ? $config_d_currency                    : 'MISSING - PLEASE FIX');
 $default_sku_prefix          = ($config_d_sku_prefix          !== '' ? $config_d_sku_prefix                  : 'MISSING - PLEASE FIX');
 
+$current_ldap_enabled        = ($config_ldap_enabled          !== '' ? $config_ldap_enabled                  : $config_d_ldap_enabled);
 $current_ldap_username       = ($config_ldap_username         !== '' ? $config_ldap_username                 : $config_d_ldap_username);
 // $current_ldap_password   = ($config_ldap_password         !== '' ? $config_ldap_password                 : $config_d_ldap_password);
 $current_ldap_domain         = ($config_ldap_domain           !== '' ? $config_ldap_domain                   : $config_d_ldap_domain);
@@ -115,7 +118,8 @@ $current_ldap_port           = ($config_ldap_port             !== '' ? $config_l
 $current_ldap_basedn         = ($config_ldap_basedn           !== '' ? $config_ldap_basedn                   : $config_d_ldap_basedn);    
 $current_ldap_usergroup      = ($config_ldap_usergroup        !== '' ? $config_ldap_usergroup                : $config_d_ldap_usergroup);    
 $current_ldap_userfilter     = ($config_ldap_userfilter       !== '' ? $config_ldap_userfilter               : $config_d_ldap_userfilter);    
-  
+
+$default_ldap_enabled        = ($config_d_ldap_enabled        !== '' ? $config_d_ldap_enabled                : 'MISSING - PLEASE FIX');  
 $default_ldap_username       = ($config_d_ldap_username       !== '' ? $config_d_ldap_username               : 'MISSING - PLEASE FIX');
 $default_ldap_password       = ($config_d_ldap_password       !== '' ? '<or class="green">Password Set</or>' : 'MISSING - PLEASE FIX');
 $default_ldap_domain         = ($config_d_ldap_domain         !== '' ? $config_d_ldap_domain                 : 'MISSING - PLEASE FIX');

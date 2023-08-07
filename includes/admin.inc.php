@@ -4,7 +4,7 @@
 // print_r($_POST);
 //         exit();
 
-if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit'])) {
+if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) &&!isset($_POST['ldap-toggle-submit'])) {
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
@@ -251,6 +251,29 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         }
 
+    } elseif (isset($_POST['ldap-toggle-submit'])) {
+        print_r($_POST);
+        $ldap_enabled_post = isset($_POST['ldap-enabled']) ? $_POST['ldap-enabled'] : "off";
+
+        if ($ldap_enabled_post == "on") {
+            $ldap_enabled = 1;
+        } else {
+            $ldap_enabled = 0;
+        }
+        
+        include 'dbh.inc.php';
+        $sql_upload = "UPDATE config SET ldap_enabled=? WHERE id=1";
+        $stmt_upload = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+            $errors[] = "ldapUploadSQLerror";
+            header("Location: ../admin.php?error=ldapEnabled#ldap-settings");
+            exit();
+        } else {
+            mysqli_stmt_bind_param($stmt_upload, "s", $ldap_enabled);
+            mysqli_stmt_execute($stmt_upload);
+            header("Location: ../admin.php?ldapEnabled=success#ldap-settings");
+            exit();
+        }
     } elseif (isset($_POST['ldap-submit'])) { // LDAP saving
 
         if (isset($_POST['auth-username']))         { $config_ldap_username         = $_POST['auth-username'];         } else { $config_ldap_username         = ''; }

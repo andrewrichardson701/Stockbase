@@ -41,61 +41,6 @@ CREATE TABLE `area` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `cable_item`
---
-
-DROP TABLE IF EXISTS `cable_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cable_item` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `stock_id` int NOT NULL,
-  `quantity` int NOT NULL,
-  `cost` decimal(10,0) DEFAULT NULL,
-  `site_id` int NOT NULL DEFAULT '0',
-  `type_id` int NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `cable_transaction`
---
-
-DROP TABLE IF EXISTS `cable_transaction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cable_transaction` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `stock_id` bigint NOT NULL,
-  `item_id` bigint NOT NULL,
-  `type` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `quantity` int NOT NULL,
-  `reason` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `date` date NOT NULL,
-  `time` time NOT NULL,
-  `username` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `cable_types`
---
-
-DROP TABLE IF EXISTS `cable_types`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cable_types` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb3_unicode_ci,
-  `parent` text COLLATE utf8mb3_unicode_ci,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `config`
 --
 
@@ -261,9 +206,8 @@ CREATE TABLE `stock` (
   `description` longtext COLLATE utf8mb3_unicode_ci,
   `sku` text COLLATE utf8mb3_unicode_ci NOT NULL,
   `min_stock` int DEFAULT '0',
-  `is_cable` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -278,7 +222,7 @@ CREATE TABLE `stock_img` (
   `stock_id` text COLLATE utf8mb3_unicode_ci NOT NULL,
   `image` text COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -293,7 +237,7 @@ CREATE TABLE `stock_label` (
   `stock_id` bigint NOT NULL,
   `label_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -339,7 +283,7 @@ CREATE TABLE `users` (
   `role_id` int DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -352,9 +296,6 @@ DROP TABLE IF EXISTS `users_roles`;
 CREATE TABLE `users_roles` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb3_unicode_ci,
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `is_root` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -368,4 +309,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-08  0:52:12
+-- Dump completed on 2023-08-02  2:02:03

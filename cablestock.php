@@ -7,7 +7,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title><?php echo ucwords($current_system_name);?> - Cable Stock</title>
+    <title><?php echo ucwords($current_system_name);?> - Fixed Cable Stock</title>
 </head>
 <body>
 
@@ -17,6 +17,69 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
 
+    <?php
+    // functions
+    function containsColorName($inputString) {
+        // List of color names (you can add more colors as needed)
+        $colorNames = array(
+            'red', 'green', 'blue', 'yellow', 'orange', 'purple', 'pink',
+            'brown', 'white', 'black', 'gray', 'cyan', 'magenta', 'gold', 'aqua'
+        );
+    
+        // Convert the input string to lowercase
+        $lowercaseInput = strtolower($inputString);
+    
+        // Loop through the color names and check if any of them are present in the input string
+        foreach ($colorNames as $color) {
+            if (strpos($lowercaseInput, $color) !== false) {
+                return $color; // Found a color name in the input string
+            }
+        }
+    
+        return false; // No color name found in the input string
+    }
+
+    function getComplement($hex) { // get inverted colour
+        $hex = str_replace('#', '', $hex);
+        $rgb = array_map('hexdec', str_split($hex, 2));
+        $complement = array(255 - $rgb[0], 255 - $rgb[1], 255 - $rgb[2]);
+        $complementHex = sprintf("%02x%02x%02x", $complement[0], $complement[1], $complement[2]);
+        return '#' . $complementHex;
+    }
+
+    function getColorHexFromName($colorName) {
+        // Convert the color name to lowercase for case-insensitive matching
+        $colorNameLower = strtolower($colorName);
+    
+        // Associative array with HTML color names and their corresponding HEX values
+        $htmlColors = array(
+            'aqua' => '#00ffff',
+            'black' => '#000000',
+            'blue' => '#0000ff',
+            'fuchsia' => '#ff00ff',
+            'gray' => '#808080',
+            'green' => '#008000',
+            'lime' => '#00ff00',
+            'maroon' => '#800000',
+            'navy' => '#000080',
+            'olive' => '#808000',
+            'purple' => '#800080',
+            'red' => '#ff0000',
+            'silver' => '#c0c0c0',
+            'teal' => '#008080',
+            'white' => '#ffffff',
+            'yellow' => '#ffff00'
+            // Add more color mappings as needed
+        );
+    
+        // Check if the color name exists in the color map
+        if (isset($htmlColors[$colorNameLower])) {
+            return $htmlColors[$colorNameLower];
+        } else {
+            return false; // Color name not found in the color map
+        }
+    }
+    ?>
     
     <!-- Get Inventory -->
     <?php
@@ -138,9 +201,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         echo('
             <div class="container" style="padding-bottom:25px">
-                <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name).' - Cables');
+                <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name).' - Fixed Cables');
             echo('</h2>
-            <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
+            <p>Stock for any fixed cables (cables which always need to be in stock and have known locations).</p>
             </div>
 
             <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
@@ -238,13 +301,15 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <table class="table table-dark centertable" id="inventoryTable">
                                 <thead style="text-align: center; white-space: nowrap;">
                                     <tr>
-                                        <th id="id" hidden>id</th>
-                                        <th></th>
-                                        <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
+                                        <th id="stock-id" hidden>Stock ID</th>
+                                        <th id="item-id" hidden>Item ID</th>
+                                        <th id="image"></th>
+                                        <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(3, this)">Name</th>
                                         <th id="type-id" hidden>Type ID</th>
-                                        <th class="clickable sorting" id="type" onclick="sortTable(3, this)">Type</th>
-                                        <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>
-                                        <th class="clickable sorting" id="min-stock" style="color:#8f8f8f">Min. stock</th>
+                                        <th class="clickable sorting" id="type" onclick="sortTable(5, this)">Type</th>
+                                        <th class="clickable sorting" id="site-name" onclick="sortTable(6, this)">Site</th>
+                                        <th class="clickable sorting" id="quantity" onclick="sortTable(7, this)">Quantity</th>
+                                        <th id="min-stock" style="color:#8f8f8f">Min. stock</th>
                                         <th style="width:50px"></th>
                                         <th style="width:50px"></th>
                                         <th style="width:50px"></th>
@@ -265,36 +330,69 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 $stock_site_id = $row['site_id'];
                                 $stock_site_name = $row['site_name'];
                                 $stock_min_stock = $row['stock_min_stock'];
+                                $cable_item_id = $row['cable_item_id'];
                                 $cable_types_id = $row['cable_types_id'];
                                 $cable_types_name = $row['cable_types_name'];
-                                $cable_types_description = $row['cable_types_description'];       
+                                $cable_types_description = $row['cable_types_description']; 
+                                $cable_types_parent = $row['cable_types_parent'];         
 
                                 // Echo each row (inside of SQL results)
+                                if (isset($_GET['cableItemID']) && $_GET['cableItemID'] == $cable_item_id) { 
+                                    $last_edited = ' last-edit'; 
+                                } else {
+                                    $last_edited = '';
+                                }
+
                                 echo('
-                                    <tr class="vertical-align align-middle"id="'.$stock_id.'">
-                                        <td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>
-                                        <td class="align-middle" id="'.$stock_id.'-img-td">
-                                        ');
-                                        if (!is_null($stock_img_file_name)) {
-                                            echo('<img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
-                                        }
-                                        echo('</td>
-                                        <td class="align-middle" id="'.$stock_id.'-name">'.$stock_name.'</td>
-                                        <td class="align-middle" id="'.$stock_id.'-type-id" hidden>'.$cable_types_id.'</td>
-                                        <td class="align-middle" id="'.$stock_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
-                                        <td class="align-middle" id="'.$stock_id.'-quantity">'); 
-                                        if ($stock_quantity_total == 0) {
-                                            echo("<or class='red' title='Out of Stock'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Out of stock. Order more if necessary.'>0 <i class='fa fa-warning' /></u></or>");
-                                        } elseif ($stock_quantity_total < $stock_min_stock) {
-                                            echo("<or class='red'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Below minimum stock count. Order more!'>$stock_quantity_total</u></or>");
-                                        } else {
-                                            echo($stock_quantity_total);
-                                        }
-                                        echo('</td>');
-                                    echo('<td class="align-middle" id="'.$stock_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
-                                    <td class="align-middle" id="'.$stock_id.'-add"><button id="'.$stock_id.'-add-btn" class="btn btn-success cw nav-v-b"><i class="fa fa-plus"></i></button></td>
-                                    <td class="align-middle" id="'.$stock_id.'-remove"><button id="'.$stock_id.'-remove-btn" class="btn btn-danger cw nav-v-b"><i class="fa fa-minus"></i></button></td>
-                                    <td class="align-middle" id="'.$stock_id.'-edit"><button id="'.$stock_id.'-edit-btn" class="btn btn-info cw nav-v-b"><i class="fa fa-pencil"></i></button></td>
+                                    <tr class="vertical-align align-middle'.$last_edited.'" id="'.$cable_item_id.'">
+                                        <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock-edit.inc.php" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" name="stock-id" value="'.$stock_id.'" />
+                                            <input type="hidden" name="cable-item-id" value="'.$cable_item_id.'" />
+                                            <td class="align-middle" id="'.$cable_item_id.'-stock-id" hidden>'.$stock_id.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-item-id" hidden>'.$cable_item_id.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-img-td">
+                                            ');
+                                            if (!is_null($stock_img_file_name)) {
+                                                echo('<img id="'.$cable_item_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
+                                            }
+                                            echo('</td>');
+                                            
+                                            if (strpos($stock_name, "SM") !== false && $cable_types_parent == "Fibre") {
+                                                $nameColor = "yellow";
+                                            } elseif (strpos($stock_name, "MM") !== false && $cable_types_parent == "Fibre") {
+                                                $nameColor = "aqua";
+                                            } else {
+                                                $nameColor = containsColorName($stock_name);
+                                            }
+                                            
+                                            $name_prefix = '';
+                                            $name_suffix = '';
+                                            if ($nameColor !== false && $nameColor !== null && $nameColor !== '') {
+                                                $nameColorHex = getColorHexFromName($nameColor);
+                                                $complement_nameColor = getComplement($nameColorHex);
+                                                $name_prefix = "<or style='background-color: $nameColorHex; color: $complement_nameColor'>";
+                                                $name_suffix = "</or>";
+                                            }
+                                            echo('
+                                            <td class="align-middle" id="'.$cable_item_id.'-name">'.$name_prefix.$stock_name.$name_suffix.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
+                                            <td class="align-middle clickable link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-quantity">'); 
+                                            if ($stock_quantity_total == 0) {
+                                                echo("<or class='red' title='Out of Stock'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Out of stock. Order more if necessary.'>0 <i class='fa fa-warning' /></u></or>");
+                                            } elseif ($stock_quantity_total < $stock_min_stock) {
+                                                echo("<or class='red'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Below minimum stock count. Order more!'>$stock_quantity_total</u></or>");
+                                            } else {
+                                                echo($stock_quantity_total);
+                                            }
+                                            echo('</td>');
+                                        echo('
+                                            <td class="align-middle" id="'.$cable_item_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" class="btn btn-success cw nav-v-b" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" class="btn btn-danger cw nav-v-b" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-edit"><button id="'.$stock_id.'-edit-btn" class="btn btn-info cw nav-v-b" type="button"><i class="fa fa-pencil"></i></button></td>
+                                        </form>
                                     </tr>
                                 ');
                             }
@@ -315,5 +413,25 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     }
 
     ?>
+<script>
+    // Function to get the value of a query parameter from the URL
+    function getQueryParameter(parameterName) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(parameterName);
+    }
 
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the value of the "cableItemID" query parameter from the URL
+        const cableItemID = getQueryParameter("cableItemID");
+
+        // Check if the "cableItemID" parameter is set and not empty
+        if (cableItemID && cableItemID.trim() !== "") {
+            // Scroll to the element with the ID equal to "cableItemID"
+            const elementToScroll = document.getElementById(cableItemID);
+            if (elementToScroll) {
+                elementToScroll.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+    });
+</script>
 </body>

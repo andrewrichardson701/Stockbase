@@ -2,7 +2,7 @@
 // print_r($_POST);
 // print_R($_FILES);
 // exit();
-function image_upload($field, $stock_id, $reditect_irl, $redirect_queries) {
+function image_upload($field, $stock_id, $reditect_url, $redirect_queries) {
     $timedate = date("dmyHis");
 
     $uploadDirectory = "../assets/img/stock/";
@@ -35,7 +35,7 @@ function image_upload($field, $stock_id, $reditect_irl, $redirect_queries) {
                 $sql = "INSERT INTO stock_img (stock_id, image) VALUES (?, ?)";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    header("Location: ".$reditect_irl.$redirect_queries."&error=imageSQL");
+                    header("Location: ".$reditect_url.$redirect_queries."&error=imageSQL");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt, "ss", $stock_id, $uploadFileName);
@@ -45,13 +45,13 @@ function image_upload($field, $stock_id, $reditect_irl, $redirect_queries) {
             } else {
                 $errors[] = "uploadFailed";
                 print_r($errors);
-                // header("Location: ".$reditect_irl.$redirect_queries."&error=imageUpload");
+                // header("Location: ".$reditect_url.$redirect_queries."&error=imageUpload");
                 exit();
                 // return $errors;
             }
         } else {
             print_r($errors);
-            // header("Location: ".$reditect_irl.$redirect_queries."&error=imageUpload");
+            // header("Location: ".$reditect_url.$redirect_queries."&error=imageUpload");
             exit();
             // return $errors;
         } 

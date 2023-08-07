@@ -21,7 +21,7 @@ function updateCableTransactions($stock_id, $item_id, $type, $quantity, $reason,
     }  
 } 
 
-function getCableItemRow ($cable_item_id) {
+function getCableItemRow($cable_item_id) {
     global $redirect_url, $queryChar;
 
     include 'dbh.inc.php';
@@ -48,8 +48,10 @@ function getCableItemRow ($cable_item_id) {
     }
 }
 
-function addQuantity ($stock_id, $cable_item_id) {
+function addQuantity($stock_id, $cable_item_id) {
     global $redirect_url, $queryChar, $_SESSION;
+
+    include 'smtp.inc.php';
 
     $type = "add";
     $reason = "Added via Fixed Cable page";
@@ -76,6 +78,10 @@ function addQuantity ($stock_id, $cable_item_id) {
             
             updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username);
 
+            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Added";
+            $email_body = "<p>Fixed cable stock added, for item ID: <strong>$cable_item_id</strong>!</p>";
+            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+
             header("Location: ../".$redirect_url.$queryChar."cableItemID=$cable_item_id&success=quantityAdded");
             exit();
         }  
@@ -85,9 +91,11 @@ function addQuantity ($stock_id, $cable_item_id) {
     }
 }
 
-function removeQuantity ($stock_id, $cable_item_id) {
+function removeQuantity($stock_id, $cable_item_id) {
     global $redirect_url, $queryChar, $_SESSION;
 
+    include 'smtp.inc.php';
+    
     $type = "remove";
     $reason = "Removed via Fixed Cable page";
     $date = date('Y-m-d'); // current date in YYY-MM-DD format
@@ -99,9 +107,9 @@ function removeQuantity ($stock_id, $cable_item_id) {
     if ($quantity > 0) {
         $new_quantity = $quantity -1;
 
-        if ($cable_item_id == $row['id']) {
+        if ($cable_item_id == $row['id']) { 
             include 'dbh.inc.php';
-            
+
             $sql = "UPDATE cable_item SET quantity=?
                     WHERE id=?";
             $stmt = mysqli_stmt_init($conn);
@@ -113,6 +121,39 @@ function removeQuantity ($stock_id, $cable_item_id) {
                 mysqli_stmt_execute($stmt);
                 
                 updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username);
+
+                $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Below Minimum Stock Count. Please Order More!";
+                $email_body = "<p>Fixed cable stock below minimum stock count, for item ID: <strong>$cable_item_id</strong>. Please order more!</p>";
+                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+
+                // Check if the quantity is below minimum
+                $sql = "SELECT * FROM stock WHERE id=$stock_id";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    header("Location: ../".$redirect_url.$queryChar."stockId=$stock_id&error=stockTableSQLConnection");
+                    exit();
+                } else {
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount < 1) {
+                        header("Location: ../".$redirect_url.$queryChar."stockId=$stock_id&error=noRowsFound");
+                        exit();
+                    } elseif ($rowCount > 1) {
+                        header("Location: ../".$redirect_url.$queryChar."stockId=$stock_id&error=tooManyRowsFound");
+                        exit();
+                    } else {
+                        $row = $result->fetch_assoc();
+                        $min_quantity = $row['min_stock'];
+
+                        if ($quantity <= $min_quantity) {
+                            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Below Minimum Stock Count. Please Order More!";
+                            $email_body = "<p>Fixed cable stock below minimum stock count, for item ID: <strong>$cable_item_id</strong>. Please order more!</p>";
+                   
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                        }
+                    }
+                }
 
                 header("Location: ../".$redirect_url.$queryChar."cableItemID=$cable_item_id&success=quantityRemoved");
                 exit();

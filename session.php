@@ -20,6 +20,12 @@ if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username']))
     
 } 
 
+if (isset($_SESSION['password_expired']) && $_SESSION['password_expired'] == 1) {
+    if (!strpos($_SERVER['REQUEST_URI'], "changepassword.php")) {
+        header("Location: ./changepassword.php?expired=true");
+        exit();
+    }
+}
 $loggedin_username = $_SESSION['username'];
 $loggedin_firstname = $_SESSION['first_name'];
 $loggedin_lastname = $_SESSION['last_name'];
@@ -27,5 +33,6 @@ $loggedin_fullname = ucwords($loggedin_firstname).' '.ucwords($loggedin_lastname
 $loggedin_email = $_SESSION['email'];
 $loggedin_role = $_SESSION['role'];
 $loggedin_auth = $_SESSION['auth'];
+$loggedin_password_expired = $_SESSION['password_expired'];
 $profile_name = ucwords($loggedin_firstname);
 ?>

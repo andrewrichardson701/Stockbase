@@ -286,3 +286,14 @@ select[disabled] {
 .fafont {
     font-family: 'FontAwesome', sans-serif;
 }
+
+
+
+.stockTD {
+    padding: 5px 10px 5px 10px !important;
+    vertical-align: middle !important;
+}
+.stockTD-input {
+    padding: 0 6px 0 6px !important;
+    height: 25px;
+}

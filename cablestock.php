@@ -253,6 +253,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 <p style="margin:0;padding:0;font-size:12">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
                                 <p style="margin:0;padding:0;font-size:12">0 Stock</p>
                         </button>
+                    </div>
+                    <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                        <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'/\')">
+                            Item Stock
+                        </button>
                     </div>');
                     
                     echo('

@@ -107,14 +107,32 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"><?php echo($profile_role); ?></p>
                         </td>
                     </tr>
-                    <tr class="nav-row" style="margin-top:70px" id="resync">
-                        <td id="resync_button_td" style="width:200px">
-                            <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
-                                <input type="password" class="form-control" name="password" id="ldap_password" placeholder="Password" />
-                                <input type="submit" style="margin-top:10px" id="resync" name="submit" value="Re-sync" class="btn btn-warning" />
-                            </form>
-                        </td>
-                    </tr>
+                    <?php 
+                    if ($_SESSION['auth'] == "ldap") {
+                        echo('
+                            <tr class="nav-row" style="margin-top:30px" id="resync">
+                                <td id="resync_button_td" style="width:200px">
+                                    <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
+                                        <input type="password" class="form-control" name="password" id="ldap_password" placeholder="Password" />
+                                        <input type="submit" style="margin-top:10px" id="resync" name="submit" value="Re-sync" class="btn btn-warning" />
+                                    </form>
+                                </td>
+                            </tr>
+                        ');
+                    } else {
+                        echo('
+                        <tr class="nav-row" style="margin-top:30px">
+                            <td><a href="changepassword.php">Change password</a></td>
+                        </tr>');
+                    }
+                    if (isset($_GET['success'])) {
+                        if ($_GET['success'] == "PasswordChanged") {
+                            echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">Password Changed Successfully.</p></td></tr>');
+                        }
+                    } elseif (isset($_GET['error'])) {
+                        echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$_GET['error'].'</p></td></tr>');
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>

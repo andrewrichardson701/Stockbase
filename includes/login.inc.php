@@ -29,7 +29,8 @@ if (isset($_POST['submit'])) {
                 // Check if the user exists already in the users table with a password and if match, login
                 include 'dbh.inc.php';
 
-                $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password FROM users 
+                $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired
+                                FROM users 
                                 INNER JOIN users_roles ON users.role_id = users_roles.id
                                 WHERE username=? AND auth='local'";
                 $stmt_users = mysqli_stmt_init($conn);
@@ -64,6 +65,7 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['email'] = $row['email'];
                                 $_SESSION['role'] = $row['role'];
                                 $_SESSION['auth'] = $row['auth'];
+                                $_SESSION['password_expired'] = $row['password_expired'];
                                 if (isset($_SESSION['redirect_url'])) {
                                     if (str_contains($_SESSION['redirect_url'], "?")) {
                                         header("Location: ../".$_SESSION['redirect_url']."&login=success");
@@ -255,6 +257,7 @@ if (isset($_POST['submit'])) {
                                     $_SESSION['email'] = $ldap_info_upn;
                                     $_SESSION['role'] = $default_role;
                                     $_SESSION['auth'] = $auth;
+                                    $_SESSION['password_expired'] = 0;
                                     if (isset($_SESSION['redirect_url'])) {
                                         if (str_contains($_SESSION['redirect_url'], "?")) {
                                             header("Location: ../".$_SESSION['redirect_url']."&login=success");
@@ -281,6 +284,7 @@ if (isset($_POST['submit'])) {
                                         $_SESSION['email'] = $row['email'];
                                         $_SESSION['role'] = $row['role'];
                                         $_SESSION['auth'] = $row['auth'];
+                                        $_SESSION['password_expired'] = 0;
                                         if (isset($_SESSION['redirect_url'])) {
                                             if (str_contains($_SESSION['redirect_url'], "?")) {
                                                 header("Location: ../".$_SESSION['redirect_url']."&login=success");

@@ -4,7 +4,7 @@
 // print_r($_POST);
 //         exit();
 
-if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) &&!isset($_POST['ldap-toggle-submit'])) {
+if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit'])) {
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
@@ -251,6 +251,73 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         }
 
+    } elseif (isset($_POST['admin-pwreset-submit'])) {
+        if (isset($_POST['user-id'])) {
+            session_start();
+            include 'get-config.inc.php';
+            if (in_array($_SESSION['role'], $config_admin_roles_array)) {
+
+                $user_id = $_POST['user-id'];
+                $new_password = $_POST['password'];
+                $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
+                $admin_roles = "'".implode("', '", $config_admin_roles_array)."'";
+
+                $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, 
+                                    users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, 
+                                    users.enabled as enabled, users.password AS users_password
+                                FROM users 
+                                INNER JOIN users_roles ON users.role_id = users_roles.id
+                                WHERE users.id=? AND users_roles.name NOT IN ($admin_roles)";
+                $stmt_users = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
+                    header("Location: ../admin.php?error=usersTableIssue#users-settings");
+                    exit();
+                } else {
+                    mysqli_stmt_bind_param($stmt_users, "s", $user_id);
+                    mysqli_stmt_execute($stmt_users);
+                    $result = mysqli_stmt_get_result($stmt_users);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount < 1) {
+                        header("Location: ../admin.php?error=noUserFound#users-settings");
+                        exit();
+                    } elseif ($rowCount > 1) {
+                        header("Location: ../admin.php?error=tooManyUserFound#users-settings");
+                        exit();
+                    } else {
+                        // 1 user found - continue
+
+                        $row = $result->fetch_assoc();
+                        $current_password_hash = $row['users_password'];
+
+                        if ($current_password_hash === $new_password_hash) {
+                            header("Location: ../admin.php?error=passwordMatchesCurrent#users-settings");
+                            exit();
+                        } else {
+                            $sql_upload = "UPDATE users SET password='$new_password_hash', password_expired=1 WHERE id=?";
+                            $stmt_upload = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                                header("Location: ../admin.php?error=passwordResetSQLError#users-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_upload, "s", $user_id);
+                                mysqli_stmt_execute($stmt_upload);
+                                $_SESSION['password_expired'] = 0;
+                                header("Location: ../admin.php?success=PasswordChanged#users-settings");
+                                exit();
+                            }
+                        }
+                        
+                    }
+                }
+            } else {
+                header("Location: ../admin.php?error=wrongUserRole#users-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=userIdMissing#users-settings");
+            exit();
+        }
     } elseif (isset($_POST['ldap-toggle-submit'])) {
         print_r($_POST);
         $ldap_enabled_post = isset($_POST['ldap-enabled']) ? $_POST['ldap-enabled'] : "off";
@@ -260,7 +327,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         } else {
             $ldap_enabled = 0;
         }
-        
+
         include 'dbh.inc.php';
         $sql_upload = "UPDATE config SET ldap_enabled=? WHERE id=1";
         $stmt_upload = mysqli_stmt_init($conn);

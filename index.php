@@ -338,40 +338,26 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         echo('
                         <span id="search-input-name-span" style="margin-right: 10px;margin-left:10px">
                             <label for="search-input-name">Name</label><br>
-                            <input id="search-input-name" type="text" name="name" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
+                            <input id="search-input-name" type="text" name="name" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
                         </span>
                         <span id="search-input-sku-span" style="margin-right: 10px">
                             <label for="search-input-sku">SKU</label><br>
-                            <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:180px;display:inline-block" placeholder="Search by SKU" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
+                            <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:160px;display:inline-block" placeholder="Search by SKU" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
                         </span>
                         <span id="search-input-shelf-span" style="margin-right: 10px" hidden>
                             <label for="search-input-shelf">Shelf</label><br>
-                            <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
+                            <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
                         </span>
                         <span id="search-input-manufacturer-span" style="margin-right: 10px">
                             <label for="search-input-manufacturer">Manufacturer</label><br>
-                            <input id="search-input-manufacturer" type="text" name="manufacturer" class="form-control" style="width:180px;display:inline-block" placeholder="Manufacturer" value="'); echo(isset($_GET['manufacturer']) ? $_GET['manufacturer'] : ''); echo('" />
+                            <input id="search-input-manufacturer" type="text" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Manufacturer" value="'); echo(isset($_GET['manufacturer']) ? $_GET['manufacturer'] : ''); echo('" />
                         </span>
                         <span id="search-input-label-span" style="margin-right: 10px">
                             <label for="search-input-label">Label</label><br>
-                            <input id="search-input-label" type="text" name="label" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Label" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
+                            <input id="search-input-label" type="text" name="label" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Label" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
                         </span>
                         <input type="submit" value="submit" hidden>
                     </form>');
-
-                    // these are now moved to the nav bar
-
-                    // echo('
-                    // <div id="add-div" class="nav-div nav-right" style="margin-right:5px" hidden>
-                    //     <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'add\'))">
-                    //         <i class="fa fa-plus"></i> Add 
-                    //     </button>
-                    // </div>
-                    // <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:0" hidden>
-                    //     <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'remove\'))">
-                    //         <i class="fa fa-minus"></i> Remove 
-                    //     </button>
-                    // </div>');
 
                     echo('
                     <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
@@ -390,7 +376,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 <p style="margin:0;padding:0;font-size:12">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
                                 <p style="margin:0;padding:0;font-size:12">0 Stock</p>
                         </button>
-                    </div>');
+                    </div>
+                    <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                        <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
+                            Fixed Cables
+                        </button>
+                    </div>
+                    ');
                     
                     echo('
                 </div>

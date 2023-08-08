@@ -209,6 +209,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <th>Role</th>
                         <th>Auth</th>
                         <th>Enabled</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -288,8 +289,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             if ($user_enabled == 1) {
                                                 echo('checked');
                                             }
-                                        echo(' onchange="usersEnabledChange(\''.$user_id.'\')"/></td>
-                                    ');
+                                        echo(' onchange="usersEnabledChange(\''.$user_id.'\')"/>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning" id="user_'.$user_id.'_pwreset" onclick="resetPassword(\''.$user_id.'\')"'); if ($user_auth == "ldap" || $user_role == "Admin" || $user_role == "Root") { echo("disabled"); } echo('>Reset Password</button>
+                                        </td>
+                                        ');
                                 }
                             }
                         }
@@ -298,9 +303,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </table>
         </div>
 
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-roles-settings" onclick="toggleSection(this, 'users-roles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="usersroles-settings" onclick="toggleSection(this, 'usersroles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
-        <div style="padding-top: 20px" id="users-roles" hidden>
+        <div style="padding-top: 20px" id="usersroles" hidden>
             <table id="usersTable" class="table table-dark" style="max-width:max-content">
                 <thead>
                     <tr id="users_table_info_tr" hidden>
@@ -343,10 +348,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </table>
         </div>
 
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stock-locations-settings" onclick="toggleSection(this, 'stock-locations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
 
         <!-- Stock Location Settings -->
-        <div style="padding-top: 20px" id="stock-locations" hidden>
+        <div style="padding-top: 20px" id="stocklocations" hidden>
             <p class="red">Still needs sorting... This will show all stock sites, areas, shelves - Need to make all of the cells (except ids) input boxes and forms for submitting on saving.</p>
 
 
@@ -403,6 +408,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <th hidden>shelf_area_id</th>
                                     <th style="border-left:2px solid #95999c"></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>');
@@ -422,20 +428,25 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     
                                 }
                                 if ($l > 1) {
-                                    echo('<tr style="background-color:#343a40"><td colspan=8></td></tr>');
+                                    echo('<tr style="background-color:#343a40"><td colspan=9></td></tr>');
                                 }
                                 echo('<tr style="background-color:'.$color1.' !important; color:black">
-                                        <td style="vertical-align: middle;">'.$site['site_id'].'</td>
-                                        <td style="vertical-align: middle;"><input class="form-control" type="text" value="'.$site['site_name'].'" style="width:150px"/></td>
+                                        <td class="stockTD" style="">'.$site['site_id'].'</td>
+                                        <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" value="'.$site['site_name'].'" style="width:150px"/></td>
                                         <td hidden>'.$site['site_description'].'</td>
-                                        <td style="border-left:2px solid #454d55; vertical-align: middle;"></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
-                                        <td style="border-left:2px solid #454d55; vertical-align: middle;"></td> <td></td> <td hidden></td>
-                                        <td style="background-color:#21272b; border-left:2px solid #454d55; vertical-align: middle;">
+                                        <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
+                                        <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
+                                        <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                            <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        </td>
+                                        <td class="stockTD" style="background-color:#21272b; ">
                                             <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
                                         </td>
-                                        <td style="background-color:#21272b; vertical-align: middle;">
+                                        <td class="stockTD" style="background-color:#21272b; ">
                                             <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
                                                 <i class="fa fa-trash"></i>
                                             </button>
@@ -443,19 +454,24 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </tr>');
                                 foreach ($site['areas'] as $area) {
                                     echo('<tr style="background-color:'.$color2.' !important; color:black">
-                                            <td style="vertical-align: middle; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
-                                            <td style="border-left:2px solid #454d55; vertical-align: middle;">'.$area['area_id'].'</td>
-                                            <td style="vertical-align: middle;"><input class="form-control" type="text" value="'.$area['area_name'].'" style="width:150px"/></td>
-                                            <td style="vertical-align: middle;" hidden>'.$area['area_description'].'</td>
-                                            <td style="vertical-align: middle;" hidden>'.$area['area_site_id'].'</td>
-                                            <td style="vertical-align: middle;" hidden>'.$area['area_parent_id'].'</td>
-                                            <td style="border-left:2px solid #454d55; vertical-align: middle;"></td> <td></td> <td hidden></td>
-                                            <td style="background-color:#21272b; border-left:2px solid #454d55; vertical-align: middle;">
+                                            <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
+                                            <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
+                                            <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" value="'.$area['area_name'].'" style="width:150px"/></td>
+                                            <td class="stockTD" hidden>'.$area['area_description'].'</td>
+                                            <td class="stockTD" hidden>'.$area['area_site_id'].'</td>
+                                            <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
+                                            <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
+                                            <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                    <i class="fa fa-save"></i>
+                                                </button>
+                                            </td>
+                                            <td class="stockTD" style="background-color:#21272b; ">
                                                 <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
                                             </td>
-                                            <td style="background-color:#21272b; vertical-align: middle;">
+                                            <td class="stockTD" style="background-color:#21272b; ">
                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -463,17 +479,22 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </tr>');
                                     foreach ($area['shelves'] as $shelf) {
                                         echo('<tr style="background-color:'.$color3.' !important; color:black">
-                                                <td style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
-                                                <td style="border-left:2px solid #454d55; vertical-align: middle;background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
-                                                <td style="border-left:2px solid #454d55; vertical-align: middle;">'.$shelf['shelf_id'].'</td>
-                                                <td style="vertical-align: middle;"><input class="form-control" type="text" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
-                                                <td style="vertical-align: middle;" hidden>'.$shelf['shelf_area_id'].'</td>
-                                                <td style="background-color:#21272b; border-left:2px solid #454d55; vertical-align: middle;">
+                                                <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
+                                                <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
+                                                <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
+                                                <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
+                                                <td class="stockTD" hidden>'.$shelf['shelf_area_id'].'</td>
+                                                <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                    <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                        <i class="fa fa-save"></i>
+                                                    </button>
+                                                </td>
+                                                <td class="stockTD" style="background-color:#21272b; ">
                                                     <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
                                                 </td>
-                                                <td style="background-color:#21272b; vertical-align: middle;">
+                                                <td class="stockTD" style="background-color:#21272b; ">
                                                     <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
                                                         <i class="fa fa-trash"></i>
                                                     </button>
@@ -481,6 +502,15 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             </tr>');
                                     }
                                 }
+                                echo('<tr style="background-color:#21272b">
+                                    <td colspan=6 class="stockTD">
+                                        <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px; width: 50px">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </td>
+                                    <td colspan=3 style="border-left:2px solid #454d55">  
+                                    </td>
+                                </tr>');
                             }
                             // echo('<tr style="background-color:#21272b">
                             //         <td></td> <td></td> <td hidden></td> <td></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> <td></td> <td></td> <td hidden></td>
@@ -817,6 +847,51 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </form>
         </div>
     </div>
+
+    <div id="modalDivResetPW" class="modal" style="display: none;">
+        <span class="close" onclick="modalCloseResetPW()">×</span>
+        <div class="container well-nopad bg-dark" style="padding:25px">
+            <div style="margin:auto;text-align:center;margin-top:10px">
+                <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="admin-pwreset-submit" value="set" />
+                    <input type="hidden" name="user-id" id="modal-user-id" value=""/>
+                    <table class="centertable">
+                        <tbody>
+                            <tr>
+                                <td class="align-middle" style="padding-right:20px">
+                                    New Password:
+                                </td>
+                                <td class="align-middle" style="padding-right:20px">
+                                    <input type="password" name="password" id="reset-password" required>
+                                </td>
+                                <td class="align-middle">
+                                    <input type="submit" name="submit" class="btn btn-success" value="Change">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script> // MODAL SCRIPT
+        // Get the modal
+        function resetPassword(user_id) {
+            var modal = document.getElementById("modalDivResetPW");
+
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+            var user_id_element = document.getElementById('modal-user-id');
+            console.log(user_id);
+            user_id_element.value = user_id;
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseResetPW = function() { 
+            var modal = document.getElementById("modalDivResetPW");
+            modal.style.display = "none";
+        }
+    </script>
 
     <!-- Modal Image Div -->
     <div id="modalDiv" class="modal" onclick="modalClose()">

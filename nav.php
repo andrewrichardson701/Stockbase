@@ -32,14 +32,7 @@
                 </div> 
                 ');
             }
-            
-            // Fixed cable stock button - this is to be removed when a better place has been found for it.
-            echo ('
-            <div id="cable-stock-div" class="nav-div" style="margin-left:50px;margin-right:0px">
-                <button id="cable-stock" class="btn btn-dark nav-v-c" style="opacity:80%;color:white" onclick="navPage(\'cablestock.php\')">
-                    Fixed Cable Stock (temporary)
-                </button>
-            </div>');
+
             $nav_right_set = 0;
 
             if (isset($profile_name)) {

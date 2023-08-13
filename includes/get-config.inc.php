@@ -21,6 +21,15 @@ function getWorB($hexCode) {
     // Return black if the color is light, white if it's dark.
     return $lightness > 127 ? "#000000" : "#ffffff";
 }
+// script to get complement colours.
+function getComplement($hex) { // get inverted colour
+    $hex = str_replace('#', '', $hex);
+    $rgb = array_map('hexdec', str_split($hex, 2));
+    $complement = array(255 - $rgb[0], 255 - $rgb[1], 255 - $rgb[2]);
+    $complementHex = sprintf("%02x%02x%02x", $complement[0], $complement[1], $complement[2]);
+    return '#' . $complementHex;
+}
+
 
 include 'dbh.inc.php';
 

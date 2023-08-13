@@ -66,6 +66,9 @@
     padding: 0px 3px 0px 3px;
     cursor: pointer;
 }
+.btn-nav {
+    border: 1px solid #091d23;
+}
 
 .link {
     cursor: pointer !important;

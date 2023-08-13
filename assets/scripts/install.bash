@@ -146,8 +146,8 @@ while true; do
 
     # Check if the folder exists
     if [ -d "$folder_name" ]; then
-        echo "Moving files to $folder_name..."
-        cp "$0" "$folder_name"  # Copy the script itself
+        echo "Moving files from $root_path to $folder_name..."
+        #cp "$0" "$folder_name"  # Copy the script itself
         mv "$root_path"/* "$folder_name"/   # Move all files except the script
         echo "Files moved successfully to $folder_name."
         break

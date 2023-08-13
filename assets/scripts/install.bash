@@ -446,9 +446,9 @@ mysql -u root -p"$mysql_root_password" -e \
     "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) \
     VALUES (1, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '$hashed_password');"
 mysql -u root -p"$mysql_root_password" -e \ 
-    "UPDATE users SET id=0 where id=1;"
+    "UPDATE inventory.users SET id=0 where id=1;"
 mysql -u root -p"$mysql_root_password" -e \  
-    "ALTER TABLE users AUTO_INCREMENT = 1;"   
+    "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"   
 
 echo "Done!"
 echo ""

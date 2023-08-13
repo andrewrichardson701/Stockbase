@@ -119,4 +119,7 @@ toggle.addEventListener('change', (event) => {
     }
 })
 </script> -->
+    
+<?php include 'foot.php'; ?>
+
 </body>

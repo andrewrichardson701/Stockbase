@@ -54,7 +54,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             }
         }
     </script>
-    <div class="container">
+    <div class="container content">
         <h3 class="clickable" style="font-size:22px" id="global-settings" onclick="toggleSection(this, 'global')">Global Settings <i class="fa-solid fa-chevron-up fa-2xs" style="margin-left:10px"></i></h3>
         <!-- Global Settings -->
         <div style="padding-top: 20px" id="global">
@@ -366,7 +366,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 $rowCount_locations = $result_locations->num_rows;
                 if ($rowCount_locations < 1) {
                     echo ("No sites found");
-                    exit();
                 } else {
                     while( $row_locations = $result_locations->fetch_assoc() ) {  
                         $locations[$row_locations['site_id']]['site_id'] = $row_locations['site_id'];
@@ -1161,5 +1160,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         });
 
     </script>
+
     
+<?php include 'foot.php'; ?>
+
+
 </body>

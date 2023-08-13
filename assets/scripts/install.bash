@@ -161,8 +161,8 @@ while true; do
                 mkdir -p "$folder_name"
                 echo "Folder created."
                 echo "Moving files to $folder_name..."
-                cp "$0" "$folder_name"  # Copy the script itself
-                mv * "$folder_name"/   # Move all files except the script
+                #cp "$0" "$folder_name"  # Copy the script itself
+                mv "$root_path"/* "$folder_name"/   # Move all files except the script
                 echo "Files moved successfully to $folder_name."
                 break
             else

@@ -11,15 +11,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <title><?php echo ucwords($current_system_name);?> - Admin</title>
 </head>
 <body>
-    <?php // dependency PHP
-    function getComplement($hex) { // get inverted colour
-        $hex = str_replace('#', '', $hex);
-        $rgb = array_map('hexdec', str_split($hex, 2));
-        $complement = array(255 - $rgb[0], 255 - $rgb[1], 255 - $rgb[2]);
-        $complementHex = sprintf("%02x%02x%02x", $complement[0], $complement[1], $complement[2]);
-        return '#' . $complementHex;
-    }
-    
+    <?php // dependency PHP    
     // Redirect if the user is not in the admin list in the get-config.inc.php page. - this needs to be after the "include head.php" 
     if (!in_array($_SESSION['role'], $config_admin_roles_array)) {
         header("Location: ./login.php");

@@ -1,5 +1,7 @@
 <?php
-print_r($_POST);
+// SAVING INFO FOR THE CABLESTOCK PAGE. THIS IS FOR REMOVING AND ADDING STOCK.
+
+// print_r($_POST);
 session_start();
 $redirect_url = $_SESSION['redirect_url'];
 $queryChar = strpos($redirect_url, "?") !== false ? '&' : '?';
@@ -95,7 +97,7 @@ function removeQuantity($stock_id, $cable_item_id) {
     global $redirect_url, $queryChar, $_SESSION;
 
     include 'smtp.inc.php';
-    
+
     $type = "remove";
     $reason = "Removed via Fixed Cable page";
     $date = date('Y-m-d'); // current date in YYY-MM-DD format

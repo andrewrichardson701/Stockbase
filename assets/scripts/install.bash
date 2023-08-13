@@ -1,7 +1,8 @@
 #!/bin/bash
 
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-root_path="$script_dir/../.."
+assets_dir="$( cd "$( dirname "$script_dir" )" &> /dev/null && pwd )"
+root_dir="$( cd "$( dirname "$assets_dir" )" &> /dev/null && pwd )"
 
 # Function to check and install necessary packages
 check_install_package() {

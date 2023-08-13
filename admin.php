@@ -39,13 +39,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <h2 class="header-small">Admin</h2>
     </div>
 
-    <?php
-
-    // Get all properties
-    include 'includes/get-config.inc.php'; 
-
-    ?>
-
     <script> // Toggle hide/show section
         function toggleSection(element, section) {
             var div = document.getElementById(section);

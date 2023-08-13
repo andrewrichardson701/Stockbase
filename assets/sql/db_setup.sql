@@ -104,9 +104,9 @@ DROP TABLE IF EXISTS `config`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `config` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `banner_color` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `logo_image` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `favicon_image` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `banner_color` text COLLATE utf8mb3_unicode_ci,
+  `logo_image` text COLLATE utf8mb3_unicode_ci,
+  `favicon_image` text COLLATE utf8mb3_unicode_ci,
   `ldap_enabled` tinyint DEFAULT NULL,
   `ldap_username` text COLLATE utf8mb3_unicode_ci,
   `ldap_password` longtext COLLATE utf8mb3_unicode_ci,

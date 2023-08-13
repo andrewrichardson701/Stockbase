@@ -3,23 +3,23 @@
     <div id="nav-row" class="nav-row">
         <div class="logo-div">
             <a href="./">
-                <img class="logo" src="assets/img/config/<?php echo($config_logo_image); ?>" />
+                <img class="logo" src="assets/img/config/<?php echo($current_logo_image); ?>" />
             </a>
         </div>
         <?php 
         if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
             echo('<div id="add-div" class="nav-div" style="margin-right:5px">
-                <button id="add-stock" class="btn btn-success cw nav-v-c" style="width:110px;opacity:90%" onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'add\'))">
+                <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" style="opacity:90%" onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'add\'))">
                     <i class="fa fa-plus"></i> Add 
                 </button>
             </div> 
             <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                <button id="remove-stock" class="btn btn-danger cw nav-v-c" style="width:110px;opacity:80%" onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'remove\'))">
+                <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'remove\'))">
                     <i class="fa fa-minus"></i> Remove 
                 </button>
             </div>
             <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-                <button id="transfer-stock" class="btn btn-warning nav-v-c" style="width:110px;opacity:80%;color:black" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'move\'))">
+                <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav" style="color:black" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'move\'))">
                     <i class="fa fa-arrows-h"></i> Move 
                 </button>
             </div>');

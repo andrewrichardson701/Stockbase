@@ -38,7 +38,7 @@
             if (isset($profile_name)) {
                 echo('
                 <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                    <button id="profile" class="nav-v-c nav-trans cw" onclick="window.location=\'./profile.php\';">'.$profile_name.'</button>
+                    <button id="profile" class="nav-v-c nav-trans" style="color:'.$current_banner_text_color.'" onclick="window.location=\'./profile.php\';">'.$profile_name.'</button>
                 </div> 
                 ');
             }
@@ -46,7 +46,7 @@
                 if (in_array($loggedin_role, $config_admin_roles_array)) {
                     echo('
                     <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <button id="admin" class="nav-v-c nav-trans cw" onclick="window.location=\'./admin.php\';">Admin</button>
+                        <button id="admin" class="nav-v-c nav-trans" style="color:'.$current_banner_text_color.'" onclick="window.location=\'./admin.php\';">Admin</button>
                     </div> 
                     ');
                 }
@@ -54,7 +54,7 @@
             if (isset($profile_name)) {
                 echo ('
                     <div id="logout-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo('nav-div">
-                        <button id="logout" class="nav-v-c nav-trans cw" onclick="window.location=\'./logout.php\';">Logout</button>
+                        <button id="logout" class="nav-v-c nav-trans" style="color:'.$current_banner_text_color.'" onclick="window.location=\'./logout.php\';">Logout</button>
                     </div> 
                 ');
             }

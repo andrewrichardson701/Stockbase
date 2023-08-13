@@ -328,7 +328,7 @@ fi
 
 echo ""
 # Run the mysql_setup.sql script
-sql_setup_script="$folder_name/assets/sql/mysql_setup.sql"
+sql_setup_script="$folder_name/assets/sql/db_setup.sql"
 if [ -f "$sql_setup_script" ]; then
     echo "Running MySQL setup script from assets..."
     mysql -u root -p"$mysql_root_password" < "$sql_setup_script"

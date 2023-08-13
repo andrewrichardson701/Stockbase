@@ -76,7 +76,7 @@ CREATE TABLE `cable_transaction` (
   `time` time NOT NULL,
   `username` text COLLATE utf8mb3_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -338,9 +338,8 @@ CREATE TABLE `users` (
   `password` longtext COLLATE utf8mb3_unicode_ci,
   `role_id` int DEFAULT NULL,
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `password_expired` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -369,4 +368,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-13  1:49:59
+-- Dump completed on 2023-08-08  0:52:12

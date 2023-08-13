@@ -68,6 +68,8 @@
 }
 .btn-nav {
     border: 1px solid #091d23;
+    width:110px ;
+    opacity:90%;
 }
 
 .link {
@@ -299,4 +301,19 @@ select[disabled] {
 .stockTD-input {
     padding: 0 6px 0 6px !important;
     height: 25px;
+}
+
+.footer {
+    background-color: #343a40;
+    color: white;
+    font-size: 14px;
+
+    position: absolute;
+    bottom: 0; /* Stick the footer to the bottom of the viewport */
+    width: 100%;
+    padding: 5px;
+}
+
+.content {
+    padding-bottom: 50px;
 }

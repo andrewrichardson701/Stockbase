@@ -329,12 +329,22 @@ fi
 echo ""
 # Run the mysql_setup.sql script
 sql_setup_script="$folder_name/assets/sql/db_setup.sql"
+sql_extras_script="$folder_name/assets/sql/db_extras.sql"
 if [ -f "$sql_setup_script" ]; then
     echo "Running MySQL setup script from assets..."
     mysql -u root -p"$mysql_root_password" < "$sql_setup_script"
     echo "MySQL setup script executed."
 else
     echo "MySQL setup script not found at $sql_setup_script."
+fi
+echo ""
+
+if [ -f "$sql_extras_script" ]; then
+    echo "Running MySQL setup extras script from assets..."
+    mysql -u root -p"$mysql_root_password" < "$sql_extras_script"
+    echo "MySQL setup extras script executed."
+else
+    echo "MySQL setup extras script not found at $sql_extras_script."
 fi
 echo ""
 

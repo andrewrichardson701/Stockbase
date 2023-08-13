@@ -365,6 +365,7 @@ if [ -n "$user_exists" ]; then
             [Yy]* ) mysql -u root -p"$mysql_root_password" -e "DROP USER 'inventory'@'localhost';"
                     mysql -u root -p"$mysql_root_password" -e "flush privileges;"
                     echo "User 'inventory' dropped."
+                    drop_user="Y";
                     break;;
             [Nn]* ) 
                     while true; do

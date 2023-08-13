@@ -1,6 +1,6 @@
 <?php 
 // USER PROFILE PAGE
-// SEE USER INFO FROM THE DATABASE BUT NOT MODIFY ANY (YET ATLEAST)
+// SEE USER INFO FROM THE DATABASE. LOCAL USERS CAN ALSO RESET THEIR PASSWORDS HERE
 include 'session.php'; // Session setup and redirect if the session is not active 
 include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 ?> 

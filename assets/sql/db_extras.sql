@@ -8,6 +8,7 @@
 --
 -- Current Database: `inventory`
 --
+USE inventory;
 
 -- Set Auto_increment for all tables
 

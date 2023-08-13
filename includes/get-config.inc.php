@@ -10,6 +10,17 @@ $predfined_sku_prefix = 'ITEM-';
 
 $config_admin_roles_array = ["Root", "Admin"];
 
+function getWorB($hexCode) {
+    // Convert the hex code to an RGB array.
+    $hex = str_replace('#', '', $hexCode);
+    $rgb = array_map('hexdec', str_split($hex, 2));
+    // Calculate the lightness of the color.
+    $lightness = ($rgb[0] + $rgb[1] + $rgb[2]) / 3;
+  
+    // Return black if the color is light, white if it's dark.
+    return $lightness > 127 ? "#000000" : "#ffffff";
+}
+
 include 'dbh.inc.php';
 
 $sql_config = "SELECT * FROM config ORDER BY id LIMIT 1";
@@ -100,6 +111,7 @@ $current_logo_image          = ($config_logo_image            !== '' ? $config_l
 $current_favicon_image       = ($config_favicon_image         !== '' ? $config_favicon_image                 : $config_d_favicon_image);
 $current_currency            = ($config_currency              !== '' ? $config_currency                      : $config_d_currency );
 $current_sku_prefix          = ($config_sku_prefix            !== '' ? $config_sku_prefix                    : $config_d_sku_prefix);
+$current_banner_text_color   = getWorB($current_banner_color);
   
 $default_system_name         = ($config_d_system_name         !== '' ? $config_d_system_name                 : 'MISSING - PLEASE FIX');
 $default_banner_color        = ($config_d_banner_color        !== '' ? $config_d_banner_color                : 'MISSING - PLEASE FIX');
@@ -107,6 +119,7 @@ $default_logo_image          = ($config_d_logo_image          !== '' ? $config_d
 $default_favicon_image       = ($config_d_favicon_image       !== '' ? $config_d_favicon_image               : 'MISSING - PLEASE FIX');
 $default_currency            = ($config_d_currency            !== '' ? $config_d_currency                    : 'MISSING - PLEASE FIX');
 $default_sku_prefix          = ($config_d_sku_prefix          !== '' ? $config_d_sku_prefix                  : 'MISSING - PLEASE FIX');
+$default_banner_text_color   = getWorB($default_banner_color);
 
 $current_ldap_enabled        = ($config_ldap_enabled          !== '' ? $config_ldap_enabled                  : $config_d_ldap_enabled);
 $current_ldap_username       = ($config_ldap_username         !== '' ? $config_ldap_username                 : $config_d_ldap_username);

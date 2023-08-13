@@ -45,9 +45,10 @@ VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 1,
 
 -- Add user roles to the user roles table
 INSERT INTO users_roles (id, name, description, is_admin, is_root) 
-VALUES (1, 'User', 'Default group for normal Users.', 0, 0);
-VALUES (2, 'Admin', 'Administrator role for any Administrator users.', 1, 0);
-VALUES (3, 'Root', 'Root role for the default Root user ONLY.', 1, 1);
+VALUES  
+    (1, 'User', 'Default group for normal Users.', 0, 0)    
+    (2, 'Admin', 'Administrator role for any Administrator users.', 1, 0)
+    (3, 'Root', 'Root role for the default Root user ONLY.', 1, 1);
 UPDATE users_roles SET id=0 where id=3;
 ALTER TABLE users_roles AUTO_INCREMENT = 3;
 

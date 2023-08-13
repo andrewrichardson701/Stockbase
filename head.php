@@ -47,7 +47,6 @@ include './includes/get-config.inc.php'; // get config options
 
 </style>
 
-
 <script> // color-picker box json - for Admin.php
         $("input.color").each(function() {
             var that = this;

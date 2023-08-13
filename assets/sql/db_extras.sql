@@ -44,7 +44,7 @@ smtp_from_name, smtp_to_email, smtp_username, system_name, ldap_host_secondary)
 VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 1, 'ldapauth', 
 'RHJvcHNCdWlsZHNTa2lsbDEyISE=', 'ajrich.co.uk', '10.0.2.2', 389, 'DC=ajrich,DC=co,DC=uk', 
 'cn=Users', '(objectClass=User)', '£', 'ITEM-', 'mail.ajrich.co.uk', 587, 'starttls', 'RGVtb1Bhc3MxIQ==',
-'inventory@ajrich.co.uk', 'Inventory System', 'inventory@ajrich.co.uk', 'Inventory System', '10.0.2.2');
+'inventory@ajrich.co.uk', 'Inventory System', 'inventory@ajrich.co.uk', 'inventory@ajrich.co.uk', 'Inventory System', '10.0.2.2');
 
 -- Add user roles to the user roles table
 INSERT INTO users_roles (id, name, description, is_admin, is_root) 

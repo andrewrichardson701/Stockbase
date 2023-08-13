@@ -406,7 +406,7 @@ else
         echo
         if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
                 echo "Creating 'inventory' user..."
-                mysql -u root -p"$mysql_root_password" -e "CREATE USER 'inventory'@'%' IDENTIFIED BY '$inventory_user_password';"
+                mysql -u root -p"$mysql_root_password" -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
                 mysql -u root -p"$mysql_root_password" -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
                 mysql -u root -p"$mysql_root_password" -e "FLUSH PRIVILEGES;"
                 echo "User 'inventory' created."

@@ -2,11 +2,12 @@
 // GET GLOBAL CONFIG OPTIONS TO BE APPLIED TO NAV AND OTHER OPTIONS ON THE PAGE
 // CALLED FROM THE HEAD.PHP PAGE DIRECTLY
 
-$predfined_config_banner_color = '#E1B12C';
-$predfined_config_logo_image = 'default/default-logo.png';
-$predfined_config_favicon_image = 'default/default-favicon.png';
-$predfined_config_currency = '£';
-$predfined_sku_prefix = 'ITEM-';
+$predefined_system_name = "inventory System";
+$predefined_config_banner_color = '#E1B12C';
+$predefined_config_logo_image = 'default/default-logo.png';
+$predefined_config_favicon_image = 'default/default-favicon.png';
+$predefined_config_currency = '£';
+$predefined_sku_prefix = 'ITEM-';
 
 $config_admin_roles_array = ["Root", "Admin"];
 
@@ -32,7 +33,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
     $result_config = mysqli_stmt_get_result($stmt_config);
     $rowCount_config = $result_config->num_rows;
     if ($rowCount_config < 1) {
-        echo ("No cutstom config found");
+        echo ("No custom config found");
         $config_system_name         = '';
         $config_banner_color        = '';
         $config_logo_image          = '';
@@ -129,32 +130,24 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
         }
     }
 }
-$current_system_name         = ($config_system_name           !== '' ? $config_system_name                   : $config_d_system_name);
-$current_banner_color        = ($config_banner_color          !== '' ? $config_banner_color                  : $config_d_banner_color);
-$current_logo_image          = ($config_logo_image            !== '' ? $config_logo_image                    : $config_d_logo_image);
-$current_favicon_image       = ($config_favicon_image         !== '' ? $config_favicon_image                 : $config_d_favicon_image);
-$current_currency            = ($config_currency              !== '' ? $config_currency                      : $config_d_currency );
-$current_sku_prefix          = ($config_sku_prefix            !== '' ? $config_sku_prefix                    : $config_d_sku_prefix);
-$current_banner_text_color   = getWorB($current_banner_color);
-  
-$default_system_name         = ($config_d_system_name         !== '' ? $config_d_system_name                 : 'MISSING - PLEASE FIX');
-$default_banner_color        = ($config_d_banner_color        !== '' ? $config_d_banner_color                : 'MISSING - PLEASE FIX');
-$default_logo_image          = ($config_d_logo_image          !== '' ? $config_d_logo_image                  : 'MISSING - PLEASE FIX');
-$default_favicon_image       = ($config_d_favicon_image       !== '' ? $config_d_favicon_image               : 'MISSING - PLEASE FIX');
-$default_currency            = ($config_d_currency            !== '' ? $config_d_currency                    : 'MISSING - PLEASE FIX');
-$default_sku_prefix          = ($config_d_sku_prefix          !== '' ? $config_d_sku_prefix                  : 'MISSING - PLEASE FIX');
+
+$default_system_name         = ($config_d_system_name         !== '' ? $config_d_system_name                 : $predefined_system_name);
+$default_banner_color        = ($config_d_banner_color        !== '' ? $config_d_banner_color                : $predefined_config_banner_color);
+$default_logo_image          = ($config_d_logo_image          !== '' ? $config_d_logo_image                  : $predefined_config_logo_image);
+$default_favicon_image       = ($config_d_favicon_image       !== '' ? $config_d_favicon_image               : $predefined_config_favicon_image);
+$default_currency            = ($config_d_currency            !== '' ? $config_d_currency                    : $predefined_config_currency);
+$default_sku_prefix          = ($config_d_sku_prefix          !== '' ? $config_d_sku_prefix                  : $predefined_sku_prefix);
 $default_banner_text_color   = getWorB($default_banner_color);
 
-$current_ldap_enabled        = ($config_ldap_enabled          !== '' ? $config_ldap_enabled                  : $config_d_ldap_enabled);
-$current_ldap_username       = ($config_ldap_username         !== '' ? $config_ldap_username                 : $config_d_ldap_username);
-// $current_ldap_password   = ($config_ldap_password         !== '' ? $config_ldap_password                 : $config_d_ldap_password);
-$current_ldap_domain         = ($config_ldap_domain           !== '' ? $config_ldap_domain                   : $config_d_ldap_domain);
-$current_ldap_host           = ($config_ldap_host             !== '' ? $config_ldap_host                     : $config_d_ldap_host);
-$current_ldap_host_secondary = ($config_ldap_host_secondary   !== '' ? $config_ldap_host_secondary           : $config_d_ldap_host_secondary);
-$current_ldap_port           = ($config_ldap_port             !== '' ? $config_ldap_port                     : $config_d_ldap_port);
-$current_ldap_basedn         = ($config_ldap_basedn           !== '' ? $config_ldap_basedn                   : $config_d_ldap_basedn);    
-$current_ldap_usergroup      = ($config_ldap_usergroup        !== '' ? $config_ldap_usergroup                : $config_d_ldap_usergroup);    
-$current_ldap_userfilter     = ($config_ldap_userfilter       !== '' ? $config_ldap_userfilter               : $config_d_ldap_userfilter);    
+$current_system_name         = ($config_system_name           !== '' ? $config_system_name                   : $default_system_name);
+$current_banner_color        = ($config_banner_color          !== '' ? $config_banner_color                  : $default_banner_color);
+$current_logo_image          = ($config_logo_image            !== '' ? $config_logo_image                    : $default_logo_image);
+$current_favicon_image       = ($config_favicon_image         !== '' ? $config_favicon_image                 : $default_favicon_image);
+$current_currency            = ($config_currency              !== '' ? $config_currency                      : $default_currency );
+$current_sku_prefix          = ($config_sku_prefix            !== '' ? $config_sku_prefix                    : $default_sku_prefix);
+$current_banner_text_color   = getWorB($current_banner_color);
+  
+# ---
 
 $default_ldap_enabled        = ($config_d_ldap_enabled        !== '' ? $config_d_ldap_enabled                : 'MISSING - PLEASE FIX');  
 $default_ldap_username       = ($config_d_ldap_username       !== '' ? $config_d_ldap_username               : 'MISSING - PLEASE FIX');
@@ -166,15 +159,19 @@ $default_ldap_port           = ($config_d_ldap_port           !== '' ? $config_d
 $default_ldap_basedn         = ($config_d_ldap_basedn         !== '' ? $config_d_ldap_basedn                 : 'MISSING - PLEASE FIX');    
 $default_ldap_usergroup      = ($config_d_ldap_usergroup      !== '' ? $config_d_ldap_usergroup              : 'MISSING - PLEASE FIX');    
 $default_ldap_userfilter     = ($config_d_ldap_userfilter     !== '' ? $config_d_ldap_userfilter             : 'MISSING - PLEASE FIX');  
-  
-$current_smtp_username       = ($config_smtp_username         !== '' ? $config_smtp_username                 : $config_d_smtp_username);
-// $current_smtp_password     = ($config_smtp_password         !== '' ? $config_smtp_password                 : $config_d_smtp_password);
-$current_smtp_encryption     = ($config_smtp_encryption       !== '' ? $config_smtp_encryption               : $config_d_smtp_encryption);
-$current_smtp_host           = ($config_smtp_host             !== '' ? $config_smtp_host                     : $config_d_smtp_host);
-$current_smtp_port           = ($config_smtp_port             !== '' ? $config_smtp_port                     : $config_d_smtp_port);
-$current_smtp_from_email     = ($config_smtp_from_email       !== '' ? $config_smtp_from_email               : $config_d_smtp_from_email);    
-$current_smtp_from_name      = ($config_smtp_from_name        !== '' ? $config_smtp_from_name                : $config_d_smtp_from_name);    
-$current_smtp_to_email       = ($config_smtp_to_email         !== '' ? $config_smtp_to_email                 : $config_d_smtp_to_email);    
+
+$current_ldap_enabled        = ($config_ldap_enabled          !== '' ? $config_ldap_enabled                  : $default_ldap_enabled);
+$current_ldap_username       = ($config_ldap_username         !== '' ? $config_ldap_username                 : $default_ldap_username);
+// $current_ldap_password      = ($config_ldap_password         !== '' ? $config_ldap_password                 : $default_ldap_password);
+$current_ldap_domain         = ($config_ldap_domain           !== '' ? $config_ldap_domain                   : $default_ldap_domain);
+$current_ldap_host           = ($config_ldap_host             !== '' ? $config_ldap_host                     : $default_ldap_host);
+$current_ldap_host_secondary = ($config_ldap_host_secondary   !== '' ? $config_ldap_host_secondary           : $default_ldap_host_secondary);
+$current_ldap_port           = ($config_ldap_port             !== '' ? $config_ldap_port                     : $default_ldap_port);
+$current_ldap_basedn         = ($config_ldap_basedn           !== '' ? $config_ldap_basedn                   : $default_ldap_basedn);    
+$current_ldap_usergroup      = ($config_ldap_usergroup        !== '' ? $config_ldap_usergroup                : $default_ldap_usergroup);    
+$current_ldap_userfilter     = ($config_ldap_userfilter       !== '' ? $config_ldap_userfilter               : $default_ldap_userfilter);    
+
+# ---
 
 $default_smtp_username       = ($config_d_smtp_username       !== '' ? $config_d_smtp_username               : 'MISSING - PLEASE FIX');
 $default_smtp_password       = ($config_d_smtp_password       !== '' ? '<or class="green">Password Set</or>' : 'MISSING - PLEASE FIX');
@@ -183,7 +180,18 @@ $default_smtp_host           = ($config_d_smtp_host           !== '' ? $config_d
 $default_smtp_port           = ($config_d_smtp_port           !== '' ? $config_d_smtp_port                   : 'MISSING - PLEASE FIX');
 $default_smtp_from_email     = ($config_d_smtp_from_email     !== '' ? $config_d_smtp_from_email             : 'MISSING - PLEASE FIX');    
 $default_smtp_from_name      = ($config_d_smtp_from_name      !== '' ? $config_d_smtp_from_name              : 'MISSING - PLEASE FIX');    
-$default_smtp_to_email       = ($config_d_smtp_to_email       !== '' ? $config_d_smtp_to_email               : 'MISSING - PLEASE FIX');
+$default_smtp_to_email       = ($config_d_smtp_to_email       !== '' ? $config_d_smtp_to_email               : 'MISSING - PLEASE FIX');  
+
+$current_smtp_username       = ($config_smtp_username         !== '' ? $config_smtp_username                 : $default_smtp_username);
+// $current_smtp_password     = ($config_smtp_password         !== '' ? $config_smtp_password                 : $default_smtp_password);
+$current_smtp_encryption     = ($config_smtp_encryption       !== '' ? $config_smtp_encryption               : $default_smtp_encryption);
+$current_smtp_host           = ($config_smtp_host             !== '' ? $config_smtp_host                     : $default_smtp_host);
+$current_smtp_port           = ($config_smtp_port             !== '' ? $config_smtp_port                     : $default_smtp_port);
+$current_smtp_from_email     = ($config_smtp_from_email       !== '' ? $config_smtp_from_email               : $default_smtp_from_email);    
+$current_smtp_from_name      = ($config_smtp_from_name        !== '' ? $config_smtp_from_name                : $default_smtp_from_name);    
+$current_smtp_to_email       = ($config_smtp_to_email         !== '' ? $config_smtp_to_email                 : $default_smtp_to_email);    
+
+
 
 
 ?>

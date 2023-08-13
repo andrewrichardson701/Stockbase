@@ -6,7 +6,7 @@ include './includes/get-config.inc.php'; // get config options
 
 <meta charset="utf-8">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" type="image/png" href="./assets/img/config/<?php echo($config_favicon_image); ?>">
+<link rel="icon" type="image/png" href="./assets/img/config/<?php echo($current_favicon_image); ?>">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -41,7 +41,7 @@ include './includes/get-config.inc.php'; // get config options
 
 <style>
 .inv-nav {
-    background-color: <?php echo($config_banner_color);?> ;
+    background-color: <?php echo($current_banner_color);?> ;
     z-index:0;
 }
 

@@ -1,5 +1,6 @@
 <?php 
 // PAGE HEADER SETUP - SETS UP CSS, BOOTSTRAP AND OTHER STYLES AND SCRIPTS
+
 include './includes/get-config.inc.php'; // get config options
 ?>
 

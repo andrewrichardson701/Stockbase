@@ -365,7 +365,23 @@ if [ -n "$user_exists" ]; then
             [Yy]* ) mysql -u root -p"$mysql_root_password" -e "DROP USER 'inventory'@'localhost';"
                     mysql -u root -p"$mysql_root_password" -e "flush privileges;"
                     echo "User 'inventory' dropped."
-                    drop_user="Y";
+                    while true; do
+                        read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
+                        echo
+                        read -s -p "Confirm the password for the 'inventory' user: " inventory_user_password_confirm
+                        echo
+                        if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
+                                echo "Creating 'inventory' user..."
+                                mysql -u root -p"$mysql_root_password" -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
+                                mysql -u root -p"$mysql_root_password" -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
+                                mysql -u root -p"$mysql_root_password" -e "FLUSH PRIVILEGES;"
+                                echo "User 'inventory' created."
+                                correct_password="Y"
+                            break
+                        else
+                            echo "Passwords do not match. Please try again."
+                        fi
+                    done
                     break;;
             [Nn]* ) 
                     while true; do
@@ -382,33 +398,6 @@ if [ -n "$user_exists" ]; then
             * ) echo "Please answer Y or N.";;
         esac
     done
-    if [ "$drop_user" = [Yy]* ]; then
-        while true; do
-            read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
-            echo
-            read -s -p "Confirm the password for the 'inventory' user: " inventory_user_password_confirm
-            echo
-            if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
-                    echo "Creating 'inventory' user..."
-                    mysql -u root -p"$mysql_root_password" -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
-                    mysql -u root -p"$mysql_root_password" -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
-                    mysql -u root -p"$mysql_root_password" -e "FLUSH PRIVILEGES;"
-                    echo "User 'inventory' created."
-                    correct_password="Y"
-                break
-            else
-                echo "Passwords do not match. Please try again."
-            fi
-        done
-    else
-        if mysql -u inventory -p"$inventory_user_password" -e ";" 2>/dev/null; then
-            echo "Password matches."
-            correct_password="Y"
-            break
-        else
-            echo "Incorrect password."
-        fi
-    fi
 else 
     while true; do
         read -s -p "Enter a password for the 'inventory' user: " inventory_user_password

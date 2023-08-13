@@ -74,6 +74,7 @@ $WorB_complement_banner_color = getWorB($complemenent_banner_color);
         } else {
             mybutton.className = "hideTranslate";
             document.getElementById("scrollTop").style.width = "38px";
+            document.activeElement.blur();
         }
     }
     // When the user clicks on the button, scroll to the top of the document

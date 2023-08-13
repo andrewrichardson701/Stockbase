@@ -443,8 +443,11 @@ hostname=$(hostname --fqdn)
 echo "Creating root user for site login..."
 # Insert new user to table
 mysql -u root -p"$mysql_root_password" -e \
+    "ALTER TABLE inventory.users AUTO_INCREMENT = 0;"
+mysql -u root -p"$mysql_root_password" -e \
     "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) \
     VALUES (0, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '$hashed_password');"
+
 echo "Done!"
 echo ""
 

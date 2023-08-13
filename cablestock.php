@@ -317,7 +317,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <th id="min-stock" style="color:#8f8f8f">Min. stock</th>
                                         <th style="width:50px"></th>
                                         <th style="width:50px"></th>
-                                        <th style="width:50px"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="align-middle" style="text-align: center; white-space: nowrap;">
@@ -396,7 +395,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             <td class="align-middle" id="'.$cable_item_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
                                             <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" class="btn btn-success cw nav-v-b" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
                                             <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" class="btn btn-danger cw nav-v-b" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
-                                            <td class="align-middle" id="'.$cable_item_id.'-edit"><button id="'.$stock_id.'-edit-btn" class="btn btn-info cw nav-v-b" type="button"><i class="fa fa-pencil"></i></button></td>
                                         </form>
                                     </tr>
                                 ');

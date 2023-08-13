@@ -35,32 +35,32 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
         echo ("No cutstom config found");
     } else {
         while ( $config = $result_config->fetch_assoc() ) {
-            $config_system_name         = $config['system_name'];
-            $config_banner_color        = $config['banner_color'];
-            $config_logo_image          = $config['logo_image'];
-            $config_favicon_image       = $config['favicon_image'];
-            $config_currency            = $config['currency'];
-            $config_sku_prefix          = $config['sku_prefix'];
+            $config_system_name         = isset($config['system_name']) ? $config['system_name'] : '';
+            $config_banner_color        = isset($config['banner_color']) ? $config['banner_color'] : '';
+            $config_logo_image          = isset($config['logo_image']) ? $config['logo_image'] : '';
+            $config_favicon_image       = isset($config['favicon_image']) ? $config['favicon_image'] : '';
+            $config_currency            = isset($config['currency']) ? $config['currency'] : '';
+            $config_sku_prefix          = isset($config['sku_prefix']) ? $config['sku_prefix'] : '';
 
-            $config_ldap_enabled        = $config['ldap_enabled'];
-            $config_ldap_username       = $config['ldap_username'];
+            $config_ldap_enabled        = isset($config['ldap_enabled']) ? $config['ldap_enabled'] : '';
+            $config_ldap_username       = isset($config['ldap_username']) ? $config['ldap_username'] : '';
             // $config_ldap_password     = base64_decode($config['ldap_password']);
-            $config_ldap_domain         = $config['ldap_domain'];
-            $config_ldap_host           = $config['ldap_host'];
-            $config_ldap_host_secondary = $config['ldap_host_secondary'];
-            $config_ldap_port           = $config['ldap_port'];
-            $config_ldap_basedn         = $config['ldap_basedn'];
-            $config_ldap_usergroup      = $config['ldap_usergroup'];
-            $config_ldap_userfilter     = $config['ldap_userfilter'];
+            $config_ldap_domain         = isset($config['ldap_domain']) ? $config['ldap_domain'] : '';
+            $config_ldap_host           = isset($config['ldap_host']) ? $config['ldap_host'] : '';
+            $config_ldap_host_secondary = isset($config['ldap_host_secondary']) ? $config['ldap_host_secondary'] : '';
+            $config_ldap_port           = isset($config['ldap_port']) ? $config['ldap_port'] : '';
+            $config_ldap_basedn         = isset($config['ldap_basedn']) ? $config['ldap_basedn'] : '';
+            $config_ldap_usergroup      = isset($config['ldap_usergroup']) ? $config['ldap_usergroup'] : '';
+            $config_ldap_userfilter     = isset($config['ldap_userfilter']) ? $config['ldap_userfilter'] : '';
 
-            $config_smtp_username       = $config['smtp_username'];
+            $config_smtp_username       = isset($config['smtp_username']) ? $config['smtp_username'] : '';
             // $config_smtp_password       = base64_decode($config['smtp_password']); 
-            $config_smtp_encryption     = $config['smtp_encryption'];
-            $config_smtp_host           = $config['smtp_host'];
-            $config_smtp_port           = $config['smtp_port'];       
-            $config_smtp_from_email     = $config['smtp_from_email']; 
-            $config_smtp_from_name      = $config['smtp_from_name']; 
-            $config_smtp_to_email       = $config['smtp_to_email'];   
+            $config_smtp_encryption     = isset($config['smtp_encryption']) ? $config['smtp_encryption'] : '';
+            $config_smtp_host           = isset($config['smtp_host']) ? $config['smtp_encryption'] : '';
+            $config_smtp_port           = isset($config['smtp_port']) ? $config['smtp_host'] : '';       
+            $config_smtp_from_email     = isset($config['smtp_from_email']) ? $config['smtp_from_email'] : ''; 
+            $config_smtp_from_name      = isset($config['smtp_from_name']) ? $config['smtp_from_name'] : ''; 
+            $config_smtp_to_email       = isset($config['smtp_to_email']) ? $config['smtp_to_email'] : '';   
         }
     }
 }

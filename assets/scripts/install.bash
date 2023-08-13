@@ -433,7 +433,7 @@ if [ "$correct_password" = "Y" ]; then
     echo "Updating $dbh with new password..."
 
     # Search and replace the string in the file
-    sed -i "s/\$dBPassword = 'admin';/\$dBUsername = 'inventory';/" "$dbh"
+    sed -i "s/\$dBUsername = 'admin';/\$dBUsername = 'inventory';/" "$dbh"
     sed -i "s/\$dBPassword = 'admin';/\$dBPassword = '$inventory_user_password';/" "$dbh"
     echo "done!"
 else

@@ -33,6 +33,30 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
     $rowCount_config = $result_config->num_rows;
     if ($rowCount_config < 1) {
         echo ("No cutstom config found");
+        $config_system_name         = '';
+        $config_banner_color        = '';
+        $config_logo_image          = '';
+        $config_favicon_image       = '';
+        $config_currency            = '';
+        $config_sku_prefix          = '';
+        $config_ldap_enabled        = '';
+        $config_ldap_username       = '';
+        // $config_ldap_password    = '';
+        $config_ldap_domain         = '';
+        $config_ldap_host           = '';
+        $config_ldap_host_secondary = '';
+        $config_ldap_port           = '';
+        $config_ldap_basedn         = '';
+        $config_ldap_usergroup      = '';
+        $config_ldap_userfilter     = '';
+        $config_smtp_username       = '';
+        // $config_smtp_password    = '';
+        $config_smtp_encryption     = '';
+        $config_smtp_host           = '';
+        $config_smtp_port           = '';
+        $config_smtp_from_email     = '';
+        $config_smtp_from_name      = '';
+        $config_smtp_to_email       = '';
     } else {
         while ( $config = $result_config->fetch_assoc() ) {
             $config_system_name         = isset($config['system_name']) ? $config['system_name'] : '';

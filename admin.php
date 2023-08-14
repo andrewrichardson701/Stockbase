@@ -1120,11 +1120,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             } else {
                 toggleSection(document.getElementById("global-settings"), "global");
 
-                // Scroll to the anchor ID after the toggleSection function is done
-                const anchorElement = document.getElementById("global-settings");
-                if (anchorElement) {
-                    anchorElement.scrollIntoView({ behavior: 'smooth' });
-                }
             }
         };
 

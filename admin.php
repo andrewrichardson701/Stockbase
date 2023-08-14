@@ -49,7 +49,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <div class="container content">
         <h3 class="clickable" style="font-size:22px" id="global-settings" onclick="toggleSection(this, 'global')">Global Settings <i class="fa-solid fa-chevron-up fa-2xs" style="margin-left:10px"></i></h3>
         <!-- Global Settings -->
-        <div style="padding-top: 20px" id="global">
+        <div style="padding-top: 20px" id="global" hidden>
             <form id="globalForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                 <table id="globalTable">
                     <tbody>
@@ -1114,6 +1114,14 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                 // Scroll to the anchor ID after the toggleSection function is done
                 const anchorElement = document.getElementById(anchor);
+                if (anchorElement) {
+                    anchorElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                toggleSection(document.getElementById("global-settings"), "global");
+
+                // Scroll to the anchor ID after the toggleSection function is done
+                const anchorElement = document.getElementById("global-settings");
                 if (anchorElement) {
                     anchorElement.scrollIntoView({ behavior: 'smooth' });
                 }

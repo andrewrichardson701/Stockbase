@@ -300,8 +300,9 @@ echo ""
 # Verify MySQL root password
 while true; do
     read -s -p "Enter the MySQL root password: " mysql_root_password
+    MYSQL_PWD=mysql_root_password
     echo
-    if mysql -u root -p"$mysql_root_password" -e ";" 2>/dev/null; then
+    if mysql -u root -e ";" 2>/dev/null; then
         echo ""
         break
     else
@@ -310,11 +311,11 @@ while true; do
 done
 
 # Check if "inventory" database exists
-if mysql -u root -p"$mysql_root_password" -e "USE inventory;" 2>/dev/null; then
+if mysql -u root -e "USE inventory;" 2>/dev/null; then
     read -p "The 'inventory' database already exists. Do you want to remove it and install the new one? (yes/no): " remove_database
     if [ "$remove_database" = "yes" ]; then
         echo "Removing existing 'inventory' database..."
-        mysql -u root -p"$mysql_root_password" -e "DROP DATABASE inventory;"
+        mysql -u root -e "DROP DATABASE inventory;"
         echo "Database removed."
     else
         echo "Database needs to be created to continue."
@@ -332,7 +333,7 @@ sql_setup_script="$folder_name/assets/sql/db_setup.sql"
 sql_extras_script="$folder_name/assets/sql/db_extras.sql"
 if [ -f "$sql_setup_script" ]; then
     echo "Running MySQL setup script from assets..."
-    mysql -u root -p"$mysql_root_password" < "$sql_setup_script"
+    mysql -u root < "$sql_setup_script"
     echo "MySQL setup script executed."
 else
     echo "MySQL setup script not found at $sql_setup_script."
@@ -341,7 +342,7 @@ echo ""
 
 if [ -f "$sql_extras_script" ]; then
     echo "Running MySQL setup extras script from assets..."
-    mysql -u root -p"$mysql_root_password" < "$sql_extras_script"
+    mysql -u root < "$sql_extras_script"
     echo "MySQL setup extras script executed."
 else
     echo "MySQL setup extras script not found at $sql_extras_script."
@@ -353,7 +354,7 @@ echo "User needed to access the database."
 
 # Check if 'inventory' user exists
 echo "Checking if inventory user exists..."
-user_exists=$(mysql -u root -p"$mysql_root_password" -e "SELECT User FROM mysql.user WHERE User='inventory' AND Host='localhost';" --skip-column-names)
+user_exists=$(mysql -u root -e "SELECT User FROM mysql.user WHERE User='inventory' AND Host='localhost';" --skip-column-names)
 
 if [ -n "$user_exists" ]; then
     # The 'inventory' user exists, prompt the user for action
@@ -362,8 +363,8 @@ if [ -n "$user_exists" ]; then
     while true; do
         read -p "Do you want to drop the user? (Y/N): " drop_user
         case "$drop_user" in
-            [Yy]* ) mysql -u root -p"$mysql_root_password" -e "DROP USER 'inventory'@'localhost';"
-                    mysql -u root -p"$mysql_root_password" -e "flush privileges;"
+            [Yy]* ) mysql -u root -e "DROP USER 'inventory'@'localhost';"
+                    mysql -u root -e "flush privileges;"
                     echo "User 'inventory' dropped."
                     while true; do
                         read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
@@ -372,9 +373,9 @@ if [ -n "$user_exists" ]; then
                         echo
                         if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
                                 echo "Creating 'inventory' user..."
-                                mysql -u root -p"$mysql_root_password" -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
-                                mysql -u root -p"$mysql_root_password" -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
-                                mysql -u root -p"$mysql_root_password" -e "FLUSH PRIVILEGES;"
+                                mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
+                                mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
+                                mysql -u root -e "FLUSH PRIVILEGES;"
                                 echo "User 'inventory' created."
                                 correct_password="Y"
                             break
@@ -406,9 +407,9 @@ else
         echo
         if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
                 echo "Creating 'inventory' user..."
-                mysql -u root -p"$mysql_root_password" -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
-                mysql -u root -p"$mysql_root_password" -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
-                mysql -u root -p"$mysql_root_password" -e "FLUSH PRIVILEGES;"
+                mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
+                mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
+                mysql -u root -e "FLUSH PRIVILEGES;"
                 echo "User 'inventory' created."
                 correct_password="Y"
             break
@@ -442,13 +443,9 @@ hostname=$(hostname --fqdn)
 
 echo "Creating root user for site login..."
 # Insert new user to table
-mysql -u root -p"$mysql_root_password" -e \
-    "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) \
-    VALUES (1, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '$hashed_password');"
-mysql -u root -p"$mysql_root_password" -e \ 
-    "UPDATE inventory.users SET id=0 where id=1;"
-mysql -u root -p"$mysql_root_password" -e \  
-    "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"   
+mysql -u root -e "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '$hashed_password');"
+mysql -u root -e "UPDATE inventory.users SET id=0 where id=1;"
+mysql -u root -e "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"   
 
 echo "Done!"
 echo ""

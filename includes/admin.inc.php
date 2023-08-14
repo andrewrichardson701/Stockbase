@@ -6,7 +6,7 @@
 // print_r($_POST);
 //         exit();
 
-if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit'])) {
+if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit'])) {
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
@@ -708,6 +708,38 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
 
 
+        }
+    } elseif (isset($_POST['stocklocation-submit'])){ //editing location info from admin.php
+        if (isset($_POST['type'])) {
+            $typesArray = ['site', 'area', 'shelf'];
+            if (in_array($_POST['type'], $typesArray)) {
+                if (isset($_POST['id']) && isset($_POST['name'])) {
+                    $type = $_POST['type'];
+                    $id = $_POST['id'];
+                    $name = $_POST['name'];
+
+                    $sql = "UPDATE $type SET name='$name' WHERE id=$id";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        header("Location: ../admin.php?error=".$type."ConnectionSQL#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt);
+
+                        header("Location: ../admin.php?success=updated&type=$type&id=$id#stocklocations-settings");
+                        exit();
+                    }  
+                } else {
+                    header("Location: ../admin.php?error=propertyMissing#stocklocations-settings");
+                    exit();
+                }            
+            } else {
+                header("Location: ../admin.php?error=unknwonType#stocklocations-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=noType#stocklocations-settings");
+            exit();
         }
     } else {
         header("Location: ../admin.php?error=submitIssue");

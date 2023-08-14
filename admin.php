@@ -391,7 +391,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <th>shelf_name</th>
                                     <th hidden>shelf_area_id</th>
                                     <th style="border-left:2px solid #95999c"></th>
-                                    <th></th>
+                                    <th hidden></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -403,9 +403,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     $color2 = '#ffe47a';
                                     $color3 = '#FFDEAD';
                                 } else {
-                                    // $color1 = '#79a8b8';
-                                    // $color2 = '#95cbe4';
-                                    // $color3 = '#a8d8db';
                                     $color1 = '#6abad6';
                                     $color2 = '#99d4ef';
                                     $color3 = '#c1e9fc';
@@ -415,74 +412,86 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     echo('<tr style="background-color:#343a40"><td colspan=9></td></tr>');
                                 }
                                 echo('<tr style="background-color:'.$color1.' !important; color:black">
-                                        <td class="stockTD" style="">'.$site['site_id'].'</td>
-                                        <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" value="'.$site['site_name'].'" style="width:150px"/></td>
-                                        <td hidden>'.$site['site_description'].'</td>
-                                        <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
-                                        <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
-                                        <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
-                                            <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
-                                                <i class="fa fa-save"></i>
-                                            </button>
-                                        </td>
-                                        <td class="stockTD" style="background-color:#21272b; ">
-                                            <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
-                                                <i class="fa fa-pencil"></i>
-                                            </button>
-                                        </td>
-                                        <td class="stockTD" style="background-color:#21272b; ">
-                                            <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>');
-                                foreach ($site['areas'] as $area) {
-                                    echo('<tr style="background-color:'.$color2.' !important; color:black">
-                                            <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
-                                            <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
-                                            <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" value="'.$area['area_name'].'" style="width:150px"/></td>
-                                            <td class="stockTD" hidden>'.$area['area_description'].'</td>
-                                            <td class="stockTD" hidden>'.$area['area_site_id'].'</td>
-                                            <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
+                                        <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                            <input type="hidden" name="type" value="site" />
+                                            <input type="hidden" name="id" value="'.$site['site_id'].'" />
+                                            <td class="stockTD" style="">'.$site['site_id'].'</td>
+                                            <td class="stockTD" style=""><input class="form-control stockTD-input" name="name" type="text" value="'.$site['site_name'].'" style="width:150px"/></td>
+                                            <td hidden><input class="form-control stockTD-input" type="text" name="description" value="'.$site['site_description'].'" /></td>
+                                            <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                             <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
-                                                <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                     <i class="fa fa-save"></i>
                                                 </button>
                                             </td>
-                                            <td class="stockTD" style="background-color:#21272b; ">
-                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                            <td class="stockTD" style="background-color:#21272b; " hidden>
+                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
                                             </td>
                                             <td class="stockTD" style="background-color:#21272b; ">
-                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
+                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </td>
-                                        </tr>');
-                                    foreach ($area['shelves'] as $shelf) {
-                                        echo('<tr style="background-color:'.$color3.' !important; color:black">
-                                                <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
-                                                <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
-                                                <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
-                                                <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
-                                                <td class="stockTD" hidden>'.$shelf['shelf_area_id'].'</td>
+                                        </form>
+                                    </tr>');
+                                foreach ($site['areas'] as $area) {
+                                    echo('<tr style="background-color:'.$color2.' !important; color:black">
+                                            <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                <input type="hidden" name="type" value="area" />
+                                                <input type="hidden" name="id" value="'.$area['area_id'].'" />
+                                                <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
+                                                <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
+                                                <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
+                                                <td class="stockTD" hidden><input class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
+                                                <td class="stockTD" hidden>'.$area['area_site_id'].'</td>
+                                                <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
+                                                <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                                 <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
-                                                    <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                    <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                         <i class="fa fa-save"></i>
                                                     </button>
                                                 </td>
-                                                <td class="stockTD" style="background-color:#21272b; ">
-                                                    <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
+                                                <td class="stockTD" style="background-color:#21272b; " hidden>
+                                                    <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
                                                 </td>
                                                 <td class="stockTD" style="background-color:#21272b; ">
-                                                    <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" disabled>
+                                                    <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </td>
+                                            </form>
+                                        </tr>');
+                                    foreach ($area['shelves'] as $shelf) {
+                                        echo('<tr style="background-color:'.$color3.' !important; color:black">
+                                                <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                    <input type="hidden" name="type" value="shelf" />
+                                                    <input type="hidden" name="id" value="'.$shelf['shelf_id'].'" />
+                                                    <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
+                                                    <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
+                                                    <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
+                                                    <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
+                                                    <td class="stockTD" hidden>'.$shelf['shelf_area_id'].'</td>
+                                                    <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                        <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
+                                                            <i class="fa fa-save"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="stockTD" style="background-color:#21272b; " hidden>
+                                                        <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="stockTD" style="background-color:#21272b; ">
+                                                        <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </form>
                                             </tr>');
                                     }
                                 }

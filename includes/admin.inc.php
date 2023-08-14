@@ -10,6 +10,34 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
+    // check the row is there to be edited. if not, add it.
+    include 'dbh.inc.php';
+    $sql = "SELECT * FROM config";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        $errors[] = "configTableSQLConnection";
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount > 1) {
+            header("Location: ../admin.php?error=tooManyConfigRows");
+            exit();
+        } elseif ($rowCount < 1) {
+            // add a blank row to the table
+            $sql = "INSERT INTO config (id) 
+                                VALUES (1)";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ../admin.php?error=configConnectionSQL");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt);
+            }  
+        } else {
+            // all good, continue.
+        }
+    }
     if (isset($_POST['global-submit'])) { // GLOBAL saving
         $errors = [];
          
@@ -204,14 +232,33 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 }
             }           
         }
-
-        if (count($queryStrings) < 1) {
-            $queryString = '?'.implode('&', array_slice($queryStrings));
+        
+        if (count($queryStrings) > 1) {
+            $queryString = implode('&', $queryStrings);
         } elseif (count($queryStrings) == 1) {
-            $queryString = '?'.$queryStrings[0];
+            $queryString = $queryStrings[0];
         } else {
             $queryString = '';
         }
+
+        if (count($errors) >= 1) {
+            $error = implode('&', $errors);
+        } elseif (count($errors) == 1) {
+            $error = $errors[0];
+        }  else {
+            $error = '';
+        }
+        
+        if ($error !== '') {
+            if ($queryString !== '') {
+                $error = '&error='.$error;
+            } else {
+                $error = 'error='.$error;
+            }
+        }
+        
+        $queryString = '?'.$queryString.$error;
+
         header("Location: ../admin.php$queryString#global-settings");
         exit();
 

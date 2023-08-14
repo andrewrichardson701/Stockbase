@@ -385,7 +385,7 @@ if (isset($_POST['submit'])) {
                                                     mysqli_stmt_execute($stmt_stock_removeQuantity);
                                                     $rows_stock_removeQuantity = $conn->affected_rows;
                                                     if ($rows_stock_removeQuantity == 1) {
-                                                        echo("<br>Item Updated for stock_id: $stock_id , Row count: $rows_stock_removeQuantity , Item ID: $stock_itemSelectID_id<br>");
+                                                        // echo("<br>Item Updated for stock_id: $stock_id , Row count: $rows_stock_removeQuantity , Item ID: $stock_itemSelectID_id<br>");
                                                         // ADD TRANSACTION
                                                         $type = 'remove';
                                                         $date = date('Y-m-d'); // current date in YYY-MM-DD format

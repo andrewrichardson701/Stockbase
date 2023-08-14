@@ -244,7 +244,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </button>
                         </div>
                         <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
-                            <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'/\')">
+                            <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'./\')">
                                 Item Stock
                             </button>
                         </div>');

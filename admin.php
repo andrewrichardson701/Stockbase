@@ -337,7 +337,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         <!-- Stock Location Settings -->
         <div style="padding-top: 20px" id="stocklocations" hidden>
-            <p class="red">Still needs sorting... This will show all stock sites, areas, shelves - Need to make all of the cells (except ids) input boxes and forms for submitting on saving.</p>
+            <p class="red">Still needs sorting... This will show all stock sites, areas, shelves - Need to work out how the edit buttons will work (hidden cells) and how to check if the relationships are good for deletion to enable the delete buttons.</p>
 
 
             <?php

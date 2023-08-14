@@ -132,8 +132,8 @@ if (isset($_POST['submit'])) {
                 $result_sku = mysqli_stmt_get_result($stmt_sku);
                 $rowCount_sku = $result_sku->num_rows;
                 if ($rowCount_sku < 1) {
-                    header("Location: ".$redirect_url.$reditect_queies."&error=noSkusInTable");
-                    exit();
+                    // header("Location: ".$redirect_url.$reditect_queies."&error=noSkusInTable");
+                    // exit();
                 } else {
                     while ($row_sku = $result_sku->fetch_assoc() ){
                         array_push($skus, $row_sku['sku']);
@@ -141,7 +141,47 @@ if (isset($_POST['submit'])) {
                 }
             }
 
-            $regex = '/^###\d{5}$/';
+            $sql_d_config = "SELECT sku_prefix FROM config_default WHERE id=1";
+            $stmt_d_config = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_d_config, $sql_d_config)) {
+                header("Location: ../$redirect_url.$redirect_queries&error=stockTableSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_d_config);
+                $result_d_config = mysqli_stmt_get_result($stmt_d_config);
+                $rowCount_d_config = $result_d_config->num_rows;
+                if ($rowCount_d_config < 1) {
+                    // header("Location: ".$redirect_url.$reditect_queies."&error=noSkusInTable");
+                    // exit();
+                } else {
+                    while ($row_d_config = $result_d_config->fetch_assoc() ){
+                        $config_d_sku_prefix = isset($row_d_config['sku_prefix']) ? $row_d_config['sku_prefix'] : 'ITEM-';
+                    }
+                }
+            }
+
+            $sql_config = "SELECT sku_prefix FROM config WHERE id=1";
+            $stmt_config = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
+                header("Location: ../$redirect_url.$redirect_queries&error=stockTableSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_config);
+                $result_config = mysqli_stmt_get_result($stmt_config);
+                $rowCount_config = $result_config->num_rows;
+                if ($rowCount_config < 1) {
+                    // header("Location: ".$redirect_url.$reditect_queies."&error=noSkusInTable");
+                    // exit();
+                } else {
+                    while ($row_config = $result_config->fetch_assoc() ){
+                        $config_sku_prefix = isset($row_config['sku_prefix']) ? $row_config['sku_prefix'] : $config_d_sku_prefix;
+                    }
+                }
+            }
+
+            $current_sku_prefix = isset($config_sku_prefix) ? $config_sku_prefix : 'ITEM-';
+
+            $regex = '/^'.$current_sku_prefix.'\d{5}$/';
             $PRE_skus = preg_grep($regex, $skus);
             if ($sku !== '') {
                 // SKU is not blank
@@ -155,7 +195,7 @@ if (isset($_POST['submit'])) {
                     return strnatcmp($a, $b);
                 });
                 $new_PRE_sku_number = ((int)substr(end($PRE_skus), 3) +1);
-                $new_PRE_skus = '###' . str_pad($new_PRE_sku_number, 5, '0', STR_PAD_LEFT);
+                $new_PRE_skus = $current_sku_prefix . str_pad($new_PRE_sku_number, 5, '0', STR_PAD_LEFT);
                 $sku = $new_PRE_skus;
             }
             

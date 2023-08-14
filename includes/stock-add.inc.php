@@ -93,7 +93,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     $result = mysqli_stmt_get_result($stmt);
                                     $rowCount = $result->num_rows;
                                     if ($rowCount < 1) {
-                                        echo('<option value="0">No Manufacturers Found...</option>');
+                                        echo('<option value="0">No Lables Found...</option>');
                                     } else {
                                         // rows found
                                         while ($row = $result->fetch_assoc()) {

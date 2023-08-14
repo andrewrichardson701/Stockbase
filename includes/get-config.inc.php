@@ -53,6 +53,7 @@ if (!mysqli_stmt_prepare($stmt_roles, $sql_roles)) {
     }
 }
 
+// get config
 $sql_config = "SELECT * FROM config ORDER BY id LIMIT 1";
 $stmt_config = mysqli_stmt_init($conn);
 if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {

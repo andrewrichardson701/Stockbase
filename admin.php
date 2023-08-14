@@ -205,13 +205,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         INNER JOIN users_roles ON users.role_id = users_roles.id";
                         $stmt_users = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-                            echo('<td colspan=7><or class="red">SQL Issue with `users` table.</or></td>');
+                            echo('<td colspan=9><or class="red">SQL Issue with `users` table.</or></td>');
                         } else {
                             mysqli_stmt_execute($stmt_users);
                             $result_users = mysqli_stmt_get_result($stmt_users);
                             $rowCount_users = $result_users->num_rows;
                             if ($rowCount_users < 1) {
-                                echo ('<td colspan=7><or class="red">No Users in table: `users`.</or></td>');
+                                echo ('<td colspan=9><or class="red">No Users in table: `users`.</or></td>');
                             } else {
                                 while($row_users = $result_users->fetch_assoc()) {
                                     $user_id = $row_users['id'];
@@ -227,13 +227,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     $sql_roles = "SELECT * FROM users_roles";
                                     $stmt_roles = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_roles, $sql_roles)) {
-                                        echo('<td colspan=7><or class="red">SQL Issue with `users` table.</or></td>');
+                                        echo('SQL Issue with `users` table.');
                                     } else {
                                         mysqli_stmt_execute($stmt_roles);
                                         $result_roles = mysqli_stmt_get_result($stmt_roles);
                                         $rowCount_roles = $result_roles->num_rows;
                                         if ($rowCount_roles < 1) {
-                                            echo ('<td colspan=7><or class="red">No Roles in table: `users`.</or></td>');
+                                            echo ('No Roles in table: `users_roles`.');
                                         } else {
                                             $i = 0;
                                             while ($row_roles = $result_roles->fetch_assoc()) {
@@ -281,6 +281,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </td>
                                         ');
                                 }
+                                echo('<tr style="background-color:#21272b"><td></td><td colspan=8><button class="btn btn-success" type="button" onclick="navPage(\'addlocaluser.php\');"><i class="fa fa-plus"></i> Add</button></td></tr>');
                             }
                         }
                     ?>

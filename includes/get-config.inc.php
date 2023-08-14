@@ -90,8 +90,8 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_smtp_username       = isset($config['smtp_username']) ? $config['smtp_username'] : '';
             // $config_smtp_password       = base64_decode($config['smtp_password']); 
             $config_smtp_encryption     = isset($config['smtp_encryption']) ? $config['smtp_encryption'] : '';
-            $config_smtp_host           = isset($config['smtp_host']) ? $config['smtp_encryption'] : '';
-            $config_smtp_port           = isset($config['smtp_port']) ? $config['smtp_host'] : '';       
+            $config_smtp_host           = isset($config['smtp_host']) ? $config['smtp_host'] : '';
+            $config_smtp_port           = isset($config['smtp_port']) ? $config['smtp_port'] : '';       
             $config_smtp_from_email     = isset($config['smtp_from_email']) ? $config['smtp_from_email'] : ''; 
             $config_smtp_from_name      = isset($config['smtp_from_name']) ? $config['smtp_from_name'] : ''; 
             $config_smtp_to_email       = isset($config['smtp_to_email']) ? $config['smtp_to_email'] : '';   

@@ -13,9 +13,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <?php // dependency PHP
     // $show_inventory = 1; // for nav.php to show the site and area on the banner - no longer used.
     ?>
-
-    <a href="links.php" class="skip-nav-link-inv">show links</a>
-
+    
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->

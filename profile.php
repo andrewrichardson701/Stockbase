@@ -13,11 +13,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <body>
     <div class="content">
         <?php // dependency PHP
-        
 
         ?>
-
-        <a href="links.php" class="skip-nav-link-inv">show links</a>
 
         <!-- Header and Nav -->
         <?php include 'nav.php'; ?>

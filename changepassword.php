@@ -19,10 +19,7 @@ if ($_SESSION['auth'] == "ldap") {
 <body>
     <?php // dependency PHP
     
-
     ?>
-
-    <a href="links.php" class="skip-nav-link-inv">show links</a>
 
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>

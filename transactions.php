@@ -11,8 +11,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <title><?php echo ucwords($current_system_name);?> - Transactions</title>
 </head>
 <body>
-    <a href="links.php" class="skip-nav-link-inv">show links</a>
-
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->

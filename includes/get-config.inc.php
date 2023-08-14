@@ -42,7 +42,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
     $result_config = mysqli_stmt_get_result($stmt_config);
     $rowCount_config = $result_config->num_rows;
     if ($rowCount_config < 1) {
-        echo ("No custom config found");
+        // echo ("No custom config found");
         $config_system_name         = '';
         $config_banner_color        = '';
         $config_logo_image          = '';

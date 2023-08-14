@@ -146,7 +146,8 @@ if ! dpkg -l | grep -q "mysql-server"; then
     echo "MySQL installed!"
     sudo mysql_secure_installation
 fi
-
+echo ""
+echo ""
 # Ask for folder input and check if it exists
 while true; do
     # Ask for folder input and allow creating the folder if needed
@@ -200,7 +201,9 @@ while true; do
     esac
 done
 
+protocol="http"
 if [ "$use_ssl" = true ]; then
+    protocol="https"
     echo "SSL is enabled."
     echo "SSL Certificate File: $ssl_certificate"
     echo "SSL Key File: $ssl_key"
@@ -354,6 +357,7 @@ echo "User needed to access the database."
 
 # Check if 'inventory' user exists
 echo "Checking if inventory user exists..."
+echo ""
 user_exists=$(mysql -u root -e "SELECT User FROM mysql.user WHERE User='inventory' AND Host='localhost';" --skip-column-names)
 
 if [ -n "$user_exists" ]; then
@@ -363,9 +367,11 @@ if [ -n "$user_exists" ]; then
     while true; do
         read -p "Do you want to drop the user? (Y/N): " drop_user
         case "$drop_user" in
-            [Yy]* ) mysql -u root -e "DROP USER 'inventory'@'localhost';"
+            [Yy]* ) 
+                    mysql -u root -e "DROP USER 'inventory'@'localhost';"
                     mysql -u root -e "flush privileges;"
                     echo "User 'inventory' dropped."
+                    echo ""
                     while true; do
                         read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
                         echo
@@ -385,6 +391,7 @@ if [ -n "$user_exists" ]; then
                     done
                     break;;
             [Nn]* ) 
+                    echo ""
                     while true; do
                         read -p "Enter the password for 'inventory' user: " inventory_user_password;
                         if mysql -u inventory -p"$inventory_user_password" -e ";" 2>/dev/null; then
@@ -400,6 +407,7 @@ if [ -n "$user_exists" ]; then
         esac
     done
 else 
+    echo ""
     while true; do
         read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
         echo
@@ -433,9 +441,9 @@ fi
 echo ""
 
 # Generate and hash password
-echo "Generating new password..."
+echo "Generating new root user password..."
 generate_password
-echo "Hashing new password..."
+echo "Hashing new root user password..."
 hash_password
 
 # get system hostname
@@ -450,11 +458,112 @@ mysql -u root -e "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"
 echo "Done!"
 echo ""
 
+while true; do
+    echo "Do you want to enable LDAP windows authentication?"
+    echo "You will be requried to enter all of the details here, however you will still be able to login as root"
+    echo "You can test the LDAP config on the admin settings page at $protocol://$web_domain/admin.php#ldap-settings"
+    read -p "Enable LDAP? (Y/N): " ldap_enabled
+    case "$ldap_enabled" in
+        [Yy]* ) 
+            ldap_enabled=1
+            while true; do
+                echo
+                read -p "LDAP authentication username: " ldap_username
+                echo
+                read -s -p "LDAP authentication password: " ldap_password
+                echo
+                read -p "LDAP domain: " ldap_domain
+                echo
+                read -p "LDAP host: " ldap_host
+                echo
+                read -p "Secondary LDAP host (this can be blank): " ldap_host_secondary
+                echo
+                read -p "LDAP port: " ldap_port
+                echo
+                read -p "LDAP Base DN: " ldap_basedn
+                echo
+                read -p "LDAP User Group: " ldap_usergroup
+                echo
+                read -p "LDAP User Filter: " ldap_userfilter
+                echo    
+                    ldap_password_hash=$(echo -n "$ldap_password" | base64)
+                    echo "Pushing settings to config..."
+                    mysql -u root -e "UPDATE inventory.config SET ldap_enabled=$ldap_enabled, ldap_username='$ldap_username', ldap_password='$ldap_password_hash', ldap_domain='$ldap_domain', ldap_host='$ldap_host', ldap_host_secondary='$ldap_host_secondary', ldap_port=$ldap_port, ldap_basedn='$ldap_basedn', ldap_usergroup='$ldap_usergroup', ldap_userfilter='$ldap_userfilter' WHERE id=1;"
+                    echo "Config Saved."
+                    correct_password="Y"
+                break
+            done
+            break;;
+        [Nn]* ) 
+            ldap-enabled=0
+            mysql -u root -e "UPDATE config SET ldap_enabled=$ldap_enabled WHERE id=1;"
+            echo "LDAP disabled."
+            break;;
+        * ) echo "Please answer Y or N.";;
+    esac
+done
+echo ""
+
+while true; do
+    echo "Input SMTP email details now?"
+    echo "You will be requried to enter all of the details here."
+    echo "You can test/change the SMTP config on the admin settings page at $protocol://$web_domain/admin.php#smtp-settings"
+    read -p "Configure SMTP now? (Y/N): " smtp_config
+    case "$smtp_config" in
+        [Yy]* ) 
+            while true; do
+                echo
+                read -p "SMTP Host (e.g. mail.domain.com): " smtp_host
+                echo
+                read -p "SMTP Port: " smtp_port
+                echo
+                echo "Select SMTP encryption."
+                echo " 1. STARTTLS"
+                echo " 2. TLS"
+                echo " 3. SSL"
+                while true; do
+                    
+                    read -p "SMTP Encryption: " smtp_encryption_value
+                    case "$smtp_encryption_value" in
+                        [1]* ) 
+                            smtp_encryption="starttls"
+                            break;;
+                        [2]* ) 
+                            smtp_encryption="tls"
+                            break;;
+                        [3]* ) 
+                            smtp_encryption="ssl"
+                            break;;
+                        * ) echo "Please select from either 1, 2 or 3.";;
+                    esac
+                done
+                read -p "SMTP Username: " smtp_username
+                echo
+                read -s -p "SMTP Password: " smtp_password
+                echo
+                read -p "SMTP From Email: " smtp_from_email
+                echo
+                read -p "SMTP From Name: " smtp_from_name
+                echo
+                read -p "SMTP To Email (Backup): " smtp_to_email
+                echo
+                    smtp_password_hash=$(echo -n "$smtp_password" | base64)
+                    echo "Pushing settings to config..."
+                    mysql -u root -e "UPDATE inventory.config SET smtp_host='$smtp_host', smtp_port=$smtp_port, smtp_encryption='$smtp_encryption', smtp_username='$smtp_username', smtp_password='$smtp_password_hash', smtp_from_email='$smtp_from_email', smtp_from_name='$smtp_from_name', smtp_to_email='$smtp_to_email' WHERE id=1;"
+                    echo "Config Saved."
+                break
+            done
+            break;;
+        [Nn]* ) 
+            echo "SMTP not configured."
+            break;;
+        * ) echo "Please answer Y or N.";;
+    esac
+done
+echo ""
+
 # Display the web URL for accessing the system
-protocol="http"
-if [ "$use_ssl" = true ]; then
-    protocol="https"
-fi
+
 echo "============================================================================="
 echo ""
 echo "=   You can access the system at: $protocol://$web_domain"

@@ -362,7 +362,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 $name_suffix = '';
                                                 if ($nameColor !== false && $nameColor !== null && $nameColor !== '') {
                                                     $nameColorHex = getColorHexFromName($nameColor);
-                                                    $complement_nameColor = getComplement($nameColorHex);
+                                                    $complement_nameColor = getWorB($nameColorHex);
                                                     $name_prefix = "<or style='background-color: $nameColorHex; color: $complement_nameColor'>";
                                                     $name_suffix = "</or>";
                                                 }

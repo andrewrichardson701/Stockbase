@@ -84,10 +84,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 </label>
                             </td>
                             <td style="width:170px;margin-left:25px">
-                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getComplement($current_banner_color)); ?>;background-color:<?php echo($current_banner_color); ?>"><?php echo($current_banner_color); ?></span></label>
+                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($current_banner_color)); ?>;background-color:<?php echo($current_banner_color); ?>"><?php echo($current_banner_color); ?></span></label>
                             </td>
                             <td style="width:200px;margin-left:25px">
-                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getComplement($default_banner_color)); ?>;background-color:<?php echo($default_banner_color); ?>"><?php echo($default_banner_color); ?></span></label>
+                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($default_banner_color)); ?>;background-color:<?php echo($default_banner_color); ?>"><?php echo($default_banner_color); ?></span></label>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="banner-logo">

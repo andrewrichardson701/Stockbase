@@ -9,8 +9,6 @@ $predefined_config_favicon_image = 'default/default-favicon.png';
 $predefined_config_currency = '£';
 $predefined_sku_prefix = 'ITEM-';
 
-$config_admin_roles_array = ["Root", "Admin"];
-
 function getWorB($hexCode) {
     // Convert the hex code to an RGB array.
     $hex = str_replace('#', '', $hexCode);
@@ -32,6 +30,28 @@ function getComplement($hex) { // get inverted colour
 
 
 include 'dbh.inc.php';
+
+// get admin capable user roles
+$config_admin_roles_array = [];
+
+$sql_roles = "SELECT * FROM users_roles ORDER BY id";
+$stmt_roles = mysqli_stmt_init($conn);
+if (!mysqli_stmt_prepare($stmt_roles, $sql_roles)) {
+    echo("ERROR getting entries");
+} else {
+    mysqli_stmt_execute($stmt_roles);
+    $result_roles = mysqli_stmt_get_result($stmt_roles);
+    $rowCount_roles = $result_roles->num_rows;
+    if ($rowCount_roles < 1) {
+        echo ("No User Roles in the users_roles table. Something is wrong here...");
+    } else {
+        while ( $role = $result_roles->fetch_assoc() ) {
+            if ($role['is_admin'] == 1 || $role['is_root'] == 1) {
+                $config_admin_roles_array[] = $role['name'];
+            }
+        }
+    }
+}
 
 $sql_config = "SELECT * FROM config ORDER BY id LIMIT 1";
 $stmt_config = mysqli_stmt_init($conn);

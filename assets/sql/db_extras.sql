@@ -31,6 +31,8 @@ ALTER TABLE stock_label AUTO_INCREMENT = 1;
 ALTER TABLE transaction AUTO_INCREMENT = 1;
 
 
+-- Add blank config to config table ready to be edited
+INSERT INTO config (id) VALUES (1);
 
 -- Add config_default to the table 
 INSERT INTO config_default 

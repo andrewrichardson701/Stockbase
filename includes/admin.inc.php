@@ -6,7 +6,7 @@
 // print_r($_POST);
 //         exit();
 
-if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit'])) {
+if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit'])) {
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
@@ -640,6 +640,74 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         } else {
             header("Location: ../admin.php?error=noUserSubmit#Users");
             exit();
+        }
+    } elseif (isset($_POST['location-submit'])) { // adding locations e.g. sites/areas/shelves
+        if (isset($_POST['index'])) { // come from the index page - this only happens when there are no sites/areas/shelves
+            // print_r($_POST);
+            // exit();
+
+            if (!isset($_POST['site-name']))        { header("Location: ../index.php?error=missingSiteName");        exit(); }
+            if (!isset($_POST['site-description'])) { header("Location: ../index.php?error=missingSiteDescription"); exit(); }
+            if (!isset($_POST['area-name']))        { header("Location: ../index.php?error=missingAreaName");        exit(); }
+            if (!isset($_POST['area-description'])) { header("Location: ../index.php?error=missingAreaDescription"); exit(); }
+            if (!isset($_POST['shelf-name']))       { header("Location: ../index.php?error=missingShelfName");       exit(); }
+
+            $site_name        = $_POST['site-name'];
+            $site_description = $_POST['site-description'];
+            $area_name        = $_POST['area-name'];
+            $area_description = $_POST['area-description'];
+            $shelf_name       = $_POST['shelf-name'];
+
+            include 'dbh.inc.php';
+
+            //insert to site
+            $sql_site = "INSERT INTO site (name, description) 
+                            VALUES (?, ?)";
+            $stmt_site = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                header("Location: ../index.php?error=siteSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_bind_param($stmt_site, "ss", $site_name, $site_description);
+                mysqli_stmt_execute($stmt_site);
+                // get new site id
+                $site_id = mysqli_insert_id($conn); // ID of the new row in the table.
+
+                //insert to area 
+                $sql_area = "INSERT INTO area (name, description, site_id) 
+                            VALUES (?, ?, ?)";
+                $stmt_area = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
+                    header("Location: ../index.php?error=areaSQLConnection");
+                    exit();
+                } else {
+                    mysqli_stmt_bind_param($stmt_area, "sss", $area_name, $area_description, $site_id);
+                    mysqli_stmt_execute($stmt_area);
+                    // get new area id
+                    $area_id = mysqli_insert_id($conn); // ID of the new row in the table.
+
+                    //insert to area 
+                    $sql_shelf = "INSERT INTO shelf (name, area_id) 
+                                VALUES (?, ?)";
+                    $stmt_shelf = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
+                        header("Location: ../index.php?error=shelfSQLConnection");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt_shelf, "ss", $shelf_name, $area_id);
+                        mysqli_stmt_execute($stmt_shelf);
+                        // get new shelf id
+                        $shelf_id = mysqli_insert_id($conn); // ID of the new row in the table.
+
+                        // redirect back - all worked
+                        header("Location: ../index.php?success=allAdded&site_id=$site_id&area_id=$area_id&shelf_id=$shelf_id");
+                        exit();
+                    }
+                }
+            }
+
+
+
         }
     } else {
         header("Location: ../admin.php?error=submitIssue");

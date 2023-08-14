@@ -241,7 +241,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 $rowCount_site = $result_site->num_rows;
                 if ($rowCount_site < 1) {
                     echo ("No sites found");
-                    exit();
+                    // exit();
                 } else {
                     
                     while( $row = $result_site->fetch_assoc() ) {
@@ -270,7 +270,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     $result_area = mysqli_stmt_get_result($stmt_area);
                     $rowCount_area = $result_area->num_rows;
                     if ($rowCount_area < 1) {
-                        // echo ("No areas found");
+                        echo ("No areas found");
                         // exit();
                     } else {
                         while( $row = $result_area->fetch_assoc() ) {
@@ -285,195 +285,307 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 }
             }
 
-            echo('
-                <div class="container" style="padding-bottom:25px">
-                    <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name));
-                    if ($site !== '0') { $area_name = $area == 0 ? "All" : $area_names_array[$area]; echo(' - '.$area_name);}
-                echo('</h2>
-                <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
-                </div>
+            // Check for site/area/shelf count
+            $siteCount = $rowCount_site;
 
-                <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
-                    <div class="nav-row">
-                        <form action="./" method="get" class="nav-row" style="max-width:max-content">
-                            <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
-                            <input id="query-area" type="hidden" name="area" value="'.$area.'" />');
-                            echo ('
-                            <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
-                                <label for="search-input-site">Site</label><br>
-                                <select id="site-dropdown" name="site" class="form-control nav-v-b cw" style="background-color:484848;border-color:black;margin:0;padding-left:0" onchange="siteChange(\'site-dropdown\')">
-                                <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
-                            ');
-                            if (!empty($site_names_array)) {
-                                foreach (array_keys($site_names_array) as $site_id) {
-                                    $site_name = $site_names_array[$site_id];
-                                    echo('<option style="color:white" value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
-                                }
-                            }
-                            
-                            echo('
-                                </select>
-                            </span>
-                            ');  
-                            echo ('
-                            <span id="search-input-area-span" style="margin-right: 10px; padding-left:12px">
-                                <label for="search-input-manufacturer">Area</label><br>
-                                    <select id="area-dropdown" name="area" class="form-control nav-v-b cw" style="background-color:#484848;border-color:black;margin:0;padding-left:0" onchange="areaChange(\'area-dropdown\')">
+            $sql_areaCheck = "SELECT DISTINCT area.id, area.name, area.description
+                        FROM area 
+                        ORDER BY area.id";
+            $stmt_areaCheck = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_areaCheck, $sql_areaCheck)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_areaCheck);
+                $result_areaCheck = mysqli_stmt_get_result($stmt_areaCheck);
+                $rowCount_areaCheck = $result_areaCheck->num_rows;
+                $areaCount = $rowCount_areaCheck;
+            }
+
+            $sql_shelfCheck = "SELECT DISTINCT site.id, site.name    
+                        FROM site 
+                        ORDER BY site.id";
+            $stmt_shelfCheck = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_shelfCheck, $sql_shelfCheck)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_shelfCheck);
+                $result_shelfCheck = mysqli_stmt_get_result($stmt_shelfCheck);
+                $rowCount_shelfCheck = $result_shelfCheck->num_rows;
+                $shelfCount = $rowCount_shelfCheck;
+            }
+
+            if (!$siteCount > 0 || !$areaCount > 0 || !$shelfCount > 0) {
+                // missing sites or areas
+                echo('
+                    <div class="container" style="padding-bottom:25px">
+                        <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name).'</h2>
+                        <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
+                        <p>There are no Sites, Areas or Shelves in the database. To continue, we need to add atleast one.<br> 
+                        More can be added from the admin page.</p>
+                    </div>
+                    <div class="container">
+                        
+                        <form id="addLocations" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                            <input type="hidden" name="index" value="1"/>
+                            <table id="area-table">
+                                <tbody>
+                                    <tr class="nav-row" id="area-headings" style="margin-bottom:20px">
+                                        <th style="width:250px;"><h3 style="font-size:22px">Add Site</h3></th>
+                                        <th style="width: 250px"></th>
+                                    </tr>
+                                    <tr class="nav-row" id="site-name-row">
+                                        <td id="site-name-label" style="width:250px;margin-left:25px">
+                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="site-name">Site Name:</p>
+                                        </td>
+                                        <td id="site-name-input">
+                                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="site-name" name="site-name"required>
+                                        </td>
+                                    </tr>
+                                    <tr class="nav-row" id="site-description-row">
+                                        <td id="site-description-label" style="width:250px;margin-left:25px">
+                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="site-description">Site Description:</p>
+                                        </td>
+                                        <td id="site-description-input">
+                                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="site-description" name="site-description"required>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="nav-row" id="area-headings" style="margin-top:50px;margin-bottom:20px">
+                                        <th style="width:250px;"><h3 style="font-size:22px">Add Area</h3></th>
+                                        <th style="width: 250px"></th>
+                                    </tr>
+                                    <tr class="nav-row" id="area-name-row">
+                                        <td id="area-name-label" style="width:250px;margin-left:25px">
+                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="area-name">Area Name:</p>
+                                        </td>
+                                        <td id="area-name-input">
+                                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="area-name" name="area-name"required>
+                                        </td>
+                                    </tr>
+                                    <tr class="nav-row" id="area-description-row">
+                                        <td id="area-description-label" style="width:250px;margin-left:25px">
+                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="area-description">Area Description:</p>
+                                        </td>
+                                        <td id="area-description-input">
+                                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="area-description" name="area-description"required>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="nav-row" id="shelf-headings" style="margin-top:50px;margin-bottom:20px">
+                                        <th style="width:250px;"><h3 style="font-size:22px">Add Shelf</h3></th>
+                                        <th style="width: 250px"></th>
+                                    </tr>
+                                    <tr class="nav-row" id="shelf-name-row">
+                                        <td id="shelf-name-label" style="width:250px;margin-left:25px">
+                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="shelf-name">Shelf Name:</p>
+                                        </td>
+                                        <td id="shelf-name-input">
+                                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="shelf-name" name="shelf-name"required>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="nav-row" style="margin-top:20px">
+                                        <td style="width:250px">
+                                            <input id="location-submit" type="submit" name="location-submit" class="btn btn-success" style="margin-left:25px" value="Submit">
+                                        </td>
+                                        <td style="width:250px">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                ');
+            } else {
+                // all is as expected. we have sites and areas
+                echo('
+                    <div class="container" style="padding-bottom:25px">
+                        <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name));
+                        if ($site !== '0') { $area_name = $area == 0 ? "All" : $area_names_array[$area]; echo(' - '.$area_name);}
+                    echo('</h2>
+                    <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
+                    </div>
+
+                    <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
+                        <div class="nav-row">
+                            <form action="./" method="get" class="nav-row" style="max-width:max-content">
+                                <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
+                                <input id="query-area" type="hidden" name="area" value="'.$area.'" />');
+                                echo ('
+                                <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
+                                    <label for="search-input-site">Site</label><br>
+                                    <select id="site-dropdown" name="site" class="form-control nav-v-b cw" style="background-color:484848;border-color:black;margin:0;padding-left:0" onchange="siteChange(\'site-dropdown\')">
                                     <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
                                 ');
-                                if (!empty($area_names_array)) {
-                                    foreach (array_keys($area_names_array) as $area_id) {
-                                        $area_name = $area_names_array[$area_id];
-                                        echo('<option style="color:white" value="'.$area_id.'"'); if ($area == $area_id) { echo('selected'); } echo('>'.$area_name.'</option>');
+                                if (!empty($site_names_array)) {
+                                    foreach (array_keys($site_names_array) as $site_id) {
+                                        $site_name = $site_names_array[$site_id];
+                                        echo('<option style="color:white" value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
                                     }
                                 }
                                 
+                                echo('
+                                    </select>
+                                </span>
+                                ');  
+                                echo ('
+                                <span id="search-input-area-span" style="margin-right: 10px; padding-left:12px">
+                                    <label for="search-input-manufacturer">Area</label><br>
+                                        <select id="area-dropdown" name="area" class="form-control nav-v-b cw" style="background-color:#484848;border-color:black;margin:0;padding-left:0" onchange="areaChange(\'area-dropdown\')">
+                                        <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
+                                    ');
+                                    if (!empty($area_names_array)) {
+                                        foreach (array_keys($area_names_array) as $area_id) {
+                                            $area_name = $area_names_array[$area_id];
+                                            echo('<option style="color:white" value="'.$area_id.'"'); if ($area == $area_id) { echo('selected'); } echo('>'.$area_name.'</option>');
+                                        }
+                                    }
+                                    
+                                
+                                echo('
+                                    </select>
+                                </span>
+                                ');
+                                echo('
+                                <span id="search-input-name-span" style="margin-right: 10px;margin-left:10px">
+                                    <label for="search-input-name">Name</label><br>
+                                    <input id="search-input-name" type="text" name="name" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
+                                </span>
+                                <span id="search-input-sku-span" style="margin-right: 10px">
+                                    <label for="search-input-sku">SKU</label><br>
+                                    <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:160px;display:inline-block" placeholder="Search by SKU" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
+                                </span>
+                                <span id="search-input-shelf-span" style="margin-right: 10px" hidden>
+                                    <label for="search-input-shelf">Shelf</label><br>
+                                    <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
+                                </span>
+                                <span id="search-input-manufacturer-span" style="margin-right: 10px">
+                                    <label for="search-input-manufacturer">Manufacturer</label><br>
+                                    <input id="search-input-manufacturer" type="text" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Manufacturer" value="'); echo(isset($_GET['manufacturer']) ? $_GET['manufacturer'] : ''); echo('" />
+                                </span>
+                                <span id="search-input-label-span" style="margin-right: 10px">
+                                    <label for="search-input-label">Label</label><br>
+                                    <input id="search-input-label" type="text" name="label" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Label" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
+                                </span>
+                                <input type="submit" value="submit" hidden>
+                            </form>');
+
+                            echo('
+                            <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
+                                <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="navPage(\'/\')">
+                                    <i class="fa fa-rotate-right" style="height:24px;padding-top:4px"></i>
+                                </button>
+                            </div>
+                            <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">');
+                            if ($showOOS == 0) {
+                                echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
+                            } else {
+                                echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
+                            }
+                                    echo('
+                                    <span>
+                                        <p style="margin:0;padding:0;font-size:12">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
+                                        <p style="margin:0;padding:0;font-size:12">0 Stock</p>
+                                </button>
+                            </div>
+                            <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                                <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
+                                    Fixed Cables
+                                </button>
+                            </div>
+                            ');
                             
                             echo('
-                                </select>
-                            </span>
-                            ');
-                            echo('
-                            <span id="search-input-name-span" style="margin-right: 10px;margin-left:10px">
-                                <label for="search-input-name">Name</label><br>
-                                <input id="search-input-name" type="text" name="name" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
-                            </span>
-                            <span id="search-input-sku-span" style="margin-right: 10px">
-                                <label for="search-input-sku">SKU</label><br>
-                                <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:160px;display:inline-block" placeholder="Search by SKU" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
-                            </span>
-                            <span id="search-input-shelf-span" style="margin-right: 10px" hidden>
-                                <label for="search-input-shelf">Shelf</label><br>
-                                <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
-                            </span>
-                            <span id="search-input-manufacturer-span" style="margin-right: 10px">
-                                <label for="search-input-manufacturer">Manufacturer</label><br>
-                                <input id="search-input-manufacturer" type="text" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Manufacturer" value="'); echo(isset($_GET['manufacturer']) ? $_GET['manufacturer'] : ''); echo('" />
-                            </span>
-                            <span id="search-input-label-span" style="margin-right: 10px">
-                                <label for="search-input-label">Label</label><br>
-                                <input id="search-input-label" type="text" name="label" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Label" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
-                            </span>
-                            <input type="submit" value="submit" hidden>
-                        </form>');
-
-                        echo('
-                        <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
-                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="navPage(\'/\')">
-                                <i class="fa fa-rotate-right" style="height:24px;padding-top:4px"></i>
-                            </button>
                         </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">');
-                        if ($showOOS == 0) {
-                            echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
-                        } else {
-                            echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
-                        }
-                                echo('
-                                <span>
-                                    <p style="margin:0;padding:0;font-size:12">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
-                                    <p style="margin:0;padding:0;font-size:12">0 Stock</p>
-                            </button>
-                        </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
-                            <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
-                                Fixed Cables
-                            </button>
-                        </div>
-                        ');
-                        
-                        echo('
                     </div>
-                </div>
 
-            ');
-            if ($rowCount_inv < 1) {
-                echo ('<div class="container" id="no-inv-found">No Inventory Found</div>');
-            } else {
-                
-                echo('
-                <!-- Modal Image Div -->
-                <div id="modalDiv" class="modal" onclick="modalClose()">
-                    <span class="close" onclick="modalClose()">&times;</span>
-                    <img class="modal-content bg-trans" id="modalImg">
-                    <div id="caption" class="modal-caption"></div>
-                </div>
-                <!-- End of Modal Image Div -->
-
-                <!-- Table -->
-                <div class="container">
-                    <table class="table table-dark centertable" id="inventoryTable">
-                        <thead style="text-align: center; white-space: nowrap;">
-                            <tr>
-                                <th id="id" hidden>id</th>
-                                <th id="img"</th>
-                                <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
-                                <th class="clickable sorting" id="sku" onclick="sortTable(3, this)">SKU</th>
-                                <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>');
-                if ($site == 0) { echo('<th class="clickable sorting" id="site" onclick="sortTable(5, this)">Site</th>'); }
-                            echo('<th id="lables">Labels</th>
-                            <th id="location">Location(s)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="align-middle" style="text-align: center; white-space: nowrap;">
                 ');
-                // Inventory Rows
-                while ( $row = $result_inv->fetch_assoc() ) {
-                    // print_r('<pre>'); print_r($row); print_r('</pre>');
-                    $img_directory = "assets/img/stock/"; 
-
-                    $stock_id = $row['stock_id'];
-                    $stock_img_file_name = $row['stock_img_image'];
-                    $stock_name = $row['stock_name'];
-                    $stock_sku = $row['stock_sku'];
-                    $stock_quantity_total = $row['item_quantity'];
-                    $stock_locations = $row['area_names'];
-                    $stock_site_id = $row['site_id'];
-                    $stock_site_name = $row['site_name'];
-                    $stock_label_names = ($row['label_names'] !== null) ? explode(", ", $row['label_names']) : '---';
+                if ($rowCount_inv < 1) {
+                    echo ('<div class="container" id="no-inv-found">No Inventory Found</div>');
+                } else {
                     
-
-                    // Echo each row (inside of SQL results)
                     echo('
-                                <tr class="vertical-align align-middle"id="'.$stock_id.'">
-                                    <td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>
-                                    <td class="align-middle" id="'.$stock_id.'-img-td">
-                                    ');
-                                    if (!is_null($stock_img_file_name)) {
-                                        echo('<img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
-                                    }
-                                    echo('</td>
-                                    <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>
-                                    <td class="align-middle" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
-                                    <td class="align-middle" id="'.$stock_id.'-quantity">'); 
-                                    if ($stock_quantity_total == 0) {
-                                        echo('<or class="red" title="Out of Stock">0 <i class="fa fa-warning" /></or>');
-                                    } else {
-                                        echo($stock_quantity_total);
-                                    }
-                                    echo('</td>');
-                    if ($site == 0) { echo ('<td class="align-middle link gold" id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'); }
-                                echo('<td class="align-middle" id="'.$stock_id.'-label">');
-                                if (is_array($stock_label_names)) {
-                                    for ($o=0; $o < count($stock_label_names); $o++) {
-                                        $divider = $o < count($stock_label_names)-1 ? ', ' : '';
-                                        echo('<or class="gold link" onclick="navPage(updateQueryParameter(\'\', \'label\', \''.$stock_label_names[$o].'\'))">'.$stock_label_names[$o].'</or>'.$divider);
-                                    }
-                                } 
-                                echo('</td>
-                                <td class="align-middle" id="'.$stock_id.'-location">'.$stock_locations.'</td>
+                    <!-- Modal Image Div -->
+                    <div id="modalDiv" class="modal" onclick="modalClose()">
+                        <span class="close" onclick="modalClose()">&times;</span>
+                        <img class="modal-content bg-trans" id="modalImg">
+                        <div id="caption" class="modal-caption"></div>
+                    </div>
+                    <!-- End of Modal Image Div -->
+
+                    <!-- Table -->
+                    <div class="container">
+                        <table class="table table-dark centertable" id="inventoryTable">
+                            <thead style="text-align: center; white-space: nowrap;">
+                                <tr>
+                                    <th id="id" hidden>id</th>
+                                    <th id="img"</th>
+                                    <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
+                                    <th class="clickable sorting" id="sku" onclick="sortTable(3, this)">SKU</th>
+                                    <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>');
+                    if ($site == 0) { echo('<th class="clickable sorting" id="site" onclick="sortTable(5, this)">Site</th>'); }
+                                echo('<th id="lables">Labels</th>
+                                <th id="location">Location(s)</th>
                                 </tr>
+                            </thead>
+                            <tbody class="align-middle" style="text-align: center; white-space: nowrap;">
+                    ');
+                    // Inventory Rows
+                    while ( $row = $result_inv->fetch_assoc() ) {
+                        // print_r('<pre>'); print_r($row); print_r('</pre>');
+                        $img_directory = "assets/img/stock/"; 
+
+                        $stock_id = $row['stock_id'];
+                        $stock_img_file_name = $row['stock_img_image'];
+                        $stock_name = $row['stock_name'];
+                        $stock_sku = $row['stock_sku'];
+                        $stock_quantity_total = $row['item_quantity'];
+                        $stock_locations = $row['area_names'];
+                        $stock_site_id = $row['site_id'];
+                        $stock_site_name = $row['site_name'];
+                        $stock_label_names = ($row['label_names'] !== null) ? explode(", ", $row['label_names']) : '---';
+                        
+
+                        // Echo each row (inside of SQL results)
+                        echo('
+                                    <tr class="vertical-align align-middle"id="'.$stock_id.'">
+                                        <td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>
+                                        <td class="align-middle" id="'.$stock_id.'-img-td">
+                                        ');
+                                        if (!is_null($stock_img_file_name)) {
+                                            echo('<img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
+                                        }
+                                        echo('</td>
+                                        <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>
+                                        <td class="align-middle" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
+                                        <td class="align-middle" id="'.$stock_id.'-quantity">'); 
+                                        if ($stock_quantity_total == 0) {
+                                            echo('<or class="red" title="Out of Stock">0 <i class="fa fa-warning" /></or>');
+                                        } else {
+                                            echo($stock_quantity_total);
+                                        }
+                                        echo('</td>');
+                        if ($site == 0) { echo ('<td class="align-middle link gold" id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'); }
+                                    echo('<td class="align-middle" id="'.$stock_id.'-label">');
+                                    if (is_array($stock_label_names)) {
+                                        for ($o=0; $o < count($stock_label_names); $o++) {
+                                            $divider = $o < count($stock_label_names)-1 ? ', ' : '';
+                                            echo('<or class="gold link" onclick="navPage(updateQueryParameter(\'\', \'label\', \''.$stock_label_names[$o].'\'))">'.$stock_label_names[$o].'</or>'.$divider);
+                                        }
+                                    } 
+                                    echo('</td>
+                                    <td class="align-middle" id="'.$stock_id.'-location">'.$stock_locations.'</td>
+                                    </tr>
+                        ');
+                    }
+
+                    // End table + body
+                    echo ('
+                            </body>
+                        </table>
+                    </div>
                     ');
                 }
-
-                // End table + body
-                echo ('
-                        </body>
-                    </table>
-                </div>
-                ');
-
-
             }
         }
 

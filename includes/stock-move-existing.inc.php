@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt_trans = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
-                header("Location: ".$redirect_url.$reditect_queies."&error=transactionConnectionSQL");
+                header("Location: ".$redirect_url."&error=transactionConnectionSQL");
                 exit();
             } else {
                 mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $item_id, $type, $shelf_id, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
@@ -231,7 +231,7 @@ if (isset($_POST['submit'])) {
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
                             echo("<br>issue at line: ".__LINE__."<br>");
-                            header("Location: ".$redirect_url.$reditect_queies."&error=itemTableSQLConnectionUpdateCurrent");
+                            header("Location: ".$redirect_url."&error=itemTableSQLConnectionUpdateCurrent");
                             exit();
                         } else {
                             mysqli_stmt_bind_param($stmt, "ss", $current_new_quantity, $current_item_id);
@@ -256,7 +256,7 @@ if (isset($_POST['submit'])) {
                             $stmt = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt, $sql)) {
                                 echo("<br>issue at line: ".__LINE__."<br>");
-                                header("Location: ".$redirect_url.$reditect_queies."&error=itemTableSQLConnectionUpdateCurrent");
+                                header("Location: ".$redirect_url."&error=itemTableSQLConnectionUpdateCurrent");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt, "ss", $new_new_quantity, $new_item_id);

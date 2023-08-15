@@ -302,7 +302,25 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </select>
                                     </td>
                                     <td>
-                                        <input class="form-control" type="text" name="stock-name" placeholder="Cable Name" required/>
+                                        <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" required/>
+                                        <datalist id="names">');
+                                            $sql_stock_name = "SELECT * from stock WHERE is_cable=1 ORDER BY name";
+                                            $stmt_stock_name = mysqli_stmt_init($conn);
+                                            if (!mysqli_stmt_prepare($stmt_stock_name, $sql_stock_name)) {
+                                                echo("ERROR getting entries");
+                                            } else {
+                                                mysqli_stmt_execute($stmt_stock_name);
+                                                $result_stock_name = mysqli_stmt_get_result($stmt_stock_name);
+                                                $rowCount_stock_name = $result_stock_name->num_rows;
+                                                if ($rowCount_stock_name < 1) {
+                                                } else {
+                                                    while( $row_stock_name = $result_stock_name->fetch_assoc() ) {
+                                                        echo("<option>".$row_stock_name['name']."</option>");
+                                                    }
+                                                }
+                                            }
+                                        echo('
+                                        </datalist>
                                     </td>
                                     <td>
                                         <input class="form-control" type="text" name="stock-description" placeholder="Description" required/>

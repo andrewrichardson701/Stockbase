@@ -6,6 +6,62 @@ session_start();
 $redirect_url = $_SESSION['redirect_url'];
 $queryChar = strpos($redirect_url, "?") !== false ? '&' : '?';
 
+function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
+    $timedate = date("dmyHis");
+
+    $uploadDirectory = "../assets/img/stock/";
+    $errors = [];                                                   // Store errors here
+    $fileExtensionsAllowed = ['png', 'gif', 'jpg', 'jpeg', 'ico'];  // These will be the only file extensions allowed 
+    $fileName = $_FILES[$field]['name'];                            // Get uploaded file name
+    $fileSize = $_FILES[$field]['size'];                            // Get uploaded file size
+    $fileTmpName  = $_FILES[$field]['tmp_name'];                    // Get uploaded file temp name
+    $fileType = $_FILES[$field]['type'];                            // Get uploaded file type
+    $explode = explode('.',$fileName);                              // Get file extension explode
+    $fileNameShort = str_replace(" ", "_", implode('.', array_slice(explode('.', $fileName), 0, -1)));                             
+    $fileExtension = strtolower(end($explode));                     // Get file extension
+
+    if ($_FILES[$field]['name'] !== '') {
+        if (!isset($_FILES[$field]))                          { $errors[] = "notSet-File";          }
+        if ($_FILES[$field]['name'] == '')                    { $errors[] = "notSet-File-name";     }
+        if ($_FILES[$field]['size'] == '')                    { $errors[] = "notSet-File-size";     }
+        if ($_FILES[$field]['tmp_name'] == '')                { $errors[] = "notSet-File-tmp_name"; }
+        if ($_FILES[$field]['type'] == '')                    { $errors[] = "notSet-File-type";     }
+        if (!in_array($fileExtension,$fileExtensionsAllowed)) { $errors[] = "wrongFileExtension";   } // File extenstion match?
+        if ($fileSize > 10000000)                             { $errors[] = "above10MB";            } // Within Filesize limits?
+        
+        if (empty($errors)) { // IF file is existing and all fields exist:
+            $moveName = "stock-$stock_id-img-$timedate.$fileExtension";
+            $uploadPath = $uploadDirectory.$moveName;
+            $uploadFileName = $moveName;
+            $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
+            if ($didUpload) {
+                include 'dbh.inc.php';
+                $sql = "INSERT INTO stock_img (stock_id, image) VALUES (?, ?)";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    header("Location: ".$redirect_url.$redirect_queries."&error=imageSQL");
+                    exit();
+                } else {
+                    mysqli_stmt_bind_param($stmt, "ss", $stock_id, $uploadFileName);
+                    mysqli_stmt_execute($stmt);
+                }
+
+            } else {
+                $errors[] = "uploadFailed";
+                print_r($errors);
+                // header("Location: ".$redirect_url.$redirect_queries."&error=imageUpload");
+                exit();
+                // return $errors;
+            }
+        } else {
+            print_r($errors);
+            // header("Location: ".$redirect_url.$redirect_queries."&error=imageUpload");
+            exit();
+            // return $errors;
+        } 
+    }
+}
+
 function updateCableTransactions($stock_id, $item_id, $type, $quantity, $reason, $date, $time, $username) {
     global $redirect_url, $queryChar;
     include 'dbh.inc.php';
@@ -201,7 +257,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     // duplicate name found
                     $row_stock = $result_stock->fetch_assoc();
                     $stock_id = $row_stock['id'];
-                    
+
                     // insert row into cable_item
                     $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, site_id, type_id) VALUES (?, ?, ?, ?, ?)";
                     $stmt_cable_item = mysqli_stmt_init($conn);
@@ -263,6 +319,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             mysqli_stmt_execute($stmt_add);
 
                             $stock_id = mysqli_insert_id($conn);
+
+                            if (isset($_FILES['stock-img']) && $_FILES['stock-img']['name'] !== '') {
+                                image_upload('stock-img', $stock_id, $redirect_url, '');
+                            }
 
 
                             // insert row into cable_item

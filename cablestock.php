@@ -263,7 +263,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 <div class="well-nopad bg-dark text-center">
                     <h3 style="font-size:22px">Add new cables</h3>
                     <hr style="border-color:#9f9d9d; margin-left:10px">
-                    <form id="add-cables-form" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                    <form id="add-cables-form" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
                         <table class="centertable">
                             <thead>
                                 <th style="padding-left:5px">Site</th>
@@ -360,6 +360,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </td>
                                     <td>
                                         <button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan=8 class="text-center">
+                                        <input type="file" style="width: 250px;margin-top:5px" id="stock-img" name="stock-img">
                                     </td>
                                 </tr>
                             </tbody>

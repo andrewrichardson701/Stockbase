@@ -144,7 +144,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 $rowCount_site = $result_site->num_rows;
                 if ($rowCount_site < 1) {
                     echo ("No sites found");
-                    exit();
                 } else {
                     
                     while( $row = $result_site->fetch_assoc() ) {
@@ -198,8 +197,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
                     <div class="nav-row">
                         <form action="./cablestock.php" method="get" class="nav-row" style="max-width:max-content">
-                            <input id="query-site" type="hidden" name="site" value="'.$site.'" />');
-                            echo ('
+                            <input id="query-site" type="hidden" name="site" value="'.$site.'" />
+                            
                             <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
                                 <label for="search-input-site">Site</label><br>
                                 <select id="site-dropdown" name="site" class="form-control nav-v-b cw" style="background-color:484848;border-color:black;margin:0;padding-left:0" onchange="siteChange(\'site-dropdown\')">
@@ -243,20 +242,115 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <p style="margin:0;padding:0;font-size:12">0 Stock</p>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
-                            <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'./\')">
+                        <div id="add-cables-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                            <button id="add-cables" class="btn btn-success nav-v-b" style="opacity:80%;color:white;padding:6 6 6 6" onclick="toggleAddDiv()" type="button">
+                                <i class="fa fa-plus" style="height:24px;padding-top:4px"></i> Add Cables
+                            </button>
+                            <button id="add-cables-hide" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="toggleAddDiv()" type="button" hidden>
+                                Hide Add Cables
+                            </button>
+                        </div>
+                        <div id="stockBtn-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                            <button id="stockBtn" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'./\')" type="button">
                                 Item Stock
                             </button>
-                        </div>');
-                        
-                        echo('
+                        </div>
                     </div>
                 </div>
-
-            ');
             
-                
-            echo('
+            <!-- Add Cables form section -->
+            <div class="container" id="add-cables-section" style="margin-bottom:10px" hidden>
+                <div class="well-nopad bg-dark text-center">
+                    <h3 style="font-size:22px">Add new cables</h3>
+                    <hr style="border-color:#9f9d9d; margin-left:10px">
+                    <form id="add-cables-form" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                        <table class="centertable">
+                            <thead>
+                                <th style="padding-left:5px">Site</th>
+                                <th style="padding-left:5px">Name</th>
+                                <th style="padding-left:5px">Description</th>
+                                <th style="padding-left:5px">Type</th>
+                                <th style="padding-left:5px">Min. Stock</th>
+                                <th style="padding-left:5px">Quantity</th>
+                                <th style="padding-left:5px">Cost</th>
+                                <th style="padding-left:5px"></th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <select name="site" class="form-control" style="border-color:black;margin:0;padding-left:0" required>');
+
+                                            $sql_site_cable = "SELECT * FROM site";
+                                            $stmt_site_cable = mysqli_stmt_init($conn);
+                                            if (!mysqli_stmt_prepare($stmt_site_cable, $sql_site_cable)) {
+                                                echo("ERROR getting entries");
+                                            } else {
+                                                mysqli_stmt_execute($stmt_site_cable);
+                                                $result_site_cable = mysqli_stmt_get_result($stmt_site_cable);
+                                                $rowCount_site_cable = $result_site_cable->num_rows;
+                                                if ($rowCount_site_cable < 1) {
+                                                    echo ("<option selected disabled>No Sites Found</option> ");
+                                                } else {
+                                                    echo ("<option selected disabled>Select Type</option>");
+                                                    while( $row_site_cable = $result_site_cable->fetch_assoc() ) {
+                                                        echo("<option value='".$row_site_cable['id']."'>".$row_site_cable['name']."</option>");
+                                                    }
+                                                }
+                                            }   
+
+                                    echo('      
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="text" name="stock-name" placeholder="Cable Name" required/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="text" name="stock-description" placeholder="Description" required/>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" name="cable-type" required>');
+
+                                            $sql_types = "SELECT * from cable_types";
+                                            $stmt_types = mysqli_stmt_init($conn);
+                                            if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
+                                                echo("ERROR getting entries");
+                                            } else {
+                                                mysqli_stmt_execute($stmt_types);
+                                                $result_types = mysqli_stmt_get_result($stmt_types);
+                                                $rowCount_types = $result_types->num_rows;
+                                                if ($rowCount_types < 1) {
+                                                    echo ("<option selected disabled>No Types Found</option> ");
+                                                } else {
+                                                    echo ("<option selected disabled>Select Type</option>");
+                                                    while( $row_types = $result_types->fetch_assoc() ) {
+                                                        echo("<option value='".$row_types['id']."'>".$row_types['name']."</option>");
+                                                    }
+                                                }
+                                            }
+
+                                        echo('
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:90px" value="10" required/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:90px" value="1" required/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:90px" value="0" required/>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>                      
+                        
+                    </form>
+                </div>
+            </div>
+
             <!-- Modal Image Div -->
             <div id="modalDiv" class="modal" onclick="modalClose()">
                 <span class="close" onclick="modalClose()">&times;</span>
@@ -338,7 +432,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                                     echo('
                                         <tr class="vertical-align align-middle'.$last_edited.'" id="'.$cable_item_id.'">
-                                            <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock-edit.inc.php" method="POST" enctype="multipart/form-data">
+                                            <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
                                                 <input type="hidden" name="stock-id" value="'.$stock_id.'" />
                                                 <input type="hidden" name="cable-item-id" value="'.$cable_item_id.'" />
                                                 <td class="align-middle" id="'.$cable_item_id.'-stock-id" hidden>'.$stock_id.'</td>
@@ -427,6 +521,25 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 }
             }
         });
+    </script>
+
+    <script>
+        function toggleAddDiv() {
+            var div = document.getElementById('add-cables-section');
+            var addButton = document.getElementById('add-cables');
+            var addButtonHide = document.getElementById('add-cables-hide');
+
+            if (div.hidden === true) {
+                div.hidden = false;
+                addButton.hidden = true;
+                addButtonHide.hidden = false;
+            } else {
+                div.hidden = true;
+                addButton.hidden = false;
+                addButtonHide.hidden = true;
+            }
+
+        }
     </script>
         
     <?php include 'foot.php'; ?>

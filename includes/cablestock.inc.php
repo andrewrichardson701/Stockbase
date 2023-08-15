@@ -173,7 +173,132 @@ function removeQuantity($stock_id, $cable_item_id) {
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST['action'])) {
+    if (isset($_POST['add-cables-submit'])) {
+        if (isset($_POST['site']) && isset($_POST['stock-name']) && isset($_POST['stock-description']) && isset($_POST['cable-type']) && isset($_POST['stock-min-stock']) && isset($_POST['item-quantity']) && isset($_POST['item-cost'])) {
+            $site_id = $_POST['site'];
+            $stock_name = $_POST['stock-name'];
+            $stock_description = $_POST['stock-description'];
+            $cable_type = $_POST['cable-type'];
+            $stock_min_stock = $_POST['stock-min-stock'];
+            $item_quantity = $_POST['item-quantity'];
+            $item_cost = $_POST['item-cost'];
+            $sku_prefix = "CABLE-";
+
+            include 'dbh.inc.php';
+            
+            // check for duplicate names
+
+            $sql_stock = "SELECT * FROM stock WHERE name='$stock_name' LIMIT 1";
+            $stmt_stock = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
+                header("Location: ../".$redirect_url.$queryChar."sqlerror=stockConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_stock);
+                $result_stock = mysqli_stmt_get_result($stmt_stock);
+                $rowCount_stock = $result_stock->num_rows;
+                if ($rowCount_stock > 0) {
+                    // duplicate name found
+                    $row_stock = $result_stock->fetch_assoc();
+                    $stock_id = $row_stock['id'];
+                    
+                    // insert row into cable_item
+                    $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, site_id, type_id) VALUES (?, ?, ?, ?, ?)";
+                    $stmt_cable_item = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_cable_item, $sql_cable_item)) {
+                        header("Location: ../".$redirect_url.$queryChar."sqlerror=cable_itemConnectionInsert");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt_cable_item, "sssss", $stock_id, $item_quantity, $item_cost, $site_id, $cable_type);
+                        mysqli_stmt_execute($stmt_cable_item);
+
+                        $cable_item_id= mysqli_insert_id($conn);
+
+                        $type = "add";
+                        $reason = "New Stock and Cable Item added";
+                        $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                        $time = date('H:i:s'); // current time in HH:MM:SS format
+                        $username = $_SESSION['username'];
+                        updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username);
+
+                        header("Location: ../".$redirect_url.$queryChar."success=cableAdded&site_id=$site_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
+                        exit();
+                    }
+                } else {
+                    // name is okay, continue
+
+                    // get the next sku with CABLE- prefix
+                    $sql_sku = "SELECT sku FROM stock WHERE sku LIKE 'CABLE-%' ORDER BY sku DESC LIMIT 1";
+                    $stmt_sku = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_sku, $sql_sku)) {
+                        header("Location: ../".$redirect_url.$queryChar."sqlerror=stockConnectionSku");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_sku);
+                        $result_sku = mysqli_stmt_get_result($stmt_sku);
+                        $rowCount_sku = $result_sku->num_rows;
+                        if ($rowCount_sku < 1) {
+                            $sku_number = '0000';
+                        } else {
+                            $row_sku = $result_sku->fetch_assoc();
+                            $sku_max = $row_sku['sku'];
+                            $sku_number = substr($sku_max, strlen($sku_prefix));
+                        }
+
+                        $sku_number_numeric = intval($sku_number);
+                        $new_sku_number_numeric = $sku_number_numeric + 1;
+                        $new_formatted_sku_number = sprintf('%04d', $new_sku_number_numeric);
+                        $new_sku = $sku_prefix.$new_formatted_sku_number;
+
+
+
+                        // insert into stock table
+                        $sql_add = "INSERT INTO stock (name, description, sku, min_stock, is_cable) VALUES (?, ?, ?, ?, 1)";
+                        $stmt_add = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_add, $sql_add)) {
+                            header("Location: ../".$redirect_url.$queryChar."sqlerror=stockConnectionInsert");
+                            exit();
+                        } else {
+                            mysqli_stmt_bind_param($stmt_add, "ssss", $stock_name, $stock_description, $new_sku, $stock_min_stock);
+                            mysqli_stmt_execute($stmt_add);
+
+                            $stock_id = mysqli_insert_id($conn);
+
+
+                            // insert row into cable_item
+                            $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, site_id, type_id) VALUES (?, ?, ?, ?, ?)";
+                            $stmt_cable_item = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_cable_item, $sql_cable_item)) {
+                                header("Location: ../".$redirect_url.$queryChar."sqlerror=cable_itemConnectionInsert");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_cable_item, "sssss", $stock_id, $item_quantity, $item_cost, $site_id, $cable_type);
+                                mysqli_stmt_execute($stmt_cable_item);
+    
+                                $cable_item_id= mysqli_insert_id($conn);
+
+                                $type = "add";
+                                $reason = "New Stock and Cable Item added";
+                                $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                $time = date('H:i:s'); // current time in HH:MM:SS format
+                                $username = $_SESSION['username'];
+                                updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username);
+
+                                header("Location: ../".$redirect_url.$queryChar."success=cableAdded&site_id=$site_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
+                                exit();
+                            }
+                        }
+                    }
+                }
+            }
+
+            
+
+        } else {
+            header("Location: ../".$redirect_url.$queryChar."error=missingFields");
+            exit();
+        }
+    } elseif (isset($_POST['action'])) {
         $action = $_POST['action'];
 
         if (isset($_POST['cable-item-id'])) {
@@ -207,7 +332,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../".$redirect_url.$queryChar."error=noCable-item-id");
             exit();
         }
-    } else { // action not set
+    } else { // no page set.
         header("Location: ../".$redirect_url.$queryChar."error=noAction");
         exit();
     }

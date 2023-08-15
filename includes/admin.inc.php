@@ -294,8 +294,36 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 } else {
                     mysqli_stmt_bind_param($stmt_upload, "ssssss", $restore_system_name, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix);
                     mysqli_stmt_execute($stmt_upload);
-                    header("Location: ../admin.php?restore=globalSuccess#global-settings");
-                    exit();
+
+                    $sql_sku = "SELECT sku_prefix FROM config ORDER BY id LIMIT 1";
+                    $stmt_sku = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_sku, $sql_sku)) {
+                        header("Location: ../admin.php?sqlerror=config_getEntries#global-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_sku);
+                        $result_sku = mysqli_stmt_get_result($stmt_sku);
+                        $rowCount_sku = $result_sku->num_rows;
+                        if ($rowCount_sku < 1) {
+                            header("Location: ../admin.php?sqlerror=config_noID1#global-settings");
+                            exit();
+                        } else {
+                            $row_sku = $result_sku->fetch_assoc();
+                            $current_sku_prefix = $row_sku['sku_prefix'];
+                        }
+                    }
+
+                    $sql_change = "UPDATE stock SET sku = REPLACE(sku, '$current_sku_prefix', '$restore_sku_prefix');";
+                    $stmt_change = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_change, $sql_change)) {
+                        header("Location: ../admin.php?sqlerror=failedToChangeSkuPrefixInTable#global-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_change);
+                        header("Location: ../admin.php?restore=globalSuccess#global-settings");
+                        exit();
+                    }
+                    
                 }
             }
         }

@@ -88,4 +88,44 @@ if (isset($_GET['area'])) {
     }
 }
 
+if (isset($_GET['type'])) {
+    $type = $_GET['type'];
+
+    if ($type !== "site" ) {
+        $output = [];
+
+        if ($type == "area") { 
+            $table = "site"; 
+        } elseif ($type == "shelf") {
+            $table = "area";
+        }
+
+        include 'dbh.inc.php';
+        $sql = "SELECT id, name
+                FROM $table
+                ORDER BY id";
+        $stmt = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            // fails to connect
+        } else {
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
+            $rowCount = $result->num_rows;
+            if ($rowCount < 1) {
+                // no rows found
+            } else {
+                // rows found
+                while ($row = $result->fetch_assoc()) {
+                    $id = $row['id'];
+                    $name = $row['name'];
+                    $output[] = array('id' => $id, 'name' => $name);
+                }
+                echo(json_encode($output));
+            }
+        }
+    } else {
+        echo "";
+    }
+}
+
 ?>

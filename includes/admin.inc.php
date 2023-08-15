@@ -733,9 +733,43 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     }
                 }
             }
+        } elseif (isset($_POST['admin'])) { // come from the admin page - this is for adding new sites/areas/shelves
+            if (isset($_POST['type']) && $_POST['type'] !== '') {
+                $location_type = $_POST['type'];
+                $location_name = $_POST['name'];
+                if ($location_type == "site") {
+                    $location_description = $_POST['description'];
+                    $sql_location = "INSERT INTO $location_type (name, description) VALUES('$location_name', '$location_description')";
+                } elseif ($location_type == "area") {
+                    $location_parent = $_POST['parent'];
+                    $location_description = $_POSt['description'];
+                    $sql_location = "INSERT INTO $location_type (name, description, site_id) VALUES('$location_name', '$location_description', $location_parent)";
+                } elseif ($location_type == "shelf") {
+                    $location_parent = $_POST['parent'];
+                    $sql_location = "INSERT INTO $location_type (name, area_id) VALUES('$location_name', $location_parent)";
+                } else {
+                    header("Location: ../admin.php?error=incorrectType#stocklocations-settings");
+                    exit();
+                }
+                $stmt_location = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_location, $sql_location)) {
+                    header("Location: ../admin.php?error=".$type."SQLConnection#stocklocations-settings");
+                    exit();
+                } else {
+                    mysqli_stmt_execute($stmt_location);
+                    // get new site id
+                    $location_id = mysqli_insert_id($conn); // ID of the new row in the table.
 
-
-
+                    header("Location: ../admin.php?success=".$location_type."LocationAdded&".$location_type."-id=$location_id#stocklocations-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=typeMissing#stocklocations-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=location-submitIssue#stocklocations-settings");
+            exit();
         }
     } elseif (isset($_POST['stocklocation-submit'])){ //editing location info from admin.php
         if (isset($_POST['type'])) {

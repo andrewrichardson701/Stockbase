@@ -240,7 +240,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 $result_site = mysqli_stmt_get_result($stmt_site);
                 $rowCount_site = $result_site->num_rows;
                 if ($rowCount_site < 1) {
-                    echo ("No sites found");
+                    // echo ("No sites found");
                     // exit();
                 } else {
                     
@@ -270,7 +270,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     $result_area = mysqli_stmt_get_result($stmt_area);
                     $rowCount_area = $result_area->num_rows;
                     if ($rowCount_area < 1) {
-                        echo ("No areas found");
+                        // echo ("No areas found");
                         // exit();
                     } else {
                         while( $row = $result_area->fetch_assoc() ) {

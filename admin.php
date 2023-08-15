@@ -47,6 +47,54 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         }
     </script>
     <div class="container content">
+
+        <div id="modalDivAdd" class="modal">
+        <!-- <div id="modalDivAdd" style="display: block;"> -->
+            <span class="close" onclick="modalCloseAdd()">×</span>
+            <div class="container well-nopad bg-dark" style="padding:25px">
+                <div class="well-nopad bg-dark" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                    <div style="display:block"> 
+                        <h2 style="margin-bottom:20px">Add new Site / Area / Shelf</h2>
+                        <form id="locationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                            <input type="hidden" name="admin" value="1" />
+                            <table class="centertable">
+                                <thead>
+                                    <tr>
+                                        <th style="padding-left:20px">Type</th>
+                                        <th style="padding-left:5px" class="specialInput shelf area" hidden>Parent</th>
+                                        <th style="padding-left:5px" class="specialInput shelf area site" hidden>Name</th>
+                                        <th style="padding-left:5px" class="specialInput area site" hidden>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-left:15px;padding-right:15px">
+                                            <select id="addLocation-type" class="form-control" name="type" onchange="showInput()">
+                                                <option selected disabled>Select a Type</option>
+                                                <option value="site">Site</option>
+                                                <option value="area">Area</option>
+                                                <option value="shelf">Shelf</option>
+                                            </select>
+                                        </td>
+                                        <td style="padding-right:15px" class="specialInput area shelf" hidden>
+                                            <select id="addLocation-parent" class="form-control" name="parent" disabled>
+                                            </select>
+                                        </td>
+                                        <td style="padding-right:15px" class="specialInput area shelf site" hidden><input class="form-control" type="text" name="name" placeholder="Name"/></td>
+                                        <td style="padding-right:15px" class="specialInput area site" hidden><input class="form-control" type="text" name="description" placeholder="Description"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="100%" style="padding-top:10px" class="text-center"><button class="btn btn-success align-bottom" type="submit" name="location-submit" style="margin-left:10px" value="1">Submit</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>        
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <h3 class="clickable" style="font-size:22px" id="global-settings" onclick="toggleSection(this, 'global')">Global Settings <i class="fa-solid fa-chevron-up fa-2xs" style="margin-left:10px"></i></h3>
         <!-- Global Settings -->
         <div style="padding-top: 20px" id="global" hidden>
@@ -347,8 +395,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.parent_id AS area_parent_id,
                                     shelf.id AS shelf_id, shelf.name AS shelf_name, shelf.area_id AS shelf_area_id
                                 FROM site
-                                INNER JOIN area ON site.id = area.site_id
-                                INNER JOIN shelf ON area.id = shelf.area_id
+                                LEFT JOIN area ON site.id = area.site_id
+                                LEFT JOIN shelf ON area.id = shelf.area_id
                                 ORDER BY site.id, area.id, shelf.id";
             $stmt_locations = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_locations, $sql_locations)) {
@@ -439,44 +487,18 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </form>
                                     </tr>');
                                 foreach ($site['areas'] as $area) {
-                                    echo('<tr style="background-color:'.$color2.' !important; color:black">
-                                            <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                                <input type="hidden" name="type" value="area" />
-                                                <input type="hidden" name="id" value="'.$area['area_id'].'" />
-                                                <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
-                                                <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
-                                                <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
-                                                <td class="stockTD" hidden><input class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
-                                                <td class="stockTD" hidden>'.$area['area_site_id'].'</td>
-                                                <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
-                                                <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
-                                                <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
-                                                    <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
-                                                        <i class="fa fa-save"></i>
-                                                    </button>
-                                                </td>
-                                                <td class="stockTD" style="background-color:#21272b; " hidden>
-                                                    <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
-                                                        <i class="fa fa-pencil"></i>
-                                                    </button>
-                                                </td>
-                                                <td class="stockTD" style="background-color:#21272b; ">
-                                                    <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </form>
-                                        </tr>');
-                                    foreach ($area['shelves'] as $shelf) {
-                                        echo('<tr style="background-color:'.$color3.' !important; color:black">
-                                                <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                                    <input type="hidden" name="type" value="shelf" />
-                                                    <input type="hidden" name="id" value="'.$shelf['shelf_id'].'" />
-                                                    <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
-                                                    <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
-                                                    <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
-                                                    <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
-                                                    <td class="stockTD" hidden>'.$shelf['shelf_area_id'].'</td>
+                                    if ($area['area_id'] !== '' && $area['area_id'] !== null) {
+                                        echo('<tr style="background-color:'.$color2.' !important; color:black">
+                                                <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                    <input type="hidden" name="type" value="area" />
+                                                    <input type="hidden" name="id" value="'.$area['area_id'].'" />
+                                                    <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
+                                                    <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
+                                                    <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
+                                                    <td class="stockTD" hidden><input class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
+                                                    <td class="stockTD" hidden>'.$area['area_site_id'].'</td>
+                                                    <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
+                                                    <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                                     <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
                                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                             <i class="fa fa-save"></i>
@@ -494,11 +516,41 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                     </td>
                                                 </form>
                                             </tr>');
+                                        foreach ($area['shelves'] as $shelf) {
+                                            if ($shelf['shelf_id'] !== '' && $shelf['shelf_id'] !== null) {
+                                                echo('<tr style="background-color:'.$color3.' !important; color:black">
+                                                        <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                            <input type="hidden" name="type" value="shelf" />
+                                                            <input type="hidden" name="id" value="'.$shelf['shelf_id'].'" />
+                                                            <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
+                                                            <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
+                                                            <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
+                                                            <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
+                                                            <td class="stockTD" hidden>'.$shelf['shelf_area_id'].'</td>
+                                                            <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                                <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
+                                                                    <i class="fa fa-save"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td class="stockTD" style="background-color:#21272b; " hidden>
+                                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
+                                                                    <i class="fa fa-pencil"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td class="stockTD" style="background-color:#21272b; ">
+                                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </form>
+                                                    </tr>');
+                                            }
+                                        }
                                     }
                                 }
                                 echo('<tr style="background-color:#21272b">
                                     <td colspan=6 class="stockTD">
-                                        <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px; width: 50px">
+                                        <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px; width: 50px" onclick="modalLoadAdd(\''.$site['site_id'].'\')">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </td>
@@ -895,6 +947,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     </div>
     <!-- End of Modal Image Div -->
     
+    
     <script>
     function testLDAP() {
         var ldap_username = $('#auth-username').val();
@@ -1164,6 +1217,81 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             document.getElementById("ldapToggleForm").submit();
         });
 
+    </script>
+
+    <script> // MODAL SCRIPT
+        // Get the modal
+        function hideAdd() {
+            properties = document.getElementsByClassName("property");
+            for (i = 0; i < properties.length; i++) {
+                properties[i].hidden=true;
+            }
+        }
+        hideAdd();
+        function modalLoadAdd(site_id) {
+            hideAdd();
+            //get the modal div with the property
+            var modal = document.getElementById("modalDivAdd");
+            var div = document.getElementById("property-"+site_id);
+            modal.style.display = "block";
+            div.hidden=false;
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseAdd = function() { 
+            var modal = document.getElementById("modalDivAdd");
+            modal.style.display = "none";
+            hideAdd();
+        }
+
+    </script>
+
+    <script> // show input for the ShowADD section
+        function showInput() {
+            var type = document.getElementById("addLocation-type");
+            var selectedType = type.options[type.selectedIndex].value;
+
+            var inputContainers = document.getElementsByClassName("specialInput");
+            for (var i = 0; i < inputContainers.length; i++) {
+                inputContainers[i].hidden = true;
+                inputContainers[i].value = '';
+            }
+
+            var modifyContainers = document.getElementsByClassName(selectedType);
+            for (var i = 0; i < modifyContainers.length; i++) {
+                modifyContainers[i].hidden = false;
+            }
+        }
+    </script>
+
+    <script>
+        function populateParent() {
+        // Get the selected type
+        var type = document.getElementById("addLocation-type").value;
+        
+        // Make an AJAX request to retrieve the corresponding parents
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the area select box
+                var select = document.getElementById("addLocation-parent");
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Parent", "");
+                if (xhr.responseText !== '') {
+                    var parents = JSON.parse(xhr.responseText);
+                    for (var i = 0; i < parents.length; i++) {
+                        select.options[select.options.length] = new Option(parents[i].name, parents[i].id);
+                    }
+                    
+                } 
+                select.disabled = (select.options.length === 1);
+            }
+            
+        };
+        xhr.send();
+        }
+        document.getElementById("addLocation-type").addEventListener("change", populateParent);
     </script>
 
     

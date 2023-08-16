@@ -368,6 +368,12 @@ if ($stock_id == 0 || $stock_id == '0') {
                     ) AS stock_img_image
                         ON stock_img_image.stock_id = stock.id
                     WHERE stock.is_cable=0
+                        AND (SELECT SUM(quantity) 
+                                FROM item 
+                                INNER JOIN shelf ON item.shelf_id=shelf.id
+                                INNER JOIN area ON shelf.area_id=area.id
+                                WHERE item.stock_id=stock.id AND area.site_id=site.id
+                            )!='null'
                     GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image

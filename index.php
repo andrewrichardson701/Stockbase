@@ -33,6 +33,16 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         $site_names_array = [];
         $area_names_array = [];
 
+        // Pagination settings
+        $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        if ($current_page < 1) {
+            $current_page = 1;
+        }
+        $results_per_page = 10; // Number of rows per page
+
+        // Calculate the offset for the query
+        $offset = ($current_page - 1) * $results_per_page;
+
         include 'includes/dbh.inc.php';
         $s = 0;
         // $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
@@ -207,7 +217,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         if ($area != 0) {
             $sql_inv .= ", area.id";
         }
-        $sql_inv .= " ORDER BY stock.name;";
+        $sql_inv .= " ORDER BY stock.name
+                        LIMIT $results_per_page OFFSET $offset;";
         echo '<pre hidden>'.$sql_inv.'</pre>';
         $stmt_inv = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {
@@ -224,6 +235,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             mysqli_stmt_execute($stmt_inv);
             $result_inv = mysqli_stmt_get_result($stmt_inv);
             $rowCount_inv = $result_inv->num_rows;
+            $total_pages = ceil($rowCount_inv / $results_per_page);
 
             // GET SITE AND AREA VALUES
             //site
@@ -578,6 +590,65 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </tr>
                         ');
                     }
+
+                    // PAGE COUNT
+                    if ($total_pages > 1) {
+                        echo('
+                        <tr style="background-color:#21272b">
+                            <td colspan="100%" style="padding:0;margin:0">
+                            <div class="row">
+                                <div class="col text-center"></div>
+                                <div class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">');
+
+                        if ($current_page > 1) {
+                            echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>');
+                        }
+
+                        for ($i = 1; $i <= $total_pages; $i++) {
+                            if ($i == $current_page) {
+                                echo('&nbsp;<span class="current-page blue">' . $i . '</span>');
+                                // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                            } else {
+                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>');
+                            }
+                        }
+
+                        if ($current_page < $total_pages) {
+                            echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>');
+                        }  
+
+                        if (isset($_GET['rows'])) {
+                            if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
+                                $rowSelectValue = $_GET['rows'];
+                            } else {
+                                $rowSelectValue = 10;
+                            }
+                        } else {
+                            $rowSelectValue = 10;
+                        }
+
+                        echo('</div>
+                            <div class="col text-center">
+                                <table style="margin-left:auto; margin-right:20px">
+                                    <tbody>
+                                        <tr>
+                                            <td class="cw align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
+                                                Rows: 
+                                            </td>
+                                            <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
+                                                <select id="tableRowCount" class="form-control" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter(\'\', \'rows\', this.value))">
+                                                    <option value="10"');  if($rowSelectValue = 10)  { echo('selected'); } echo('>10</option>
+                                                    <option value="50"');  if($rowSelectValue = 50)  { echo('selected'); } echo('>50</option>
+                                                    <option value="100"'); if($rowSelectValue = 100) { echo('selected'); } echo('>100</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        ');
+                    } 
 
                     // End table + body
                     echo ('

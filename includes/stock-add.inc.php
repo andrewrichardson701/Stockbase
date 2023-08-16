@@ -479,18 +479,19 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             ');
         } else {
             // Pagination settings
-            $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-            if ($page < 1) {
-                $page = 1;
+            $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+            if ($current_page < 1) {
+                $current_page = 1;
             }
-            $pageSize = 10; // Number of rows per page
+            $results_per_page = 10; // Number of rows per page
 
             // Calculate the offset for the query
-            $offset = ($page - 1) * $pageSize;
+            $offset = ($current_page - 1) * $results_per_page;
 
             echo('
             <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">');
             include 'includes/dbh.inc.php';
+
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
                             FROM item 
@@ -515,7 +516,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image
                     ORDER BY stock.name
-                    LIMIT $pageSize OFFSET $offset;";
+                    LIMIT $results_per_page OFFSET $offset;";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
@@ -523,6 +524,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
                 $rowCount = $result->num_rows;
+                $total_pages = ceil($rowCount / $results_per_page);
                 if ($rowCount < 1) {
                     echo('<p>No Stock Found</p>');
                 } else {
@@ -562,6 +564,31 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             </tr>
                             ');
                         }
+                        if ($total_pages > 1) {
+                            echo('
+                            <tr style="color:21272b">
+                                <td colspan="100%">');
+    
+                            if ($current_page > 1) {
+                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                            }
+
+                            for ($i = 1; $i <= $total_pages; $i++) {
+                                if ($i == $current_page) {
+                                    echo('&nbsp;<span class="current-page">' . $i . '</span>');
+                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                } else {
+                                    echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                }
+                            }
+
+                            if ($current_page < $total_pages) {
+                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                            }  
+                        }                              
+                    echo('
+                                </td>
+                            </td></tr>');
                     echo('    
                         </tbody>
                     </table>

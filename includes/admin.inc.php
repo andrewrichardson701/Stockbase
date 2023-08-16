@@ -1,7 +1,7 @@
 <?php
-// SUBMITTING THE ADMIN CONFIG CHANGES. WILL UPDATE THE INFO IN THE CONFIG TABLE ONLY 
-// LEAVING THE CONFIG_DEFAULT TABLE UNTOUCHED
-// THERE IS ALSO A PASSWORD RESET SECTION IN HER FOR ADMIN PASSWORD RESETTING.
+// USED FOR SUBMITTING FORMS AND DOING SQL CHANGES FOR THE ADMIN PAGE AND SOME OTHER PAGES WITH SIMILAR PROPERTIES
+// PROFILE PAGE USES THIS ALSO FOR ITS SAVING
+// ADDING NEW ROWS AND AREAS ETC ALSO USES THIS FROM INDEX PAGE WHEN THERE IS NO SITE/AREA/SHELF
 
 // print_r($_POST);
 //         exit();
@@ -38,7 +38,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             // all good, continue.
         }
     }
-    if (isset($_POST['global-submit'])) { // GLOBAL saving
+    if (isset($_POST['global-submit'])) { // GLOBAL saving in admin
         $errors = [];
          
         $config_system_name   = isset($_POST['system_name'])        ? $_POST['system_name']        : '';
@@ -262,7 +262,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         header("Location: ../admin.php$queryString#global-settings");
         exit();
 
-    } elseif (isset($_POST['global-restore-defaults'])) {
+    } elseif (isset($_POST['global-restore-defaults'])) { // restore global settings in admin
         include 'dbh.inc.php';
 
         $sql_config = "SELECT system_name, banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
@@ -328,7 +328,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         }
 
-    } elseif (isset($_POST['admin-pwreset-submit'])) {
+    } elseif (isset($_POST['admin-pwreset-submit'])) { // resetting a user's password in the admin section
         if (isset($_POST['user-id'])) {
             session_start();
             include 'get-config.inc.php';
@@ -395,7 +395,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=userIdMissing#users-settings");
             exit();
         }
-    } elseif (isset($_POST['ldap-toggle-submit'])) {
+    } elseif (isset($_POST['ldap-toggle-submit'])) { // enable/disable LDAP
         print_r($_POST);
         $ldap_enabled_post = isset($_POST['ldap-enabled']) ? $_POST['ldap-enabled'] : "off";
 
@@ -418,7 +418,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?ldapEnabled=success#ldap-settings");
             exit();
         }
-    } elseif (isset($_POST['ldap-submit'])) { // LDAP saving
+    } elseif (isset($_POST['ldap-submit'])) { // LDAP saving in admin page
 
         if (isset($_POST['auth-username']))         { $config_ldap_username         = $_POST['auth-username'];         } else { $config_ldap_username         = ''; }
         if (isset($_POST['auth-password']))         { $config_ldap_password         = base64_encode(($_POST['auth-password']));         } else { $config_ldap_password         = ''; }
@@ -459,7 +459,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
             
         }
-    } elseif (isset($_POST['ldap-restore-defaults'])) { 
+    } elseif (isset($_POST['ldap-restore-defaults'])) { // restore LDAP default settings
         // RESTORE LDAP
         include 'dbh.inc.php';
 
@@ -501,7 +501,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 }
             }
         }
-    } elseif (isset($_POST['smtp-submit'])) {
+    } elseif (isset($_POST['smtp-submit'])) { // save smtp info in smtp section of admin page
         if (isset($_POST['smtp-username']))   { $config_smtp_username   = $_POST['smtp-username'];   } else { $config_smtp_username   = ''; }
         if (isset($_POST['smtp-password']))   { $config_smtp_password   = base64_encode($_POST['smtp-password']);   } else { $config_smtp_password   = ''; }
         if (isset($_POST['smtp-encryption'])) { $config_smtp_encryption = $_POST['smtp-encryption']; } else { $config_smtp_encryption = ''; }
@@ -530,7 +530,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 exit();
             }
         }
-    } elseif (isset($_POST['smtp-restore-defaults'])) { 
+    } elseif (isset($_POST['smtp-restore-defaults'])) { // restore default smtp info
         // RESTORE SMTP
         include 'dbh.inc.php';
 
@@ -571,7 +571,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 }
             }
         }
-    } elseif (isset($_POST['user_role_submit'])) { 
+    } elseif (isset($_POST['user_role_submit'])) { // changing users roles in admin users section
         if (isset($_POST['user_id']) && isset($_POST['user_new_role'])) {
             $user_id = $_POST['user_id'];
             $user_new_role = $_POST['user_new_role'];
@@ -620,7 +620,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=noUserSubmit#Users");
             exit();
         }
-    } elseif (isset($_POST['user_enabled_submit'])) { 
+    } elseif (isset($_POST['user_enabled_submit'])) { // enabling / disabling users from the admin users section
         if (isset($_POST['user_id']) && isset($_POST['user_new_enabled'])) {
             $user_id = $_POST['user_id'];
             $user_new_enabled = $_POST['user_new_enabled'];
@@ -771,7 +771,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=location-submitIssue#stocklocations-settings");
             exit();
         }
-    } elseif (isset($_POST['stocklocation-submit'])) { //editing location info from admin.php
+    } elseif (isset($_POST['stocklocation-submit'])) { // editing location info from admin.php
         if (isset($_POST['type'])) {
             $typesArray = ['site', 'area', 'shelf'];
             if (in_array($_POST['type'], $typesArray)) {
@@ -803,7 +803,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=noType#stocklocations-settings");
             exit();
         }
-    } elseif (isset($_POST['profile-submit'])) {
+    } elseif (isset($_POST['profile-submit'])) { // profile.php info e.g. email and name updates
         session_start();
         if (isset($_POST['id'])) {
             if ($_POST['id'] == $_SESSION['user_id']) {

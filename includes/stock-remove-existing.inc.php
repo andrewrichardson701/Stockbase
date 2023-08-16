@@ -2,15 +2,16 @@
 //
 // STILL  NEED TO WORK THE MINIMUM STOCK INTO THE CHECKER FOR REMOVING STOCK
 //
+include 'smtp.inc.php';
 if (isset($_GET['type'])) {
     session_start();
-    $redirect_url = "../stock.php?modify=remove&stock_id=".$_POST['stock_id'];
+    $redirect_url = "../stock.php?modify=remove&stock_id=".$_GET['stock_id'];
 
     // DELETE ENTIRE STOCK OBJECT
     if ( $_GET['type'] == "delete") {
         if (isset($_GET['stock_id'])) {
             if (is_numeric($_GET['stock_id'])) {
-                echo('Type='.$_GET['type'].'<br>ID='.$_GET['stock_id'].'<br>');
+                // echo('Type='.$_GET['type'].'<br>ID='.$_GET['stock_id'].'<br>');
 
                 $stock_id = $_GET['stock_id'];
 
@@ -61,6 +62,9 @@ if (isset($_GET['type'])) {
                                 exit();
                             } elseif ($rowCount_totalItemCount == 1) { 
                                 $itemCountTotal = $result_totalItemCount->fetch_assoc()['quantity'];
+                                if ($itemCountTotal == null) {
+                                    $itemCountTotal = 0;
+                                }
                             }
                         }
 
@@ -76,7 +80,7 @@ if (isset($_GET['type'])) {
                             mysqli_stmt_execute($stmt_delete_item);
                             $rows_delete_item = $conn->affected_rows;
                             if ($rows_delete_item > 0) {
-                                echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
+                                // echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
                             } else {
                                 // There wont always be items related to the stock object, ignore the error
 
@@ -99,7 +103,7 @@ if (isset($_GET['type'])) {
                             mysqli_stmt_execute($stmt_delete_stock_img);
                             $rows_delete_stock_img = $conn->affected_rows;
                             if ($rows_delete_stock_img > 0) {
-                                echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
+                                // echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
                             } else {
                                 // There wont always be images linked, so ignore this 
 
@@ -122,7 +126,7 @@ if (isset($_GET['type'])) {
                             mysqli_stmt_execute($stmt_delete_stock_label);
                             $rows_delete_stock_label = $conn->affected_rows;
                             if ($rows_delete_stock_label > 0) {
-                                echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
+                                // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
                             } else {
                                 // There wont always be labels to delete, so ignore for now.
 
@@ -145,9 +149,9 @@ if (isset($_GET['type'])) {
                             mysqli_stmt_execute($stmt_delete_stock);
                             $rows_delete_stock = $conn->affected_rows;
                             if ($rows_delete_stock > 0) {
-                                echo("<br>Stock Deleted for id: $stock_id , Row count: $rows_delete_stock<br>");
+                                // echo("<br>Stock Deleted for id: $stock_id , Row count: $rows_delete_stock<br>");
                             } else {
-                                echo("<br>No Stock Deleted for id: $stock_id... <br>");
+                                // echo("<br>No Stock Deleted for id: $stock_id... <br>");
                                 header("Location: $redirect_url&error=deleteStockTable-NoRowsDeleted");
                                 exit();
                             }
@@ -171,6 +175,8 @@ if (isset($_GET['type'])) {
                         } else {
                             mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $empty_item_id, $type, $stock_shelf, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
                             mysqli_stmt_execute($stmt_trans);
+                            header("Location: ./?success=stockRemoved&stock_id=$stock_id");
+                            exit();
                         } 
 
                         

@@ -44,11 +44,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
             } elseif ($rowCount == 1) {
                 while ($row = $result->fetch_assoc()){
+                    $profile_id = $row['users_id'];
                     $profile_username = $row['username'];
                     $profile_first_name = $row['first_name'];
                     $profile_last_name = $row['last_name'];
                     $profile_email = $row['email'];
                     $profile_role = ucwords($row['role']);
+                    $profile_auth = $row['auth'];
                 }  
             } else { // if there are somehow too many rows matching the sql
                 header("Location: ../index.php?sqlerror=multipleentries");
@@ -60,54 +62,61 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <div class="container" style="margin-top:25px">
             <h3 style="font-size:22px">User Information</h3>
             <div style="padding-top: 20px;margin-left:25px">
-                <table>
-                    <tbody>
-                        <tr class="nav-row" id="username">
-                            <td id="username_header" style="width:200px">
-                                <!-- Custodian Colour: #72BE2A -->
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Username:</p>
-                            </td>
-                            <td id="username_info">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"><?php echo($profile_username); ?></p>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="firstname">
-                            <td id="firstname_header" style="width:200px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
-                            </td>
-                            <td id="firstname_info">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"><?php echo($profile_first_name); ?></p>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="lastname">
-                            <td id="lastname_header" style="width:200px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
-                            </td>
-                            <td id="lastname_info">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"><?php echo($profile_last_name); ?></p>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="email">
-                            <td id="email_header" style="width:200px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Email:</p>
-                            </td>
-                            <td id="email_info">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"><?php echo($profile_email); ?></p>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="role">
-                            <td id="role_header" style="width:200px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Role:</p>
-                            </td>
-                            <td id="role_info">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"><?php echo($profile_role); ?></p>
-                            </td>
-                        </tr>
-                        <?php 
-                        if ($_SESSION['auth'] == "ldap") {
-                            echo('
+                <?php 
+                if ($_SESSION['auth'] == "ldap") {
+                    echo('<table>
+                            <tbody>
+                                <tr class="nav-row" id="username">
+                                    <td id="username_header" style="width:200px">
+                                        <!-- Custodian Colour: #72BE2A -->
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Username:</p>
+                                    </td>
+                                    <td id="username_info">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_username.'</p>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row" style="margin-top:20px" id="firstname">
+                                    <td id="firstname_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
+                                    </td>
+                                    <td id="firstname_info">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_first_name.'</p>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row" style="margin-top:20px" id="lastname">
+                                    <td id="lastname_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
+                                    </td>
+                                    <td id="lastname_info">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_last_name.'</p>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row" style="margin-top:20px" id="email">
+                                    <td id="email_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Email:</p>
+                                    </td>
+                                    <td id="email_info">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_email.'</p>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row" style="margin-top:20px" id="role">
+                                    <td id="role_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Role:</p>
+                                    </td>
+                                    <td id="role_info">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_role.'</p>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row" style="margin-top:20px" id="role">
+                                    <td id="auth_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Auth:</p>
+                                    </td>
+                                    <td id="auth_info">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_auth.'</p>
+                                    </td>
+                                </tr>
                                 <tr class="nav-row" style="margin-top:30px" id="resync">
                                     <td id="resync_button_td" style="width:200px">
                                         <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
@@ -117,22 +126,84 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </td>
                                 </tr>
                             ');
-                        } else {
-                            echo('
+                } else {
+                    echo('
+                    <form id="profileForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                    <input type="hidden" value="'.$profile_id.'" name="id"/>
+                    <table>
+                        <tbody>
+                            <tr class="nav-row" id="username">
+                                <td id="username_header" style="width:200px">
+                                    <!-- Custodian Colour: #72BE2A -->
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Username:</p>
+                                </td>
+                                <td id="username_info">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_username.'</p>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-top:20px" id="firstname">
+                                <td id="firstname_header" style="width:200px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
+                                </td>
+                                <td id="firstname_info">
+                                <input type="text" class="nav-v-c align-middle form-control" name="first-name" value="'.$profile_first_name.'" placeholder="First Name" required />
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-top:20px" id="lastname">
+                                <td id="lastname_header" style="width:200px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
+                                </td>
+                                <td id="lastname_info">
+                                    <input type="text" class="nav-v-c align-middle form-control" name="last-name" value="'.$profile_last_name.'" placeholder="Last Name" required />
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-top:20px" id="email">
+                                <td id="email_header" style="width:200px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Email:</p>
+                                </td>
+                                <td id="email_info">
+                                <input type="text" class="nav-v-c align-middle form-control" name="email" value="'.$profile_email.'" placeholder="email@domain.com" required />
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-top:20px" id="role">
+                                <td id="role_header" style="width:200px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Role:</p>
+                                </td>
+                                <td id="role_info">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_role.'</p>
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-top:20px" id="role">
+                                <td id="auth_header" style="width:200px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Auth:</p>
+                                </td>
+                                <td id="auth_info">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_auth.'</p>
+                                </td>
+                            </tr>
                             <tr class="nav-row" style="margin-top:30px">
-                                <td><a href="changepassword.php">Change password</a></td>
-                            </tr>');
-                        }
-                        if (isset($_GET['success'])) {
-                            if ($_GET['success'] == "PasswordChanged") {
-                                echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">Password Changed Successfully.</p></td></tr>');
-                            }
-                        } elseif (isset($_GET['error'])) {
-                            echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$_GET['error'].'</p></td></tr>');
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                                <td id="profile-submit" style="width:200px">
+                                    <button class="btn btn-success align-bottom" type="submit" name="profile-submit" style="margin-left:0px" value="1">Save</button>
+                                </td>
+                                <td class="align-middle"><a href="changepassword.php">Change password</a></td>
+                            </tr>  
+                    ');
+                }
+                if (isset($_GET['success'])) {
+                    if ($_GET['success'] == "PasswordChanged") {
+                        echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">Password Changed Successfully.</p></td></tr>');
+                    } elseif ($_GET['success'] == "profileUpdated") {
+                        echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">Profile Updated Successfully.</p></td></tr>');
+                    }
+                } elseif (isset($_GET['error'])) {
+                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$_GET['error'].'</p></td></tr>');
+                }
+                ?>
+                        </tbody>
+                    </table>
+                <?php if($_SESSION['auth'] == "ldap") { echo("</form>"); } ?>
             </div>
 
         </div>

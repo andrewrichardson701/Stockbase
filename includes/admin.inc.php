@@ -6,7 +6,7 @@
 // print_r($_POST);
 //         exit();
 
-if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit'])) {
+if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['profile-submit'])) {
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
@@ -771,7 +771,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=location-submitIssue#stocklocations-settings");
             exit();
         }
-    } elseif (isset($_POST['stocklocation-submit'])){ //editing location info from admin.php
+    } elseif (isset($_POST['stocklocation-submit'])) { //editing location info from admin.php
         if (isset($_POST['type'])) {
             $typesArray = ['site', 'area', 'shelf'];
             if (in_array($_POST['type'], $typesArray)) {
@@ -801,6 +801,44 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } else {
             header("Location: ../admin.php?error=noType#stocklocations-settings");
+            exit();
+        }
+    } elseif (isset($_POST['profile-submit'])) {
+        session_start();
+        if (isset($_POST['id'])) {
+            if ($_POST['id'] == $_SESSION['user_id']) {
+                // user matches
+                if (!isset($_POST['first-name']) || !isset($_POST['last-name']) || !isset($_POST['email'])) {
+                    header("Location: ../profile.php?error=missingFields");
+                    exit();
+                } else {
+                    if ($_POST['first-name'] == '' || $_POST['last-name'] == '' || $_POST['email'] == '') {
+                        header("Location: ../profile.php?error=emptyFields");
+                        exit();
+                    } else {
+                        $id = $_POST['id'];
+                        $first_name = $_POST['first-name'];
+                        $last_name = $_POST['last-name'];
+                        $email = $_POST['email'];
+
+                        $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../profile.php?error=usersConnectionSQL");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt);
+                            header("Location: ../profile.php?success=profileUpdated");
+                            exit();
+                        }  
+                    }
+                }
+            } else {
+                header("Location: ../profile.php?error=idMissmatch");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=idMissing");
             exit();
         }
     } else {

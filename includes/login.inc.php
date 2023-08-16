@@ -59,6 +59,7 @@ if (isset($_POST['submit'])) {
                                 }
                                 session_start();
                                 $userFound = 1; // not needed, but useful for debugging
+                                $_SESSION['user_id'] = $row['users_id'];
                                 $_SESSION['username'] = $row['username'];
                                 $_SESSION['first_name'] = $row['first_name'];
                                 $_SESSION['last_name'] = $row['last_name'];

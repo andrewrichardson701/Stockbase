@@ -3,6 +3,8 @@
 // PROFILE PAGE USES THIS ALSO FOR ITS SAVING
 // ADDING NEW ROWS AND AREAS ETC ALSO USES THIS FROM INDEX PAGE WHEN THERE IS NO SITE/AREA/SHELF
 
+// USED BY: admin.php, index.php, profile.php
+
 // print_r($_POST);
 //         exit();
 
@@ -846,12 +848,5 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         exit();
     }
 }
-
-
-
-
-
-
-
 
 ?>

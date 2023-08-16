@@ -284,7 +284,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                 </div>
             </form>
         ');
-        if (isset($_GET['search'])) {
+        if (isset($_GET['search']) && $_GET['search'] !== '') {
             echo('
             <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">
                 ');
@@ -294,7 +294,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                     ORDER BY name;";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
-                echo('SQL Failure at '.__LINE__.' in includes/stock-remove.inc.php');
+                echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
             } else {
                 mysqli_stmt_bind_param($stmt, "s", $search);
                 mysqli_stmt_execute($stmt);
@@ -319,7 +319,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         $name = $row['name'];
                         $sku = $row['sku'];
                         echo('
-                        <tr class="clickable" onclick="window.location.href=\'stock.php?modify=remove&stock_id='.$id.'\'">
+                        <tr class="clickable" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$id.'\'">
                             <td id="'.$id.'-id"  style="max-width:max-content">'.$id.'</td>
                             <td id="'.$id.'-name">'.$name.'</td>
                             <td id="'.$id.'-sku">'.$sku.'</td>
@@ -330,6 +330,100 @@ if ($stock_id == 0 || $stock_id == '0') {
                     </tbody>
                 </table>'); 
                     }
+            }
+            echo('
+            </div>
+            ');
+        } else {
+            // Pagination settings
+            $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+            if ($page < 1) {
+                $page = 1;
+            }
+            $pageSize = 10; // Number of rows per page
+
+            // Calculate the offset for the query
+            $offset = ($page - 1) * $pageSize;
+
+            echo('
+            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">');
+            include 'includes/dbh.inc.php';
+            $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
+                        (SELECT SUM(quantity) 
+                            FROM item 
+                            INNER JOIN shelf ON item.shelf_id=shelf.id
+                            INNER JOIN area ON shelf.area_id=area.id
+                            WHERE item.stock_id=stock.id
+                        ) AS item_quantity,
+                        stock_img_image.stock_img_image
+                    FROM stock
+                    LEFT JOIN item ON stock.id=item.stock_id
+                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                    LEFT JOIN area ON shelf.area_id=area.id 
+                    LEFT JOIN site ON area.site_id=site.id
+                    LEFT JOIN (
+                        SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
+                        FROM stock_img
+                        GROUP BY stock_img.stock_id
+                    ) AS stock_img_image
+                        ON stock_img_image.stock_id = stock.id
+                    WHERE stock.is_cable=0
+                    GROUP BY 
+                        stock.id, stock_name, stock_description, stock_sku, 
+                        stock_img_image.stock_img_image
+                    ORDER BY stock.name
+                    LIMIT $pageSize OFFSET $offset;";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount < 1) {
+                    echo('<p>No Stock Found</p>');
+                } else {
+                    // rows found
+                    echo('
+                    <table class="table table-dark" id="inventoryTable" style="max-width:max-content">
+                        <thead style="text-align: center; white-space: nowrap;">
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th hidden>Descritpion</th>
+                                <th>SKU</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody class="align-middle" style="text-align: center; white-space: nowrap;">');
+                        while($row = $result->fetch_assoc()){
+                            if ($row['item_quantity'] == null || $row['item_quantity'] == 0 || $row['item_quantity'] == '') {
+                                $quantity = '<or class="red">0</or>';
+                            } else {
+                                $quantity =  $row['item_quantity'];
+                            }
+                            echo('
+                            <tr class="clickable" style="vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                                <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
+                                if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
+                                    echo ('<img id="'.$row['stock_id'].'-img" class="inv-img thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                                } 
+                            echo('
+                                </td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-name">'.$row['stock_name'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-description" hidden>'.$row['stock_description'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-sku">'.$row['stock_sku'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-quantity">'.$quantity.'</td>
+                            </tr>
+                            ');
+                        }
+                    echo('    
+                        </tbody>
+                    </table>
+                    ');
+                }
             }
             echo('
             </div>

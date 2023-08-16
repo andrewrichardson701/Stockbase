@@ -32,7 +32,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 
             }
         } elseif (isset($_GET['modify'])) {
-
+            if ($_GET['modify'] == "edit") {
+                echo("No Stock ID Selected.");
+            }
         } else {
             header("Location: ./?error=noStockSelected");
             exit();

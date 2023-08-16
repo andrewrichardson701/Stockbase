@@ -33,7 +33,6 @@ if (isset($_GET['stock_id'])) {
                 $rowCount_tran = $result_tran->num_rows;
                 if ($rowCount_tran < 1) {
                     echo ("No Transactions.");
-                    exit();
                 } else {
                     echo('
                     <table class="table table-dark centertable" id="transactions">

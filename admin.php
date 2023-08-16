@@ -955,6 +955,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         var ldap_password_confirm = $('#auth-password-confirm').val();
         var ldap_domain = $('#auth-domain').val();
         var ldap_host = $('#auth-host').val();
+        var ldap_host_secondary = $('#auth-host-secondary').val();
         var ldap_port = $('#auth-port').val();
         var ldap_basedn = $('#auth-basedn').val();
         var ldap_usergroup = $('#auth-usergroup').val();
@@ -979,6 +980,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             ldap_password_confirm: ldap_password_confirm, 
             ldap_domain: ldap_domain,
             ldap_host: ldap_host,
+            ldap_host_secondary: ldap_host_secondary,
             ldap_port: ldap_port,
             ldap_basedn: ldap_basedn,
             ldap_usergroup: ldap_usergroup,

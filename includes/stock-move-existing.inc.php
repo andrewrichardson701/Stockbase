@@ -281,13 +281,6 @@ if (isset($_POST['submit'])) {
                 }
             }
         }
-
-
-        
-
-
-
-
     } else { // else for the username checker at top of page.
         header("Location: $redirect_url&error=unauthorised");
         exit();

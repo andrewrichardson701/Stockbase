@@ -1,5 +1,5 @@
 <?php
-function image_upload($field, $stock_id, $redirect_url) {
+function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
     $timedate = date("dmyHis");
 
     $uploadDirectory = "../assets/img/stock/";
@@ -32,7 +32,7 @@ function image_upload($field, $stock_id, $redirect_url) {
                 $sql = "INSERT INTO stock_img (stock_id, image) VALUES (?, ?)";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    header("Location: ".$redirect_url."&error=imageSQL");
+                    header("Location: ".$redirect_url.$redirect_queries."&error=imageSQL");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt, "ss", $stock_id, $uploadFileName);
@@ -42,13 +42,13 @@ function image_upload($field, $stock_id, $redirect_url) {
             } else {
                 $errors[] = "uploadFailed";
                 print_r($errors);
-                header("Location: ".$redirect_url."&error=imageUpload");
+                // header("Location: ".$redirect_url.$redirect_queries."&error=imageUpload");
                 exit();
                 // return $errors;
             }
         } else {
             print_r($errors);
-            header("Location: ".$redirect_url."&error=imageUpload");
+            // header("Location: ".$redirect_url.$redirect_queries."&error=imageUpload");
             exit();
             // return $errors;
         } 
@@ -186,7 +186,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     // echo('Delete<br>');
     // print_r($_POST);
 
-    $redi_url = 'https://inventory.arpco.xyz/stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
+    $redi_url = '../stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
 
     if (isset($_POST['stock_id'])) {
         if (isset($_POST['img_id'])) {
@@ -312,7 +312,7 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     $redi_url = 'https://inventory.arpco.xyz/stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
     if (isset($_POST['stock_id'])) {
         if (isset($_FILES['image'])) {
-            image_upload('image', $_POST['stock_id'], $redi_url);
+            image_upload('image', $_POST['stock_id'], $redi_url, '');
             $email_subject = ucwords($current_system_name)." - Stock image uploaded";
             $email_body = "<p>Image successfully uploaded for stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));

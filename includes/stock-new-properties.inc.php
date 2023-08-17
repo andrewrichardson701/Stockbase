@@ -179,7 +179,7 @@ if (!empty($_POST)) {
                                                 }
                                             } else {
                                                 //do nothing
-                                                echo("duso");
+                                                echo("0 rows");
                                             }
                                         }
                                     ?>

@@ -1,7 +1,8 @@
 <?php
 // print_r($_POST);
-// print_R($_FILES);
+// print_r($_FILES);
 // exit();
+
 function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
     $timedate = date("dmyHis");
 
@@ -368,6 +369,9 @@ if (isset($_POST['submit'])) {
         header("Location: ".$_SESSION['redirect_url']."&error=addStock");
         exit();
     }
+} else {
+    header("Location: ".$_SESSION['redirect_url']."&error=noSubmit");
+    exit();
 }
 
 

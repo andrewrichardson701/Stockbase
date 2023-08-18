@@ -157,7 +157,10 @@ if ($stock_id == 0 || $stock_id == '0') {
                             }
                             
                             $stock_id = $_GET['stock_id'];
-                            echo('<form action="includes/stock-remove-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                            echo('
+                            <!-- this is for the stock-modify.inc.php page -->
+                            <input type="hidden" name="stock-remove" value="1" /> 
+                            <form action="includes/stock-remove-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                 <div class="nav-row" style="margin-bottom:10px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
                                         <div style="width:200px;margin-right:25px"></div>
@@ -252,7 +255,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                             echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" />');
                                                         } else {
                                                             echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />');
-                                                            echo('<a href="#" onclick="confirmAction(\''.$stock_name.'\', \''.$stock_sku.'\', \'includes/stock-remove-existing.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
+                                                            echo('<a href="#" onclick="confirmAction(\''.$stock_name.'\', \''.$stock_sku.'\', \'includes/stock-modify.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
                                                         }
                                                     echo('
                                                     </div>

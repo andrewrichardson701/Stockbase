@@ -73,7 +73,9 @@ if (isset($_GET['stock_id'])) {
                     <h3 style="font-size:22px; margin-left:25pxq">Edit Existing Stock</h3>
                     <div class="row">
                         <div class="col-sm-7 text-left" id="stock-info-left">
-                            <form id="edit-form" action="includes/stock-edit-action.inc.php" method="POST" enctype="multipart/form-data">
+                            <form id="edit-form" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                                <!-- below input is used for the stock-modify.inc.php page -->
+                                <input type="hidden" name="stock-edit" value="1" />
                                 <div class="nav-row" style="margin-bottom:25px">
                                     <div class="nav-row" id="id-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="id" id="id-label">ID</label></div>

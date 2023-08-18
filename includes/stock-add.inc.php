@@ -4,7 +4,6 @@
 // Query string bits
 $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
 
-// include 'head.php';
 ?>
 <!-- <div style="margin-bottom:200px"></div> -->
 
@@ -30,10 +29,12 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         $input_serial_number = isset($_GET['serial_number']) ? $_GET['serial_number'] : '';
         $input_reason        = isset($_GET['reason'])        ? $_GET['reason'] : '';
 
-        echo('<form action="includes/stock-add-new.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">');
+        echo('<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">');
         if ($stock_id == 0 || $stock_id == '0') {
             //<input type="text" name="labels" placeholder="Labels - allow multiple" id="labels" class="form-control nav-v-c" style="width:300px" value="'.$input_labels.'"></input>
             echo('
+            <!-- this is for the stock-modify.inc.php page -->
+            <input type="hidden" name="stock-add" value="1" /> 
             <div class="container well-nopad bg-dark" style="margin-bottom:5px">
                 <h3 style="font-size:22px; margin-left:25px">Add New Stock</h3>
                 <div class="row">
@@ -153,7 +154,10 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             ');
         } else {
             // Adding exisiting stock for item
-            echo('<input type="hidden" name="id" value="'.$_GET['stock_id'].'" />');
+            echo('
+            <!-- this is for the stock-modify.inc.php page -->
+            <input type="hidden" name="stock-add" value="1" /> 
+            <input type="hidden" name="id" value="'.$_GET['stock_id'].'" />');
             $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                             area.id AS area_id, area.name AS area_name,
                             shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,

@@ -4,7 +4,14 @@
 
 // THIS USED TO BE THE COLLECTION OF stock-add-new.inc.php, stock-edit-action.inc.php, stock-remove-existing.inc.php, stock-move-existing.inc.php
 
-// NEED TO FIGURE OUT HOW TO JOIN THE TWO IMAGE_UPLOAD FUNCTIONS
+// Tested and working:
+//    - stock-add
+//    - stock-remove
+//    - stock-edit
+//    - stock-delete
+//    - stock-move
+
+// This shoulw all be working now, but will be leaving the old files in the /includes/old folder
 
 session_start(); // start the session
 
@@ -121,7 +128,6 @@ function checkDeleteCurrentRow($item_id) {
 
 if (isset($_POST['submit'])) { // standard submit button name - this should be the case on all forms.
     include 'smtp.inc.php';
-
     if (isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
         if (isset($_POST['stock-add'])) { // bits from the stock-add-new.inc.php page - need to add a hidden input with name="stock-add" for this
             if ($_POST['submit'] == 'Add Stock') {
@@ -402,209 +408,6 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 }
             } else {
                 header("Location: ".$_SESSION['redirect_url']."&error=addStock");
-                exit();
-            }
-        } elseif (isset($_POST['stock-delete'])) { // delete bits from the stock-remove-existing.inc.php - need to add a hidden input with name="stock-delete" for this
-            //
-            // STILL  NEED TO WORK THE MINIMUM STOCK INTO THE CHECKER FOR REMOVING STOCK
-            //
-
-            $errors =[];
-
-            if (isset($_GET['type'])) {
-                session_start();
-                $redirect_url = "../stock.php?modify=remove&stock_id=".$_GET['stock_id'];
-
-                // DELETE ENTIRE STOCK OBJECT
-                if ( $_GET['type'] == "delete") {
-                    if (isset($_GET['stock_id'])) {
-                        if (is_numeric($_GET['stock_id'])) {
-                            // echo('Type='.$_GET['type'].'<br>ID='.$_GET['stock_id'].'<br>');
-
-                            $stock_id = $_GET['stock_id'];
-
-                            include 'dbh.inc.php';
-                            $sql_checkID = "SELECT * FROM stock
-                                            WHERE id=?
-                                            ORDER BY id";
-                            $stmt_checkID = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_checkID, $sql_checkID)) {
-                                $errors[] = 'checkID stock table error - SQL connection';
-                                header("Location: $redirect_url&error=stockTableSQLConnection");
-                                exit();
-                            } else {
-                                mysqli_stmt_bind_param($stmt_checkID, "s", $stock_id);
-                                mysqli_stmt_execute($stmt_checkID);
-                                $result_checkID = mysqli_stmt_get_result($stmt_checkID);
-                                $rowCount_checkID = $result_checkID->num_rows;
-                                if ($rowCount_checkID < 1) {
-                                    $errors[] = 'checkID stock table error - no IDs found';
-                                    header("Location: $redirect_url&error=noIDInTable");
-                                    exit();
-                                } elseif ($rowCount_checkID == 1) { 
-                                    $row_checkID = $result_checkID->fetch_assoc();
-
-                                    $checkID_id = $row_checkID['id'];
-                                    $checkID_name = $row_checkID['name'];
-                                    $checkID_description = $row_checkID['description'];
-                                    $checkID_sku = $row_checkID['sku'];
-                                    $checkID_min_stock = $row_checkID['min_stock'];
-
-                                    // GET TOTAL ITEM COUNT BEFORE DELETE
-                                    $sql_totalItemCount = "SELECT sum(quantity) AS quantity FROM item
-                                                    WHERE stock_id=?
-                                                    ORDER BY id";
-                                    $stmt_totalItemCount = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_totalItemCount, $sql_totalItemCount)) {
-                                        $errors[] = 'totalItemCount item table error - SQL connection';
-                                        header("Location: $redirect_url&error=stockTableSQLConnection");
-                                        exit();
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_totalItemCount, "s", $stock_id);
-                                        mysqli_stmt_execute($stmt_totalItemCount);
-                                        $result_totalItemCount = mysqli_stmt_get_result($stmt_totalItemCount);
-                                        $rowCount_totalItemCount = $result_totalItemCount->num_rows;
-                                        if ($rowCount_totalItemCount < 1) {
-                                            $errors[] = 'totalItemCount item table error - no quantity found';
-                                            header("Location: $redirect_url&error=noIDInTable");
-                                            exit();
-                                        } elseif ($rowCount_totalItemCount == 1) { 
-                                            $itemCountTotal = $result_totalItemCount->fetch_assoc()['quantity'];
-                                            if ($itemCountTotal == null) {
-                                                $itemCountTotal = 0;
-                                            }
-                                        }
-                                    }
-
-                                    // CLEAR ITEM TABLE
-                                    $sql_delete_item = "DELETE FROM item WHERE stock_id=?";
-                                    $stmt_delete_item = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_delete_item, $sql_delete_item)) {
-                                        $errors[] = 'delete item table error - SQL connection';
-                                        header("Location: $redirect_url&error=itemTableSQLConnection");
-                                        exit();
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_delete_item, "s", $stock_id);
-                                        mysqli_stmt_execute($stmt_delete_item);
-                                        $rows_delete_item = $conn->affected_rows;
-                                        if ($rows_delete_item > 0) {
-                                            // echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
-                                        } else {
-                                            // There wont always be items related to the stock object, ignore the error
-
-                                            // echo("<br>No Items Deleted for stock_id: $stock_id... <br>");
-                                            // header("Location: $redirect_url&error=deleteItemTable-NoRowsDeleted");
-                                            // exit();
-                                        }
-                                        
-                                    }
-
-                                    // CLEAR STOCK_IMG TABEL
-                                    $sql_delete_stock_img = "DELETE FROM stock_img WHERE stock_id=?";
-                                    $stmt_delete_stock_img = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_delete_stock_img, $sql_delete_stock_img)) {
-                                        $errors[] = 'delete stock_img table error - SQL connection';
-                                        header("Location: $redirect_url&error=stock_imgTableSQLConnection");
-                                        exit();
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_delete_stock_img, "s", $stock_id);
-                                        mysqli_stmt_execute($stmt_delete_stock_img);
-                                        $rows_delete_stock_img = $conn->affected_rows;
-                                        if ($rows_delete_stock_img > 0) {
-                                            // echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
-                                        } else {
-                                            // There wont always be images linked, so ignore this 
-
-                                            // echo("<br>No stock_imgs Deleted for stock_id: $stock_id... <br>");
-                                            // header("Location: $redirect_url&error=deletestock_imgTable-NoRowsDeleted");
-                                            // exit();
-                                        }
-                                        
-                                    }
-
-                                    // CLEAR STOCK_LABEL TABEL
-                                    $sql_delete_stock_label = "DELETE FROM stock_label WHERE stock_id=?";
-                                    $stmt_delete_stock_label = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_delete_stock_label, $sql_delete_stock_label)) {
-                                        $errors[] = 'delete stock_label table error - SQL connection';
-                                        header("Location: $redirect_url&error=stock_labelTableSQLConnection");
-                                        exit();
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_delete_stock_label, "s", $stock_id);
-                                        mysqli_stmt_execute($stmt_delete_stock_label);
-                                        $rows_delete_stock_label = $conn->affected_rows;
-                                        if ($rows_delete_stock_label > 0) {
-                                            // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
-                                        } else {
-                                            // There wont always be labels to delete, so ignore for now.
-
-                                            // echo("<br>No stock_labels Deleted for stock_id: $stock_id... <br>");
-                                            // header("Location: $redirect_url&error=deleteStock_labelTable-NoRowsDeleted");
-                                            // exit();
-                                        }
-                                        
-                                    }
-
-                                    // CLEAR STOCK TABLE
-                                    $sql_delete_stock = "DELETE FROM stock WHERE id=?";
-                                    $stmt_delete_stock = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_delete_stock, $sql_delete_stock)) {
-                                        $errors[] = 'delete stock table error - SQL connection';
-                                        header("Location: $redirect_url&error=stockTableSQLConnection");
-                                        exit();
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_delete_stock, "s", $stock_id);
-                                        mysqli_stmt_execute($stmt_delete_stock);
-                                        $rows_delete_stock = $conn->affected_rows;
-                                        if ($rows_delete_stock > 0) {
-                                            // echo("<br>Stock Deleted for id: $stock_id , Row count: $rows_delete_stock<br>");
-                                        } else {
-                                            // echo("<br>No Stock Deleted for id: $stock_id... <br>");
-                                            header("Location: $redirect_url&error=deleteStockTable-NoRowsDeleted");
-                                            exit();
-                                        }
-                                        
-                                    }
-
-                                    $type = 'delete';
-                                    $empty_item_id = 0;
-                                    $empty_cost = 0;
-                                    $empty_serial_number = '';
-                                    $reason = "No Stock Remaining, Deleted.";
-                                    $date = date('Y-m-d'); // current date in YYY-MM-DD format
-                                    $time = date('H:i:s'); // current time in HH:MM:SS format
-                                    $username = $_SESSION['username'];
-                                    $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
-                                                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                                    $stmt_trans = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
-                                        header("Location: $redirect_url&error=TransactionConnectionIssue");
-                                        exit();
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $empty_item_id, $type, $stock_shelf, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
-                                        mysqli_stmt_execute($stmt_trans);
-                                        header("Location: ./?success=stockRemoved&stock_id=$stock_id");
-                                        exit();
-                                    } 
-
-                                    
-                                } else { // too many rows (checkID query)
-                                    $errors[] = 'checkID stock table error - too many rows with same ID';
-                                    header("Location: $redirect_url&error=tooManyWithSameID");
-                                    exit();
-                                }
-                            }
-                        } else {
-                            $errors[] = 'Non-numeric ID';
-                        }
-                    } else {
-                        $errors[] = 'ID not set';
-                    }
-                } else {
-                    $errors[] = 'type is not = delete';
-                }
-            } else {
-                header("Location: $redirect_url&error=typeMissing");
                 exit();
             }
         } elseif (isset($_POST['stock-remove'])) { // stock removal bits from the stock-remove-existing.inc.php - need to add a hidden input with name="stock-remove"
@@ -1189,49 +992,6 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         }  
                     } 
 
-                    // function to check the current row and if 0 quantity, remove it.
-                    function checkDeleteCurrentRow($item_id) {
-                        global $redirect_url;
-                        include 'dbh.inc.php';
-                    
-                        $sql = "SELECT * FROM item WHERE id=?";
-                        $stmt = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ".$redirect_url."&error=itemTableSQLConnectionCurrentRowCheck");
-                            exit();
-                        } else {
-                            mysqli_stmt_bind_param($stmt, "s", $item_id);
-                            mysqli_stmt_execute($stmt);
-                            $result = mysqli_stmt_get_result($stmt);
-                            $rowCount = $result->num_rows;
-                            if ($rowCount < 1) {
-                                // No Rows found
-                                // continue.
-                            } else {
-                                // Row found
-                                $row = $result->fetch_assoc();
-                                $quantity = $row['quantity'];
-                                if ($quantity == 0 || $quantity == '0') {
-                                    // Row has no quantity
-                                    // Delete the row
-
-                                    $sql_delete = "DELETE FROM item WHERE id=?";
-                                    $stmt_delete = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_delete, $sql_delete)) {
-                                        echo("<br>issue at line: ".__LINE__."<br>");
-                                        header("Location: $redirect_url&error=itemTableSQLConnectionUpdateCurrent");
-                                        exit();
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_delete, "s", $item_id);
-                                        mysqli_stmt_execute($stmt_delete);
-                                    }
-                                } else {
-                                    // no need to do anything, there is still quantity.
-                                }
-                            }
-                        }
-                    }
-
                     // Check if the values all match up with current DB.
 
                     include 'dbh.inc.php';
@@ -1421,6 +1181,213 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
         } else {
             header("Location: ".$_SESSION['redirect_url']."&error=unknownQuery");
             exit(); 
+        }
+    } else {
+        header("Location: ".$_SESSION['redirect_url']."&error=noLogin");
+        exit();
+    }
+} elseif (isset($_GET['type']) && $_GET['type'] == "delete") { // delete bits from the stock-remove-existing.inc.php - need to add a hidden input with name="stock-delete" for this
+    //
+    // STILL  NEED TO WORK THE MINIMUM STOCK INTO THE CHECKER FOR REMOVING STOCK
+    //
+    if (isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
+        $errors =[];
+
+        if (isset($_GET['type'])) {
+            session_start();
+            $redirect_url = "../stock.php?modify=remove&stock_id=".$_GET['stock_id'];
+
+            // DELETE ENTIRE STOCK OBJECT
+            if ( $_GET['type'] == "delete") {
+                if (isset($_GET['stock_id'])) {
+                    if (is_numeric($_GET['stock_id'])) {
+                        // echo('Type='.$_GET['type'].'<br>ID='.$_GET['stock_id'].'<br>');
+
+                        $stock_id = $_GET['stock_id'];
+
+                        include 'dbh.inc.php';
+                        $sql_checkID = "SELECT * FROM stock
+                                        WHERE id=?
+                                        ORDER BY id";
+                        $stmt_checkID = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_checkID, $sql_checkID)) {
+                            $errors[] = 'checkID stock table error - SQL connection';
+                            header("Location: $redirect_url&error=stockTableSQLConnection");
+                            exit();
+                        } else {
+                            mysqli_stmt_bind_param($stmt_checkID, "s", $stock_id);
+                            mysqli_stmt_execute($stmt_checkID);
+                            $result_checkID = mysqli_stmt_get_result($stmt_checkID);
+                            $rowCount_checkID = $result_checkID->num_rows;
+                            if ($rowCount_checkID < 1) {
+                                $errors[] = 'checkID stock table error - no IDs found';
+                                header("Location: $redirect_url&error=noIDInTable");
+                                exit();
+                            } elseif ($rowCount_checkID == 1) { 
+                                $row_checkID = $result_checkID->fetch_assoc();
+
+                                $checkID_id = $row_checkID['id'];
+                                $checkID_name = $row_checkID['name'];
+                                $checkID_description = $row_checkID['description'];
+                                $checkID_sku = $row_checkID['sku'];
+                                $checkID_min_stock = $row_checkID['min_stock'];
+
+                                // GET TOTAL ITEM COUNT BEFORE DELETE
+                                $sql_totalItemCount = "SELECT sum(quantity) AS quantity FROM item
+                                                WHERE stock_id=?
+                                                ORDER BY id";
+                                $stmt_totalItemCount = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_totalItemCount, $sql_totalItemCount)) {
+                                    $errors[] = 'totalItemCount item table error - SQL connection';
+                                    header("Location: $redirect_url&error=stockTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_totalItemCount, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_totalItemCount);
+                                    $result_totalItemCount = mysqli_stmt_get_result($stmt_totalItemCount);
+                                    $rowCount_totalItemCount = $result_totalItemCount->num_rows;
+                                    if ($rowCount_totalItemCount < 1) {
+                                        $errors[] = 'totalItemCount item table error - no quantity found';
+                                        header("Location: $redirect_url&error=noIDInTable");
+                                        exit();
+                                    } elseif ($rowCount_totalItemCount == 1) { 
+                                        $itemCountTotal = $result_totalItemCount->fetch_assoc()['quantity'];
+                                        if ($itemCountTotal == null) {
+                                            $itemCountTotal = 0;
+                                        }
+                                    }
+                                }
+
+                                // CLEAR ITEM TABLE
+                                $sql_delete_item = "DELETE FROM item WHERE stock_id=?";
+                                $stmt_delete_item = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_item, $sql_delete_item)) {
+                                    $errors[] = 'delete item table error - SQL connection';
+                                    header("Location: $redirect_url&error=itemTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_delete_item, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_item);
+                                    $rows_delete_item = $conn->affected_rows;
+                                    if ($rows_delete_item > 0) {
+                                        // echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
+                                    } else {
+                                        // There wont always be items related to the stock object, ignore the error
+
+                                        // echo("<br>No Items Deleted for stock_id: $stock_id... <br>");
+                                        // header("Location: $redirect_url&error=deleteItemTable-NoRowsDeleted");
+                                        // exit();
+                                    }
+                                    
+                                }
+
+                                // CLEAR STOCK_IMG TABEL
+                                $sql_delete_stock_img = "DELETE FROM stock_img WHERE stock_id=?";
+                                $stmt_delete_stock_img = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_stock_img, $sql_delete_stock_img)) {
+                                    $errors[] = 'delete stock_img table error - SQL connection';
+                                    header("Location: $redirect_url&error=stock_imgTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_delete_stock_img, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_stock_img);
+                                    $rows_delete_stock_img = $conn->affected_rows;
+                                    if ($rows_delete_stock_img > 0) {
+                                        // echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
+                                    } else {
+                                        // There wont always be images linked, so ignore this 
+
+                                        // echo("<br>No stock_imgs Deleted for stock_id: $stock_id... <br>");
+                                        // header("Location: $redirect_url&error=deletestock_imgTable-NoRowsDeleted");
+                                        // exit();
+                                    }
+                                    
+                                }
+
+                                // CLEAR STOCK_LABEL TABEL
+                                $sql_delete_stock_label = "DELETE FROM stock_label WHERE stock_id=?";
+                                $stmt_delete_stock_label = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_stock_label, $sql_delete_stock_label)) {
+                                    $errors[] = 'delete stock_label table error - SQL connection';
+                                    header("Location: $redirect_url&error=stock_labelTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_delete_stock_label, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_stock_label);
+                                    $rows_delete_stock_label = $conn->affected_rows;
+                                    if ($rows_delete_stock_label > 0) {
+                                        // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
+                                    } else {
+                                        // There wont always be labels to delete, so ignore for now.
+
+                                        // echo("<br>No stock_labels Deleted for stock_id: $stock_id... <br>");
+                                        // header("Location: $redirect_url&error=deleteStock_labelTable-NoRowsDeleted");
+                                        // exit();
+                                    }
+                                    
+                                }
+
+                                // CLEAR STOCK TABLE
+                                $sql_delete_stock = "DELETE FROM stock WHERE id=?";
+                                $stmt_delete_stock = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_stock, $sql_delete_stock)) {
+                                    $errors[] = 'delete stock table error - SQL connection';
+                                    header("Location: $redirect_url&error=stockTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_delete_stock, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_stock);
+                                    $rows_delete_stock = $conn->affected_rows;
+                                    if ($rows_delete_stock > 0) {
+                                        // echo("<br>Stock Deleted for id: $stock_id , Row count: $rows_delete_stock<br>");
+                                    } else {
+                                        // echo("<br>No Stock Deleted for id: $stock_id... <br>");
+                                        header("Location: $redirect_url&error=deleteStockTable-NoRowsDeleted");
+                                        exit();
+                                    }
+                                    
+                                }
+
+                                $type = 'delete';
+                                $empty_item_id = 0;
+                                $empty_cost = 0;
+                                $empty_serial_number = '';
+                                $reason = "No Stock Remaining, Deleted.";
+                                $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                $time = date('H:i:s'); // current time in HH:MM:SS format
+                                $username = $_SESSION['username'];
+                                $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
+                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                $stmt_trans = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
+                                    header("Location: $redirect_url&error=TransactionConnectionIssue");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $empty_item_id, $type, $stock_shelf, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
+                                    mysqli_stmt_execute($stmt_trans);
+                                    header("Location: $redirect_url?success=stockRemoved&stock_id=$stock_id");
+                                    exit();
+                                } 
+
+                                
+                            } else { // too many rows (checkID query)
+                                $errors[] = 'checkID stock table error - too many rows with same ID';
+                                header("Location: $redirect_url&error=tooManyWithSameID");
+                                exit();
+                            }
+                        }
+                    } else {
+                        $errors[] = 'Non-numeric ID';
+                    }
+                } else {
+                    $errors[] = 'ID not set';
+                }
+            } else {
+                $errors[] = 'type is not = delete';
+            }
+        } else {
+            header("Location: $redirect_url&error=typeMissing");
+            exit();
         }
     } else {
         header("Location: ".$_SESSION['redirect_url']."&error=noLogin");

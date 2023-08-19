@@ -396,15 +396,59 @@ $currency_symbol = '£';
             </div>
             ');
         } else {
-            // Pagination settings
-            $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-            if ($page < 1) {
-                $page = 1;
+            // Get total row count
+            $sql_total = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
+                        (SELECT SUM(quantity) 
+                            FROM item 
+                            INNER JOIN shelf ON item.shelf_id=shelf.id
+                            INNER JOIN area ON shelf.area_id=area.id
+                            WHERE item.stock_id=stock.id
+                        ) AS item_quantity,
+                        stock_img_image.stock_img_image
+                    FROM stock
+                    LEFT JOIN item ON stock.id=item.stock_id
+                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                    LEFT JOIN area ON shelf.area_id=area.id 
+                    LEFT JOIN site ON area.site_id=site.id
+                    LEFT JOIN (
+                        SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
+                        FROM stock_img
+                        GROUP BY stock_img.stock_id
+                    ) AS stock_img_image
+                        ON stock_img_image.stock_id = stock.id
+                    WHERE stock.is_cable=0
+                        AND (SELECT SUM(quantity) 
+                                FROM item 
+                                INNER JOIN shelf ON item.shelf_id=shelf.id
+                                INNER JOIN area ON shelf.area_id=area.id
+                                WHERE item.stock_id=stock.id AND area.site_id=site.id
+                            )!='null'
+                    GROUP BY 
+                        stock.id, stock_name, stock_description, stock_sku, 
+                        stock_img_image.stock_img_image
+                    ORDER BY stock.name;";
+            $stmt_total = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_total, $sql_total)) {
+                echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+            } else {
+                mysqli_stmt_execute($stmt_total);
+                $result_total = mysqli_stmt_get_result($stmt_total);
+                $totalRowCount = $result_total->num_rows;
             }
-            $pageSize = 10; // Number of rows per page
 
-            // Calculate the offset for the query
-            $offset = ($page - 1) * $pageSize;
+            // Pagination settings
+           $results_per_page = 10; // row count to show
+           $total_pages = ceil($totalRowCount / $results_per_page);
+
+           $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+           if ($current_page < 1) {
+               $current_page = 1;
+           } elseif ($current_page > $total_pages) {
+               $current_page = $total_pages;
+           } 
+           
+           // Calculate the offset for the query
+           $offset = ($current_page - 1) * $results_per_page;
 
             echo('
             <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">');
@@ -439,7 +483,7 @@ $currency_symbol = '£';
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image
                     ORDER BY stock.name
-                    LIMIT $pageSize OFFSET $offset;";
+                    LIMIT $results_per_page OFFSET $offset;";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
@@ -447,6 +491,7 @@ $currency_symbol = '£';
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
                 $rowCount = $result->num_rows;
+
                 if ($rowCount < 1) {
                     echo('<p>No Stock Found</p>');
                 } else {
@@ -485,6 +530,28 @@ $currency_symbol = '£';
                                 <td class="align-middle" id="'.$row['stock_id'].'-quantity">'.$quantity.'</td>
                             </tr>
                             ');
+                        }
+                        if ($total_pages > 1) {
+                            echo('
+                            <tr style="background-color:#21272b">
+                                <td colspan="100%">');
+    
+                            if ($current_page > 1) {
+                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                            }
+
+                            for ($i = 1; $i <= $total_pages; $i++) {
+                                if ($i == $current_page) {
+                                    echo('&nbsp;<span class="current-page blue">' . $i . '</span>');
+                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                } else {
+                                    echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                }
+                            }
+
+                            if ($current_page < $total_pages) {
+                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                            }  
                         }
                     echo('    
                         </tbody>

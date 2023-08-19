@@ -8,7 +8,7 @@
 // print_r($_POST);
 //         exit();
 
-if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['profile-submit'])) {
+if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['profile-submit']) && !isset($_POST['location-delete-submit'])) {
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
@@ -744,7 +744,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $sql_location = "INSERT INTO $location_type (name, description) VALUES('$location_name', '$location_description')";
                 } elseif ($location_type == "area") {
                     $location_parent = $_POST['parent'];
-                    $location_description = $_POSt['description'];
+                    $location_description = $_POST['description'];
                     $sql_location = "INSERT INTO $location_type (name, description, site_id) VALUES('$location_name', '$location_description', $location_parent)";
                 } elseif ($location_type == "shelf") {
                     $location_parent = $_POST['parent'];
@@ -773,6 +773,113 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=location-submitIssue#stocklocations-settings");
             exit();
         }
+    } elseif (isset($_POST['location-delete-submit'])) { // section for the location deleting in admin.inc.php
+        // for the Stock Location Settings section on admin.inc.php page. This is only the deleting of the site/area/shelf
+        if ($_POST['location-delete-submit'] == "site") {
+            $site_id = $_POST['location-id'];
+            $sql_check = "SELECT * FROM area WHERE site_id=$site_id;";
+            $stmt_check = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_check);
+                $result_check = mysqli_stmt_get_result($stmt_check);
+                $rowCount_check = $result_check->num_rows;
+
+                if ($rowCount_check == 0) {
+                    $sql_check2 = "SELECT * FROM cable_item WHERE site_id=$site_id;";
+                    $stmt_check2 = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
+                        header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_check2);
+                        $result_check2 = mysqli_stmt_get_result($stmt_check2);
+                        $rowCount_check2 = $result_check2->num_rows;
+                        
+                        if ($rowCount_check2 == 0) {
+                            $sql_site = "DELETE FROM site WHERE id=$site_id;";
+                            $stmt_site = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                                header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_execute($stmt_site);
+                                header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
+                                exit();
+                            }
+                        } else {
+                            header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
+                            exit();
+                        }
+                    }     
+                } else {
+                    header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
+                    exit();
+                }
+            }
+        } elseif ($_POST['location-delete-submit'] == "area") {
+            $area_id = $_POST['location-id'];
+            $sql_check = "SELECT * FROM shelf WHERE area_id=$area_id;";
+            $stmt_check = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_check);
+                $result_check = mysqli_stmt_get_result($stmt_check);
+                $rowCount_check = $result_check->num_rows;
+
+                if ($rowCount_check == 0) {
+                    $sql_area = "DELETE FROM area WHERE id=$area_id;";
+                    $stmt_area = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
+                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_area);
+                        header("Location: ../admin.php?success=areaDeleted&id=$area_id#stocklocations-settings");
+                        exit();
+                    }
+                } else {
+                    header("Location: ../admin.php?error=areaHasDependencies#stocklocations-settings");
+                    exit();
+                }
+            }
+        } elseif ($_POST['location-delete-submit'] == "shelf") {
+            $shelf_id = $_POST['location-id'];
+            $sql_check = "SELECT * FROM item WHERE id=$shelf_id;";
+            $stmt_check = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_check);
+                $result_check = mysqli_stmt_get_result($stmt_check);
+                $rowCount_check = $result_check->num_rows;
+
+                if ($rowCount_check == 0) {
+                    $sql_shelf = "DELETE FROM shelf WHERE id=$shelf_id;";
+                    $stmt_shelf = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
+                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_shelf);
+                        header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
+                        exit();
+                    }
+                } else {
+                    header("Location: ../admin.php?error=shelfHasDependencies#stocklocations-settings");
+                    exit();
+                }
+            }
+        } else {
+            header("Location: ../admin.php?error=unknownLocationDeleteType#stocklocations-settings");
+            exit();
+        }
+
     } elseif (isset($_POST['stocklocation-submit'])) { // editing location info from admin.php
         if (isset($_POST['type'])) {
             $typesArray = ['site', 'area', 'shelf'];

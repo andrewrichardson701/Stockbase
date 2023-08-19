@@ -502,9 +502,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
                                             </td>
+                                        </form>
+                                        <form id="shelfForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="location-id" value="'.$site_id_check.'" />
                                             <td class="stockTD" style="background-color:#21272b; ">
-                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" '); 
-                                                if ($rowCount_site_check != 0 && $rowCount_site_check2 != 0 ) { echo("disabled"); } 
+                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" '); 
+                                                if ($rowCount_site_check > 0 || $rowCount_site_check2 > 0 ) { echo("disabled"); } 
                                                 echo('>
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -546,8 +549,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
                                                     </td>
+                                                </form>
+                                                <form id="shelfForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                <input type="hidden" name="location-id" value="'.$area_id_check.'" />
                                                     <td class="stockTD" style="background-color:#21272b; ">
-                                                        <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" '); 
+                                                        <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" '); 
                                                         if ($rowCount_area_check != 0) { echo("disabled"); } 
                                                         echo('>
                                                             <i class="fa fa-trash"></i>
@@ -557,7 +563,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             </tr>');
                                         foreach ($area['shelves'] as $shelf) {
                                             if ($shelf['shelf_id'] !== '' && $shelf['shelf_id'] !== null) {
-                                                $shelf_id_check = $area['area_id'];
+                                                $shelf_id_check = $shelf['shelf_id'];
 
                                                 $sql_shelf_check = "SELECT * FROM item WHERE shelf_id=$shelf_id_check;";
                                                 $stmt_shelf_check = mysqli_stmt_init($conn);
@@ -566,7 +572,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 } else {
                                                     mysqli_stmt_execute($stmt_shelf_check);
                                                     $result_shelf_check = mysqli_stmt_get_result($stmt_shelf_check);
-                                                    $rowCount_shelf_check = $result_shelf_check->num_rows;
+                                                    echo $rowCount_shelf_check = $result_shelf_check->num_rows;
                                                 }
 
                                                 echo('<tr style="background-color:'.$color3.' !important; color:black">
@@ -588,9 +594,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                                     <i class="fa fa-pencil"></i>
                                                                 </button>
                                                             </td>
+                                                        </form>
+                                                        <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                            <input type="hidden" name="location-id" value="'.$shelf_id_check.'" />
                                                             <td class="stockTD" style="background-color:#21272b; ">
-                                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" '); 
-                                                                if ($rowCount_site_check != 0) { echo("disabled"); } 
+                                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="shelf" type="submit" '); 
+                                                                if ($rowCount_shelf_check != 0) { echo("disabled"); }
                                                                 echo('>
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>

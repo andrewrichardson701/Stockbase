@@ -460,6 +460,29 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 if ($l > 1) {
                                     echo('<tr style="background-color:#343a40"><td colspan=9></td></tr>');
                                 }
+
+                                $site_id_check = $site['site_id'];
+
+                                $sql_site_check = "SELECT * FROM area WHERE site_id=$site_id_check;";
+                                $stmt_site_check = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_site_check, $sql_site_check)) {
+                                    echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+                                } else {
+                                    mysqli_stmt_execute($stmt_site_check);
+                                    $result_site_check = mysqli_stmt_get_result($stmt_site_check);
+                                    $rowCount_site_check = $result_site_check->num_rows;
+                                }
+
+                                $sql_site_check2 = "SELECT * FROM cable_item WHERE site_id=$site_id_check;";
+                                $stmt_site_check2 = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_site_check2, $sql_site_check2)) {
+                                    echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+                                } else {
+                                    mysqli_stmt_execute($stmt_site_check2);
+                                    $result_site_check2 = mysqli_stmt_get_result($stmt_site_check2);
+                                    $rowCount_site_check2 = $result_site_check2->num_rows;
+                                }
+
                                 echo('<tr style="background-color:'.$color1.' !important; color:black">
                                         <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                             <input type="hidden" name="type" value="site" />
@@ -480,7 +503,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 </button>
                                             </td>
                                             <td class="stockTD" style="background-color:#21272b; ">
-                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
+                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" '); 
+                                                if ($rowCount_site_check != 0 && $rowCount_site_check2 != 0 ) { echo("disabled"); } 
+                                                echo('>
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </td>
@@ -488,6 +513,18 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </tr>');
                                 foreach ($site['areas'] as $area) {
                                     if ($area['area_id'] !== '' && $area['area_id'] !== null) {
+                                        $area_id_check = $area['area_id'];
+
+                                        $sql_area_check = "SELECT * FROM shelf WHERE area_id=$area_id_check;";
+                                        $stmt_area_check = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_area_check, $sql_area_check)) {
+                                            echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+                                        } else {
+                                            mysqli_stmt_execute($stmt_area_check);
+                                            $result_area_check = mysqli_stmt_get_result($stmt_area_check);
+                                            $rowCount_area_check = $result_area_check->num_rows;
+                                        }
+
                                         echo('<tr style="background-color:'.$color2.' !important; color:black">
                                                 <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                     <input type="hidden" name="type" value="area" />
@@ -510,7 +547,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                         </button>
                                                     </td>
                                                     <td class="stockTD" style="background-color:#21272b; ">
-                                                        <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
+                                                        <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" '); 
+                                                        if ($rowCount_area_check != 0) { echo("disabled"); } 
+                                                        echo('>
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>
@@ -518,6 +557,18 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             </tr>');
                                         foreach ($area['shelves'] as $shelf) {
                                             if ($shelf['shelf_id'] !== '' && $shelf['shelf_id'] !== null) {
+                                                $shelf_id_check = $area['area_id'];
+
+                                                $sql_shelf_check = "SELECT * FROM item WHERE shelf_id=$shelf_id_check;";
+                                                $stmt_shelf_check = mysqli_stmt_init($conn);
+                                                if (!mysqli_stmt_prepare($stmt_shelf_check, $sql_shelf_check)) {
+                                                    echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+                                                } else {
+                                                    mysqli_stmt_execute($stmt_shelf_check);
+                                                    $result_shelf_check = mysqli_stmt_get_result($stmt_shelf_check);
+                                                    $rowCount_shelf_check = $result_shelf_check->num_rows;
+                                                }
+
                                                 echo('<tr style="background-color:'.$color3.' !important; color:black">
                                                         <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                             <input type="hidden" name="type" value="shelf" />
@@ -538,7 +589,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                                 </button>
                                                             </td>
                                                             <td class="stockTD" style="background-color:#21272b; ">
-                                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" disabled>
+                                                                <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" '); 
+                                                                if ($rowCount_site_check != 0) { echo("disabled"); } 
+                                                                echo('>
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>
                                                             </td>

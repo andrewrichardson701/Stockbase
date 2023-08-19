@@ -137,19 +137,23 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             mysqli_stmt_execute($stmt_inv_count);
             $result_inv_count = mysqli_stmt_get_result($stmt_inv_count);
             $totalRowCount = $result_inv_count->num_rows;
-
+            
             // Pagination settings
+            $results_per_page = $rowSelectValue; // Number of rows per page - based no the querystring (or 10 by default)
+            $total_pages = ceil($totalRowCount / $results_per_page);
+
             $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
             if ($current_page < 1) {
                 $current_page = 1;
-            }
-            $results_per_page = $rowSelectValue; // Number of rows per page - based no the querystring (or 10 by default)
+            } elseif ($current_page > $total_pages) {
+                $current_page = $total_pages;
+            }          
 
             // Calculate the offset for the query
             $offset = ($current_page - 1) * $results_per_page;
 
             $sql_inv_pagination = " LIMIT $results_per_page OFFSET $offset;";
-            
+
             $sql_inv = $sql_inv_count .= $sql_inv_pagination;
 
             echo '<pre hidden>'.$sql_inv.'</pre>';
@@ -161,7 +165,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 mysqli_stmt_execute($stmt_inv);
                 $result_inv = mysqli_stmt_get_result($stmt_inv);
                 $rowCount_inv = $result_inv->num_rows;
-                $total_pages = ceil($totalRowCount / $results_per_page);
+                
 
                 // GET SITE AND AREA VALUES
                 //site

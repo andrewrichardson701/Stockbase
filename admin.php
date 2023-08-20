@@ -507,7 +507,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <input type="hidden" name="location-id" value="'.$site_id_check.'" />
                                             <td class="stockTD" style="background-color:#21272b; ">
                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" '); 
-                                                if ($rowCount_site_check > 0 || $rowCount_site_check2 > 0 ) { echo("disabled"); } 
+                                                if ($rowCount_site_check > 0 || $rowCount_site_check2 > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                 echo('>
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -554,7 +554,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <input type="hidden" name="location-id" value="'.$area_id_check.'" />
                                                     <td class="stockTD" style="background-color:#21272b; ">
                                                         <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" '); 
-                                                        if ($rowCount_area_check != 0) { echo("disabled"); } 
+                                                        if ($rowCount_area_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                         echo('>
                                                             <i class="fa fa-trash"></i>
                                                         </button>
@@ -572,7 +572,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 } else {
                                                     mysqli_stmt_execute($stmt_shelf_check);
                                                     $result_shelf_check = mysqli_stmt_get_result($stmt_shelf_check);
-                                                    echo $rowCount_shelf_check = $result_shelf_check->num_rows;
+                                                    $rowCount_shelf_check = $result_shelf_check->num_rows;
                                                 }
 
                                                 echo('<tr style="background-color:'.$color3.' !important; color:black">
@@ -599,7 +599,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                             <input type="hidden" name="location-id" value="'.$shelf_id_check.'" />
                                                             <td class="stockTD" style="background-color:#21272b; ">
                                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="shelf" type="submit" '); 
-                                                                if ($rowCount_shelf_check != 0) { echo("disabled"); }
+                                                                if ($rowCount_shelf_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                                 echo('>
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>

@@ -228,6 +228,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         }
                     }
 
+                    // if default sku is not set, set it to ITEM- 
+                    $config_d_sku_prefix = isset($config_d_sku_prefix) ? $config_d_sku_prefix : 'ITEM-';
+
                     $sql_config = "SELECT sku_prefix FROM config WHERE id=1";
                     $stmt_config = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
@@ -246,12 +249,12 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             }
                         }
                     }
-
+                    
                     $current_sku_prefix = isset($config_sku_prefix) ? $config_sku_prefix : 'ITEM-';
 
                     $regex = '/^'.$current_sku_prefix.'\d{5}$/';
                     $PRE_skus = preg_grep($regex, $skus);
-                    if ($sku !== '') {
+                    if (isset($sku) && $sku !== '') {
                         // SKU is not blank
                         if (in_array($sku, $skus)) {
                             // SKU already exists
@@ -262,7 +265,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         usort($PRE_skus, function($a, $b) { // sort the array 
                             return strnatcmp($a, $b);
                         });
-                        $new_PRE_sku_number = ((int)substr(end($PRE_skus), 3) +1);
+                        preg_match_all('/\d+/', end($PRE_skus), $max_sku_number_temp);
+                        $max_sku_number = $max_sku_number_temp[0][0];
+                        $new_PRE_sku_number = $max_sku_number +1; 
+
                         $new_PRE_skus = $current_sku_prefix . str_pad($new_PRE_sku_number, 5, '0', STR_PAD_LEFT);
                         $sku = $new_PRE_skus;
                     }

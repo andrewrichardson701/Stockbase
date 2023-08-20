@@ -158,9 +158,10 @@ if ($stock_id == 0 || $stock_id == '0') {
                             
                             $stock_id = $_GET['stock_id'];
                             echo('
-                            <!-- this is for the stock-modify.inc.php page -->
-                            <input type="hidden" name="stock-remove" value="1" /> 
-                            <form action="includes/stock-remove-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                            
+                            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                <!-- this is for the stock-modify.inc.php page -->
+                                <input type="hidden" name="stock-remove" value="1" /> 
                                 <div class="nav-row" style="margin-bottom:10px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
                                         <div style="width:200px;margin-right:25px"></div>

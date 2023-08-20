@@ -11,9 +11,22 @@
 //    - stock-delete
 //    - stock-move
 
-// This shoulw all be working now, but will be leaving the old files in the /includes/old folder
+// This should all be working now, but will be leaving the old files in the /includes/old folder
 
 session_start(); // start the session
+
+// check the redirect url for the file name and for ?
+if (str_contains($_SESSION['redirect_url'], basename(__FILE__))) {
+    $redirect_url = 'index.php';
+    $query_char = '?';
+} else {
+    $redirect_url = $_SESSION['redirect_url'];
+    if (str_contains($_SESSION['redirect_url'], '?')) {
+        $query_char = '&';
+    } else {
+        $query_char = '?';
+    }
+}
 
 // FUNCTIONS
 
@@ -51,7 +64,7 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
                 $sql = "INSERT INTO stock_img (stock_id, image) VALUES (?, ?)";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    header("Location: ".$redirect_url.$redirect_queries."&error=imageSQL");
+                    header("Location: ../".$redirect_url.$redirect_queries."&error=imageSQL");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt, "ss", $stock_id, $uploadFileName);
@@ -61,13 +74,13 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
             } else {
                 $errors[] = "uploadFailed";
                 print_r($errors);
-                // header("Location: ".$redirect_url.$redirect_queries."&error=imageUpload");
+                // header("Location: ../".$redirect_url.$redirect_queries."&error=imageUpload");
                 exit();
                 // return $errors;
             }
         } else {
             print_r($errors);
-            // header("Location: ".$redirect_url.$redirect_queries."&error=imageUpload");
+            // header("Location: ../".$redirect_url.$redirect_queries."&error=imageUpload");
             exit();
             // return $errors;
         } 
@@ -76,7 +89,7 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
 
 // check whether to delete the row - from the stock-remove-existing.inc.php page
 function checkDeleteCurrentRow($item_id) {
-    global $redirect_url;
+    global $redirect_url, $current_system_name, $loggedin_email, $loggedin_fullname, $config_smtp_from_name;
     include 'dbh.inc.php';
 
     $sql = "SELECT * FROM item WHERE id=?";
@@ -125,7 +138,8 @@ function checkDeleteCurrentRow($item_id) {
 }
 
 // MAIN SCRIPTS
-
+// print_r($_POST);
+// exit();
 if (isset($_POST['submit'])) { // standard submit button name - this should be the case on all forms.
     include 'smtp.inc.php';
     if (isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
@@ -150,17 +164,16 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 $comments = isset($_POST['comments']) ? $POST['comments'] : '' ; // comments
                 
                 // transaction
-                $quantity = $_POST['quantity']; 
-                $serial_number = $_POST['serial-number']; 
-                $reason = $_POST['reason'];
+                $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : ''; 
+                $serial_number = isset($_POST['serial-number']) ? $_POST['serial-number'] : ''; 
+                $reason = isset($_POST['reason']) ? $_POST['reason'] : '';
 
                 $username = $_SESSION['username'];
-                $redirect_url = $_SESSION['redirect_url'];
 
-                $redirect_queries = "&manufacturer=$manufacturer&site=$site&area=$area&shelf=$shelf&quantity=$quantity&serial-number=$serial_number&reason=$reason";
+                $redirect_queries = $query_char."manufacturer=$manufacturer&site=$site&area=$area&shelf=$shelf&quantity=$quantity&serial-number=$serial_number&reason=$reason";
                 
                 if (!isset($_POST['shelf']) || $_POST['shelf'] == '' || $_POST['shelf'] == 0 || $_POST['shelf'] == '0') {
-                    header("Location: ../$redirect_url.$redirect_queries&error=shelfRequired");
+                    header("Location: ../$redirect_url$redirect_queries&error=shelfRequired");
                     exit();
                 }
 
@@ -173,7 +186,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $sku = $_POST['sku'];
                     $description = $_POST['description'];
                     $min_stock = $_POST['min-stock'] == '' ? 0 : $_POST['min-stock'];
-                    $labels = $_POST['labels'];
+                    $labels = isset($_POST['labels']) ? $_POST['labels'] : '';
                     $image = $_FILES['image'];
                     if (is_array($labels)) {
                         $labelsQ = implode(',', $labels);
@@ -193,14 +206,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 ORDER BY sku";
                     $stmt_sku = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_sku, $sql_sku)) {
-                        header("Location: ../$redirect_url.$redirect_queries&error=stockTableSQLConnection");
+                        header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_sku);
                         $result_sku = mysqli_stmt_get_result($stmt_sku);
                         $rowCount_sku = $result_sku->num_rows;
                         if ($rowCount_sku < 1) {
-                            // header("Location: ".$redirect_url.$reditect_queies."&error=noSkusInTable");
+                            // header("Location: ../".$redirect_url.$redirect_queries."&error=noSkusInTable");
                             // exit();
                         } else {
                             while ($row_sku = $result_sku->fetch_assoc() ){
@@ -212,14 +225,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $sql_d_config = "SELECT sku_prefix FROM config_default WHERE id=1";
                     $stmt_d_config = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_d_config, $sql_d_config)) {
-                        header("Location: ../$redirect_url.$redirect_queries&error=stockTableSQLConnection");
+                        header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_d_config);
                         $result_d_config = mysqli_stmt_get_result($stmt_d_config);
                         $rowCount_d_config = $result_d_config->num_rows;
                         if ($rowCount_d_config < 1) {
-                            // header("Location: ".$redirect_url.$reditect_queies."&error=noSkusInTable");
+                            // header("Location: ../".$redirect_url.$redirect_queries."&error=noSkusInTable");
                             // exit();
                         } else {
                             while ($row_d_config = $result_d_config->fetch_assoc() ){
@@ -234,14 +247,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $sql_config = "SELECT sku_prefix FROM config WHERE id=1";
                     $stmt_config = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
-                        header("Location: ../$redirect_url.$redirect_queries&error=stockTableSQLConnection");
+                        header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_config);
                         $result_config = mysqli_stmt_get_result($stmt_config);
                         $rowCount_config = $result_config->num_rows;
                         if ($rowCount_config < 1) {
-                            // header("Location: ".$redirect_url.$reditect_queies."&error=noSkusInTable");
+                            // header("Location: ../".$redirect_url.$redirect_queries."&error=noSkusInTable");
                             // exit();
                         } else {
                             while ($row_config = $result_config->fetch_assoc() ){
@@ -255,10 +268,15 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $regex = '/^'.$current_sku_prefix.'\d{5}$/';
                     $PRE_skus = preg_grep($regex, $skus);
                     if (isset($sku) && $sku !== '') {
+                        if (str_contains($sku, $current_sku_prefix)) {
+                            // prefix is in the predefined sku. Error due to this creating potential errors.
+                            header("Location: ../$redirect_url$redirect_queries&error=SKUcontainsSKU-prefix");
+                            exit();
+                        }
                         // SKU is not blank
                         if (in_array($sku, $skus)) {
                             // SKU already exists
-                            header("Location: ../$redirect_url.$redirect_queries&error=SKUexists");
+                            header("Location: ../$redirect_url$redirect_queries&error=SKUexists");
                             exit();
                         }
                     } else {
@@ -279,7 +297,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $sql = "INSERT INTO stock (name, description, sku, min_stock) VALUES (?, ?, ?, ?)";
                     $stmt = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt, $sql)) {
-                        header("Location: ".$redirect_url.$reditect_queies."&error=stockTableSQLConnection");
+                        header("Location: ../".$redirect_url.$redirect_queries."&error=stockTableSQLConnection");
                         exit();
                     } else {
                         mysqli_stmt_bind_param($stmt, "ssss", $name, $description, $sku, $min_stock);
@@ -299,26 +317,24 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 $sql = "INSERT INTO stock_label (stock_id, label_id) VALUES (?, ?)";
                                 $stmt = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                    header("Location: ".$redirect_url.$reditect_queies."&error=stockTableSQLConnection");
+                                    header("Location: ../".$redirect_url.$redirect_queries."&error=stockTableSQLConnection");
                                     exit();
                                 } else {
                                     mysqli_stmt_bind_param($stmt, "ss", $id, $label);
                                     mysqli_stmt_execute($stmt);
                                 }
                             }
-                        } else {
+                        } elseif ($labels !== '') {
                             $sql = "INSERT INTO stock_label (stock_id, label_id) VALUES (?, ?)";
                             $stmt = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                header("Location: ".$redirect_url.$reditect_queies."&error=stockTableSQLConnection");
+                                header("Location: ../".$redirect_url.$redirect_queries."&error=stockTableSQLConnection");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt, "ss", $id, $labels);
                                 mysqli_stmt_execute($stmt);
                             }
                         }
-                        
-
                     }
 
                     $id = $insert_id;
@@ -333,7 +349,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             ORDER BY stock_id";
                 $stmt_item = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_item, $sql_item)) {
-                    header("Location: ".$redirect_url.$reditect_queies."&error=itemTableSQLConnection");
+                    header("Location: ../".$redirect_url.$redirect_queries."&error=itemTableSQLConnection");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt_item, "ssssss", $id, $upc, $serial_number, $manufacturer, $cost, $shelf);
@@ -346,7 +362,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ".$redirect_url.$reditect_queies."&error=itemTableSQLConnection");
+                            header("Location: ../".$redirect_url.$redirect_queries."&error=itemTableSQLConnection");
                             exit();
                         } else {
                             mysqli_stmt_bind_param($stmt, "ssssssss", $id, $upc, $quantity, $cost, $serial_number, $comments, $manufacturer, $shelf);
@@ -359,7 +375,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                             $stmt_trans = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
-                                header("Location: ".$redirect_url.$reditect_queies."&error=transactionConnectionSQL");
+                                header("Location: ../".$redirect_url.$redirect_queries."&error=transactionConnectionSQL");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $id, $item_id, $type, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
@@ -383,7 +399,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 WHERE id=?";
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ".$redirect_url.$reditect_queies."&error=itemTableSQLConnection");
+                            header("Location: ../".$redirect_url.$redirect_queries."&error=itemTableSQLConnection");
                             exit();
                         } else {
                             mysqli_stmt_bind_param($stmt, "ss", $new_quantity, $item_id);
@@ -394,7 +410,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                             $stmt_trans = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
-                                header("Location: ".$redirect_url.$reditect_queies."&error=transactionConnectionSQL");
+                                header("Location: ../".$redirect_url.$redirect_queries."&error=transactionConnectionSQL");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $id, $item_id, $type, $shelf, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
@@ -408,12 +424,12 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         }
                     } else {
                         // too many rows!
-                        header("Location: ".$redirect_url.$reditect_queies."&error=multipleItemsFound");
+                        header("Location: ../".$redirect_url.$redirect_queries."error=multipleItemsFound");
                         exit();
                     }
                 }
             } else {
-                header("Location: ".$_SESSION['redirect_url']."&error=addStock");
+                header("Location: ".$redirect_url.$redirect_queries."&error=addStock");
                 exit();
             }
         } elseif (isset($_POST['stock-remove'])) { // stock removal bits from the stock-remove-existing.inc.php - need to add a hidden input with name="stock-remove"
@@ -938,7 +954,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
             } else {
                 session_start();
-                header("Location: ../".$_SESSION['redirect_url']."&error=noSubmit");
+                header("Location: ../".$redirect_url."&error=noSubmit&line=".__LINE__);
                 exit();
             }
         } elseif (isset($_POST['stock-move'])) { // stock move bits from the stock-move-existing.inc.php - need to add a hidden input with name="stock-move"
@@ -989,7 +1005,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt_trans = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
-                            header("Location: ".$redirect_url."&error=transactionConnectionSQL");
+                            header("Location: ../".$redirect_url."&error=transactionConnectionSQL");
                             exit();
                         } else {
                             mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $item_id, $type, $shelf_id, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
@@ -1008,7 +1024,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     }
                     $stmt_currentRow = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_currentRow, $sql_currentRow)) {
-                        header("Location: ".$redirect_url."&error=stockTableSQLConnectionCurrentRow");
+                        header("Location: ../".$redirect_url."&error=stockTableSQLConnectionCurrentRow");
                         exit();
                     } else {
                         mysqli_stmt_bind_param($stmt_currentRow, "ssssss", $current_item_id, $stock_id, $current_shelf_id, $current_upc, $current_quantity, $current_manufacturer_id);
@@ -1020,11 +1036,11 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             // No Rows found
                             if ($current_serial_number !== '' && !empty($current_serial_number)) {
                                 echo("<br>issue at line: ".__LINE__."<br>");
-                                header("Location: ".$redirect_url."&error=noMatchInItemTableWithSerial");
+                                header("Location: ../".$redirect_url."&error=noMatchInItemTableWithSerial");
                                 exit();
                             } else {
                                 echo("<br>issue at line: ".__LINE__."<br>");
-                                header("Location: ".$redirect_url."&error=noMatchInItemTable");
+                                header("Location: ../".$redirect_url."&error=noMatchInItemTable");
                                 exit();
                             }
                         } else {
@@ -1042,7 +1058,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             $sql_newRow = "SELECT * FROM item WHERE stock_id=? AND shelf_id=? AND upc=? AND manufacturer_id=? AND serial_number='$current_serial_number' LIMIT 1";
                             $stmt_newRow = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_newRow, $sql_newRow)) {
-                                header("Location: ".$redirect_url."&error=stockTableSQLConnectionNewRow");
+                                header("Location: ../".$redirect_url."&error=stockTableSQLConnectionNewRow");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_newRow, "ssss", $stock_id, $new_shelf_id, $current_upc, $current_manufacturer_id);
@@ -1126,7 +1142,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     $stmt = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt, $sql)) {
                                         echo("<br>issue at line: ".__LINE__."<br>");
-                                        header("Location: ".$redirect_url."&error=itemTableSQLConnectionUpdateCurrent");
+                                        header("Location: ../".$redirect_url."&error=itemTableSQLConnectionUpdateCurrent");
                                         exit();
                                     } else {
                                         mysqli_stmt_bind_param($stmt, "ss", $current_new_quantity, $current_item_id);
@@ -1151,7 +1167,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         $stmt = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt, $sql)) {
                                             echo("<br>issue at line: ".__LINE__."<br>");
-                                            header("Location: ".$redirect_url."&error=itemTableSQLConnectionUpdateCurrent");
+                                            header("Location: ../".$redirect_url."&error=itemTableSQLConnectionUpdateCurrent");
                                             exit();
                                         } else {
                                             mysqli_stmt_bind_param($stmt, "ss", $new_new_quantity, $new_item_id);
@@ -1181,15 +1197,15 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     exit();
                 }
             } else { // else for the submit button checker at top of page.
-                header("Location: $redirect_url&error=noSubmit");
+                header("Location: $redirect_url&error=noSubmit&line=".__LINE__);
                 exit();
             }
         } else {
-            header("Location: ".$_SESSION['redirect_url']."&error=unknownQuery");
+            header("Location: ".$redirect_url.$query_char."error=unknownQuery");
             exit(); 
         }
     } else {
-        header("Location: ".$_SESSION['redirect_url']."&error=noLogin");
+        header("Location: ../".$redirect_url.$query_char."error=noLogin");
         exit();
     }
 } elseif (isset($_GET['type']) && $_GET['type'] == "delete") { // delete bits from the stock-remove-existing.inc.php - need to add a hidden input with name="stock-delete" for this
@@ -1371,7 +1387,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 } else {
                                     mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $empty_item_id, $type, $stock_shelf, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
                                     mysqli_stmt_execute($stmt_trans);
-                                    header("Location: $redirect_url?success=stockRemoved&stock_id=$stock_id");
+                                    header("Location: ../stock.php?modify=remove&success=stockDeleted&old_stock_id=$stock_id");
                                     exit();
                                 } 
 
@@ -1396,10 +1412,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             exit();
         }
     } else {
-        header("Location: ".$_SESSION['redirect_url']."&error=noLogin");
+        header("Location: ".$redirect_url."&error=noLogin");
         exit();
     }
 } else {
-    header("Location: ".$_SESSION['redirect_url']."&error=noSubmit");
+    header("Location: ../".$redirect_url.$query_char."error=noSubmit&line=".__LINE__);
     exit();
 }

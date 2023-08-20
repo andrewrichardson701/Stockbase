@@ -36,8 +36,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 echo("No Stock ID Selected.");
             }
         } else {
-            header("Location: ./?error=noStockSelected");
-            exit();
+            echo("No Stock ID or Modification Selected.");
         }
         if (isset($_GET['modify'])) {
             $stock_modify = $_GET['modify'];

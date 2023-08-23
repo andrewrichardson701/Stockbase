@@ -929,17 +929,36 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $first_name = $_POST['first-name'];
                         $last_name = $_POST['last-name'];
                         $email = $_POST['email'];
-
-                        $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
-                        $stmt = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ../profile.php?error=usersConnectionSQL");
+                        
+                        $sql_users = "SELECT users.email
+                                        FROM users 
+                                        WHERE email='$email' AND auth='local' AND id!=$id";
+                        $stmt_users = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
+                            header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
                             exit();
                         } else {
-                            mysqli_stmt_execute($stmt);
-                            header("Location: ../profile.php?success=profileUpdated");
-                            exit();
-                        }  
+                            mysqli_stmt_execute($stmt_users);
+                            $result = mysqli_stmt_get_result($stmt_users);
+                            $rowCount = $result->num_rows;
+                            if ($rowCount > 0) {
+                                header("Location: ../profile.php?error=emailExists&email=$email&first_name=$first_name&last_name=$last_name");
+                                exit();
+                            } else {
+                                // no emails exist in the row, can be used.
+
+                                $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_execute($stmt);
+                                    header("Location: ../profile.php?success=profileUpdated");
+                                    exit();
+                                }  
+                            }
+                        }
                     }
                 }
             } else {

@@ -48,7 +48,11 @@
     color: black;
 }
 
-.inv-img {
+.inv-img-25h {
+    max-width: 50px;
+    max-height: 25px;
+}
+.inv-img-50h {
     max-width: 50px;
     max-height: 50px;
 }

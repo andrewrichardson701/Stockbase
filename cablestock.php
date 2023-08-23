@@ -463,7 +463,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <td class="align-middle" id="'.$cable_item_id.'-img-td">
                                                 ');
                                                 if (!is_null($stock_img_file_name)) {
-                                                    echo('<img id="'.$cable_item_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
+                                                    echo('<img id="'.$cable_item_id.'-img" class="inv-img-50h thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
                                                 }
                                                 echo('</td>');
                                                 

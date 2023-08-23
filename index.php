@@ -341,14 +341,14 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 } else {
                     // all is as expected. we have sites and areas
                     echo('
-                        <div class="container" style="padding-bottom:25px">
+                        <div class="container" style="padding-bottom:20px">
                             <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name));
                             if ($site !== '0') { $area_name = $area == 0 ? "All" : $area_names_array[$area]; echo(' - '.$area_name);}
                         echo('</h2>
                         <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
                         </div>
 
-                        <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:15px">
+                        <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
                             <div class="nav-row">
                                 <form action="./" method="get" class="nav-row" style="max-width:max-content">
                                     <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
@@ -495,7 +495,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             <td class="align-middle" id="'.$stock_id.'-img-td">
                                             ');
                                             if (!is_null($stock_img_file_name)) {
-                                                echo('<img id="'.$stock_id.'-img" class="inv-img thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
+                                                echo('<img id="'.$stock_id.'-img" class="inv-img-25h thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
                                             }
                                             echo('</td>
                                             <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>

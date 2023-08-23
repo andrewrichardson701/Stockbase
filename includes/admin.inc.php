@@ -917,49 +917,54 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         if (isset($_POST['id'])) {
             if ($_POST['id'] == $_SESSION['user_id']) {
                 // user matches
-                if (!isset($_POST['first-name']) || !isset($_POST['last-name']) || !isset($_POST['email'])) {
-                    header("Location: ../profile.php?error=missingFields");
-                    exit();
-                } else {
-                    if ($_POST['first-name'] == '' || $_POST['last-name'] == '' || $_POST['email'] == '') {
-                        header("Location: ../profile.php?error=emptyFields");
-                        exit();
-                    } else {
-                        $id = $_POST['id'];
-                        $first_name = $_POST['first-name'];
-                        $last_name = $_POST['last-name'];
-                        $email = $_POST['email'];
-                        
-                        $sql_users = "SELECT users.email
-                                        FROM users 
-                                        WHERE email='$email' AND auth='local' AND id!=$id";
-                        $stmt_users = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-                            header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
-                            exit();
-                        } else {
-                            mysqli_stmt_execute($stmt_users);
-                            $result = mysqli_stmt_get_result($stmt_users);
-                            $rowCount = $result->num_rows;
-                            if ($rowCount > 0) {
-                                header("Location: ../profile.php?error=emailExists&email=$email&first_name=$first_name&last_name=$last_name");
+                if (isset($_POST['first-name']) && isset($_POST['last-name']) && isset($_POST['email'])) {
+                    if ($_POST['first-name'] !== '' && $_POST['last-name'] !== '' && $_POST['email'] !== '') {
+                        if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                            $id = $_POST['id'];
+                            $first_name = $_POST['first-name'];
+                            $last_name = $_POST['last-name'];
+                            $email = strtolower($_POST['email']);
+                            
+                            $sql_users = "SELECT users.email
+                                            FROM users 
+                                            WHERE email='$email' AND auth='local' AND id!=$id";
+                            $stmt_users = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
+                                header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
                                 exit();
                             } else {
-                                // no emails exist in the row, can be used.
-
-                                $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
-                                $stmt = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                    header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
+                                mysqli_stmt_execute($stmt_users);
+                                $result = mysqli_stmt_get_result($stmt_users);
+                                $rowCount = $result->num_rows;
+                                if ($rowCount > 0) {
+                                    header("Location: ../profile.php?error=emailExists&email=$email&first_name=$first_name&last_name=$last_name");
                                     exit();
                                 } else {
-                                    mysqli_stmt_execute($stmt);
-                                    header("Location: ../profile.php?success=profileUpdated");
-                                    exit();
-                                }  
+                                    // no emails exist in the row, can be used.
+
+                                    $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
+                                    $stmt = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
+                                        exit();
+                                    } else {
+                                        mysqli_stmt_execute($stmt);
+                                        header("Location: ../profile.php?success=profileUpdated");
+                                        exit();
+                                    }  
+                                }
                             }
+                        } else {
+                            header("Location: ../profile.php?error=emailFormat");
+                            exit();
                         }
+                    } else {
+                        header("Location: ../profile.php?error=emptyFields");
+                        exit();
                     }
+                } else {
+                    header("Location: ../profile.php?error=missingFields");
+                    exit();
                 }
             } else {
                 header("Location: ../profile.php?error=idMissmatch");

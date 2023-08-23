@@ -4,8 +4,11 @@
     border-radius: 0 0 0.25rem 0.25rem;
     position: absolute;
     transform: translateY(-110%);
-    left: 0.5rem;
+    left: 45%;
+    right: 45%;
     transition: transform 325ms ease-in;
+    text-align: center;
+    z-index: 10000;
 }
 .skip-nav-link-inv:focus {
     transform: translateY(0%);

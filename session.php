@@ -26,13 +26,14 @@ if (isset($_SESSION['password_expired']) && $_SESSION['password_expired'] == 1) 
         exit();
     }
 }
-$loggedin_username = $_SESSION['username'];
-$loggedin_firstname = $_SESSION['first_name'];
-$loggedin_lastname = $_SESSION['last_name'];
+$loggedin_username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
+$loggedin_firstname = isset($_SESSION['first_name']) ? $_SESSION['first_name'] : '';
+$loggedin_lastname = isset($_SESSION['last_name']) ? $_SESSION['last_name'] : '';
+$loggedin_email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
+$loggedin_role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+$loggedin_auth = isset($_SESSION['auth']) ? $_SESSION['auth'] : '';
+$loggedin_password_expired = isset($_SESSION['password_expired']) ? $_SESSION['password_expired'] : '';
+
 $loggedin_fullname = ucwords($loggedin_firstname).' '.ucwords($loggedin_lastname);
-$loggedin_email = $_SESSION['email'];
-$loggedin_role = $_SESSION['role'];
-$loggedin_auth = $_SESSION['auth'];
-$loggedin_password_expired = $_SESSION['password_expired'];
 $profile_name = ucwords($loggedin_firstname);
 ?>

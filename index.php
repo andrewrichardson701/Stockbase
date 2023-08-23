@@ -348,7 +348,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
                         </div>
 
-                        <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
+                        <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:15px">
                             <div class="nav-row">
                                 <form action="./" method="get" class="nav-row" style="max-width:max-content">
                                     <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
@@ -457,7 +457,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                         <!-- Table -->
                         <div class="container">
-                            <table class="table table-dark centertable" id="inventoryTable">
+                            <table class="table table-dark centertable" id="inventoryTable" style="margin-bottom:0px">
                                 <thead style="text-align: center; white-space: nowrap;">
                                     <tr>
                                         <th id="id" hidden>id</th>

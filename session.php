@@ -8,17 +8,20 @@ if (substr($_SERVER['REQUEST_URI'], 0, strlen('/inventory/')) == '/inventory/') 
     $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
 }
 // if session not set, go to login page
-if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username'])) || ($_SESSION['username'] === '')) {
-    // redirect to login page
-    if (isset($_SESSION['redirect_url']) && $_SESSION['redirect_url'] !== '') {
-        header('Location: ./login.php?url=' . urlencode($_SESSION['redirect_url']));
-        exit;
-    } else {
-        header('Location: ./login.php');
-        exit;
-    }
-    
-} 
+if (!str_contains($_SERVER['REQUEST_URI'], "changepassword.inc.php")) {
+    if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username'])) || ($_SESSION['username'] === '')) {
+        // redirect to login page
+        if (isset($_SESSION['redirect_url']) && $_SESSION['redirect_url'] !== '') {
+            header('Location: ./login.php?url=' . urlencode($_SESSION['redirect_url']));
+            exit;
+        } else {
+            header('Location: ./login.php');
+            exit;
+        }
+        
+    }  
+}
+
 
 if (isset($_SESSION['password_expired']) && $_SESSION['password_expired'] == 1) {
     if (!strpos($_SERVER['REQUEST_URI'], "changepassword.php")) {

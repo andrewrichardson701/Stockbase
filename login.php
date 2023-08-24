@@ -93,13 +93,57 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     if (isset($_GET["sqlerror"])) {
                         echo '<p class="red">SQL error. Check URL!</p>';
                     }
+                    if (isset($_GET['resetemail'])) {
+                        if ($_GET['resetemail'] == "sent") {
+                            echo '<p class="green">Password reset email sent. Please check your email.</p>';
+                        }
+                    }
                 ?>
-                <!-- <p><a href="reset-password.php" id="password-reset">Forgot password?</a> -->
+                <p><a href="login.php?reset=true" id="password-reset">Forgot password?</a>
                 <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p>
             </div>
         </div>
 	</div>
-<!-- <script>
+    <?php
+        if (isset($_GET['reset']) && $_GET['reset'] == "true") {
+    ?>
+            <div id="modalDiv" class="modal" style="display:block;padding:300px;background-color: rgba(0,0,0,0.7);">
+                <span class="close" onclick="modalClose()">×</span>
+                    <div class="well-nopad bg-dark" style="position:relative; margin:auto; width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
+                    <form id="locationForm" enctype="multipart/form-data" action="./includes/changepassword.inc.php" method="POST">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="align-middle">Username / Email:</td>
+                                    <td class="align-middle" style="padding-left:10px"><input class="form-control" type="text" name="uid" placeholder="username / email" /></td>
+                                </tr>
+                                <tr>
+                                    <td colspan=2 class="text-center" style="padding-top:20px">
+                                        <input class="btn btn-success" name="reset-request-submit" value="Reset Password" type="submit"/> 
+                                        <button type="button"  class="btn btn-warning" onclick="navPage('login.php')" style="margin-left:20px">Cancel</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <?php
+                    if (isset($_GET['sqlerror'])) {
+                        echo('<p class="red">SQL Error: '.$_GET['sqlerror'].'</p>');
+                    } elseif (isset($_GET['reseterror'])) {
+                        if ($_GET['reseterror'] == "uidMissmatch") {
+                            echo('<p class="red">Username/email not found.</p>');
+                        } elseif ($_GET['reseterror'] == "multipleUsersMatchUid") {
+                            echo('<p class="red">Multiple users found for this username/email (somehow). Contact an administrator.</p>');
+                        }
+                    }
+                    ?>
+                    </div>
+                </div>
+            </div>
+    <?php
+    }
+    ?>
+<script>
 var toggle = document.getElementById("local-toggle");
 var reset = document.getElementById("password-reset");
 if (toggle.checked) {
@@ -115,7 +159,7 @@ toggle.addEventListener('change', (event) => {
         reset.hidden=true;
     }
 })
-</script> -->
+</script>
     
 <?php include 'foot.php'; ?>
 

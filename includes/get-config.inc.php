@@ -8,6 +8,7 @@ $predefined_config_logo_image = 'default/default-logo.png';
 $predefined_config_favicon_image = 'default/default-favicon.png';
 $predefined_config_currency = '£';
 $predefined_sku_prefix = 'ITEM-';
+$predefined_base_url = 'inventory.ajrich.co.uk';
 
 function getWorB($hexCode) {
     // Convert the hex code to an RGB array.
@@ -70,6 +71,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
         $config_favicon_image       = '';
         $config_currency            = '';
         $config_sku_prefix          = '';
+        $config_base_url            = '';
         $config_ldap_enabled        = '';
         $config_ldap_username       = '';
         // $config_ldap_password    = '';
@@ -96,6 +98,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_favicon_image       = isset($config['favicon_image']) ? $config['favicon_image'] : '';
             $config_currency            = isset($config['currency']) ? $config['currency'] : '';
             $config_sku_prefix          = isset($config['sku_prefix']) ? $config['sku_prefix'] : '';
+            $config_base_url            = isset($config['base_url']) ? $config['base_url'] : '';
 
             $config_ldap_enabled        = isset($config['ldap_enabled']) ? $config['ldap_enabled'] : '';
             $config_ldap_username       = isset($config['ldap_username']) ? $config['ldap_username'] : '';
@@ -137,6 +140,7 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_favicon_image       = $config_d['favicon_image'];
             $config_d_currency            = $config_d['currency'];
             $config_d_sku_prefix          = $config_d['sku_prefix'];
+            $config_d_base_url            = $config_d['base_url'];
 
             $config_d_ldap_enabled        = $config_d['ldap_enabled'];
             $config_d_ldap_username       = $config_d['ldap_username'];
@@ -167,6 +171,7 @@ $default_logo_image          = ($config_d_logo_image          !== '' ? $config_d
 $default_favicon_image       = ($config_d_favicon_image       !== '' ? $config_d_favicon_image               : $predefined_config_favicon_image);
 $default_currency            = ($config_d_currency            !== '' ? $config_d_currency                    : $predefined_config_currency);
 $default_sku_prefix          = ($config_d_sku_prefix          !== '' ? $config_d_sku_prefix                  : $predefined_sku_prefix);
+$default_base_url            = ($config_d_base_url            !== '' ? $config_d_base_url                    : $predefined_base_url);
 $default_banner_text_color   = getWorB($default_banner_color);
 
 $current_system_name         = ($config_system_name           !== '' ? $config_system_name                   : $default_system_name);
@@ -175,6 +180,7 @@ $current_logo_image          = ($config_logo_image            !== '' ? $config_l
 $current_favicon_image       = ($config_favicon_image         !== '' ? $config_favicon_image                 : $default_favicon_image);
 $current_currency            = ($config_currency              !== '' ? $config_currency                      : $default_currency );
 $current_sku_prefix          = ($config_sku_prefix            !== '' ? $config_sku_prefix                    : $default_sku_prefix);
+$current_base_url            = ($config_base_url              !== '' ? $config_base_url                      : $default_base_url);
 $current_banner_text_color   = getWorB($current_banner_color);
   
 # ---

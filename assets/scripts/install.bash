@@ -338,6 +338,9 @@ if [ -f "$sql_setup_script" ]; then
     echo "Running MySQL setup script from assets..."
     mysql -u root < "$sql_setup_script"
     echo "MySQL setup script executed."
+    echo "Updating base_url with the selected web url..."
+    mysql -u root -e "UPDATE config SET base_url='$web_domain' WHERE id=1;";
+    echo "Done!"
 else
     echo "MySQL setup script not found at $sql_setup_script."
 fi

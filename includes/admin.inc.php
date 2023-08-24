@@ -43,24 +43,25 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     if (isset($_POST['global-submit'])) { // GLOBAL saving in admin
         $errors = [];
          
-        $config_system_name   = isset($_POST['system_name'])        ? $_POST['system_name']        : '';
+        $config_base_url   = isset($_POST['base_url'])        ? $_POST['base_url']        : '';
         $config_banner_color  = isset($_POST['banner_color'])       ? $_POST['banner_color']       : '';
         $config_logo_image    = isset($_FILES['logo_image'])        ? $_FILES['logo_image']        : '';
         $config_favicon_image = isset($_FILES['favicon_image'])     ? $_FILES['favicon_image']     : '';
         $config_currency      = isset($_POST['currency_selection']) ? $_POST['currency_selection'] : '';
         $config_sku_prefix    = isset($_POST['sku_prefix'])         ? $_POST['sku_prefix']         : '';
+        $config_base_url      = isset($_POST['base_url'])           ? $_POST['base_url']           : '';
 
-        if (isset($_POST['system_name']) && $config_system_name !== '') {
-            $post_system_name = $_POST['system_name'];
+        if (isset($_POST['base_url']) && $config_base_url !== '') {
+            $post_base_url = $_POST['base_url'];
             include 'dbh.inc.php';
-            $sql_upload = "UPDATE config SET system_name=? WHERE id=1";
+            $sql_upload = "UPDATE config SET base_url=? WHERE id=1";
             $stmt_upload = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                $errors[] = "system_nameSqlError";
+                $errors[] = "base_urlSqlError";
             } else {
-                mysqli_stmt_bind_param($stmt_upload, "s", $post_system_name);
+                mysqli_stmt_bind_param($stmt_upload, "s", $post_base_url);
                 mysqli_stmt_execute($stmt_upload);
-                $queryStrings[] = "system_nameUpload=success";
+                $queryStrings[] = "base_urlUpload=success";
             }
         }
 
@@ -234,6 +235,20 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 }
             }           
         }
+
+        if (isset($_POST['base_url']) && $config_base_url !== '') {
+            $post_base_url = $_POST['base_url'];
+            include 'dbh.inc.php';
+            $sql_upload = "UPDATE config SET base_url=? WHERE id=1";
+            $stmt_upload = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                $errors[] = "base_urlSqlError";
+            } else {
+                mysqli_stmt_bind_param($stmt_upload, "s", $post_base_url);
+                mysqli_stmt_execute($stmt_upload);
+                $queryStrings[] = "base_urlUpload=success";
+            }
+        }
         
         if (count($queryStrings) > 1) {
             $queryString = implode('&', $queryStrings);
@@ -267,7 +282,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['global-restore-defaults'])) { // restore global settings in admin
         include 'dbh.inc.php';
 
-        $sql_config = "SELECT system_name, banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
+        $sql_config = "SELECT base_url, banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
         $stmt_config = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             header("Location: ../admin.php?sqlerror=config_default_getEntries#global-settings");
@@ -281,20 +296,20 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 exit();
             } else {
                 while ( $config = $result_config->fetch_assoc() ) {
-                    $restore_system_name   = $config['system_name'];
+                    $restore_base_url   = $config['base_url'];
                     $restore_banner_color  = $config['banner_color'];
                     $restore_logo_image    = $config['logo_image'];
                     $restore_favicon_image = $config['favicon_image'];
                     $restore_currency      = $config['currency'];
                     $restore_sku_prefix    = $config['sku_prefix'];
                 }
-                $sql_upload = "UPDATE config SET system_name=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=? WHERE id=1";
+                $sql_upload = "UPDATE config SET base_url=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=? WHERE id=1";
                 $stmt_upload = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                     header("Location: ../admin.php?sqlerror=config_noUpdate#global-settings");
                     exit();
                 } else {
-                    mysqli_stmt_bind_param($stmt_upload, "ssssss", $restore_system_name, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix);
+                    mysqli_stmt_bind_param($stmt_upload, "ssssss", $restore_base_url, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix);
                     mysqli_stmt_execute($stmt_upload);
 
                     $sql_sku = "SELECT sku_prefix FROM config ORDER BY id LIMIT 1";

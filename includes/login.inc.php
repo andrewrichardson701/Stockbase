@@ -29,10 +29,16 @@ if (isset($_POST['submit'])) {
                 // Check if the user exists already in the users table with a password and if match, login
                 include 'dbh.inc.php';
 
+                if (filter_var($login_username, FILTER_VALIDATE_EMAIL)) {
+                    $uid_type = "email";
+                } else{
+                    $uid_Type = "username";
+                }
+
                 $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired
                                 FROM users 
                                 INNER JOIN users_roles ON users.role_id = users_roles.id
-                                WHERE username=? AND auth='local'";
+                                WHERE $uid_type=? AND auth='local'";
                 $stmt_users = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
                     header("Location: ../login.php?error=sqlerror_getUsersList");

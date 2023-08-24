@@ -104,8 +104,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <tr class="nav-row" id="ldap-headings" style="margin-bottom:10px">
                             <th style="width:250px;margin-left:25px"></th>
                             <th style="width: 250px">Change</th>
-                            <th style="width:170px;margin-left:25px">Custom</th>
-                            <th style="width:120px;margin-left:25px">Default</th>
+                            <th style="min-width:230px;margin-left:25px">Custom</th>
+                            <th style="min-width:230px;margin-left:25px">Default</th>
                         </tr>
                         <tr class="nav-row">
                             <td id="system_name-label" style="width:250px;margin-left:25px">
@@ -114,10 +114,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <td id="system_name-set" style="width:250px">
                                 <input class="form-control nav-v-c" type="text" style="width: 150px" id="system_name" name="system_name">
                             </td>
-                            <td style="width:170px;margin-left:10px; padding-left:15px">
+                            <td style="min-width:230px;margin-left:10px; padding-left:15px">
                                 <label class="nav-v-c"><span class="uni"><?php echo($current_system_name); ?></span></label>
                             </td>
-                            <td style="width:200px;margin-left:25px; padding-left:15px">
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
                                 <label class="nav-v-c"><span class="uni"><?php echo($default_system_name); ?></span></label>
                             </td>
                         </tr>
@@ -131,10 +131,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <input class="form-control input-color color" id="banner_color" name="banner_color" placeholder="#XXXXXX" data-value="#xxxxxx" value="<?php echo($current_banner_color); ?>"/>
                                 </label>
                             </td>
-                            <td style="width:170px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                                 <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($current_banner_color)); ?>;background-color:<?php echo($current_banner_color); ?>"><?php echo($current_banner_color); ?></span></label>
                             </td>
-                            <td style="width:200px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                                 <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($default_banner_color)); ?>;background-color:<?php echo($default_banner_color); ?>"><?php echo($default_banner_color); ?></span></label>
                             </td>
                         </tr>
@@ -145,10 +145,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <td id="banner-logo-file">
                                 <input class="nav-v-c" type="file" style="width: 250px" id="logo_image" name="logo_image">
                             </td>
-                            <td style="width:170px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                                 <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($current_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
                             </td>
-                            <td style="width:200px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                                 <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($default_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
                             </td>
                         </tr>
@@ -159,10 +159,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <td id="favicon-image-file">
                                 <input class="nav-v-c" type="file" style="width: 250px" id="favicon_image" name="favicon_image">
                             </td>
-                            <td style="width:170px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                                 <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($current_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
                             </td>
-                            <td style="width:200px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                                 <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($default_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
                             </td>
                         </tr>
@@ -183,15 +183,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <option alt="Lira"            value="₺" <?php if ($current_currency == "₺") { echo("selected"); } ?>>₺ (Lira)</option>
                                 </select>
                             </td>
-                            <td style="width:170px;margin-left:25px; padding-left:15px">
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
                                 <label class="nav-v-c"><span class="uni"><?php echo($current_currency); ?></span></label>
                             </td>
-                            <td style="width:200px;margin-left:25px; padding-left:15px">
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
                                 <label class="nav-v-c"><span class="uni"><?php echo($default_currency); ?></span></label>
                             </td>
                         </tr>
-
-
                         <tr class="nav-row" style="margin-top:20px">
                             <td id="sku-prefix-label" style="width:250px;margin-left:25px">
                                 <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="sku_prefix">SKU Prefix:</p>
@@ -199,24 +197,39 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <td id="sku-prefix-set" style="width:250px">
                                 <input class="form-control nav-v-c" type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
                             </td>
-                            <td style="width:170px;margin-left:25px; padding-left:15px">
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
                                 <label class="nav-v-c"><span class="uni"><?php echo($current_sku_prefix); ?></span></label>
                             </td>
-                            <td style="width:200px;margin-left:25px; padding-left:15px">
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
                                 <label class="nav-v-c"><span class="uni"><?php echo($default_sku_prefix); ?></span></label>
                             </td>
                         </tr>
 
-
                         <tr class="nav-row" style="margin-top:20px">
+                            <td id="base-url-label" style="width:250px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="base_url">Base URL:</p>
+                            </td>
+                            <td id="base-url-set" style="width:250px">
+                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="base_url" name="base_url">
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($current_base_url); ?></span></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($default_base_url); ?></span></label>
+                            </td>
+                        </tr>
+
+
+                        <tr class="nav-row" style="margin-top:20px;margin-left:25px">
                             <td style="width:250px">
-                                <input id="global-submit" type="submit" name="global-submit" class="btn btn-success" style="margin-left:25px" value="Save" />
+                                <input id="global-submit" type="submit" name="global-submit" class="btn btn-success" value="Save" />
                             </td>
                             <td style="width:250px">
                             </td>
-                            <td style="width:170px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                             </td>
-                            <td style="width:170px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px">
                                 <input id="global-restore-defaults" type="submit" name="global-restore-defaults" class="btn btn-danger" style="margin-left:25px" value="Restore Default" />
                             </td>
                         </tr>

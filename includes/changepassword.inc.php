@@ -80,15 +80,11 @@ if (isset($_POST['password-submit'])) { // normal change password requests
     if (isset($_POST['uid'])) {
         
         require 'dbh.inc.php';
-        include 'smtp.inc.php';
 
         $uid = strtolower($_POST["uid"]);
         
         $selector = bin2hex(random_bytes(8));
         $token = random_bytes(32);
-
-        $baseUrl = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://".$current_base_url."/reset-password.php";
-        $url = "$baseUrl?selector=" . $selector . "&validator=" . bin2hex($token);
 
         $expires = date("U") + 3600;
 
@@ -150,6 +146,13 @@ if (isset($_POST['password-submit'])) { // normal change password requests
 
                 mysqli_stmt_close($stmt);
                 mysqli_close($conn);
+
+                $override_email = $user_email;
+
+                include 'smtp.inc.php';
+                
+                $baseUrl = ((str_contains($_SERVER['HTTP_REFERER'], "https")) ? 'https' : 'http') . "://".$current_base_url."/reset-password.php";
+                $url = "$baseUrl?selector=" . $selector . "&validator=" . bin2hex($token);
 
                 $email_subject = ucwords($current_system_name)." - Reset your password";
                 $email_body = '<p>We recieved a password reset request for your account. <br>The link to reset your password is below. If you did not make this request, you can ignore this email.</p>
@@ -227,6 +230,10 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                     header("location: $url&error=resubmitResults"); 
                                     exit();
                                 } else {
+                                    $user_firstname = $row['first_name'];
+                                    $user_lastname = $row['last_name'];
+                                    $user_email = $row['email'];
+                                    $user_fullname = ucwords($user_firstname).' '.ucwords($user_lastname);
 
                                     $sql = "UPDATE users SET password=? WHERE id=? AND auth='local'";
                                     $stmt = mysqli_stmt_init($conn);
@@ -246,6 +253,13 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                         } else {
                                             mysqli_stmt_bind_param($stmt, "s", $reset_user_id);
                                             mysqli_stmt_execute($stmt);
+
+                                            include 'smtp.inc.php';
+
+                                            $email_subject = ucwords($current_system_name)." - Reset your password";
+                                            $email_body = '<p>We recieved a password reset request for your account. <br>The link to reset your password is below. If you did not make this request, you can ignore this email.</p>
+                                                            <p>Here is your password reset link: </br><a href="' . $url . '">' . $url . '</a></p>';
+                                            send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                                             header("Location: ../login.php?newpwd=passwordupdated");
                                         }
                                     }

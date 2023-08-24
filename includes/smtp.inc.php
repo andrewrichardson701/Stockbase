@@ -109,21 +109,28 @@ function send_email($to, $toName, $fromName, $subject, $body) {
     }
 }
 
+$comp_banner_color = getWorB($current_banner_color);
+$comp_url_color = getComplement($current_banner_color);
 
-$comp_banner_color = getComplement($config_banner_color);
+if (isset($override_email)) {
+    $loggedin_email = $override_email;
+    if (!isset($loggedin_firstname) || $loggedin_firstname == '') {
+        $loggedin_firstname = $override_email;
+    }
+}
 
 $email_template_start = '
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: \'Poppins\', sans-serif; padding-left:20vw; padding-right:20vw">
+<body style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">
     <!-- inset block -->
-    <div style="padding-top:25px; background-color: '.$config_banner_color.'; text-align: center;">
+    <div style="padding-top:25px; background-color: '.$current_banner_color.'; text-align: center;">
         <div style="text-align: center;padding-bottom:10px">
             <h3 style="color: '.$comp_banner_color.'">'.ucwords($current_system_name).'</h3>
         </div>
-        <div style="background-color:lightgray; text-align: center;  padding-top:10px; padding-bottom:10px">
+        <div style="background-color:#e8e8e8; text-align: center;  padding-top:10px; padding-bottom:10px">
             <h1>Hello '.ucwords($loggedin_firstname).'!</h1>
 ';
 
@@ -131,7 +138,7 @@ $email_template_end = '
             <p>Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
         </div>
         <div style="padding-top:10px; padding-bottom:20px;text-align: center;">
-            <p style="font-size:14; color: '.$comp_banner_color.'">&copy; '.date("Y").' <a href="https://inventory.ajrich.co.uk">Inventory</a>. All rights reserved.</p>
+            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.'">Inventory</a>. All rights reserved.</p>
         </div>
     </div>
 </body>

@@ -520,7 +520,7 @@ $currency_symbol = '£';
                                 <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
-                                    echo ('<img id="'.$row['stock_id'].'-img" class="inv-img thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                                    echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-25h thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
                                 } 
                             echo('
                                 </td>

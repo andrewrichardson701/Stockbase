@@ -897,58 +897,63 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
     } elseif (isset($_POST['location-edit-submit'])) { // editing location descriptions on admin.php modal edit popup
         if (isset($_POST['location-type'])) {
-            if (isset($_POST['location-id'])) {
-                if (isset($_POST['location-name'])) {
-                    if (isset($_POST['location-description'])) {
-                        $location_type = $_POST['location-type'];
-                        $location_id = $_POST['location-id'];
-                        $location_name = $_POST['location-name'];
-                        $location_description = $_POST['location-description'];
-                        
-                        $sql = "SELECT *
-                                FROM $location_type
-                                WHERE id=?";
-                        
-                        $stmt = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ../admin.php?error=sqlError&table=$location_type#stocklocations-settings");
-                            exit();
-                        } else {
-                            mysqli_stmt_bind_param($stmt, "i", $location_id);
-                            mysqli_stmt_execute($stmt);
-                            $result = mysqli_stmt_get_result($stmt);
-                            $rowCount = mysqli_num_rows($result);
-                            if ($rowCount < 1) {
-                                header("Location: ../admin.php?error=noRowsFound&table=$location_type#stocklocations-settings");
+            if ($_POST['location-type'] == "site" || $_POST['location-type'] == "area" || $_POST['location-type'] == "shelf") {
+                if (isset($_POST['location-id'])) {
+                    if (isset($_POST['location-name'])) {
+                        if (isset($_POST['location-description'])) {
+                            $location_type = $_POST['location-type'];
+                            $location_id = $_POST['location-id'];
+                            $location_name = $_POST['location-name'];
+                            $location_description = $_POST['location-description'];
+                            
+                            $sql = "SELECT *
+                                    FROM $location_type
+                                    WHERE id=?";
+                            
+                            $stmt = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                header("Location: ../admin.php?error=sqlError&table=$location_type#stocklocations-settings");
                                 exit();
                             } else {
-                                $sql = "UPDATE $location_type 
-                                        SET name=?, description=? 
-                                        WHERE id=?";
-                                
-                                $stmt = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                    header("Location: ../admin.php?error=sqlError&table=$location_type#stocklocations-settings");
+                                mysqli_stmt_bind_param($stmt, "i", $location_id);
+                                mysqli_stmt_execute($stmt);
+                                $result = mysqli_stmt_get_result($stmt);
+                                $rowCount = mysqli_num_rows($result);
+                                if ($rowCount < 1) {
+                                    header("Location: ../admin.php?error=noRowsFound&table=$location_type#stocklocations-settings");
                                     exit();
                                 } else {
-                                    mysqli_stmt_bind_param($stmt, "ssi", $location_name, $location_description, $location_id);
-                                    mysqli_stmt_execute($stmt);
-                    
-                                    header("Location: ../admin.php?success=updated&type=$location_type&id=$location_id#stocklocations-settings");
-                                    exit();
-                                }  
+                                    $sql = "UPDATE $location_type 
+                                            SET name=?, description=? 
+                                            WHERE id=?";
+                                    
+                                    $stmt = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        header("Location: ../admin.php?error=sqlError&table=$location_type#stocklocations-settings");
+                                        exit();
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt, "ssi", $location_name, $location_description, $location_id);
+                                        mysqli_stmt_execute($stmt);
+                        
+                                        header("Location: ../admin.php?success=updated&type=$location_type&id=$location_id#stocklocations-settings");
+                                        exit();
+                                    }  
+                                }
                             }
+                        } else {
+                            header("Location: ../admin.php?error=missingLocationDescription#stocklocations-settings");
+                            exit();
                         }
                     } else {
-                        header("Location: ../admin.php?error=missingLocationDescription#stocklocations-settings");
+                        header("Location: ../admin.php?error=missingLocationName#stocklocations-settings");
                         exit();
                     }
                 } else {
-                    header("Location: ../admin.php?error=missingLocationName#stocklocations-settings");
+                    header("Location: ../admin.php?error=missingLocationId#stocklocations-settings");
                     exit();
                 }
             } else {
-                header("Location: ../admin.php?error=missingLocationId#stocklocations-settings");
+                header("Location: ../admin.php?error=incorrectLocationType#stocklocations-settings");
                 exit();
             }
         } else {

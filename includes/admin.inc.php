@@ -905,6 +905,41 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             $location_id = $_POST['location-id'];
                             $location_name = $_POST['location-name'];
                             $location_description = $_POST['location-description'];
+
+                            if ($location_type == "shelf") {
+                                // change the area_id
+                                if (isset($_POST['location-parent-area'])) {
+                                    $location_area_id = $_POST['location-parent-area'];
+                                    $sql = "UPDATE shelf 
+                                            SET area_id=?
+                                            WHERE id=?";
+                                    $stmt = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        header("Location: ../admin.php?error=sqlError&table=shelf#stocklocations-settings");
+                                        
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt, "si", $location_area_id, $location_id);
+                                        mysqli_stmt_execute($stmt);
+                                    }  
+                                }
+                                
+                            } elseif ($location_type == "area") {
+                                // change the site_id
+                                if (isset($_POST['location-parent-site'])) {
+                                    $location_site_id = $_POST['location-parent-site'];
+                                    $sql = "UPDATE area 
+                                            SET site_id=?
+                                            WHERE id=?";
+                                    $stmt = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        header("Location: ../admin.php?error=sqlError&table=area#stocklocations-settings");
+                                        
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt, "si", $location_site_id, $location_id);
+                                        mysqli_stmt_execute($stmt);
+                                    }  
+                                }
+                            }
                             
                             $sql = "SELECT *
                                     FROM $location_type
@@ -923,16 +958,27 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     header("Location: ../admin.php?error=noRowsFound&table=$location_type#stocklocations-settings");
                                     exit();
                                 } else {
-                                    $sql = "UPDATE $location_type 
+                                    if ($location_type !== "shelf") {
+                                        $sql = "UPDATE $location_type 
                                             SET name=?, description=? 
                                             WHERE id=?";
+                                    } else {
+                                        $sql = "UPDATE $location_type 
+                                            SET name=?
+                                            WHERE id=?";
+                                    }
+                                    
                                     
                                     $stmt = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt, $sql)) {
                                         header("Location: ../admin.php?error=sqlError&table=$location_type#stocklocations-settings");
                                         exit();
                                     } else {
-                                        mysqli_stmt_bind_param($stmt, "ssi", $location_name, $location_description, $location_id);
+                                        if ($location_type !== "shelf") {
+                                            mysqli_stmt_bind_param($stmt, "ssi", $location_name, $location_description, $location_id);
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt, "si", $location_name, $location_id);
+                                        }   
                                         mysqli_stmt_execute($stmt);
                         
                                         header("Location: ../admin.php?success=updated&type=$location_type&id=$location_id#stocklocations-settings");

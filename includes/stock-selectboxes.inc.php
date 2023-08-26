@@ -1,4 +1,43 @@
 <?php
+if (isset($_GET['getsites'])) {
+    if (is_numeric($_GET['getsites'])) {
+        if ($_GET['getsites'] == 1) {
+
+            $sites = [];
+
+            include 'dbh.inc.php';
+            $sql = "SELECT id, name
+                    FROM site
+                    ORDER BY id";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                // fails to connect
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount < 1) {
+                    // no rows found
+                } else {
+                    // rows found
+                    while ($row = $result->fetch_assoc()) {
+                        $id = $row['id'];
+                        $name = $row['name'];
+                        $sites[] = array('id' => $id, 'name' => $name);
+                    }
+                    echo(json_encode($sites));
+                }
+            }
+
+        } elseif ($_GET['getsites'] == 0) {
+
+        } else {
+
+        }
+    } else {
+        // not numeric
+    }
+}
 
 if (isset($_GET['site'])) {
     if (is_numeric($_GET['site'])) {

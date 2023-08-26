@@ -118,16 +118,28 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             <label style="margin-bottom:0" id="location-id-text"></label>
                                         </td>
                                     </tr>
-                                    <tr class="align-middle">
-                                        <th style="padding-right:15px">Name:</th>
+                                    <tr id="location-parent-site-tr" class="align-middle">
+                                        <th id="location-parent-site-th" style="padding-right:15px">Site:</th>
                                         <td>
-                                            <input type="text" class="form-control" id="location-name-input" type="hidden" name="location-name" value="" />
+                                            <select class="form-control" id="location-parent-site-input" name="location-parent-site"></select>
+                                        </td>
+                                    </tr>
+                                    <tr id="location-parent-area-tr" class="align-middle">
+                                        <th id="location-parent-area-th" style="padding-right:15px">Area:</th>
+                                        <td>
+                                            <select class="form-control" id="location-parent-area-input" name="location-parent-area"></select>
                                         </td>
                                     </tr>
                                     <tr class="align-middle">
+                                        <th style="padding-right:15px">Name:</th>
+                                        <td>
+                                            <input type="text" class="form-control" id="location-name-input" name="location-name" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr id="location-description-tr" class="align-middle">
                                         <th style="padding-right:15px">Description:</th>
                                         <td>
-                                            <input type="text" class="form-control" style="width:400px" id="location-description-input" type="hidden" name="location-description" value="" />
+                                            <input type="text" class="form-control" style="width:400px" id="location-description-input" name="location-description" value="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -596,7 +608,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
                                                     <td class="stockTD" style=""><input id="area-'.$area['area_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
                                                     <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
-                                                    <td class="stockTD" hidden>'.$area['area_site_id'].'</td>
+                                                    <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-parent" type="hidden" name="area-site-id" value="'.$area['area_site_id'].'" /></td>
                                                     <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                                     <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
@@ -637,20 +649,21 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                                                 echo('<tr style="background-color:'.$color3.' !important; color:black">
                                                         <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                            <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-site" name="site" value="'.$site['site_id'].'" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-type" name="type" value="shelf" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-id" name="id" value="'.$shelf['shelf_id'].'" />
                                                             <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
                                                             <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
                                                             <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
                                                             <td class="stockTD" style=""><input id="shelf-'.$shelf['shelf_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
-                                                            <td class="stockTD" hidden>'.$shelf['shelf_area_id'].'</td>
+                                                            <td class="stockTD" hidden><input id="shelf-'.$shelf['shelf_id'].'-parent" type="hidden" name="shelf-area-id" value="'.$shelf['shelf_area_id'].'" /></td>
                                                             <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
                                                                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                                     <i class="fa fa-save"></i>
                                                                 </button>
                                                             </td>
                                                             <td class="stockTD" style="background-color:#21272b; ">
-                                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$shelf['shelf_id'].'\', \'shelf\')" disabled>
+                                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$shelf['shelf_id'].'\', \'shelf\')" >
                                                                     <i class="fa fa-pencil"></i>
                                                                 </button>
                                                             </td>
@@ -1359,13 +1372,100 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
     </script>
 
+    <script>
+        function populateSites(field, current_site) {
+            // Make an AJAX request to retrieve the corresponding sites
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var sites = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Site", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < sites.length; i++) {
+                        select.options[select.options.length] = new Option(sites[i].name, sites[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_site) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreas(field, current_site, current_area) {
+            // Make an AJAX request to retrieve the corresponding areas
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var areas = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Area", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < areas.length; i++) {
+                        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_area) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreasUpdate() {
+            // Get the selected site
+            var site = document.getElementById("location-parent-site-input").value;
+            var type = document.getElementById("location-type-input").value;
+            if (type === "shelf") {
+                // Make an AJAX request to retrieve the corresponding areas
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Parse the response and populate the area select box
+                        var areas = JSON.parse(xhr.responseText);
+                        var select = document.getElementById("location-parent-area-input");
+                        select.options.length = 0;
+                        select.options[0] = new Option("Select Area", "");
+                        select.options[0].disabled = true;
+                        for (var i = 0; i < areas.length; i++) {
+                            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                        }
+                        select.disabled = (select.options.length === 1);
+                    }
+                };
+                xhr.send();
+            }
+        }
+        document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
+    </script>
+
     <script> // MODAL SCRIPT
         // Get the modal
-
         function modalLoadEdit(id, type) {
             //get the modal div with the property
             var modal = document.getElementById("modalDivEdit");
             modal.style.display = "block";
+
+            var input_parent_site = document.getElementById('location-parent-site-input');
+            var input_parent_area = document.getElementById('location-parent-area-input');
+            var input_parent_site_tr = document.getElementById('location-parent-site-tr');
+            var input_parent_area_tr = document.getElementById('location-parent-area-tr');
+            var input_parent_site_th = document.getElementById('location-parent-site-th');
+            var input_parent_area_th = document.getElementById('location-parent-area-th');
 
             var input_type = document.getElementById('location-type-input');
             var text_type = document.getElementById('location-type-text');
@@ -1375,7 +1475,30 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
             var input_name = document.getElementById('location-name-input');
 
+            var input_description_tr = document.getElementById('location-description-tr');
             var input_description = document.getElementById('location-description-input');
+
+            // input_parent.value = '';
+            // input_parent_site.value = '';
+            input_parent_area.options.length = 0;
+            input_parent_site.options.length = 0;
+            input_parent_area_tr.hidden=true;
+            input_parent_site_tr.hidden=true;
+            input_description_tr.hidden=true;
+            
+            if (type !== "site") {
+                if (type == "area") {
+                    input_parent_site_tr.hidden=false;
+                    populateSites(input_parent_site, document.getElementById(type+'-'+id+'-parent').value);
+
+                } 
+                if (type == "shelf") {
+                    input_parent_area_tr.hidden=false;
+                    input_parent_site_tr.hidden=false;
+                    populateSites(input_parent_site, document.getElementById(type+'-'+id+'-site').value);
+                    populateAreas(input_parent_area, document.getElementById(type+'-'+id+'-site').value, document.getElementById(type+'-'+id+'-parent').value);
+                }
+            } 
 
             input_type.value = type;
             if (type.length > 0) {
@@ -1388,13 +1511,24 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
             input_name.value = document.getElementById(type+'-'+id+'-name').value;
 
-            input_description.value = document.getElementById(type+'-'+id+'-description').value;
+            if (type !== "shelf") {
+                input_description_tr.hidden=false;
+                input_description.value = document.getElementById(type+'-'+id+'-description').value;
+            }
+            
         }
 
         // When the user clicks on <span> (x), close the modal or if they click the image.
         modalCloseEdit = function() { 
             var modal = document.getElementById("modalDivEdit");
             modal.style.display = "none";
+
+            var input_parent_site = document.getElementById('location-parent-site-input');
+            var input_parent_area = document.getElementById('location-parent-area-input');
+            var input_parent_site_tr = document.getElementById('location-parent-site-tr');
+            var input_parent_area_tr = document.getElementById('location-parent-area-tr');
+            var input_parent_site_th = document.getElementById('location-parent-site-th');
+            var input_parent_area_th = document.getElementById('location-parent-area-th');
 
             var input_type = document.getElementById('location-type-input');
             var text_type = document.getElementById('location-type-text');
@@ -1404,7 +1538,15 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
             var input_name = document.getElementById('location-name-input');
 
+            var input_description_tr = document.getElementById('location-description-tr');
             var input_description = document.getElementById('location-description-input');
+
+            input_parent_area.value = '';
+            input_parent_site.value = '';
+            input_parent_area.options.length = 0;
+            input_parent_site.options.length = 0;
+            input_parent_area_tr.hidden=true;
+            input_parent_site_tr.hidden=true;
 
             input_type.value = '';
             text_type.textContent = '';
@@ -1414,6 +1556,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
             input_name.value = '';
 
+            input_description_tr.hidden=true;
             input_description.value = '';
         }
 

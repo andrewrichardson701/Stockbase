@@ -439,7 +439,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     // print_r('</pre>');
                     $l = 0;
                     echo('<table class="table table-dark text-center" style="max-width:max-content; vertical-align: middle;">
-                            <tbody>
+                            <thead>
                                 <tr>
                                     <th>site_id</th>
                                     <th>site_name</th>

@@ -94,6 +94,53 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </div>
         </div>
 
+        <div id="modalDivEdit" class="modal">
+        <!-- <div id="modalDivEdit" style="display: block;"> -->
+            <span class="close" onclick="modalCloseEdit()">×</span>
+            <div class="container well-nopad bg-dark" style="padding:25px">
+                <div class="well-nopad bg-dark" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                    <div style="display:block"> 
+                        <h2 style="margin-bottom:20px">Edit Location</h2>
+                        <form id="editLocationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                            <table class="centertable">
+                                <tbody>
+                                    <tr class="align-middle">
+                                        <th style="padding-right:15px">Type:</th>
+                                        <td>
+                                            <input id="location-type-input" type="hidden" name="location-type" value="" />
+                                            <label style="margin-bottom:0" id="location-type-text"></label>
+                                        </td>
+                                    </tr>
+                                    <tr class="align-middle">
+                                        <th style="padding-top:15px; padding-right:10px; padding-bottom:10px ">ID:</th>
+                                        <td>
+                                            <input id="location-id-input" type="hidden" name="location-id" value="" />
+                                            <label style="margin-bottom:0" id="location-id-text"></label>
+                                        </td>
+                                    </tr>
+                                    <tr class="align-middle">
+                                        <th style="padding-right:15px">Name:</th>
+                                        <td>
+                                            <input type="text" class="form-control" id="location-name-input" type="hidden" name="location-name" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr class="align-middle">
+                                        <th style="padding-right:15px">Description:</th>
+                                        <td>
+                                            <input type="text" class="form-control" style="width:400px" id="location-description-input" type="hidden" name="location-description" value="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="100%" style="padding-top:10px" class="text-center"><button class="btn btn-success align-bottom" type="submit" name="location-edit-submit" style="margin-left:10px;margin-top:20px" value="1">Save</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>        
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <h3 class="clickable" style="font-size:22px" id="global-settings" onclick="toggleSection(this, 'global')">Global Settings <i class="fa-solid fa-chevron-up fa-2xs" style="margin-left:10px"></i></h3>
         <!-- Global Settings -->
@@ -453,7 +500,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <th>shelf_name</th>
                                     <th hidden>shelf_area_id</th>
                                     <th style="border-left:2px solid #95999c"></th>
-                                    <th hidden></th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -498,11 +545,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                                 echo('<tr style="background-color:'.$color1.' !important; color:black">
                                         <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                            <input type="hidden" name="type" value="site" />
-                                            <input type="hidden" name="id" value="'.$site['site_id'].'" />
+                                            <input type="hidden" id="site-'.$site['site_id'].'-type" name="type" value="site" />
+                                            <input type="hidden" id="site-'.$site['site_id'].'-id" name="id" value="'.$site['site_id'].'" />
                                             <td class="stockTD" style="">'.$site['site_id'].'</td>
-                                            <td class="stockTD" style=""><input class="form-control stockTD-input" name="name" type="text" value="'.$site['site_name'].'" style="width:150px"/></td>
-                                            <td hidden><input class="form-control stockTD-input" type="text" name="description" value="'.$site['site_description'].'" /></td>
+                                            <td class="stockTD" style=""><input id="site-'.$site['site_id'].'-name" class="form-control stockTD-input" name="name" type="text" value="'.$site['site_name'].'" style="width:150px"/></td>
+                                            <td hidden><input id="site-'.$site['site_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.$site['site_description'].'" /></td>
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                             <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
@@ -510,13 +557,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                     <i class="fa fa-save"></i>
                                                 </button>
                                             </td>
-                                            <td class="stockTD" style="background-color:#21272b; " hidden>
-                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
+                                            <td class="stockTD" style="background-color:#21272b; ">
+                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$site['site_id'].'\', \'site\')">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
                                             </td>
                                         </form>
-                                        <form id="shelfForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <form id="siteForm-delete-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                         <input type="hidden" name="location-id" value="'.$site_id_check.'" />
                                             <td class="stockTD" style="background-color:#21272b; ">
                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" '); 
@@ -543,12 +590,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                                         echo('<tr style="background-color:'.$color2.' !important; color:black">
                                                 <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                                    <input type="hidden" name="type" value="area" />
-                                                    <input type="hidden" name="id" value="'.$area['area_id'].'" />
+                                                    <input type="hidden" id="area-'.$area['area_id'].'-type" name="type" name="type" value="area" />
+                                                    <input type="hidden" id="area-'.$area['area_id'].'-id" name="id" value="'.$area['area_id'].'" />
                                                     <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
-                                                    <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
-                                                    <td class="stockTD" hidden><input class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
+                                                    <td class="stockTD" style=""><input id="area-'.$area['area_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
+                                                    <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
                                                     <td class="stockTD" hidden>'.$area['area_site_id'].'</td>
                                                     <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
@@ -557,13 +604,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                             <i class="fa fa-save"></i>
                                                         </button>
                                                     </td>
-                                                    <td class="stockTD" style="background-color:#21272b; " hidden>
-                                                        <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
+                                                    <td class="stockTD" style="background-color:#21272b; ">
+                                                        <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$area['area_id'].'\', \'area\')">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
                                                     </td>
                                                 </form>
-                                                <form id="shelfForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                <form id="areaForm-delete-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                 <input type="hidden" name="location-id" value="'.$area_id_check.'" />
                                                     <td class="stockTD" style="background-color:#21272b; ">
                                                         <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" '); 
@@ -590,25 +637,25 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                                                 echo('<tr style="background-color:'.$color3.' !important; color:black">
                                                         <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                                            <input type="hidden" name="type" value="shelf" />
-                                                            <input type="hidden" name="id" value="'.$shelf['shelf_id'].'" />
+                                                            <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-type" name="type" value="shelf" />
+                                                            <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-id" name="id" value="'.$shelf['shelf_id'].'" />
                                                             <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
                                                             <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
                                                             <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
-                                                            <td class="stockTD" style=""><input class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
+                                                            <td class="stockTD" style=""><input id="shelf-'.$shelf['shelf_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
                                                             <td class="stockTD" hidden>'.$shelf['shelf_area_id'].'</td>
                                                             <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
                                                                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                                     <i class="fa fa-save"></i>
                                                                 </button>
                                                             </td>
-                                                            <td class="stockTD" style="background-color:#21272b; " hidden>
-                                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button">
+                                                            <td class="stockTD" style="background-color:#21272b; ">
+                                                                <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$shelf['shelf_id'].'\', \'shelf\')" disabled>
                                                                     <i class="fa fa-pencil"></i>
                                                                 </button>
                                                             </td>
                                                         </form>
-                                                        <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                        <form id="shelfForm-delete-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                             <input type="hidden" name="location-id" value="'.$shelf_id_check.'" />
                                                             <td class="stockTD" style="background-color:#21272b; ">
                                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="shelf" type="submit" '); 
@@ -1298,27 +1345,76 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
     <script> // MODAL SCRIPT
         // Get the modal
-        function hideAdd() {
-            properties = document.getElementsByClassName("property");
-            for (i = 0; i < properties.length; i++) {
-                properties[i].hidden=true;
-            }
-        }
-        hideAdd();
         function modalLoadAdd(site_id) {
-            hideAdd();
             //get the modal div with the property
             var modal = document.getElementById("modalDivAdd");
-            var div = document.getElementById("property-"+site_id);
             modal.style.display = "block";
-            div.hidden=false;
         }
 
         // When the user clicks on <span> (x), close the modal or if they click the image.
         modalCloseAdd = function() { 
             var modal = document.getElementById("modalDivAdd");
             modal.style.display = "none";
-            hideAdd();
+        }
+
+    </script>
+
+    <script> // MODAL SCRIPT
+        // Get the modal
+
+        function modalLoadEdit(id, type) {
+            //get the modal div with the property
+            var modal = document.getElementById("modalDivEdit");
+            modal.style.display = "block";
+
+            var input_type = document.getElementById('location-type-input');
+            var text_type = document.getElementById('location-type-text');
+
+            var input_id = document.getElementById('location-id-input');
+            var text_id = document.getElementById('location-id-text');
+
+            var input_name = document.getElementById('location-name-input');
+
+            var input_description = document.getElementById('location-description-input');
+
+            input_type.value = type;
+            if (type.length > 0) {
+                type_cap = type.charAt(0).toUpperCase() + type.slice(1);
+            }
+            text_type.textContent = type_cap;
+
+            input_id.value = document.getElementById(type+'-'+id+'-id').value;
+            text_id.textContent = document.getElementById(type+'-'+id+'-id').value;
+
+            input_name.value = document.getElementById(type+'-'+id+'-name').value;
+
+            input_description.value = document.getElementById(type+'-'+id+'-description').value;
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseEdit = function() { 
+            var modal = document.getElementById("modalDivEdit");
+            modal.style.display = "none";
+
+            var input_type = document.getElementById('location-type-input');
+            var text_type = document.getElementById('location-type-text');
+
+            var input_id = document.getElementById('location-id-input');
+            var text_id = document.getElementById('location-id-text');
+
+            var input_name = document.getElementById('location-name-input');
+
+            var input_description = document.getElementById('location-description-input');
+
+            input_type.value = '';
+            text_type.textContent = '';
+
+            input_id.value = '';
+            text_id.textContent = '';
+
+            input_name.value = '';
+
+            input_description.value = '';
         }
 
     </script>

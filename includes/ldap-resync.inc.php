@@ -173,6 +173,11 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Re-sync') {
                                         $rows_update = $conn->affected_rows;
                                         if ($rows_update == 1) {
                                             // Expected 
+                                            // update changelog
+                                            if ($_SESSION['first_name'] !== $ldap_info_firstName) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $user_id, "first_name", $_SESSION['first_name'], $ldap_info_firstName); }
+                                            if ($_SESSION['last_name'] !== $ldap_info_lastName)   { addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $user_id, "last_name", $_SESSION['last_name'], $ldap_info_lastName); }
+                                            if ($_SESSION['email'] !== $ldap_info_upn)            { addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $user_id, "email", $_SESSION['email'], $ldap_info_upn); }
+                                            
                                             $_SESSION['first_name'] = $ldap_info_firstName;
                                             $_SESSION['last_name'] = $ldap_info_lastName;
                                             $_SESSION['email'] = $ldap_info_upn;

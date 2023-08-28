@@ -256,6 +256,9 @@ if (isset($_POST['submit'])) {
                                     } else {
                                         mysqli_stmt_bind_param($stmt_upload, "ssssss", $ldap_info_samAccountName, $ldap_info_firstName, $ldap_info_lastName, $ldap_info_upn, $default_role, $auth);
                                         mysqli_stmt_execute($stmt_upload);
+                                        $insert_id = mysqli_insert_id($conn);
+                                        // update changelog
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }
                                     session_start();
                                     $_SESSION['user_id'] = $row['users_id'];
@@ -324,199 +327,13 @@ if (isset($_POST['submit'])) {
                 }
 
                 ldapConnection($ldap_username, $ldap_password, $ldap_domain, $ldap_host, $ldap_host_secondary, $ldap_port, $ldap_basedn, $ldap_usergroup, $ldap_userfilter, $login_username, $login_password);
-                
 
             }
-
-
-
-
-
-
-
-
-
-            // include 'dbh.inc.php';
-            // $sql_ldap = "SELECT * FROM config WHERE id=1";
-            // $stmt_ldap = mysqli_stmt_init($conn);
-            // if (!mysqli_stmt_prepare($stmt_ldap, $sql_ldap)) {
-            //     header("Location: ../login.php?sqlerror=getLDAPconfig");
-            //     exit();
-            // } else {
-            //     mysqli_stmt_execute($stmt_ldap);
-            //     $result_ldap = mysqli_stmt_get_result($stmt_ldap);
-            //     $rowCount_ldap = $result_ldap->num_rows;
-            //     if ($rowCount_ldap < 1) {
-            //         header("Location: ../login.php?sqlerror=missingConfig");
-            //         exit(); 
-            //     } elseif ($rowCount_ldap == 1) {
-            //         while ( $row_ldap = $result_ldap->fetch_assoc() ) {
-            //             $ldap_username  = $row_ldap['ldap_username'];
-            //             $ldap_password = base64_decode($row_ldap['ldap_password']);
-            //             $ldap_domain = $row_ldap['ldap_domain'];
-            //             $ldap_host = $row_ldap['ldap_host'];
-            //             $ldap_port = $row_ldap['ldap_port'];
-            //             $ldap_basedn = $row_ldap['ldap_basedn'];
-            //             $ldap_usergroup = $row_ldap['ldap_usergroup'];
-            //             $ldap_userfilter = $row_ldap['ldap_userfilter'];
-
-            //             // $ldap_username  = "CN=ldapauth,CN=Users,DC=ajrich,DC=co,DC=uk";
-            //             // $ldap_password = "PASSWORD";
-            //             // $ldap_domain = 'ajrich.co.uk';
-            //             // $ldap_host = '10.0.2.2';
-            //             // $ldap_port = 389;
-            //             // $ldap_basedn = 'DC=ajrich,DC=co,DC=uk';
-            //             // $ldap_usergroup = "cn=Users";
-            //             // $ldap_userfilter = "(objectClass=User)";
-
-            //             $ldap_conn = ldap_connect($ldap_host, $ldap_port) or die("Could not connect to LDAP server.");
-            //             ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-            //             ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0);
-
-            //             $ldap_dn = $ldap_usergroup.",".$ldap_basedn;
-            //             $ldap_bind = ldap_bind($ldap_conn, $ldap_username, $ldap_password) or die("Could not bind to LDAP server.");
-
-            //             if (filter_var($login_username, FILTER_VALIDATE_EMAIL )) {
-            //                 $ldap_filter = '(&'.$ldap_userfilter.'(userPrincipalName=' . $login_username . '))';
-            //             } else {
-            //                 $ldap_filter = '(&'.$ldap_userfilter.'(sAMAccountName=' . $login_username. '))';
-            //             }
-            //             $ldap_search = ldap_search($ldap_conn, $ldap_dn, $ldap_filter);
-            //             $ldap_info = ldap_get_entries($ldap_conn, $ldap_search);
-
-            //             if ($ldap_info['count'] == 1) {
-            //                 $ldap_bind = ldap_bind($ldap_conn, $ldap_info[0]['dn'], $login_password);
-            //                 if ($ldap_bind) {
-            //                     $ldap_info_samAccountName = $ldap_info[0]['samaccountname'][0];
-            //                     $ldap_info_upn = $ldap_info[0]['userprincipalname'][0];
-            //                     $ldap_info_firstName = $ldap_info[0]['givenname'][0];
-            //                     $ldap_info_lastName = $ldap_info[0]['sn'][0];
-
-            //                     // Check if the user exists already in the users table
-            //                     include 'dbh.inc.php';
-
-            //                     $sql_users = "SELECT * FROM users WHERE username=? AND auth='ldap'";
-            //                     $stmt_users = mysqli_stmt_init($conn);
-            //                     if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-            //                         header("Location: ../login.php?sqlerror=sqlerror_getUsersList");
-            //                         exit();
-            //                     } else {
-            //                         mysqli_stmt_bind_param($stmt_users, "s", $ldap_info_samAccountName);
-            //                         mysqli_stmt_execute($stmt_users);
-            //                         $result = mysqli_stmt_get_result($stmt_users);
-            //                         $rowCount = $result->num_rows;
-            //                         if ($rowCount < 1) {
-            //                             $userFound = 0; // not needed, but useful for debugging
-
-            //                             // ADD user to table
-            //                             $default_role = 'user';
-            //                             $auth = 'ldap';
-
-            //                             $sql_upload = "INSERT INTO users (username, first_name, last_name, email, role, auth) VALUES (?,?,?,?,?,?)";
-            //                             $stmt_upload = mysqli_stmt_init($conn);
-            //                             if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-            //                                 header("Location: ../upload.php?sqlerror=sqlerror");
-            //                                 exit();
-            //                             } else {
-            //                                 mysqli_stmt_bind_param($stmt_upload, "ssssss", $ldap_info_samAccountName, $ldap_info_firstName, $ldap_info_lastName, $ldap_info_upn, $default_role, $auth);
-            //                                 mysqli_stmt_execute($stmt_upload);
-            //                             }
-            //                             session_start();
-            //                             $_SESSION['username'] = $ldap_info_samAccountName;
-            //                             $_SESSION['first_name'] = $ldap_info_firstName;
-            //                             $_SESSION['last_name'] = $ldap_info_lastName;
-            //                             $_SESSION['email'] = $ldap_info_upn;
-            //                             $_SESSION['role'] = $default_role;
-            //                             $_SESSION['auth'] = $auth;
-            //                             header("Location: ../?login=success");
-            //                             exit();
-
-            //                         } elseif ($rowCount == 1) {
-            //                             session_start();
-            //                             $userFound = 1; // not needed, but useful for debugging
-            //                             while ($row = $result->fetch_assoc()){
-            //                                 $_SESSION['username'] = $row['username'];
-            //                                 $_SESSION['first_name'] = $row['first_name'];
-            //                                 $_SESSION['last_name'] = $row['last_name'];
-            //                                 $_SESSION['email'] = $row['email'];
-            //                                 $_SESSION['role'] = $row['role'];
-            //                                 $_SESSION['auth'] = $row['auth'];
-            //                                 header("Location: ../?login=success");
-            //                                 exit();
-            //                             }  
-            //                         } else { // if there are somehow too many rows matching the sql
-            //                             header("Location: ../login.php?sqlerror=multipleEntries");
-            //                             exit();
-            //                         }
-            //                     }
-            //                 } else {
-            //                     // echo("Invalid username or password.");
-            //                     header("Location: ../login.php?error=invalidCredentials");
-            //                     exit();
-            //                 }
-            //             } else {
-            //                 // echo("Invalid username or password.");
-            //                 header("Location: ../login.php?error=invalidCredentials");
-            //                 exit();
-            //             }
-            //         }
-            //     } else {
-            //         header("Location: ../login.php?sqlerror=sqlerror=multipleLDAPEntries");
-            //         exit(); 
-            //     }
-            // }
         }
     } 
 } else {
     header("Location: ../login.php?error=submitNotSet");
     exit();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// $login_username = $_GET["username"];
-// $login_password = $_GET["password"];
-
-// $ldap_username  = "CN=ldapauth,CN=Users,DC=ajrich,DC=co,DC=uk";
-// $ldap_password = "DropsBuildsSkill12!!";
-// $ldap_domain = 'ajrich.co.uk';
-// $ldap_host = '10.0.2.2';
-// $ldap_port = 389;
-// $ldap_basedn = 'DC=ajrich,DC=co,DC=uk';
-
-// $ldap_conn = ldap_connect($ldap_host, $ldap_port) or die("Could not connect to LDAP server.");
-// ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-// ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0);
-
-// $ldap_dn = "cn=Users,".$ldap_basedn;
-// $ldap_bind = ldap_bind($ldap_conn, $ldap_username, $ldap_password) or die("Could not bind to LDAP server.");
-// $ldap_filter = '(&(objectClass=User)(sAMAccountName=' . $login_username. '))';
-// $ldap_search = ldap_search($ldap_conn, $ldap_dn, $ldap_filter);
-// $ldap_info = ldap_get_entries($ldap_conn, $ldap_search);
-
-// if ($ldap_info['count'] == 1) {
-//     $ldap_bind = ldap_bind($ldap_conn, $ldap_info[0]['dn'], $login_password);
-//     if ($ldap_bind) {
-//         echo "Login successful!";
-
-//     } else {
-//         echo "Invalid username or password.";
-//     }
-// } else {
-//     echo "Invalid username or password.";
-// }
-
-
 
 ?>

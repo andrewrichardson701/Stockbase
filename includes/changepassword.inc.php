@@ -173,7 +173,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
 	        $validator = $_POST["validator"];
 
             $url = "../reset-password.php";
-            $baseUrl = ((str_contains($_SERVER['HTTP_REFERER'], "https")) ? 'https' : 'http') . "://".$current_base_url."/reset-password.php";
+            $baseUrl = ((str_contains($_SERVER['HTTP_REFERER'], "https")) ? 'https' : 'http') . "://".$current_base_url;
 
             if (isset($_POST["password"]) && isset($_POST["password_confirm"])) {
 

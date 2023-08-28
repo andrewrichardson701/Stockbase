@@ -13,7 +13,11 @@
 
 // This should all be working now, but will be leaving the old files in the /includes/old folder
 
+// 28-08-23 - added changelog for all sql queries here that need it.
+
 session_start(); // start the session
+// include '../session.php';
+include 'changelog.inc.php';
 
 // check the redirect url for the file name and for ?
 if (str_contains($_SESSION['redirect_url'], basename(__FILE__))) {
@@ -61,6 +65,8 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
             $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
             if ($didUpload) {
                 include 'dbh.inc.php';
+                
+
                 $sql = "INSERT INTO stock_img (stock_id, image) VALUES (?, ?)";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -69,6 +75,9 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
                 } else {
                     mysqli_stmt_bind_param($stmt, "ss", $stock_id, $uploadFileName);
                     mysqli_stmt_execute($stmt);
+                    $new_stock_img_id = mysqli_insert_id($conn);
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_img", $new_stock_img_id, "image", null, $uploadFileName);
                 }
 
             } else {
@@ -126,6 +135,10 @@ function checkDeleteCurrentRow($item_id) {
                     $email_subject = ucwords($current_system_name)." - Stock inventory deleted.";
                     $email_body = "<p>Stock inventory deleted to stock ID: $stock_id, with item ID: <strong>$item_id</strong>!</p>";
                         send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "item", $item_id, "stock_id", $stock_id, null);
+
                     header("Location: $redirect_url&success=stockRemoved&row=deleted");
                     exit();
                 }
@@ -142,6 +155,7 @@ function checkDeleteCurrentRow($item_id) {
 // exit();
 if (isset($_POST['submit'])) { // standard submit button name - this should be the case on all forms.
     include 'smtp.inc.php';
+
     if (isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
         if (isset($_POST['stock-add'])) { // bits from the stock-add-new.inc.php page - need to add a hidden input with name="stock-add" for this
             if ($_POST['submit'] == 'Add Stock') {
@@ -304,6 +318,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         mysqli_stmt_execute($stmt);
                         $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
                         $id = $insert_id;
+
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock", $id, "name", null, $name);
+
                         // image upload
                         if (isset($_FILES['image'])) {
                             if ($_FILES['image']['name'] !== '') {
@@ -322,6 +340,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 } else {
                                     mysqli_stmt_bind_param($stmt, "ss", $id, $label);
                                     mysqli_stmt_execute($stmt);
+                                    $label_insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_label", $label_insert_id, "stock_id", null, $id);
                                 }
                             }
                         } elseif ($labels !== '') {
@@ -333,6 +355,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             } else {
                                 mysqli_stmt_bind_param($stmt, "ss", $id, $labels);
                                 mysqli_stmt_execute($stmt);
+                                $label_insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+                                    
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_label", $label_insert_id, "stock_id", null, $id);
                             }
                         }
                     }
@@ -369,6 +395,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             mysqli_stmt_execute($stmt);
                             $item_id = mysqli_insert_id($conn); // ID of the new row in the table.
 
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "item", $item_id, "stock_id", null, $id);
+
                             // Transaction update
                             $type = 'add';
                             $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username) 
@@ -404,6 +433,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         } else {
                             mysqli_stmt_bind_param($stmt, "ss", $new_quantity, $item_id);
                             mysqli_stmt_execute($stmt);
+
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add quantity", "item", $item_id, "quantity", $item_quantity, $new_quantity);
+
                             // Transaction update
                             $type = 'add';
                             $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
@@ -580,6 +613,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                         } else {
                                                             mysqli_stmt_bind_param($stmt_stock_removeQuantity, "ss", $new_quantity, $stock_itemSelectID_id);
                                                             mysqli_stmt_execute($stmt_stock_removeQuantity);
+
+                                                            // update changelog
+                                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove quantity", "item", $stock_itemSelectID_id, "quantity", $stock_itemSelectID_quantity, $new_quantity);
+
                                                             $rows_stock_removeQuantity = $conn->affected_rows;
                                                             if ($rows_stock_removeQuantity == 1) {
                                                                 // echo("<br>Item Updated for stock_id: $stock_id , Row count: $rows_stock_removeQuantity , Item ID: $stock_itemSelectID_id<br>");
@@ -765,16 +802,38 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     } else {
                                         mysqli_stmt_bind_param($stmt_add, "ss", $stock_id, $label_id);
                                         mysqli_stmt_execute($stmt_add);
+                                        $insert_id = mysqli_insert_id($conn);
+
+                                        // update changelog
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_label", $insert_id, "stock_id", null, $stock_id);
                                     }
                                 }
                                 function cleanupLabels($stock_id) {
                                     include 'dbh.inc.php';
-                                    $sql_clean = "DELETE FROM stock_label WHERE stock_id=$stock_id";
-                                    $stmt_clean = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_clean, $sql_clean)) {
-                                        echo ("error");
+                                    include 'changlog.inc.php';
+
+                                    $sql = "SELECT id FROM stock_label WHERE stock_id=$stock_id";
+                                    $stmt = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        echo("ERROR getting entries");
                                     } else {
-                                        mysqli_stmt_execute($stmt_clean);
+                                        mysqli_stmt_execute($stmt);
+                                        $result = mysqli_stmt_get_result($stmt);
+                                        $rowCount = $result->num_rows;
+
+                                        while ($row = $result->fetch_assoc()) {
+                                            $id = $row['id'];
+                                            $sql_clean = "DELETE FROM stock_label WHERE stock_id=$stock_id AND id=$id";
+                                            $stmt_clean = mysqli_stmt_init($conn);
+                                            if (!mysqli_stmt_prepare($stmt_clean, $sql_clean)) {
+                                                echo ("error");
+                                            } else {
+                                                mysqli_stmt_execute($stmt_clean);
+
+                                                // update changelog
+                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_label", $id, "stock_id", $stock_id, null);
+                                            }
+                                        }
                                     }
                                 }
 
@@ -838,6 +897,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 $email_subject = ucwords($current_system_name)." - Image unlinked from stock";
                                 $email_body = "<p>Image with ID: <strong>$img_id</strong> unlinked from stock item with ID: <strong>$stock_id</strong>.</p>";
                                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_img", $img_id, "stock_id", $stock_id, null);
+
                                 header("Location: ".$redi_url."&success=ImgRemoved&count=".$rows_delete_stock_img);
                                 exit();
                             }
@@ -890,6 +952,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 } else {
                                     mysqli_stmt_bind_param($stmt, "ss", $_POST['img-file-name'], $_POST['stock_id']);
                                     mysqli_stmt_execute($stmt);
+                                    $new_stock_img_id = mysqli_insert_id($conn);
+
                                     $modified_rows = $conn->affected_rows;
                                     if ($modified_rows == 0) {
                                         // No rows changed - error
@@ -900,6 +964,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         $email_subject = ucwords($current_system_name)." - Stock image added";
                                         $email_body = "<p>Image successfully added to stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
                                             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                        // update changelog
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_img", $new_stock_img_id, "image", null, $_POST['img-file-name']);
+
                                         header("Location: ".$redi_url."&success=stock_imgAdded");
                                         exit();
                                     } else {
@@ -969,14 +1036,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             $redirect_url = "../stock.php?stock_id=$stock_id&modify=move";
 
             if (isset($_POST['submit'])) {
-                session_start();
 
                 if ($_POST['submit'] == 'Move') {
                     // print_r($_POST);
+                    // include 'get-config.inc.php';
                     
-                    $to = 'inventory@ajrich.co.uk';
-                    $toName = 'Andrew';
-                    $fromName = 'Inventory';
+                    $to = $current_smtp_to_email;
+                    $toName = 'Root';
+                    $fromName = $current_smtp_from_email;
 
                     $current_date = date('Y-m-d'); // current date in YYY-MM-DD format
                     $current_time = date('H:i:s'); // current time in HH:MM:SS format
@@ -1099,6 +1166,13 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             echo($current_new_quantity.'<br>'.$current_item_id.'<br>'.$move_quantity.'<br>'.$new_serial_number_specified);
                                             mysqli_stmt_execute($stmt);
 
+                                            // update changelog for adding
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "item", $new_item_id, "stock_id", null, $row_currentRow['stock_id']);
+                                            // update changelog for removal
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove quantity", "item", $current_item_id, "quantity", $row_currentRow['quantity'], $current_new_quantity);
+                                            // update changelog for adding
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Quantity", "item", $new_item_id, "quantity", null, $move_quantity);
+
                                             // Transaction update - old row
                                             $neg_move_quantity = -1*(int)$move_quantity;
                                             updateTransactions($stock_id, $current_item_id, 'move', $neg_move_quantity, $current_shelf_id, $current_serial_number, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
@@ -1148,6 +1222,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         mysqli_stmt_bind_param($stmt, "ss", $current_new_quantity, $current_item_id);
                                         mysqli_stmt_execute($stmt);
 
+                                        // update changelog for removal
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove quantity", "item", $current_item_id, "quantity", $current_quantity, $current_new_quantity);
+
                                         
                                         
 
@@ -1178,6 +1255,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             updateTransactions($stock_id, $current_item_id, 'move', $neg_move_quantity, $current_shelf_id, $current_serial_number, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
                                             // Transaction update - new row
                                             updateTransactions($stock_id, $new_item_id, 'move', $move_quantity, $new_shelf_id, $new_serial_number, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
+
+                                            // update changelog for removal
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add quantity", "item", $new_item_id, "quantity", $new_quantity, $new_new_quantity);
 
 
                                                             // send email - testing 
@@ -1281,75 +1361,159 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 }
 
                                 // CLEAR ITEM TABLE
-                                $sql_delete_item = "DELETE FROM item WHERE stock_id=?";
-                                $stmt_delete_item = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_delete_item, $sql_delete_item)) {
+                                $sql_delete_check = "SELECT id FROM item
+                                                WHERE stock_id=?
+                                                ORDER BY id";
+                                $stmt_delete_check = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_check, $sql_delete_check)) {
                                     $errors[] = 'delete item table error - SQL connection';
                                     header("Location: $redirect_url&error=itemTableSQLConnection");
                                     exit();
                                 } else {
-                                    mysqli_stmt_bind_param($stmt_delete_item, "s", $stock_id);
-                                    mysqli_stmt_execute($stmt_delete_item);
-                                    $rows_delete_item = $conn->affected_rows;
-                                    if ($rows_delete_item > 0) {
-                                        // echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
-                                    } else {
-                                        // There wont always be items related to the stock object, ignore the error
+                                    mysqli_stmt_bind_param($stmt_delete_check, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_check);
+                                    $result_delete_check = mysqli_stmt_get_result($stmt_delete_check);
+                                    $rowCount_delete_check = $result_delete_check->num_rows;
 
-                                        // echo("<br>No Items Deleted for stock_id: $stock_id... <br>");
-                                        // header("Location: $redirect_url&error=deleteItemTable-NoRowsDeleted");
-                                        // exit();
+                                    while ($row_delete_check = $result_delete_check->fetch_assoc()) {
+                                        $item_delete_id = $row_delete_check['id'];
+                                        // CLEAR STOCK_IMG TABEL
+                                        $sql_delete_item = "DELETE FROM item WHERE stock_id=? AND id=?";
+                                        $stmt_delete_item = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_delete_item, $sql_delete_item)) {
+                                            $errors[] = 'delete item table error - SQL connection';
+                                            header("Location: $redirect_url&error=itemTableSQLConnection");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_delete_item, "ss", $stock_id, $item_delete_id);
+                                            mysqli_stmt_execute($stmt_delete_item);
+                                            $rows_delete_item = $conn->affected_rows;
+                                            if ($rows_delete_item > 0) {
+                                                // echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
+                                                // update changelog for delete
+                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "item", $item_delete_id, "stock_id", $stock_id, null);
+   
+                                            } else {
+                                                // There wont always be items related to the stock object, ignore the error
+
+                                                // echo("<br>No Items Deleted for stock_id: $stock_id... <br>");
+                                                // header("Location: $redirect_url&error=deleteItemTable-NoRowsDeleted");
+                                                // exit();
+                                            }
+                                            
+                                        }
                                     }
-                                    
                                 }
 
-                                // CLEAR STOCK_IMG TABEL
-                                $sql_delete_stock_img = "DELETE FROM stock_img WHERE stock_id=?";
-                                $stmt_delete_stock_img = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_delete_stock_img, $sql_delete_stock_img)) {
-                                    $errors[] = 'delete stock_img table error - SQL connection';
-                                    header("Location: $redirect_url&error=stock_imgTableSQLConnection");
+
+                                
+                                // CLEAR ITEM TABLE
+                                $sql_delete_img_check = "SELECT id FROM stock_img
+                                                WHERE stock_id=?
+                                                ORDER BY id";
+                                $stmt_delete_img_check = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_img_check, $sql_delete_img_check)) {
+                                    $errors[] = 'delete item table error - SQL connection';
+                                    header("Location: $redirect_url&error=itemTableSQLConnection");
                                     exit();
                                 } else {
-                                    mysqli_stmt_bind_param($stmt_delete_stock_img, "s", $stock_id);
-                                    mysqli_stmt_execute($stmt_delete_stock_img);
-                                    $rows_delete_stock_img = $conn->affected_rows;
-                                    if ($rows_delete_stock_img > 0) {
-                                        // echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
-                                    } else {
-                                        // There wont always be images linked, so ignore this 
+                                    mysqli_stmt_bind_param($stmt_delete_img_check, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_img_check);
+                                    $result_delete_img_check = mysqli_stmt_get_result($stmt_delete_img_check);
+                                    $rowCount_delete_img_check = $result_delete_img_check->num_rows;
 
-                                        // echo("<br>No stock_imgs Deleted for stock_id: $stock_id... <br>");
-                                        // header("Location: $redirect_url&error=deletestock_imgTable-NoRowsDeleted");
-                                        // exit();
+                                    while ($row_delete_img_check = $result_delete_img_check->fetch_assoc()) {
+                                        $img_delete_id = $row_delete_img_check['id'];
+
+                                        $sql_delete_stock_img = "DELETE FROM stock_img WHERE stock_id=? AND id=?";
+                                        $stmt_delete_stock_img = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_delete_stock_img, $sql_delete_stock_img)) {
+                                            $errors[] = 'delete stock_img table error - SQL connection';
+                                            header("Location: $redirect_url&error=stock_imgTableSQLConnection");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_delete_stock_img, "ss", $stock_id, $img_delete_id);
+                                            mysqli_stmt_execute($stmt_delete_stock_img);
+                                            $rows_delete_stock_img = $conn->affected_rows;
+                                            if ($rows_delete_stock_img > 0) {
+                                                // echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
+                                                // update changelog for delete
+                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_img", $item_delete_id, "stock_id", $stock_id, null);
+                                            } else {
+                                                // There wont always be images linked, so ignore this 
+
+                                                // echo("<br>No stock_imgs Deleted for stock_id: $stock_id... <br>");
+                                                // header("Location: $redirect_url&error=deletestock_imgTable-NoRowsDeleted");
+                                                // exit();
+                                            }
+                                            
+                                        }
                                     }
-                                    
                                 }
+                                
 
                                 // CLEAR STOCK_LABEL TABEL
-                                $sql_delete_stock_label = "DELETE FROM stock_label WHERE stock_id=?";
-                                $stmt_delete_stock_label = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_delete_stock_label, $sql_delete_stock_label)) {
-                                    $errors[] = 'delete stock_label table error - SQL connection';
-                                    header("Location: $redirect_url&error=stock_labelTableSQLConnection");
+                                $sql_delete_label_check = "SELECT id FROM stock_label
+                                                WHERE stock_id=?
+                                                ORDER BY id";
+                                $stmt_delete_label_check = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_label_check, $sql_delete_label_check)) {
+                                    $errors[] = 'delete item table error - SQL connection';
+                                    header("Location: $redirect_url&error=itemTableSQLConnection");
                                     exit();
                                 } else {
-                                    mysqli_stmt_bind_param($stmt_delete_stock_label, "s", $stock_id);
-                                    mysqli_stmt_execute($stmt_delete_stock_label);
-                                    $rows_delete_stock_label = $conn->affected_rows;
-                                    if ($rows_delete_stock_label > 0) {
-                                        // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
-                                    } else {
-                                        // There wont always be labels to delete, so ignore for now.
+                                    mysqli_stmt_bind_param($stmt_delete_label_check, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_label_check);
+                                    $result_delete_label_check = mysqli_stmt_get_result($stmt_delete_label_check);
+                                    $rowCount_delete_label_check = $result_delete_label_check->num_rows;
 
-                                        // echo("<br>No stock_labels Deleted for stock_id: $stock_id... <br>");
-                                        // header("Location: $redirect_url&error=deleteStock_labelTable-NoRowsDeleted");
-                                        // exit();
+                                    while ($row_delete_label_check = $result_delete_label_check->fetch_assoc()) {
+                                        $label_delete_id = $row_delete_label_check['id'];
+
+                                        $sql_delete_stock_label = "DELETE FROM stock_label WHERE stock_id=? AND id=?";
+                                        $stmt_delete_stock_label = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_delete_stock_label, $sql_delete_stock_label)) {
+                                            $errors[] = 'delete stock_label table error - SQL connection';
+                                            header("Location: $redirect_url&error=stock_labelTableSQLConnection");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_delete_stock_label, "ss", $stock_id, $label_delete_id);
+                                            mysqli_stmt_execute($stmt_delete_stock_label);
+                                            $rows_delete_stock_label = $conn->affected_rows;
+                                            if ($rows_delete_stock_label > 0) {
+                                                // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
+                                                // update changelog for delete
+                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_label", $label_delete_id, "stock_id", $stock_id, null);
+                                            } else {
+                                                // There wont always be labels to delete, so ignore for now.
+
+                                                // echo("<br>No stock_labels Deleted for stock_id: $stock_id... <br>");
+                                                // header("Location: $redirect_url&error=deleteStock_labelTable-NoRowsDeleted");
+                                                // exit();
+                                            }
+                                            
+                                        }
                                     }
-                                    
                                 }
 
                                 // CLEAR STOCK TABLE
+                                $sql_stock_name = "SELECT name FROM stock
+                                                WHERE id=?
+                                                ORDER BY id";
+                                $stmt_stock_name = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_stock_name, $sql_stock_name)) {
+                                    $errors[] = 'delete item table error - SQL connection';
+                                    header("Location: $redirect_url&error=itemTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_stock_name, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_stock_name);
+                                    $result_stock_name = mysqli_stmt_get_result($stmt_stock_name);
+                                    $rowCount_stock_name = $result_stock_name->num_rows;
+
+                                    $row_stock_name = $result_stock_name->fetch_assoc();
+                                    $stock_delete_name = $row_stock_name['name'];
+                                }
                                 $sql_delete_stock = "DELETE FROM stock WHERE id=?";
                                 $stmt_delete_stock = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_delete_stock, $sql_delete_stock)) {
@@ -1362,6 +1526,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     $rows_delete_stock = $conn->affected_rows;
                                     if ($rows_delete_stock > 0) {
                                         // echo("<br>Stock Deleted for id: $stock_id , Row count: $rows_delete_stock<br>");
+                                        // update changelog for delete
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock", $stock_id, "name", $stock_delete_name, null);
                                     } else {
                                         // echo("<br>No Stock Deleted for id: $stock_id... <br>");
                                         header("Location: $redirect_url&error=deleteStockTable-NoRowsDeleted");

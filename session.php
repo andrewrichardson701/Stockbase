@@ -29,6 +29,7 @@ if (isset($_SESSION['password_expired']) && $_SESSION['password_expired'] == 1) 
         exit();
     }
 }
+$loggedin_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
 $loggedin_username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 $loggedin_firstname = isset($_SESSION['first_name']) ? $_SESSION['first_name'] : '';
 $loggedin_lastname = isset($_SESSION['last_name']) ? $_SESSION['last_name'] : '';

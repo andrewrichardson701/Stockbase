@@ -258,6 +258,7 @@ if (isset($_POST['submit'])) {
                                         mysqli_stmt_execute($stmt_upload);
                                     }
                                     session_start();
+                                    $_SESSION['user_id'] = $row['users_id'];
                                     $_SESSION['username'] = $ldap_info_samAccountName;
                                     $_SESSION['first_name'] = $ldap_info_firstName;
                                     $_SESSION['last_name'] = $ldap_info_lastName;
@@ -285,6 +286,7 @@ if (isset($_POST['submit'])) {
                                             header("Location: ../login.php?error=userDisabled");
                                             exit();
                                         }
+                                        $_SESSION['user_id'] = $row['users_id'];
                                         $_SESSION['username'] = $row['username'];
                                         $_SESSION['first_name'] = $row['first_name'];
                                         $_SESSION['last_name'] = $row['last_name'];

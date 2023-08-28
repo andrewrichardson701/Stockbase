@@ -31,8 +31,8 @@ if (isset($_POST['submit'])) {
 
                 if (filter_var($login_username, FILTER_VALIDATE_EMAIL)) {
                     $uid_type = "email";
-                } else{
-                    $uid_Type = "username";
+                } else {
+                    $uid_type = "username";
                 }
 
                 $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired

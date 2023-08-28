@@ -905,7 +905,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     </tbody>
                 </table>
             </form>
-            <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+            <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" <?php if($current_smtp_enabled == 0) { echo("hidden"); } ?>>
                 <table id="smtpTable">
                     <tbody>
                         <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">
@@ -1081,7 +1081,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             // Get the image and insert it inside the modal - use its "alt" text as a caption
             modal.style.display = "block";
             var user_id_element = document.getElementById('modal-user-id');
-            console.log(user_id);
             user_id_element.value = user_id;
         }
 
@@ -1326,8 +1325,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             const anchor = window.location.hash.substring(1); // Remove the leading '#'
             if (anchor) {
                 const { param1, param2 } = extractParamsFromAnchor(anchor);
-                console.log(param1);
-                console.log(param2);
+                // console.log(param1);
+                // console.log(param2);
                 toggleSection(document.getElementById(param1), param2);
 
                 // Scroll to the anchor ID after the toggleSection function is done
@@ -1345,7 +1344,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         // LDAP TOGGLE ENABLE STUFF
 
         // Get the initial state of the LDAP enable toggle checkbox
-        let isCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
+        let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
 
         // Add an event listener to the checkbox
         document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
@@ -1366,10 +1365,40 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             }
 
             // Update the initial state of the checkbox for the next change event
-            isCheckboxChecked = this.checked;
+            isLdapCheckboxChecked = this.checked;
 
             // If the checkbox is not being unchecked or the user confirmed, submit the form
             document.getElementById("ldapToggleForm").submit();
+        });
+
+        // SMTP TOGGLE ENABLE STUFF
+
+        // Get the initial state of the SMTP enable toggle checkbox
+        let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
+
+        // Add an event listener to the checkbox
+        document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
+            // Check if the checkbox is being unchecked
+            const isUncheck = !this.checked;
+
+            // If the checkbox is being unchecked, display the confirmation popup
+            if (isUncheck) {
+                const confirmed = confirm(
+                    'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
+                );
+
+                // If the user cancels, revert the checkbox back to its previous state
+                if (!confirmed) {
+                    this.checked = true; // Revert the checkbox back to checked state
+                    return;
+                }
+            }
+
+            // Update the initial state of the checkbox for the next change event
+            isSmtpCheckboxChecked = this.checked;
+
+            // If the checkbox is not being unchecked or the user confirmed, submit the form
+            document.getElementById("smtpToggleForm").submit();
         });
 
     </script>

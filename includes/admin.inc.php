@@ -18,6 +18,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     header("Location: ../admin.php?error=noSubmit");
     exit();
 } else {
+    include 'changelog.inc.php'; // for updating the changelog table
+
     // check the row is there to be edited. if not, add it.
     include 'dbh.inc.php';
     $sql = "SELECT * FROM config";
@@ -40,7 +42,11 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 header("Location: ../admin.php?error=configConnectionSQL");
                 exit();
             } else {
+                $configCurrent = $result->fetch_assoc();
                 mysqli_stmt_execute($stmt);
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Create config", "config", 1, "id", null, 1);
+
             }  
         } else {
             // all good, continue.
@@ -49,7 +55,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     if (isset($_POST['global-submit'])) { // GLOBAL saving in admin
         $errors = [];
          
-        $config_base_url   = isset($_POST['base_url'])        ? $_POST['base_url']        : '';
+        $config_system_name   = isset($_POST['system_name'])        ? $_POST['system_name']        : '';
         $config_banner_color  = isset($_POST['banner_color'])       ? $_POST['banner_color']       : '';
         $config_logo_image    = isset($_FILES['logo_image'])        ? $_FILES['logo_image']        : '';
         $config_favicon_image = isset($_FILES['favicon_image'])     ? $_FILES['favicon_image']     : '';
@@ -57,17 +63,19 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         $config_sku_prefix    = isset($_POST['sku_prefix'])         ? $_POST['sku_prefix']         : '';
         $config_base_url      = isset($_POST['base_url'])           ? $_POST['base_url']           : '';
 
-        if (isset($_POST['base_url']) && $config_base_url !== '') {
-            $post_base_url = $_POST['base_url'];
+        if (isset($_POST['system_name']) && $config_system_name !== '') {
+            $post_system_name = $_POST['system_name'];
             include 'dbh.inc.php';
-            $sql_upload = "UPDATE config SET base_url=? WHERE id=1";
+            $sql_upload = "UPDATE config SET system_name=? WHERE id=1";
             $stmt_upload = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                $errors[] = "base_urlSqlError";
+                $errors[] = "system_nameSqlError";
             } else {
-                mysqli_stmt_bind_param($stmt_upload, "s", $post_base_url);
+                mysqli_stmt_bind_param($stmt_upload, "s", $post_system_name);
                 mysqli_stmt_execute($stmt_upload);
-                $queryStrings[] = "base_urlUpload=success";
+                $queryStrings[] = "system_nameUpload=success";
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "system_name", $configCurrent['system_name'], $post_system_name);
             }
         }
 
@@ -83,6 +91,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     mysqli_stmt_bind_param($stmt_upload, "s", $post_banner_color);
                     mysqli_stmt_execute($stmt_upload);
                     $queryStrings[] = "bannercolorUpload=success";
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "banner_color", $configCurrent['banner_color'], $post_banner_color);
+
                 }
                 
             } else {
@@ -145,6 +156,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_bind_param($stmt_upload, "s", $logo_image_name);
                         mysqli_stmt_execute($stmt_upload);
                         $queryStrings[] = "logoUpload=success";
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "logo_image", $configCurrent['logo_image'], $logo_image_name);
                     }
                 } else {
                     $errors[] = "FAVICON ERROR START";
@@ -176,6 +189,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_bind_param($stmt_upload, "s", $favicon_image_name);
                         mysqli_stmt_execute($stmt_upload);
                         $queryStrings[] = "faviconUpload=success";
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "favicon_image", $configCurrent['favicon_image'], $post_favicon_image);
                     }
                 } else {
                     $errors[] = "FAVICON ERROR START";
@@ -202,44 +217,35 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 mysqli_stmt_bind_param($stmt_upload, "s", $post_currency);
                 mysqli_stmt_execute($stmt_upload);
                 $queryStrings[] = "currencyUpload=success";
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "currency", $configCurrent['currency'], $post_currency);
             }
         }
 
         if (isset($_POST['sku_prefix']) && $config_sku_prefix !== '') {
             $post_sku_prefix = $_POST['sku_prefix'];
-            include 'dbh.inc.php';
-
-            $sql_prefix = "SELECT sku_prefix FROM config WHERE id=1";
-            $stmt_prefix = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($stmt_prefix, $sql_prefix)) {
-                $errors[] = "configTableSQLConnection";
-            } else {
-                mysqli_stmt_execute($stmt_prefix);
-                $result_prefix = mysqli_stmt_get_result($stmt_prefix);
-                $rowCount_prefix = $result_prefix->num_rows;
-                if ($rowCount_prefix == 1) {
-                    $row_prefix = $result_prefix->fetch_assoc();
-                    $current_sku_prefix = $row_prefix['sku_prefix'];
-
-                    $sql_upload = "UPDATE config SET sku_prefix=? WHERE id=1";
-                    $stmt_upload = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+            $current_sku_prefix = $configCurrent['sku_prefix']; 
+            if ($current_sku_prefix !== '') {
+                $sql_upload = "UPDATE config SET sku_prefix=? WHERE id=1";
+                $stmt_upload = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                    $errors[] = "SKU_prefixSqlError";
+                } else {
+                    mysqli_stmt_bind_param($stmt_upload, "s", $post_sku_prefix);
+                    mysqli_stmt_execute($stmt_upload);
+                    
+                    $sql_change = "UPDATE stock SET sku = REPLACE(sku, '$current_sku_prefix', '$post_sku_prefix');";
+                    $stmt_change = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_change, $sql_change)) {
                         $errors[] = "SKU_prefixSqlError";
                     } else {
-                        mysqli_stmt_bind_param($stmt_upload, "s", $post_sku_prefix);
-                        mysqli_stmt_execute($stmt_upload);
-                        
-                        $sql_change = "UPDATE stock SET sku = REPLACE(sku, '$current_sku_prefix', '$post_sku_prefix');";
-                        $stmt_change = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt_change, $sql_change)) {
-                            $errors[] = "SKU_prefixSqlError";
-                        } else {
-                            mysqli_stmt_execute($stmt_change);
-                            $queryStrings[] = "SKU_prefixChange=success";
-                        }
+                        mysqli_stmt_execute($stmt_change);
+                        $queryStrings[] = "SKU_prefixChange=success";
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "sku_prefix", $configCurrent['sku_prefix'], $post_sku_prefix);
                     }
-                }
-            }           
+                }     
+            } 
         }
 
         if (isset($_POST['base_url']) && $config_base_url !== '') {
@@ -253,6 +259,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 mysqli_stmt_bind_param($stmt_upload, "s", $post_base_url);
                 mysqli_stmt_execute($stmt_upload);
                 $queryStrings[] = "base_urlUpload=success";
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "base_url", $configCurrent['base_url'], $post_base_url);
             }
         }
         
@@ -288,7 +296,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['global-restore-defaults'])) { // restore global settings in admin
         include 'dbh.inc.php';
 
-        $sql_config = "SELECT base_url, banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
+        $sql_config = "SELECT system_name, base_url, banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
         $stmt_config = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             header("Location: ../admin.php?sqlerror=config_default_getEntries#global-settings");
@@ -302,21 +310,30 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 exit();
             } else {
                 while ( $config = $result_config->fetch_assoc() ) {
-                    $restore_base_url   = $config['base_url'];
+                    $restore_system_name   = $config['system_name'];
+                    $restore_base_url      = $config['base_url'];
                     $restore_banner_color  = $config['banner_color'];
                     $restore_logo_image    = $config['logo_image'];
                     $restore_favicon_image = $config['favicon_image'];
                     $restore_currency      = $config['currency'];
                     $restore_sku_prefix    = $config['sku_prefix'];
                 }
-                $sql_upload = "UPDATE config SET base_url=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=? WHERE id=1";
+                $sql_upload = "UPDATE config SET system_name=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=?, base_url-? WHERE id=1";
                 $stmt_upload = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                     header("Location: ../admin.php?sqlerror=config_noUpdate#global-settings");
                     exit();
                 } else {
-                    mysqli_stmt_bind_param($stmt_upload, "ssssss", $restore_base_url, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix);
+                    mysqli_stmt_bind_param($stmt_upload, "sssssss", $restore_system_name, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix, $restore_base_url);
                     mysqli_stmt_execute($stmt_upload);
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "system_name", $configCurrent['system_name'], $restore_system_name);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "banner_color", $configCurrent['banner_color'], $restore_banner_color);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "logo_image", $configCurrent['logo_image'], $restore_logo_image);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "favicon_image", $configCurrent['favicon_image'], $restore_favicon_image);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "currency", $configCurrent['currency'], $restore_currency);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "sku_prefix", $configCurrent['sku_prefix'], $restore_sku_prefix);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "base_url", $configCurrent['base_url'], $restore_base_url);
 
                     $sql_sku = "SELECT sku_prefix FROM config ORDER BY id LIMIT 1";
                     $stmt_sku = mysqli_stmt_init($conn);
@@ -365,7 +382,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
                 $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, 
                                     users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, 
-                                    users.enabled as enabled, users.password AS users_password
+                                    users.enabled as enabled, users.password AS users_password, users.password_expired as password_expired
                                 FROM users 
                                 INNER JOIN users_roles ON users.role_id = users_roles.id
                                 WHERE users.id=? AND users_roles.name NOT IN ($admin_roles)";
@@ -389,6 +406,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
                         $row = $result->fetch_assoc();
                         $current_password_hash = $row['users_password'];
+                        $current_password_expired = $row['password_expired'];
 
                         if ($current_password_hash === $new_password_hash) {
                             header("Location: ../admin.php?error=passwordMatchesCurrent#users-settings");
@@ -402,7 +420,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             } else {
                                 mysqli_stmt_bind_param($stmt_upload, "s", $user_id);
                                 mysqli_stmt_execute($stmt_upload);
-                                $_SESSION['password_expired'] = 0;
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Reset Password", "users", $user_id, "password", '****', '****');
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Reset Password", "users", $user_id, "password_expired", $current_password_expired, 1);
                                 header("Location: ../admin.php?success=PasswordChanged#users-settings");
                                 exit();
                             }
@@ -438,6 +458,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         } else {
             mysqli_stmt_bind_param($stmt_upload, "s", $ldap_enabled);
             mysqli_stmt_execute($stmt_upload);
+            // update changelog
+            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_enabled", $configCurrent['ldap_enabled'], $ldap_enabled);
             header("Location: ../admin.php?ldapEnabled=success#ldap-settings");
             exit();
         }
@@ -473,6 +495,17 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 } else {
                     mysqli_stmt_bind_param($stmt_upload, "sssssssss", $config_ldap_username, $config_ldap_password, $config_ldap_domain, $config_ldap_host, $config_ldap_host_secondary, $config_ldap_port, $config_ldap_basedn, $config_ldap_usergroup, $config_ldap_userfilter);
                     mysqli_stmt_execute($stmt_upload);
+                    // update changelog
+                    if ($config_ldap_username       !== $configCurrent['ldap_username'])       { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_username", $configCurrent['ldap_username'], $config_ldap_username); }
+                    if ($config_ldap_password       !== $configCurrent['ldap_password'])       { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_password", $configCurrent['ldap_password'], $config_ldap_password); }
+                    if ($config_ldap_domain         !== $configCurrent['ldap_domain'])         { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_domain", $configCurrent['ldap_domain'], $config_ldap_domain); }
+                    if ($config_ldap_host           !== $configCurrent['ldap_host'])           { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_host", $configCurrent['ldap_host'], $config_ldap_host); }
+                    if ($config_ldap_host_secondary !== $configCurrent['ldap_host_secondary']) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_host_secondary", $configCurrent['ldap_host_secondary'], $config_ldap_host_secondary); }
+                    if ($config_ldap_port           !== $configCurrent['ldap_port'])           { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_port", $configCurrent['ldap_port'], $config_ldap_port); }
+                    if ($config_ldap_basedn         !== $configCurrent['ldap_basedn'])         { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_basedn", $configCurrent['ldap_basedn'], $config_ldap_basedn); }
+                    if ($config_ldap_usergroup      !== $configCurrent['ldap_usergroup'])      { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_usergroup", $configCurrent['ldap_usergroup'], $config_ldap_usergroup); }
+                    if ($config_ldap_userfilter     !== $configCurrent['ldap_userfilter'])     { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_userfilter", $configCurrent['ldap_userfilter'], $config_ldap_userfilter); }
+
                     header("Location: ../admin.php?ldapUpload=success#ldap-settings");
                     exit();
                 }
@@ -519,6 +552,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 } else {
                     mysqli_stmt_bind_param($stmt_upload, "sssssssss", $restore_ldap_username, $restore_ldap_password, $restore_ldap_domain, $restore_ldap_host, $restore_ldap_host_secondary, $restore_ldap_port, $restore_ldap_basedn, $restore_ldap_usergroup, $restore_ldap_userfilter);
                     mysqli_stmt_execute($stmt_upload);
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_username", $configCurrent['ldap_username'], $restore_ldap_username);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_password", $configCurrent['ldap_password'], $restore_ldap_password);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_domain", $configCurrent['ldap_domain'], $restore_ldap_domain);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_host", $configCurrent['ldap_host'], $restore_ldap_host);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_host_secondary", $configCurrent['ldap_host_secondary'], $restore_ldap_host_secondary);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_port", $configCurrent['ldap_port'], $restore_ldap_port);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_basedn", $configCurrent['ldap_basedn'], $restore_ldap_basedn);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_usergroup", $configCurrent['ldap_usergroup'], $restore_ldap_usergroup);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_userfilter", $configCurrent['ldap_userfilter'], $restore_ldap_userfilter);
                     header("Location: ../admin.php?ldapUpload=configRestored#ldap-settings");
                     exit();
                 }
@@ -572,6 +615,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             } else {
                 mysqli_stmt_bind_param($stmt_upload, "ssssssss", $config_smtp_username, $config_smtp_password, $config_smtp_encryption, $config_smtp_host, $config_smtp_port, $config_smtp_from_email, $config_smtp_from_name, $config_smtp_to_email);
                 mysqli_stmt_execute($stmt_upload);
+                // update changelog
+                if ($config_smtp_username   !== $configCurrent['smtp_username'])   { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_username", $configCurrent['smtp_username'], $config_smtp_username); }
+                if ($config_smtp_password   !== $configCurrent['smtp_password'])   { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_password", $configCurrent['smtp_password'], $config_smtp_password); }
+                if ($config_smtp_encryption !== $configCurrent['smtp_encryption']) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_encryption", $configCurrent['smtp_encryption'], $config_smtp_encryption); }
+                if ($config_smtp_host       !== $configCurrent['smtp_host'])       { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_host", $configCurrent['smtp_host'], $config_smtp_host); }
+                if ($config_smtp_port       !== $configCurrent['smtp_port'])       { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_port", $configCurrent['smtp_port'], $config_smtp_port); }
+                if ($config_smtp_from_email !== $configCurrent['smtp_from_email']) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_from_email", $configCurrent['smtp_from_email'], $config_smtp_from_email); }
+                if ($config_smtp_from_name  !== $configCurrent['smtp_from_name'])  { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_from_name", $configCurrent['smtp_from_name'], $config_smtp_from_name); }
+                if ($config_smtp_to_email   !== $configCurrent['smtp_to_email'])   { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_to_email", $configCurrent['smtp_to_email'], $config_smtp_to_email); }
                 header("Location: ../admin.php?smtpUpload=success#smtp-settings");
                 exit();
             }
@@ -612,6 +664,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 } else {
                     mysqli_stmt_bind_param($stmt_upload, "ssssssss", $restore_smtp_username, $restore_smtp_password, $restore_smtp_encryption, $restore_smtp_host, $restore_smtp_port, $restore_smtp_from_email, $restore_smtp_from_name, $restore_smtp_to_email);
                     mysqli_stmt_execute($stmt_upload);
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_username", $configCurrent['smtp_username'], $restore_smtp_username); 
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_password", $configCurrent['smtp_password'], $restore_smtp_password); 
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_encryption", $configCurrent['smtp_encryption'], $restore_smtp_encryption); 
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_host", $configCurrent['smtp_host'], $restore_smtp_host); 
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_port", $configCurrent['smtp_port'], $restore_smtp_port); 
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_from_email", $configCurrent['smtp_from_email'], $restore_smtp_from_email); 
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_from_name", $configCurrent['smtp_from_name'], $restore_smtp_from_name); 
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_to_email", $configCurrent['smtp_to_email'], $restore_smtp_to_email); 
                     header("Location: ../admin.php?smtpUpload=configRestored#smtp-settings");
                     exit();
                 }
@@ -652,6 +713,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 echo('<or class="red">SQL Error in Users Table</or>');
                             } else {
                                 mysqli_stmt_execute($stmt_user_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, "role_id", $user_role, $user_new_role);
                                 echo("User updated: id: $user_id, username: $user_username, role_id: $user_new_role.");
                             }
                         } else {
@@ -701,6 +764,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 echo('<or class="red">SQL Error in Users Table</or>');
                             } else {
                                 mysqli_stmt_execute($stmt_user_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, "enabled", $user_enabled, $user_new_enabled);
                                 echo("User updated: id: $user_id, username: $user_username, enabled: $user_new_enabled.");
                             }
                         } else {
@@ -746,6 +811,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 mysqli_stmt_execute($stmt_site);
                 // get new site id
                 $site_id = mysqli_insert_id($conn); // ID of the new row in the table.
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "site", $site_id, "name", null, $site_name);
 
                 //insert to area 
                 $sql_area = "INSERT INTO area (name, description, site_id) 
@@ -759,6 +826,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     mysqli_stmt_execute($stmt_area);
                     // get new area id
                     $area_id = mysqli_insert_id($conn); // ID of the new row in the table.
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "area", $area_id, "name", null, $area_name);
+                    
 
                     //insert to area 
                     $sql_shelf = "INSERT INTO shelf (name, area_id) 
@@ -772,6 +842,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt_shelf);
                         // get new shelf id
                         $shelf_id = mysqli_insert_id($conn); // ID of the new row in the table.
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "shelf", $shelf_id, "name", null, $shelf_name);
 
                         // redirect back - all worked
                         header("Location: ../index.php?success=allAdded&site_id=$site_id&area_id=$area_id&shelf_id=$shelf_id");
@@ -805,6 +877,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     mysqli_stmt_execute($stmt_location);
                     // get new site id
                     $location_id = mysqli_insert_id($conn); // ID of the new row in the table.
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "$location_type", $location_id, "name", null, $location_name);
 
                     header("Location: ../admin.php?success=".$location_type."LocationAdded&".$location_type."-id=$location_id#stocklocations-settings");
                     exit();
@@ -843,16 +917,34 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $rowCount_check2 = $result_check2->num_rows;
                         
                         if ($rowCount_check2 == 0) {
-                            $sql_site = "DELETE FROM site WHERE id=$site_id;";
-                            $stmt_site = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                            $sql_check3 = "SELECT * site WHERE id=$site_id;";
+                            $stmt_check3 = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_check3, $sql_check3)) {
                                 header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
                                 exit();
                             } else {
-                                mysqli_stmt_execute($stmt_site);
-                                header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
-                                exit();
+                                mysqli_stmt_execute($stmt_check3);
+                                $result_check3 = mysqli_stmt_get_result($stmt_check3);
+                                $rowCount_check3 = $result_check3->num_rows;
+                                $row_check3 = $result_check3->fetch_assoc();
+
+                                $current_stock_name = $row_check3['name'];
+
+                                $sql_site = "DELETE FROM site WHERE id=$site_id;";
+                                $stmt_site = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                                    header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_execute($stmt_site);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "name", $current_stock_name, null);
+
+                                    header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
+                                    exit();
+                                }
                             }
+                            
                         } else {
                             header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
                             exit();
@@ -876,15 +968,32 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_area = "DELETE FROM area WHERE id=$area_id;";
-                    $stmt_area = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
+                    $sql_check1 = "SELECT * FROM area WHERE id=$area_id;";
+                    $stmt_check1 = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
                         exit();
                     } else {
-                        mysqli_stmt_execute($stmt_area);
-                        header("Location: ../admin.php?success=areaDeleted&id=$area_id#stocklocations-settings");
-                        exit();
+                        mysqli_stmt_execute($stmt_check1);
+                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                        $rowCount_check1 = $result_check1->num_rows;
+                        $row_check1 = $result_check1->fetch_assoc();
+
+                        $current_area_name = $row_check1['name'];
+                        
+                        $sql_area = "DELETE FROM area WHERE id=$area_id;";
+                        $stmt_area = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
+                            header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt_area);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "area", $area_id, "name", $current_area_name, null);
+
+                            header("Location: ../admin.php?success=areaDeleted&id=$area_id#stocklocations-settings");
+                            exit();
+                        }
                     }
                 } else {
                     header("Location: ../admin.php?error=areaHasDependencies#stocklocations-settings");
@@ -904,16 +1013,34 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_shelf = "DELETE FROM shelf WHERE id=$shelf_id;";
-                    $stmt_shelf = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
+                    $sql_check1 = "SELECT * FROM shelf WHERE id=$shelf_id;";
+                    $stmt_check1 = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
                         exit();
                     } else {
-                        mysqli_stmt_execute($stmt_shelf);
-                        header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
-                        exit();
+                        mysqli_stmt_execute($stmt_check1);
+                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                        $rowCount_check1 = $result_check1->num_rows;
+                        $row_check1 = $result_check1->fetch_assoc();
+
+                        $current_shelf_name = $row_check1['name'];
+
+                        $sql_shelf = "DELETE FROM shelf WHERE id=$shelf_id;";
+                        $stmt_shelf = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
+                            header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt_shelf);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "shelf", $shelf_id, "name", $current_shelf_name, null);
+
+                            header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
+                            exit();
+                        }
                     }
+                    
                 } else {
                     header("Location: ../admin.php?error=shelfHasDependencies#stocklocations-settings");
                     exit();
@@ -939,34 +1066,71 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 // change the area_id
                                 if (isset($_POST['location-parent-area'])) {
                                     $location_area_id = $_POST['location-parent-area'];
-                                    $sql = "UPDATE shelf 
-                                            SET area_id=?
-                                            WHERE id=?";
-                                    $stmt = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                        header("Location: ../admin.php?error=sqlError&table=shelf#stocklocations-settings");
-                                        
+
+                                    $sql_check1 = "SELECT * FROM shelf WHERE id=$location_id;";
+                                    $stmt_check1 = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
+                                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                        exit();
                                     } else {
-                                        mysqli_stmt_bind_param($stmt, "si", $location_area_id, $location_id);
-                                        mysqli_stmt_execute($stmt);
-                                    }  
+                                        mysqli_stmt_execute($stmt_check1);
+                                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                                        $rowCount_check1 = $result_check1->num_rows;
+                                        $row_check1 = $result_check1->fetch_assoc();
+
+                                        $current_area_id = $row_check1['area_id'];
+
+                                        $sql = "UPDATE shelf 
+                                                SET area_id=?
+                                                WHERE id=?";
+                                        $stmt = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                            header("Location: ../admin.php?error=sqlError&table=shelf#stocklocations-settings");
+                                            
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt, "si", $location_area_id, $location_id);
+                                            mysqli_stmt_execute($stmt);
+                                            // update changelog
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "shelf", $location_id, "area_id", $current_area_id, $location_area_id);
+                                        }  
+                                    }
+
+                                    
                                 }
                                 
                             } elseif ($location_type == "area") {
                                 // change the site_id
                                 if (isset($_POST['location-parent-site'])) {
                                     $location_site_id = $_POST['location-parent-site'];
-                                    $sql = "UPDATE area 
-                                            SET site_id=?
-                                            WHERE id=?";
-                                    $stmt = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                        header("Location: ../admin.php?error=sqlError&table=area#stocklocations-settings");
-                                        
+
+                                    $sql_check1 = "SELECT * FROM area WHERE id=$location_id;";
+                                    $stmt_check1 = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
+                                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                        exit();
                                     } else {
-                                        mysqli_stmt_bind_param($stmt, "si", $location_site_id, $location_id);
-                                        mysqli_stmt_execute($stmt);
-                                    }  
+                                        mysqli_stmt_execute($stmt_check1);
+                                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                                        $rowCount_check1 = $result_check1->num_rows;
+                                        $row_check1 = $result_check1->fetch_assoc();
+
+                                        $current_site_id = $row_check1['site_id'];
+
+                                        $sql = "UPDATE area 
+                                                SET site_id=?
+                                                WHERE id=?";
+                                        $stmt = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                            header("Location: ../admin.php?error=sqlError&table=area#stocklocations-settings");
+                                            
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt, "si", $location_site_id, $location_id);
+                                            mysqli_stmt_execute($stmt);
+                                            // update changelog
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "area", $location_id, "site_id", $current_site_id, $location_site_id);
+                                        } 
+                                    }
+                                     
                                 }
                             }
                             
@@ -987,6 +1151,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     header("Location: ../admin.php?error=noRowsFound&table=$location_type#stocklocations-settings");
                                     exit();
                                 } else {
+                                    $row = $result->fetch_assoc();
+
                                     if ($location_type !== "shelf") {
                                         $sql = "UPDATE $location_type 
                                             SET name=?, description=? 
@@ -1009,6 +1175,12 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                             mysqli_stmt_bind_param($stmt, "si", $location_name, $location_id);
                                         }   
                                         mysqli_stmt_execute($stmt);
+
+                                        // update changelog
+                                        if ($row['name'] !== $location_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "$location_type", $location_id, "name", $row['name'], $location_name); }
+                                        if ($location_type !== "shelf") { 
+                                            if ($row['description'] !== $location_description) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "$location_type", $location_id, "description", $row['description'], $location_description); }
+                                        }
                         
                                         header("Location: ../admin.php?success=updated&type=$location_type&id=$location_id#stocklocations-settings");
                                         exit();
@@ -1044,17 +1216,34 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $id = $_POST['id'];
                     $name = $_POST['name'];
 
-                    $sql = "UPDATE $type SET name='$name' WHERE id=$id";
-                    $stmt = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt, $sql)) {
-                        header("Location: ../admin.php?error=".$type."ConnectionSQL#stocklocations-settings");
+                    $sql_check1 = "SELECT * FROM $type WHERE id=$id;";
+                    $stmt_check1 = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
+                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
                         exit();
                     } else {
-                        mysqli_stmt_execute($stmt);
+                        mysqli_stmt_execute($stmt_check1);
+                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                        $rowCount_check1 = $result_check1->num_rows;
+                        $row_check1 = $result_check1->fetch_assoc();
 
-                        header("Location: ../admin.php?success=updated&type=$type&id=$id#stocklocations-settings");
-                        exit();
-                    }  
+                        $current_name = $row_check1['name'];
+
+                        $sql = "UPDATE $type SET name='$name' WHERE id=$id";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../admin.php?error=".$type."ConnectionSQL#stocklocations-settings");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "$type", $id, "name", $current_name, $name);
+
+                            header("Location: ../admin.php?success=updated&type=$type&id=$id#stocklocations-settings");
+                            exit();
+                        }  
+                    }
+                    
                 } else {
                     header("Location: ../admin.php?error=propertyMissing#stocklocations-settings");
                     exit();
@@ -1096,17 +1285,33 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     exit();
                                 } else {
                                     // no emails exist in the row, can be used.
-
-                                    $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
-                                    $stmt = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                        header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
+                                    $sql_check1 = "SELECT first_name, last_name, email FROM users WHERE id=$id;";
+                                    $stmt_check1 = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
+                                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
                                         exit();
                                     } else {
-                                        mysqli_stmt_execute($stmt);
-                                        header("Location: ../profile.php?success=profileUpdated");
-                                        exit();
-                                    }  
+                                        mysqli_stmt_execute($stmt_check1);
+                                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                                        $rowCount_check1 = $result_check1->num_rows;
+                                        $row_check1 = $result_check1->fetch_assoc();
+
+                                        $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
+                                        $stmt = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                            header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_execute($stmt);
+                                            // update changelog
+                                            if ($row_check1['first_name'] !== $first_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "first_name", $row_check1['first_name'], $first_name); }
+                                            if ($row_check1['last_name'] !== $last_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "last_name", $row_check1['last_name'], $last_name); }
+                                            if ($row_check1['email'] !== $email) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "email", $row_check1['email'], $email); }
+                                            header("Location: ../profile.php?success=profileUpdated");
+                                            exit();
+                                        }  
+                                    }
+                                    
                                 }
                             }
                         } else {

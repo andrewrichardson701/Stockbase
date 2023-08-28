@@ -21,7 +21,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
 
     <!-- set to index.php for now as there is nothing to put here. But i will forget about it if i remove it -->
-    <a href="index.php" class="skip-nav-link-inv">show links</a>
+    <a href="changelog.php" class="skip-nav-link-inv">changelog</a>
 
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>

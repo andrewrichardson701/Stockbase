@@ -6,6 +6,8 @@ session_start();
 $redirect_url = $_SESSION['redirect_url'];
 $queryChar = strpos($redirect_url, "?") !== false ? '&' : '?';
 
+include 'changelog.inc.php';
+
 function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
     $timedate = date("dmyHis");
 
@@ -44,6 +46,9 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
                 } else {
                     mysqli_stmt_bind_param($stmt, "ss", $stock_id, $uploadFileName);
                     mysqli_stmt_execute($stmt);
+                    $new_stock_img_id = mysqli_insert_id($conn);
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_img", $new_stock_img_id, "image", null, $uploadFileName);
                 }
 
             } else {
@@ -139,6 +144,8 @@ function addQuantity($stock_id, $cable_item_id) {
             $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Added";
             $email_body = "<p>Fixed cable stock added, for item ID: <strong>$cable_item_id</strong>!</p>";
             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+            // update changelog
+            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Quantity", "cable_item", $cable_item_id, "quantity", $quantity, $new_quantity);
 
             header("Location: ../".$redirect_url.$queryChar."cableItemID=$cable_item_id&success=quantityAdded");
             exit();
@@ -183,6 +190,9 @@ function removeQuantity($stock_id, $cable_item_id) {
                 $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Below Minimum Stock Count. Please Order More!";
                 $email_body = "<p>Fixed cable stock below minimum stock count, for item ID: <strong>$cable_item_id</strong>. Please order more!</p>";
                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove Quantity", "cable_item", $cable_item_id, "quantity", $quantity, $new_quantity);
+
 
                 // Check if the quantity is below minimum
                 $sql = "SELECT * FROM stock WHERE id=$stock_id";
@@ -276,6 +286,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $time = date('H:i:s'); // current time in HH:MM:SS format
                         $username = $_SESSION['username'];
                         updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username);
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "stock_id", null, $stock_id);
 
                         header("Location: ../".$redirect_url.$queryChar."success=cableAdded&site_id=$site_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
                         exit();
@@ -319,6 +331,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             mysqli_stmt_execute($stmt_add);
 
                             $stock_id = mysqli_insert_id($conn);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock", $stock_id, "name", null, $stock_name);
+
 
                             if (isset($_FILES['stock-img']) && $_FILES['stock-img']['name'] !== '') {
                                 image_upload('stock-img', $stock_id, $redirect_url, '');
@@ -343,6 +358,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 $time = date('H:i:s'); // current time in HH:MM:SS format
                                 $username = $_SESSION['username'];
                                 updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "quantity", null, $item_quantity);
 
                                 header("Location: ../".$redirect_url.$queryChar."success=cableAdded&site_id=$site_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
                                 exit();

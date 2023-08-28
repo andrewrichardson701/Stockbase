@@ -887,6 +887,24 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         <!-- SMTP Settings -->
         <div style="padding-top: 20px" id="smtp" hidden>
+            <form id="smtpToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                <input type="hidden" name="smtp-toggle-submit" value="set" />
+                <table id="smtpToggleTable">
+                    <tbody>
+                        <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">
+                            <td style="width:150px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-username">Enable SMTP</p>
+                                </td>
+                            <td class="align-middle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                    <input type="checkbox" name="smtp-enabled" id="smtp-enabled-toggle" <?php if($current_smtp_enabled == 1) { echo("checked"); } ?> >
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
             <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                 <table id="smtpTable">
                     <tbody>

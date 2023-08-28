@@ -518,6 +518,29 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 }
             }
         }
+    } elseif (isset($_POST['smtp-toggle-submit'])) { // enable/disable SMTP
+        print_r($_POST);
+        $smtp_enabled_post = isset($_POST['smtp-enabled']) ? $_POST['smtp-enabled'] : "off";
+
+        if ($smtp_enabled_post == "on") {
+            $smtp_enabled = 1;
+        } else {
+            $smtp_enabled = 0;
+        }
+
+        include 'dbh.inc.php';
+        $sql_upload = "UPDATE config SET smtp_enabled=? WHERE id=1";
+        $stmt_upload = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+            $errors[] = "smtpUploadSQLerror";
+            header("Location: ../admin.php?error=smtpEnabled#smtp-settings");
+            exit();
+        } else {
+            mysqli_stmt_bind_param($stmt_upload, "s", $smtp_enabled);
+            mysqli_stmt_execute($stmt_upload);
+            header("Location: ../admin.php?smtpEnabled=success#smtp-settings");
+            exit();
+        }
     } elseif (isset($_POST['smtp-submit'])) { // save smtp info in smtp section of admin page
         if (isset($_POST['smtp-username']))   { $config_smtp_username   = $_POST['smtp-username'];   } else { $config_smtp_username   = ''; }
         if (isset($_POST['smtp-password']))   { $config_smtp_password   = base64_encode($_POST['smtp-password']);   } else { $config_smtp_password   = ''; }

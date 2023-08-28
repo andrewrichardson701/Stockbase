@@ -82,6 +82,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
         $config_ldap_basedn         = '';
         $config_ldap_usergroup      = '';
         $config_ldap_userfilter     = '';
+        $config_smtp_enabled        = '';
         $config_smtp_username       = '';
         // $config_smtp_password    = '';
         $config_smtp_encryption     = '';
@@ -111,6 +112,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_ldap_usergroup      = isset($config['ldap_usergroup']) ? $config['ldap_usergroup'] : '';
             $config_ldap_userfilter     = isset($config['ldap_userfilter']) ? $config['ldap_userfilter'] : '';
 
+            $config_smtp_enabled        = isset($config['smtp_enabled']) ? $config['smtp_enabled'] : '';
             $config_smtp_username       = isset($config['smtp_username']) ? $config['smtp_username'] : '';
             // $config_smtp_password       = base64_decode($config['smtp_password']); 
             $config_smtp_encryption     = isset($config['smtp_encryption']) ? $config['smtp_encryption'] : '';
@@ -153,6 +155,7 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_ldap_usergroup      = $config_d['ldap_usergroup'];
             $config_d_ldap_userfilter     = $config_d['ldap_userfilter'];
 
+            $config_d_smtp_enabled        = $config_d['smtp_enabled'];
             $config_d_smtp_username       = $config_d['smtp_username'];
             $config_d_smtp_password       = $config_d['smtp_password']; 
             $config_d_smtp_encryption     = $config_d['smtp_encryption'];
@@ -209,6 +212,7 @@ $current_ldap_userfilter     = ($config_ldap_userfilter       !== '' ? $config_l
 
 # ---
 
+$default_smtp_enabled        = ($config_d_smtp_enabled        !== '' ? $config_d_smtp_enabled                : 'MISSING - PLEASE FIX');
 $default_smtp_username       = ($config_d_smtp_username       !== '' ? $config_d_smtp_username               : 'MISSING - PLEASE FIX');
 $default_smtp_password       = ($config_d_smtp_password       !== '' ? '<or class="green">Password Set</or>' : 'MISSING - PLEASE FIX');
 $default_smtp_encryption     = ($config_d_smtp_encryption     !== '' ? $config_d_smtp_encryption             : 'MISSING - PLEASE FIX');
@@ -216,8 +220,9 @@ $default_smtp_host           = ($config_d_smtp_host           !== '' ? $config_d
 $default_smtp_port           = ($config_d_smtp_port           !== '' ? $config_d_smtp_port                   : 'MISSING - PLEASE FIX');
 $default_smtp_from_email     = ($config_d_smtp_from_email     !== '' ? $config_d_smtp_from_email             : 'MISSING - PLEASE FIX');    
 $default_smtp_from_name      = ($config_d_smtp_from_name      !== '' ? $config_d_smtp_from_name              : 'MISSING - PLEASE FIX');    
-$default_smtp_to_email       = ($config_d_smtp_to_email       !== '' ? $config_d_smtp_to_email               : 'MISSING - PLEASE FIX');  
+$default_smtp_to_email       = ($config_d_smtp_to_email       !== '' ? $config_d_smtp_to_email               : 'MISSING - PLEASE FIX');
 
+$current_smtp_enabled        = ($config_smtp_enabled          !== '' ? $config_smtp_enabled                  : $default_smtp_enabled);
 $current_smtp_username       = ($config_smtp_username         !== '' ? $config_smtp_username                 : $default_smtp_username);
 // $current_smtp_password     = ($config_smtp_password         !== '' ? $config_smtp_password                 : $default_smtp_password);
 $current_smtp_encryption     = ($config_smtp_encryption       !== '' ? $config_smtp_encryption               : $default_smtp_encryption);

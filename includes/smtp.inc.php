@@ -21,89 +21,93 @@ include 'get-config.inc.php';
 // $folder = explode('/', $folder)[1]; // inventory folder
 
 function send_email($to, $toName, $fromName, $subject, $body) {
-    // Get SMTP info from DB
-    $folder = dirname($_SERVER['PHP_SELF']);
-    $folder = explode('/', $folder)[1]; // inventory folder
+    global $current_smtp_enabled;
+    if ($current_smtp_enabled == 1) { // check if smtp is enabled.
 
-    include $_SERVER['DOCUMENT_ROOT'].'/'.$folder.'/includes/dbh.inc.php';
-    $sql_config = "SELECT smtp_host, smtp_port, smtp_encryption, smtp_username, smtp_password, smtp_from_email, smtp_from_name, smtp_to_email 
-                    FROM config ORDER BY id LIMIT 1";
-    $stmt_config = mysqli_stmt_init($conn);
-    if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
-        header("Location: ../admin.php?sqlerror=config_default_getEntries_ldap#ldap-settings");
-        exit();
-    } else {
-        mysqli_stmt_execute($stmt_config);
-        $result_config = mysqli_stmt_get_result($stmt_config);
-        $rowCount_config = $result_config->num_rows;
-        if ($rowCount_config < 1) {
-            header("Location: ../admin.php?sqlerror=config_default_noID1_ldap#ldap-settings");
+        // Get SMTP info from DB
+        $folder = dirname($_SERVER['PHP_SELF']);
+        $folder = explode('/', $folder)[1]; // inventory folder
+
+        include $_SERVER['DOCUMENT_ROOT'].'/'.$folder.'/includes/dbh.inc.php';
+        $sql_config = "SELECT smtp_host, smtp_port, smtp_encryption, smtp_username, smtp_password, smtp_from_email, smtp_from_name, smtp_to_email 
+                        FROM config ORDER BY id LIMIT 1";
+        $stmt_config = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
+            header("Location: ../admin.php?sqlerror=config_default_getEntries_ldap#ldap-settings");
             exit();
         } else {
-            while ( $config = $result_config->fetch_assoc() ) {
-                $smtp_username   = $config['smtp_username'];       
-                $smtp_password   = base64_decode($config['smtp_password']);      
-                $smtp_encryption    = $config['smtp_encryption'];          
-                $smtp_host       = $config['smtp_host'];            
-                $smtp_port       = $config['smtp_port'];            
-                $smtp_from_email     = $config['smtp_from_email'];          
-                $smtp_from_name  = $config['smtp_from_name'];      
-                $smtp_to_email = $config['smtp_to_email'];     
-            }
-
-            // if $to is set to use-default, then use the default email
-            if ($to == 'use-default') {
-                $to = $smtp_to_email;
-            }
-            if ($toName == 'use-default') {
-                $toName = $smtp_to_email;
-            }
-            if ($fromName == 'use-default') {
-                $fromName = $smtp_from_name;
-            }
-
-            // Create a new PHPMailer instance
-            $mail = new PHPMailer();
-
-            // SMTP configuration
-            $mail->isSMTP();
-            $mail->SMTPDebug = 0;
-            $mail->Host = $smtp_host;  // SMTP server address
-            $mail->Port = $smtp_port;  // SMTP server port
-            switch($smtp_encryption) {
-                case 'none':
-                    break;
-                case 'starttls':
-                    $mail->SMTPSecure = 'tls';  // Encryption type (ssl or tls)
-                    $mail->SMTPAutoTLS = true; // starttls
-                    break;
-                case 'tls':
-                    $mail->SMTPSecure = 'tls';  // Encryption type (ssl or tls)
-                    break;
-                case 'ssl':
-                    $mail->SMTPSecure = 'ssl';  // Encryption type (ssl or tls)
-                    break;
-                default:          
-            }
-            
-            if ($smtp_username !== '' && $smtp_password !== '') {
-                $mail->SMTPAuth = true;  // Enable SMTP authentication
-                $mail->Username = $smtp_username;  // SMTP username
-                $mail->Password = $smtp_password;  // SMTP password
-            }
-
-            // Recipient and email details
-            $mail->setFrom($smtp_from_email, $fromName);
-            $mail->addAddress($to, $toName);
-            $mail->Subject = $subject;
-            $mail->Body = $body;
-            $mail->IsHTML(true);
-
-            // Send the email
-            if ($mail->send()) {
-                echo "Email sent successfully to $to!";
+            mysqli_stmt_execute($stmt_config);
+            $result_config = mysqli_stmt_get_result($stmt_config);
+            $rowCount_config = $result_config->num_rows;
+            if ($rowCount_config < 1) {
+                header("Location: ../admin.php?sqlerror=config_default_noID1_ldap#ldap-settings");
+                exit();
             } else {
-                echo 'Email could not be sent. Error: ' . $mail->ErrorInfo;
+                while ( $config = $result_config->fetch_assoc() ) {
+                    $smtp_username   = $config['smtp_username'];       
+                    $smtp_password   = base64_decode($config['smtp_password']);      
+                    $smtp_encryption    = $config['smtp_encryption'];          
+                    $smtp_host       = $config['smtp_host'];            
+                    $smtp_port       = $config['smtp_port'];            
+                    $smtp_from_email     = $config['smtp_from_email'];          
+                    $smtp_from_name  = $config['smtp_from_name'];      
+                    $smtp_to_email = $config['smtp_to_email'];     
+                }
+
+                // if $to is set to use-default, then use the default email
+                if ($to == 'use-default') {
+                    $to = $smtp_to_email;
+                }
+                if ($toName == 'use-default') {
+                    $toName = $smtp_to_email;
+                }
+                if ($fromName == 'use-default') {
+                    $fromName = $smtp_from_name;
+                }
+
+                // Create a new PHPMailer instance
+                $mail = new PHPMailer();
+
+                // SMTP configuration
+                $mail->isSMTP();
+                $mail->SMTPDebug = 0;
+                $mail->Host = $smtp_host;  // SMTP server address
+                $mail->Port = $smtp_port;  // SMTP server port
+                switch($smtp_encryption) {
+                    case 'none':
+                        break;
+                    case 'starttls':
+                        $mail->SMTPSecure = 'tls';  // Encryption type (ssl or tls)
+                        $mail->SMTPAutoTLS = true; // starttls
+                        break;
+                    case 'tls':
+                        $mail->SMTPSecure = 'tls';  // Encryption type (ssl or tls)
+                        break;
+                    case 'ssl':
+                        $mail->SMTPSecure = 'ssl';  // Encryption type (ssl or tls)
+                        break;
+                    default:          
+                }
+                
+                if ($smtp_username !== '' && $smtp_password !== '') {
+                    $mail->SMTPAuth = true;  // Enable SMTP authentication
+                    $mail->Username = $smtp_username;  // SMTP username
+                    $mail->Password = $smtp_password;  // SMTP password
+                }
+
+                // Recipient and email details
+                $mail->setFrom($smtp_from_email, $fromName);
+                $mail->addAddress($to, $toName);
+                $mail->Subject = $subject;
+                $mail->Body = $body;
+                $mail->IsHTML(true);
+
+                // Send the email
+                if ($mail->send()) {
+                    echo "Email sent successfully to $to!";
+                } else {
+                    echo 'Email could not be sent. Error: ' . $mail->ErrorInfo;
+                }
             }
         }
     }

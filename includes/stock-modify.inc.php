@@ -1171,7 +1171,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             // update changelog for removal
                                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove quantity", "item", $current_item_id, "quantity", $row_currentRow['quantity'], $current_new_quantity);
                                             // update changelog for adding
-                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Quantity", "item", $new_item_id, "quantity", null, $move_quantity);
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add quantity", "item", $new_item_id, "quantity", null, $move_quantity);
 
                                             // Transaction update - old row
                                             $neg_move_quantity = -1*(int)$move_quantity;

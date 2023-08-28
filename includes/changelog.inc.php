@@ -45,7 +45,7 @@ function addChangelog($user_id, $user_username, $action, $table_name, $record_id
         send_email($current_smtp_to_email, "Administrator", $config_smtp_from_name, $email_subject, createEmail($email_body));
         error_log("Unable to update changelog. please add manually using: \"$sql_command\"\n");
     } else {
-    mysqli_stmt_bind_param($stmt, "sssssssss", $timestamp, $user_id, $user_username, $action, $table_name, $record_id, $field_name, $value_old, $vallue_new);
+    mysqli_stmt_bind_param($stmt, "sssssssss", $timestamp, $user_id, $user_username, $action, $table_name, $record_id, $field_name, $value_old, $value_new);
     mysqli_stmt_execute($stmt);
     }
 }

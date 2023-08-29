@@ -28,6 +28,9 @@ Login to your site to continue with any further setup
 <summary><h3>Manual Deployment</h3></summary>
 For manual deployment, it requires all packages to be installed manually and the database to be configured and setup correctly.
 
+Clone the repo first, and the follow the below steps.
+`git clone http://git.ajrich.co.uk/web/inventory.git`
+
 1. Update your packages and install them if you are confident they are okay to be updated
 
     `sudo apt update`

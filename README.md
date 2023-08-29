@@ -18,7 +18,7 @@ The purpose of this project is for stock tracking and locating.
 ### Automated Deployment
 For automated deployment, run the below command to clone the repository and run the install script:
 
-`git clone http://git.arpco.xyz/web/inventory.git && ./inventory/assets/scripts/install.bash`
+`git clone http://git.ajrich.co.uk/web/inventory.git && ./inventory/assets/scripts/install.bash`
 
 This will run the setup for the system and provide a username and password to login with.
 

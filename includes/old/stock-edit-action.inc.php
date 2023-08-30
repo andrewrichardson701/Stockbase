@@ -57,7 +57,9 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
 
 // Main Info Form - id, name, description sku etc.
 if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     include 'smtp.inc.php';
 
     // print_r($_POST);
@@ -180,7 +182,9 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     
     
 } elseif (isset($_POST['submit']) && ($_POST['submit'] == 'image-delete')) {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     include 'smtp.inc.php'; 
     
     // echo('Delete<br>');
@@ -228,7 +232,9 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
         exit();
     }
 } elseif (isset($_POST['submit']) && ($_POST['submit'] == 'Add Image')) {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     include 'smtp.inc.php'; 
     
     // echo('Add<br>');
@@ -302,7 +308,9 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     }
 
 } elseif (isset($_POST['submit']) && ($_POST['submit'] == 'Upload')) {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     include 'smtp.inc.php'; 
 
     // echo('Upload<br>');
@@ -331,7 +339,9 @@ if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     
 
 } else {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     header("Location: ../".$_SESSION['redirect_url']."&error=noSubmit");
     exit();
 }

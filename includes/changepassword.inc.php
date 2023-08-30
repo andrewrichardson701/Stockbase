@@ -1,7 +1,10 @@
 <?php
 print_r($_POST);
 
-session_start();
+if(session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 $redirect_url = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : 'index.php';
 if (strpos($redirect_url, "?")) {
     $queryChar = "&";

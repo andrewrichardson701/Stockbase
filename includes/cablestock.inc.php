@@ -2,7 +2,10 @@
 // SAVING INFO FOR THE CABLESTOCK PAGE. THIS IS FOR REMOVING AND ADDING STOCK.
 
 // print_r($_POST);
-session_start();
+if(session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 $redirect_url = $_SESSION['redirect_url'];
 $queryChar = strpos($redirect_url, "?") !== false ? '&' : '?';
 

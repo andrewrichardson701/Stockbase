@@ -60,7 +60,9 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
 }
 
 if (isset($_POST['submit'])) {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     include 'smtp.inc.php';
 
     if ($_POST['submit'] == 'Add Stock') {

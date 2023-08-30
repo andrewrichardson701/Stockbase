@@ -8,6 +8,10 @@
 // print_r($_POST);
 //         exit();
 
+if(session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) 
     && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) 
     && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) 
@@ -370,7 +374,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
     } elseif (isset($_POST['admin-pwreset-submit'])) { // resetting a user's password in the admin section
         if (isset($_POST['user-id'])) {
-            session_start();
+
             include 'get-config.inc.php';
             if (in_array($_SESSION['role'], $config_admin_roles_array)) {
 
@@ -1257,7 +1261,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['profile-submit'])) { // profile.php info e.g. email and name updates
-        session_start();
+
         if (isset($_POST['id'])) {
             if ($_POST['id'] == $_SESSION['user_id']) {
                 // user matches

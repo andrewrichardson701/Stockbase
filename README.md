@@ -468,22 +468,24 @@ Clone the repo first, and the follow the below steps.
 
 <details>
 <summary><h2>Change Log</h2></summary>
-    <details>
-    <summary><h3>0.1.0-beta</h3></summary>
-    <h4>First beta test release of the system to be tested for install and running functionality</h4>
-    - Fully functioning changelog reachable from the secret admin menu - this will have a home eventually.
-    - Fully functional LDAP login system with failover host integration.
-    - Fully functional SMTP mail sending. All information is saved and pulled from the DB when requested.
-    - Fully customisable global settings, including logo, system name and banner colour.
-    - Email password resetting now possible and working.
-    - Bash install script implemented and fucntional. May need adapting as changes happen to the system.
-    - Email template created but could probably use some work.
-    - Stock editing, adding, removing and moving all functional to limited testing. Further testing needed.
+<details>
+<summary><h3>0.1.0-beta</h3></summary>
+<h4>First beta test release of the system to be tested for install and running functionality</h4>
 
-    Issues
-    - Some page redirects are not redirecting correctly and will be addressed when found.
+- Fully functioning changelog reachable from the secret admin menu - this will have a home eventually.
+- Fully functional LDAP login system with failover host integration.
+- Fully functional SMTP mail sending. All information is saved and pulled from the DB when requested.
+- Fully customisable global settings, including logo, system name and banner colour.
+- Email password resetting now possible and working.
+- Bash install script implemented and fucntional. May need adapting as changes happen to the system.
+- Email template created but could probably use some work.
+- Stock editing, adding, removing and moving all functional to limited testing. Further testing needed.
 
-    </details>
+<h5>Issues</h5>
+
+- Some page redirects are not redirecting correctly and will be addressed when found.
+
+</details>
 </details>
 
 

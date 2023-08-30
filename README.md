@@ -138,7 +138,7 @@ Clone the repo first, and the follow the below steps.
         ```
         GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';
         FLUSH PRIVILEGES;
-        v
+        quit;
         ```
 
         </details>

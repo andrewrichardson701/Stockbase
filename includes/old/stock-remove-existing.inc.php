@@ -6,7 +6,7 @@ include 'smtp.inc.php';
 if (isset($_GET['type'])) {
     if(session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
-    }
+    } 
     $redirect_url = "../stock.php?modify=remove&stock_id=".$_GET['stock_id'];
 
     // DELETE ENTIRE STOCK OBJECT

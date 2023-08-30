@@ -17,7 +17,7 @@
 
 if(session_status() !== PHP_SESSION_ACTIVE) { // start the session
     session_start();
-} 
+}  
 
 // include '../session.php';
 include 'changelog.inc.php';
@@ -1025,7 +1025,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             } else {
                 if(session_status() !== PHP_SESSION_ACTIVE) {
                     session_start();
-                }
+                } 
                 header("Location: ../".$redirect_url."&error=noSubmit&line=".__LINE__);
                 exit();
             }
@@ -1303,7 +1303,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
         if (isset($_GET['type'])) {
             if(session_status() !== PHP_SESSION_ACTIVE) {
                 session_start();
-            }
+            } 
             $redirect_url = "../stock.php?modify=remove&stock_id=".$_GET['stock_id'];
 
             // DELETE ENTIRE STOCK OBJECT

@@ -10,7 +10,7 @@
 
 if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
-}
+} 
 
 if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) 
     && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) 

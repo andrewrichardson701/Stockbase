@@ -59,7 +59,7 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
 if (isset($_POST['submit']) && ($_POST['submit'] == 'Save')) {
     if(session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
-    }
+    } 
     include 'smtp.inc.php';
 
     // print_r($_POST);

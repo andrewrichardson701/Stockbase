@@ -15,7 +15,7 @@ $redirect_url = "../stock.php?stock_id=$stock_id&modify=move";
 if (isset($_POST['submit'])) {
     if(session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
-    }
+    } 
 
     if ($_POST['submit'] == 'Move' && isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
         // print_r($_POST);

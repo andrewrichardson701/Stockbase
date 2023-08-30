@@ -4,7 +4,7 @@ if (!empty($_POST)) {
     if (isset($_POST['submit'])) {
         if(session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
-        }
+        } 
         $redirect_url = str_replace('includes/', '', $_SESSION['redirect_url']);
         print_r($_POST);        
         $name = isset($_POST['property-name']) ? $_POST['property-name'] : header("Location ../$redirect_url&error=nameEmpty"); // all

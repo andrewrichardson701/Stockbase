@@ -1,7 +1,7 @@
 <?php
 // SETUP THE SESSION FOR ALL PAGES - THIS WILL CONFIRM IF THERE IS A LOGGED IN USER OR NOT.
 if(session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
+    session_start(); 
 }
 // set the redirect_url 
 if (substr($_SERVER['REQUEST_URI'], 0, strlen('/inventory/')) == '/inventory/') {

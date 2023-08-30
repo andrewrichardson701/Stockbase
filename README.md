@@ -230,6 +230,20 @@ Clone the repo first, and the follow the below steps.
 
 7. Move your files to your web server/desired location
 
+    *Make sure you are already in the downloaded repo folder*
+
+    Replace `new/folder/location/` to the folder you want your server hosted from (e.g. /var/www/html/inventory/) including the trailing /
+
+    ```
+    sudo cp -a . /new/folder/location/
+    ```
+
+    Set the permissions for your new folder location
+
+    ```
+    sudo chown -R www-data:www-data /new/folder/location/
+    sudo chmod go-rwx /new/folder/location/
+    ```
 
 8. Web config setup
 

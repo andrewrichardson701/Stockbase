@@ -3,6 +3,7 @@
 include 'session.php'; // Session setup and redirect if the session is not active 
 include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 
+
 ?>
 
 <html lang="en">

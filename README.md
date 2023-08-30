@@ -86,6 +86,7 @@ Clone the repo first, and the follow the below steps.
         If it does exist, it will be overwritten.
     
     - Run the MySQL DB setup
+    
         *we will navigate to the downloaded git repo*
 
         ```
@@ -95,6 +96,7 @@ Clone the repo first, and the follow the below steps.
         ```
 
     - Run the extras script to fill in the required tables with the information they need.
+
         *This script creates the required fields for the config and config_default tables, also setting the auto-increment values*
 
         ```

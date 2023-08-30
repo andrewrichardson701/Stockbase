@@ -4,7 +4,9 @@
 //
 include 'smtp.inc.php';
 if (isset($_GET['type'])) {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     $redirect_url = "../stock.php?modify=remove&stock_id=".$_GET['stock_id'];
 
     // DELETE ENTIRE STOCK OBJECT
@@ -203,7 +205,9 @@ if (isset($_GET['type'])) {
 
 
 if (isset($_POST['submit'])) {
-    session_start();
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     $redirect_url = "../stock.php?modify=remove&stock_id=".$_POST['stock_id'];
     if ($_POST['submit'] == 'Remove Stock' && isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
         // print_r('<pre>');

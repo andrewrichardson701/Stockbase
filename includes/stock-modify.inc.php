@@ -15,7 +15,10 @@
 
 // 28-08-23 - added changelog for all sql queries here that need it.
 
-session_start(); // start the session
+if(session_status() !== PHP_SESSION_ACTIVE) { // start the session
+    session_start();
+} 
+
 // include '../session.php';
 include 'changelog.inc.php';
 
@@ -570,7 +573,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
         
                                                 // GET BEST ITEM ID FOR THE JOB
                                                 if ($stock_serial_number !== '' && !empty($stock_serial_number)) {
-                                                    $sql_itemSelectID = "SELECT id, quantity FROM item WHERE stock_id=? AND shelf_id=? serial_number=? AND quantity > 0 ORDER BY quantity LIMIT 1";
+                                                    $sql_itemSelectID = "SELECT id, quantity FROM item WHERE stock_id=? AND shelf_id=? AND serial_number=? AND quantity > 0 ORDER BY quantity LIMIT 1";
                                                 } else {
                                                     $sql_itemSelectID= "SELECT id, quantity FROM item WHERE stock_id=? AND shelf_id=? AND quantity > 0 ORDER BY quantity LIMIT 1";
                                                 }
@@ -1020,7 +1023,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 
 
             } else {
-                session_start();
+                if(session_status() !== PHP_SESSION_ACTIVE) {
+                    session_start();
+                }
                 header("Location: ../".$redirect_url."&error=noSubmit&line=".__LINE__);
                 exit();
             }
@@ -1296,7 +1301,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
         $errors =[];
 
         if (isset($_GET['type'])) {
-            session_start();
+            if(session_status() !== PHP_SESSION_ACTIVE) {
+                session_start();
+            }
             $redirect_url = "../stock.php?modify=remove&stock_id=".$_GET['stock_id'];
 
             // DELETE ENTIRE STOCK OBJECT

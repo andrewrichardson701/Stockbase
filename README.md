@@ -257,29 +257,29 @@ Clone the repo first, and the follow the below steps.
     <summary>Apache</summary>
     - Run the below to create the config, replacing `[DOMAIN NAME]` and `[LOCATION]` with your domain name and fodler location
 
-        ```
-        web_domain='[DOMAIN NAME]'
-        folder_name='[LOCATION]'
+    ```
+    web_domain='[DOMAIN NAME]'
+    folder_name='[LOCATION]'
 
-        cat > /etc/apache2/sites-available/$web_domain.conf <<EOL
-        <VirtualHost *:80>
-            ServerName $web_domain
-            DocumentRoot $folder_name
+    cat > /etc/apache2/sites-available/$web_domain.conf <<EOL
+    <VirtualHost *:80>
+        ServerName $web_domain
+        DocumentRoot $folder_name
 
-            <Directory $folder_name>
-                Options Indexes FollowSymLinks MultiViews
-                AllowOverride All
-                Require all granted
-            </Directory>
-        </VirtualHost>
-        EOL
-        ```
+        <Directory $folder_name>
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride All
+            Require all granted
+        </Directory>
+    </VirtualHost>
+    EOL
+    ```
     - Enable the site
 
-        ```
-        sudo a2ensite $web_domain.conf
-        sudo systemctl reload apache2
-        ```
+    ```
+    sudo a2ensite $web_domain.conf
+    sudo systemctl reload apache2
+    ```
 
     </details>
 
@@ -287,35 +287,35 @@ Clone the repo first, and the follow the below steps.
     <summary>Nginx</summary>
     - Run the below to create the config, replacing `[DOMAIN NAME]` and `[LOCATION]` with your domain name and fodler location
 
-        ```
-        cat > /etc/nginx/sites-available/$web_domain <<EOL
-        server {
-            listen 80;
-            server_name $web_domain;
+    ```
+    cat > /etc/nginx/sites-available/$web_domain <<EOL
+    server {
+        listen 80;
+        server_name $web_domain;
 
-            root $folder_name;
-            index index.php index.html;
+        root $folder_name;
+        index index.php index.html;
 
-            location / {
-                try_files $uri $uri/ /index.php?$query_string;
-            }
-
-            location ~ \.php$ {
-                include fastcgi_params;
-                fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-                fastcgi_index index.php;
-                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            }
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
         }
-        EOL
-        ```
+
+        location ~ \.php$ {
+            include fastcgi_params;
+            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
+    }
+    EOL
+    ```
 
     - Enable the site
 
-        ```
-        sudo ln -s /etc/nginx/sites-available/$web_domain /etc/nginx/sites-enabled/
-        sudo systemctl reload nginx
-        ```
+    ```
+    sudo ln -s /etc/nginx/sites-available/$web_domain /etc/nginx/sites-enabled/
+    sudo systemctl reload nginx
+    ```
         
     </details>
 
@@ -331,44 +331,44 @@ Clone the repo first, and the follow the below steps.
     <summary>Apache</summary>
     - Run the below, replacing `[DOMAIN NAME]`, `[LOCATION]`, `[SSL KEY]` and `[SSL CERT]` with your domain name, folder location, ssl key location and ssl cert location.
 
-        ```
-        web_domain='[DOMAIN NAME]'
-        folder_name='[LOCATION]'
-        ssl_certificate='[SSL CERT]'
-        ssl_key='[SSL KEY]'
+    ```
+    web_domain='[DOMAIN NAME]'
+    folder_name='[LOCATION]'
+    ssl_certificate='[SSL CERT]'
+    ssl_key='[SSL KEY]'
 
-        cat > /etc/apache2/sites-available/$web_domain.conf <<EOL
-        <VirtualHost *:80>
-            ServerName $web_domain
-            DocumentRoot $folder_name
+    cat > /etc/apache2/sites-available/$web_domain.conf <<EOL
+    <VirtualHost *:80>
+        ServerName $web_domain
+        DocumentRoot $folder_name
 
-            <Directory $folder_name>
-                Options Indexes FollowSymLinks MultiViews
-                AllowOverride All
-                Require all granted
-            </Directory>
+        <Directory $folder_name>
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride All
+            Require all granted
+        </Directory>
 
-            Redirect permanent / https://$web_domain/
-        </VirtualHost>
+        Redirect permanent / https://$web_domain/
+    </VirtualHost>
 
-        <VirtualHost *:443>
-            ServerName $web_domain
-            DocumentRoot $folder_name
+    <VirtualHost *:443>
+        ServerName $web_domain
+        DocumentRoot $folder_name
 
-            <Directory $folder_name>
-                Options Indexes FollowSymLinks MultiViews
-                AllowOverride All
-                Require all granted
-            </Directory>
+        <Directory $folder_name>
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride All
+            Require all granted
+        </Directory>
 
-            SSLEngine on
-            SSLCertificateFile $ssl_certificate
-            SSLCertificateKeyFile $ssl_key
+        SSLEngine on
+        SSLCertificateFile $ssl_certificate
+        SSLCertificateKeyFile $ssl_key
 
-            Redirect permanent / https://$web_domain/
-        </VirtualHost>
-        EOL
-        ```
+        Redirect permanent / https://$web_domain/
+    </VirtualHost>
+    EOL
+    ```
 
     - Enable to appropriate modules and enable the site
 
@@ -387,57 +387,57 @@ Clone the repo first, and the follow the below steps.
     <summary>Nginx</summary>
     - Run the below, replacing `[DOMAIN NAME]`, `[LOCATION]`, `[SSL KEY]` and `[SSL CERT]` with your domain name, folder location, ssl key location and ssl cert location.
 
-        ```
-        web_domain='[DOMAIN NAME]'
-        folder_name='[LOCATION]'
-        ssl_certificate='[SSL CERT]'
-        ssl_key='[SSL KEY]'
+    ```
+    web_domain='[DOMAIN NAME]'
+    folder_name='[LOCATION]'
+    ssl_certificate='[SSL CERT]'
+    ssl_key='[SSL KEY]'
 
-        cat > /etc/nginx/sites-available/$web_domain <<EOL
-        server {
-            listen 80;
-            server_name $web_domain;
+    cat > /etc/nginx/sites-available/$web_domain <<EOL
+    server {
+        listen 80;
+        server_name $web_domain;
 
-            root $folder_name;
-            index index.php index.html;
+        root $folder_name;
+        index index.php index.html;
 
-            location / {
-                try_files $uri $uri/ /index.php?$query_string;
-            }
-
-            location ~ \.php$ {
-                include fastcgi_params;
-                fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-                fastcgi_index index.php;
-                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            }
-
-            return 301 https://$web_domain$request_uri;
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
         }
 
-        server {
-            listen 443 ssl;
-            server_name $web_domain;
-
-            root $folder_name;
-            index index.php index.html;
-
-            ssl_certificate $ssl_certificate;
-            ssl_certificate_key $ssl_key;
-
-            location / {
-                try_files $uri $uri/ /index.php?$query_string;
-            }
-
-            location ~ \.php$ {
-                include fastcgi_params;
-                fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-                fastcgi_index index.php;
-                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            }
+        location ~ \.php$ {
+            include fastcgi_params;
+            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         }
-        EOL
-        ```
+
+        return 301 https://$web_domain$request_uri;
+    }
+
+    server {
+        listen 443 ssl;
+        server_name $web_domain;
+
+        root $folder_name;
+        index index.php index.html;
+
+        ssl_certificate $ssl_certificate;
+        ssl_certificate_key $ssl_key;
+
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+        }
+
+        location ~ \.php$ {
+            include fastcgi_params;
+            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
+    }
+    EOL
+    ```
 
     - Add a symlink for this file
 

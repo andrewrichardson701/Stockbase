@@ -13,7 +13,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <?php // dependency PHP
     // $show_inventory = 1; // for nav.php to show the site and area on the banner - no longer used.
     ?>
-    
+    <p class="nav-head" style="color:<?php echo($current_banner_text_color); ?>"><?php echo($current_system_name); ?></p>
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
@@ -262,12 +262,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 if (!$siteCount > 0 || !$areaCount > 0 || !$shelfCount > 0) {
                     // missing sites or areas
                     echo('
-                        <div class="container" style="padding-bottom:25px">
-                            <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name).'</h2>
-                            <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
-                            <p>There are no Sites, Areas or Shelves in the database. To continue, we need to add atleast one.<br> 
-                            More can be added from the admin page.</p>
-                        </div>
+
                         <div class="container">
                             
                             <form id="addLocations" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
@@ -344,14 +339,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 } else {
                     // all is as expected. we have sites and areas
                     echo('
-                        <div class="container" style="padding-bottom:20px">
-                            <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name));
-                            if ($site !== '0') { $area_name = $area == 0 ? "All" : $area_names_array[$area]; echo(' - '.$area_name);}
-                        echo('</h2>
-                        <p>Welcome, <or class="green">'.$profile_name.'</or>.</p>
-                        </div>
-
-                        <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
+                        <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px; padding-top:20px">
                             <div class="nav-row">
                                 <form action="./" method="get" class="nav-row" style="max-width:max-content">
                                     <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 

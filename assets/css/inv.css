@@ -14,6 +14,19 @@
     transform: translateY(0%);
 }
 
+.nav-head {
+    height: 60px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    text-align: center;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+
 .header-small {
     padding-top: 30px;
     padding-bottom: 30px;

@@ -3,12 +3,12 @@
 if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start(); 
 }
+
 // set the redirect_url 
-if (substr($_SERVER['REQUEST_URI'], 0, strlen('/inventory/')) == '/inventory/') {
-    $_SESSION['redirect_url'] = substr($_SERVER['REQUEST_URI'], strlen('/inventory/'));
-} else {
-    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
-}
+
+$redirect_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$_SESSION['redirect_url'] = basename($redirect_path);
+
 // if session not set, go to login page
 if (!str_contains($_SERVER['REQUEST_URI'], "changepassword.inc.php")) {
     if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username'])) || ($_SESSION['username'] === '')) {

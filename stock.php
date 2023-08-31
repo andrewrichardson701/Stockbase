@@ -333,7 +333,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         $sn = 0;
                                         while ($row_serials = $result_serials->fetch_assoc()) {
                                             $sn++;
-                                            echo('<a class="btn btn-dark btn-stock" style="color:#cfcfcf !important" id="serialNumber'.$sn.'">'.$row_serials['serial_number'].'</a>');
+                                            echo('<a class="serial-bg" id="serialNumber'.$sn.'">'.$row_serials['serial_number'].'</a>');
                                         }
                                         echo('</p>');
                                     }

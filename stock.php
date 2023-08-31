@@ -51,7 +51,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         $stock_modify_values = ['add', 'remove', 'edit', 'move'];
         if (isset($stock_modify) && in_array(strtolower($stock_modify), $stock_modify_values)) {
             echo('<div class="container" style="padding-bottom:25px">
-            <h2 class="header-small" style="padding-bottom:10px">Stock - '.ucwords($stock_modify).'</h2>');
+            <h2 class="header-small" style="padding-bottom:5px">Stock - '.ucwords($stock_modify).'</h2>');
             if (isset($_GET['error'])) {
                 $error = $_GET['error'];
                 if ($_GET['error'] == 'SKUexists') { $error = 'SKU "<or class="blue">'.$_GET['sku'].'</or>" already exists. Please pick another, or leave empty to generate a new one'; }
@@ -104,7 +104,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                     echo('
                         <div class="container" style="padding-bottom:25px">
-                            <h2 class="header-small" style="padding-bottom:10px">Stock</h2>
+                            <h2 class="header-small" style="padding-bottom:5px">Stock</h2>
                             <div class="nav-row" style="margin-top:10px">
                                 <h3 style="font-size:22px;margin-top:20px;margin-bottom:0;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
                                 <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">

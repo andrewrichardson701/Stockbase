@@ -43,7 +43,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $_SERVER['HTTP_REFERER'] = './index.php';
         }
     echo('<div class="container" style="padding-bottom:25px">
-        <h2 class="header-small" style="padding-bottom:10px">Transactions - Stock ID: '.$_GET['stock_id'].'</h2>');
+        <h2 class="header-small" style="padding-bottom:5px">Transactions - Stock ID: '.$_GET['stock_id'].'</h2>');
     if (isset($_GET['stock_id'])) {
         if (is_numeric($_GET['stock_id'])) {
             if ($_GET['stock_id'] !== '') {

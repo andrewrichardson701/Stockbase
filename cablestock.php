@@ -188,13 +188,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             }
 
             echo('
-                <div class="container" style="padding-bottom:25px">
-                    <h2 class="header-small" style="padding-bottom:10px">'.ucwords($current_system_name).' - Fixed Cables');
-                echo('</h2>
-                <p>Stock for any fixed cables (cables which always need to be in stock and have known locations).</p>
-                </div>
-
-                <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px">
+                <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px;padding-top:20px">
                     <div class="nav-row">
                         <form action="./cablestock.php" method="get" class="nav-row" style="max-width:max-content">
                             <input id="query-site" type="hidden" name="site" value="'.$site.'" />
@@ -256,6 +250,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </button>
                         </div>
                     </div>
+                    <p style="padding-top:20px">Stock for any fixed cables (cables which always need to be in stock and have known locations).</p>
                 </div>
             
             <!-- Add Cables form section -->

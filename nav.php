@@ -1,5 +1,5 @@
 <!-- Navigation Bar for the top of the page, using the config settings for logo and colour -->
-<p class="nav-head" style="color:<?php echo($current_banner_text_color); ?>"><?php echo($current_system_name); ?></p>
+<a href="./" class="nav-head cw" style="color:<?php echo($current_banner_text_color); ?>"><?php echo($current_system_name); ?></a>
 <div class="nav inv-nav">
     <div id="nav-row" class="nav-row">
         <div class="logo-div">

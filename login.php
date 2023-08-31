@@ -4,7 +4,7 @@
 session_start();
 // if session not set, go to login page
 if (session_status() !== PHP_SESSION_ACTIVE) {
-    header("Location: ./index.php");
+    header("Location: ./");
     exit();
 } else {
     if (!isset($_SESSION['username']) || !isset($_SESSION['first_name']) || !isset($_SESSION['last_name']) || !isset($_SESSION['email'])) {

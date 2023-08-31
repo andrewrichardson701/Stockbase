@@ -147,10 +147,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 $current_page = 1;
             } elseif ($current_page > $total_pages) {
                 $current_page = $total_pages;
-            }          
+            } 
 
             // Calculate the offset for the query
             $offset = ($current_page - 1) * $results_per_page;
+            if ($offset < 0) {
+                $offset = $results_per_page;
+            }
 
             $sql_inv_pagination = " LIMIT $results_per_page OFFSET $offset;";
 

@@ -388,7 +388,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <label for="search-input-sku">SKU</label><br>
                                         <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:160px;display:inline-block" placeholder="Search by SKU" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
                                     </span>
-                                    <span id="search-input-shelf-span" style="margin-right: 10px" hidden>
+                                    <span id="search-input-shelf-span" style="margin-right: 10px">
                                         <label for="search-input-shelf">Shelf</label><br>
                                         <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Shelf" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
                                     </span>
@@ -406,7 +406,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 echo('
                                 <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
                                     <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="navPage(\'/\')">
-                                        <i class="fa fa-rotate-right" style="height:24px;padding-top:4px"></i>
+                                        <i class="fa fa-ban fa-rotate-90" style="height:24px;padding-top:4px"></i>
                                     </button>
                                 </div>
                                 <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">');

@@ -11,6 +11,10 @@ The purpose of this project is for stock tracking and locating.
     - php8.1-calendar, php8.1-common, php8.1-ctype, php8.1-ldap, php8.1-mysqli, php8.1-curl, php8.1-dom, php8.1-exif, php8.1-ffi, php8.1-fileinfo, php8.1-filter, php8.1-ftp, php8.1-gd, php8.1-gettext, php8.1-hash, php8.1-iconv, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-json, php8.1-ldap, php8.1-libxml, php8.1-mbstring, php8.1-mysqli, php8.1-mysqlnd, php8.1-openssl, php8.1-pcntl, php8.1-pcre, php8.1-pdo, php8.1-pdo_mysql, php8.1-phar, php8.1-posix, php8.1-readline, php8.1-redis, php8.1-reflection, php8.1-session, php8.1-shmop, php8.1-simplexml, php8.1-soap, php8.1-sockets, php8.1-sodium, php8.1-spl, php8.1-sysvmsg, php8.1-sysvsem, php8.1-sysvshm, php8.1-tokenizer, php8.1-xml, php8.1-xmlreader, php8.1-xmlrpc, php8.1-xmlwriter, php8.1-xsl, php8.1-zip, php8.1-zlib
 - MySQL Server (v8.0.34) (or similar DB using mysql syntax)
 - PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
+- Bootstrap (v4.5.2) (included in headers)
+- Jquery (v3.5.1) (included in headers)
+- Font Awesome (v6.4.0) (included in headers)
+- Google Font - Poppins (included in headers)
 
 *These packages are all installed as part of the install script at* `assets/scripts/install.bash`*.*
 
@@ -468,6 +472,19 @@ Clone the repo first, and the follow the below steps.
 
 <details>
 <summary><h2>Change Log</h2></summary>
+<details>
+<summary><h3>0.2.0-beta</h3></summary>
+<h4>Beta releast 0.2.0, based on initial feedback.</h4>
+
+- Corrected the url redirects when a user tries to reach a page without being logged in. Logging in now redirects to the correct page.
+- Removed the title and welcome message from the index page and cablestock pages.
+- Moved the title into the Nav bar and linked it to the index page.
+- Corrected the issue with the offset being negative when no items are found on the index sql query. Negative numbers now default to 0.
+- Back button removed from the nav. This was creating loops where you couldnt actually go back.
+- Changes the icon in the clear button to be the fa-ban icon and rotated it 90degrees
+- Change the serial number so it can now be copied but this may be going later down the line
+
+</details>
 <details>
 <summary><h3>0.1.0-beta</h3></summary>
 <h4>First beta test release of the system to be tested for install and running functionality</h4>

@@ -103,6 +103,7 @@
     border-radius: 0.25rem;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     padding: 0px 3px 0px 3px;
+    margin-right:5px;
     background-color: #696969 !important;
     color: #cfcfcf !important;
 }

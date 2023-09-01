@@ -50,7 +50,7 @@ if (isset($_GET['stock_id'])) {
                                 <th>Quantity</th>
                                 <th>Price</th>
                                 <th>Reason</th>
-                                <th hidden>Serial Number</th>
+                                <th>Serial Number</th>
                                 <th hidden>Comments</th>
                             </tr>
                         </thead>
@@ -105,7 +105,7 @@ if (isset($_GET['stock_id'])) {
                                 <td id="t_quantity">' . $t_quantity . '</td>
                                 <td>' . $currency_symbol . $t_price . '</td>
                                 <td id="t_reason">' . $t_reason . '</td>
-                                <td hidden>' . $t_serial_number . '</td>
+                                <td>' . $t_serial_number . '</td>
                                 <td hidden>' . $t_comments . '</td>
                             </tr>
                         ');

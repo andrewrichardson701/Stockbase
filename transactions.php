@@ -89,7 +89,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <th>Quantity</th>
                                     <th>Price</th>
                                     <th>Reason</th>
-                                    <th hidden>Serial Number</th>
+                                    <th>Serial Number</th>
                                     <th hidden>Comments</th>
                                 </tr>
                             </thead>
@@ -142,7 +142,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <td id="t_quantity">'.$t_quantity.'</td>
                                     <td>'.$currency_symbol.$t_price.'</td>
                                     <td id="t_reason">'.$t_reason.'</td>
-                                    <td hidden>'.$t_serial_number.'</td>
+                                    <td>'.$t_serial_number.'</td>
                                     <td hidden>'.$t_comments.'</td>
                                 </tr>
                                 ');

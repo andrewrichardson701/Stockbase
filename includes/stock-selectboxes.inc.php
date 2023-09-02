@@ -167,4 +167,79 @@ if (isset($_GET['type'])) {
     }
 }
 
+if (isset($_GET['getserials'])) {
+    if (is_numeric($_GET['getserials'])) {
+        if ($_GET['getserials'] == 1) {
+            if (isset($_GET['shelf'])) {
+                $serials = [];
+
+                include 'dbh.inc.php';
+
+                // empty serial
+                $sql = "SELECT DISTINCT serial_number
+                        FROM item
+                        WHERE shelf_id=?
+                        AND (serial_number = null 
+                            OR serial_number = '')
+                        ORDER BY serial_number";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    // fails to connect
+                } else {
+                    mysqli_stmt_bind_param($stmt, "s", $_GET['shelf']);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount < 1) {
+                        // no rows found
+                    } else {
+                        // rows found
+                        while ($row = $result->fetch_assoc()) {
+                            $id = 0;
+                            $serial_number = $row['serial_number'];
+                            $serials[] = array('id' => $id, 'serial_number' => $serial_number);
+                        }
+                    }
+                }
+
+                // serial
+                $sql = "SELECT DISTINCT id, serial_number
+                        FROM item
+                        WHERE shelf_id=?
+                        AND (serial_number != null 
+                            OR serial_number != '')
+                        ORDER BY serial_number";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    // fails to connect
+                } else {
+                    mysqli_stmt_bind_param($stmt, "s", $_GET['shelf']);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount < 1) {
+                        // no rows found
+                    } else {
+                        // rows found
+                        while ($row = $result->fetch_assoc()) {
+                            $id = $row['id'];
+                            $serial_number = $row['serial_number'];
+                            $serials[] = array('id' => $id, 'serial_number' => $serial_number);
+                        }
+                    }
+                }
+                echo(json_encode($serials));
+            } else {
+
+            }
+        } elseif ($_GET['getserials'] == 0) {
+
+        } else {
+
+        }
+    } else {
+        // not numeric
+    }
+}
+
 ?>

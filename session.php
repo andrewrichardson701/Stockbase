@@ -8,7 +8,7 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
 
 $redirect_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $queryString = '?'.parse_url($_SERVER['QUERY_STRING'], PHP_URL_PATH);
-echo $queryString;
+
 $_SESSION['redirect_url'] = str_contains(basename($redirect_path), '.php') ? basename($redirect_path).$queryString : "";
 
 // if session not set, go to login page

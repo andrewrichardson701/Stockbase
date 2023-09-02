@@ -208,7 +208,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
                                                     <div>
-                                                        <select class="form-control" id="shelf" name="shelf" style="width:300px" required>
+                                                        <select class="form-control" id="shelf" name="shelf" style="width:300px" required onchange="populateSerials(this)">
                                                             <option value="" selected disabled hidden>Select Location</option>');
                                                             $temp_site_id = '';
                                                             foreach ($stock_inv_data as $temp_data) {
@@ -234,11 +234,15 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 </div>
                                                 <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
-                                                    <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c" style="width:300px" value="'.$input_serial_number.'"></input></div>
+                                                    <div>
+                                                        <select name="serial-number" id="serial-number" class="form-control" style="width:300px" value="'.$input_serial_number.'" required>
+                                                            <option value="" selected disabled hidden>Serial...</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="nav-row" id="quantity-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
-                                                    <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
+                                                    <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" min="1" required></input></div>
                                                 </div>
                                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
@@ -505,5 +509,45 @@ if ($stock_id == 0 || $stock_id == '0') {
         if (confirmed) {
             window.location.href = url;
         }
+    }
+
+    // change the quantity and max etc when the serial number changes
+    function serialChange() {
+        var serial = document.getElementById('serial-number');
+        var quantity = document.getElementById('quantity');
+
+        if (serial.value !== '') {
+            quantity.value = "1";
+            quantity.max = 1;
+            quantity.textContent = "1";
+        } else {
+            quantity.value = "1";
+            quantity.max = 100;
+            quantity.textContent = "1";
+        }
+    }
+
+    // populate serials
+    function populateSerials(elem) {
+        // Make an AJAX request to retrieve the corresponding areas
+        shelf_id = elem.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getserials=1&shelf="+shelf_id, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var serials = JSON.parse(xhr.responseText);
+                var select = document.getElementById('serial-number');
+                select.options.length = 0;
+                if (serials.length === 0) {
+                    select.options[0] = new Option("", "");
+                }
+                for (var i = 0; i < serials.length; i++) {
+                    select.options[select.options.length] = new Option(serials[i].serial_number, serials[i].id);
+                }
+                select.disabled = (select.options.length === 1);
+            }
+        };
+        xhr.send();
     }
 </script>

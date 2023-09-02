@@ -221,7 +221,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         echo('
                         <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
                             <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="navPage(\'./cablestock.php\')">
-                                <i class="fa fa-rotate-right" style="height:24px;padding-top:4px"></i>
+                                <i class="fa fa-ban fa-rotate-90" style="height:24px;padding-top:4px"></i>
                             </button>
                         </div>
                         <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">');

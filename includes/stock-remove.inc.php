@@ -47,7 +47,7 @@ if ($stock_id == 0 || $stock_id == '0') {
             include 'includes/dbh.inc.php';
             $sql = "SELECT id, name, description, sku, min_stock
                     FROM stock
-                    WHERE id=?
+                    WHERE id=? AND deleted=0
                     ORDER BY id";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -92,7 +92,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 LEFT JOIN area ON shelf.area_id=area.id 
                                 LEFT JOIN site ON area.site_id=site.id
                                 LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                WHERE stock.id=?
+                                WHERE stock.id=? AND item.deleted=0 ANd stock.deleted=0
                                 GROUP BY 
                                     stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                                     site_id, site_name, site_description, 
@@ -190,14 +190,14 @@ if ($stock_id == 0 || $stock_id == '0') {
                                     <div class="row">
                                         <div class="text-left" id="stock-info-left" style="padding-left:15px">
                                             <div class="nav-row" style="margin-bottom:25px">
-                                                <input type="hidden" value="'.$stock_id.'" name="stock_id" />
+                                                <input type="hidden" id="stock-id" value="'.$stock_id.'" name="stock_id" />
                                                 <input type="hidden" value="'.$stock_sku.'" name="stock_sku" />
                                                 <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                                     <div>
-                                                        <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" onchange="populateRemoveShelves(this)" required>
-                                                            <option value="" selected disabled hidden>Select Manufacturer</option>');
-                                                            foreach ( $stock_inv_manu as $manu ) {
+                                                        <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" onchange="populateRemoveShelves(this)" required>');
+                                                            echo('<option value="" selected disabled hidden>Select Manufacturer</option>');
+                                                            foreach ( $stock_inv_manu as $manu) {
                                                                 echo('<option value='.$manu['id'].'>'.$manu['name'].'</option>');
                                                             }
                                                         echo('
@@ -297,7 +297,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                 ');
             include 'includes/dbh.inc.php';
             $sql = "SELECT * from stock
-                    WHERE name LIKE CONCAT('%', ?, '%')
+                    WHERE name LIKE CONCAT('%', ?, '%') AND deleted=0
                     ORDER BY name;";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -361,7 +361,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                             GROUP BY stock_img.stock_id
                         ) AS stock_img_image
                             ON stock_img_image.stock_id = stock.id
-                        WHERE stock.is_cable=0
+                        WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0
                         GROUP BY 
                             stock.id, stock_name, stock_description, stock_sku, 
                             stock_img_image.stock_img_image
@@ -411,7 +411,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         GROUP BY stock_img.stock_id
                     ) AS stock_img_image
                         ON stock_img_image.stock_id = stock.id
-                    WHERE stock.is_cable=0
+                    WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0
                     GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image
@@ -510,28 +510,12 @@ if ($stock_id == 0 || $stock_id == '0') {
         }
     }
 
-    // change the quantity and max etc when the serial number changes
-    function serialChange() {
-        var serial = document.getElementById('serial-number');
-        var quantity = document.getElementById('quantity');
-
-        if (serial.value !== '') {
-            quantity.value = "1";
-            quantity.max = 1;
-            quantity.textContent = "1";
-        } else {
-            quantity.value = "1";
-            quantity.max = 100;
-            quantity.textContent = "1";
-        }
-    }
-
     // populate shelves from manuyfacturer
     function populateRemoveShelves(elem) {
-        // Make an AJAX request to retrieve the corresponding areas
+        var stock = document.getElementById('stock-id').value;
         manufacturer_id = elem.value;
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?getremoveshelves=1&manufacturer="+manufacturer_id, true);
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getremoveshelves=1&stock="+stock+"&manufacturer="+manufacturer_id, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 // Parse the response and populate the shelf select box
@@ -553,10 +537,10 @@ if ($stock_id == 0 || $stock_id == '0') {
 
     // populate serials
     function populateSerials(elem) {
-        // Make an AJAX request to retrieve the corresponding areas
+        var stock = document.getElementById('stock-id').value;
         shelf_id = elem.value;
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?getserials=1&shelf="+shelf_id, true);
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getserials=1&stock="+stock+"&shelf="+shelf_id, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 // Parse the response and populate the shelf select box
@@ -577,12 +561,13 @@ if ($stock_id == 0 || $stock_id == '0') {
     }
 
     function getQuantity() {
+        var stock = document.getElementById('stock-id').value;
         var manufacturer = document.getElementById('manufacturer').value;
         var shelf = document.getElementById('shelf').value;
         var serial = document.getElementById('serial-number').value;
         
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantity=1&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial, true);
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantity=1&stock="+stock+"&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 // Parse the response and populate the shelf select box
@@ -593,6 +578,8 @@ if ($stock_id == 0 || $stock_id == '0') {
 
                 if (quantity.min === quantity.max) {
                     quantity.disabled = true;
+                } else {
+                    quantity.disabled = false;
                 }
             }
         };

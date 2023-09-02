@@ -170,7 +170,7 @@ if (isset($_GET['type'])) {
 if (isset($_GET['getserials'])) {
     if (is_numeric($_GET['getserials'])) {
         if ($_GET['getserials'] == 1) {
-            if (isset($_GET['shelf'])) {
+            if (isset($_GET['shelf']) && isset($_GET['stock'])) {
                 $serials = [];
 
                 include 'dbh.inc.php';
@@ -181,12 +181,13 @@ if (isset($_GET['getserials'])) {
                         WHERE shelf_id=?
                         AND (serial_number = null 
                             OR serial_number = '')
+                        AND item.deleted=0 AND item.stock_id=?
                         ORDER BY serial_number";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                     // fails to connect
                 } else {
-                    mysqli_stmt_bind_param($stmt, "s", $_GET['shelf']);
+                    mysqli_stmt_bind_param($stmt, "ss", $_GET['shelf'], $_GET['stock']);
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                     $rowCount = $result->num_rows;
@@ -207,13 +208,14 @@ if (isset($_GET['getserials'])) {
                         FROM item
                         WHERE shelf_id=?
                         AND (serial_number != null 
-                            OR serial_number != '')
+                            OR serial_number != '') 
+                        AND item.deleted=0 AND item.stock_id=?
                         ORDER BY serial_number";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                     // fails to connect
                 } else {
-                    mysqli_stmt_bind_param($stmt, "s", $_GET['shelf']);
+                    mysqli_stmt_bind_param($stmt, "ss", $_GET['shelf'], $_GET['stock']);
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                     $rowCount = $result->num_rows;
@@ -246,7 +248,7 @@ if (isset($_GET['getserials'])) {
 if (isset($_GET['getremoveshelves'])) {
     if (is_numeric($_GET['getremoveshelves'])) {
         if ($_GET['getremoveshelves'] == 1) {
-            if (isset($_GET['manufacturer'])) {
+            if (isset($_GET['manufacturer']) && isset($_GET['stock'])) {
                 $locations = [];
                 //'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'
                 include 'dbh.inc.php';
@@ -256,13 +258,13 @@ if (isset($_GET['getremoveshelves'])) {
                         INNER JOIN shelf ON item.shelf_id=shelf.id
                         INNER JOIN area ON shelf.area_id=area.id
                         INNER JOIN site ON area.site_id=site.id
-                        WHERE item.manufacturer_id=?
+                        WHERE item.manufacturer_id=? AND item.deleted=0 AND item.stock_id=?
                         ORDER BY item.shelf_id";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                     // fails to connect
                 } else {
-                    mysqli_stmt_bind_param($stmt, "s", $_GET['manufacturer']);
+                    mysqli_stmt_bind_param($stmt, "ss", $_GET['manufacturer'], $_GET['stock']);
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                     $rowCount = $result->num_rows;
@@ -295,12 +297,12 @@ if (isset($_GET['getremoveshelves'])) {
 if (isset($_GET['getquantity'])) {
     if (is_numeric($_GET['getquantity'])) {
         if ($_GET['getquantity'] == 1) {
-            if (isset($_GET['manufacturer']) && isset($_GET['shelf']) && isset($_GET['serial'])) {
+            if (isset($_GET['manufacturer']) && isset($_GET['shelf']) && isset($_GET['serial']) && isset($_GET['stock'])) {
 
                 if ($_GET['serial'] == 0) {
                     $serial = '';
                 } else { 
-                    $serial = '';
+                    $serial = $_GET['serial'];
                 }
                 
                 $quantityArr = [];
@@ -311,13 +313,13 @@ if (isset($_GET['getquantity'])) {
                         INNER JOIN shelf ON item.shelf_id=shelf.id
                         INNER JOIN area ON shelf.area_id=area.id
                         INNER JOIN site ON area.site_id=site.id
-                        WHERE item.manufacturer_id=? AND item.shelf_id=? AND item.serial_number=?
+                        WHERE item.manufacturer_id=? AND item.shelf_id=? AND item.serial_number=? AND item.deleted=0 AND item.stock_id=?
                         ORDER BY item.shelf_id";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                     // fails to connect
                 } else {
-                    mysqli_stmt_bind_param($stmt, "sss", $_GET['manufacturer'], $_GET['shelf'], $serial);
+                    mysqli_stmt_bind_param($stmt, "ssss", $_GET['manufacturer'], $_GET['shelf'], $serial, $_GET['stock']);
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                     $rowCount = $result->num_rows;

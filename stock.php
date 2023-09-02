@@ -67,7 +67,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 stock_img.id AS stock_img_id, stock_img.stock_id AS stock_img_stock_id, stock_img.image AS stock_img_image
                         FROM stock
                         LEFT JOIN stock_img ON stock.id=stock_img.stock_id
-                        WHERE stock.id=?;";
+                        WHERE stock.id=? AND stock.deleted=0;";
             $stmt_stock = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                 echo("ERROR getting entries");
@@ -178,7 +178,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         LEFT JOIN shelf ON item.shelf_id=shelf.id 
                         LEFT JOIN area ON shelf.area_id=area.id 
                         LEFT JOIN site ON area.site_id=site.id
-                        WHERE stock.id=?
+                        WHERE stock.id=? AND stock.deleted=0
                         GROUP BY 
                             stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                             site_id, site_name, site_description, 
@@ -318,7 +318,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 }
                                 echo('</p>');
                                 
-                                $sql_serials = "SELECT DISTINCT serial_number, id FROM item WHERE stock_id=? AND serial_number != '' AND quantity != 0 ORDER BY id";
+                                $sql_serials = "SELECT DISTINCT serial_number, id FROM item WHERE stock_id=? AND serial_number != '' AND quantity != 0 AND deleted=0 ORDER BY id";
                                 $stmt_serials = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_serials, $sql_serials)) {
                                     // fails to connect (do nothing this time)

@@ -181,7 +181,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         LEFT JOIN area ON shelf.area_id=area.id 
                         LEFT JOIN site ON area.site_id=site.id
                         LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                        WHERE stock.id=?
+                        WHERE stock.id=? AND stock.deleted=0
                         GROUP BY 
                             stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                             site_id, site_name, site_description, 
@@ -252,9 +252,11 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 <div style="width:200px;margin-right:25px"></div>
                                 <div id="heading-heading">
                                     <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$stock_inv_data[0]['name'].'</h2></a>
-                                    <p id="sku"><strong>SKU:</strong> <or class="blue">'.$stock_inv_data[0]['sku'].'</or></p>
+                                    <p id="sku"><strong>SKU:</strong> <or class="blue">'.$stock_inv_data[0]['sku'].'</or></p>');
+
+                                    echo('
                                     <p id="locations" style="margin-bottom:0"><strong>Locations:</strong><br>');
-                                        if (empty($stock_inv_data)) {
+                                        if (!$stock_inv_data[0]['shelf_id']) {
                                             echo("No locations linked.");
                                         } else {
                                             echo('<table><tbody>');
@@ -326,7 +328,8 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         <option value="" selected disabled hidden>Select Site</option>');
                                             include 'includes/dbh.inc.php';
                                             $sql = "SELECT id, name
-                                                    FROM site
+                                                    FROM site 
+                                                    WHERE site.deleted=0
                                                     ORDER BY id";
                                             $stmt = mysqli_stmt_init($conn);
                                             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -437,7 +440,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                 ');
             include 'includes/dbh.inc.php';
             $sql = "SELECT * from stock
-                    WHERE name LIKE CONCAT('%', ?, '%')
+                    WHERE name LIKE CONCAT('%', ?, '%') AND stock.deleted=0
                     ORDER BY name;";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -502,7 +505,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         GROUP BY stock_img.stock_id
                     ) AS stock_img_image
                         ON stock_img_image.stock_id = stock.id
-                    WHERE stock.is_cable=0
+                    WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0
                     GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image
@@ -553,7 +556,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         GROUP BY stock_img.stock_id
                     ) AS stock_img_image
                         ON stock_img_image.stock_id = stock.id
-                    WHERE stock.is_cable=0
+                    WHERE stock.is_cable=0 AND stock.deleted=0 
                     GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image
@@ -692,8 +695,8 @@ function populateShelves() {
   };
   xhr.send();
 }
-document.getElementById("site").addEventListener("change", populateAreas);
-document.getElementById("area").addEventListener("change", populateShelves);
+// document.getElementById("site").addEventListener("change", populateAreas);
+// document.getElementById("area").addEventListener("change", populateShelves);
 </script>
 
 

@@ -47,7 +47,7 @@ $currency_symbol = '£';
             include 'includes/dbh.inc.php';
             $sql = "SELECT id, name, description, sku, min_stock
                     FROM stock
-                    WHERE id=?
+                    WHERE id=? AND stock.deleted=0
                     ORDER BY id";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -97,7 +97,7 @@ $currency_symbol = '£';
                                     LEFT JOIN area ON shelf.area_id=area.id 
                                     LEFT JOIN site ON area.site_id=site.id
                                     LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                    WHERE stock.id=? AND quantity!=0
+                                    WHERE stock.id=? AND quantity!=0 AND stock.deleted=0 AND item.deleted=0
                                     GROUP BY 
                                         stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                                         site_id, site_name, site_description, 
@@ -248,6 +248,7 @@ $currency_symbol = '£';
                                                                                     include 'includes/dbh.inc.php';
                                                                                     $sql = "SELECT id, name
                                                                                             FROM site
+                                                                                            WHERE site.deleted=0
                                                                                             ORDER BY id";
                                                                                     $stmt = mysqli_stmt_init($conn);
                                                                                     if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -351,7 +352,7 @@ $currency_symbol = '£';
                 ');
             include 'includes/dbh.inc.php';
             $sql = "SELECT * from stock
-                    WHERE name LIKE CONCAT('%', ?, '%')
+                    WHERE name LIKE CONCAT('%', ?, '%') AND stock.deleted=0
                     ORDER BY name;";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -423,6 +424,7 @@ $currency_symbol = '£';
                                 INNER JOIN area ON shelf.area_id=area.id
                                 WHERE item.stock_id=stock.id AND area.site_id=site.id
                             )!='null'
+                        AND stock.deleted=0 AND item.deleted=0
                     GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image
@@ -479,6 +481,7 @@ $currency_symbol = '£';
                                 INNER JOIN area ON shelf.area_id=area.id
                                 WHERE item.stock_id=stock.id AND area.site_id=site.id
                             )!='null'
+                        AND stock.deleted=0 AND item.deleted=0
                     GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image

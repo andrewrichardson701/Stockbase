@@ -12,15 +12,50 @@ if (isset($_GET['stock_id'])) {
             $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
             $start_index = ($current_page - 1) * $results_per_page;
 
-            $sql_tran = "SELECT t.id AS t_id, t.stock_id AS t_stock_id, t.item_id AS t_item_id, t.type AS t_type, t.quantity AS t_quantity,
-                            t.price AS t_price, t.serial_number AS t_serial_number, t.reason AS t_reason, t.comments AS t_comments,
-                            t.date AS t_date, t.time AS t_time, t.username as t_username, t.shelf_id AS t_shelf_id,
-                            s.name AS s_name, a.name AS a_name
+            // $sql_tran = "SELECT t.id AS t_id, t.stock_id AS t_stock_id, t.item_id AS t_item_id, t.type AS t_type, t.quantity AS t_quantity,
+            //                 t.price AS t_price, t.serial_number AS t_serial_number, t.reason AS t_reason, t.comments AS t_comments,
+            //                 t.date AS t_date, t.time AS t_time, t.username as t_username, t.shelf_id AS t_shelf_id,
+            //                 s.name AS s_name, a.name AS a_name
+            //             FROM transaction AS t
+            //             LEFT JOIN shelf AS s ON t.shelf_id=s.id
+            //             LEFT JOIN area AS a ON s.area_id=a.id
+            //             WHERE t.stock_id=?
+            //             ORDER BY t.id DESC
+            //             LIMIT ?, ?";
+
+            // Grouping
+            $sql_tran = "SELECT
+                            t.stock_id AS t_stock_id,
+                            t.type AS t_type,
+                            SUM(t.quantity) AS t_quantity,
+                            t.price AS t_price,
+                            t.serial_number AS t_serial_number,
+                            t.reason AS t_reason,
+                            t.comments AS t_comments,
+                            t.date AS t_date,
+                            t.time AS t_time,
+                            t.username AS t_username,
+                            t.shelf_id AS t_shelf_id,
+                            s.name AS s_name,
+                            a.name AS a_name
                         FROM transaction AS t
-                        LEFT JOIN shelf AS s ON t.shelf_id=s.id
-                        LEFT JOIN area AS a ON s.area_id=a.id
-                        WHERE t.stock_id=?
-                        ORDER BY t.id DESC
+                        LEFT JOIN shelf AS s ON t.shelf_id = s.id
+                        LEFT JOIN area AS a ON s.area_id = a.id
+                        WHERE t.stock_id = ?
+                        GROUP BY
+                            t.stock_id,
+                            t.type,
+                            t.price,
+                            t.serial_number,
+                            t.reason,
+                            t.comments,
+                            t.date,
+                            t.time,
+                            t.username,
+                            t.shelf_id,
+                            s.name,
+                            a.name
+                        ORDER BY t.date desc, t.time desc
                         LIMIT ?, ?";
             
             $stmt_tran = mysqli_stmt_init($conn);
@@ -59,9 +94,9 @@ if (isset($_GET['stock_id'])) {
                     ');
 
                     while ($row_tran = $result_tran->fetch_assoc()) {
-                        $t_id = $row_tran['t_id'];
+                        $t_id = isset($row_tran['t_id']) ? $row_tran['t_id'] : '';
                         $t_stock_id = $row_tran['t_stock_id'];
-                        $t_item_id = $row_tran['t_item_id'];
+                        $t_item_id = isset($row_tran['t_item_id']) ? $row_tran['t_item_id'] : '' ;
                         $t_type = $row_tran['t_type'];
                         $t_shelf_id = $row_tran['t_shelf_id'];
                         $t_quantity = $row_tran['t_quantity'];
@@ -116,14 +151,45 @@ if (isset($_GET['stock_id'])) {
 
                     // Pagination links
                     echo('<div class="container" style="text-align: center;">');
-                    $sql_count = "SELECT COUNT(*) AS total FROM transaction WHERE stock_id=?";
+                    $sql_count = "SELECT
+                                    t.stock_id AS t_stock_id,
+                                    t.type AS t_type,
+                                    SUM(t.quantity) AS t_quantity,
+                                    t.price AS t_price,
+                                    t.serial_number AS t_serial_number,
+                                    t.reason AS t_reason,
+                                    t.comments AS t_comments,
+                                    t.date AS t_date,
+                                    t.time AS t_time,
+                                    t.username AS t_username,
+                                    t.shelf_id AS t_shelf_id,
+                                    s.name AS s_name,
+                                    a.name AS a_name
+                                FROM transaction AS t
+                                LEFT JOIN shelf AS s ON t.shelf_id = s.id
+                                LEFT JOIN area AS a ON s.area_id = a.id
+                                WHERE t.stock_id = ?
+                                GROUP BY
+                                    t.stock_id,
+                                    t.type,
+                                    t.price,
+                                    t.serial_number,
+                                    t.reason,
+                                    t.comments,
+                                    t.date,
+                                    t.time,
+                                    t.username,
+                                    t.shelf_id,
+                                    s.name,
+                                    a.name
+                                ORDER BY t.date desc, t.time desc";
                     $stmt_count = mysqli_stmt_init($conn);
                     if (mysqli_stmt_prepare($stmt_count, $sql_count)) {
                         mysqli_stmt_bind_param($stmt_count, "s", $stock_id);
                         mysqli_stmt_execute($stmt_count);
                         $result_count = mysqli_stmt_get_result($stmt_count);
-                        $row_count = mysqli_fetch_assoc($result_count);
-                        $total_pages = ceil($row_count['total'] / $results_per_page);
+                        $row_count = $result_count->num_rows;
+                        $total_pages = ceil($row_count / $results_per_page);
 
                         if ($current_page > 1) {
                             echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');

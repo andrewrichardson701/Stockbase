@@ -232,17 +232,17 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="transaction_date" id="date-label">Transaction Date</label></div>
                                                     <div><input type="date" value="'.date('Y-m-d').'" name="transaction_date" id="transaction_date" class="form-control" style="width:150px"/></div>
                                                 </div>
-                                                <div class="nav-row" id="quantity-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
-                                                    <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
-                                                </div>
                                                 <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
                                                     <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c" style="width:300px" value="'.$input_serial_number.'"></input></div>
                                                 </div>
+                                                <div class="nav-row" id="quantity-row" style="margin-top:25px">
+                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
+                                                    <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
+                                                </div>
                                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
-                                                    <div><input type="text" name="reason" placeholder="Customer sale [CDC-ID: #XXXXXX]" id="reason" class="form-control nav-v-c" style="width:300px" value="'.$input_reason.'" required></input></div>
+                                                    <div><input type="text" name="reason" placeholder="Customer sale, ID: XXXXXX" id="reason" class="form-control nav-v-c" style="width:300px" value="'.$input_reason.'" required></input></div>
                                                 </div>
                                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"></div>

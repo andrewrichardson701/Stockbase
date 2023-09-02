@@ -242,4 +242,104 @@ if (isset($_GET['getserials'])) {
     }
 }
 
+
+if (isset($_GET['getremoveshelves'])) {
+    if (is_numeric($_GET['getremoveshelves'])) {
+        if ($_GET['getremoveshelves'] == 1) {
+            if (isset($_GET['manufacturer'])) {
+                $locations = [];
+                //'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'
+                include 'dbh.inc.php';
+
+                $sql = "SELECT DISTINCT item.shelf_id AS item_shelf_id, shelf.name AS shelf_name, area.name AS area_name, site.name AS site_name, item.manufacturer_id AS item_manufacturer_id
+                        FROM item
+                        INNER JOIN shelf ON item.shelf_id=shelf.id
+                        INNER JOIN area ON shelf.area_id=area.id
+                        INNER JOIN site ON area.site_id=site.id
+                        WHERE item.manufacturer_id=?
+                        ORDER BY item.shelf_id";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    // fails to connect
+                } else {
+                    mysqli_stmt_bind_param($stmt, "s", $_GET['manufacturer']);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount < 1) {
+                        // no rows found
+                    } else {
+                        // rows found
+                        while ($row = $result->fetch_assoc()) {
+                            $id = $row['item_shelf_id'];
+                            $location = $row['site_name'].' - '.$row['area_name'].' - '.$row['shelf_name'];
+                            $locations[] = array('id' => $id, 'location' => $location);
+                        }
+                        echo(json_encode($locations));
+                    }
+                }
+                
+            } else {
+
+            }
+        } elseif ($_GET['getremoveshelves'] == 0) {
+
+        } else {
+
+        }
+    } else {
+        // not numeric
+    }
+}
+
+if (isset($_GET['getquantity'])) {
+    if (is_numeric($_GET['getquantity'])) {
+        if ($_GET['getquantity'] == 1) {
+            if (isset($_GET['manufacturer']) && isset($_GET['shelf']) && isset($_GET['serial'])) {
+
+                if ($_GET['serial'] == 0) {
+                    $serial = '';
+                } else { 
+                    $serial = '';
+                }
+                
+                $quantityArr = [];
+                include 'dbh.inc.php';
+
+                $sql = "SELECT * 
+                        FROM item
+                        INNER JOIN shelf ON item.shelf_id=shelf.id
+                        INNER JOIN area ON shelf.area_id=area.id
+                        INNER JOIN site ON area.site_id=site.id
+                        WHERE item.manufacturer_id=? AND item.shelf_id=? AND item.serial_number=?
+                        ORDER BY item.shelf_id";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    // fails to connect
+                } else {
+                    mysqli_stmt_bind_param($stmt, "sss", $_GET['manufacturer'], $_GET['shelf'], $serial);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+
+                    $id = 0;
+                    $quantity = $rowCount;
+                    $quantityArr[$id] = array('id' => $id, 'quantity' => $quantity);
+
+                    echo(json_encode($quantityArr));
+                }
+                
+            } else {
+
+            }
+        } elseif ($_GET['getquantity'] == 0) {
+
+        } else {
+
+        }
+    } else {
+        // not numeric
+    }
+}
+
 ?>

@@ -113,6 +113,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                             echo ('<div class="container" id="no-stock-found">No Stock Found</div>');
                         } else {
                             $stock_inv_data = [];
+                            $stock_inv_manu = [];
                             while ( $row = $result_stock->fetch_assoc() ) {
                                 $stock_id = $row['stock_id'];
                                 $stock_name = $row['stock_name'];
@@ -154,6 +155,8 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                         'manufacturer_id' => $stock_manufacturer_id,
                                                         'manufacturer_name' => $stock_manufacturer_name,
                                                         'label' => $stock_label_data);
+                                
+                                $stock_inv_manu[$stock_manufacturer_id] = array('id' => $stock_manufacturer_id, 'name' => $stock_manufacturer_name);
                             }
                             
                             $stock_id = $_GET['stock_id'];
@@ -192,14 +195,10 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                                     <div>
-                                                        <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" required>
+                                                        <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" onchange="populateRemoveShelves(this)" required>
                                                             <option value="" selected disabled hidden>Select Manufacturer</option>');
-                                                            $temp_manu_id = '';
-                                                            foreach ($stock_inv_data as $temp_data) {
-                                                                if ($temp_data['manufacturer_id'] !== $temp_manu_id) {
-                                                                    echo('<option value='.$temp_data['manufacturer_id'].'>'.$temp_data['manufacturer_name'].'</option>');
-                                                                }
-                                                                $temp_manu_id = $temp_data['manufacturer_id'];
+                                                            foreach ( $stock_inv_manu as $manu ) {
+                                                                echo('<option value='.$manu['id'].'>'.$manu['name'].'</option>');
                                                             }
                                                         echo('
                                                         </select>
@@ -208,15 +207,15 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
                                                     <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
                                                     <div>
-                                                        <select class="form-control" id="shelf" name="shelf" style="width:300px" required onchange="populateSerials(this)">
+                                                        <select class="form-control" id="shelf" name="shelf" style="width:300px" required onchange="populateSerials(this)" disabled>
                                                             <option value="" selected disabled hidden>Select Location</option>');
-                                                            $temp_site_id = '';
-                                                            foreach ($stock_inv_data as $temp_data) {
-                                                                if ($temp_data['shelf_id'] !== $temp_site_id) {
-                                                                    echo('<option value='.$temp_data['shelf_id'].'>'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'</option>');
-                                                                }
-                                                                $temp_site_id = $temp_data['shelf_id'];
-                                                            }
+                                                            // $temp_site_id = '';
+                                                            // foreach ($stock_inv_data as $temp_data) {
+                                                            //     if ($temp_data['shelf_id'] !== $temp_site_id) {
+                                                            //         echo('<option value='.$temp_data['shelf_id'].'>'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'</option>');
+                                                            //     }
+                                                            //     $temp_site_id = $temp_data['shelf_id'];
+                                                            // }
                                                         echo('
                                                         </select>
                                                     </div>
@@ -527,6 +526,31 @@ if ($stock_id == 0 || $stock_id == '0') {
         }
     }
 
+    // populate shelves from manuyfacturer
+    function populateRemoveShelves(elem) {
+        // Make an AJAX request to retrieve the corresponding areas
+        manufacturer_id = elem.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getremoveshelves=1&manufacturer="+manufacturer_id, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var shelves = JSON.parse(xhr.responseText);
+                var select = document.getElementById('shelf');
+                select.options.length = 0;
+                if (shelves.length === 0) {
+                    select.options[0] = new Option("", "");
+                }
+                for (var i = 0; i < shelves.length; i++) {
+                    select.options[select.options.length] = new Option(shelves[i].location, shelves[i].id);
+                }
+                select.disabled = (select.options.length === 1);
+                populateSerials(document.getElementById('shelf'));
+            }
+        };
+        xhr.send();
+    }
+
     // populate serials
     function populateSerials(elem) {
         // Make an AJAX request to retrieve the corresponding areas
@@ -546,6 +570,30 @@ if ($stock_id == 0 || $stock_id == '0') {
                     select.options[select.options.length] = new Option(serials[i].serial_number, serials[i].id);
                 }
                 select.disabled = (select.options.length === 1);
+            }
+        };
+        xhr.send();
+        getQuantity();
+    }
+
+    function getQuantity() {
+        var manufacturer = document.getElementById('manufacturer').value;
+        var shelf = document.getElementById('shelf').value;
+        var serial = document.getElementById('serial-number').value;
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantity=1&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var quantityArr = JSON.parse(xhr.responseText);
+                var quantity = document.getElementById('quantity');
+                quantity.value = 1;
+                quantity.max = quantityArr[0]['quantity'];
+
+                if (quantity.min === quantity.max) {
+                    quantity.disabled = true;
+                }
             }
         };
         xhr.send();

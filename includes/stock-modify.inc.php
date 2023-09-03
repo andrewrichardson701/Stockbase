@@ -548,6 +548,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
         
                     include 'dbh.inc.php';
 
+                    // check if the stock item exists and is not deleted.
                     $sql_checkID = "SELECT * FROM stock
                                     WHERE id=?
                                     AND deleted=0
@@ -570,14 +571,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                             // GET TOTAL STOCK COUNT
 
-                            $sql_itemQuantity = "SELECT * FROM item WHERE stock_id=? AND serial_number=? AND deleted=0";
+                            $sql_itemQuantity = "SELECT * FROM item WHERE stock_id=? AND serial_number=? AND deleted=0 AND shelf_id=?";
                             $stmt_itemQuantity = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_itemQuantity, $sql_itemQuantity)) {
                                 $errors[] = 'itemQuantity stock table error - SQL connection';
                                 header("Location: $redirect_url&error=stockTableSQLConnection");
                                 exit();
                             } else {
-                                mysqli_stmt_bind_param($stmt_itemQuantity, "ss", $stock_id, $stock_serial_number);
+                                mysqli_stmt_bind_param($stmt_itemQuantity, "sss", $stock_id, $stock_serial_number, $stock_shelf);
                                 mysqli_stmt_execute($stmt_itemQuantity);
                                 $result_itemQuantity = mysqli_stmt_get_result($stmt_itemQuantity);
                                 $rowCount_itemQuantity = $result_itemQuantity->num_rows;
@@ -596,7 +597,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             $itemIdArray[] = $removeId;
                                         }
 
-                                        for ($i=0; $i<=$stock_quantity; $i++) {
+                                        for ($i=0; $i<=($stock_quantity-1); $i++) {
                                             $delete_id = $itemIdArray[$i];
                                             
                                             $sql_remove_row = "UPDATE item SET quantity=0, deleted=1 WHERE id=?";
@@ -631,9 +632,45 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                     echo("Transaction Added");
                                                 }
 
+
                                             }
 
                                         }
+                                        $sql_min_stock = "SELECT * FROM stock WHERE id=?";
+                                        $stmt_min_stock = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_min_stock, $sql_min_stock)) {
+                                            $errors[] = 'min_stock stock table error - SQL connection';
+                                            header("Location: $redirect_url&error=stockTableSQLConnection");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_min_stock, "s", $stock_id);
+                                            mysqli_stmt_execute($stmt_min_stock);
+                                            $result_min_stock = mysqli_stmt_get_result($stmt_min_stock);
+                                            $rowCount_min_stock = $result_min_stock->num_rows;
+                                            if ($rowCount_min_stock < 1) {
+                                                $errors[] = 'min_stock stock table error - no row found';
+                                                header("Location: $redirect_url&error=noIDInTable");
+                                                exit();
+                                            } elseif ($rowCount_min_stock == 1) { 
+                                                $row_min_stock = $result_min_stock->fetch_assoc();
+                                                $stock_name = $row_min_stock['name'];
+                                                $stock_min_stock = $row_min_stock['min_stock'];
+                                                $new_quantity = $totalQuantity - $stock_quantity;
+                                                
+                                                if ($stock_min_stock > $new_quantity) {
+                                                    $email_subject = ucwords($current_system_name)." - Stock Needs Re-ordering.";
+                                                    $email_body = "<p>Stock count for stock: <strong>$stock_name</strong> with ID: <strong>$stock_id</strong>, with item ID: <strong>$stock_itemSelectID_id</strong> is below the minimum stock count: <stong>$stock_min_stock</strong> with <strong>$new_quantity</strong>!<br>Please order more.</p>";
+                                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                                }
+                                            }
+                                        }
+                                    
+                                        // Remove any 0 quantity entries from DB
+                                        $email_subject = ucwords($current_system_name)." - Stock inventory removed.";
+                                        $email_body = "<p>Stock inventory added to stock ID: $stock_id!</p>";
+                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                        header("Location: $redirect_url&success=stockRemoved");
+                                        exit();
 
                                     } else {
                                         $errors[] = 'not enough stock quantity found to remove (total stored = '.$totalQuantity.', total to remove = '.$stock_quantity.')';

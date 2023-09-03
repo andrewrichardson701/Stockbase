@@ -278,7 +278,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <td hidden id="site-'.$stock_inv_data[$st]['site_id'].'"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'\'">'.$stock_inv_data[$st]['site_name'].'</or></td>
                                                 <td id="area-'.$stock_inv_data[$st]['area_id'].'"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'&area='.$stock_inv_data[$st]['area_id'].'\'">'.$stock_inv_data[$st]['area_name'].':</or></td>
                                                 <td id="shelf-'.$stock_inv_data[$st]['shelf_id'].'" style="padding-left: 5px"><button class="btn btn-dark btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$st]['shelf_name']).'\'">'.$stock_inv_data[$st]['shelf_name'].'</button></td>
-                                                <td style="padding-left: 5px"><a class="btn btn-dark btn-stock">'.$stock_inv_data[$st]['quantity'].'</a></td>
+                                                <td style="padding-left: 5px" class="text-center cw">'.$stock_inv_data[$st]['quantity'].'</td>
                                             </tr>
                                             ');
                                         }
@@ -297,51 +297,53 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 ');
 
                                 echo('
-                                <p id="labels-head"><strong>Labels</strong></p>
-                                <p id="labels">');
-                                if (is_array($stock_inv_data[0]['label'])) {
-                                    for ($l=0; $l < count($stock_inv_data[0]['label']); $l++) {
-                                        echo('<button class="btn btn-dark btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['name'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
-                                    }
-                                } else {
-                                    echo('None');
-                                }
-                                
-                                echo('
-                                <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
-                                if ( is_array($stock_inv_data[0]['manufacturer'])) {
-                                    for ($m=0; $m < count($stock_inv_data[0]['manufacturer']); $m++) {
-                                        echo('<button class="btn btn-dark btn-stock-click gold" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
-                                    }
-                                } else {
-                                    echo('None');
-                                }
-                                echo('</p>');
-                                
-                                $sql_serials = "SELECT DISTINCT serial_number, id FROM item WHERE stock_id=? AND serial_number != '' AND quantity != 0 AND deleted=0 ORDER BY id";
-                                $stmt_serials = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_serials, $sql_serials)) {
-                                    // fails to connect (do nothing this time)
-                                } else {
-                                    mysqli_stmt_bind_param($stmt_serials, "s", $stock_id);
-                                    mysqli_stmt_execute($stmt_serials);
-                                    $result_serials = mysqli_stmt_get_result($stmt_serials);
-                                    $rowCount_serials = $result_serials->num_rows;
-                                    if ($rowCount_serials > 0) {
-                                        // rows found
-                                        echo('<p id="serial-numbers-head"><strong>Serial Numbers</strong></p><p>');
-                                        $sn = 0;
-                                        while ($row_serials = $result_serials->fetch_assoc()) {
-                                            $sn++;
-                                            echo('<a class="serial-bg" id="serialNumber'.$sn.'">'.$row_serials['serial_number'].'</a>');
+                                <p class="clickable gold" id="extra-info-dropdown" onclick="toggleSection(this, \'extra-info\')">More Info <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></p> 
+                                <div id="extra-info" hidden>
+                                    <p id="labels-head"><strong>Labels</strong></p>
+                                    <p id="labels">');
+                                    if (is_array($stock_inv_data[0]['label'])) {
+                                        for ($l=0; $l < count($stock_inv_data[0]['label']); $l++) {
+                                            echo('<button class="btn btn-dark btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['name'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
                                         }
-                                        echo('</p>');
+                                    } else {
+                                        echo('None');
                                     }
-                                }  
+                                    
+                                    echo('
+                                    <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
+                                    if ( is_array($stock_inv_data[0]['manufacturer'])) {
+                                        for ($m=0; $m < count($stock_inv_data[0]['manufacturer']); $m++) {
+                                            echo('<button class="btn btn-dark btn-stock-click gold" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
+                                        }
+                                    } else {
+                                        echo('None');
+                                    }
+                                    echo('</p>');
+                                    
+                                    $sql_serials = "SELECT DISTINCT serial_number, id FROM item WHERE stock_id=? AND serial_number != '' AND quantity != 0 AND deleted=0 ORDER BY id";
+                                    $stmt_serials = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_serials, $sql_serials)) {
+                                        // fails to connect (do nothing this time)
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt_serials, "s", $stock_id);
+                                        mysqli_stmt_execute($stmt_serials);
+                                        $result_serials = mysqli_stmt_get_result($stmt_serials);
+                                        $rowCount_serials = $result_serials->num_rows;
+                                        if ($rowCount_serials > 0) {
+                                            // rows found
+                                            echo('<p id="serial-numbers-head"><strong>Serial Numbers</strong></p><p>');
+                                            $sn = 0;
+                                            while ($row_serials = $result_serials->fetch_assoc()) {
+                                                $sn++;
+                                                echo('<a class="serial-bg" id="serialNumber'.$sn.'">'.$row_serials['serial_number'].'</a>');
+                                            }
+                                            echo('</p>');
+                                        }
+                                    }  
+                            
 
-
-
-                            echo('   
+                                echo(' 
+                                    </div>
                             </div>
                             
                             <div class="col-sm text-right" style="margin-left:70px" id="stock-info-right">');  
@@ -390,11 +392,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 }
                                 echo('</div>
                                 </div>');
-                                echo('<div id="edit-images-div" class="nav-div-mid">
-                                    <button id="edit-images" class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
-                                        <i class="fa fa-pencil"></i> Edit images
-                                    </button>
-                                </div> ');
+                                // echo('<div id="edit-images-div" class="nav-div-mid">
+                                //     <button id="edit-images" class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
+                                //         <i class="fa fa-pencil"></i> Edit images
+                                //     </button>
+                                // </div> ');
                             } else {
                                 echo('<div id="edit-images-div" class="nav-div-mid nav-v-c">
                                     <button id="edit-images" class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px">
@@ -407,9 +409,157 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         </div>
                     </div>
                     <div class="container well-nopad bg-dark" style="margin-top:5px">
-                        <h2 style="font-size:22px">Transactions</h2>');
-                        include 'includes/transaction.inc.php';
-                    echo('</div>');
+                        <h2 style="font-size:22px">Stock</h2>');
+                        $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                            area.id AS area_id, area.name AS area_name,
+                                            shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                            item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, 
+                                            (SELECT SUM(quantity) 
+                                                FROM item 
+                                                WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
+                                                    AND item.serial_number=item_serial_number AND item.upc=item_upc
+                                            ) AS item_quantity,
+                                            manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+                                            (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
+                                                FROM stock_label 
+                                                INNER JOIN label ON stock_label.label_id = label.id 
+                                                WHERE stock_label.stock_id = stock.id
+                                                ORDER BY label.name
+                                            ) AS label_names,
+                                            (SELECT GROUP_CONCAT(DISTINCT label.id ORDER BY label.name SEPARATOR ', ') 
+                                                FROM stock_label
+                                                INNER JOIN label ON stock_label.label_id = label.id
+                                                WHERE stock_label.stock_id = stock.id
+                                                ORDER BY label.name
+                                            ) AS label_ids
+                                        FROM stock
+                                        LEFT JOIN item ON stock.id=item.stock_id
+                                        LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                                        LEFT JOIN area ON shelf.area_id=area.id 
+                                        LEFT JOIN site ON area.site_id=site.id
+                                        LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
+                                        WHERE stock.id=? AND quantity!=0 AND stock.deleted=0 AND item.deleted=0
+                                        GROUP BY 
+                                            stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                                            site_id, site_name, site_description, 
+                                            area_id, area_name, 
+                                            shelf_id, shelf_name,
+                                            manufacturer_name, manufacturer_id,
+                                            item_serial_number, item_upc, item_comments, item_cost
+                                        ORDER BY site.id, area.name, shelf.name;";
+                        $stmt_stock = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
+                            echo("ERROR getting entries");
+                        } else {
+                            mysqli_stmt_bind_param($stmt_stock, "s", $stock_id);
+                            mysqli_stmt_execute($stmt_stock);
+                            $result_stock = mysqli_stmt_get_result($stmt_stock);
+                            $rowCount_stock = $result_stock->num_rows;
+
+                            if ($rowCount_stock < 1) {
+                                echo ('<div class="container" id="no-stock-found">No Stock Found</div>');
+                            } else {
+                                $stock_inv_data = [];
+                                while ( $row = $result_stock->fetch_assoc() ) {
+                                    $stock_id = $row['stock_id'];
+                                    $stock_name = $row['stock_name'];
+                                    $stock_sku = $row['stock_sku'];
+                                    $stock_quantity_total = $row['item_quantity'];
+                                    $stock_shelf_id = $row['shelf_id'];
+                                    $stock_shelf_name = $row['shelf_name'];
+                                    $stock_area_id = $row['area_id'];
+                                    $stock_area_name = $row['area_name'];
+                                    $stock_site_id = $row['site_id'];
+                                    $stock_site_name = $row['site_name'];
+                                    $stock_manufacturer_id = $row['manufacturer_id'];
+                                    $stock_manufacturer_name = $row['manufacturer_name'];
+                                    $item_upc = $row['item_upc'];
+                                    $item_cost = $row['item_cost'];
+                                    $item_comments = $row['item_comments'];
+                                    $item_serial_number = $row['item_serial_number'];
+                                    $stock_label_ids = $row['label_ids'];
+                                    $stock_label_names = $row['label_names'];
+                                    
+                                    $stock_label_data = [];
+
+                                    if ($stock_label_ids !== null) {
+                                        for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
+                                            $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
+                                                                                'name' => explode(", ", $stock_label_names)[$n]);
+                                        }
+                                    } else {
+                                        $stock_label_data = '';
+                                    }
+                                    
+
+                                    $stock_inv_data[] = array('id' => $stock_id,
+                                                            'name' => $stock_name,
+                                                            'sku' => $stock_sku,
+                                                            'quantity' => $stock_quantity_total,
+                                                            'shelf_id' => $stock_shelf_id,
+                                                            'shelf_name' => $stock_shelf_name,
+                                                            'area_id' => $stock_area_id,
+                                                            'area_name' => $stock_area_name,
+                                                            'site_id' => $stock_site_id,
+                                                            'site_name' => $stock_site_name,
+                                                            'manufacturer_id' => $stock_manufacturer_id,
+                                                            'manufacturer_name' => $stock_manufacturer_name,
+                                                            'upc' => $item_upc,
+                                                            'cost' => $item_cost,
+                                                            'comments' => $item_comments,
+                                                            'serial_number' => $item_serial_number,
+                                                            'label_names' => $stock_label_names,
+                                                            'label' => $stock_label_data);
+                                }
+                                
+                                        echo('
+                                    <table class="table table-dark centertable">
+                                        <thead>
+                                            <tr>
+                                                <th hidden>ID</th>
+                                                <th>Site</th>
+                                                <th>Location</th>
+                                                <th>Shelf</th>
+                                                <th>Manufacturer</th>
+                                                <th>UPC</th>
+                                                <th title="Serial Numbers">Serial</th>
+                                                <th>Labels</th>
+                                                <th>Cost</th>
+                                                <th>Comments</th>
+                                                <th>Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>                           
+                                    ');
+                                    for ($i=0; $i<count($stock_inv_data); $i++) {
+                                        echo('
+                                            <tr id="item-'.$i.'" class="clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $i) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$i.'\')">
+                                                <td hidden>'.$i.'</td>
+                                                <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
+                                                <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
+                                                <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
+                                                <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
+                                                <td id="item-'.$i.'-manu">'.$stock_inv_data[$i]['upc'].'</td>
+                                                <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
+                                                <td id="item-'.$i.'-labels">'.$stock_inv_data[$i]['label_names'].'</td>
+                                                <td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                <td id="item-'.$i.'-comments">'.$stock_inv_data[$i]['comments'].'</td>
+                                                <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
+                                            </tr>
+
+                                        ');
+                                    }
+                                    echo('
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="container well-nopad bg-dark" style="margin-top:5px">
+                                <h2 style="font-size:22px">Transactions</h2>');
+                                include 'includes/transaction.inc.php';
+                        echo('</div>');
+                        }
+                    }
                 }
             }
         }
@@ -418,5 +568,19 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     </div>
     
     <?php include 'foot.php'; ?>
-
+    <script> // Toggle hide/show section
+        function toggleSection(element, section) {
+            var div = document.getElementById(section);
+            var icon = element.children[0];
+            if (div.hidden == false) {
+                div.hidden=true;
+                icon.classList.remove("fa-chevron-up");
+                icon.classList.add("fa-chevron-down");
+            } else {
+                div.hidden=false;
+                icon.classList.remove("fa-chevron-down");
+                icon.classList.add("fa-chevron-up");
+            }
+        }
+    </script>
 </body>

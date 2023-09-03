@@ -72,11 +72,11 @@ $currency_symbol = '£';
                     $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                         area.id AS area_id, area.name AS area_name,
                                         shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                                        item.serial_number AS item_serial_number, item.upc AS item_upc, item.id AS item_id, item.cost AS item_cost, item.comments AS item_comments, 
+                                        item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, 
                                         (SELECT SUM(quantity) 
                                             FROM item 
                                             WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.id=item_id
+                                                AND item.serial_number=item_serial_number AND item.upc=item_upc
                                         ) AS item_quantity,
                                         manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                                         (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
@@ -104,7 +104,7 @@ $currency_symbol = '£';
                                         area_id, area_name, 
                                         shelf_id, shelf_name,
                                         manufacturer_name, manufacturer_id,
-                                        item_serial_number, item_upc, item_id, item_comments, item_cost
+                                        item_serial_number, item_upc, item_comments, item_cost
                                     ORDER BY site.id, area.name, shelf.name;";
                     $stmt_stock = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
@@ -132,7 +132,6 @@ $currency_symbol = '£';
                                 $stock_site_name = $row['site_name'];
                                 $stock_manufacturer_id = $row['manufacturer_id'];
                                 $stock_manufacturer_name = $row['manufacturer_name'];
-                                $item_id = $row['item_id'];
                                 $item_upc = $row['item_upc'];
                                 $item_cost = $row['item_cost'];
                                 $item_comments = $row['item_comments'];
@@ -164,7 +163,6 @@ $currency_symbol = '£';
                                                         'site_name' => $stock_site_name,
                                                         'manufacturer_id' => $stock_manufacturer_id,
                                                         'manufacturer_name' => $stock_manufacturer_name,
-                                                        'item_id' => $item_id,
                                                         'upc' => $item_upc,
                                                         'cost' => $item_cost,
                                                         'comments' => $item_comments,
@@ -199,7 +197,7 @@ $currency_symbol = '£';
                                                 <th>Shelf</th>
                                                 <th>Manufacturer</th>
                                                 <th>UPC</th>
-                                                <th title="Serial Numbers">SNs</th>
+                                                <th title="Serial Numbers">Serial</th>
                                                 <th>Cost</th>
                                                 <th>Comments</th>
                                                 <th>Stock</th>
@@ -209,33 +207,34 @@ $currency_symbol = '£';
                                     ');
                                     for ($i=0; $i<count($stock_inv_data); $i++) {
                                         echo('
-                                            <tr id="item-'.$stock_inv_data[$i]['item_id'].'" class="clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $stock_inv_data[$i]['item_id']) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$stock_inv_data[$i]['item_id'].'\')">
-                                                <td hidden>'.$stock_inv_data[$i]['item_id'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-manu">'.$stock_inv_data[$i]['upc'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-cost">'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-comments">'.$stock_inv_data[$i]['comments'].'</td>
-                                                <td id="item-'.$stock_inv_data[$i]['item_id'].'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
+                                            <tr id="item-'.$i.'" class="clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $i) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$i.'\')">
+                                                <td hidden>'.$i.'</td>
+                                                <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
+                                                <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
+                                                <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
+                                                <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
+                                                <td id="item-'.$i.'-manu">'.$stock_inv_data[$i]['upc'].'</td>
+                                                <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
+                                                <td id="item-'.$i.'-cost">'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
+                                                <td id="item-'.$i.'-comments">'.$stock_inv_data[$i]['comments'].'</td>
+                                                <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                             </tr>
-                                            <tr class="move-hide" id="item-'.$stock_inv_data[$i]['item_id'].'-edit" hidden>
-                                                <td colspan=7>
+                                            <tr class="move-hide" id="item-'.$i.'-edit" hidden>
+                                                <td colspan=100%>
                                                     <div class="container">
                                                         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                                             <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                                             <input type="hidden" name="stock-move" value="1" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-stock" name="current_stock" value="'.$stock_id.'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-item" name="current_item" value="'.$stock_inv_data[$i]['item_id'].'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
-                                                            <input type="hidden" id="'.$stock_inv_data[$i]['item_id'].'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-stock" name="current_stock" value="'.$stock_id.'" />
+                                                            <input type="hidden" id="'.$i.'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-cost" name="current_cost" value="'.$stock_inv_data[$i]['cost'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-comments" name="current_comments" value="'.$stock_inv_data[$i]['comments'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
                                                             <table style="border: 1px solid #454d55;">
                                                                 <tbody>
                                                                     <tr>
@@ -243,7 +242,7 @@ $currency_symbol = '£';
                                                                             <label style="padding-top:5px">To:</label>
                                                                         </td>
                                                                         <td>
-                                                                            <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-site" name="site" style="min-width:100px" required onchange="populateAreas(\''.$stock_inv_data[$i]['item_id'].'\')">
+                                                                            <select class="form-control" id="'.$i.'-n-site" name="site" style="min-width:100px" required onchange="populateAreas(\''.$i.'\')">
                                                                                 <option value="" selected disabled hidden>Select Site</option>');
                                                                                     include 'includes/dbh.inc.php';
                                                                                     $sql = "SELECT id, name
@@ -272,39 +271,26 @@ $currency_symbol = '£';
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-area" name="area" style="min-width:100px" disabled required onchange="populateShelves(\''.$stock_inv_data[$i]['item_id'].'\')">
+                                                                            <select class="form-control" id="'.$i.'-n-area" name="area" style="min-width:100px" disabled required onchange="populateShelves(\''.$i.'\')">
                                                                                 <option value="" selected disabled hidden>Select Area</option>
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-shelf" name="shelf" style="min-width:100px" disabled required>
+                                                                            <select class="form-control" id="'.$i.'-n-shelf" name="shelf" style="min-width:100px" disabled required>
                                                                                 <option value="" selected disabled hidden>Select Shelf</option>
                                                                             </select>
                                                                         </td>
                                                                         <td>
-                                                                            <label style="padding-top:5px" for="'.$stock_inv_data[$i]['item_id'].'-n-quantity">Quantity: </label>
+                                                                            <label style="padding-top:5px" for="'.$i.'-n-quantity">Quantity: </label>
                                                                         </td>
                                                                         <td>
-                                                                            <input type="number" class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-quantity" name="quantity" style="min-width: 50px; max-width:70px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
+                                                                            <input type="number" class="form-control" id="'.$i.'-n-quantity" name="quantity" style="min-width: 50px; max-width:70px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
                                                                         </td>
-                                                                        ');
-                                                                        if ($stock_inv_data[$i]['serial_number'] != '') {
-                                                                            $serials = explode(', ', $stock_inv_data[$i]['serial_number']);
-                                                                            echo('<td>
-                                                                                <select class="form-control" id="'.$stock_inv_data[$i]['item_id'].'-n-serial" name="serial" style="min-width:100px" onchange="serialInputCheck(\''.$stock_inv_data[$i]['item_id'].'\')" required>
-                                                                                    <option value="" selected disabled hidden>Serial #</option>
-                                                                                    <option value=""></option>
-                                                                                    ');
-                                                                                    foreach ($serials as $serial) {
-                                                                                        echo('<option value="'.$serial.'">'.$serial.'</option>');
-                                                                                    }
-                                                                                    echo('
-                                                                                </select>
-                                                                            </td>');
-                                                                        }
-                                                                        echo('
                                                                         <td>
-                                                                            <input type="submit" class="btn btn-warning" id="'.$stock_inv_data[$i]['item_id'].'-n-submit" value="Move" style="opacity:80%" name="submit" required />
+                                                                            <input type="number" class="form-control" id="'.$i.'-n-serial" name="serial" style="min-width: 160px; max-width:70px;" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled />
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="submit" class="btn btn-warning" id="'.$i.'-n-submit" value="Move" style="opacity:80%" name="submit" required />
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>

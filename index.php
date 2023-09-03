@@ -103,7 +103,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             FROM stock_label
                             GROUP BY stock_label.stock_id) AS label_ids
                         ON label_ids.stock_id = stock.id
-                        WHERE stock.is_cable=0";
+                        WHERE stock.is_cable=0 AND stock.deleted=0 ";
         $sql_inv_add = '';
         if ($site !== '0') { $sql_inv_add  .= " AND site.id=$site"; $s++; } 
         if ($area !== '0') { $sql_inv_add  .= " AND area.id=$area"; $s++; } 
@@ -114,7 +114,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         if ($label !== '') { $sql_inv_add  .= " AND label_names LIKE CONCAT('%', '$label', '%')"; $s++; }
         if ($manufacturer !== '') { $sql_inv_add  .= " AND manufacturer.name LIKE CONCAT('%', '$manufacturer', '%')"; $s++; }
         if ($showOOS == 0) { 
-            $sql_inv_add  .= " AND 
+            $sql_inv_add  .= " AND item.deleted=0 AND 
                 (SELECT SUM(quantity) 
                     FROM item 
                     INNER JOIN shelf ON item.shelf_id=shelf.id
@@ -127,7 +127,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         $sql_inv_count .= " GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, stock_min_stock, stock_is_cable, 
                         site_id, site_name, site_description, stock_img_image.stock_img_image";
-        if ($area != 0) { $sql_inv .= ", area.id"; }
+        if ($area != 0) { $sql_inv_count .= ", area.id"; }
+        if ($showOOS == 1) {
+            $sql_inv_count .= " HAVING item_quantity IS NULL OR item_quantity = 0";
+        }
         $sql_inv_count .= " ORDER BY stock.name";
 
         $stmt_inv_count = mysqli_stmt_init($conn);

@@ -236,8 +236,8 @@ if (isset($_GET['stock_id'])) {
                                             $imgWidth = "235px";
                                         }
                                         echo('
-                                        <div class=" thumb bg-dark-m" style="width:'.$imgWidth.';height:235px" onclick="modalLoad(this.children[0])">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:'.$imgWidth.'" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
+                                        <div class=" thumb bg-dark-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoad(this.children[0])">
+                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-width:'.$imgWidth.';max-height:235px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
                                         ');
@@ -283,12 +283,13 @@ if (isset($_GET['stock_id'])) {
                             }
                         } else {
                             if (!empty($stock_img_data)) {
-                                echo('<table><tbody>');
+                                echo('<table style="width:100%"><tbody>');
                                 for ($i=0; $i < count($stock_img_data); $i++) {
                                     $ii = $i+1;
                                         echo('
                                         <tr>
-                                            <form action="includes/stock-edit-action.inc.php" method="POST" enctype="multipart/form-data" onsubmit="return confirm(\'Are you sure you want to unlink this image?\nThe file will remain on the system.\');">
+                                            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" onsubmit="return confirm(\'Are you sure you want to unlink this image?\nThe file will remain on the system.\');">
+                                                <input type="hidden" name="stock-edit" value="1" />
                                                 <td class="bg-dark-m" style="padding-right:5px">
                                                     <input type="hidden" name="stock_id" value="'.$stock_img_data[$i]['stock_id'].'" />
                                                     <input type="hidden" name="img_id" value="'.$stock_img_data[$i]['id'].'" />
@@ -360,7 +361,8 @@ if (isset($_GET['stock_id'])) {
 
             ?>
         </div>
-        <form action="includes/stock-edit-action.inc.php" method="POST" enctype="multipart/form-data">
+        <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="stock-edit" value="1" />
             <div class="nav-row well-nopad bg-dark">
                 <div class="nav-row" style="padding:25px 50px 25px 50px;width:750px">
                     <div>
@@ -374,6 +376,9 @@ if (isset($_GET['stock_id'])) {
                 </div>
                 <div class="thumb bg-dark-m" style="width:85px;height:85px;margin:2px">
                     <img class="nav-v-c" id="img-selected-thumb" style="width:85px" />
+                </div>
+                <div style="padding-left:100px" class="">
+                    <button class="btn btn-warning nav-v-c" type="button" onclick="modalCloseSelection()">Cancel</button>
                 </div>
             </div>
         </form>
@@ -389,10 +394,11 @@ if (isset($_GET['stock_id'])) {
             <img class="nav-v-c" id="upload-img-pre" style="max-width:250px;max-height:250px" />
         </div>
         <div style="margin:auto;text-align:center;margin-top:10px">
-            <form action="includes/stock-edit-action.inc.php" method="POST" enctype="multipart/form-data">
+            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="stock-edit" value="1" />
                 <input type="file" accept="image/*" style="margin:auto;text-align:center" id="image" name="image" onchange="loadImage(event)"><br><br>
                 <input type="hidden" id="upload_stock_id" name="stock_id" value="<?php echo(isset($_GET['stock_id'])?$_GET['stock_id']:''); ?>" />
-                <input type="submit" name="submit" class="btn btn-success" value="Upload" />
+                <input type="submit" name="submit" class="btn btn-success" value="Upload" style="margin-right:25px"/><button class="btn btn-warning" type="button"  onclick="modalCloseUpload()">Cancel</button>
                 <script>
                 var loadImage = function(event) {
                     var preview = document.getElementById('upload-img-pre');

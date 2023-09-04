@@ -149,6 +149,13 @@ if (isset($_GET['stock_id'])) {
                                     <div class="nav-row" id="submit-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"></div>
                                         <div><input id="form-submit" type="submit" value="Save" name="submit" class="nav-v-c btn btn-success" /></div>
+                                        <div>');
+                                        if (isset($_GET['images']) && ($_GET['images'] == 'edit')) {
+                                            // echo('<button type="button" style="margin-left:150px" class="nav-v-c btn btn-warning" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'images\', \'\'), \'modify\', \'\'))">Cancel</button>');
+                                        } else {
+                                            echo('<button type="button" style="margin-left:150px" class="nav-v-c btn btn-warning" onclick="navPage(updateQueryParameter(\'\', \'modify\', \'\'))">Cancel</button>');
+                                        }
+                                        echo('</div>
                                     </div>
                                     <style>
                                             #labels {
@@ -318,8 +325,10 @@ if (isset($_GET['stock_id'])) {
                                     </a>
                                     <a id="edit-images" class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" onclick="modalLoadUpload()">
                                         <i class="fa fa-plus"></i> Add new image
-                                    </a>
+                                    </a><br>
+                                    <button type="button" style="margin-top:15px" class="nav-v-b btn btn-warning" onclick="navPage(updateQueryParameter(\'\', \'images\', \'\'))">Cancel</button>
                                 </div> ');
+                                
                         }
                         echo('
                         </div>

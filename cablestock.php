@@ -462,24 +462,25 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 }
                                                 echo('</td>');
                                                 
-                                                if (strpos($stock_name, "SM") !== false && $cable_types_parent == "Fibre") {
-                                                    $nameColor = "yellow";
-                                                } elseif (strpos($stock_name, "MM") !== false && $cable_types_parent == "Fibre") {
-                                                    $nameColor = "aqua";
-                                                } else {
-                                                    $nameColor = containsColorName($stock_name);
-                                                }
+                                                // if (strpos($stock_name, "SM") !== false && $cable_types_parent == "Fibre") {
+                                                //     $nameColor = "yellow";
+                                                // } elseif (strpos($stock_name, "MM") !== false && $cable_types_parent == "Fibre") {
+                                                //     $nameColor = "aqua";
+                                                // } else {
+                                                //     $nameColor = containsColorName($stock_name);
+                                                // }
                                                 
-                                                $name_prefix = '';
-                                                $name_suffix = '';
-                                                if ($nameColor !== false && $nameColor !== null && $nameColor !== '') {
-                                                    $nameColorHex = getColorHexFromName($nameColor);
-                                                    $complement_nameColor = getWorB($nameColorHex);
-                                                    $name_prefix = "<or style='background-color: $nameColorHex; color: $complement_nameColor'>";
-                                                    $name_suffix = "</or>";
-                                                }
+                                                // $name_prefix = '';
+                                                // $name_suffix = '';
+                                                // if ($nameColor !== false && $nameColor !== null && $nameColor !== '') {
+                                                //     $nameColorHex = getColorHexFromName($nameColor);
+                                                //     $complement_nameColor = getWorB($nameColorHex);
+                                                //     $name_prefix = "<or style='background-color: $nameColorHex; color: $complement_nameColor'>";
+                                                //     $name_suffix = "</or>";
+                                                // }
+                                                // <td class="align-middle" id="'.$cable_item_id.'-name">'.$name_prefix.$stock_name.$name_suffix.'</td>
                                                 echo('
-                                                <td class="align-middle" id="'.$cable_item_id.'-name">'.$name_prefix.$stock_name.$name_suffix.'</td>
+                                                <td class="align-middle" id="'.$cable_item_id.'-name">'.$stock_name.'</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
                                                 <td class="align-middle clickable link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>

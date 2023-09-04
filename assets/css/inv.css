@@ -65,13 +65,18 @@
 }
 
 .inv-img-25h {
-    max-width: 50px;
+    max-width: 25px;
     max-height: 25px;
 }
 .inv-img-50h {
     max-width: 50px;
     max-height: 50px;
 }
+.inv-img-main {
+    max-width: 125px;
+    max-height: 75px;
+}
+
 .inv-nav {
     background-color: #72BE2A;
     z-index:0;

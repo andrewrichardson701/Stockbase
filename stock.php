@@ -347,7 +347,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </div>
                             
                             <div class="col-sm text-right" style="margin-left:70px" id="stock-info-right">');  
-                            if (!empty($stock_img_data)) {
+                            if (!empty($stock_img_data) && $stock_img_data !== null && $stock_img_data !== '') {
                                 echo('<div class="well-nopad bg-dark nav-right" style="margin:20px;padding:0px;width:max-content">
                                 <div class="nav-row" style="width:315px">');
                                 for ($i=0; $i < count($stock_img_data); $i++) {
@@ -359,8 +359,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             $imgWidth = "235px";
                                         }
                                         echo('
-                                        <div class=" thumb bg-dark-m" style="width:'.$imgWidth.';height:235px" onclick="modalLoad(this.children[0])">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:'.$imgWidth.'" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
+                                        <div class=" thumb bg-dark-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoad(this.children[0])">
+                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-   width:'.$imgWidth.'; max-height:235px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
                                         ');
@@ -399,7 +399,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 // </div> ');
                             } else {
                                 echo('<div id="edit-images-div" class="nav-div-mid nav-v-c">
-                                    <button id="edit-images" class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px">
+                                    <button id="edit-images" class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
                                         <i class="fa fa-plus"></i> Add images
                                     </button>
                                 </div> ');

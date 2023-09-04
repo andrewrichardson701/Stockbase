@@ -76,6 +76,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         $site = isset($_GET['site']) ? $_GET['site'] : "0";
         $name = isset($_GET['name']) ? $_GET['name'] : "";
         $cableType = isset($_GET['cable']) ? $_GET['cable'] : 'copper';
+
         $site_names_array = [];
         $area_names_array = [];
 
@@ -111,8 +112,10 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $sql_inv_add  .= " AND stock.name LIKE '%$name%'";
         }
         if (isset($cableType)) {
-            $type = ucwords($cableType);
-            $sql_inv_add .= " AND cable_types.parent = '$type'";
+            if ($name == '' || $name == null) {
+                $type = ucwords($cableType);
+                $sql_inv_add .= " AND cable_types.parent = '$type'";
+            }
         }    
         $sql_inv .= $sql_inv_add;
         $sql_inv .= " GROUP BY stock.id, stock_name, stock_description, stock_sku, stock_min_stock, stock_is_cable,
@@ -192,7 +195,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     <div class="nav-row">
                         <form action="./cablestock.php" method="get" class="nav-row" style="max-width:max-content">
                             <input id="query-site" type="hidden" name="site" value="'.$site.'" />
-                            
+                            <input type="hidden" name="cable" value="'.$cableType.'" />
+                            <input type="hidden" name="oos" value="'.$showOOS.'" />
                             <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
                                 <label for="search-input-site">Site</label><br>
                                 <select id="site-dropdown" name="site" class="form-control nav-v-b cw" style="background-color:484848;border-color:black;margin:0;padding-left:0" onchange="siteChange(\'site-dropdown\')">
@@ -390,11 +394,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 <table class="table table-dark centertable" id="cableSelection" style="border:0px !important">
                     <thead style="text-align: center; white-space: nowrap; border:0px !important">
                         <tr style="border:0px !important">');
+                        if (!isset($_GET['name']) || $name == '') {
                             echo('<th class="clickable '); if ($cableType == "copper" || $cableType == '') { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'copper\'))">Copper</th>');
                             echo('<th class="clickable '); if ($cableType == "fibre") { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'fibre\'))">Fibre</th>');
                             echo('<th class="clickable '); if ($cableType == "power") { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'power\'))">Power</th>');
                             echo('<th class="clickable '); if ($cableType == "other") { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'other\'))">Other</th>');
-                            echo('
+                        }
+                        echo('
                         </tr>
                     </thead>
                     <tbody>

@@ -1061,7 +1061,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 // echo('Delete<br>');
                 // print_r($_POST);
 
-                $redi_url = 'https://inventory.arpco.xyz/stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
+                $redi_url = '../stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
 
                 if (isset($_POST['stock_id'])) {
                     if (isset($_POST['img_id'])) {
@@ -1188,7 +1188,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 // print_r($_POST);
                 // print_r($_FILES);
 
-                $redi_url = 'https://inventory.arpco.xyz/stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
+                $redi_url = '../stock.php?stock_id='.$_POST['stock_id'].'&modify=edit&images=edit';
                 if (isset($_POST['stock_id'])) {
                     if (isset($_FILES['image'])) {
                         image_upload('image', $_POST['stock_id'], $redi_url, '');

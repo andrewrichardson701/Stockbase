@@ -346,7 +346,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <div class="nav-row">
                                 <form action="./" method="get" class="nav-row" style="max-width:max-content">
                                     <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
-                                    <input id="query-area" type="hidden" name="area" value="'.$area.'" />');
+                                    <input id="query-area" type="hidden" name="area" value="'.$area.'" />
+                                    <input id="query-oos" type="hidden" name="oos" value="'.$showOOS.'" />');
                                     echo ('
                                     <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
                                         <label for="search-input-site">Site</label><br>

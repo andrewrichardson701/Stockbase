@@ -360,7 +360,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         }
                                         echo('
                                         <div class=" thumb bg-dark-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoad(this.children[0])">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-   width:'.$imgWidth.'; max-height:235px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
+                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-width:'.$imgWidth.'; max-height:235px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
                                         ');

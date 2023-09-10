@@ -228,7 +228,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
             $results[-1]['page-number-area'] = $pageNumberArea;
             $results[-1]['page'] = $current_page;
             $results[-1]['rows'] = $rowSelectValue;
-            $results[-1]['url'] = "./?site=$site&area=$area&name=$name&sku=$sku&shelf=$shelf&manufacturer=$manufacturer&label=$label&page=$current_page&rows=$rowSelectValue";
+            $results[-1]['url'] = "./?oos=$showOOS&site=$site&area=$area&name=$name&sku=$sku&shelf=$shelf&manufacturer=$manufacturer&label=$label&page=$current_page&rows=$rowSelectValue";
             $results[-1]['sql'] = $sql_inv;
             $results[-1]['areas'] = $area_array;
             // ----

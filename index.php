@@ -48,6 +48,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         }
         echo('<input id="hidden-row-count" type="hidden" value="'.$rowSelectValue.'" />
         <input id="hidden-page-number" type="hidden" value="'.$page.'" />
+        <input id="hidden-oos" type="hidden" value="'.$showOOS.'" />
         <pre id="hidden-sql" hidden></pre>');
 
         
@@ -366,6 +367,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             var pageNumberArea = document.getElementById('inv-page-numbers');
             var sql = document.getElementById('hidden-sql');
             // console.log(invBody);
+            var oos = document.getElementById('hidden-oos').value;
             var site = document.getElementById('site-dropdown').value;
             var area = document.getElementById('area-dropdown').value;
             var name = document.getElementById('search-input-name').value;
@@ -379,7 +381,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             var areaSelect = document.getElementById('area-dropdown');
 
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/indexajax.php?request-inventory=1&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&label="+label+"&rows="+rows+"&page="+page, true);
+            xhr.open("GET", "includes/indexajax.php?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&label="+label+"&rows="+rows+"&page="+page, true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     // Parse the response and populate the shelf select box

@@ -7,7 +7,7 @@ $WorB_complement_banner_color = getWorB($complemenent_banner_color);
     #scrollTop {
         display: block;
         position: fixed;
-        bottom: 20px;
+        bottom: 35px;
         right: -100px;
         z-index: 99;
         font-size: 18px;

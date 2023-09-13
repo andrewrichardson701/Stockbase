@@ -475,7 +475,7 @@ if ($stock_id == 0 || $stock_id == '0') {
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page">' . $i . '</span>');
+                                    echo('&nbsp;<span class="current-page blue">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
                                     echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');

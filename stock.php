@@ -293,7 +293,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 // <p id="sku-head"><strong>SKU</strong></p>
                                 // <p id="sku">'.$stock_sku.'</p>');
                                 echo('
-                                    <p id="min-stock"><strong>Minimum Stock Count:</strong> <or class="gold">'.$stock_min_stock.'</or></p>
+                                    <p id="min-stock"><strong>Minimum Stock Count:</strong> <or class="blue">'.$stock_min_stock.'</or></p>
                                 ');
 
                                 echo('

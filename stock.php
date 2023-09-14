@@ -359,7 +359,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             $imgWidth = "235px";
                                         }
                                         echo('
-                                        <div class=" thumb bg-dark-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoad(this.children[0])">
+                                        <div class="thumb bg-dark-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-width:'.$imgWidth.'; max-height:235px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
@@ -367,7 +367,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     } 
                                     if ($i == 1 || $i == 2) {
                                         echo('
-                                        <div class="thumb bg-dark-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoad(this.children[0])">
+                                        <div class="thumb bg-dark-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
                                         </div>
                                         ');
@@ -380,7 +380,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             ');
                                         } else {
                                             echo('
-                                            <div class="thumb bg-dark-m" style="width:75px;height:75px" onclick="modalLoad(this.children[0])">
+                                            <div class="thumb bg-dark-m" style="width:75px;height:75px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" onclick="modalLoad(this)"/>
                                             ');
                                         }
@@ -397,6 +397,67 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 //         <i class="fa fa-pencil"></i> Edit images
                                 //     </button>
                                 // </div> ');
+                                if (count($stock_img_data) == 1) {
+                                    echo('
+                                    <!-- Modal Image Div -->
+                                    <div id="modalDivCarousel" class="modal" onclick="modalCloseCarousel()">
+                                        <span class="close" onclick="modalCloseCarousel()">&times;</span>
+                                        <img class="modal-content bg-trans" id="modalImg">
+                                        <div id="caption" class="modal-caption"></div>
+                                    </div>
+                                    <!-- End of Modal Image Div -->
+                                    ');
+                                } else {
+                                    echo('
+                                    <link rel="stylesheet" href="./assets/css/carousel.css">
+                                    <script src="assets/js/carousel.js"></script>
+                                    <!-- Modal Image Div -->
+                                    <div id="modalDivCarousel" class="modal">
+                                        <span class="close" onclick="modalCloseCarousel()">&times;</span>
+                                        <img class="modal-content bg-trans" id="modalImg">
+                                            <div id="myCarousel" class="carousel slide" data-ride="carousel" align="center" style="margin-left:10%; margin-right:10%">
+                                                <!-- Indicators -->
+                                                <ol class="carousel-indicators">');
+                                                for ($a=0; $a < count($stock_img_data); $a++) {
+                                                    if ($a == 0) { $active = ' class="active"'; } else { $active = ''; }
+                                                    echo('<li data-target="#myCarousel" data-slide-to="'.$a.'"'.$active.'></li>');
+                                                }
+                                                echo('
+                                                </ol>
+
+                                                <!-- Wrapper for slides -->
+                                                <div class="carousel-inner" align="centre">');
+                                                for ($b=0; $b < count($stock_img_data); $b++) {
+                                                    if ($b == 0) { $active = " active"; } else { $active = ''; }
+                                                    $bb = $b+1;
+                                                    echo('
+                                                    <div class="item'.$active.'" align="centre">
+                                                    <img class="modal-content bg-trans" id="stock-'.$stock_img_data[$b]['stock_id'].'-img-'.$stock_img_data[$b]['id'].'" src="assets/img/stock/'.$stock_img_data[$b]['image'].'" style="max-width:1000px"/>
+                                                        <div class="carousel-caption">
+                                                            <h3></h3>
+                                                            <p></p>
+                                                        </div>
+                                                    </div>
+                                                    ');
+                                                }
+                                                    echo('
+                                                </div>
+
+                                                <!-- Left and right controls -->
+                                                <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                                                    <i class="fa fa-chevron-left" style="position:absolute; top:50%; margin-top:-5px"></i>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                                <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                                                    <i class="fa fa-chevron-right" style="position:absolute; top:50%; margin-top:-5px"></i>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </div>
+                                        <div id="caption" class="modal-caption"></div>
+                                    </div>
+                                    <!-- End of Modal Image Div -->
+                                    ');
+                                }
                             } else {
                                 echo('<div id="edit-images-div" class="nav-div-mid nav-v-c">
                                     <button id="edit-images" class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
@@ -581,6 +642,20 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 icon.classList.remove("fa-chevron-down");
                 icon.classList.add("fa-chevron-up");
             }
+        }
+    </script>
+
+    <script>
+        function modalLoadCarousel() {
+            var modal = document.getElementById("modalDivCarousel");
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseCarousel = function() { 
+            var modal = document.getElementById("modalDivCarousel");
+            modal.style.display = "none";
         }
     </script>
 </body>

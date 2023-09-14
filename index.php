@@ -243,11 +243,43 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </span>
                             <span id="search-input-manufacturer-span" style="margin-right: 10px">
                                 <label for="search-input-manufacturer">Manufacturer</label><br>
-                                <input id="search-input-manufacturer" type="text" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Manufacturer" oninput="getInventory(1)" value="'); echo(isset($_GET['manufacturer']) ? $_GET['manufacturer'] : ''); echo('" />
+                                
+                                <select id="search-input-manufacturer" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Manufacturer" onchange="getInventory(1)">
+                                <option value="" '); if (!isset($_GET['manufacturer']) || $_GET['manufacturer'] == '') { echo('selected'); } echo('>All</option>');
+                                $sql_manufacturer = "SELECT * FROM manufacturer";
+                                $stmt_manufacturer = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
+                                    echo("ERROR getting entries");
+                                } else {
+                                    mysqli_stmt_execute($stmt_manufacturer);
+                                    $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
+                                    $rowCount_manufacturer = $result_manufacturer->num_rows;
+                                    while ($row_manufacturer = $result_manufacturer->fetch_assoc()) {
+                                        echo('<option value="'.$row_manufacturer['name'].'" '); if (isset($_GET['label']) && $_GET['manufacturer'] == $row_manufacturer['name']) { echo ('selected'); } echo('>'.$row_manufacturer['name'].'</option>');
+                                    }
+                                }
+                                echo('
+                                </select>
                             </span>
                             <span id="search-input-label-span" style="margin-right: 10px">
                                 <label for="search-input-label">Label</label><br>
-                                <input id="search-input-label" type="text" name="label" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Label" oninput="getInventory(1)" value="'); echo(isset($_GET['label']) ? $_GET['label'] : ''); echo('" />
+                                
+                                <select id="search-input-label" name="label" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Label" onchange="getInventory(1)">
+                                <option value="" '); if (!isset($_GET['label']) || $_GET['label'] == '') { echo('selected'); } echo('>All</option>');
+                                $sql_labels = "SELECT * FROM label";
+                                $stmt_labels = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
+                                    echo("ERROR getting entries");
+                                } else {
+                                    mysqli_stmt_execute($stmt_labels);
+                                    $result_labels = mysqli_stmt_get_result($stmt_labels);
+                                    $rowCount_labels = $result_labels->num_rows;
+                                    while ($row_labels = $result_labels->fetch_assoc()) {
+                                        echo('<option value="'.$row_labels['name'].'" '); if (isset($_GET['label']) && $_GET['label'] == $row_labels['name']) { echo ('selected'); } echo('>'.$row_labels['name'].'</option>');
+                                    }
+                                }
+                                echo('
+                                </select>
                             </span>
                             <input type="submit" value="submit" hidden>
                         </form>');

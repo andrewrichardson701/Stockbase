@@ -17,7 +17,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) 
     && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit'])
-    && !isset($_POST['smtp-toggle-submit'])) {
+    && !isset($_POST['smtp-toggle-submit']) && !isset($_POST['imagemanagement-submit'])) {
 
     header("Location: ../admin.php?error=noSubmit");
     exit();
@@ -1209,6 +1209,26 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } else {
             header("Location: ../admin.php?error=missingLocationType#stocklocations-settings");
+            exit();
+        }
+    } elseif (isset($_POST['imagemanagement-submit'])) { // image management section in the admin.php page
+        if (isset($_POST['file-name'])) {
+            if (isset($_POST['file-links'])) {
+                if ($_POST['file-links'] == 0) {
+                    $filename = $_POST['file-name'];
+                    exec("rm ../assets/img/stock/$filename");
+                    header("Location: ../admin.php?success=imageDeleted#imagemanagement-settings");
+                    exit();
+                } else {
+                    header("Location: ../admin.php?error=linksExist#imagemanagement-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=missingFileLinks#imagemanagement-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=missingFileName#imagemanagement-settings");
             exit();
         }
     } elseif (isset($_POST['stocklocation-submit'])) { // editing location info from admin.php

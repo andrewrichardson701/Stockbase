@@ -454,12 +454,98 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </table>
         </div>
 
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings" onclick="toggleSection(this, 'imagemanagement')">Image Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Image Management Settings -->
+        <div style="padding-top: 20px" id="imagemanagement" hidden>
+            <div style="height:75%;overflow-x: hidden;overflow-y: auto;">
+                <table class="table table-dark" style="max-width:max-content">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width:130px">Image</th>
+                            <th class="text-center">File</th>
+                            <th class="text-center">Links</th>
+                            <th class="text-center">Delete</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        $filepath = 'assets/img/stock';
+                        $files = array_values(array_diff(scandir($filepath), array('..', '.')));
+                        // print_r($files);
+                        
 
+                        for ($f=0; $f<count($files); $f++) {
+                            $filename = $files[$f];
+
+                            $sql_images = "SELECT * FROM stock_img WHERE image='$filename'";
+                            $stmt_images = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_images, $sql_images)) {
+                                echo("ERROR getting entries");
+                            } else {
+                                mysqli_stmt_execute($stmt_images);
+                                $result_images = mysqli_stmt_get_result($stmt_images);
+                                $rowCount_images = $result_images->num_rows;
+                                $links = $rowCount_images;
+                            }
+                            echo('
+                                <tr id="image-row-'.$f.'" class="align-middle">
+                                    <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="file-name" value="'.$filename.'" />
+                                        <input type="hidden" name="file-links" value="'.$links.'" />
+                                        <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
+                                        <td id="image-'.$f.'-name" class="text-center align-middle">'.$filepath.'/'.$filename.'</td>
+                                        <td class="text-center align-middle">'.$links.'</td>
+                                        <td class="text-center align-middle"><button class="btn btn-danger" type="submit" name="imagemanagement-submit" '); if ($links !== 0) { echo('disabled title="Image still linked to stock. Remove these links before deleting."'); } echo('><i class="fa fa-trash"></i></button></td>
+                                        <td class="text-center align-middle">'); if ($links !== 0) { echo('<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showImageLinks(\''.$f.'\')">Show Links</button>'); } echo('</td>
+                                    </form>
+                                </tr>
+                            ');
+                            if ($links !== 0) { 
+                                echo('
+                                    <tr id="image-row-'.$f.'-links" class="align-middle" hidden>
+                                        <td colspan=100%>
+                                            <div>
+                                                <table class="table table-dark">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID</td>
+                                                            <th>Stock ID</td>
+                                                            <th>Image</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>');
+                                                    while ($row_images = $result_images->fetch_assoc()) {
+                                                        echo('
+                                                            <tr class="clickable" onclick=navPage("stock.php?stock_id='.$row_images['stock_id'].'")>
+                                                                <td>'.$row_images['id'].'</td>
+                                                                <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_id'].'</a></td>
+                                                                <td>'.$row_images['image'].'</td>
+                                                            </tr>
+                                                        ');
+                                                    }
+                                                    
+                                                    echo('
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ');
+                            }
+                        }
+                        
+
+                    ?>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Stock Location Settings -->
         <div style="padding-top: 20px" id="stocklocations" hidden>
-            <p class="red">Still needs sorting... This will show all stock sites, areas, shelves - Need to work out how the edit buttons will work (hidden cells) and how to check if the relationships are good for deletion to enable the delete buttons.</p>
-
 
             <?php
             $locations = [];
@@ -1655,6 +1741,23 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         xhr.send();
         }
         document.getElementById("addLocation-type").addEventListener("change", populateParent);
+    </script>
+
+    <script>
+        function showImageLinks(num) {
+            var button = document.getElementById('image-'+num+'-links');
+            var linksRow = document.getElementById('image-row-'+num+'-links');
+
+            if (linksRow.hidden === true) {
+                button.className = "btn btn-dark";
+                button.innerText = "Hide Links";
+                linksRow.hidden = false;
+            } else {
+                button.className = "btn btn-warning";
+                button.innerText = "Show Links";
+                linksRow.hidden = true;
+            }
+        }
     </script>
 
     

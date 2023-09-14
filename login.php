@@ -32,10 +32,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
 
-    <div class="container">
-        <h2 class="header-small"><?php echo ucwords($current_system_name);?></h2>
-    </div>
-    <div class="container" style="margin-top:20px">
+    <div class="container" style="margin-top:75px">
         <div class="row">
             <div class="col-md-6" style="margin-left:25px">
                 <h3>Login</h3>

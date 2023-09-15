@@ -181,7 +181,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         LEFT JOIN area ON shelf.area_id=area.id 
                         LEFT JOIN site ON area.site_id=site.id
                         LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                        WHERE stock.id=? AND stock.deleted=0
+                        WHERE stock.id=? AND stock.deleted=0 AND item.deleted=0
                         GROUP BY 
                             stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                             site_id, site_name, site_description, 

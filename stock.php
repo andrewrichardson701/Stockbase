@@ -270,18 +270,27 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             </tr>
                                         </thead>
                                         <tbody>');
+                                    $stt = 0; // checker to see if the stock is 0
                                     for ($st=0; $st<count($stock_inv_data); $st++) {
                                         if ($stock_inv_data[$st]['quantity'] !== 0 && $stock_inv_data[$st]['quantity'] !== '0' && $stock_inv_data[$st]['quantity'] !== null && $stock_inv_data[$st]['quantity'] !== 'null') {
                                             echo('
                                             <tr id="stock-row-'.$stock_inv_data[$st]['id'].'">
                                                 <td hidden>'.$stock_inv_data[$st]['id'].'</td>
-                                                <td id="site-'.$stock_inv_data[$st]['site_id'].'"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'\'">'.$stock_inv_data[$st]['site_name'].'</or></td>
-                                                <td id="area-'.$stock_inv_data[$st]['area_id'].'" style="padding-left: 10px"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'&area='.$stock_inv_data[$st]['area_id'].'\'">'.$stock_inv_data[$st]['area_name'].':</or></td>
+                                                <td id="site-'.$stock_inv_data[$st]['site_id'].'"><or class="clickable" onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'\'">'.$stock_inv_data[$st]['site_name'].'</or></td>
+                                                <td id="area-'.$stock_inv_data[$st]['area_id'].'" style="padding-left: 10px"><or class="clickable" onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'&area='.$stock_inv_data[$st]['area_id'].'\'">'.$stock_inv_data[$st]['area_name'].'</or>:</td>
                                                 <td id="shelf-'.$stock_inv_data[$st]['shelf_id'].'" style="padding-left: 5px"><button class="btn btn-dark btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$st]['shelf_name']).'\'">'.$stock_inv_data[$st]['shelf_name'].'</button></td>
                                                 <td style="padding-left: 5px" class="text-center cw">'.$stock_inv_data[$st]['quantity'].'</td>
                                             </tr>
                                             ');
+                                            $stt ++; // stock found, add one to the checker.
                                         }
+                                    }
+                                    if ($stt == 0) { // show this only if there is no stock - this is the cleanest solution i could find at the time. Probably a better way but not worth searching for it yet
+                                        echo('
+                                        <tr id="stock-row-na-'.$st.'">
+                                            <td colspan=100% style="padding-left: 5px" class="text-center">N/A</td>
+                                        </tr>
+                                        ');
                                     }
                                     echo('</tbody>
                                     </table>

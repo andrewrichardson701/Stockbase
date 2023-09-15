@@ -263,8 +263,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <thead>
                                             <tr>
                                                 <th hidden>id</th>
-                                                <th hidden>Site</th>
-                                                <th>Location</th>
+                                                <th>Site</th>
+                                                <th style="padding-left: 10px">Location</th>
                                                 <th style="padding-left: 5px">Shelf</th>
                                                 <th style="padding-left: 5px">Stock</th>
                                             </tr>
@@ -275,8 +275,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             echo('
                                             <tr id="stock-row-'.$stock_inv_data[$st]['id'].'">
                                                 <td hidden>'.$stock_inv_data[$st]['id'].'</td>
-                                                <td hidden id="site-'.$stock_inv_data[$st]['site_id'].'"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'\'">'.$stock_inv_data[$st]['site_name'].'</or></td>
-                                                <td id="area-'.$stock_inv_data[$st]['area_id'].'"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'&area='.$stock_inv_data[$st]['area_id'].'\'">'.$stock_inv_data[$st]['area_name'].':</or></td>
+                                                <td id="site-'.$stock_inv_data[$st]['site_id'].'"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'\'">'.$stock_inv_data[$st]['site_name'].'</or></td>
+                                                <td id="area-'.$stock_inv_data[$st]['area_id'].'" style="padding-left: 10px"><or onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'&area='.$stock_inv_data[$st]['area_id'].'\'">'.$stock_inv_data[$st]['area_name'].':</or></td>
                                                 <td id="shelf-'.$stock_inv_data[$st]['shelf_id'].'" style="padding-left: 5px"><button class="btn btn-dark btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$st]['shelf_name']).'\'">'.$stock_inv_data[$st]['shelf_name'].'</button></td>
                                                 <td style="padding-left: 5px" class="text-center cw">'.$stock_inv_data[$st]['quantity'].'</td>
                                             </tr>

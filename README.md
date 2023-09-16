@@ -474,15 +474,29 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.2.0-beta</h3></summary>
-<h4>Beta releast 0.2.0, based on initial feedback.</h4>
+<h4>Beta release 0.2.0, based on initial feedback.</h4>
 
 - Corrected the url redirects when a user tries to reach a page without being logged in. Logging in now redirects to the correct page.
 - Removed the title and welcome message from the index page and cablestock pages.
 - Moved the title into the Nav bar and linked it to the index page.
 - Corrected the issue with the offset being negative when no items are found on the index sql query. Negative numbers now default to 0.
 - Back button removed from the nav. This was creating loops where you couldnt actually go back.
-- Changes the icon in the clear button to be the fa-ban icon and rotated it 90degrees
-- Change the serial number so it can now be copied but this may be going later down the line
+- Changed the icon in the clear button to be the fa-ban icon and rotated it 90degrees
+- Changed the serial number so it can now be copied but this may be going later down the line
+- Stock page now allows you to edit individual rows in the item table. This allows the adding of new serial numbers which were missed.
+- Images can be permenantly deleted from the admin page
+- Cable stock now relates to shelves rather than just sites. This is now added correctly too.
+- Stock page now hides irrelevant info for cables.
+- Less important info is now under the "more info" section on the stock page.
+- The "show 0 stock" button now ONLY shows 0 stock rows, now all rows.
+- Corrected the cablestock searching and formatting.
+- Dynamic searching is now in and working. Ajax based searching which updates on input.
+- Can now search with more criteria on the home page.
+- Images are now larger on the home page. This is copied throughout.
+- Cablestock page now allows you to go to the stock properies page by clicking the cable name. This is the same as normal stock items, with less important info removed. 
+- Can now change the image for cablestock with the above change.
+- Label and Manufacturer are now select boxes rather than input because this makes more sense.
+- Added deleted field to tables (item, stock, shelf, area etc) so that things can be tracked.
 
 </details>
 <details>

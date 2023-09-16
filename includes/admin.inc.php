@@ -899,7 +899,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         // for the Stock Location Settings section on admin.inc.php page. This is only the deleting of the site/area/shelf
         if ($_POST['location-delete-submit'] == "site") {
             $site_id = $_POST['location-id'];
-            $sql_check = "SELECT * FROM area WHERE site_id=$site_id;";
+            $sql_check = "SELECT * FROM area WHERE site_id=$site_id AND deleted=0;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
                 header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -910,7 +910,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_check2 = "SELECT * FROM cable_item WHERE site_id=$site_id;";
+                    $sql_check2 = "SELECT * site WHERE id=$site_id AND deleted=0;";
                     $stmt_check2 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
@@ -919,41 +919,25 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt_check2);
                         $result_check2 = mysqli_stmt_get_result($stmt_check2);
                         $rowCount_check2 = $result_check2->num_rows;
-                        
-                        if ($rowCount_check2 == 0) {
-                            $sql_check3 = "SELECT * site WHERE id=$site_id;";
-                            $stmt_check3 = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_check3, $sql_check3)) {
-                                header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
-                                exit();
-                            } else {
-                                mysqli_stmt_execute($stmt_check3);
-                                $result_check3 = mysqli_stmt_get_result($stmt_check3);
-                                $rowCount_check3 = $result_check3->num_rows;
-                                $row_check3 = $result_check3->fetch_assoc();
+                        $row_check2 = $result_check2->fetch_assoc();
 
-                                $current_stock_name = $row_check3['name'];
+                        $current_stock_name = $row_check2['name'];
 
-                                $sql_site = "DELETE FROM site WHERE id=$site_id;";
-                                $stmt_site = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
-                                    header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
-                                    exit();
-                                } else {
-                                    mysqli_stmt_execute($stmt_site);
-                                    // update changelog
-                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "name", $current_stock_name, null);
-
-                                    header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
-                                    exit();
-                                }
-                            }
-                            
+                        $sql_site = "UPDATE site SET deleted=1 WHERE id=$site_id;";
+                        $stmt_site = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                            header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                            exit();
                         } else {
-                            header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
+                            mysqli_stmt_execute($stmt_site);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "deleted", 0, 1);
+
+                            header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
                             exit();
                         }
-                    }     
+                    }
+                         
                 } else {
                     header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
                     exit();
@@ -961,7 +945,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } elseif ($_POST['location-delete-submit'] == "area") {
             $area_id = $_POST['location-id'];
-            $sql_check = "SELECT * FROM shelf WHERE area_id=$area_id;";
+            $sql_check = "SELECT * FROM shelf WHERE area_id=$area_id AND deleted=0;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
                 header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -972,7 +956,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_check1 = "SELECT * FROM area WHERE id=$area_id;";
+                    $sql_check1 = "SELECT * FROM area WHERE id=$area_id AND deleted=0;";
                     $stmt_check1 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -985,7 +969,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
                         $current_area_name = $row_check1['name'];
                         
-                        $sql_area = "DELETE FROM area WHERE id=$area_id;";
+                        $sql_area = "UPDATE area SET deleted=1 WHERE id=$area_id;";
                         $stmt_area = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
                             header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -993,7 +977,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         } else {
                             mysqli_stmt_execute($stmt_area);
                             // update changelog
-                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "area", $area_id, "name", $current_area_name, null);
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "area", $area_id, "deleted", 0, 1);
 
                             header("Location: ../admin.php?success=areaDeleted&id=$area_id#stocklocations-settings");
                             exit();
@@ -1006,7 +990,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } elseif ($_POST['location-delete-submit'] == "shelf") {
             $shelf_id = $_POST['location-id'];
-            $sql_check = "SELECT * FROM item WHERE id=$shelf_id;";
+            $sql_check = "SELECT * FROM item WHERE shelf_id=$shelf_id AND deleted=0;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
                 header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -1017,7 +1001,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_check1 = "SELECT * FROM shelf WHERE id=$shelf_id;";
+
+                    $sql_check1 = "SELECT * FROM cable_item WHERE shelf_id=$shelf_id AND deleted=0;";
                     $stmt_check1 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -1026,27 +1011,43 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt_check1);
                         $result_check1 = mysqli_stmt_get_result($stmt_check1);
                         $rowCount_check1 = $result_check1->num_rows;
-                        $row_check1 = $result_check1->fetch_assoc();
 
-                        $current_shelf_name = $row_check1['name'];
+                        if ($rowCount_check1 == 0) {
 
-                        $sql_shelf = "DELETE FROM shelf WHERE id=$shelf_id;";
-                        $stmt_shelf = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
-                            header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
-                            exit();
+                            $sql_check2 = "SELECT * FROM shelf WHERE id=$shelf_id AND deleted=0;";
+                            $stmt_check2 = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
+                                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_execute($stmt_check2);
+                                $result_check2 = mysqli_stmt_get_result($stmt_check2);
+                                $rowCount_check2 = $result_check2->num_rows;
+                                $row_check2 = $result_check2->fetch_assoc();
+
+                                $current_shelf_name = $row_check2['name'];
+
+                                $sql_shelf = "UPDATE shelf SET deleted=1 WHERE id=$shelf_id;";
+                                $stmt_shelf = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
+                                    header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_execute($stmt_shelf);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "shelf", $shelf_id, "deleted", 0, 1);
+
+                                    header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
+                                    exit();
+                                }
+                            }
                         } else {
-                            mysqli_stmt_execute($stmt_shelf);
-                            // update changelog
-                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "shelf", $shelf_id, "name", $current_shelf_name, null);
-
-                            header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
+                            header("Location: ../admin.php?error=shelfHasDependencies1#stocklocations-settings");
                             exit();
                         }
                     }
-                    
                 } else {
-                    header("Location: ../admin.php?error=shelfHasDependencies#stocklocations-settings");
+                    header("Location: ../admin.php?error=shelfHasDependencies2#stocklocations-settings");
                     exit();
                 }
             }

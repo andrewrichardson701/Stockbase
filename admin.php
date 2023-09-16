@@ -555,6 +555,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 FROM site
                                 LEFT JOIN area ON site.id = area.site_id
                                 LEFT JOIN shelf ON area.id = shelf.area_id
+                                WHERE site.deleted=0 AND area.deleted=0 AND shelf.deleted=0
                                 ORDER BY site.id, area.id, shelf.id";
             $stmt_locations = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_locations, $sql_locations)) {

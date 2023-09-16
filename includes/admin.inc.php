@@ -46,14 +46,26 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 header("Location: ../admin.php?error=configConnectionSQL");
                 exit();
             } else {
-                $configCurrent = $result->fetch_assoc();
                 mysqli_stmt_execute($stmt);
+                    
+                $sql = "SELECT * FROM config";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    $errors[] = "configTableSQLConnection";
+                } else {
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    $configCurrent = $result->fetch_assoc();
+                }
+                
                 // update changelog
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Create config", "config", 1, "id", null, 1);
 
             }  
         } else {
             // all good, continue.
+            $configCurrent = $result->fetch_assoc();
         }
     }
     if (isset($_POST['global-submit'])) { // GLOBAL saving in admin
@@ -85,23 +97,25 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
         if ( isset($_POST['banner_color']) && $config_banner_color !== '') {
             $post_banner_color = $config_banner_color;
-            if (preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $post_banner_color)) {
-                include 'dbh.inc.php';
-                $sql_upload = "UPDATE config SET banner_color=? WHERE id=1";
-                $stmt_upload = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                    $errors[] = "bannercolorSqlError";
-                } else {
-                    mysqli_stmt_bind_param($stmt_upload, "s", $post_banner_color);
-                    mysqli_stmt_execute($stmt_upload);
-                    $queryStrings[] = "bannercolorUpload=success";
-                    // update changelog
-                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "banner_color", $configCurrent['banner_color'], $post_banner_color);
+            if ($post_banner_color !== $configCurrent['banner_color']) {
+                if (preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $post_banner_color)) {
+                    include 'dbh.inc.php';
+                    $sql_upload = "UPDATE config SET banner_color=? WHERE id=1";
+                    $stmt_upload = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                        $errors[] = "bannercolorSqlError";
+                    } else {
+                        mysqli_stmt_bind_param($stmt_upload, "s", $post_banner_color);
+                        mysqli_stmt_execute($stmt_upload);
+                        $queryStrings[] = "bannercolorUpload=success";
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "banner_color", $configCurrent['banner_color'], $post_banner_color);
 
+                    }
+                    
+                } else {
+                    $errors[] = "invalidHexFormat";
                 }
-                
-            } else {
-                $errors[] = "invalidHexFormat";
             }
         }
 
@@ -194,7 +208,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt_upload);
                         $queryStrings[] = "faviconUpload=success";
                         // update changelog
-                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "favicon_image", $configCurrent['favicon_image'], $post_favicon_image);
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "favicon_image", $configCurrent['favicon_image'], $favicon_image_name);
                     }
                 } else {
                     $errors[] = "FAVICON ERROR START";
@@ -213,16 +227,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         if (isset($_POST['currency_selection']) && $config_currency !== '') {
             $post_currency = $_POST['currency_selection'];
             include 'dbh.inc.php';
-            $sql_upload = "UPDATE config SET currency=? WHERE id=1";
-            $stmt_upload = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                $errors[] = "currencySqlError";
-            } else {
-                mysqli_stmt_bind_param($stmt_upload, "s", $post_currency);
-                mysqli_stmt_execute($stmt_upload);
-                $queryStrings[] = "currencyUpload=success";
-                // update changelog
-                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "currency", $configCurrent['currency'], $post_currency);
+            if ($post_currency !== $configCurrent['currency']) {
+                $sql_upload = "UPDATE config SET currency=? WHERE id=1";
+                $stmt_upload = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                    $errors[] = "currencySqlError";
+                } else {
+                    mysqli_stmt_bind_param($stmt_upload, "s", $post_currency);
+                    mysqli_stmt_execute($stmt_upload);
+                    $queryStrings[] = "currencyUpload=success";
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "currency", $configCurrent['currency'], $post_currency);
+                }
             }
         }
 

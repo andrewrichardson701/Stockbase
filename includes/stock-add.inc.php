@@ -695,8 +695,8 @@ function populateShelves() {
   };
   xhr.send();
 }
-// document.getElementById("site").addEventListener("change", populateAreas);
-// document.getElementById("area").addEventListener("change", populateShelves);
+document.getElementById("site").addEventListener("change", populateAreas);
+document.getElementById("area").addEventListener("change", populateShelves);
 </script>
 
 

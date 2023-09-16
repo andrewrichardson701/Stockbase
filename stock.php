@@ -63,7 +63,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         } else {
             include 'includes/dbh.inc.php';
-            $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock,
+            $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, stock.is_cable AS stock_is_cable,
                                 stock_img.id AS stock_img_id, stock_img.stock_id AS stock_img_stock_id, stock_img.image AS stock_img_image
                         FROM stock
                         LEFT JOIN stock_img ON stock.id=stock_img.stock_id
@@ -87,6 +87,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         $stock_description         = $row['stock_description'] ;
                         $stock_sku                 = $row['stock_sku']         ;
                         $stock_min_stock           = $row['stock_min_stock']   ;
+                        $stock_is_cable            = $row['stock_is_cable']   ;
                         $stock_stock_img_id        = $row['stock_img_id']      ;
                         $stock_stock_img_stock_id  = $row['stock_img_stock_id'];
                         $stock_stock_img_image     = $row['stock_img_image']   ;
@@ -101,7 +102,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     // print_r('<pre class="bg-dark">');
                     // print_r($stock_img_data);
                     // print_r('</pre>');
-
+                    if ($stock_is_cable == 1) {
+                        $cable_disable = ' disabled';
+                    } else {
+                        $cable_disable = '';
+                    }
                     echo('
                         <div class="container" style="padding-bottom:25px">
                             <h2 class="header-small" style="padding-bottom:5px">Stock</h2>
@@ -113,17 +118,17 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </button>
                                 </div> 
                                 <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                    <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))">
+                                    <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$cable_disable.'>
                                         <i class="fa fa-plus"></i> Add 
                                     </button>
                                 </div> 
                                 <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                    <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))">
+                                    <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$cable_disable.'>
                                         <i class="fa fa-minus"></i> Remove 
                                     </button>
                                 </div> 
                                 <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-                                    <button id="transfer-stock" class="btn btn-warning nav-v-b" style="width:110px;color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))">
+                                    <button id="transfer-stock" class="btn btn-warning nav-v-b" style="width:110px;color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))"'.$cable_disable.'>
                                         <i class="fa fa-arrows-h"></i> Move 
                                     </button>
                                 </div>
@@ -143,8 +148,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 }
             }
 
-
-            $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+            if ($stock_is_cable == 0) { // not a cable
+                $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                             area.id AS area_id, area.name AS area_name,
                             shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
                             (SELECT SUM(quantity) 
@@ -185,6 +190,27 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             area_id, area_name, 
                             shelf_id, shelf_name
                         ORDER BY site.id, area.name, shelf.name;";
+            } else { // is a cable
+                $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                            area.id AS area_id, area.name AS area_name,
+                            shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                            (SELECT SUM(quantity) 
+                                FROM cable_item 
+                                WHERE cable_item.stock_id = stock.id AND cable_item.shelf_id=shelf.id
+                            ) AS item_quantity
+                        FROM stock
+                        LEFT JOIN cable_item ON stock.id=cable_item.stock_id
+                        LEFT JOIN shelf ON cable_item.shelf_id=shelf.id 
+                        LEFT JOIN area ON shelf.area_id=area.id 
+                        LEFT JOIN site ON area.site_id=site.id
+                        WHERE stock.id=? AND stock.deleted=0
+                        GROUP BY 
+                            stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                            site_id, site_name, site_description, 
+                            area_id, area_name, 
+                            shelf_id, shelf_name
+                        ORDER BY site.id, area.name, shelf.name;";
+            }
             $stmt_stock = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                 echo("ERROR getting entries");
@@ -210,29 +236,34 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         $stock_area_name = $row['area_name'];
                         $stock_site_id = $row['site_id'];
                         $stock_site_name = $row['site_name'];
-                        $stock_manufacturer_ids = $row['manufacturer_ids'];
-                        $stock_manufacturer_names = $row['manufacturer_names'];
-                        $stock_label_ids = $row['label_ids'];
-                        $stock_label_names = $row['label_names'];
-                        
-                        $stock_label_data = [];
-                        if ($stock_label_ids !== null) {
-                            for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
-                                $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
-                                                                    'name' => explode(", ", $stock_label_names)[$n]);
+                        if ($stock_is_cable == 0) {
+                            $stock_manufacturer_ids = $row['manufacturer_ids'];
+                            $stock_manufacturer_names = $row['manufacturer_names'];
+                            $stock_label_ids = $row['label_ids'];
+                            $stock_label_names = $row['label_names'];
+                            
+                            $stock_label_data = [];
+                            if ($stock_label_ids !== null) {
+                                for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
+                                    $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
+                                                                        'name' => explode(", ", $stock_label_names)[$n]);
+                                }
+                            } else {
+                                $stock_label_data = '';
                             }
-                        } else {
-                            $stock_label_data = '';
-                        }
 
-                        $stock_manufacturer_data = [];
-                        if ($stock_manufacturer_ids !== null) {
-                            for ($n=0; $n < count(explode(", ", $stock_manufacturer_ids)); $n++) {
-                                $stock_manufacturer_data[$n] = array('id' => explode(", ", $stock_manufacturer_ids)[$n],
-                                                                    'name' => explode(", ", $stock_manufacturer_names)[$n]);
+                            $stock_manufacturer_data = [];
+                            if ($stock_manufacturer_ids !== null) {
+                                for ($n=0; $n < count(explode(", ", $stock_manufacturer_ids)); $n++) {
+                                    $stock_manufacturer_data[$n] = array('id' => explode(", ", $stock_manufacturer_ids)[$n],
+                                                                        'name' => explode(", ", $stock_manufacturer_names)[$n]);
+                                }
+                            } else {
+                                $stock_manufacturer_data = '';
                             }
                         } else {
                             $stock_manufacturer_data = '';
+                            $stock_label_data = '';
                         }
                         
                         $stock_inv_data[] = array('id' => $stock_id,
@@ -305,54 +336,56 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <p id="min-stock"><strong>Minimum Stock Count:</strong> <or class="blue">'.$stock_min_stock.'</or></p>
                                 ');
 
-                                echo('
-                                <p class="clickable gold" id="extra-info-dropdown" onclick="toggleSection(this, \'extra-info\')">More Info <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></p> 
-                                <div id="extra-info" hidden>
-                                    <p id="labels-head"><strong>Labels</strong></p>
-                                    <p id="labels">');
-                                    if (is_array($stock_inv_data[0]['label'])) {
-                                        for ($l=0; $l < count($stock_inv_data[0]['label']); $l++) {
-                                            echo('<button class="btn btn-dark btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['name'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
-                                        }
-                                    } else {
-                                        echo('None');
-                                    }
-                                    
+                                if ($stock_is_cable == 0) {
                                     echo('
-                                    <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
-                                    if ( is_array($stock_inv_data[0]['manufacturer'])) {
-                                        for ($m=0; $m < count($stock_inv_data[0]['manufacturer']); $m++) {
-                                            echo('<button class="btn btn-dark btn-stock-click gold" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
-                                        }
-                                    } else {
-                                        echo('None');
-                                    }
-                                    echo('</p>');
-                                    
-                                    $sql_serials = "SELECT DISTINCT serial_number, id FROM item WHERE stock_id=? AND serial_number != '' AND quantity != 0 AND deleted=0 ORDER BY id";
-                                    $stmt_serials = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_serials, $sql_serials)) {
-                                        // fails to connect (do nothing this time)
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_serials, "s", $stock_id);
-                                        mysqli_stmt_execute($stmt_serials);
-                                        $result_serials = mysqli_stmt_get_result($stmt_serials);
-                                        $rowCount_serials = $result_serials->num_rows;
-                                        if ($rowCount_serials > 0) {
-                                            // rows found
-                                            echo('<p id="serial-numbers-head"><strong>Serial Numbers</strong></p><p>');
-                                            $sn = 0;
-                                            while ($row_serials = $result_serials->fetch_assoc()) {
-                                                $sn++;
-                                                echo('<a class="serial-bg" id="serialNumber'.$sn.'">'.$row_serials['serial_number'].'</a>');
+                                    <p class="clickable gold" id="extra-info-dropdown" onclick="toggleSection(this, \'extra-info\')">More Info <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></p> 
+                                    <div id="extra-info" hidden>
+                                        <p id="labels-head"><strong>Labels</strong></p>
+                                        <p id="labels">');
+                                        if (is_array($stock_inv_data[0]['label'])) {
+                                            for ($l=0; $l < count($stock_inv_data[0]['label']); $l++) {
+                                                echo('<button class="btn btn-dark btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['name'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
                                             }
-                                            echo('</p>');
+                                        } else {
+                                            echo('None');
                                         }
-                                    }  
-                            
-
-                                echo(' 
-                                    </div>
+                                        
+                                        echo('
+                                        <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
+                                        if ( is_array($stock_inv_data[0]['manufacturer'])) {
+                                            for ($m=0; $m < count($stock_inv_data[0]['manufacturer']); $m++) {
+                                                echo('<button class="btn btn-dark btn-stock-click gold" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
+                                            }
+                                        } else {
+                                            echo('None');
+                                        }
+                                        echo('</p>');
+                                        
+                                        $sql_serials = "SELECT DISTINCT serial_number, id FROM item WHERE stock_id=? AND serial_number != '' AND quantity != 0 AND deleted=0 ORDER BY id";
+                                        $stmt_serials = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_serials, $sql_serials)) {
+                                            // fails to connect (do nothing this time)
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_serials, "s", $stock_id);
+                                            mysqli_stmt_execute($stmt_serials);
+                                            $result_serials = mysqli_stmt_get_result($stmt_serials);
+                                            $rowCount_serials = $result_serials->num_rows;
+                                            if ($rowCount_serials > 0) {
+                                                // rows found
+                                                echo('<p id="serial-numbers-head"><strong>Serial Numbers</strong></p><p>');
+                                                $sn = 0;
+                                                while ($row_serials = $result_serials->fetch_assoc()) {
+                                                    $sn++;
+                                                    echo('<a class="serial-bg" id="serialNumber'.$sn.'">'.$row_serials['serial_number'].'</a>');
+                                                }
+                                                echo('</p>');
+                                            }
+                                        }  
+                                
+                                    
+                                    echo('</div>');
+                                }
+                                echo('
                             </div>
                             
                             <div class="col-sm text-right" style="margin-left:70px" id="stock-info-right">');  
@@ -480,7 +513,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     </div>
                     <div class="container well-nopad bg-dark" style="margin-top:5px">
                         <h2 style="font-size:22px">Stock</h2>');
-                        $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+
+                        if ($stock_is_cable == 0) {
+                            $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                             area.id AS area_id, area.name AS area_name,
                                             shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
                                             item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, 
@@ -517,6 +552,41 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             manufacturer_name, manufacturer_id,
                                             item_serial_number, item_upc, item_comments, item_cost
                                         ORDER BY site.id, area.name, shelf.name;";
+                        } else {
+                            $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                            area.id AS area_id, area.name AS area_name,
+                                            shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                            cable_item.cost AS item_cost,
+                                            (SELECT SUM(quantity) 
+                                                FROM cable_item 
+                                                WHERE cable_item.stock_id = stock.id AND cable_item.shelf_id=shelf.id
+                                            ) AS item_quantity,
+                                            (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
+                                                FROM stock_label 
+                                                INNER JOIN label ON stock_label.label_id = label.id 
+                                                WHERE stock_label.stock_id = stock.id
+                                                ORDER BY label.name
+                                            ) AS label_names,
+                                            (SELECT GROUP_CONCAT(DISTINCT label.id ORDER BY label.name SEPARATOR ', ') 
+                                                FROM stock_label
+                                                INNER JOIN label ON stock_label.label_id = label.id
+                                                WHERE stock_label.stock_id = stock.id
+                                                ORDER BY label.name
+                                            ) AS label_ids
+                                        FROM stock
+                                        LEFT JOIN cable_item ON stock.id=cable_item.stock_id
+                                        LEFT JOIN shelf ON cable_item.shelf_id=shelf.id 
+                                        LEFT JOIN area ON shelf.area_id=area.id 
+                                        LEFT JOIN site ON area.site_id=site.id
+                                        WHERE stock.id=? AND quantity!=0 AND stock.deleted=0 AND cable_item.deleted=0
+                                        GROUP BY 
+                                            stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                                            site_id, site_name, site_description, 
+                                            area_id, area_name, 
+                                            shelf_id, shelf_name,
+                                            item_cost
+                                        ORDER BY site.id, area.name, shelf.name;";
+                        }
                         $stmt_stock = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                             echo("ERROR getting entries");
@@ -541,12 +611,14 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     $stock_area_name = $row['area_name'];
                                     $stock_site_id = $row['site_id'];
                                     $stock_site_name = $row['site_name'];
-                                    $stock_manufacturer_id = $row['manufacturer_id'];
-                                    $stock_manufacturer_name = $row['manufacturer_name'];
-                                    $item_upc = $row['item_upc'];
+                                    if ($stock_is_cable == 0) {
+                                        $stock_manufacturer_id = $row['manufacturer_id'];
+                                        $stock_manufacturer_name = $row['manufacturer_name'];
+                                        $item_upc = $row['item_upc'];
+                                        $item_comments = $row['item_comments'];
+                                        $item_serial_number = $row['item_serial_number'];
+                                    }
                                     $item_cost = $row['item_cost'];
-                                    $item_comments = $row['item_comments'];
-                                    $item_serial_number = $row['item_serial_number'];
                                     $stock_label_ids = $row['label_ids'];
                                     $stock_label_names = $row['label_names'];
                                     
@@ -561,8 +633,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         $stock_label_data = '';
                                     }
                                     
-
-                                    $stock_inv_data[] = array('id' => $stock_id,
+                                    if ($stock_is_cable == 0) {
+                                        $stock_inv_data[] = array('id' => $stock_id,
                                                             'name' => $stock_name,
                                                             'sku' => $stock_sku,
                                                             'quantity' => $stock_quantity_total,
@@ -580,6 +652,20 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                             'serial_number' => $item_serial_number,
                                                             'label_names' => $stock_label_names,
                                                             'label' => $stock_label_data);
+                                    } else {
+                                        $stock_inv_data[] = array('id' => $stock_id,
+                                                            'name' => $stock_name,
+                                                            'sku' => $stock_sku,
+                                                            'quantity' => $stock_quantity_total,
+                                                            'shelf_id' => $stock_shelf_id,
+                                                            'shelf_name' => $stock_shelf_name,
+                                                            'area_id' => $stock_area_id,
+                                                            'area_name' => $stock_area_name,
+                                                            'site_id' => $stock_site_id,
+                                                            'site_name' => $stock_site_name,
+                                                            'cost' => $item_cost);
+                                    }
+                                    
                                 }
                                 
                                         echo('
@@ -589,13 +675,19 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <th hidden>ID</th>
                                                 <th>Site</th>
                                                 <th>Location</th>
-                                                <th>Shelf</th>
-                                                <th>Manufacturer</th>
-                                                <th>UPC</th>
-                                                <th title="Serial Numbers">Serial</th>
-                                                <th>Labels</th>
-                                                <th>Cost</th>
-                                                <th>Comments</th>
+                                                <th>Shelf</th>');
+                                                if ($stock_is_cable == 0) { 
+                                                    echo('
+                                                    <th>Manufacturer</th>
+                                                    <th>UPC</th>
+                                                    <th title="Serial Numbers">Serial</th>
+                                                    <th>Labels</th>
+                                                    <th>Cost</th>
+                                                    <th>Comments</th>');
+                                                } else { 
+                                                    echo('<th>Cost</th>');
+                                                }
+                                                echo('
                                                 <th>Stock</th>
                                             </tr>
                                         </thead>
@@ -608,12 +700,20 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
+                                        ');   
+                                        if ($stock_is_cable == 0) {
+                                            echo('   
                                                 <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
                                                 <td id="item-'.$i.'-manu">'.$stock_inv_data[$i]['upc'].'</td>
                                                 <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
                                                 <td id="item-'.$i.'-labels">'.$stock_inv_data[$i]['label_names'].'</td>
                                                 <td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                 <td id="item-'.$i.'-comments">'.$stock_inv_data[$i]['comments'].'</td>
+                                                ');
+                                        } else {
+                                            echo('<td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>');
+                                        }
+                                        echo('
                                                 <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                             </tr>
 

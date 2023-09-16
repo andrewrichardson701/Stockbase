@@ -85,14 +85,16 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, 
                         stock.sku as stock_sku, stock.min_stock as stock_min_stock, stock.is_cable as stock_is_cable,
                         cable_item.id as cable_item_id, cable_item.stock_id as cable_item_stock_id, cable_item.quantity as cable_item_quantity,
-                        cable_item.cost AS cable_item_cost, cable_item.site_id AS cable_item_site_id, cable_item.type_id as cable_item_type_id,
+                        cable_item.cost AS cable_item_cost, cable_item.shelf_id AS cable_item_site_id, cable_item.type_id as cable_item_type_id,
                         cable_types.id AS cable_types_id, cable_types.name AS cable_types_name, cable_types.description AS cable_types_description,
                         cable_types.parent AS cable_types_parent,
                         site.id AS site_id, site.name AS site_name,
                         stock_img_image.stock_img_image
                     FROM cable_item
                     LEFT JOIN stock ON cable_item.stock_id=stock.id 
-                    LEFT JOIN site ON cable_item.site_id=site.id
+                    LEFT JOIN shelf ON cable_item.shelf_id=shelf.id
+                    LEFT JOIN area ON shelf.area_id=area.id
+                    LEFT JOIN site ON area.site_id=site.id
                     LEFT JOIN cable_types ON cable_item.type_id=cable_types.id
                     LEFT JOIN (
                             SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
@@ -486,7 +488,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 // }
                                                 // <td class="align-middle" id="'.$cable_item_id.'-name">'.$name_prefix.$stock_name.$name_suffix.'</td>
                                                 echo('
-                                                <td class="align-middle" id="'.$cable_item_id.'-name">'.$stock_name.'</td>
+                                                <td class="align-middle" id="'.$cable_item_id.'-name"><a href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
                                                 <td class="align-middle clickable link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>

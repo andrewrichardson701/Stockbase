@@ -93,54 +93,57 @@ if (isset($_GET['stock_id'])) {
                                     <div class="nav-row" id="description-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
                                         <div><textarea class="form-control nav-v-c" id="description" name="description" rows="3" cols="32" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.$stock['description'].'" >'.$stock['description'].'</textarea></div>
-                                    </div>
-                                    <div class="nav-row" id="labels-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
-                                        <div id="labels-group">
-                                        <input id="labels-selected" name="labels-selected" type="hidden" />
-                                        <select id="labels" name="labels[]" multiple class="form-control nav-trans" style="border: 1px solid grey;display: inline-block;width:300px;height:40px">');
-                                            if (is_array($stock_label_data)) {
-                                                for ($l=0; $l<count($stock_label_data); $l++) {
-                                                    // echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'">'.$stock_label_data[$l]['name'].' &#xf057;</option> ');
-                                                    echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'" selected>'.$stock_label_data[$l]['name'].'</option> ');
-                                                }
-                                            } else {
-                                                //echo('None');
-                                            }
+                                    </div>');
+                                    if ($stock['is_cable'] == 0) {
                                         echo('
-                                        </select>
-                                        <select class="form-control" id="labels-init" name="labels-init" style="width:300px;margin-top:2px">
-                                            <option value="" selected>-- Add Labels --</option>');
-                                            include 'includes/dbh.inc.php';
-                                            $sql = "SELECT id, name
-                                                    FROM label
-                                                    WHERE label.id NOT IN (SELECT label_id FROM stock_label WHERE stock_id = '$stock_id')
-                                                    ORDER BY id";
-                                            $stmt = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                                // fails to connect
-                                            } else {
-                                                mysqli_stmt_execute($stmt);
-                                                $result = mysqli_stmt_get_result($stmt);
-                                                $rowCount = $result->num_rows;
-                                                if ($rowCount < 1) {
-                                                    echo('<option value="0" selected>No Manufacturers Found...</option>');
+                                        <div class="nav-row" id="labels-row" style="margin-top:25px">
+                                            <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
+                                            <div id="labels-group">
+                                            <input id="labels-selected" name="labels-selected" type="hidden" />
+                                            <select id="labels" name="labels[]" multiple class="form-control nav-trans" style="border: 1px solid grey;display: inline-block;width:300px;height:40px">');
+                                                if (is_array($stock_label_data)) {
+                                                    for ($l=0; $l<count($stock_label_data); $l++) {
+                                                        // echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'">'.$stock_label_data[$l]['name'].' &#xf057;</option> ');
+                                                        echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'" selected>'.$stock_label_data[$l]['name'].'</option> ');
+                                                    }
                                                 } else {
-                                                    // rows found
-                                                    while ($row = $result->fetch_assoc()) {
-                                                        $label_id = $row['id'];
-                                                        $label_name = $row['name'];
-                                                        echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$label_id.'">'.$label_name.'</option>');
+                                                    //echo('None');
+                                                }
+                                            echo('
+                                            </select>
+                                            <select class="form-control" id="labels-init" name="labels-init" style="width:300px;margin-top:2px">
+                                                <option value="" selected>-- Add Labels --</option>');
+                                                include 'includes/dbh.inc.php';
+                                                $sql = "SELECT id, name
+                                                        FROM label
+                                                        WHERE label.id NOT IN (SELECT label_id FROM stock_label WHERE stock_id = '$stock_id')
+                                                        ORDER BY id";
+                                                $stmt = mysqli_stmt_init($conn);
+                                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                                    // fails to connect
+                                                } else {
+                                                    mysqli_stmt_execute($stmt);
+                                                    $result = mysqli_stmt_get_result($stmt);
+                                                    $rowCount = $result->num_rows;
+                                                    if ($rowCount < 1) {
+                                                        echo('<option value="0" selected>No Manufacturers Found...</option>');
+                                                    } else {
+                                                        // rows found
+                                                        while ($row = $result->fetch_assoc()) {
+                                                            $label_id = $row['id'];
+                                                            $label_name = $row['name'];
+                                                            echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$label_id.'">'.$label_name.'</option>');
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        echo('
-                                        </select>
-                                        </div>
-                                        <div>
-                                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
-                                        </div>
-                                    </div>');
+                                            echo('
+                                            </select>
+                                            </div>
+                                            <div>
+                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
+                                            </div>
+                                        </div>');
+                                    }
                                     echo('
                                     <div class="nav-row" id="min-stock-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>

@@ -631,16 +631,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     $rowCount_site_check = $result_site_check->num_rows;
                                 }
 
-                                $sql_site_check2 = "SELECT * FROM cable_item WHERE site_id=$site_id_check;";
-                                $stmt_site_check2 = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_site_check2, $sql_site_check2)) {
-                                    echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
-                                } else {
-                                    mysqli_stmt_execute($stmt_site_check2);
-                                    $result_site_check2 = mysqli_stmt_get_result($stmt_site_check2);
-                                    $rowCount_site_check2 = $result_site_check2->num_rows;
-                                }
-
                                 echo('<tr style="background-color:'.$color1.' !important; color:black">
                                         <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                             <input type="hidden" id="site-'.$site['site_id'].'-type" name="type" value="site" />
@@ -665,7 +655,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <input type="hidden" name="location-id" value="'.$site_id_check.'" />
                                             <td class="stockTD" style="background-color:#21272b; ">
                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" '); 
-                                                if ($rowCount_site_check > 0 || $rowCount_site_check2 > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
+                                                if ($rowCount_site_check > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                 echo('>
                                                     <i class="fa fa-trash"></i>
                                                 </button>

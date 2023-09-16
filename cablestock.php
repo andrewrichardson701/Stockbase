@@ -268,18 +268,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         <table class="centertable">
                             <thead>
                                 <th style="padding-left:5px">Site</th>
-                                <th style="padding-left:5px">Name</th>
-                                <th style="padding-left:5px">Description</th>
-                                <th style="padding-left:5px">Type</th>
-                                <th style="padding-left:5px">Min. Stock</th>
-                                <th style="padding-left:5px">Quantity</th>
-                                <th style="padding-left:5px">Cost</th>
-                                <th style="padding-left:5px"></th>
+                                <th style="padding-left:5px">Area</th>
+                                <th style="padding-left:5px">Shelf</th>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>
-                                        <select name="site" class="form-control" style="border-color:black;margin:0;padding-left:0" required>');
+                                        <select id="site" name="site" class="form-control" style="border-color:black;margin:0;padding-left:0" required>');
 
                                             $sql_site_cable = "SELECT * FROM site";
                                             $stmt_site_cable = mysqli_stmt_init($conn);
@@ -292,7 +287,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 if ($rowCount_site_cable < 1) {
                                                     echo ("<option selected disabled>No Sites Found</option> ");
                                                 } else {
-                                                    echo ("<option selected disabled>Select Type</option>");
+                                                    echo ("<option selected disabled>Select Site</option>");
                                                     while( $row_site_cable = $result_site_cable->fetch_assoc() ) {
                                                         echo("<option value='".$row_site_cable['id']."'>".$row_site_cable['name']."</option>");
                                                     }
@@ -302,6 +297,32 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     echo('      
                                         </select>
                                     </td>
+                                    <td>
+                                        <select id="area" name="area" class="form-control" style="border-color:black;margin:0;padding-left:0" disabled required>
+                                            <option value="" selected disabled hidden>Select Area</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select id="shelf" name="shelf" class="form-control" style="border-color:black;margin:0;padding-left:0" disabled required>
+                                            <option value="" selected disabled hidden>Select Shelf</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                            <thead>
+                                <tr>
+                                    <th style="padding-left:5px">Name</th>
+                                    <th style="padding-left:5px">Description</th>
+                                    <th style="padding-left:5px">Type</th>
+                                    <th style="padding-left:5px">Min. Stock</th>
+                                    <th style="padding-left:5px">Quantity</th>
+                                    <th style="padding-left:5px">Cost</th>
+                                    <th style="padding-left:5px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
                                     <td>
                                         <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" required/>
                                         <datalist id="names">');
@@ -567,6 +588,54 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             }
 
         }
+    </script>
+    <script> // for the select boxes
+    function populateAreas() {
+    // Get the selected site
+    var site = document.getElementById("site").value;
+    
+    // Make an AJAX request to retrieve the corresponding areas
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+        // Parse the response and populate the area select box
+        var areas = JSON.parse(xhr.responseText);
+        var select = document.getElementById("area");
+        select.options.length = 0;
+        select.options[0] = new Option("Select Area", "");
+        for (var i = 0; i < areas.length; i++) {
+            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+        }
+        select.disabled = (select.options.length === 1);
+        }
+    };
+    xhr.send();
+    }
+    function populateShelves() {
+    // Get the selected area
+    var area = document.getElementById("area").value;
+    
+    // Make an AJAX request to retrieve the corresponding shelves
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "includes/stock-selectboxes.inc.php?area=" + area, true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+        // Parse the response and populate the shelf select box
+        var shelves = JSON.parse(xhr.responseText);
+        var select = document.getElementById("shelf");
+        select.options.length = 0;
+        select.options[0] = new Option("Select Shelf", "");
+        for (var i = 0; i < shelves.length; i++) {
+            select.options[select.options.length] = new Option(shelves[i].name, shelves[i].id);
+        }
+        select.disabled = (select.options.length === 1);
+        }
+    };
+    xhr.send();
+    }
+    document.getElementById("site").addEventListener("change", populateAreas);
+    document.getElementById("area").addEventListener("change", populateShelves);
     </script>
         
     <?php include 'foot.php'; ?>

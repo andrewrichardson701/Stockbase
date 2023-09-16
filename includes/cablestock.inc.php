@@ -243,8 +243,10 @@ function removeQuantity($stock_id, $cable_item_id) {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['add-cables-submit'])) {
-        if (isset($_POST['site']) && isset($_POST['stock-name']) && isset($_POST['stock-description']) && isset($_POST['cable-type']) && isset($_POST['stock-min-stock']) && isset($_POST['item-quantity']) && isset($_POST['item-cost'])) {
+        if (isset($_POST['shelf']) && isset($_POST['stock-name']) && isset($_POST['stock-description']) && isset($_POST['cable-type']) && isset($_POST['stock-min-stock']) && isset($_POST['item-quantity']) && isset($_POST['item-cost'])) {
             $site_id = $_POST['site'];
+            $area_id = $_POST['area'];
+            $shelf_id = $_POST['shelf'];
             $stock_name = $_POST['stock-name'];
             $stock_description = $_POST['stock-description'];
             $cable_type = $_POST['cable-type'];
@@ -272,13 +274,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $stock_id = $row_stock['id'];
 
                     // insert row into cable_item
-                    $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, site_id, type_id) VALUES (?, ?, ?, ?, ?)";
+                    $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, shelf_id, type_id) VALUES (?, ?, ?, ?, ?)";
                     $stmt_cable_item = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_cable_item, $sql_cable_item)) {
                         header("Location: ../".$redirect_url.$queryChar."sqlerror=cable_itemConnectionInsert");
                         exit();
                     } else {
-                        mysqli_stmt_bind_param($stmt_cable_item, "sssss", $stock_id, $item_quantity, $item_cost, $site_id, $cable_type);
+                        mysqli_stmt_bind_param($stmt_cable_item, "sssss", $stock_id, $item_quantity, $item_cost, $shelf_id, $cable_type);
                         mysqli_stmt_execute($stmt_cable_item);
 
                         $cable_item_id= mysqli_insert_id($conn);
@@ -292,7 +294,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         // update changelog
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "stock_id", null, $stock_id);
 
-                        header("Location: ../".$redirect_url.$queryChar."success=cableAdded&site_id=$site_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
+                        header("Location: ../".$redirect_url.$queryChar."success=cableAdded&shelf_id=$shelf_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
                         exit();
                     }
                 } else {
@@ -344,13 +346,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
                             // insert row into cable_item
-                            $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, site_id, type_id) VALUES (?, ?, ?, ?, ?)";
+                            $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, shelf_id, type_id) VALUES (?, ?, ?, ?, ?)";
                             $stmt_cable_item = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_cable_item, $sql_cable_item)) {
                                 header("Location: ../".$redirect_url.$queryChar."sqlerror=cable_itemConnectionInsert");
                                 exit();
                             } else {
-                                mysqli_stmt_bind_param($stmt_cable_item, "sssss", $stock_id, $item_quantity, $item_cost, $site_id, $cable_type);
+                                mysqli_stmt_bind_param($stmt_cable_item, "sssss", $stock_id, $item_quantity, $item_cost, $shelf_id, $cable_type);
                                 mysqli_stmt_execute($stmt_cable_item);
     
                                 $cable_item_id= mysqli_insert_id($conn);
@@ -364,7 +366,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "quantity", null, $item_quantity);
 
-                                header("Location: ../".$redirect_url.$queryChar."success=cableAdded&site_id=$site_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
+                                header("Location: ../".$redirect_url.$queryChar."success=cableAdded&shelf_id=$shelf_id&stock_id=$stock_id&item_id=$cable_item_id&transaction=added");
                                 exit();
                             }
                         }

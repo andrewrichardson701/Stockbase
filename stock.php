@@ -695,7 +695,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     ');
                                     for ($i=0; $i<count($stock_inv_data); $i++) {
                                         echo('
-                                            <tr id="item-'.$i.'" class="clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $i) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$i.'\')">
+                                            <tr id="item-'.$i.'" class="clickable" onclick="toggleHidden(\''.$i.'\')">
                                                 <td hidden>'.$i.'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
@@ -716,8 +716,90 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         echo('
                                                 <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                             </tr>
-
                                         ');
+                                        if ($stock_is_cable == 0) { 
+                                            echo ('
+                                            <tr id="item-'.$i.'-hidden" class="row-hide" hidden>
+                                                <td colspan=100%>
+                                                    <div style="max-height:50vh;overflow-x: hidden;overflow-y: auto;">
+                                                        <table class="table table-dark centertable" style="border-left: 1px solid #454d55;border-right: 1px solid #454d55;border-bottom: 1px solid #454d55">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>ID</th>
+                                                                    <th hidden>Site</th>
+                                                                    <th hidden>Location</th>
+                                                                    <th hidden>Shelf</th>
+                                                                    <th>Manufacturer</th>
+                                                                    <th>UPC</th>
+                                                                    <th>Serial</th>
+                                                                    <th>Cost ('.$current_currency.')</th>
+                                                                    <th>Comments</th>
+                                                                    <th>Stock</th>
+                                                                    <th></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            ');
+                                                            $hidden_shelf_id = $stock_inv_data[$i]['shelf_id'];
+                                                            $hidden_serial = $stock_inv_data[$i]['serial_number']; 
+                                                            $hidden_cost = $stock_inv_data[$i]['cost'];
+                                                            $sql_hidden = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                                                        area.id AS area_id, area.name AS area_name,
+                                                                        shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                                                        item.id AS item_id, item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, item.quantity AS item_quantity,
+                                                                        manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name
+                                                                    FROM stock
+                                                                    LEFT JOIN item ON stock.id=item.stock_id
+                                                                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                                                                    LEFT JOIN area ON shelf.area_id=area.id 
+                                                                    LEFT JOIN site ON area.site_id=site.id
+                                                                    LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
+                                                                    WHERE stock.id=? AND shelf_id=$hidden_shelf_id AND quantity!=0 AND stock.deleted=0 AND item.deleted=0 AND item.serial_number='$hidden_serial' AND item.cost='$hidden_cost'
+                                                                    ORDER BY item.serial_number, item.upc, item.comments";
+                                                            $stmt_hidden = mysqli_stmt_init($conn);
+                                                            if (!mysqli_stmt_prepare($stmt_hidden, $sql_hidden)) {
+                                                                echo("ERROR getting entries");
+                                                            } else {
+                                                                mysqli_stmt_bind_param($stmt_hidden, "s", $stock_id);
+                                                                mysqli_stmt_execute($stmt_hidden);
+                                                                $result_hidden = mysqli_stmt_get_result($stmt_hidden);
+                                                                $rowCount_hidden = $result_hidden->num_rows;
+
+                                                                if ($rowCount_hidden < 1) {
+                                                                    echo ('<tr><td colpan=100%>No Stock Found</td></tr>');
+                                                                } else {
+                                                                    $stock_img_data = [];
+                                                                    while ( $row_hidden = $result_hidden->fetch_assoc() ) {
+                                                                        echo('
+                                                                        <tr class="align-middle">
+                                                                            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                                                                                <input type="hidden" name="submit" value="row"/>
+                                                                                <td class="align-middle"><input type="hidden" name="item-id" value="'.$row_hidden['item_id'].'" />'.$row_hidden['item_id'].'</td>
+                                                                                <td hidden>'.$row_hidden['site_name'].'</td>
+                                                                                <td hidden>'.$row_hidden['area_name'].'</td>
+                                                                                <td hidden>'.$row_hidden['shelf_name'].'</td>
+                                                                                <td class="align-middle">'.$row_hidden['manufacturer_name'].'</td>
+                                                                                <td class="align-middle"><input type="text" class="form-control" style="width:100px" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
+                                                                                <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
+                                                                                <td class="align-middle"><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
+                                                                                <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_comments'].'" name="comments" /></td>
+                                                                                <td class="align-middle">'.$row_hidden['item_quantity'].'</td>
+                                                                                <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Save" /> </td>
+                                                                            </form>
+                                                                        </tr>
+                                                                        ');
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            echo('
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            ');
+                                        }
                                     }
                                     echo('
                                     </tbody>
@@ -766,5 +848,20 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             var modal = document.getElementById("modalDivCarousel");
             modal.style.display = "none";
         }
+    </script>
+    <script>
+    function toggleHidden(id) {
+        var hiddenID = 'item-'+id+'-hidden';
+        var hiddenRow = document.getElementById(hiddenID);
+        var allHiddenRows = document.getElementsByClassName('row-hide');
+        if (hiddenRow.hidden == false) {
+            hiddenRow.hidden=true;
+        } else {
+            for(var i = 0; i < allHiddenRows.length; i++) {
+            allHiddenRows[i].hidden=true;
+            }   
+            hiddenRow.hidden=false;
+        }
+    }
     </script>
 </body>

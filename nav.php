@@ -1,5 +1,5 @@
 <!-- Navigation Bar for the top of the page, using the config settings for logo and colour -->
-<a href="./" class="nav-head cw" style="color:<?php echo($current_banner_text_color); ?>"><?php echo($current_system_name); ?></a>
+<a href="./" class="nav-head" style="color:<?php echo($current_banner_text_color); ?> !important"><?php echo($current_system_name); ?></a>
 <div class="nav inv-nav">
     <div id="nav-row" class="nav-row">
         <div class="logo-div">
@@ -24,15 +24,6 @@
                     <i class="fa fa-arrows-h"></i> Move 
                 </button>
             </div>');
-            // if (isset($_SERVER['HTTP_REFERER']) && !str_contains($_SERVER['HTTP_REFERER'], "login.") && !str_contains($_SERVER['HTTP_REFERER'], "logout.") && !str_contains($_SERVER['PHP_SELF'], "index.php") && !str_contains($_SERVER['PHP_SELF'], "login.php")) {
-            //     echo('
-            //     <div id="profile-div" style="margin-left:25px">
-            //         <button id="back-button" class="btn btn-secondary cw nav-v-c" style="padding: 3px 6px 3px 6px" onclick="navPage(\''.$_SERVER['HTTP_REFERER'].'\');">
-            //             <i class="fa fa-arrow-left"></i> Back 
-            //         </button>
-            //     </div> 
-            //     ');
-            // }
 
             $nav_right_set = 0;
 

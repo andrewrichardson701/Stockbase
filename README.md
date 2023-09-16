@@ -497,6 +497,8 @@ Clone the repo first, and the follow the below steps.
 - Can now change the image for cablestock with the above change.
 - Label and Manufacturer are now select boxes rather than input because this makes more sense.
 - Added deleted field to tables (item, stock, shelf, area etc) so that things can be tracked.
+- Deleting stock when the stock count is 0, no longer deletes the row from the database and instead marks deleted as 1.
+- Minimum stock count now checks against the site using the shelf of the object that the stock was removed from for the email notifications.
 
 </details>
 <details>

@@ -19,6 +19,13 @@ include './includes/get-config.inc.php'; // get config options
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./assets/css/main.css">
 <link rel="stylesheet" href="./assets/css/inv.css">
+<?php
+if (isset($loggedin_theme)) {
+    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/theme-'.$loggedin_theme.'.css">');
+} else {
+    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/theme-dark.css">');
+}
+?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

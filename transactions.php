@@ -74,9 +74,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         exit();
                     } else {
                         echo('
-                        <table class="table table-dark centertable" id="transactions">
+                        <table class="table table-dark theme-table centertable" id="transactions">
                             <thead>
-                                <tr>
+                                <tr class="theme-tableOuter">
                                     <th hidden>ID</th>
                                     <th hidden>Stock ID</th>
                                     <th hidden>Item ID</th>

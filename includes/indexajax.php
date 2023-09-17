@@ -204,7 +204,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
 
                 for ($i = 1; $i <= $total_pages; $i++) {
                     if ($i == $current_page) {
-                        $pageNumberArea .= '&nbsp;<span class="current-page blue">' . $i . '</span>';
+                        $pageNumberArea .= '&nbsp;<span class="current-page pageSelected">' . $i . '</span>';
                         // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                     } else {
                         $pageNumberArea .= '&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';

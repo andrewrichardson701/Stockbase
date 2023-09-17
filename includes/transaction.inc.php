@@ -70,9 +70,9 @@ if (isset($_GET['stock_id'])) {
                     echo ("No Transactions.");
                 } else {
                     echo('
-                    <table class="table table-dark centertable" id="transactions">
+                    <table class="table table-dark theme-table centertable" id="transactions">
                         <thead>
-                            <tr>
+                            <tr class="theme-tableOuter">
                                 <th hidden>ID</th>
                                 <th hidden>Stock ID</th>
                                 <th hidden>Item ID</th>
@@ -197,7 +197,7 @@ if (isset($_GET['stock_id'])) {
 
                         for ($i = 1; $i <= $total_pages; $i++) {
                             if ($i == $current_page) {
-                                echo('&nbsp;<span class="current-page blue">' . $i . '</span>');
+                                echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
                                 // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                             } else {
                                 echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
@@ -207,7 +207,7 @@ if (isset($_GET['stock_id'])) {
                         if ($current_page < $total_pages) {
                             echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
                         }
-                        if ($total_pages > 1) { echo('&nbsp;&nbsp;<or class="blue clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>'); }
+                        if ($total_pages > 1) { echo('&nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>'); }
                     }
                     echo('</div>');
                 }

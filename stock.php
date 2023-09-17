@@ -99,7 +99,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     // $stock_img_data[] = array('id' => $stock_stock_img_id, 'stock_id' => $stock_stock_img_stock_id, 'image' => $stock_stock_img_image);
                     // $stock_img_data[] = array('id' => $stock_stock_img_id, 'stock_id' => $stock_stock_img_stock_id, 'image' => $stock_stock_img_image);
                     // $stock_img_data[] = array('id' => $stock_stock_img_id, 'stock_id' => $stock_stock_img_stock_id, 'image' => $stock_stock_img_image);
-                    // print_r('<pre class="bg-dark">');
+                    // print_r('<pre class="theme-divBg">');
                     // print_r($stock_img_data);
                     // print_r('</pre>');
                     if ($stock_is_cable == 1) {
@@ -113,17 +113,17 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <div class="nav-row" style="margin-top:10px">
                                 <h3 style="font-size:22px;margin-top:20px;margin-bottom:0;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
                                 <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">
-                                    <button id="edit-stock" class="btn btn-info cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'edit\'))">
+                                    <button id="edit-stock" class="btn btn-info theme-textColor nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'edit\'))">
                                         <i class="fa fa-pencil"></i> Edit 
                                     </button>
                                 </div> 
                                 <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                    <button id="add-stock" class="btn btn-success cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$cable_disable.'>
+                                    <button id="add-stock" class="btn btn-success theme-textColor nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$cable_disable.'>
                                         <i class="fa fa-plus"></i> Add 
                                     </button>
                                 </div> 
                                 <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                    <button id="remove-stock" class="btn btn-danger cw nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$cable_disable.'>
+                                    <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$cable_disable.'>
                                         <i class="fa fa-minus"></i> Remove 
                                     </button>
                                 </div> 
@@ -282,7 +282,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     
                     // Inventory Rows
                     echo ('
-                    <div class="container well-nopad bg-dark">
+                    <div class="container well-nopad theme-divBg">
                         <div class="row">
                             <div class="col-sm-7 text-left" id="stock-info-left">
                                 ');
@@ -309,8 +309,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <td hidden>'.$stock_inv_data[$st]['id'].'</td>
                                                 <td id="site-'.$stock_inv_data[$st]['site_id'].'"><or class="clickable" onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'\'">'.$stock_inv_data[$st]['site_name'].'</or></td>
                                                 <td id="area-'.$stock_inv_data[$st]['area_id'].'" style="padding-left: 10px"><or class="clickable" onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'&area='.$stock_inv_data[$st]['area_id'].'\'">'.$stock_inv_data[$st]['area_name'].'</or>:</td>
-                                                <td id="shelf-'.$stock_inv_data[$st]['shelf_id'].'" style="padding-left: 5px"><button class="btn btn-dark btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$st]['shelf_name']).'\'">'.$stock_inv_data[$st]['shelf_name'].'</button></td>
-                                                <td style="padding-left: 5px" class="text-center cw">'.$stock_inv_data[$st]['quantity'].'</td>
+                                                <td id="shelf-'.$stock_inv_data[$st]['shelf_id'].'" style="padding-left: 5px"><button class="btn theme-btn btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$st]['shelf_name']).'\'">'.$stock_inv_data[$st]['shelf_name'].'</button></td>
+                                                <td style="padding-left: 5px" class="text-center theme-textColor">'.$stock_inv_data[$st]['quantity'].'</td>
                                             </tr>
                                             ');
                                             $stt ++; // stock found, add one to the checker.
@@ -333,7 +333,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 // <p id="sku-head"><strong>SKU</strong></p>
                                 // <p id="sku">'.$stock_sku.'</p>');
                                 echo('
-                                    <p id="min-stock"><strong>Minimum Stock Count:</strong> <or class="blue">'.$stock_min_stock.'</or></p>
+                                    <p id="min-stock"><strong>Minimum Stock Count:</strong> <or class="specialColor">'.$stock_min_stock.'</or></p>
                                 ');
 
                                 if ($stock_is_cable == 0) {
@@ -344,7 +344,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <p id="labels">');
                                         if (is_array($stock_inv_data[0]['label'])) {
                                             for ($l=0; $l < count($stock_inv_data[0]['label']); $l++) {
-                                                echo('<button class="btn btn-dark btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['name'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
+                                                echo('<button class="btn theme-btn btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['name'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
                                             }
                                         } else {
                                             echo('None');
@@ -354,7 +354,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
                                         if ( is_array($stock_inv_data[0]['manufacturer'])) {
                                             for ($m=0; $m < count($stock_inv_data[0]['manufacturer']); $m++) {
-                                                echo('<button class="btn btn-dark btn-stock-click gold" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
+                                                echo('<button class="btn theme-btn btn-stock-click gold" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
                                             }
                                         } else {
                                             echo('None');
@@ -390,7 +390,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             
                             <div class="col-sm text-right" style="margin-left:70px" id="stock-info-right">');  
                             if (!empty($stock_img_data) && $stock_img_data !== null && $stock_img_data !== '') {
-                                echo('<div class="well-nopad bg-dark nav-right" style="margin:20px;padding:0px;width:max-content">
+                                echo('<div class="well-nopad theme-divBg nav-right" style="margin:20px;padding:0px;width:max-content">
                                 <div class="nav-row" style="width:315px">');
                                 for ($i=0; $i < count($stock_img_data); $i++) {
                                     $ii = $i+1;
@@ -401,7 +401,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             $imgWidth = "235px";
                                         }
                                         echo('
-                                        <div class="thumb bg-dark-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoadCarousel()">
+                                        <div class="thumb theme-divBg-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-width:'.$imgWidth.'; max-height:235px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
@@ -409,7 +409,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     } 
                                     if ($i == 1 || $i == 2) {
                                         echo('
-                                        <div class="thumb bg-dark-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoadCarousel()">
+                                        <div class="thumb theme-divBg-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
                                         </div>
                                         ');
@@ -417,12 +417,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     if ($i == 3) {
                                         if ($i < (count($stock_img_data)-1)) {
                                             echo ('
-                                            <div class="thumb bg-dark-m" style="width:75px;height:75px">
+                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px">
                                             <p class="nav-v-c text-center" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-more" style="width:75px">+'.(count($stock_img_data)-3).'</p>
                                             ');
                                         } else {
                                             echo('
-                                            <div class="thumb bg-dark-m" style="width:75px;height:75px" onclick="modalLoadCarousel()">
+                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" onclick="modalLoad(this)"/>
                                             ');
                                         }
@@ -502,7 +502,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 }
                             } else {
                                 echo('<div id="edit-images-div" class="nav-div-mid nav-v-c">
-                                    <button id="edit-images" class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
+                                    <button id="edit-images" class="btn btn-success theme-textColor nav-v-b" style="padding: 3px 6px 3px 6px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
                                         <i class="fa fa-plus"></i> Add images
                                     </button>
                                 </div> ');
@@ -511,7 +511,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </div>
                         </div>
                     </div>
-                    <div class="container well-nopad bg-dark" style="margin-top:5px">
+                    <div class="container well-nopad theme-divBg" style="margin-top:5px">
                         <h2 style="font-size:22px">Stock</h2>');
 
                         if ($stock_is_cable == 0) {
@@ -669,9 +669,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 }
                                 
                                         echo('
-                                    <table class="table table-dark centertable">
+                                    <table class="table table-dark theme-table centertable">
                                         <thead>
-                                            <tr>
+                                            <tr class="theme-tableOuter">
                                                 <th hidden>ID</th>
                                                 <th>Site</th>
                                                 <th>Location</th>
@@ -695,7 +695,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     ');
                                     for ($i=0; $i<count($stock_inv_data); $i++) {
                                         echo('
-                                            <tr id="item-'.$i.'" class="clickable" onclick="toggleHidden(\''.$i.'\')">
+                                            <tr id="item-'.$i.'" class="clickable" onclick="toggleHiddenStock(\''.$i.'\')">
                                                 <td hidden>'.$i.'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
@@ -722,9 +722,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             <tr id="item-'.$i.'-hidden" class="row-hide" hidden>
                                                 <td colspan=100%>
                                                     <div style="max-height:50vh;overflow-x: hidden;overflow-y: auto;">
-                                                        <table class="table table-dark centertable" style="border-left: 1px solid #454d55;border-right: 1px solid #454d55;border-bottom: 1px solid #454d55">
+                                                        <table class="table table-dark theme-table centertable" style="border-left: 1px solid #454d55;border-right: 1px solid #454d55;border-bottom: 1px solid #454d55">
                                                             <thead>
-                                                                <tr>
+                                                                <tr class="theme-tableOuter">
                                                                     <th>ID</th>
                                                                     <th hidden>Site</th>
                                                                     <th hidden>Location</th>
@@ -806,7 +806,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 </table>
                             </div>
                             
-                            <div class="container well-nopad bg-dark" style="margin-top:5px">
+                            <div class="container well-nopad theme-divBg" style="margin-top:5px">
                                 <h2 style="font-size:22px">Transactions</h2>');
                                 include 'includes/transaction.inc.php';
                         echo('</div>');
@@ -850,7 +850,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         }
     </script>
     <script>
-    function toggleHidden(id) {
+    function toggleHiddenStock(id) {
         var hiddenID = 'item-'+id+'-hidden';
         var hiddenRow = document.getElementById(hiddenID);
         var allHiddenRows = document.getElementsByClassName('row-hide');

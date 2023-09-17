@@ -300,12 +300,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" onclick="toggleSection(this, 'users')">Users <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
         <div style="padding-top: 20px" id="users" hidden>
-            <table id="usersTable" class="table table-dark" style="max-width:max-content">
+            <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
                     <tr id="users_table_info_tr" hidden>
                         <td colspan=8 id="users_table_info_td"></td>
                     </tr>
-                    <tr class="text-center">
+                    <tr class="text-center theme-tableOuter">
                         <th>ID</th>
                         <th>Username</th>
                         <th>First Name</th>
@@ -401,7 +401,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </td>
                                         ');
                                 }
-                                echo('<tr style="background-color:#21272b"><td></td><td colspan=8><button class="btn btn-success" type="button" onclick="navPage(\'addlocaluser.php\');"><i class="fa fa-plus"></i> Add</button></td></tr>');
+                                echo('<tr class="theme-tableOuter"><td></td><td colspan=8><button class="btn btn-success" type="button" onclick="navPage(\'addlocaluser.php\');"><i class="fa fa-plus"></i> Add</button></td></tr>');
                             }
                         }
                     ?>
@@ -412,12 +412,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="usersroles-settings" onclick="toggleSection(this, 'usersroles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
         <div style="padding-top: 20px" id="usersroles" hidden>
-            <table id="usersTable" class="table table-dark" style="max-width:max-content">
+            <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
-                    <tr id="users_table_info_tr" hidden>
-                        <td colspan=8 id="users_table_info_td"></td>
-                    </tr>
-                    <tr class="text-center">
+                    <tr class="text-center theme-tableOuter">
                         <th>ID</th>
                         <th>Name</th>
                         <th>Description</th>
@@ -458,9 +455,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <!-- Image Management Settings -->
         <div style="padding-top: 20px" id="imagemanagement" hidden>
             <div style="height:75%;overflow-x: hidden;overflow-y: auto;">
-                <table class="table table-dark" style="max-width:max-content">
+                <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
-                        <tr>
+                        <tr class="theme-tableOuter">
                             <th class="text-center" style="width:130px">Image</th>
                             <th class="text-center">File</th>
                             <th class="text-center">Links</th>
@@ -506,9 +503,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <tr id="image-row-'.$f.'-links" class="align-middle" hidden>
                                         <td colspan=100%>
                                             <div>
-                                                <table class="table table-dark">
+                                                <table class="table table-dark theme-table">
                                                     <thead>
-                                                        <tr>
+                                                        <tr class="theme-tableOuter">
                                                             <th>ID</td>
                                                             <th>Stock ID</td>
                                                             <th>Image</th>
@@ -584,9 +581,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     // print_r($locations);
                     // print_r('</pre>');
                     $l = 0;
-                    echo('<table class="table table-dark text-center" style="max-width:max-content; vertical-align: middle;">
+                    echo('<table class="table table-dark theme-table text-center" style="max-width:max-content; vertical-align: middle;">
                             <thead>
-                                <tr>
+                                <tr class="theme-tableOuter">
                                     <th>site_id</th>
                                     <th>site_name</th>
                                     <th hidden>site_description</th>
@@ -617,7 +614,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     
                                 }
                                 if ($l > 1) {
-                                    echo('<tr style="background-color:#343a40"><td colspan=9></td></tr>');
+                                    echo('<tr class="theme-tableOuter"><td colspan=9></td></tr>');
                                 }
 
                                 $site_id_check = $site['site_id'];
@@ -641,12 +638,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             <td hidden><input id="site-'.$site['site_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.$site['site_description'].'" /></td>
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
-                                            <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                            <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                     <i class="fa fa-save"></i>
                                                 </button>
                                             </td>
-                                            <td class="stockTD" style="background-color:#21272b; ">
+                                            <td class="stockTD theme-table-blank" ">
                                                 <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$site['site_id'].'\', \'site\')">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
@@ -654,7 +651,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </form>
                                         <form id="siteForm-delete-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                         <input type="hidden" name="location-id" value="'.$site_id_check.'" />
-                                            <td class="stockTD" style="background-color:#21272b; ">
+                                            <td class="stockTD theme-table-blank">
                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" '); 
                                                 if ($rowCount_site_check > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                 echo('>
@@ -681,19 +678,19 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                     <input type="hidden" id="area-'.$area['area_id'].'-type" name="type" name="type" value="area" />
                                                     <input type="hidden" id="area-'.$area['area_id'].'-id" name="id" value="'.$area['area_id'].'" />
-                                                    <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
+                                                    <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
                                                     <td class="stockTD" style=""><input id="area-'.$area['area_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
                                                     <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
                                                     <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-parent" type="hidden" name="area-site-id" value="'.$area['area_site_id'].'" /></td>
                                                     <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
-                                                    <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                    <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                             <i class="fa fa-save"></i>
                                                         </button>
                                                     </td>
-                                                    <td class="stockTD" style="background-color:#21272b; ">
+                                                    <td class="stockTD theme-table-blank">
                                                         <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$area['area_id'].'\', \'area\')">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
@@ -701,7 +698,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 </form>
                                                 <form id="areaForm-delete-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                 <input type="hidden" name="location-id" value="'.$area_id_check.'" />
-                                                    <td class="stockTD" style="background-color:#21272b; ">
+                                                    <td class="stockTD theme-table-blank">
                                                         <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" '); 
                                                         if ($rowCount_area_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                         echo('>
@@ -729,17 +726,17 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-site" name="site" value="'.$site['site_id'].'" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-type" name="type" value="shelf" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-id" name="id" value="'.$shelf['shelf_id'].'" />
-                                                            <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
-                                                            <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
+                                                            <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td> 
+                                                            <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden></td> <td hidden></td> <td hidden></td>
                                                             <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
                                                             <td class="stockTD" style=""><input id="shelf-'.$shelf['shelf_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
                                                             <td class="stockTD" hidden><input id="shelf-'.$shelf['shelf_id'].'-parent" type="hidden" name="shelf-area-id" value="'.$shelf['shelf_area_id'].'" /></td>
-                                                            <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                            <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                                     <i class="fa fa-save"></i>
                                                                 </button>
                                                             </td>
-                                                            <td class="stockTD" style="background-color:#21272b; ">
+                                                            <td class="stockTD theme-table-blank">
                                                                 <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$shelf['shelf_id'].'\', \'shelf\')" >
                                                                     <i class="fa fa-pencil"></i>
                                                                 </button>
@@ -747,7 +744,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                         </form>
                                                         <form id="shelfForm-delete-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                             <input type="hidden" name="location-id" value="'.$shelf_id_check.'" />
-                                                            <td class="stockTD" style="background-color:#21272b; ">
+                                                            <td class="stockTD theme-table-blank">
                                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="shelf" type="submit" '); 
                                                                 if ($rowCount_shelf_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                                 echo('>
@@ -760,7 +757,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         }
                                     }
                                 }
-                                echo('<tr style="background-color:#21272b">
+                                echo('<tr class="theme-table-blank">
                                     <td colspan=6 class="stockTD">
                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px; width: 50px" onclick="modalLoadAdd(\''.$site['site_id'].'\')">
                                             <i class="fa fa-plus"></i>

@@ -21,7 +21,7 @@ $currency_symbol = '£';
 ?>
 <!-- <div style="margin-bottom:200px"></div> -->
 
-<div class="container well-nopad bg-dark">
+<div class="container well-nopad theme-divBg">
     
     <?php
     if (is_numeric($stock_id)) {
@@ -188,9 +188,9 @@ $currency_symbol = '£';
                                 </div>');
                                     echo('
                                 <div style="width:100%">
-                                    <table class="table table-dark centertable" style="max-width:max-content">
+                                    <table class="table table-dark theme-table centertable" style="max-width:max-content">
                                         <thead>
-                                            <tr>
+                                            <tr class="theme-tableOuter">
                                                 <th hidden>ID</th>
                                                 <th>Site</th>
                                                 <th>Location</th>
@@ -307,7 +307,7 @@ $currency_symbol = '£';
                                 </div>
                             </div>
                             
-                            <div class="container well-nopad bg-dark" style="margin-top:5px">
+                            <div class="container well-nopad theme-divBg" style="margin-top:5px">
                                 <h2 style="font-size:22px">Transactions</h2>');
                                 include 'includes/transaction.inc.php';
                         echo('</div>');
@@ -334,7 +334,7 @@ $currency_symbol = '£';
         ');
         if (isset($_GET['search']) && $_GET['search'] !== '') {
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
             $sql = "SELECT * from stock
@@ -352,9 +352,9 @@ $currency_symbol = '£';
                     echo('<p>No Stock Found</p>');
                 } else {
                     echo('
-                <table class="table table-dark" style="min-width:500px;max-width:max-content">
+                <table class="table table-dark theme-table" style="min-width:500px;max-width:max-content">
                     <thead>
-                        <tr>
+                        <tr class="theme-tableOuter">
                             <th style="max-width:max-content">ID</th>
                             <th>Stock Name</th>
                             <th>SKU</th>
@@ -439,7 +439,7 @@ $currency_symbol = '£';
            $offset = ($current_page - 1) * $results_per_page;
 
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">');
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">');
             include 'includes/dbh.inc.php';
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
@@ -486,9 +486,9 @@ $currency_symbol = '£';
                 } else {
                     // rows found
                     echo('
-                    <table class="table table-dark" id="inventoryTable" style="max-width:max-content">
+                    <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
                         <thead style="text-align: center; white-space: nowrap;">
-                            <tr>
+                            <tr class="theme-tableOuter">
                                 <th>ID</th>
                                 <th>Image</th>
                                 <th>Name</th>
@@ -522,7 +522,7 @@ $currency_symbol = '£';
                         }
                         if ($total_pages > 1) {
                             echo('
-                            <tr style="background-color:#21272b">
+                            <tr class="theme-tableOuter">
                                 <td colspan="100%">');
     
                             if ($current_page > 1) {
@@ -531,7 +531,7 @@ $currency_symbol = '£';
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page blue">' . $i . '</span>');
+                                    echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
                                     echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');

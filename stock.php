@@ -522,7 +522,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             (SELECT SUM(quantity) 
                                                 FROM item 
                                                 WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                    AND item.serial_number=item_serial_number AND item.upc=item_upc
+                                                    AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments
                                             ) AS item_quantity,
                                             manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                                             (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
@@ -743,6 +743,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                             $hidden_shelf_id = $stock_inv_data[$i]['shelf_id'];
                                                             $hidden_serial = $stock_inv_data[$i]['serial_number']; 
                                                             $hidden_cost = $stock_inv_data[$i]['cost'];
+                                                            $hidden_comments = $stock_inv_data[$i]['comments'];
                                                             $sql_hidden = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                                                         area.id AS area_id, area.name AS area_name,
                                                                         shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
@@ -754,8 +755,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                                     LEFT JOIN area ON shelf.area_id=area.id 
                                                                     LEFT JOIN site ON area.site_id=site.id
                                                                     LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                                                    WHERE stock.id=? AND shelf_id=$hidden_shelf_id AND quantity!=0 AND stock.deleted=0 AND item.deleted=0 AND item.serial_number='$hidden_serial' AND item.cost='$hidden_cost'
-                                                                    ORDER BY item.serial_number, item.upc, item.comments";
+                                                                    WHERE stock.id=? AND shelf_id=$hidden_shelf_id AND quantity!=0 AND stock.deleted=0 AND item.deleted=0 AND item.serial_number='$hidden_serial' AND item.cost='$hidden_cost' AND item.comments='$hidden_comments'
+                                                                    ORDER BY item.serial_number, item.upc, item.comments DESC";
                                                             $stmt_hidden = mysqli_stmt_init($conn);
                                                             if (!mysqli_stmt_prepare($stmt_hidden, $sql_hidden)) {
                                                                 echo("ERROR getting entries");

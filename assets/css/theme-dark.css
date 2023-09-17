@@ -1,9 +1,9 @@
 body {
-    background-color: #091d23 !important; 
-    color: #bbbbbb !important; 
+    background-color: #091d23 !important; /* base background colour */
+    color: #bbbbbb !important; /* base text colour */
 }
 
-.theme-dropdown {
+.theme-dropdown { /* themed dropdown select boxes */
 	background-color:#484848 !important;
 	border-color:black !important;
 	margin:0 !important;
@@ -11,51 +11,45 @@ body {
 	color: white !important;
 }
 
-.theme-dropdown option {
+.theme-dropdown option { /* themed dropdown select box options */
 	color: white !important;
 }
 
-.theme-textColor {
+.theme-textColor { /* specified text colour (used to be cw) */
 	color: white !important;
 }
 
-.theme-profileTextColor {
+.theme-profileTextColor { /* Profile page text colour */
 	color: #bbbbbb !important;
 }
 
-.theme-table {
+.theme-table { /* Table colouring */
 	color: #fff;
     background-color: #343a40;
 }
 
-.theme-tableOuter {
+.theme-tableOuter { /* Table header and footer colours */
 	background-color:#21272b
 }
 
-.theme-table-blank {
+.theme-table-blank { /* Table blank cell for the stock locations */
     background-color:#21272b;
 }
 
-.theme-th-selected {
+.theme-th-selected { /* Table selected th cells */
     background-color: #202328;
     border: 0px !important;
 }
 
-.gold {
+.gold, a { /* was gold, now changes based on theme - same as url links */
 	color: #e1b12c !important; 
 }
 
-a {
-    color: #e1b12c !important; 
-}
-
-
-.clickable {
+.clickable { /* clickable items */
     cursor: pointer !important;
 }
-.clickable:hover {
+.clickable:hover { /* clickable items colours */
     background-color: #3e3e3e !important;
-    /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;*/
 }
 
 
@@ -70,24 +64,24 @@ a {
     padding: 5px;
 }
 
-.pageSelected {
+.pageSelected { /* selected page for paginatation */
     color: #007FFF !important;
 }
 
-.theme-divBg {
+.theme-divBg { /* div background colours */
     background-color: #303335 !important;
 }
 
-.theme-divBg-m {
+.theme-divBg-m { /* div background colours (darker) */
     background-color: #434749 !important;
 }
 
 
-.theme-btn {
+.theme-btn { /* special button look */
     background-color: #696969 !important;
 }
 
-.serial-bg {
+.serial-bg { /* special serial button background look */
     display: inline-block;
     font-weight: 400;
     text-align: center;
@@ -103,6 +97,6 @@ a {
     color: #cfcfcf !important;
 }
 
-.specialColor {
+.specialColor { /*special colour - currently used for the view all in transactions and the min stock count */
     color: #007FFF !important;
 }

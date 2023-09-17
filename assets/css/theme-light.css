@@ -1,9 +1,9 @@
 body {
-	background-color: #FFFDFA !important; 
-	color: #000000 !important; 
+	background-color: #FFFDFA !important; /* base background colour */
+	color: #000000 !important; /* base text colour */
 }
 
-.theme-dropdown {
+.theme-dropdown { /* themed dropdown select boxes */
 	background-color:#aaa9a9 !important;
 	border-color:#505050 !important;
 	margin:0 !important;
@@ -11,51 +11,45 @@ body {
 	color: black !important;
 }
 
-.theme-dropdown option {
+.theme-dropdown option { /* themed dropdown select box options */
 	color: black !important;
 }
 
-.theme-textColor {
+.theme-textColor { /* specified text colour (used to be cw) */
 	color: black !important;
 }
 
-.theme-profileTextColor {
+.theme-profileTextColor { /* Profile page text colour */
 	color: black !important;
 }
 
-.theme-table {
+.theme-table { /* Table colouring */
 	background-color: #F9F9F9;
 	color: black;
 }
 
-.theme-tableOuter {
+.theme-tableOuter { /* Table header and footer colours */
 	background-color:#e1e1e1;
 }
 
-.theme-table-blank {
+.theme-table-blank { /* Table blank cell for the stock locations */
     background-color:#bcbcbc;
 }
 
-.theme-th-selected {
+.theme-th-selected { /* Table selected th cells */
     background-color: #999999;
     border: 0px !important;
 }
 
-.gold {
+.gold, a { /* was gold, now changes based on theme - same as url links */
 	color: blue !important;
 }
 
-a {
-    color: blue !important; 
-}
-
-
-.clickable {
+.clickable { /* clickable items */
     cursor: pointer !important;
 }
-.clickable:hover {
+.clickable:hover { /* clickable items colours */
     background-color: #858484 !important;
-    /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;*/
 }
 
 
@@ -70,24 +64,24 @@ a {
     padding: 5px;
 }
 
-.pageSelected {
+.pageSelected { /* selected page for paginatation */
     color: black !important;
 }
 
-.theme-divBg {
+.theme-divBg { /* div background colours */
     background-color: #d3d3d3 !important;
 }
 
-.theme-divBg-m {
+.theme-divBg-m { /* div background colours (darker) */
     background-color: #acacac !important;
 }
 
 
-.theme-btn {
+.theme-btn { /* special button look */
     background-color: #a6a3a3 !important;
 }
 
-.serial-bg {
+.serial-bg { /* special serial button background look */
     display: inline-block;
     font-weight: 400;
     text-align: center;
@@ -103,6 +97,6 @@ a {
     color: #1f1f1f !important;
 }
 
-.specialColor {
+.specialColor { /*special colour - currently used for the view all in transactions and the min stock count */ 
     color: #9b7202 !important; 
 }

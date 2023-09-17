@@ -35,7 +35,7 @@ if (isset($_POST['submit'])) {
                     $uid_type = "username";
                 }
 
-                $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired
+                $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired, users.theme AS users_theme
                                 FROM users 
                                 INNER JOIN users_roles ON users.role_id = users_roles.id
                                 WHERE $uid_type=? AND auth='local'";
@@ -72,6 +72,17 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['email'] = $row['email'];
                                 $_SESSION['role'] = $row['role'];
                                 $_SESSION['auth'] = $row['auth'];
+                                switch ($row['users_theme']) {
+                                    case '0':
+                                        $theme = 'dark';
+                                        break;
+                                    case '1':
+                                        $theme = 'light';
+                                        break;
+                                    default:
+                                        $theme = 'dark';
+                                }
+                                $_SESSION['theme'] = $theme;
                                 $_SESSION['password_expired'] = $row['password_expired'];
                                 if (isset($_SESSION['redirect_url'])) {
                                     if (str_contains($_SESSION['redirect_url'], "?")) {
@@ -229,7 +240,8 @@ if (isset($_POST['submit'])) {
                             // Check if the user exists already in the users table
                             include 'dbh.inc.php';
 
-                            $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled FROM users 
+                            $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.theme AS users_theme
+                                            FROM users 
                                             INNER JOIN users_roles ON users.role_id = users_roles.id
                                             WHERE username=? AND auth='ldap'";
                             $stmt_users = mysqli_stmt_init($conn);
@@ -268,6 +280,17 @@ if (isset($_POST['submit'])) {
                                     $_SESSION['email'] = $ldap_info_upn;
                                     $_SESSION['role'] = $default_role;
                                     $_SESSION['auth'] = $auth;
+                                    switch ($row['users_theme']) {
+                                        case '0':
+                                            $theme = 'dark';
+                                            break;
+                                        case '1':
+                                            $theme = 'light';
+                                            break;
+                                        default:
+                                            $theme = 'dark';
+                                    }
+                                    $_SESSION['theme'] = $theme;
                                     $_SESSION['password_expired'] = 0;
                                     if (isset($_SESSION['redirect_url'])) {
                                         if (str_contains($_SESSION['redirect_url'], "?")) {
@@ -296,6 +319,17 @@ if (isset($_POST['submit'])) {
                                         $_SESSION['email'] = $row['email'];
                                         $_SESSION['role'] = $row['role'];
                                         $_SESSION['auth'] = $row['auth'];
+                                        switch ($row['users_theme']) {
+                                            case '0':
+                                                $theme = 'dark';
+                                                break;
+                                            case '1':
+                                                $theme = 'light';
+                                                break;
+                                            default:
+                                                $theme = 'dark';
+                                        }
+                                        $_SESSION['theme'] = $theme;
                                         $_SESSION['password_expired'] = 0;
                                         if (isset($_SESSION['redirect_url'])) {
                                             if (str_contains($_SESSION['redirect_url'], "?")) {

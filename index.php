@@ -196,13 +196,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             echo ('
                             <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
                                 <label for="search-input-site">Site</label><br>
-                                <select id="site-dropdown" name="site" class="form-control nav-v-b cw" style="background-color:484848;border-color:black;margin:0;padding-left:0" oninput="getInventory(1)" >
-                                <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
+                                <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
+                                <option value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
                             ');
                             if (!empty($site_names_array)) {
                                 foreach (array_keys($site_names_array) as $site_id) {
                                     $site_name = $site_names_array[$site_id];
-                                    echo('<option style="color:white" value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
+                                    echo('<option value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
                                 }
                             }
                             
@@ -213,7 +213,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             echo ('
                             <span id="search-input-area-span" style="margin-right: 10px; padding-left:12px">
                                 <label for="search-input-manufacturer">Area</label><br>
-                                    <select id="area-dropdown" name="area" class="form-control nav-v-b cw" style="background-color:#484848;border-color:black;margin:0;padding-left:0" oninput="getInventory(1)" >
+                                    <select id="area-dropdown" name="area" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
                                     <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
                                 ');
                                 if (!empty($area_names_array)) {
@@ -326,9 +326,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
             <!-- Table -->
             <div class="container">
-                <table class="table table-dark centertable" id="inventoryTable" style="margin-bottom:0px">
+                <table class="table table-dark theme-table centertable" id="inventoryTable" style="margin-bottom:0px">
                     <thead style="text-align: center; white-space: nowrap;">
-                        <tr>
+                        <tr class="theme-tableOuter">
                             <th id="id" hidden>id</th>
                             <th id="img"</th>
                             <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
@@ -348,7 +348,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             
             echo('
             <tbody>
-            <tr style="background-color:#21272b">
+            <tr class="theme-tableOuter">
                 <td colspan="100%" style="padding:0;margin:0">
                 <div class="row">
                     <div class="col text-center"></div>
@@ -361,7 +361,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     <table style="margin-left:auto; margin-right:20px">
                         <tbody>
                             <tr>
-                                <td class="cw align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
+                                <td class="theme-textColor align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
                                     Rows: 
                                 </td>
                                 <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">

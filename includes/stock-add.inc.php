@@ -8,7 +8,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
 <!-- <div style="margin-bottom:200px"></div> -->
 
 <!-- NEW STOCK -->
-<div class="container well-nopad bg-dark">
+<div class="container well-nopad theme-divBg">
     
     <?php
     if (is_numeric($stock_id)) {
@@ -35,7 +35,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             echo('
             <!-- this is for the stock-modify.inc.php page -->
             <input type="hidden" name="stock-add" value="1" /> 
-            <div class="container well-nopad bg-dark" style="margin-bottom:5px">
+            <div class="container well-nopad theme-divBg" style="margin-bottom:5px">
                 <h3 style="font-size:22px; margin-left:25px">Add New Stock</h3>
                 <div class="row">
                     <div class="col-sm text-left" id="stock-info-left">
@@ -279,7 +279,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         // <input type="text" name="area" placeholder="Area - make drop down" id="area" class="form-control nav-v-c" style="width:300px" value="'.$input_area.'"></input>
         // <input type="text" name="shelf" placeholder="Shelf - make drop down" id="shelf" class="form-control nav-v-c" style="width:300px" value="'.$input_shelf.'" required></input>
         echo('
-            <div class="container well-nopad bg-dark">
+            <div class="container well-nopad theme-divBg">
                 <div class="row">
                     <div class="text-left" id="stock-info-left" style="padding-left:15px">
                         <div class="nav-row" style="margin-bottom:25px">
@@ -436,7 +436,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         ');
         if (isset($_GET['search']) && $_GET['search'] !== '') {
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
             $sql = "SELECT * from stock
@@ -454,9 +454,9 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     echo('<p>No Stock Found</p>');
                 } else {
                     echo('
-                <table class="table table-dark" style="min-width:500px;max-width:max-content">
+                <table class="table table-dark theme-table" style="min-width:500px;max-width:max-content">
                     <thead>
-                        <tr>
+                        <tr class="theme-tableOuter">
                             <th style="max-width:max-content">ID</th>
                             <th>Stock Name</th>
                             <th>SKU</th>
@@ -534,7 +534,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             $offset = ($current_page - 1) * $results_per_page;
 
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">');
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">');
             include 'includes/dbh.inc.php';
 
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
@@ -575,9 +575,9 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                 } else {
                     // rows found
                     echo('
-                    <table class="table table-dark" id="inventoryTable" style="max-width:max-content">
+                    <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
                         <thead style="text-align: center; white-space: nowrap;">
-                            <tr>
+                            <tr class="theme-tableOuter">
                                 <th>ID</th>
                                 <th>Image</th>
                                 <th>Name</th>
@@ -611,7 +611,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         }
                         if ($total_pages > 1) {
                             echo('
-                            <tr style="background-color:#21272b">
+                            <tr class="theme-tableOuter">
                                 <td colspan="100%">');
     
                             if ($current_page > 1) {
@@ -620,7 +620,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page blue">' . $i . '</span>');
+                                    echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
                                     echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');

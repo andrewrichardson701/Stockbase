@@ -201,13 +201,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <input type="hidden" name="oos" value="'.$showOOS.'" />
                             <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
                                 <label for="search-input-site">Site</label><br>
-                                <select id="site-dropdown" name="site" class="form-control nav-v-b cw" style="background-color:484848;border-color:black;margin:0;padding-left:0" onchange="siteChange(\'site-dropdown\')">
-                                <option style="color:white" value="0"'); if ($site == 0) { echo('selected'); } echo('>All</option>
+                                <select id="site-dropdown" name="site" class="form-control nav-v-b cw theme-dropdown"  onchange="siteChange(\'site-dropdown\')">
+                                <option value="0"'); if ($site == 0) { echo('selected'); } echo('>All</option>
                             ');
                             if (!empty($site_names_array)) {
                                 foreach (array_keys($site_names_array) as $site_id) {
                                     $site_name = $site_names_array[$site_id];
-                                    echo('<option style="color:white" value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
+                                    echo('<option value="'.$site_id.'"'); if ($site == $site_id) { echo('selected'); } echo('>'.$site_name.'</option>');
                                 }
                             }
                             
@@ -261,7 +261,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             
             <!-- Add Cables form section -->
             <div class="container" id="add-cables-section" style="margin-bottom:10px" hidden>
-                <div class="well-nopad bg-dark text-center">
+                <div class="well-nopad theme-divBg text-center">
                     <h3 style="font-size:22px">Add new cables</h3>
                     <hr style="border-color:#9f9d9d; margin-left:10px">
                     <form id="add-cables-form" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
@@ -414,26 +414,26 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </style>
             <!-- Table -->
             <div class="container">
-                <table class="table table-dark centertable" id="cableSelection" style="border:0px !important">
-                    <thead style="text-align: center; white-space: nowrap; border:0px !important">
+                <table class="table table-dark theme-table centertable" id="cableSelection" style="border:0px !important">
+                    <thead class="theme-tableOuter" style="text-align: center; white-space: nowrap; border:0px !important">
                         <tr style="border:0px !important">');
                         if (!isset($_GET['name']) || $name == '') {
-                            echo('<th class="clickable '); if ($cableType == "copper" || $cableType == '') { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'copper\'))">Copper</th>');
-                            echo('<th class="clickable '); if ($cableType == "fibre") { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'fibre\'))">Fibre</th>');
-                            echo('<th class="clickable '); if ($cableType == "power") { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'power\'))">Power</th>');
-                            echo('<th class="clickable '); if ($cableType == "other") { echo('th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'other\'))">Other</th>');
+                            echo('<th class="clickable '); if ($cableType == "copper" || $cableType == '') { echo('theme-th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'copper\'))">Copper</th>');
+                            echo('<th class="clickable '); if ($cableType == "fibre") { echo('theme-th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'fibre\'))">Fibre</th>');
+                            echo('<th class="clickable '); if ($cableType == "power") { echo('theme-th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'power\'))">Power</th>');
+                            echo('<th class="clickable '); if ($cableType == "other") { echo('theme-th-selected'); } else { echo('th-noBorder'); } echo('" onclick="navPage(updateQueryParameter(\'\', \'cable\', \'other\'))">Other</th>');
                         }
                         echo('
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan=4 class="th-selected">');
+                            <td colspan=4 class="theme-th-selected">');
                             if ($rowCount_inv < 1) {
                                 echo ('<div class="container" id="no-inv-found">No Inventory Found</div>');
                             } else {
                                 echo('
-                                <table class="table table-dark centertable" id="inventoryTable">
+                                <table class="table table-dark theme-table centertable" id="inventoryTable">
                                     <thead style="text-align: center; white-space: nowrap;">
                                         <tr>
                                             <th id="stock-id" hidden>Stock ID</th>

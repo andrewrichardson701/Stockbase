@@ -106,9 +106,9 @@ if (!empty($_POST)) {
 <div id="modalDivProperties" class="modal">
 <!-- <div id="modalDivProperties" style="display: block;"> -->
     <span class="close" onclick="modalCloseProperties()">&times;</span>
-    <div class="container well-nopad bg-dark" style="padding:25px">
+    <div class="container well-nopad theme-divBg" style="padding:25px">
         <!-- Label -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-label" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-label" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>
@@ -123,7 +123,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Manufacturer -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-manufacturer" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-manufacturer" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>
@@ -138,7 +138,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Site -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-site" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-site" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable" style="border-collapse: collapse;table-layout:fixed;">
                     <tbody>
@@ -157,7 +157,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Area -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-area" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-area" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>
@@ -204,7 +204,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Shelf -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-shelf" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-shelf" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>

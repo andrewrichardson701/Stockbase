@@ -27,7 +27,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         include 'includes/dbh.inc.php';
 
-        $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role FROM users 
+        $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.theme AS users_theme
+                        FROM users 
                         INNER JOIN users_roles ON users.role_id = users_roles.id
                         WHERE username=?";
         $stmt_users = mysqli_stmt_init($conn);
@@ -51,6 +52,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     $profile_email = $row['email'];
                     $profile_role = ucwords($row['role']);
                     $profile_auth = $row['auth'];
+                    $profile_theme = $row['users_theme'];
                 }  
             } else { // if there are somehow too many rows matching the sql
                 header("Location: ../index.php?sqlerror=multipleentries");
@@ -64,8 +66,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             <div style="padding-top: 20px;margin-left:25px">
                 <?php 
                 if ($_SESSION['auth'] == "ldap") {
-                    echo('<table>
+                    echo('<table class="theme-profileTextColor">
                             <tbody>
+                                <input id="profile-id" type="hidden" value="'.$profile_id.'" name="id"/>
                                 <tr class="nav-row" id="username">
                                     <td id="username_header" style="width:200px">
                                         <!-- Custodian Colour: #72BE2A -->
@@ -117,6 +120,17 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                     </td>
                                 </tr>
+                                <tr class="nav-row" style="margin-top:30px">
+                                    <td id="theme_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
+                                    </td>
+                                    <td id="theme_info">
+                                        <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">
+                                            <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
+                                            <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
+                                        </select>
+                                    </td>
+                                </tr>
                                 <tr class="nav-row" style="margin-top:30px" id="resync">
                                     <td id="resync_button_td" style="width:200px">
                                         <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
@@ -129,7 +143,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 } else {
                     echo('
                     <form id="profileForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                    <input type="hidden" value="'.$profile_id.'" name="id"/>
+                    <input id="profile-id" type="hidden" value="'.$profile_id.'" name="id"/>
                     <table>
                         <tbody>
                             <tr class="nav-row" id="username">
@@ -184,6 +198,17 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 </td>
                             </tr>
                             <tr class="nav-row" style="margin-top:30px">
+                                <td id="theme_header" style="width:200px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
+                                </td>
+                                <td id="theme_info">
+                                    <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">
+                                        <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
+                                        <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-top:30px">
                                 <td id="profile-submit" style="width:200px">
                                     <button class="btn btn-success align-bottom" type="submit" name="profile-submit" style="margin-left:0px" value="1">Save</button>
                                 </td>
@@ -210,5 +235,42 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     </div>
         
 <?php include 'foot.php'; ?>
+
+<script>
+    function changeTheme() {
+        var select = document.getElementById('theme-select');
+        var value = select.value;
+        var css = document.getElementById('theme-css');
+        var profile_id = document.getElementById('profile-id').value;
+
+        switch(value) {
+            case '0':
+                var theme = 'dark';
+                break;
+            case '1': 
+                var theme = 'light';
+                break;
+            default:
+                var theme = 'dark';
+        }
+
+        css.href = "./assets/css/theme-"+theme+".css";
+
+
+        var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/change-theme.inc.php?change=1&theme="+theme+"&value="+value+"&user-id="+profile_id, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    // var return = JSON.parse(xhr.responseText);
+                    
+                    // if (return == 'success') {
+                    //     css.href = './assets/css/theme-'+theme+'.css';
+                    // } 
+                }
+            };
+            xhr.send();
+    }
+</script>
 
 </body>

@@ -1,0 +1,108 @@
+body {
+	background-color: #FFFDFA !important; 
+	color: #000000 !important; 
+}
+
+.theme-dropdown {
+	background-color:#aaa9a9 !important;
+	border-color:#505050 !important;
+	margin:0 !important;
+	padding-left:0 !important;
+	color: black !important;
+}
+
+.theme-dropdown option {
+	color: black !important;
+}
+
+.theme-textColor {
+	color: black !important;
+}
+
+.theme-profileTextColor {
+	color: black !important;
+}
+
+.theme-table {
+	background-color: #F9F9F9;
+	color: black;
+}
+
+.theme-tableOuter {
+	background-color:#e1e1e1;
+}
+
+.theme-table-blank {
+    background-color:#bcbcbc;
+}
+
+.theme-th-selected {
+    background-color: #999999;
+    border: 0px !important;
+}
+
+.gold {
+	color: blue !important;
+}
+
+a {
+    color: blue !important; 
+}
+
+
+.clickable {
+    cursor: pointer !important;
+}
+.clickable:hover {
+    background-color: #858484 !important;
+    /*text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;*/
+}
+
+
+
+.footer {
+    background-color: #d1cfcf;
+    color: black;
+    font-size: 14px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 5px;
+}
+
+.pageSelected {
+    color: black !important;
+}
+
+.theme-divBg {
+    background-color: #d3d3d3 !important;
+}
+
+.theme-divBg-m {
+    background-color: #acacac !important;
+}
+
+
+.theme-btn {
+    background-color: #a6a3a3 !important;
+}
+
+.serial-bg {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    padding: 0px 3px 0px 3px;
+    margin-right: 5px;
+    background-color: #a6a3a3 !important;
+    color: #1f1f1f !important;
+}
+
+.specialColor {
+    color: #9b7202 !important; 
+}

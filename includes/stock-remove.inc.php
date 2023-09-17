@@ -21,7 +21,7 @@ if ($stock_id == 0 || $stock_id == '0') {
 <!-- <div style="margin-bottom:200px"></div> -->
 
 <!-- NEW STOCK -->
-<div class="container well-nopad bg-dark">
+<div class="container well-nopad theme-divBg">
     
     <?php
     if (is_numeric($stock_id)) {
@@ -186,7 +186,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="container well-nopad bg-dark">
+                                <div class="container well-nopad theme-divBg">
                                     <div class="row">
                                         <div class="text-left" id="stock-info-left" style="padding-left:15px">
                                             <div class="nav-row" style="margin-bottom:25px">
@@ -293,7 +293,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         ');
         if (isset($_GET['search']) && $_GET['search'] !== '') {
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
             $sql = "SELECT * from stock
@@ -311,9 +311,9 @@ if ($stock_id == 0 || $stock_id == '0') {
                     echo('<p>No Stock Found</p>');
                 } else {
                     echo('
-                <table class="table table-dark" style="min-width:500px;max-width:max-content">
+                <table class="table table-dark theme-table" style="min-width:500px;max-width:max-content">
                     <thead>
-                        <tr>
+                        <tr class="theme-tableOuter">
                             <th style="max-width:max-content">ID</th>
                             <th>Stock Name</th>
                             <th>SKU</th>
@@ -390,7 +390,7 @@ if ($stock_id == 0 || $stock_id == '0') {
            $offset = ($current_page - 1) * $results_per_page;
 
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">');
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">');
             include 'includes/dbh.inc.php';
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
@@ -430,9 +430,9 @@ if ($stock_id == 0 || $stock_id == '0') {
                 } else {
                     // rows found
                     echo('
-                    <table class="table table-dark" id="inventoryTable" style="max-width:max-content">
+                    <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
                         <thead style="text-align: center; white-space: nowrap;">
-                            <tr>
+                            <tr class="theme-tableOuter">
                                 <th>ID</th>
                                 <th>Image</th>
                                 <th>Name</th>
@@ -466,7 +466,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         }
                         if ($total_pages > 1) {
                             echo('
-                            <tr style="background-color:#21272b">
+                            <tr class="theme-tableOuter">
                                 <td colspan="100%">');
     
                             if ($current_page > 1) {
@@ -475,7 +475,7 @@ if ($stock_id == 0 || $stock_id == '0') {
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page blue">' . $i . '</span>');
+                                    echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
                                     echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');

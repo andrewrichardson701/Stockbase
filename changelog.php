@@ -42,9 +42,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 echo("<p>No entries found.</p>");
             } else {
                 ?>
-                <table id="changelogTable" class="table table-dark" style="max-width:max-content">
+                <table id="changelogTable" class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
-                        <tr>
+                        <tr class="theme-tableOuter">
                             <th>id</th>
                             <th>timestamp</th>
                             <th>user_id</th>

@@ -1,0 +1,102 @@
+body {
+	background-color: #d2f1f0 !important; /* base background colour */
+	color: #000000 !important; /* base text colour */
+}
+
+.theme-dropdown { /* themed dropdown select boxes */
+	background-color:#aaa9a9 !important;
+	border-color:#505050 !important;
+	margin:0 !important;
+	padding-left:0 !important;
+	color: black !important;
+}
+
+.theme-dropdown option { /* themed dropdown select box options */
+	color: black !important;
+}
+
+.theme-textColor { /* specified text colour (used to be cw) */
+	color: black !important;
+}
+
+.theme-profileTextColor { /* Profile page text colour */
+	color: black !important;
+}
+
+.theme-table { /* Table colouring */
+	background-color: rgb(186 212 223);
+	color: black;
+}
+
+.theme-tableOuter { /* Table header and footer colours */
+	background-color:#8ed5df;
+}
+
+.theme-table-blank { /* Table blank cell for the stock locations */
+    background-color:#77b4be;
+}
+
+.theme-th-selected { /* Table selected th cells */
+    background-color: #5f8c97;
+    border: 0px !important;
+}
+
+.gold, a { /* was gold, now changes based on theme - same as url links */
+	color: blue !important;
+}
+
+.clickable { /* clickable items */
+    cursor: pointer !important;
+}
+.clickable:hover { /* clickable items colours */
+    background-color: #8fd0fc !important;
+}
+
+
+
+.footer {
+    background-color: #6be3e3;
+    color: black;
+    font-size: 14px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 5px;
+}
+
+.pageSelected { /* selected page for paginatation */
+    color: black !important;
+}
+
+.theme-divBg { /* div background colours */
+    background-color: #7eeded4d !important;
+}
+
+.theme-divBg-m { /* div background colours (darker) */
+    background-color: #6be3e3 !important;
+}
+
+
+.theme-btn { /* special button look */
+    background-color: #a6a3a38f !important;
+}
+
+.serial-bg { /* special serial button background look */
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    padding: 0px 3px 0px 3px;
+    margin-right: 5px;
+    background-color: #a6a3a38f !important;
+    color: #1f1f1f !important;
+}
+
+.specialColor { /*special colour - currently used for the view all in transactions and the min stock count */ 
+    color: #889200 !important; 
+}

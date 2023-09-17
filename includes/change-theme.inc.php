@@ -15,8 +15,7 @@ if (isset($_GET['change']) && isset($_GET['theme']) && isset($_GET['value']) && 
                     WHERE id=?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
-        $errors[] = 'checkID stock table error - SQL connection';
-        echo('error');
+        $results[] = 'error';
     } else {
         mysqli_stmt_bind_param($stmt, "s", $_GET['user-id']);
         mysqli_stmt_execute($stmt);
@@ -32,7 +31,7 @@ if (isset($_GET['change']) && isset($_GET['theme']) && isset($_GET['value']) && 
         $sql_update = "UPDATE users SET theme='$theme' WHERE id=?";
         $stmt_update = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-            echo('error');
+            $results[] = 'error';
         } else {
             mysqli_stmt_bind_param($stmt_update, "s", $_GET['user-id']);
             mysqli_stmt_execute($stmt_update);
@@ -40,7 +39,8 @@ if (isset($_GET['change']) && isset($_GET['theme']) && isset($_GET['value']) && 
             // update changelog
             addChangelog($_GET['user-id'], $username, "Theme Change", "users", $_GET['user-id'], "theme", $old_theme, $_GET['value']);
             
-            echo ('success');
+            $results[] = 'success';
         }
     } 
+    echo(json_encode($results));
 } 

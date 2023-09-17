@@ -128,6 +128,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">
                                             <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
                                             <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
+                                            <option value="2" '); if ($profile_theme == 2) { echo('selected'); } echo('>Light Blue</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -205,6 +206,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">
                                         <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
                                         <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
+                                        <option value="2" '); if ($profile_theme == 2) { echo('selected'); } echo('>Light Blue</option>
                                     </select>
                                 </td>
                             </tr>
@@ -250,11 +252,14 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             case '1': 
                 var theme = 'light';
                 break;
+            case '2': 
+                var theme = 'light-blue';
+                break;
             default:
                 var theme = 'dark';
         }
 
-        css.href = "./assets/css/theme-"+theme+".css";
+        // css.href = "./assets/css/theme-"+theme+".css";
 
 
         var xhr = new XMLHttpRequest();
@@ -262,11 +267,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     // Parse the response and populate the shelf select box
-                    // var return = JSON.parse(xhr.responseText);
-                    
-                    // if (return == 'success') {
-                    //     css.href = './assets/css/theme-'+theme+'.css';
-                    // } 
+                    var re = JSON.parse(xhr.responseText);
+                    console.log (re);
+                    if (re == 'success') {
+                        css.href = './assets/css/theme-'+theme+'.css';
+                    } 
                 }
             };
             xhr.send();

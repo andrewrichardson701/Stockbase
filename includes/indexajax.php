@@ -216,6 +216,11 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                 }  
             }
 
+            if ($site !== 0 && $site !== '0') { // checker for whether or not to show the site heading on the table.
+                $results[-1]['siteNeeded'] = 0;
+            } else {
+                $results[-1]['siteNeeded'] = 1;
+            }
             $results[-1]['site'] = $site;
             $results[-1]['area'] = $area;
             $results[-1]['shelf'] = $shelf;
@@ -231,6 +236,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
             $results[-1]['url'] = "./?oos=$showOOS&site=$site&area=$area&name=$name&sku=$sku&shelf=$shelf&manufacturer=$manufacturer&label=$label&page=$current_page&rows=$rowSelectValue";
             $results[-1]['sql'] = $sql_inv;
             $results[-1]['areas'] = $area_array;
+            
             // ----
             $img_directory = "assets/img/stock/"; 
             if ($rowCount_inv < 1) {

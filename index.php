@@ -333,9 +333,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <th id="img"</th>
                             <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
                             <th class="clickable sorting" id="sku" onclick="sortTable(3, this)">SKU</th>
-                            <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>');
-            if ($site == 0) { echo('<th class="clickable sorting" id="site" onclick="sortTable(5, this)">Site</th>'); }
-                        echo('<th id="lables">Labels</th>
+                            <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>
+                            <th class="clickable sorting" id="site" onclick="sortTable(5, this)" '); if ($site == 0) { echo('hidden'); } echo('>Site</th>
+                            <th id="lables">Labels</th>
                         <th id="location">Location(s)</th>
                         </tr>
                     </thead>
@@ -421,6 +421,15 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     // console.log(inventory);
                     var bodyExtras = '';
                     var count = inventory[-1]['rows']-1;
+                    var siteNeeded = inventory[-1]['siteNeeded'];
+                    var siteHeading = document.getElementById('site');
+                    console.log(siteNeeded);
+                    if (siteNeeded == 0 || siteNeeded == '0') {
+                        siteHeading.hidden = true;
+                    } else {
+                        siteHeading.hidden = false;
+                    }
+
                     for (let i=0; i<count; i++) {
                         if (inventory[i]) {
                             var extras = bodyExtras+inventory[i];

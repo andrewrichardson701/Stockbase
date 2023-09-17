@@ -106,7 +106,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     ?>
             <div id="modalDiv" class="modal" style="display:block;padding:300px;background-color: rgba(0,0,0,0.7);">
                 <span class="close" onclick="modalClose()">×</span>
-                    <div class="well-nopad bg-dark" style="position:relative; margin:auto; width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
+                    <div class="well-nopad theme-divBg" style="position:relative; margin:auto; width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
                     <form id="locationForm" enctype="multipart/form-data" action="./includes/changepassword.inc.php" method="POST">
                         <table>
                             <tbody>

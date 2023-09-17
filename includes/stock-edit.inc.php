@@ -69,7 +69,7 @@ if (isset($_GET['stock_id'])) {
 
                 echo ('
                 
-                <div class="container well-nopad bg-dark" style="margin-bottom:5px">
+                <div class="container well-nopad theme-divBg" style="margin-bottom:5px">
                     <h3 style="font-size:22px; margin-left:25pxq">Edit Existing Stock</h3>
                     <div class="row">
                         <div class="col-sm-7 text-left" id="stock-info-left">
@@ -235,7 +235,7 @@ if (isset($_GET['stock_id'])) {
                         <div class="col-sm text-right"  id="stock-info-right"> ');
                         if (!isset($_GET['images']) || ($_GET['images'] !== 'edit')) {
                             if (!empty($stock_img_data)) {
-                                echo('<div class="well-nopad bg-dark nav-right" style="margin:20px;padding:0px;width:max-content;margin-left:70px">
+                                echo('<div class="well-nopad theme-divBg nav-right" style="margin:20px;padding:0px;width:max-content;margin-left:70px">
                                 <div class="nav-row" style="width:315px">');
                                 for ($i=0; $i < count($stock_img_data); $i++) {
                                     $ii = $i+1;
@@ -246,7 +246,7 @@ if (isset($_GET['stock_id'])) {
                                             $imgWidth = "235px";
                                         }
                                         echo('
-                                        <div class="thumb bg-dark-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoadCarousel()">
+                                        <div class="thumb theme-divBg-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-width:'.$imgWidth.';max-height:235px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
@@ -254,7 +254,7 @@ if (isset($_GET['stock_id'])) {
                                     } 
                                     if ($i == 1 || $i == 2) {
                                         echo('
-                                        <div class="thumb bg-dark-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoadCarousel()">
+                                        <div class="thumb theme-divBg-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
                                         </div>
                                         ');
@@ -262,12 +262,12 @@ if (isset($_GET['stock_id'])) {
                                     if ($i == 3) {
                                         if ($i < (count($stock_img_data)-1)) {
                                             echo ('
-                                            <div class="thumb bg-dark-m" style="width:75px;height:75px">
+                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px">
                                             <p class="nav-v-c text-center" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-more" style="width:75px">+'.(count($stock_img_data)-3).'</p>
                                             ');
                                         } else {
                                             echo('
-                                            <div class="thumb bg-dark-m" style="width:75px;height:75px" onclick="modalLoadCarousel()">
+                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px" onclick="modalLoadCarousel()">
                                             <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" onclick="modalLoad(this)"/>
                                             ');
                                         }
@@ -362,17 +362,17 @@ if (isset($_GET['stock_id'])) {
                                         <tr>
                                             <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" onsubmit="return confirm(\'Are you sure you want to unlink this image?\nThe file will remain on the system.\');">
                                                 <input type="hidden" name="stock-edit" value="1" />
-                                                <td class="bg-dark-m" style="padding-right:5px">
+                                                <td class="theme-divBg-m" style="padding-right:5px">
                                                     <input type="hidden" name="stock_id" value="'.$stock_img_data[$i]['stock_id'].'" />
                                                     <input type="hidden" name="img_id" value="'.$stock_img_data[$i]['id'].'" />
                                                     <input type="hidden" name="submit" value="image-delete" />
-                                                    <div class="thumb bg-dark-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoad(this.children[0])">
+                                                    <div class="thumb theme-divBg-m" style="width:75px;height:75px;margin:5px" onclick="modalLoad(this.children[0])">
                                                         <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
                                                     
                                                     </div>
                                                 </td>
-                                                <td class="bg-dark-m uni" style="font-size:14">assets/img/stock/'.$stock_img_data[$i]['image'].'</td>
-                                                <td class="bg-dark-m" style="padding-left:10px;padding-right:10px">
+                                                <td class="theme-divBg-m uni" style="font-size:14">assets/img/stock/'.$stock_img_data[$i]['image'].'</td>
+                                                <td class="theme-divBg-m" style="padding-left:10px;padding-right:10px">
                                                     <button id="edit-images" class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
@@ -421,15 +421,15 @@ if (isset($_GET['stock_id'])) {
 <div id="modalDivSelection" class="modal">
 <!-- <div id="modalDivSelection" style="display: block;"> -->
     <span class="close" onclick="modalCloseSelection()">&times;</span>
-    <div class="container well-nopad bg-dark" style="padding:25px">
-        <div  class="well-nopad bg-dark" style="overflow-y:auto; height:450px">
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <div  class="well-nopad theme-divBg" style="overflow-y:auto; height:450px">
             <?php
                 $filepath = 'assets/img/stock';
                 $files = array_values(array_diff(scandir($filepath), array('..', '.')));
                 // print_r($files);
                 echo('<div class="nav-row">');
                 for ($f=0; $f<count($files); $f++) {
-                    echo('<div class="thumb bg-dark-m" id="add-image-'.$f.'-div" style="width:200px;height:200px;margin:2px"><img class="nav-v-c" id="add-image-'.$f.'" style="width:200px" alt="'.$files[$f].'" src="'.$filepath.'/'.$files[$f].'" onclick="modalImageInputFill(this);"/></div>');
+                    echo('<div class="thumb theme-divBg-m" id="add-image-'.$f.'-div" style="width:200px;height:200px;margin:2px"><img class="nav-v-c" id="add-image-'.$f.'" style="width:200px" alt="'.$files[$f].'" src="'.$filepath.'/'.$files[$f].'" onclick="modalImageInputFill(this);"/></div>');
                 }
                 echo('</div>');
 
@@ -437,7 +437,7 @@ if (isset($_GET['stock_id'])) {
         </div>
         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="stock-edit" value="1" />
-            <div class="nav-row well-nopad bg-dark">
+            <div class="nav-row well-nopad theme-divBg">
                 <div class="nav-row" style="padding:25px 50px 25px 50px;width:750px">
                     <div>
                         <input class="nav-v-c form-control" style="height:35px;width:500px;background-color:#adadad !important; color:black !important" name="img-file-name-visible" id="img-file-name-visible" type="text" placeholder="path/to/file.png" disabled />
@@ -448,7 +448,7 @@ if (isset($_GET['stock_id'])) {
                         <input class="btn btn-success" type="submit" name="submit" value="Add Image" />
                     </div>
                 </div>
-                <div class="thumb bg-dark-m" style="width:85px;height:85px;margin:2px">
+                <div class="thumb theme-divBg-m" style="width:85px;height:85px;margin:2px">
                     <img class="nav-v-c" id="img-selected-thumb" style="width:85px" />
                 </div>
                 <div style="padding-left:100px" class="">
@@ -463,7 +463,7 @@ if (isset($_GET['stock_id'])) {
 <!-- Modal Image Upload Div -->
 <div id="modalDivUpload" class="modal">
     <span class="close" onclick="modalCloseUpload()">&times;</span>
-    <div class="container well-nopad bg-dark" style="padding:25px">
+    <div class="container well-nopad theme-divBg" style="padding:25px">
         <div style="width:250px;height:250px;margin:auto">
             <img class="nav-v-c" id="upload-img-pre" style="max-width:250px;max-height:250px" />
         </div>

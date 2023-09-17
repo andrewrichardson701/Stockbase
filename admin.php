@@ -51,8 +51,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <div id="modalDivAdd" class="modal">
         <!-- <div id="modalDivAdd" style="display: block;"> -->
             <span class="close" onclick="modalCloseAdd()">×</span>
-            <div class="container well-nopad bg-dark" style="padding:25px">
-                <div class="well-nopad bg-dark" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <div class="container well-nopad theme-divBg" style="padding:25px">
+                <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                     <div style="display:block"> 
                         <h2 style="margin-bottom:20px">Add new Site / Area / Shelf</h2>
                         <form id="locationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
@@ -97,8 +97,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <div id="modalDivEdit" class="modal">
         <!-- <div id="modalDivEdit" style="display: block;"> -->
             <span class="close" onclick="modalCloseEdit()">×</span>
-            <div class="container well-nopad bg-dark" style="padding:25px">
-                <div class="well-nopad bg-dark" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <div class="container well-nopad theme-divBg" style="padding:25px">
+                <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                     <div style="display:block"> 
                         <h2 style="margin-bottom:20px">Edit Location</h2>
                         <form id="editLocationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
@@ -1123,7 +1123,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
     <div id="modalDivResetPW" class="modal" style="display: none;">
         <span class="close" onclick="modalCloseResetPW()">×</span>
-        <div class="container well-nopad bg-dark" style="padding:25px">
+        <div class="container well-nopad theme-divBg" style="padding:25px">
             <div style="margin:auto;text-align:center;margin-top:10px">
                 <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="admin-pwreset-submit" value="set" />
@@ -1193,7 +1193,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             outputPre.parentNode.removeChild(outputPre)
         }
         var newOutputPre = document.createElement("pre");
-        newOutputPre.setAttribute("class", "well-nopad bg-dark");
+        newOutputPre.setAttribute("class", "well-nopad theme-divBg");
         newOutputPre.setAttribute("id", "ldapTestOutput");
         newOutputPre.setAttribute("style", "color:white;margin-bottom:50px");
         ldapForm.parentNode.insertBefore(newOutputPre, ldapForm.nextSibling);
@@ -1254,7 +1254,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             outputPre.parentNode.removeChild(outputPre)
         }
         var newOutputPre = document.createElement("pre");
-        newOutputPre.setAttribute("class", "well-nopad bg-dark");
+        newOutputPre.setAttribute("class", "well-nopad theme-divBg");
         newOutputPre.setAttribute("id", "smtpTestOutput");
         newOutputPre.setAttribute("style", "color:white;margin-bottom:50px");
         smtpForm.parentNode.insertBefore(newOutputPre, smtpForm.nextSibling);

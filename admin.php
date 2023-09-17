@@ -20,8 +20,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     ?>
 
 
-    <!-- set to index.php for now as there is nothing to put here. But i will forget about it if i remove it -->
-    <a href="changelog.php" class="skip-nav-link-inv">changelog</a>
+    <!-- hidden link, commented out as no purpose currently -->
+    <!-- <a href="changelog.php" class="skip-nav-link-inv">changelog</a> -->
 
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
@@ -1118,6 +1118,178 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     </tbody>
                 </table>
             </form>
+        </div>
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="notification-settings" onclick="toggleSection(this, 'notification')">Email Notification Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+
+        <!-- Notification Settings -->
+        <div style="padding-top: 20px" id="notification" hidden>
+            <p class="red">There will be notification toggles in here eventually... Still working on how these will be stored and how they will be disabled</p>
+            <?php if($current_smtp_enabled == 1) {
+                ?>
+                <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                    <input type="hidden" name="notifications-submit" value="set" />
+                    <table>
+                        <tbody>
+                            <tr class="nav-row" style="margin-bottom:10px">
+                                <td style="margin-left:25px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Added:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="stock-added">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                                <td style="margin-left:50px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Removed:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="stock-removed">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                                <td style="margin-left:50px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Deleted:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="stock-deleted">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                                <td style="margin-left:50px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Moved:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="stock-moved">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-bottom:10px">
+                                <td style="margin-left:25px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Cable Stock Added:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="cablestock-added">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                                <td style="margin-left:50px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Cable Stock Removed:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="cablestock-removed">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                            <tr class="nav-row" style="margin-bottom:10px">
+                                <td style="margin-left:25px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Minimum Stock Warnings:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="minstock-warning">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                                <td style="margin-left:50px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Edited:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="stock-edited">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                                <td style="margin-left:50px;margin-right:10px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Image Linking:</p>
+                                </td>
+                                <td class="align-middle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                        <input type="checkbox" name="stock-images">
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            <?php 
+            } else {
+                echo ('<p class="blue">SMTP is disabled. All email notifications have been disabled.</p>');
+            }
+            ?>
+
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="changelog-settings" onclick="toggleSection(this, 'changelog')">Changelog <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+
+        <!-- Changelog -->
+        <div style="padding-top: 20px" id="changelog" hidden>
+            <div class="container content">
+                <?php 
+                include 'includes/dbh.inc.php';
+                $sql = "SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 10";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    echo("<p class='red'>Error reaching changelog table</p>");
+                } else {
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount < 1) {
+                        echo("<p>No entries found.</p>");
+                    } else {
+                        ?>
+                        <table id="changelogTable" class="table table-dark theme-table" style="max-width:max-content">
+                            <thead>
+                                <tr class="theme-tableOuter">
+                                    <th>id</th>
+                                    <th>timestamp</th>
+                                    <th>user_id</th>
+                                    <th>user_username</th>
+                                    <th>action</th>
+                                    <th>table_name</th>
+                                    <th>record_id</th>
+                                    <th>field_name</th>
+                                    <th>value_old</th>
+                                    <th>value_new</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                while ($row = $result->fetch_assoc()) {
+                                    echo('
+                                    <tr>
+                                        <td>'.$row['id'].'</td>
+                                        <td>'.$row['timestamp'].'</td>
+                                        <td>'.$row['user_id'].'</td>
+                                        <td>'.$row['user_username'].'</td>
+                                        <td>'.$row['action'].'</td>
+                                        <td>'.$row['table_name'].'</td>
+                                        <td>'.$row['record_id'].'</td>
+                                        <td>'.$row['field_name'].'</td>
+                                        <td>'.$row['value_old'].'</td>
+                                        <td>'.$row['value_new'].'</td>
+                                    </tr>
+                                    ');
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                        <?php
+                    }
+                }
+                ?>
+                <a class="clickable" href="changelog.php">Full Changelog</a>
+            </div>
+            
         </div>
     </div>
 

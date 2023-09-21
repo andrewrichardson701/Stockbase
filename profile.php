@@ -129,6 +129,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
                                             <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
                                             <option value="2" '); if ($profile_theme == 2) { echo('selected'); } echo('>Light Blue</option>
+                                            <option value="3" '); if ($profile_theme == 3) { echo('selected'); } echo('>Dark Red</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -207,6 +208,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
                                         <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
                                         <option value="2" '); if ($profile_theme == 2) { echo('selected'); } echo('>Light Blue</option>
+                                        <option value="3" '); if ($profile_theme == 3) { echo('selected'); } echo('>Dark Red</option>
                                     </select>
                                 </td>
                             </tr>
@@ -254,6 +256,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 break;
             case '2': 
                 var theme = 'light-blue';
+                break;
+            case '3': 
+                var theme = 'dark-red';
                 break;
             default:
                 var theme = 'dark';

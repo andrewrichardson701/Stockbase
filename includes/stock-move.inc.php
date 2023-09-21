@@ -76,7 +76,7 @@ $currency_symbol = '£';
                                         (SELECT SUM(quantity) 
                                             FROM item 
                                             WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments
+                                                AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments AND item.deleted=0
                                         ) AS item_quantity,
                                         manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                                         (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 

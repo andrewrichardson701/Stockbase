@@ -18,7 +18,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         exit();
     }
     ?>
-    
+
 
     <!-- hidden link, commented out as no purpose currently -->
     <!-- <a href="changelog.php" class="skip-nav-link-inv">changelog</a> -->
@@ -1222,7 +1222,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         <!-- Changelog -->
         <div style="padding-top: 20px" id="changelog" hidden>
-            <div class="container content">
+            <div class="content">
                 <?php 
                 include 'includes/dbh.inc.php';
                 $sql = "SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 10";
@@ -1241,7 +1241,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <thead>
                                 <tr class="theme-tableOuter">
                                     <th>id</th>
-                                    <th>timestamp</th>
+                                    <th style="min-width: 110px;">timestamp</th>
                                     <th>user_id</th>
                                     <th>user_username</th>
                                     <th>action</th>

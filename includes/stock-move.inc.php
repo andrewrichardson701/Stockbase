@@ -76,7 +76,7 @@ $currency_symbol = '£';
                                         (SELECT SUM(quantity) 
                                             FROM item 
                                             WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                AND item.serial_number=item_serial_number AND item.upc=item_upc
+                                                AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments
                                         ) AS item_quantity,
                                         manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                                         (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
@@ -505,7 +505,7 @@ $currency_symbol = '£';
                                 $quantity =  $row['item_quantity'];
                             }
                             echo('
-                            <tr class="clickable" style="vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                            <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
                                 <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {

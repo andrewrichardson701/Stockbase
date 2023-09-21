@@ -449,7 +449,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 $quantity =  $row['item_quantity'];
                             }
                             echo('
-                            <tr class="clickable" style="vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                            <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
                                 <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {

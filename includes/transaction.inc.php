@@ -112,22 +112,22 @@ if (isset($_GET['stock_id'])) {
                         $a_name = $row_tran['a_name'];
                         switch ($t_type) {
                             case 'add':
-                                $t_type_color = 'limegreen';
+                                $t_type_color = 'transactionAdd';
                                 break;
                             case 'remove':
-                                $t_type_color = 'red';
+                                $t_type_color = 'transactionRemove';
                                 break;
                             case 'delete':
-                                $t_type_color = 'brown';
+                                $t_type_color = 'transactionDelete';
                                 break;
                             case 'move':
-                                $t_type_color = 'orange';
+                                $t_type_color = 'transactionMove';
                                 break;
                             default:
                                 $t_type_color = '';
                         }
                         echo('
-                            <tr style="color:' . $t_type_color . '">
+                            <tr class="' . $t_type_color . '">
                                 <td id="t_id" hidden>' . $t_id . '</td>
                                 <td hidden>' . $t_stock_id . '</td>
                                 <td hidden>' . $t_item_id . '</td>

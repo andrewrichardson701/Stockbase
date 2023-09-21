@@ -350,7 +350,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <td>
                                         <select class="form-control" name="cable-type" required>');
 
-                                            $sql_types = "SELECT * from cable_types";
+                                            $sql_types = "SELECT * from cable_types
+                                                            ORDER BY parent";
                                             $stmt_types = mysqli_stmt_init($conn);
                                             if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
                                                 echo("ERROR getting entries");
@@ -542,7 +543,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 <form action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
                     <table class="centertable">
                         <tbody>
-                            <tr class="nav-row">
+                        <tr class="align-middle">
                                 <td style="width:150px">Parent:</td>
                                 <td>
                                     <select class="form-control" name="type-parent" style="width:300px" required>
@@ -554,22 +555,22 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </select>
                                 </td>
                             </tr>
-                            <tr class="nav-row">
+                            <tr class="align-middle">
                                 <td style="width:150px">New Type:</td>
                                 <td>
                                     <input class="form-control" type="text" placeholder="New Type" name="type-name" required/>
                                 </td>
                             </tr>
-                            <tr class="nav-row">
+                            <tr class="align-middle">
                                 <td style="width:150px">Description:</td>
                                 <td>
                                     <input class="form-control" type="text" placeholder="Description" name="type-description" required/>
                                 </td>
                             </tr>
-                            <tr class="nav-row">
+                            <tr class="align-middle">
                                 <td style="width:150px"></td>     
                                 <td><input type="submit" name="submit" value="Add Type" class="btn btn-success"></td>
-                                <td hidden=""><input type="hidden" name="type" value="manufacturer"></td>
+                                <td hidden=""><input type="hidden" name="new-type" value="1"></td>
                             </tr>
                         </tbody>
                     </table>

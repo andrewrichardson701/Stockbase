@@ -414,6 +414,62 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../".$redirect_url.$queryChar."error=noCable-item-id");
             exit();
         }
+    } elseif (isset($_POST['new-type'])) {
+        if (isset($_POST['type-parent'])) {
+            if (isset($_POST['type-name'])) {
+                if (isset($_POST['type-description'])) {
+                    $name = $_POST['type-name'];
+                    $parent = $_POST['type-parent'];
+                    $description = $_POST['type-description'];
+
+                    // check if it already exists
+                    include 'dbh.inc.php';
+
+                    $sql = "SELECT * FROM cable_types
+                            WHERE name=? AND parent=?";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        header("Location: ../".$redirect_url.$queryChar."&error=cable_typesTableSQLConnection");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt, "ss", $name, $parent);
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+                        $rowCount = $result->num_rows;
+                        if ($rowCount < 1) {
+                            // no match found, continue to add.
+                            $sql_insert = "INSERT INTO cable_types (name, description, parent) VALUES (?, ?, ?)";
+                            $stmt_insert = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_insert, $sql_insert)) {
+                                header("Location: ".$redirect_url.$redirect_queries."&error=cable_typesTableSQLConnection");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_insert, "sss", $name, $description, $parent);
+                                mysqli_stmt_execute($stmt_insert);
+                                $insert_id = mysqli_insert_id($conn);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_types", $insert_id, "name", null, $name);
+                                header("Location: ../".$redirect_url.$queryChar."&success=typeAdded&type-id=$insert_id");
+                                exit();
+                            }
+                        } elseif ($rowCount > 1) {
+                            header("Location: ../".$redirect_url.$queryChar."&error=typeAlreadyExists");
+                            exit();
+                        }
+                    }
+                } else { // no description selected
+                    header("Location: ../".$redirect_url.$queryChar."error=missingDescription");
+                    exit();
+                }
+            } else { // no name selected
+                header("Location: ../".$redirect_url.$queryChar."error=missingName");
+                exit();
+            }
+        } else { // no parent selected
+            header("Location: ../".$redirect_url.$queryChar."error=missingParent");
+            exit();
+        }
+
     } else { // no page set.
         header("Location: ../".$redirect_url.$queryChar."error=noAction");
         exit();

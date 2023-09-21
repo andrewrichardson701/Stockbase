@@ -130,9 +130,9 @@ $email_template_start = '
 </head>
 <body style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">
     <!-- inset block -->
-    <div style="padding-top:25px; background-color: '.$current_banner_color.'; text-align: center;">
+    <div style="padding-top:20px; background-color: '.$current_banner_color.'; text-align: center;">
         <div style="text-align: center;padding-bottom:10px">
-            <h3 style="color: '.$comp_banner_color.'">'.ucwords($current_system_name).'</h3>
+        <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.';"><h2>'.ucwords($current_system_name).'</h2></a>
         </div>
         <div style="background-color:#e8e8e8; text-align: center;  padding-top:10px; padding-bottom:10px">
             <h1>Hello '.ucwords($loggedin_firstname).'!</h1>
@@ -142,7 +142,7 @@ $email_template_end = '
             <p>Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
         </div>
         <div style="padding-top:10px; padding-bottom:20px;text-align: center;">
-            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.'">Inventory</a>. All rights reserved.</p>
+            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.'">Andrew Richardson</a>. All rights reserved.</p>
         </div>
     </div>
 </body>

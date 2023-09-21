@@ -18,6 +18,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         exit();
     }
     ?>
+    
 
     <!-- hidden link, commented out as no purpose currently -->
     <!-- <a href="changelog.php" class="skip-nav-link-inv">changelog</a> -->

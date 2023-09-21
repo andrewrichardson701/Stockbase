@@ -262,7 +262,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                             echo('<table><tbody>');
                                             for ($l=0; $l < count($stock_inv_data); $l++) {
                                                 // if ($l == 0 || $l < count($stock_inv_data)-1) { $divider = '<br>'; } else { $divider = ''; }
-                                                echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
+                                                echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn serial-bg btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
                                             }
                                             echo('</tbody></table>');
                                         }

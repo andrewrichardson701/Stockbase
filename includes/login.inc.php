@@ -82,6 +82,9 @@ if (isset($_POST['submit'])) {
                                     case '2':
                                         $theme = 'light-blue';
                                         break;
+                                    case '3':
+                                        $theme = 'dark-red';
+                                        break;
                                     default:
                                         $theme = 'dark';
                                 }
@@ -293,6 +296,9 @@ if (isset($_POST['submit'])) {
                                         case '2':
                                             $theme = 'light-blue';
                                             break;
+                                        case '3':
+                                            $theme = 'dark-red';
+                                            break;
                                         default:
                                             $theme = 'dark';
                                     }
@@ -334,6 +340,9 @@ if (isset($_POST['submit'])) {
                                                 break;
                                             case '2':
                                                 $theme = 'light-blue';
+                                                break;
+                                            case '3':
+                                                $theme = 'dark-red';
                                                 break;
                                             default:
                                                 $theme = 'dark';

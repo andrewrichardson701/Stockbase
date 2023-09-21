@@ -19,7 +19,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     }
     ?>
 
-
     <!-- hidden link, commented out as no purpose currently -->
     <!-- <a href="changelog.php" class="skip-nav-link-inv">changelog</a> -->
 
@@ -577,9 +576,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_name'] = $row_locations['shelf_name'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_area_id'] = $row_locations['shelf_area_id'];
                     }
-                    // print_r('<pre>');
-                    // print_r($locations);
-                    // print_r('</pre>');
+
                     $l = 0;
                     echo('<table class="table table-dark theme-table text-center" style="max-width:max-content; vertical-align: middle;">
                             <thead>
@@ -767,14 +764,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </td>
                                 </tr>');
                             }
-                            // echo('<tr style="background-color:#21272b">
-                            //         <td></td> <td></td> <td hidden></td> <td></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> <td></td> <td></td> <td hidden></td>
-                            //             <td>
-                            //                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
-                            //                     <i class="fa fa-plus"></i>
-                            //                 </button>
-                            //             </td>
-                            //         </tr>');
                     echo('  </tbody>
                         </table>');
                 }

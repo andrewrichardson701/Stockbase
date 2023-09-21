@@ -1319,23 +1319,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </div>
         </div>
     </div>
-    <script> // MODAL SCRIPT
-        // Get the modal
-        function resetPassword(user_id) {
-            var modal = document.getElementById("modalDivResetPW");
-
-            // Get the image and insert it inside the modal - use its "alt" text as a caption
-            modal.style.display = "block";
-            var user_id_element = document.getElementById('modal-user-id');
-            user_id_element.value = user_id;
-        }
-
-        // When the user clicks on <span> (x), close the modal or if they click the image.
-        modalCloseResetPW = function() { 
-            var modal = document.getElementById("modalDivResetPW");
-            modal.style.display = "none";
-        }
-    </script>
 
     <!-- Modal Image Div -->
     <div id="modalDiv" class="modal" onclick="modalClose()">
@@ -1482,170 +1465,171 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             }
         }
     }
+        
+    // color-picker box json - for Admin.php
+    $("input.color").each(function() {
+        var that = this;
+        $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {
+            that.type = (that.type == "color") ? "text" : "color";
+        }));
+    }).change(function() {
+        $(this).attr("data-value", this.value);
+        this.type = "text";
+    });
 
-    </script>
-    <script> // color-picker box json - for Admin.php
-        $("input.color").each(function() {
-            var that = this;
-            $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {
-                that.type = (that.type == "color") ? "text" : "color";
-            }));
-        }).change(function() {
-            $(this).attr("data-value", this.value);
-            this.type = "text";
-        });
-    </script>
+    // scripts for users modifications
+    function userRoleChange(id) {
+        var select = document.getElementById("user_"+id+"_role_select");
+        var selectedValue = select.value;
 
-    <script> // script for users modifications
-        function userRoleChange(id) {
-            var select = document.getElementById("user_"+id+"_role_select");
-            var selectedValue = select.value;
-
-            $.ajax({
-                type: "POST",
-                url: "./includes/admin.inc.php",
-                data: {
-                    user_id: id,
-                    user_new_role: selectedValue,
-                    user_role_submit: 'yes'
-                },
-                dataType: "html",
-                success: function(response) {
-                    var tr = document.getElementById('users_table_info_tr');
-                    var td = document.getElementById('users_table_info_td');
-                    tr.hidden = false;
-                    var result = response;
-                    if (result.startsWith("Error:")) {
-                        td.classList.add("red");
-                    } else {
-                        td.classList.add("green");
-                    }
-                    td.textContent = result;
-                },
-                async: true
-            });
-        }
-        function usersEnabledChange(id) {
-            var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
-            if (checkbox.checked == true) {
-                var checkboxValue = 1;
-            } else {
-                var checkboxValue = 0;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "./includes/admin.inc.php",
-                data: {
-                    user_id: id,
-                    user_new_enabled: checkboxValue,
-                    user_enabled_submit: 'yes'
-                },
-                dataType: "html",
-                success: function(response) {
-                    var tr = document.getElementById('users_table_info_tr');
-                    var td = document.getElementById('users_table_info_td');
-                    tr.hidden = false;
-                    var result = response;
-                    if (result.startsWith("Error:")) {
-                        td.classList.add("red");
-                    } else {
-                        td.classList.add("green");
-                    }
-                    td.textContent = result;
-                },
-                async: true
-            });
-        }
-        // Function to extract the anchor and split it before the first hyphen
-        function extractParamsFromAnchor(anchor) {
-            const params = anchor.split('-');
-            return {
-                param1: anchor,
-                param2: params[0],
-            };
-        }
-
-        // Check for anchors in the URL and call toggleSection function if present
-        window.onload = function () {
-            const anchor = window.location.hash.substring(1); // Remove the leading '#'
-            if (anchor) {
-                const { param1, param2 } = extractParamsFromAnchor(anchor);
-                // console.log(param1);
-                // console.log(param2);
-                toggleSection(document.getElementById(param1), param2);
-
-                // Scroll to the anchor ID after the toggleSection function is done
-                const anchorElement = document.getElementById(anchor);
-                if (anchorElement) {
-                    anchorElement.scrollIntoView({ behavior: 'smooth' });
+        $.ajax({
+            type: "POST",
+            url: "./includes/admin.inc.php",
+            data: {
+                user_id: id,
+                user_new_role: selectedValue,
+                user_role_submit: 'yes'
+            },
+            dataType: "html",
+            success: function(response) {
+                var tr = document.getElementById('users_table_info_tr');
+                var td = document.getElementById('users_table_info_td');
+                tr.hidden = false;
+                var result = response;
+                if (result.startsWith("Error:")) {
+                    td.classList.add("red");
+                } else {
+                    td.classList.add("green");
                 }
-            } else {
-                toggleSection(document.getElementById("global-settings"), "global");
+                td.textContent = result;
+            },
+            async: true
+        });
+    }
+    function usersEnabledChange(id) {
+        var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
+        if (checkbox.checked == true) {
+            var checkboxValue = 1;
+        } else {
+            var checkboxValue = 0;
+        }
 
-            }
+        $.ajax({
+            type: "POST",
+            url: "./includes/admin.inc.php",
+            data: {
+                user_id: id,
+                user_new_enabled: checkboxValue,
+                user_enabled_submit: 'yes'
+            },
+            dataType: "html",
+            success: function(response) {
+                var tr = document.getElementById('users_table_info_tr');
+                var td = document.getElementById('users_table_info_td');
+                tr.hidden = false;
+                var result = response;
+                if (result.startsWith("Error:")) {
+                    td.classList.add("red");
+                } else {
+                    td.classList.add("green");
+                }
+                td.textContent = result;
+            },
+            async: true
+        });
+    }
+    // ===
+
+
+    // Function to extract the anchor and split it before the first hyphen
+    function extractParamsFromAnchor(anchor) {
+        const params = anchor.split('-');
+        return {
+            param1: anchor,
+            param2: params[0],
         };
+    }
+
+    // Check for anchors in the URL and call toggleSection function if present
+    window.onload = function () {
+        const anchor = window.location.hash.substring(1); // Remove the leading '#'
+        if (anchor) {
+            const { param1, param2 } = extractParamsFromAnchor(anchor);
+            // console.log(param1);
+            // console.log(param2);
+            toggleSection(document.getElementById(param1), param2);
+
+            // Scroll to the anchor ID after the toggleSection function is done
+            const anchorElement = document.getElementById(anchor);
+            if (anchorElement) {
+                anchorElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            toggleSection(document.getElementById("global-settings"), "global");
+
+        }
+    };
 
         
-        // LDAP TOGGLE ENABLE STUFF
+    // LDAP TOGGLE ENABLE STUFF
 
-        // Get the initial state of the LDAP enable toggle checkbox
-        let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
+    // Get the initial state of the LDAP enable toggle checkbox
+    let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
 
-        // Add an event listener to the checkbox
-        document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
-            // Check if the checkbox is being unchecked
-            const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-            // If the checkbox is being unchecked, display the confirmation popup
-            if (isUncheck) {
-                const confirmed = confirm(
-                    'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
-                );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
+            );
 
-                // If the user cancels, revert the checkbox back to its previous state
-                if (!confirmed) {
-                    this.checked = true; // Revert the checkbox back to checked state
-                    return;
-                }
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
             }
+        }
 
-            // Update the initial state of the checkbox for the next change event
-            isLdapCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isLdapCheckboxChecked = this.checked;
 
-            // If the checkbox is not being unchecked or the user confirmed, submit the form
-            document.getElementById("ldapToggleForm").submit();
-        });
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("ldapToggleForm").submit();
+    });
 
-        // SMTP TOGGLE ENABLE STUFF
+    // SMTP TOGGLE ENABLE STUFF
 
-        // Get the initial state of the SMTP enable toggle checkbox
-        let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
+    // Get the initial state of the SMTP enable toggle checkbox
+    let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
 
-        // Add an event listener to the checkbox
-        document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
-            // Check if the checkbox is being unchecked
-            const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-            // If the checkbox is being unchecked, display the confirmation popup
-            if (isUncheck) {
-                const confirmed = confirm(
-                    'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
-                );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
+            );
 
-                // If the user cancels, revert the checkbox back to its previous state
-                if (!confirmed) {
-                    this.checked = true; // Revert the checkbox back to checked state
-                    return;
-                }
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
             }
+        }
 
-            // Update the initial state of the checkbox for the next change event
-            isSmtpCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isSmtpCheckboxChecked = this.checked;
 
-            // If the checkbox is not being unchecked or the user confirmed, submit the form
-            document.getElementById("smtpToggleForm").submit();
-        });
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("smtpToggleForm").submit();
+    });
 
     </script>
 
@@ -1663,90 +1647,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             modal.style.display = "none";
         }
 
-    </script>
 
-    <script>
-        function populateSites(field, current_site) {
-            // Make an AJAX request to retrieve the corresponding sites
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Parse the response and populate the shelf select box
-                    var sites = JSON.parse(xhr.responseText);
-                    var select = field;
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Site", "");
-                    select.options[0].disabled = true;
-                    for (var i = 0; i < sites.length; i++) {
-                        select.options[select.options.length] = new Option(sites[i].name, sites[i].id);
-                    }
-                    select.disabled = (select.options.length === 1);
-                    for (var i = 0; i < select.options.length; i++) {
-                        if (select.options[i].value === current_site) {
-                            select.options[i].selected = true;
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        }
-        function populateAreas(field, current_site, current_area) {
-            // Make an AJAX request to retrieve the corresponding areas
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Parse the response and populate the shelf select box
-                    var areas = JSON.parse(xhr.responseText);
-                    var select = field;
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Area", "");
-                    select.options[0].disabled = true;
-                    for (var i = 0; i < areas.length; i++) {
-                        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
-                    }
-                    select.disabled = (select.options.length === 1);
-                    for (var i = 0; i < select.options.length; i++) {
-                        if (select.options[i].value === current_area) {
-                            select.options[i].selected = true;
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        }
-        function populateAreasUpdate() {
-            // Get the selected site
-            var site = document.getElementById("location-parent-site-input").value;
-            var type = document.getElementById("location-type-input").value;
-            if (type === "shelf") {
-                // Make an AJAX request to retrieve the corresponding areas
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Parse the response and populate the area select box
-                        var areas = JSON.parse(xhr.responseText);
-                        var select = document.getElementById("location-parent-area-input");
-                        select.options.length = 0;
-                        select.options[0] = new Option("Select Area", "");
-                        select.options[0].disabled = true;
-                        for (var i = 0; i < areas.length; i++) {
-                            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
-                        }
-                        select.disabled = (select.options.length === 1);
-                    }
-                };
-                xhr.send();
-            }
-        }
-        document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
-    </script>
-
-    <script> // MODAL SCRIPT
         // Get the modal
         function modalLoadEdit(id, type) {
             //get the modal div with the property
@@ -1853,9 +1754,108 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             input_description.value = '';
         }
 
+        // Get the modal
+        function resetPassword(user_id) {
+            var modal = document.getElementById("modalDivResetPW");
+
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+            var user_id_element = document.getElementById('modal-user-id');
+            user_id_element.value = user_id;
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseResetPW = function() { 
+            var modal = document.getElementById("modalDivResetPW");
+            modal.style.display = "none";
+        }
+
     </script>
 
-    <script> // show input for the ShowADD section
+    <script>
+        function populateSites(field, current_site) {
+            // Make an AJAX request to retrieve the corresponding sites
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var sites = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Site", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < sites.length; i++) {
+                        select.options[select.options.length] = new Option(sites[i].name, sites[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_site) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreas(field, current_site, current_area) {
+            // Make an AJAX request to retrieve the corresponding areas
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var areas = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Area", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < areas.length; i++) {
+                        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_area) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreasUpdate() {
+            // Get the selected site
+            var site = document.getElementById("location-parent-site-input").value;
+            var type = document.getElementById("location-type-input").value;
+            if (type === "shelf") {
+                // Make an AJAX request to retrieve the corresponding areas
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Parse the response and populate the area select box
+                        var areas = JSON.parse(xhr.responseText);
+                        var select = document.getElementById("location-parent-area-input");
+                        select.options.length = 0;
+                        select.options[0] = new Option("Select Area", "");
+                        select.options[0].disabled = true;
+                        for (var i = 0; i < areas.length; i++) {
+                            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                        }
+                        select.disabled = (select.options.length === 1);
+                    }
+                };
+                xhr.send();
+            }
+        }
+        document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
+    </script>
+
+
+    <script> 
+    // show input for the ShowADD section
         function showInput() {
             var type = document.getElementById("addLocation-type");
             var selectedType = type.options[type.selectedIndex].value;
@@ -1871,9 +1871,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 modifyContainers[i].hidden = false;
             }
         }
-    </script>
 
-    <script>
         function populateParent() {
         // Get the selected type
         var type = document.getElementById("addLocation-type").value;
@@ -1901,9 +1899,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         xhr.send();
         }
         document.getElementById("addLocation-type").addEventListener("change", populateParent);
-    </script>
 
-    <script>
         function showImageLinks(num) {
             var button = document.getElementById('image-'+num+'-links');
             var linksRow = document.getElementById('image-row-'+num+'-links');

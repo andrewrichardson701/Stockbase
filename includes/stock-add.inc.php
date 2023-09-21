@@ -615,20 +615,20 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 <td colspan="100%">');
     
                             if ($current_page > 1) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                                echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
                             }
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
+                                    echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
-                                    echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                    echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
                                 }
                             }
 
                             if ($current_page < $total_pages) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                                echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
                             }  
                         }                              
                     echo('

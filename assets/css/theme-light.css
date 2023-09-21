@@ -100,3 +100,17 @@ body {
 .specialColor { /*special colour - currently used for the view all in transactions and the min stock count */ 
     color: #9b7202 !important; 
 }
+
+
+.transactionAdd {
+    color: limegreen;
+}
+.transactionMove {
+    color: #ed9a00;
+}
+.transactionRemove {
+    color: #e11010;     
+}
+.transactionDelete {
+    color: brown;
+}

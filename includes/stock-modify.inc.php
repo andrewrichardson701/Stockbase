@@ -1022,7 +1022,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     }
                                 }
 
-                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail("<p>Item ID: $current_stock_id stock moved - $move_quantity moved from </p>"));
+                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail("<p>Item ID: $current_stock_id stock moved - $move_quantity moved from shelf ID: $current_shelf_id to $new_shelf_id</p>"));
                                 header("Location: $redirect_url&success=stockMoved&edited=$new_item_id"); // Final redirect - for success and stock is moved.
                                 exit();
                             } else {

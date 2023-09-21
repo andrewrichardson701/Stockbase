@@ -385,6 +385,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td colspan=2></td>
+                                    <td class="text-center"><label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a></td>
+                                    <td colspan=4</td>
+                                </tr>
+                                <tr>
                                     <td colspan=8 class="text-center">
                                         <input type="file" style="width: 250px;margin-top:5px" id="stock-img" name="stock-img">
                                     </td>
@@ -489,26 +494,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 if (!is_null($stock_img_file_name)) {
                                                     echo('<img id="'.$cable_item_id.'-img" class="inv-img-50h thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
                                                 }
-                                                echo('</td>');
-                                                
-                                                // if (strpos($stock_name, "SM") !== false && $cable_types_parent == "Fibre") {
-                                                //     $nameColor = "yellow";
-                                                // } elseif (strpos($stock_name, "MM") !== false && $cable_types_parent == "Fibre") {
-                                                //     $nameColor = "aqua";
-                                                // } else {
-                                                //     $nameColor = containsColorName($stock_name);
-                                                // }
-                                                
-                                                // $name_prefix = '';
-                                                // $name_suffix = '';
-                                                // if ($nameColor !== false && $nameColor !== null && $nameColor !== '') {
-                                                //     $nameColorHex = getColorHexFromName($nameColor);
-                                                //     $complement_nameColor = getWorB($nameColorHex);
-                                                //     $name_prefix = "<or style='background-color: $nameColorHex; color: $complement_nameColor'>";
-                                                //     $name_suffix = "</or>";
-                                                // }
-                                                // <td class="align-middle" id="'.$cable_item_id.'-name">'.$name_prefix.$stock_name.$name_suffix.'</td>
-                                                echo('
+                                                echo('</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-name"><a href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
@@ -547,6 +533,49 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         }
 
         ?>
+    </div>    
+    <div id="modalDivNewType" class="modal">
+        <!-- <div id="modalDivProperties" style="display: block;"> -->
+        <span class="close" onclick="modalCloseNewType()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                    <table class="centertable">
+                        <tbody>
+                            <tr class="nav-row">
+                                <td style="width:150px">Parent:</td>
+                                <td>
+                                    <select class="form-control" name="type-parent" style="width:300px" required>
+                                            <option value="" selected disabled hidden>Select Parent</option>
+                                            <option value="Copper">Copper</option>
+                                            <option value="Fibre">Fibre</option>
+                                            <option value="Power">Power</option>
+                                            <option value="Other">Other</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width:150px">New Type:</td>
+                                <td>
+                                    <input class="form-control" type="text" placeholder="New Type" name="type-name" required/>
+                                </td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width:150px">Description:</td>
+                                <td>
+                                    <input class="form-control" type="text" placeholder="Description" name="type-description" required/>
+                                </td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width:150px"></td>     
+                                <td><input type="submit" name="submit" value="Add Type" class="btn btn-success"></td>
+                                <td hidden=""><input type="hidden" name="type" value="manufacturer"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>  
+        </div>
     </div>
 
     <script>
@@ -587,6 +616,18 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 addButtonHide.hidden = true;
             }
 
+        }
+    </script>
+    <script>
+        function modalLoadNewType() {
+            var modal = document.getElementById("modalDivNewType");
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseNewType = function() { 
+            var modal = document.getElementById("modalDivNewType");
+            modal.style.display = "none";
         }
     </script>
     <script> // for the select boxes

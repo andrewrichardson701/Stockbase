@@ -927,6 +927,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $current_area_id = $_POST['current_area'];
                     $current_shelf_id = $_POST['current_shelf'];
 
+                    $current_i = $_POST['current_i'];
+
                     $new_site_id = $_POST['site'];
                     $new_area_id = $_POST['area'];
                     $new_shelf_id = $_POST['shelf'];
@@ -1023,7 +1025,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 }
 
                                 send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail("<p>Item ID: $current_stock_id stock moved - $move_quantity moved from shelf ID: $current_shelf_id to $new_shelf_id</p>"));
-                                header("Location: $redirect_url&success=stockMoved&edited=$new_item_id"); // Final redirect - for success and stock is moved.
+                                header("Location: $redirect_url&success=stockMoved&edited=$current_i&newItemId=$new_item_id"); // Final redirect - for success and stock is moved.
                                 exit();
                             } else {
                                 header("Location: ../".$redirect_url."&error=notEnoughStockedForRemoval");

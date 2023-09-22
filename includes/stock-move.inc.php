@@ -225,6 +225,7 @@ $currency_symbol = '£';
                                                         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                                             <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                                             <input type="hidden" name="stock-move" value="1" />
+                                                            <input type="hidden" id="'.$i.'-c-i" name="current_i" value="'.$i.'" />
                                                             <input type="hidden" id="'.$i.'-c-stock" name="current_stock" value="'.$stock_id.'" />
                                                             <input type="hidden" id="'.$i.'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
                                                             <input type="hidden" id="'.$i.'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />

@@ -1114,103 +1114,62 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <!-- Notification Settings -->
         <div style="padding-top: 20px" id="notification" hidden>
             <p class="red">There will be notification toggles in here eventually... Still working on how these will be stored and how they will be disabled</p>
-            <?php if($current_smtp_enabled == 1) {
-                ?>
-                <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                    <input type="hidden" name="notifications-submit" value="set" />
-                    <table>
-                        <tbody>
-                            <tr class="nav-row" style="margin-bottom:10px">
-                                <td style="margin-left:25px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Added:</p>
+            <?php if ($current_smtp_enabled == 1) {
+                $sql_notif = "SELECT * FROM notifications;";
+                $stmt_notif = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_notif, $sql_notif)) {
+                    // show error for no connection
+                    echo('<p id="notification-output"><or class="red">Error: MYSQL connection issue.</or></p>');
+                } else {
+                    mysqli_stmt_execute($stmt_notif);
+                    $result_notif = mysqli_stmt_get_result($stmt_notif);
+                    $rowCount_notif = $result_notif->num_rows;
+                    if ($rowCount_notif != 0) {
+
+                        echo('<p id="notification-output" class="last-edit-T" hidden></p>
+                            <table><tbody>');
+
+                        $n = 0;
+                        while($row_notif = $result_notif->fetch_assoc()){
+                            if ($n == 0) {
+                                echo('<tr>');
+                            }
+
+                            $notif_id = $row_notif['id'];
+                            $notif_name = $row_notif['name'];
+                            $notif_title = $row_notif['title'];
+                            $notif_description = $row_notif['description'];
+                            $notif_enabled = $row_notif['enabled'];
+                            $checked = $row_notif['enabled'] == 1 ? 'checked' : '';
+
+                            if ($n % 4 == 0) {
+                                echo('</tr><tr>');
+                            }
+
+                            echo('
+                                <td class="align-middle" style="margin-left:25px;margin-right:10px" id="notif-'.$notif_id.'">
+                                    <p style="min-height:max-content;margin:0" class="align-middle title" title="'.$notif_description.'">'.$notif_title.':</p>
                                 </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-added">
+                                <td class="align-middle" style="padding-left:5px;padding-right:20px" id="notif-'.$notif_id.'-toggle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
+                                        <input type="checkbox" name="'.$notif_name.'" onchange="mailNotification(this)" '.$checked.'>
                                         <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
                                     </label>
                                 </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Removed:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-removed">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Deleted:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-deleted">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Moved:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-moved">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr class="nav-row" style="margin-bottom:10px">
-                                <td style="margin-left:25px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Cable Stock Added:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="cablestock-added">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Cable Stock Removed:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="cablestock-removed">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr class="nav-row" style="margin-bottom:10px">
-                                <td style="margin-left:25px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Minimum Stock Warnings:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="minstock-warning">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Edited:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-edited">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Image Linking:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-images">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
-            <?php 
+                            ');
+
+                            if ($n == $rowCount_notif-1) {
+                                echo('</tr>');
+                            }
+                            $n++;
+                        }
+                        echo('</tbody></table>');
+                        
+                    } else {
+                        // show an error for no rows
+                        echo('<p id="notification-output"><or class="red">No notifications settings found in table...</or></p>');
+                    }
+                }
             } else {
                 echo ('<p class="blue">SMTP is disabled. All email notifications have been disabled.</p>');
             }
@@ -1621,6 +1580,29 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         document.getElementById("smtpToggleForm").submit();
     });
 
+    // Mail notifications checkboxes
+    function mailNotification(checkbox) {
+        var outputBox = document.getElementById('notification-output');
+        var notification = checkbox.name;
+        if (checkbox.checked) {
+            // enable the notification
+            var value = 1;
+        } else {
+            // disable the notification
+            var value = 0;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/admin.inc.php?mail-notification=1&notification="+notification+"&value="+value, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var output = JSON.parse(xhr.responseText);
+                outputBox.hidden = false;
+                outputBox.classList="last-edit-T";
+                outputBox.innerHTML = output[0];
+            }
+        };
+        xhr.send();
+    } 
     </script>
 
     <script> // MODAL SCRIPT

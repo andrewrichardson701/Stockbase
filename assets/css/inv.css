@@ -53,6 +53,32 @@
     }
 }
 
+.last-edit-T {
+    color: #fff;
+    animation: flashAnimationTransparent 2s;
+}
+
+@keyframes flashAnimationTransparent {
+    0% {
+        background-color: rgb(75, 75, 75);
+        /* color: black; */
+    }
+    20% {
+        background-color: rgb(75, 75, 75);
+        /* color: black; */
+    }
+    100% {
+        background-color: transparent;
+        /* color: #fff; */
+    }
+}
+
+.title {
+    border-bottom: 1px dashed #999; 
+    text-decoration: none;
+    cursor: help;
+}
+
 
 .cw {
     color: white !important;

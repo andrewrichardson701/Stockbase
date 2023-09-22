@@ -132,10 +132,10 @@ $email_template_start = '
     <!-- inset block -->
     <div style="padding-top:20px; background-color: '.$current_banner_color.'; text-align: center;">
         <div style="text-align: center;padding-bottom:10px">
-        <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.';"><h2>'.ucwords($current_system_name).'</h2></a>
+        <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.';"><h1>'.ucwords($current_system_name).'</h1></a>
         </div>
         <div style="background-color:#e8e8e8; text-align: center;  padding-top:10px; padding-bottom:10px">
-            <h1>Hello '.ucwords($loggedin_firstname).'!</h1>
+            <h2>Hello, '.ucwords($loggedin_firstname).'!</h2>
 ';
 
 $email_template_end = '

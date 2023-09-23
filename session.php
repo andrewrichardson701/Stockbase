@@ -40,7 +40,9 @@ $loggedin_lastname = isset($_SESSION['last_name']) ? $_SESSION['last_name'] : ''
 $loggedin_email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 $loggedin_role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 $loggedin_auth = isset($_SESSION['auth']) ? $_SESSION['auth'] : '';
-$loggedin_theme = isset($_SESSION['theme']) ? $_SESSION['theme'] : '';
+$loggedin_theme_id = isset($_SESSION['theme_id']) ? $_SESSION['theme_id'] : '';
+$loggedin_theme_name = isset($_SESSION['theme_name']) ? $_SESSION['theme_name'] : '';
+$loggedin_theme_file_name = isset($_SESSION['theme_file_name']) ? $_SESSION['theme_file_name'] : '';
 $loggedin_password_expired = isset($_SESSION['password_expired']) ? $_SESSION['password_expired'] : '';
 
 $loggedin_fullname = ucwords($loggedin_firstname).' '.ucwords($loggedin_lastname);

@@ -1,9 +1,11 @@
 <?php
 
-if (isset($_GET['change']) && isset($_GET['theme']) && isset($_GET['value']) && isset($_GET['user-id'])) {
+if (isset($_GET['change']) && isset($_GET['theme_file_name']) && isset($_GET['value']) && isset($_GET['theme_name']) && isset($_GET['user-id'])) {
 
     session_start();
-    $_SESSION['theme'] = $_GET['theme'];
+    $_SESSION['theme_id'] = $_GET['value'];
+    $_SESISON['theme_name'] = $_GET['theme_name'];
+    $_SESSION['theme_file_name'] = $_GET['theme_file_name'];
 
     $theme = $_GET['value'];
 
@@ -11,7 +13,7 @@ if (isset($_GET['change']) && isset($_GET['theme']) && isset($_GET['value']) && 
     include 'changelog.inc.php';
 
     // get current info
-    $sql = "SELECT id, username, theme FROM users
+    $sql = "SELECT id, username, theme_id FROM users
                     WHERE id=?";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -25,10 +27,10 @@ if (isset($_GET['change']) && isset($_GET['theme']) && isset($_GET['value']) && 
         $row = $result->fetch_assoc();
 
         $username = $row['username'];
-        $old_theme = $row['theme'];
+        $old_theme = $row['theme_id'];
 
         //update info
-        $sql_update = "UPDATE users SET theme='$theme' WHERE id=?";
+        $sql_update = "UPDATE users SET theme_id='$theme' WHERE id=?";
         $stmt_update = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
             $results[] = 'error';
@@ -37,7 +39,7 @@ if (isset($_GET['change']) && isset($_GET['theme']) && isset($_GET['value']) && 
             mysqli_stmt_execute($stmt_update);
             
             // update changelog
-            addChangelog($_GET['user-id'], $username, "Theme Change", "users", $_GET['user-id'], "theme", $old_theme, $_GET['value']);
+            addChangelog($_GET['user-id'], $username, "Theme Change", "users", $_GET['user-id'], "theme", $old_theme, $theme);
             
             $results[] = 'success';
         }

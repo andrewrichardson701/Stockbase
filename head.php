@@ -2,6 +2,7 @@
 // PAGE HEADER SETUP - SETS UP CSS, BOOTSTRAP AND OTHER STYLES AND SCRIPTS
 
 include './includes/get-config.inc.php'; // get config options
+
 ?>
 
 <meta charset="utf-8">
@@ -20,10 +21,10 @@ include './includes/get-config.inc.php'; // get config options
 <link rel="stylesheet" href="./assets/css/main.css">
 <link rel="stylesheet" href="./assets/css/inv.css">
 <?php
-if (isset($loggedin_theme)) {
-    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/theme-'.$loggedin_theme.'.css">');
-} else {
-    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/theme-dark.css">');
+if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
+    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/'.$loggedin_theme_file_name.'">');
+} elseif (isset($current_default_theme_file_name) && $current_default_theme_file_name !== ''){
+    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/'.$current_default_theme_file_name.'">');
 }
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

@@ -27,9 +27,13 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         include 'includes/dbh.inc.php';
 
-        $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.theme AS users_theme
+        $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, 
+                            users.last_name as last_name, users.email as email, users.auth as auth, 
+                            users_roles.name as role, users.theme_id AS users_theme_id,
+                            theme.name as theme_name, theme.file_name as theme_file_name
                         FROM users 
                         INNER JOIN users_roles ON users.role_id = users_roles.id
+                        INNER JOIN theme ON users.theme_id = theme.id
                         WHERE username=?";
         $stmt_users = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
@@ -52,7 +56,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     $profile_email = $row['email'];
                     $profile_role = ucwords($row['role']);
                     $profile_auth = $row['auth'];
-                    $profile_theme = $row['users_theme'];
+                    $profile_theme_id = $row['users_theme_id'];
+                    $profile_theme_name = $row['theme_name'];
+                    $profile_theme_file_name = $row['theme_file_name'];
                 }  
             } else { // if there are somehow too many rows matching the sql
                 header("Location: ../index.php?sqlerror=multipleentries");
@@ -125,11 +131,28 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
                                     </td>
                                     <td id="theme_info">
-                                        <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">
-                                            <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
-                                            <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
-                                            <option value="2" '); if ($profile_theme == 2) { echo('selected'); } echo('>Light Blue</option>
-                                            <option value="3" '); if ($profile_theme == 3) { echo('selected'); } echo('>Dark Red</option>
+                                        <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">');
+                                        $sql_theme = "SELECT * FROM theme";
+                                        $stmt_theme = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
+                                            echo("ERROR getting entries");
+                                        } else {
+                                            mysqli_stmt_execute($stmt_theme);
+                                            $result_theme = mysqli_stmt_get_result($stmt_theme);
+                                            $rowCount_theme = $result_theme->num_rows;
+                                            if ($rowCount_theme < 1) {
+                                                echo ("No themes found.");
+                                            } else {
+                                                while ( $row_theme = $result_theme->fetch_assoc() ) {
+                                                    $theme_id = $row_theme['id'];
+                                                    $theme_name = $row_theme['name'];
+                                                    $theme_file_name = $row_theme['file_name'];
+                                                    echo ('<option id="theme-select-option-'.$theme_id.'" title="'.$theme_file_name.'" alt="'.$theme_name.'" value="'.$theme_id.'" '); if ($profile_theme_id == $theme_id) { echo('selected'); } echo('>'.$theme_name); if ($current_default_theme_id == $theme_id) { echo(' (default)'); } echo('</option>');
+                                                }
+                                            }
+                                        }
+
+                                        echo('
                                         </select>
                                     </td>
                                 </tr>
@@ -204,11 +227,28 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
                                 </td>
                                 <td id="theme_info">
-                                    <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">
-                                        <option value="0" '); if ($profile_theme == 0) { echo('selected'); } echo('>Dark (default)</option>
-                                        <option value="1" '); if ($profile_theme == 1) { echo('selected'); } echo('>Light</option>
-                                        <option value="2" '); if ($profile_theme == 2) { echo('selected'); } echo('>Light Blue</option>
-                                        <option value="3" '); if ($profile_theme == 3) { echo('selected'); } echo('>Dark Red</option>
+                                <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">');
+                                    $sql_theme = "SELECT * FROM theme";
+                                    $stmt_theme = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_theme);
+                                        $result_theme = mysqli_stmt_get_result($stmt_theme);
+                                        $rowCount_theme = $result_theme->num_rows;
+                                        if ($rowCount_theme < 1) {
+                                            echo ("No themes found.");
+                                        } else {
+                                            while ( $row_theme = $result_theme->fetch_assoc() ) {
+                                                $theme_id = $row_theme['id'];
+                                                $theme_name = $row_theme['name'];
+                                                $theme_file_name = $row_theme['file_name'];
+                                                echo ('<option id="theme-select-option-'.$theme_id.'" title="'.$theme_file_name.'" alt="'.$theme_name.'" value="'.$theme_id.'" '); if ($profile_theme_id == $theme_id) { echo('selected'); } echo('>'.$theme_name); if ($current_default_theme_id == $theme_id) { echo(' (default)'); } echo('</option>');
+                                            }
+                                        }
+                                    }
+
+                                    echo('
                                     </select>
                                 </td>
                             </tr>
@@ -246,36 +286,19 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         var value = select.value;
         var css = document.getElementById('theme-css');
         var profile_id = document.getElementById('profile-id').value;
-
-        switch(value) {
-            case '0':
-                var theme = 'dark';
-                break;
-            case '1': 
-                var theme = 'light';
-                break;
-            case '2': 
-                var theme = 'light-blue';
-                break;
-            case '3': 
-                var theme = 'dark-red';
-                break;
-            default:
-                var theme = 'dark';
-        }
-
+        var theme = document.getElementById('theme-select-option-'+value).title;
+        var theme_name = document.getElementById('theme-select-option-'+value).alt;
         // css.href = "./assets/css/theme-"+theme+".css";
 
 
         var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/change-theme.inc.php?change=1&theme="+theme+"&value="+value+"&user-id="+profile_id, true);
+            xhr.open("GET", "includes/change-theme.inc.php?change=1&theme_file_name="+theme+"&value="+value+"&theme_name="+theme_name+"&user-id="+profile_id, true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     // Parse the response and populate the shelf select box
                     var re = JSON.parse(xhr.responseText);
-                    console.log (re);
                     if (re == 'success') {
-                        css.href = './assets/css/theme-'+theme+'.css';
+                        css.href = './assets/css/'+theme;
                     } 
                 }
             };

@@ -1115,7 +1115,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <div style="padding-top: 20px" id="notification" hidden>
             <p class="red">There will be notification toggles in here eventually... Still working on how these will be stored and how they will be disabled</p>
             <?php if ($current_smtp_enabled == 1) {
-                $sql_notif = "SELECT * FROM notifications;";
+                $sql_notif = "SELECT * FROM notifications
+                                WHERE id!=0;"; 
                 $stmt_notif = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_notif, $sql_notif)) {
                     // show error for no connection
@@ -1152,7 +1153,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 </td>
                                 <td class="align-middle" style="padding-left:5px;padding-right:20px" id="notif-'.$notif_id.'-toggle">
                                     <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
-                                        <input type="checkbox" name="'.$notif_name.'" onchange="mailNotification(this)" '.$checked.'>
+                                        <input type="checkbox" name="'.$notif_name.'" onchange="mailNotification(this, '.$notif_id.')" '.$checked.'>
                                         <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
                                     </label>
                                 </td>
@@ -1581,9 +1582,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     });
 
     // Mail notifications checkboxes
-    function mailNotification(checkbox) {
+    function mailNotification(checkbox, id) {
         var outputBox = document.getElementById('notification-output');
-        var notification = checkbox.name;
+        var notification = id;
         if (checkbox.checked) {
             // enable the notification
             var value = 1;

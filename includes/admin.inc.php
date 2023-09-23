@@ -1271,7 +1271,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
                     include 'dbh.inc.php';
 
-                    $sql = "SELECT * FROM notifications WHERE name='$notification'";
+                    $sql = "SELECT * FROM notifications WHERE id='$notification'";
                     $stmt = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt, $sql)) {
                         $results[] = msg('SQL connection issue.', 'error');
@@ -1287,7 +1287,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
                             $state = $value == 1 ? 'enabled' : 'disabled';
                             
-                            $sql_update = "UPDATE notifications SET enabled=? WHERE name='$notification'";
+                            $sql_update = "UPDATE notifications SET enabled=? WHERE id='$id'";
                             $stmt_update = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
                                 $results[] = msg('SQL connection issue.', 'error');

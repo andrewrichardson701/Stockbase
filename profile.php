@@ -155,6 +155,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         echo('
                                         </select>
                                     </td>
+                                    <td id="theme_header" style="width:200px;padding-left:20px">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">
+                                            <a class="link align-middle" href="theme-test.php">Theme testing</a>
+                                        </p>
+                                    </td>
                                 </tr>
                                 <tr class="nav-row" style="margin-top:30px" id="resync">
                                     <td id="resync_button_td" style="width:200px">

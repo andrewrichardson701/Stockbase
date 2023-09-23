@@ -42,7 +42,7 @@ function addChangelog($user_id, $user_username, $action, $table_name, $record_id
                         <p>Use the below SQL to add this:</p>
                         <p style=\"font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace; \">$sql_command</p>
                         ";
-        send_email($current_smtp_to_email, "Administrator", $config_smtp_from_name, $email_subject, createEmail($email_body));
+        send_email($current_smtp_to_email, "Administrator", $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
         error_log("Unable to update changelog. please add manually using: \"$sql_command\"\n");
     } else {
     mysqli_stmt_bind_param($stmt, "sssssssss", $timestamp, $user_id, $user_username, $action, $table_name, $record_id, $field_name, $value_old, $value_new);

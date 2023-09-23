@@ -27,7 +27,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <h2 class="header-small">Changelog</h2>
     </div>
 
-    <div class="container content">
+    <div class="content">
         <?php 
         include 'includes/dbh.inc.php';
         $sql = "SELECT * FROM changelog ORDER BY timestamp DESC";
@@ -42,7 +42,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 echo("<p>No entries found.</p>");
             } else {
                 ?>
-                <table id="changelogTable" class="table table-dark theme-table" style="max-width:max-content">
+                <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                     <thead>
                         <tr class="theme-tableOuter">
                             <th>id</th>

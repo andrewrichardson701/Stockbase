@@ -188,7 +188,7 @@ if (isset($_POST['smtp_host']) && isset($_POST['smtp_port']) && isset($_POST['sm
         $testBody = $email_template_start.$email_content_test.$email_template_end;
 
         send_test_email($smtp_to_email, $smtp_to_email, $smtp_from_email, $smtp_from_name, ucwords($current_system_name).' SMTP Test', $testBody, $smtp_host, $smtp_port, $smtp_encryption, $smtp_username, $smtp_password);
-        // send_email($smtp_to_email, $smtp_from_email, $smtp_from_name, 'Inventory SMTP Test', 'email test body');
+        // send_email($smtp_to_email, $smtp_from_email, $smtp_from_name, 'Inventory SMTP Test', 'email test body', 0);
     }
 
     

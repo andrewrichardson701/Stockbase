@@ -695,7 +695,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     ');
                                     for ($i=0; $i<count($stock_inv_data); $i++) {
                                         echo('
-                                            <tr id="item-'.$i.'" class="clickable" onclick="toggleHiddenStock(\''.$i.'\')">
+                                            <tr id="item-'.$i.'" ');if ($stock_is_cable == 0) { echo('class="clickable" onclick="toggleHiddenStock(\''.$i.'\')"'); } echo('>
                                                 <td hidden>'.$i.'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
@@ -709,12 +709,14 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <td id="item-'.$i.'-labels">'.$stock_inv_data[$i]['label_names'].'</td>
                                                 <td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                 <td id="item-'.$i.'-comments">'.$stock_inv_data[$i]['comments'].'</td>
+                                                <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                                 ');
                                         } else {
-                                            echo('<td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>');
+                                            echo('<td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                            <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] != $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
                                         }
                                         echo('
-                                                <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
+                                                
                                             </tr>
                                         ');
                                         if ($stock_is_cable == 0) { 

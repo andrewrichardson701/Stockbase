@@ -112,22 +112,22 @@ if (isset($_GET['stock_id'])) {
                         $a_name = $row_tran['a_name'];
                         switch ($t_type) {
                             case 'add':
-                                $t_type_color = 'limegreen';
+                                $t_type_color = 'transactionAdd';
                                 break;
                             case 'remove':
-                                $t_type_color = 'red';
+                                $t_type_color = 'transactionRemove';
                                 break;
                             case 'delete':
-                                $t_type_color = 'brown';
+                                $t_type_color = 'transactionDelete';
                                 break;
                             case 'move':
-                                $t_type_color = 'orange';
+                                $t_type_color = 'transactionMove';
                                 break;
                             default:
                                 $t_type_color = '';
                         }
                         echo('
-                            <tr style="color:' . $t_type_color . '">
+                            <tr class="' . $t_type_color . '">
                                 <td id="t_id" hidden>' . $t_id . '</td>
                                 <td hidden>' . $t_stock_id . '</td>
                                 <td hidden>' . $t_item_id . '</td>
@@ -190,24 +190,26 @@ if (isset($_GET['stock_id'])) {
                         $result_count = mysqli_stmt_get_result($stmt_count);
                         $row_count = $result_count->num_rows;
                         $total_pages = ceil($row_count / $results_per_page);
-
-                        if ($current_page > 1) {
-                            echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
-                        }
-
-                        for ($i = 1; $i <= $total_pages; $i++) {
-                            if ($i == $current_page) {
-                                echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
-                                // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
-                            } else {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                        
+                        if ( $total_pages > 1){
+                            if ($current_page > 1) {
+                                echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
                             }
-                        }
 
-                        if ($current_page < $total_pages) {
-                            echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                            for ($i = 1; $i <= $total_pages; $i++) {
+                                if ($i == $current_page) {
+                                    echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
+                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                } else {
+                                    echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                }
+                            }
+
+                            if ($current_page < $total_pages) {
+                                echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                            }  
+                            echo('&nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>');
                         }
-                        if ($total_pages > 1) { echo('&nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>'); }
                     }
                     echo('</div>');
                 }

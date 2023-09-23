@@ -53,7 +53,7 @@ if (isset($_POST['submit'])) {
                         $baseUrl = ((str_contains($_SERVER['HTTP_REFERER'], "https")) ? 'https' : 'http') . "://".$current_base_url;
                         $email_subject = ucwords($current_system_name)." - Account created";
                         $email_body = "<p>Your user account has been created.<br>Your temporary password is:<br><strong>$new_password</strong><br>You will be prompted to change this on login.<br>Click <a href=\"$baseUrl\">here</a> to login.</p>";
-                        send_email($new_email, ucwords($new_first_name).' '.ucwords($new_last_name), $config_smtp_from_name, $email_subject, createEmail($email_body));
+                        send_email($new_email, ucwords($new_first_name).' '.ucwords($new_last_name), $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
 
                     }
                     header("Location: ../addlocaluser.php?user=added&username=$new_username&userId=$new_id");

@@ -199,20 +199,20 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
 
             if ($total_pages > 1) {
                 if ($current_page > 1) {
-                    $pageNumberArea .= '&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
+                    $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
                 }
 
                 for ($i = 1; $i <= $total_pages; $i++) {
                     if ($i == $current_page) {
-                        $pageNumberArea .= '&nbsp;<span class="current-page pageSelected">' . $i . '</span>';
+                        $pageNumberArea .= '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
                         // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                     } else {
-                        $pageNumberArea .= '&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                        $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
                     }
                 }
 
                 if ($current_page < $total_pages) {
-                    $pageNumberArea .= '&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>';
+                    $pageNumberArea .= '<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>';
                 }  
             }
 

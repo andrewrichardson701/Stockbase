@@ -8,6 +8,7 @@ if (isset($_GET['getsites'])) {
             include 'dbh.inc.php';
             $sql = "SELECT id, name
                     FROM site
+                    WHERE deleted=0
                     ORDER BY id";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -50,7 +51,7 @@ if (isset($_GET['site'])) {
             include 'dbh.inc.php';
             $sql = "SELECT id, name
                     FROM area
-                    WHERE site_id=?
+                    WHERE site_id=? AND deleted=0
                     ORDER BY id";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -94,7 +95,7 @@ if (isset($_GET['area'])) {
             include 'dbh.inc.php';
             $sql = "SELECT id, name
                     FROM shelf
-                    WHERE area_id=?
+                    WHERE area_id=? AND deleted=0
                     ORDER BY id";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -141,7 +142,7 @@ if (isset($_GET['type'])) {
 
         include 'dbh.inc.php';
         $sql = "SELECT id, name
-                FROM $table
+                FROM $table WHERE deleted=0
                 ORDER BY id";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {

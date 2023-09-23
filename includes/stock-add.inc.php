@@ -262,7 +262,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                             echo('<table><tbody>');
                                             for ($l=0; $l < count($stock_inv_data); $l++) {
                                                 // if ($l == 0 || $l < count($stock_inv_data)-1) { $divider = '<br>'; } else { $divider = ''; }
-                                                echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
+                                                echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn serial-bg btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
                                             }
                                             echo('</tbody></table>');
                                         }
@@ -594,7 +594,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 $quantity =  $row['item_quantity'];
                             }
                             echo('
-                            <tr class="clickable" style="vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                            <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
                                 <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
@@ -615,20 +615,20 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 <td colspan="100%">');
     
                             if ($current_page > 1) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                                echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
                             }
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
+                                    echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
-                                    echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                    echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
                                 }
                             }
 
                             if ($current_page < $total_pages) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                                echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
                             }  
                         }                              
                     echo('

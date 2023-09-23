@@ -17,7 +17,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) 
     && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit'])
-    && !isset($_POST['smtp-toggle-submit']) && !isset($_POST['imagemanagement-submit'])) {
+    && !isset($_POST['smtp-toggle-submit']) && !isset($_POST['imagemanagement-submit'])
+    && !isset($_GET['mail-notification'])) {
 
     header("Location: ../admin.php?error=noSubmit");
     exit();
@@ -1248,6 +1249,72 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=missingFileName#imagemanagement-settings");
             exit();
         }
+    } elseif (isset($_GET['mail-notification'])) {
+        $results = [];
+
+        function msg($text, $type) {
+            if ($type == 'error') {
+                $class="red";
+            } else {
+                $class="green";
+            }
+            $head = '<or class="'.$class.'">';
+            $foot = '</or>';
+
+            return $head.$text.$foot;
+        }
+
+        if (isset($_GET['notification'])) {
+            $notification = $_GET['notification'];
+            if (isset($_GET['value'])) {
+                $value = $_GET['value'];
+                if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
+                    include 'dbh.inc.php';
+
+                    $sql = "SELECT * FROM notifications WHERE id='$notification'";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        $results[] = msg('SQL connection issue.', 'error');
+                    } else {
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+                        $rowCount = $result->num_rows;
+                        if ($rowCount == 1) {
+                            $row = $result->fetch_assoc();
+                            $id = $row['id'];
+                            $title = $row['title'];
+                            $prev_value = $row['enabled'];
+
+                            $state = $value == 1 ? 'enabled' : 'disabled';
+                            
+                            $sql_update = "UPDATE notifications SET enabled=? WHERE id='$id'";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                $results[] = msg('SQL connection issue.', 'error');
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "notifications", $id, 'enabled', $prev_value, $value);
+                                $results[] = msg("$title notificaiton $state!", 'success');
+                            }
+                        } else {
+
+                        }
+                    }
+                } else {
+                    $results[] = msg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = msg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = msg('No notification type specified.', 'error');
+        }
+
+        echo(json_encode($results));
+
     } elseif (isset($_POST['stocklocation-submit'])) { // editing location info from admin.php
         if (isset($_POST['type'])) {
             $typesArray = ['site', 'area', 'shelf'];

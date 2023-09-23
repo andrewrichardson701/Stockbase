@@ -577,9 +577,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_name'] = $row_locations['shelf_name'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_area_id'] = $row_locations['shelf_area_id'];
                     }
-                    // print_r('<pre>');
-                    // print_r($locations);
-                    // print_r('</pre>');
+
                     $l = 0;
                     echo('<table class="table table-dark theme-table text-center" style="max-width:max-content; vertical-align: middle;">
                             <thead>
@@ -767,14 +765,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </td>
                                 </tr>');
                             }
-                            // echo('<tr style="background-color:#21272b">
-                            //         <td></td> <td></td> <td hidden></td> <td></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> <td></td> <td></td> <td hidden></td>
-                            //             <td>
-                            //                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
-                            //                     <i class="fa fa-plus"></i>
-                            //                 </button>
-                            //             </td>
-                            //         </tr>');
                     echo('  </tbody>
                         </table>');
                 }
@@ -1124,103 +1114,63 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <!-- Notification Settings -->
         <div style="padding-top: 20px" id="notification" hidden>
             <p class="red">There will be notification toggles in here eventually... Still working on how these will be stored and how they will be disabled</p>
-            <?php if($current_smtp_enabled == 1) {
-                ?>
-                <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                    <input type="hidden" name="notifications-submit" value="set" />
-                    <table>
-                        <tbody>
-                            <tr class="nav-row" style="margin-bottom:10px">
-                                <td style="margin-left:25px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Added:</p>
+            <?php if ($current_smtp_enabled == 1) {
+                $sql_notif = "SELECT * FROM notifications
+                                WHERE id!=0;"; 
+                $stmt_notif = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_notif, $sql_notif)) {
+                    // show error for no connection
+                    echo('<p id="notification-output"><or class="red">Error: MYSQL connection issue.</or></p>');
+                } else {
+                    mysqli_stmt_execute($stmt_notif);
+                    $result_notif = mysqli_stmt_get_result($stmt_notif);
+                    $rowCount_notif = $result_notif->num_rows;
+                    if ($rowCount_notif != 0) {
+
+                        echo('<p id="notification-output" class="last-edit-T" hidden></p>
+                            <table><tbody>');
+
+                        $n = 0;
+                        while($row_notif = $result_notif->fetch_assoc()){
+                            if ($n == 0) {
+                                echo('<tr>');
+                            }
+
+                            $notif_id = $row_notif['id'];
+                            $notif_name = $row_notif['name'];
+                            $notif_title = $row_notif['title'];
+                            $notif_description = $row_notif['description'];
+                            $notif_enabled = $row_notif['enabled'];
+                            $checked = $row_notif['enabled'] == 1 ? 'checked' : '';
+
+                            if ($n % 4 == 0) {
+                                echo('</tr><tr>');
+                            }
+
+                            echo('
+                                <td class="align-middle" style="margin-left:25px;margin-right:10px" id="notif-'.$notif_id.'">
+                                    <p style="min-height:max-content;margin:0" class="align-middle title" title="'.$notif_description.'">'.$notif_title.':</p>
                                 </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-added">
+                                <td class="align-middle" style="padding-left:5px;padding-right:20px" id="notif-'.$notif_id.'-toggle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
+                                        <input type="checkbox" name="'.$notif_name.'" onchange="mailNotification(this, '.$notif_id.')" '.$checked.'>
                                         <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
                                     </label>
                                 </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Removed:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-removed">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Deleted:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-deleted">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Moved:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-moved">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr class="nav-row" style="margin-bottom:10px">
-                                <td style="margin-left:25px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Cable Stock Added:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="cablestock-added">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Cable Stock Removed:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="cablestock-removed">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                            <tr class="nav-row" style="margin-bottom:10px">
-                                <td style="margin-left:25px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Minimum Stock Warnings:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="minstock-warning">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Edited:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-edited">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                                <td style="margin-left:50px;margin-right:10px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Stock Image Linking:</p>
-                                </td>
-                                <td class="align-middle">
-                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                        <input type="checkbox" name="stock-images">
-                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                    </label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </form>
-            <?php 
+                            ');
+
+                            if ($n == $rowCount_notif-1) {
+                                echo('</tr>');
+                            }
+                            $n++;
+                        }
+                        echo('</tbody></table>');
+                        
+                    } else {
+                        // show an error for no rows
+                        echo('<p id="notification-output"><or class="red">No notifications settings found in table...</or></p>');
+                    }
+                }
             } else {
                 echo ('<p class="blue">SMTP is disabled. All email notifications have been disabled.</p>');
             }
@@ -1232,7 +1182,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         <!-- Changelog -->
         <div style="padding-top: 20px" id="changelog" hidden>
-            <div class="container content">
+            <div class="content">
                 <?php 
                 include 'includes/dbh.inc.php';
                 $sql = "SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 10";
@@ -1251,7 +1201,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             <thead>
                                 <tr class="theme-tableOuter">
                                     <th>id</th>
-                                    <th>timestamp</th>
+                                    <th style="min-width: 110px;">timestamp</th>
                                     <th>user_id</th>
                                     <th>user_username</th>
                                     <th>action</th>
@@ -1319,23 +1269,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </div>
         </div>
     </div>
-    <script> // MODAL SCRIPT
-        // Get the modal
-        function resetPassword(user_id) {
-            var modal = document.getElementById("modalDivResetPW");
-
-            // Get the image and insert it inside the modal - use its "alt" text as a caption
-            modal.style.display = "block";
-            var user_id_element = document.getElementById('modal-user-id');
-            user_id_element.value = user_id;
-        }
-
-        // When the user clicks on <span> (x), close the modal or if they click the image.
-        modalCloseResetPW = function() { 
-            var modal = document.getElementById("modalDivResetPW");
-            modal.style.display = "none";
-        }
-    </script>
 
     <!-- Modal Image Div -->
     <div id="modalDiv" class="modal" onclick="modalClose()">
@@ -1482,171 +1415,195 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             }
         }
     }
+        
+    // color-picker box json - for Admin.php
+    $("input.color").each(function() {
+        var that = this;
+        $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {
+            that.type = (that.type == "color") ? "text" : "color";
+        }));
+    }).change(function() {
+        $(this).attr("data-value", this.value);
+        this.type = "text";
+    });
 
-    </script>
-    <script> // color-picker box json - for Admin.php
-        $("input.color").each(function() {
-            var that = this;
-            $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {
-                that.type = (that.type == "color") ? "text" : "color";
-            }));
-        }).change(function() {
-            $(this).attr("data-value", this.value);
-            this.type = "text";
-        });
-    </script>
+    // scripts for users modifications
+    function userRoleChange(id) {
+        var select = document.getElementById("user_"+id+"_role_select");
+        var selectedValue = select.value;
 
-    <script> // script for users modifications
-        function userRoleChange(id) {
-            var select = document.getElementById("user_"+id+"_role_select");
-            var selectedValue = select.value;
-
-            $.ajax({
-                type: "POST",
-                url: "./includes/admin.inc.php",
-                data: {
-                    user_id: id,
-                    user_new_role: selectedValue,
-                    user_role_submit: 'yes'
-                },
-                dataType: "html",
-                success: function(response) {
-                    var tr = document.getElementById('users_table_info_tr');
-                    var td = document.getElementById('users_table_info_td');
-                    tr.hidden = false;
-                    var result = response;
-                    if (result.startsWith("Error:")) {
-                        td.classList.add("red");
-                    } else {
-                        td.classList.add("green");
-                    }
-                    td.textContent = result;
-                },
-                async: true
-            });
-        }
-        function usersEnabledChange(id) {
-            var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
-            if (checkbox.checked == true) {
-                var checkboxValue = 1;
-            } else {
-                var checkboxValue = 0;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "./includes/admin.inc.php",
-                data: {
-                    user_id: id,
-                    user_new_enabled: checkboxValue,
-                    user_enabled_submit: 'yes'
-                },
-                dataType: "html",
-                success: function(response) {
-                    var tr = document.getElementById('users_table_info_tr');
-                    var td = document.getElementById('users_table_info_td');
-                    tr.hidden = false;
-                    var result = response;
-                    if (result.startsWith("Error:")) {
-                        td.classList.add("red");
-                    } else {
-                        td.classList.add("green");
-                    }
-                    td.textContent = result;
-                },
-                async: true
-            });
-        }
-        // Function to extract the anchor and split it before the first hyphen
-        function extractParamsFromAnchor(anchor) {
-            const params = anchor.split('-');
-            return {
-                param1: anchor,
-                param2: params[0],
-            };
-        }
-
-        // Check for anchors in the URL and call toggleSection function if present
-        window.onload = function () {
-            const anchor = window.location.hash.substring(1); // Remove the leading '#'
-            if (anchor) {
-                const { param1, param2 } = extractParamsFromAnchor(anchor);
-                // console.log(param1);
-                // console.log(param2);
-                toggleSection(document.getElementById(param1), param2);
-
-                // Scroll to the anchor ID after the toggleSection function is done
-                const anchorElement = document.getElementById(anchor);
-                if (anchorElement) {
-                    anchorElement.scrollIntoView({ behavior: 'smooth' });
+        $.ajax({
+            type: "POST",
+            url: "./includes/admin.inc.php",
+            data: {
+                user_id: id,
+                user_new_role: selectedValue,
+                user_role_submit: 'yes'
+            },
+            dataType: "html",
+            success: function(response) {
+                var tr = document.getElementById('users_table_info_tr');
+                var td = document.getElementById('users_table_info_td');
+                tr.hidden = false;
+                var result = response;
+                if (result.startsWith("Error:")) {
+                    td.classList.add("red");
+                } else {
+                    td.classList.add("green");
                 }
-            } else {
-                toggleSection(document.getElementById("global-settings"), "global");
+                td.textContent = result;
+            },
+            async: true
+        });
+    }
+    function usersEnabledChange(id) {
+        var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
+        if (checkbox.checked == true) {
+            var checkboxValue = 1;
+        } else {
+            var checkboxValue = 0;
+        }
 
-            }
+        $.ajax({
+            type: "POST",
+            url: "./includes/admin.inc.php",
+            data: {
+                user_id: id,
+                user_new_enabled: checkboxValue,
+                user_enabled_submit: 'yes'
+            },
+            dataType: "html",
+            success: function(response) {
+                var tr = document.getElementById('users_table_info_tr');
+                var td = document.getElementById('users_table_info_td');
+                tr.hidden = false;
+                var result = response;
+                if (result.startsWith("Error:")) {
+                    td.classList.add("red");
+                } else {
+                    td.classList.add("green");
+                }
+                td.textContent = result;
+            },
+            async: true
+        });
+    }
+    // ===
+
+
+    // Function to extract the anchor and split it before the first hyphen
+    function extractParamsFromAnchor(anchor) {
+        const params = anchor.split('-');
+        return {
+            param1: anchor,
+            param2: params[0],
         };
+    }
+
+    // Check for anchors in the URL and call toggleSection function if present
+    window.onload = function () {
+        const anchor = window.location.hash.substring(1); // Remove the leading '#'
+        if (anchor) {
+            const { param1, param2 } = extractParamsFromAnchor(anchor);
+            // console.log(param1);
+            // console.log(param2);
+            toggleSection(document.getElementById(param1), param2);
+
+            // Scroll to the anchor ID after the toggleSection function is done
+            const anchorElement = document.getElementById(anchor);
+            if (anchorElement) {
+                anchorElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            toggleSection(document.getElementById("global-settings"), "global");
+
+        }
+    };
 
         
-        // LDAP TOGGLE ENABLE STUFF
+    // LDAP TOGGLE ENABLE STUFF
 
-        // Get the initial state of the LDAP enable toggle checkbox
-        let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
+    // Get the initial state of the LDAP enable toggle checkbox
+    let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
 
-        // Add an event listener to the checkbox
-        document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
-            // Check if the checkbox is being unchecked
-            const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-            // If the checkbox is being unchecked, display the confirmation popup
-            if (isUncheck) {
-                const confirmed = confirm(
-                    'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
-                );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
+            );
 
-                // If the user cancels, revert the checkbox back to its previous state
-                if (!confirmed) {
-                    this.checked = true; // Revert the checkbox back to checked state
-                    return;
-                }
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
             }
+        }
 
-            // Update the initial state of the checkbox for the next change event
-            isLdapCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isLdapCheckboxChecked = this.checked;
 
-            // If the checkbox is not being unchecked or the user confirmed, submit the form
-            document.getElementById("ldapToggleForm").submit();
-        });
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("ldapToggleForm").submit();
+    });
 
-        // SMTP TOGGLE ENABLE STUFF
+    // SMTP TOGGLE ENABLE STUFF
 
-        // Get the initial state of the SMTP enable toggle checkbox
-        let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
+    // Get the initial state of the SMTP enable toggle checkbox
+    let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
 
-        // Add an event listener to the checkbox
-        document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
-            // Check if the checkbox is being unchecked
-            const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-            // If the checkbox is being unchecked, display the confirmation popup
-            if (isUncheck) {
-                const confirmed = confirm(
-                    'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
-                );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
+            );
 
-                // If the user cancels, revert the checkbox back to its previous state
-                if (!confirmed) {
-                    this.checked = true; // Revert the checkbox back to checked state
-                    return;
-                }
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
             }
+        }
 
-            // Update the initial state of the checkbox for the next change event
-            isSmtpCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isSmtpCheckboxChecked = this.checked;
 
-            // If the checkbox is not being unchecked or the user confirmed, submit the form
-            document.getElementById("smtpToggleForm").submit();
-        });
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("smtpToggleForm").submit();
+    });
 
+    // Mail notifications checkboxes
+    function mailNotification(checkbox, id) {
+        var outputBox = document.getElementById('notification-output');
+        var notification = id;
+        if (checkbox.checked) {
+            // enable the notification
+            var value = 1;
+        } else {
+            // disable the notification
+            var value = 0;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/admin.inc.php?mail-notification=1&notification="+notification+"&value="+value, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var output = JSON.parse(xhr.responseText);
+                outputBox.hidden = false;
+                outputBox.classList="last-edit-T";
+                outputBox.innerHTML = output[0];
+            }
+        };
+        xhr.send();
+    } 
     </script>
 
     <script> // MODAL SCRIPT
@@ -1663,90 +1620,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             modal.style.display = "none";
         }
 
-    </script>
 
-    <script>
-        function populateSites(field, current_site) {
-            // Make an AJAX request to retrieve the corresponding sites
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Parse the response and populate the shelf select box
-                    var sites = JSON.parse(xhr.responseText);
-                    var select = field;
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Site", "");
-                    select.options[0].disabled = true;
-                    for (var i = 0; i < sites.length; i++) {
-                        select.options[select.options.length] = new Option(sites[i].name, sites[i].id);
-                    }
-                    select.disabled = (select.options.length === 1);
-                    for (var i = 0; i < select.options.length; i++) {
-                        if (select.options[i].value === current_site) {
-                            select.options[i].selected = true;
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        }
-        function populateAreas(field, current_site, current_area) {
-            // Make an AJAX request to retrieve the corresponding areas
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Parse the response and populate the shelf select box
-                    var areas = JSON.parse(xhr.responseText);
-                    var select = field;
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Area", "");
-                    select.options[0].disabled = true;
-                    for (var i = 0; i < areas.length; i++) {
-                        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
-                    }
-                    select.disabled = (select.options.length === 1);
-                    for (var i = 0; i < select.options.length; i++) {
-                        if (select.options[i].value === current_area) {
-                            select.options[i].selected = true;
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        }
-        function populateAreasUpdate() {
-            // Get the selected site
-            var site = document.getElementById("location-parent-site-input").value;
-            var type = document.getElementById("location-type-input").value;
-            if (type === "shelf") {
-                // Make an AJAX request to retrieve the corresponding areas
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Parse the response and populate the area select box
-                        var areas = JSON.parse(xhr.responseText);
-                        var select = document.getElementById("location-parent-area-input");
-                        select.options.length = 0;
-                        select.options[0] = new Option("Select Area", "");
-                        select.options[0].disabled = true;
-                        for (var i = 0; i < areas.length; i++) {
-                            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
-                        }
-                        select.disabled = (select.options.length === 1);
-                    }
-                };
-                xhr.send();
-            }
-        }
-        document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
-    </script>
-
-    <script> // MODAL SCRIPT
         // Get the modal
         function modalLoadEdit(id, type) {
             //get the modal div with the property
@@ -1853,9 +1727,108 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             input_description.value = '';
         }
 
+        // Get the modal
+        function resetPassword(user_id) {
+            var modal = document.getElementById("modalDivResetPW");
+
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+            var user_id_element = document.getElementById('modal-user-id');
+            user_id_element.value = user_id;
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseResetPW = function() { 
+            var modal = document.getElementById("modalDivResetPW");
+            modal.style.display = "none";
+        }
+
     </script>
 
-    <script> // show input for the ShowADD section
+    <script>
+        function populateSites(field, current_site) {
+            // Make an AJAX request to retrieve the corresponding sites
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var sites = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Site", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < sites.length; i++) {
+                        select.options[select.options.length] = new Option(sites[i].name, sites[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_site) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreas(field, current_site, current_area) {
+            // Make an AJAX request to retrieve the corresponding areas
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var areas = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Area", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < areas.length; i++) {
+                        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_area) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreasUpdate() {
+            // Get the selected site
+            var site = document.getElementById("location-parent-site-input").value;
+            var type = document.getElementById("location-type-input").value;
+            if (type === "shelf") {
+                // Make an AJAX request to retrieve the corresponding areas
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Parse the response and populate the area select box
+                        var areas = JSON.parse(xhr.responseText);
+                        var select = document.getElementById("location-parent-area-input");
+                        select.options.length = 0;
+                        select.options[0] = new Option("Select Area", "");
+                        select.options[0].disabled = true;
+                        for (var i = 0; i < areas.length; i++) {
+                            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                        }
+                        select.disabled = (select.options.length === 1);
+                    }
+                };
+                xhr.send();
+            }
+        }
+        document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
+    </script>
+
+
+    <script> 
+    // show input for the ShowADD section
         function showInput() {
             var type = document.getElementById("addLocation-type");
             var selectedType = type.options[type.selectedIndex].value;
@@ -1871,9 +1844,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 modifyContainers[i].hidden = false;
             }
         }
-    </script>
 
-    <script>
         function populateParent() {
         // Get the selected type
         var type = document.getElementById("addLocation-type").value;
@@ -1901,9 +1872,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         xhr.send();
         }
         document.getElementById("addLocation-type").addEventListener("change", populateParent);
-    </script>
 
-    <script>
         function showImageLinks(num) {
             var button = document.getElementById('image-'+num+'-links');
             var linksRow = document.getElementById('image-row-'+num+'-links');

@@ -358,7 +358,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             if ($i == (int)$quantity) {
                                 $email_subject = ucwords($current_system_name)." - Stock inventory added";
                                 $email_body = "<p>Stock inventory added, with ID: <strong>$id</strong>!</p>";
-                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 1);
                                 header("Location: ../stock.php?stock_id=$id&item_id=$item_id&success=stockAdded");
                                 exit();
                             }
@@ -555,14 +555,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                 if ($stock_min_stock > $new_quantity) {
                                                     $email_subject = ucwords($current_system_name)." - Stock Needs Re-ordering at $site_name.";
                                                     $email_body = "<p>Stock count at <strong>$site_name</strong> for stock: <strong>$stock_name</strong> with ID: <strong>$stock_id</strong> is below the minimum stock count: <stong>$stock_min_stock</strong> with <strong>$new_quantity</strong>!<br>Please order more.</p>";
-                                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                                 }
                                             }
                                         }
                                     
                                         $email_subject = ucwords($current_system_name)." - Stock inventory removed.";
-                                        $email_body = "<p>Stock inventory added to stock: <strong>$stock_name</strong> with ID: <strong>$stock_id</strong> at <strong>$site_name</strong>!</p>";
-                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                        $email_body = "<p>Stock inventory removed from stock: <strong>$stock_name</strong> with ID: <strong>$stock_id</strong> at <strong>$site_name</strong>!</p>";
+                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 2);
                                         header("Location: $redirect_url&success=stockRemoved");
                                         exit();
 
@@ -728,7 +728,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 
                                 $email_subject = ucwords($current_system_name)." - Stock information edited";
                                 $email_body = "<p>Stock with ID: <strong>$stock_id</strong> edited and successfully saved!</p>";
-                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 5);
                                 header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
                                 exit();
                             }
@@ -768,7 +768,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 // Rows Deleted.
                                 $email_subject = ucwords($current_system_name)." - Image unlinked from stock";
                                 $email_body = "<p>Image with ID: <strong>$img_id</strong> unlinked from stock item with ID: <strong>$stock_id</strong>.</p>";
-                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_img", $img_id, "stock_id", $stock_id, null);
 
@@ -835,7 +835,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         // correct number of rows change - success
                                         $email_subject = ucwords($current_system_name)." - Stock image added";
                                         $email_body = "<p>Image successfully added to stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
-                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
                                         // update changelog
                                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_img", $new_stock_img_id, "image", null, $_POST['img-file-name']);
 
@@ -876,7 +876,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         image_upload('image', $_POST['stock_id'], $redi_url, '');
                         $email_subject = ucwords($current_system_name)." - Stock image uploaded";
                         $email_body = "<p>Image successfully uploaded for stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
-                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
                         header("Location: ".$redi_url."&success=fileUploaded");
                         exit();
                     } else {
@@ -926,6 +926,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $current_site_id = $_POST['current_site'];
                     $current_area_id = $_POST['current_area'];
                     $current_shelf_id = $_POST['current_shelf'];
+
+                    $current_i = $_POST['current_i'];
 
                     $new_site_id = $_POST['site'];
                     $new_area_id = $_POST['area'];
@@ -1021,9 +1023,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         }
                                     }
                                 }
-
-                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail("<p>Item ID: $current_stock_id stock moved - $move_quantity moved from </p>"));
-                                header("Location: $redirect_url&success=stockMoved&edited=$new_item_id"); // Final redirect - for success and stock is moved.
+                                $move_body = "<p>Item ID: $current_stock_id stock moved - $move_quantity moved from shelf ID: $current_shelf_id to $new_shelf_id</p>";
+                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail($move_body), 4);
+                                header("Location: $redirect_url&success=stockMoved&edited=$current_i&newItemId=$new_item_id"); // Final redirect - for success and stock is moved.
                                 exit();
                             } else {
                                 header("Location: ../".$redirect_url."&error=notEnoughStockedForRemoval");

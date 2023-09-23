@@ -76,7 +76,7 @@ $currency_symbol = '£';
                                         (SELECT SUM(quantity) 
                                             FROM item 
                                             WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                AND item.serial_number=item_serial_number AND item.upc=item_upc
+                                                AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments AND item.deleted=0
                                         ) AS item_quantity,
                                         manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                                         (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
@@ -225,6 +225,7 @@ $currency_symbol = '£';
                                                         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                                             <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                                             <input type="hidden" name="stock-move" value="1" />
+                                                            <input type="hidden" id="'.$i.'-c-i" name="current_i" value="'.$i.'" />
                                                             <input type="hidden" id="'.$i.'-c-stock" name="current_stock" value="'.$stock_id.'" />
                                                             <input type="hidden" id="'.$i.'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
                                                             <input type="hidden" id="'.$i.'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
@@ -505,7 +506,7 @@ $currency_symbol = '£';
                                 $quantity =  $row['item_quantity'];
                             }
                             echo('
-                            <tr class="clickable" style="vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                            <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
                                 <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
@@ -526,22 +527,22 @@ $currency_symbol = '£';
                                 <td colspan="100%">');
     
                             if ($current_page > 1) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                                echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
                             }
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page pageSelected">' . $i . '</span>');
+                                    echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
-                                    echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                    echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
                                 }
                             }
 
                             if ($current_page < $total_pages) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                                echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
                             }  
-                        }
+                        } 
                     echo('    
                         </tbody>
                     </table>

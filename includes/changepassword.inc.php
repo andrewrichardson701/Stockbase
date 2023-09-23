@@ -160,7 +160,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                 $email_subject = ucwords($current_system_name)." - Reset your password";
                 $email_body = '<p>We recieved a password reset request for your account. <br>The link to reset your password is below. If you did not make this request, you can ignore this email.</p>
                                 <p>Here is your password reset link: </br><a href="' . $url . '">' . $url . '</a></p>';
-                send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
                 header("Location: ../login.php?resetemail=sent");
                 exit();
             }
@@ -262,7 +262,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                             $email_subject = ucwords($current_system_name)." - Password Reset!";
                                             $email_body = '<p>Your password has been reset.</p>
                                                             <p>Click <a href="' . $baseUrl . '">here</a> to login.</p>';
-                                            send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
+                                            send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
                                             header("Location: ../login.php?newpwd=passwordupdated");
                                         }
                                     }

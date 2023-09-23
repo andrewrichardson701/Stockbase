@@ -474,6 +474,16 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.2.0-beta</h3></summary>
+<h4>Beta release 0.2.1, based on initial feedback.</h4>
+
+- Added more themes. Theme CSS now has more properties which can be adjusted.
+- Changelog page has been formatted better and now fills the page.
+- Email notifications can now be disabled from the admin page. Each notification type is configurable, excpet them important things, like password resets.
+- SMTP send_mail function has been updated to check if the notification type is enabled. All send_mail requests have been updated accordingly.
+
+</details>
+<details>
+<summary><h3>0.2.0-beta</h3></summary>
 <h4>Beta release 0.2.0, based on initial feedback.</h4>
 
 - Corrected the url redirects when a user tries to reach a page without being logged in. Logging in now redirects to the correct page.
@@ -500,7 +510,8 @@ Clone the repo first, and the follow the below steps.
 - Deleting stock when the stock count is 0, no longer deletes the row from the database and instead marks deleted as 1.
 - Minimum stock count now checks against the site using the shelf of the object that the stock was removed from for the email notifications.
 - Added a light theme (for those who no longer want their eyes), which can be enabled under the user profile section.
-- Email notification settings added to admin page
+- Added more themes. Theme CSS now has more properties which can be adjusted.
+- Email notification settings section added to admin page. This is a work in progress.
 - Changelog section added to admin page. Moved from the hidden link and now shows 10 by default, with a link to the full page
 
 </details>

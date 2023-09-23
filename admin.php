@@ -279,6 +279,43 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </td>
                         </tr>
 
+                        <tr class="nav-row" style="margin-top:20px">
+                            <td id="default-theme-label" style="width:250px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="default_theme">Default Theme:</p>
+                            </td>
+                            <td id="default-theme-set" style="width:250px">
+                                <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control" style="width:150px">
+                                    <?php
+                                    $sql_theme = "SELECT * FROM theme";
+                                    $stmt_theme = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_theme);
+                                        $result_theme = mysqli_stmt_get_result($stmt_theme);
+                                        $rowCount_theme = $result_theme->num_rows;
+                                        if ($rowCount_theme < 1) {
+                                            echo ("No themes found.");
+                                        } else {
+                                            while ( $row_theme = $result_theme->fetch_assoc() ) {
+                                                $theme_id = $row_theme['id'];
+                                                $theme_name = $row_theme['name'];
+                                                $theme_file_name = $row_theme['file_name'];
+                                                echo ('<option value="'.$theme_id.'" '); if ($current_default_theme_id == $theme_id) { echo('selected'); } echo('>'.$theme_name.'</option>');
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($current_default_theme_name); ?></span></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($default_default_theme_name); ?></span></label>
+                            </td>
+                        </tr>
+
 
                         <tr class="nav-row" style="margin-top:20px;margin-left:25px">
                             <td style="width:250px">

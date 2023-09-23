@@ -184,7 +184,6 @@ $default_currency            = ($config_d_currency            !== '' ? $config_d
 $default_sku_prefix          = ($config_d_sku_prefix          !== '' ? $config_d_sku_prefix                  : $predefined_sku_prefix);
 $default_base_url            = ($config_d_base_url            !== '' ? $config_d_base_url                    : $predefined_base_url);
 $default_banner_text_color   = getWorB($default_banner_color);
-$default_default_theme_id    = ($config_d_default_theme_id    !== '' ? $config_d_default_theme_id            : $predefined_default_theme_id);
 
 $current_system_name         = ($config_system_name           !== '' ? $config_system_name                   : $default_system_name);
 $current_banner_color        = ($config_banner_color          !== '' ? $config_banner_color                  : $default_banner_color);
@@ -194,8 +193,7 @@ $current_currency            = ($config_currency              !== '' ? $config_c
 $current_sku_prefix          = ($config_sku_prefix            !== '' ? $config_sku_prefix                    : $default_sku_prefix);
 $current_base_url            = ($config_base_url              !== '' ? $config_base_url                      : $default_base_url);
 $current_banner_text_color   = getWorB($current_banner_color);
-$current_default_theme_id    = ($config_default_theme_id      !== '' ? $config_default_theme_id              : $default_default_theme_id);
-  
+
 # ---
 
 $default_ldap_enabled        = ($config_d_ldap_enabled        !== '' ? $config_d_ldap_enabled                : 'MISSING - PLEASE FIX');  
@@ -244,6 +242,9 @@ $current_smtp_to_email       = ($config_smtp_to_email         !== '' ? $config_s
 
 # ---
 
+$default_default_theme_id    = ($config_d_default_theme_id    !== '' ? $config_d_default_theme_id            : $predefined_default_theme_id); 
+$current_default_theme_id    = ($config_default_theme_id      !== '' ? $config_default_theme_id              : $default_default_theme_id);
+
 // get theme info for defaults
 $sql_theme = "SELECT * FROM theme WHERE id=$current_default_theme_id";
 $stmt_theme = mysqli_stmt_init($conn);
@@ -264,8 +265,32 @@ if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
     }
 }
 
+$sql_theme_d = "SELECT * FROM theme WHERE id=$default_default_theme_id";
+$stmt_theme_d = mysqli_stmt_init($conn);
+if (!mysqli_stmt_prepare($stmt_theme_d, $sql_theme_d)) {
+    echo("ERROR getting entries");
+} else {
+    mysqli_stmt_execute($stmt_theme_d);
+    $result_theme_d = mysqli_stmt_get_result($stmt_theme_d);
+    $rowCount_theme_d = $result_theme_d->num_rows;
+    if ($rowCount_theme_d < 1) {
+        echo ("No themes found for id: $default_default_theme_id");
+    } else {
+        while ( $row_theme_d = $result_theme_d->fetch_assoc() ) {
+            $c_d_theme_id = $row_theme_d['id'];
+            $c_d_theme_name = $row_theme_d['name'];
+            $c_d_theme_file_name = $row_theme_d['file_name'];
+        }
+    }
+}
+
+
 $current_default_theme_name = $c_theme_name;
 $current_default_theme_file_name = $c_theme_file_name;
+
+
+$default_default_theme_name = $c_d_theme_name;
+$default_default_theme_file_name = $c_d_theme_file_name;
 
 
 ?>

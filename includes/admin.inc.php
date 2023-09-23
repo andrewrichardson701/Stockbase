@@ -70,15 +70,17 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
     }
     if (isset($_POST['global-submit'])) { // GLOBAL saving in admin
+        $queryStrings = [];
         $errors = [];
          
-        $config_system_name   = isset($_POST['system_name'])        ? $_POST['system_name']        : '';
-        $config_banner_color  = isset($_POST['banner_color'])       ? $_POST['banner_color']       : '';
-        $config_logo_image    = isset($_FILES['logo_image'])        ? $_FILES['logo_image']        : '';
-        $config_favicon_image = isset($_FILES['favicon_image'])     ? $_FILES['favicon_image']     : '';
-        $config_currency      = isset($_POST['currency_selection']) ? $_POST['currency_selection'] : '';
-        $config_sku_prefix    = isset($_POST['sku_prefix'])         ? $_POST['sku_prefix']         : '';
-        $config_base_url      = isset($_POST['base_url'])           ? $_POST['base_url']           : '';
+        $config_system_name   = isset($_POST['system_name'])             ? $_POST['system_name']             : '';
+        $config_banner_color  = isset($_POST['banner_color'])            ? $_POST['banner_color']            : '';
+        $config_logo_image    = isset($_FILES['logo_image'])             ? $_FILES['logo_image']             : '';
+        $config_favicon_image = isset($_FILES['favicon_image'])          ? $_FILES['favicon_image']          : '';
+        $config_currency      = isset($_POST['currency_selection'])      ? $_POST['currency_selection']      : '';
+        $config_sku_prefix    = isset($_POST['sku_prefix'])              ? $_POST['sku_prefix']              : '';
+        $config_base_url      = isset($_POST['base_url'])                ? $_POST['base_url']                : '';
+        $config_default_theme = isset($_POST['default_theme']) ? $_POST['default_theme'] : '';
 
         if (isset($_POST['system_name']) && $config_system_name !== '') {
             $post_system_name = $_POST['system_name'];
@@ -284,20 +286,46 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "base_url", $configCurrent['base_url'], $post_base_url);
             }
         }
+
+        if (isset($_POST['default_theme']) && $config_default_theme !== '') {
+            $post_default_theme = $_POST['default_theme'];
+            include 'dbh.inc.php';
+            if ($post_default_theme !== $configCurrent['default_theme_id']) {
+                $sql_upload = "UPDATE config SET default_theme_id=? WHERE id=1";
+                $stmt_upload = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                    $errors[] = "default_themeSqlError";
+                } else {
+                    mysqli_stmt_bind_param($stmt_upload, "s", $post_default_theme);
+                    mysqli_stmt_execute($stmt_upload);
+                    $queryStrings[] = "default_themeUpload=success";
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "default_theme", $configCurrent['default_theme_id'], $post_default_theme);
+                }
+            }
+        }
         
-        if (count($queryStrings) > 1) {
-            $queryString = implode('&', $queryStrings);
-        } elseif (count($queryStrings) == 1) {
-            $queryString = $queryStrings[0];
+        if (is_array($queryStrings)) {
+            if (count($queryStrings) > 1) {
+                $queryString = implode('&', $queryStrings);
+            } elseif (count($queryStrings) == 1) {
+                $queryString = $queryStrings[0];
+            } else {
+                $queryString = '';
+            }
         } else {
             $queryString = '';
         }
 
-        if (count($errors) >= 1) {
-            $error = implode('&', $errors);
-        } elseif (count($errors) == 1) {
-            $error = $errors[0];
-        }  else {
+        if (is_array($errors)) {
+            if (count($errors) >= 1) {
+                $error = implode('&', $errors);
+            } elseif (count($errors) == 1) {
+                $error = $errors[0];
+            }  else {
+                $error = '';
+            }
+        } else {
             $error = '';
         }
         

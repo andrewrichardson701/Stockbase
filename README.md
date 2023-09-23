@@ -480,6 +480,8 @@ Clone the repo first, and the follow the below steps.
 - Changelog page has been formatted better and now fills the page.
 - Email notifications can now be disabled from the admin page. Each notification type is configurable, excpet them important things, like password resets.
 - SMTP send_mail function has been updated to check if the notification type is enabled. All send_mail requests have been updated accordingly.
+- Default theme selection now added to Global Settings of admin page
+- Themes are now in their own table in the database and theme selection is now auto generated on pages.
 
 </details>
 <details>

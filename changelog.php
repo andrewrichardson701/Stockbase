@@ -8,7 +8,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title><?php echo ucwords($current_system_name);?> - Admin</title>
+    <title><?php echo ucwords($current_system_name);?> - Changelog</title>
 </head>
 <body>
     <?php // dependency PHP    

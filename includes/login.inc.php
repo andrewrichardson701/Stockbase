@@ -11,7 +11,7 @@
 
 
 //DEBUG
-// if (isset($_GET['submit'])) { //jumpcli.arpco.xyz/inventory/includes/login.inc.php?submit=submit&username=andrew1&password=DropsBuildsSkill12!!
+
 if (isset($_POST['submit'])) {
     // if (!isset($_GET['username']) || !isset($_GET['password'])) {
     if (!isset($_POST['username']) || !isset($_POST['password'])) {

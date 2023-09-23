@@ -1113,7 +1113,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         <!-- Notification Settings -->
         <div style="padding-top: 20px" id="notification" hidden>
-            <p class="red">There will be notification toggles in here eventually... Still working on how these will be stored and how they will be disabled</p>
             <?php if ($current_smtp_enabled == 1) {
                 $sql_notif = "SELECT * FROM notifications
                                 WHERE id!=0;"; 

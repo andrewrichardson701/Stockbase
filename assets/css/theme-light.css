@@ -1,9 +1,12 @@
 body {
-	background-color: #FFFDFA !important; /* base background colour */
-	color: #000000 !important; /* base text colour */
+    /* base background colour */
+	background-color: #FFFDFA !important; 
+    /* base text colour */
+	color: #000000 !important; 
 }
 
-.theme-dropdown { /* themed dropdown select boxes */
+/* themed dropdown select boxes */
+.theme-dropdown { 
 	background-color:#aaa9a9 !important;
 	border-color:#505050 !important;
 	margin:0 !important;
@@ -11,97 +14,94 @@ body {
 	color: black !important;
 }
 
-.theme-dropdown option { /* themed dropdown select box options */
+/* themed dropdown select box options */
+.theme-dropdown option { 
 	color: black !important;
 }
 
-.theme-textColor { /* specified text colour (used to be cw) */
+/* specified text colour (used to be .cw) */
+.theme-textColor { 
 	color: black !important;
 }
 
-.theme-profileTextColor { /* Profile page text colour */
+/* Profile page text colour */
+.theme-profileTextColor { 
 	color: black !important;
 }
 
-.theme-table { /* Table colouring */
+/* Table colouring */
+.theme-table { 
 	background-color: #F9F9F9;
 	color: black;
 }
 
-.theme-tableOuter { /* Table header and footer colours */
+/* Table header and footer colours */
+.theme-tableOuter { 
 	background-color:#e1e1e1;
 }
 
-.theme-table-blank { /* Table blank cell for the stock locations */
+/* Table blank cell for the stock locations */
+.theme-table-blank { 
     background-color:#bcbcbc;
 }
 
-.theme-th-selected { /* Table selected th cells */
+/* Table selected th cells */
+.theme-th-selected { 
     background-color: #999999;
     border: 0px !important;
 }
 
-.gold, a { /* was gold, now changes based on theme - same as url links */
+/* was gold, now changes based on theme - same as url links */
+.gold, a { 
 	color: blue !important;
 }
 
-.clickable { /* clickable items */
+/* clickable items */
+.clickable { 
     cursor: pointer !important;
 }
-.clickable:hover { /* clickable items colours */
+/* clickable items colours */
+.clickable:hover { 
     background-color: #858484 !important;
 }
-
-
 
 .footer {
     background-color: #d1cfcf;
     color: black;
-    font-size: 14px;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 5px;
 }
 
-.pageSelected { /* selected page for paginatation */
+/* selected page for paginatation */
+.pageSelected { 
     color: black !important;
 }
 
-.theme-divBg { /* div background colours */
+/* div background colours */
+.theme-divBg { 
     background-color: #d3d3d3 !important;
 }
 
-.theme-divBg-m { /* div background colours (darker) */
+/* div background colours (darker) */
+.theme-divBg-m { 
     background-color: #acacac !important;
 }
 
-
-.theme-btn { /* special button look */
+/* special button look */
+.theme-btn { 
     background-color: #a6a3a3 !important;
 }
 
-.serial-bg { /* special serial button background look */
-    display: inline-block;
-    font-weight: 400;
-    text-align: center;
-    vertical-align: middle;
-    border: 1px solid transparent;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: 0.25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    padding: 0px 3px 0px 3px;
-    margin-right: 5px;
+/* special serial button background look */
+.serial-bg { 
     background-color: #a6a3a3 !important;
     color: #1f1f1f !important;
 }
 
-.specialColor { /*special colour - currently used for the view all in transactions and the min stock count */ 
+/*special colour - currently used for the view all in transactions and the min stock count */ 
+.specialColor { 
     color: #9b7202 !important; 
 }
 
-
+/* transaction table text colours */
 .transactionAdd {
     color: limegreen;
 }

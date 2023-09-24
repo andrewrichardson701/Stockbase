@@ -18,7 +18,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit'])
     && !isset($_POST['smtp-toggle-submit']) && !isset($_POST['imagemanagement-submit'])
-    && !isset($_GET['mail-notification'])) {
+    && !isset($_POST['theme-upload']) && !isset($_GET['mail-notification'])) {
 
     header("Location: ../admin.php?error=noSubmit");
     exit();
@@ -1277,7 +1277,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=missingFileName#imagemanagement-settings");
             exit();
         }
-    } elseif (isset($_GET['mail-notification'])) {
+    } elseif (isset($_GET['mail-notification'])) { // mail notification section in admin.php page. this is ajax'd
         $results = [];
 
         function msg($text, $type) {
@@ -1468,6 +1468,98 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } else {
             header("Location: ../profile.php?error=idMissing");
+            exit();
+        }
+    } elseif (isset($_POST['theme-upload'])) { // theme uploading from the theme-test page
+        if (isset($_POST['submit']) && $_POST['submit'] == 'Upload Theme') {
+            if (isset($_POST['theme-name'])) {
+                if (isset($_POST['theme-file-name'])) {
+                    if (isset($_FILES['css-file']['name']) && $_FILES['css-file']['name'] !== '') {
+                        $errors = [];
+                        
+                        if (!isset($_FILES['css-file']))           { $errors[] = "notSet-File";          }
+                        if ($_FILES['css-file']['name'] == '')     { $errors[] = "notSet-File-name";     }
+                        if ($_FILES['css-file']['size'] == '')     { $errors[] = "notSet-File-size";     }
+                        if ($_FILES['css-file']['tmp_name'] == '') { $errors[] = "notSet-File-tmp_name"; }
+                        if ($_FILES['css-file']['type'] == '')     { $errors[] = "notSet-File-type";     }
+
+                        $fileName = $_FILES['css-file']['name'];                            // Get uploaded file name
+                        $fileSize = $_FILES['css-file']['size'];                            // Get uploaded file size
+                        $explode = explode('.',$fileName);                              // Get file extension explode
+                        $fileExtension = strtolower(end($explode));                     // Get file extension
+
+                        if ($fileExtension !== "css")                { $errors[] = "wrongFileExtension";   } // File extenstion match?
+                        if ($fileSize > 10000000)                   { $errors[] = "above10MB";            } // Within Filesize limits?
+                        
+                        if (str_contains($_POST['theme-file-name'], '.'))         { $errors[] = "File-name-includes-extension"; }
+                        if (str_contains($_POST['theme-file-name'], '/')) { $errors[] = "File-name-includes-path"; }
+                        if (preg_match('/[^\p{L}\p{N}]+/u', $_POST['theme-name'])) { $errors[] = "theme-name-includes-speical-chars"; }
+        
+                        $theme_name = $_POST['theme-name'];
+                        $theme_file_name = $_POST['theme-file-name'].'.css';
+                        $file_tmp_name = $_FILES['css-file']['tmp_name'];
+        
+                        include 'dbh.inc.php';
+        
+                        $sql = "SELECT * FROM theme WHERE name='$theme_name' OR file_name='$theme_file_name'";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../test-theme.php?sqlerror=SQLconnection");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt);
+                            $result = mysqli_stmt_get_result($stmt);
+                            $rowCount = $result->num_rows;
+                            if ($rowCount != 0) {
+                                $errors[] = 'theme-matches-existing';
+                            }
+                        }
+        
+                        if (empty($errors)) { // IF file is existing and all fields exist:;
+                            $uploadPath = '../assets/css/'.$theme_file_name;
+                            $didUpload = move_uploaded_file($_FILES['css-file']['tmp_name'], $uploadPath);
+                            if ($didUpload) {
+                                $sql_theme = "INSERT INTO theme (name, file_name) 
+                                                VALUES (?, ?)";
+                                $stmt_theme = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
+                                    header("Location: ../theme-test.php?error=SQLconnection&theme-name=$theme_name");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_theme, "ss", $theme_name, $theme_file_name);
+                                    mysqli_stmt_execute($stmt_theme);
+                                    // get new theme id
+                                    $theme_id = mysqli_insert_id($conn); // ID of the new row in the table.
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "theme", $theme_id, "name", null, $theme_name);
+                                    header("Location: ../theme-test.php?success=uploaded&theme-name=$theme_name");
+                                    exit();
+                                }
+                            } else {
+                                $errors[] = "uploadFailed";
+                                $errorQ = implode('+', $errors);
+                                header("Location: ../theme-test.php?errors=$errorQ");
+                                exit();
+                            }
+                        } else {
+                            $errorQ = implode('+', $errors);
+                            header("Location: ../theme-test.php?errors=$errorQ");
+                            exit();
+                        } 
+                    } else {
+                        header("Location: ../theme-test.php?error=uploadedFileNameMissing");
+                        exit();
+                    }
+                } else {
+                    header("Location: ../theme-test.php?error=fileNameMissing");
+                    exit();
+                }
+            } else {
+                header("Location: ../theme-test.php?error=themeNameMissing");
+                exit();
+            }
+        } else {
+            header("Location: ../theme-test.php?error=submitMissing");
             exit();
         }
     } else {

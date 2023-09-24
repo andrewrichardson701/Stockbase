@@ -79,8 +79,8 @@ if (isset($_GET['stock_id'])) {
                                 <th>Type</th>
                                 <th>Date</th>
                                 <th>Time</th>
-                                <th hidden>Shelf</th>
                                 <th>Location</th>
+                                <th>Shelf</th>
                                 <th>Username</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
@@ -134,8 +134,8 @@ if (isset($_GET['stock_id'])) {
                                 <td id="t_type">' . ucwords($t_type) . '</td>
                                 <td id="t_date">' . $t_date . '</td>
                                 <td id="t_time">' . $t_time . '</td>
-                                <td hidden>' . $s_name . '</td>
                                 <td id="a_name">' . $a_name . '</td>
+                                <td id="s_name">' . $s_name . '</td>
                                 <td id="t_username">' . $t_username . '</td>
                                 <td id="t_quantity">' . $t_quantity . '</td>
                                 <td>' . $currency_symbol . $t_price . '</td>

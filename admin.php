@@ -1007,6 +1007,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 </table>
             </form>
             <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" <?php if($current_smtp_enabled == 0) { echo("hidden"); } ?>>
+                <hr style="border-color:white; margin-left:10px">
                 <table id="smtpTable">
                     <tbody>
                         <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">

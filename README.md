@@ -482,6 +482,7 @@ Clone the repo first, and the follow the below steps.
 - SMTP send_mail function has been updated to check if the notification type is enabled. All send_mail requests have been updated accordingly.
 - Default theme selection now added to Global Settings of admin page
 - Themes are now in their own table in the database and theme selection is now auto generated on pages.
+- Theme test page added ad theme-test.php. This shows all relevant pages which are affected by the theme. The css can be edited, applied, downloaded and uploaded from here for new themes.
 
 </details>
 <details>

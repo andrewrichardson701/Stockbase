@@ -22,13 +22,10 @@ if (!isset($loggedin_username)) {
 
 include 'get-config.inc.php';
 
-// $folder = dirname($_SERVER['PHP_SELF']);
-// $folder = explode('/', $folder)[1]; // inventory folder
-
 function send_email($to, $toName, $fromName, $subject, $body, $notif_id) {
     global $current_smtp_enabled;
-    if ($current_smtp_enabled == 1) { // check if smtp is enabled.
 
+    if ($current_smtp_enabled == 1) { // check if smtp is enabled.
         if (is_numeric($notif_id)) {
 
             // get folder info to get the dbh config

@@ -718,7 +718,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 ');
                                         } else {
                                             echo('<td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
-                                            <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] != $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
+                                            <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] < $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
                                         }
                                         echo('
                                                 

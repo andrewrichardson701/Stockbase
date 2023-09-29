@@ -104,6 +104,114 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
     }
 }
 
+function getItemRow($item_id) {
+    global $redirect_url, $queryChar;
+
+    include 'dbh.inc.php';
+
+    $sql = "SELECT * FROM item WHERE id=$item_id";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location: ../".$redirect_url.$queryChar."itemID=$item_id&error=itemTableSQLConnection");
+        exit();
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            return '';
+        } elseif ($rowCount > 1) {
+            return '';
+        } else {
+            $row = $result->fetch_assoc();
+            return $row;
+        }
+    }
+}
+
+function getItemStockInfo($stock_id) {
+    global $redirect_url, $queryChar;
+
+    include 'dbh.inc.php';
+
+    $sql = "SELECT * FROM stock WHERE id=$stock_id";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        return '';
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            return '';
+        } elseif ($rowCount > 1) {
+            return '';
+        } else {
+            $row = $result->fetch_assoc();
+            return $row;
+        }
+    }
+}
+
+function getItemQuantity($stock_id, $shelf_id) {
+    global $redirect_url, $queryChar;
+
+    include 'dbh.inc.php';
+
+    $sql = "SELECT sum(quantity) AS total_quantity 
+            FROM item
+            INNER JOIN stock ON item.stock_id=stock.id
+            WHERE stock.id=$stock_id AND item.shelf_id=$shelf_id 
+                AND stock.deleted=0 AND item.deleted=0";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        return '';
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            return '';
+        } elseif ($rowCount > 1) {
+            return '';
+        } else {
+            $row = $result->fetch_assoc();
+            return $row['total_quantity'];
+        }
+    }
+}
+
+function getItemLocation($shelf_id) {
+    global $redirect_url, $queryChar;
+
+    include 'dbh.inc.php';
+
+    $sql = "SELECT site.id AS site_id, site.name AS site_name, 
+                    area.id AS area_id, area.name AS area_name,
+                    shelf.id AS shelf_id, shelf.name AS shelf_name
+            FROM site 
+            INNER JOIN area ON area.site_id=site.id
+            INNER JOIN shelf ON shelf.area_id=area.id
+            WHERE shelf.id=$shelf_id";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        return '';
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            return '';
+        } elseif ($rowCount > 1) {
+            header("Location: ../".$redirect_url.$queryChar."shelfID=$shelf_id&error=tooManyRowsFound");
+            return '';
+        } else {
+            $row = $result->fetch_assoc();
+            return $row;
+        }
+    }
+}
+
 // MAIN SCRIPTS
 // print_r($_POST);
 // exit();
@@ -361,8 +469,12 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $id, $item_id, $type, $quantity_one, $cost, $serial_number_input, $reason, $date, $time, $username);
                             mysqli_stmt_execute($stmt_trans);
                             if ($i == (int)$quantity) {
+                                $stock_info = getItemStockInfo($id);
+                                $item_location = getItemLocation($shelf);
+                                $new_quantity = getItemQuantity($id, $shelf);
+
                                 $email_subject = ucwords($current_system_name)." - Stock inventory added";
-                                $email_body = "<p>Stock inventory added, with ID: <strong>$id</strong>!</p>";
+                                $email_body = "<p>Stock inventory added, for <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 1);
                                 header("Location: ../stock.php?stock_id=$id&item_id=$item_id&success=stockAdded");
                                 exit();
@@ -510,8 +622,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             $rowCount_getSite = $result_getSite->num_rows;
 
                                             $row_getSite = $result_getSite->fetch_assoc();
-                                            $site_id = $row_getSite['id'];
-                                            $site_name = $row_getSite['name'];
+                                            $site_id = $row_getSite['site_id'];
+                                            $site_name = $row_getSite['site_name'];
                                         }
                                         
                                         // get site stock count
@@ -537,39 +649,31 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         }
 
                                         // check count 
-                                        $sql_min_stock = "SELECT * FROM stock WHERE id=?";
-                                        $stmt_min_stock = mysqli_stmt_init($conn);
-                                        if (!mysqli_stmt_prepare($stmt_min_stock, $sql_min_stock)) {
-                                            $errors[] = 'min_stock stock table error - SQL connection';
-                                            header("Location: $redirect_url&error=stockTableSQLConnection");
+                                        $stock_info = getItemStockInfo($stock_id);
+                                        $item_location = getItemLocation($stock_shelf);
+                                        $new_quantity = getItemQuantity($stock_id, $stock_shelf);
+
+                                        if (isset( $stock_info['id'])) {
+                                            $stock_name = $stock_info['name'];
+                                            $stock_min_stock = $stock_info['min_stock'];
+                                            
+                                            if ($stock_min_stock > $new_quantity) {
+                                                $email_subject = ucwords($current_system_name)." - Stock Needs Re-ordering at $site_name.";
+                                                $email_body = "<p>Stock is below minimum stock count, for <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p><p style='color:red'>Please raise a PO to order more!</p>";
+                                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                            }
+                                
+                                            $email_subject = ucwords($current_system_name)." - Stock inventory removed.";
+                                            $email_body = "<p>Stock removed, from <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 2);
+                                            header("Location: $redirect_url&success=stockRemoved");
                                             exit();
                                         } else {
-                                            mysqli_stmt_bind_param($stmt_min_stock, "s", $stock_id);
-                                            mysqli_stmt_execute($stmt_min_stock);
-                                            $result_min_stock = mysqli_stmt_get_result($stmt_min_stock);
-                                            $rowCount_min_stock = $result_min_stock->num_rows;
-                                            if ($rowCount_min_stock < 1) {
-                                                $errors[] = 'min_stock stock table error - no row found';
-                                                header("Location: $redirect_url&error=noIDInTable");
-                                                exit();
-                                            } elseif ($rowCount_min_stock == 1) { 
-                                                $row_min_stock = $result_min_stock->fetch_assoc();
-                                                $stock_name = $row_min_stock['name'];
-                                                $stock_min_stock = $row_min_stock['min_stock'];
-                                                
-                                                if ($stock_min_stock > $new_quantity) {
-                                                    $email_subject = ucwords($current_system_name)." - Stock Needs Re-ordering at $site_name.";
-                                                    $email_body = "<p>Stock count at <strong>$site_name</strong> for stock: <strong>$stock_name</strong> with ID: <strong>$stock_id</strong> is below the minimum stock count: <stong>$stock_min_stock</strong> with <strong>$new_quantity</strong>!<br>Please order more.</p>";
-                                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                                }
-                                            }
+                                            header("Location: $redirect_url&error=noIDInTable");
+                                            exit();
                                         }
-                                    
-                                        $email_subject = ucwords($current_system_name)." - Stock inventory removed.";
-                                        $email_body = "<p>Stock inventory removed from stock: <strong>$stock_name</strong> with ID: <strong>$stock_id</strong> at <strong>$site_name</strong>!</p>";
-                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 2);
-                                        header("Location: $redirect_url&success=stockRemoved");
-                                        exit();
+                    
+                                        
 
                                     } else {
                                         $errors[] = 'not enough stock quantity found to remove (total stored = '.$totalQuantity.', total to remove = '.$stock_quantity.')';
@@ -687,7 +791,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 }
                                 function cleanupLabels($stock_id) {
                                     include 'dbh.inc.php';
-                                    include 'changlog.inc.php';
+                                    include 'changelog.inc.php';
 
                                     $sql = "SELECT id FROM stock_label WHERE stock_id=$stock_id";
                                     $stmt = mysqli_stmt_init($conn);
@@ -730,9 +834,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         }
                                     }
                                 }
-                                
+                                $stock_info = getItemStockInfo($stock_id);
+
                                 $email_subject = ucwords($current_system_name)." - Stock information edited";
-                                $email_body = "<p>Stock with ID: <strong>$stock_id</strong> edited and successfully saved!</p>";
+                                $email_body = "<p>Stock details updated for <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> and successfully saved!</p>";
                                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 5);
                                 header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
                                 exit();
@@ -764,15 +869,17 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         } else {
                             mysqli_stmt_bind_param($stmt_delete_stock_img, "ss", $stock_id, $img_id);
                             mysqli_stmt_execute($stmt_delete_stock_img);
-                            $rows_delete_stock_img = $conn->affected_rows;
+                            $rows_delete_stock_img = $conn->affected_rows();
                             if ($rows_delete_stock_img == 0) {
                                 // No Rows deleted.
                                 header("Location: ".$redi_url."&error=noImgRemoved");
                                 exit();
                             } else {
                                 // Rows Deleted.
+                                $stock_info = getItemStockInfo($stock_id);
+
                                 $email_subject = ucwords($current_system_name)." - Image unlinked from stock";
-                                $email_body = "<p>Image with ID: <strong>$img_id</strong> unlinked from stock item with ID: <strong>$stock_id</strong>.</p>";
+                                $email_body = "<p>Image with ID: <strong>$img_id</strong> unlinked from <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong>.</p>";
                                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_img", $img_id, "stock_id", $stock_id, null);
@@ -838,8 +945,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         exit();
                                     } else if ($modified_rows == 1) {
                                         // correct number of rows change - success
+                                        $stock_info = getItemStockInfo($_POST['stock_id']);
+
                                         $email_subject = ucwords($current_system_name)." - Stock image added";
-                                        $email_body = "<p>Image successfully added to stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
+                                        $email_body = "<p>Image successfully added to <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong>!</p>";
                                             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
                                         // update changelog
                                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_img", $new_stock_img_id, "image", null, $_POST['img-file-name']);
@@ -879,8 +988,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 if (isset($_POST['stock_id'])) {
                     if (isset($_FILES['image'])) {
                         image_upload('image', $_POST['stock_id'], $redi_url, '');
+                        $stock_info = getItemStockInfo($_POST['stock_id']);
                         $email_subject = ucwords($current_system_name)." - Stock image uploaded";
-                        $email_body = "<p>Image successfully uploaded for stock with ID: <strong>".$_POST['stock_id']."</strong>!</p>";
+                        $email_body = "<p>Image successfully uploaded for <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong>!</p>";
                             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
                         header("Location: ".$redi_url."&success=fileUploaded");
                         exit();
@@ -1028,7 +1138,11 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         }
                                     }
                                 }
-                                $move_body = "<p>Item ID: $current_stock_id stock moved - $move_quantity moved from shelf ID: $current_shelf_id to $new_shelf_id</p>";
+                                $stock_info = getItemStockInfo($current_stock_id);
+                                $current_location = getItemLocation($current_shelf_id);
+                                $new_location = getItemLocation($new_shelf_id);
+
+                                $move_body = "<p><strong>".$move_quantity."</strong> stock moved from <strong>".$current_location['site_name']."</strong>, <strong>".$current_location['area_name']."</strong>, <strong>".$current_location['shelf_name']."</strong> to <strong>".$new_location['site_name']."</strong>, <strong>".$new_location['area_name']."</strong>, <strong>".$new_location['shelf_name']."</strong> for <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong>.</p>";
                                 send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail($move_body), 4);
                                 header("Location: $redirect_url&success=stockMoved&edited=$current_i&newItemId=$new_item_id"); // Final redirect - for success and stock is moved.
                                 exit();

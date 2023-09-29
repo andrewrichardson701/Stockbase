@@ -1,4 +1,6 @@
 <?php 
+$showFoot = 1; // change this if you want to hide the footer - 1=show, 0=hide.
+
 $WorB_banner_color = getWorB($current_banner_color);
 $complemenent_banner_color = getComplement($current_banner_color);
 $WorB_complement_banner_color = getWorB($complemenent_banner_color);
@@ -83,18 +85,24 @@ $WorB_complement_banner_color = getWorB($complemenent_banner_color);
     }
     
 </script>
-<div class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col text-center">
-                <a href="https://git.ajrich.co.uk/web/inventory" class="link" style="font-size:12px" target="_blank">GitLab</a>
-            </div>
-            <div class="col-6 text-center" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
-                Copyright &copy; <?php echo date("Y"); ?> Andrew Richardson. All rights reserved.
-            </div>
-            <div class="col text-center">
-                <a href="https://todo.ajrich.co.uk/#/board/16" class="link" style="font-size:12px" target="_blank">Road Map</a>
+<?php
+if ($showFoot == 1) {
+    ?>
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <a href="https://git.ajrich.co.uk/web/inventory" class="link" style="font-size:12px" target="_blank">GitLab</a>
+                </div>
+                <div class="col-6 text-center" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
+                    Copyright &copy; <?php echo date("Y"); ?> Andrew Richardson. All rights reserved.
+                </div>
+                <div class="col text-center">
+                    <a href="https://todo.ajrich.co.uk/#/board/16" class="link" style="font-size:12px" target="_blank">Road Map</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <?php
+}
+?>

@@ -20,7 +20,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         exit();
     }
 }
-include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">

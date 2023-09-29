@@ -170,7 +170,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Re-sync') {
                                     } else {
                                         mysqli_stmt_bind_param($stmt_update, "sss", $ldap_info_firstName, $ldap_info_lastName, $ldap_info_upn);
                                         mysqli_stmt_execute($stmt_update);
-                                        $rows_update = $conn->affected_rows;
+                                        $rows_update = $conn->affected_rows();
                                         if ($rows_update == 1) {
                                             // Expected 
                                             // update changelog

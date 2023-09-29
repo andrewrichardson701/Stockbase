@@ -2,7 +2,7 @@
 // SHOWS THE INFORMATION FOR EACH PEICE OF STOCK AND ITS LOCATIONS ETC. 
 // id QUERY STRING IS NEEDED FOR THIS
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">

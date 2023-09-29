@@ -1,7 +1,7 @@
 <?php 
 // INVENTORY VIEW PAGE. SHOWS ALL INVENTORY ONCE LOGGED IN AND SHOWS FILTERS IN THE NAV
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">

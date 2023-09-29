@@ -89,7 +89,7 @@ $WorB_complement_banner_color = getWorB($complemenent_banner_color);
             <div class="col text-center">
                 <a href="https://git.ajrich.co.uk/web/inventory" class="link" style="font-size:12px" target="_blank">GitLab</a>
             </div>
-            <div class="col-6 text-center" style="font-size:12px">
+            <div class="col-6 text-center" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
                 Copyright &copy; <?php echo date("Y"); ?> Andrew Richardson. All rights reserved.
             </div>
             <div class="col text-center">

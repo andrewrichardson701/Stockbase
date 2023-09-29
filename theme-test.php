@@ -2,7 +2,7 @@
 // THEME TEST PAGE
 // EVERYTHING HERE IS HARD CODED IN SO IF THE FORMAT OF THINGS CHANGE, THIS WILL LIKELY NEED TO CHANGE TOO.
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 ?>
 
 <html lang="en">
@@ -161,7 +161,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </table>
                         </form>
                     </td>
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         <p>.theme-table<br>
                             .theme-tableOuter<br>
                             .theme-textColor<br>
@@ -328,7 +328,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                 <tr><td colspan=2><div style="height:20px"></div></td></tr>
                 <tr id="template" class="text-center">
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         <p>
                         .theme-th-selected<br>
                         .theme-table<br>
@@ -412,7 +412,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                 <tr><td colspan=2><div style="height:20px"></div></td></tr>
                 <tr class="text-center">
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         <p>.theme-table<br>
                             .theme-tableOuter<br>
                             .theme-table-blank<br>
@@ -614,7 +614,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 </tr>
                 <tr><td colspan=2><div style="height:20px"></div></td></tr>
                 <tr class="text-center">
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         <p>
                         .theme-divBg<br>
                         .serial-bg<br>
@@ -683,7 +683,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                 <tr><td colspan=2><div style="height:20px"></div></td></tr>
                 <tr class="text-center">
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         <p>
                         .theme-textColor<br>
                         .theme-btn<br>
@@ -793,7 +793,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                 <tr><td colspan=2><div style="height:20px"></div></td></tr>
                 <tr id="template" class="text-center">
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         <p>.theme-profileTextColor</p>
                     </td>
                     <td style="min-width:100px">
@@ -829,7 +829,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                 <tr><td colspan=2><div style="height:20px"></div></td></tr>
                 <tr id="template" class="text-center">
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         <p>
                         .theme-table<br>
                         .theme-tableOuter<br>
@@ -935,7 +935,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
                 <!-- <tr><td colspan=2><div style="height:20px"></div></td></tr>
                 <tr id="template" class="text-center">
-                    <td style="min-width:100px;padding-left:20px;padding-right:20px">
+                    <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
                         template
                     </td>
                     <td style="min-width:100px">

@@ -43,7 +43,7 @@ function addChangelog($user_id, $user_username, $action, $table_name, $record_id
                             </tbody>
                         </table>
                         <br>
-                        <p>Use the below SQL to add this:</p>
+                        <p>Please contact an administrator, or use the below SQL to add this:</p>
                         <p style=\"font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace; \">$sql_command</p>
                         ";
         send_email($current_smtp_to_email, "Administrator", $config_smtp_from_name, $email_subject, createEmail($email_body), 0);

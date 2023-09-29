@@ -1,4 +1,9 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // ALL OF THE STOCK MODIFICATION ACTIONS
 // THESE DO THE ADDING, REMOVAL, MOVING AND EDITING OF STOCK/ITEMS
 
@@ -759,7 +764,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         } else {
                             mysqli_stmt_bind_param($stmt_delete_stock_img, "ss", $stock_id, $img_id);
                             mysqli_stmt_execute($stmt_delete_stock_img);
-                            $rows_delete_stock_img = $conn->affected_rows();
+                            $rows_delete_stock_img = $conn->affected_rows;
                             if ($rows_delete_stock_img == 0) {
                                 // No Rows deleted.
                                 header("Location: ".$redi_url."&error=noImgRemoved");
@@ -826,7 +831,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     mysqli_stmt_execute($stmt);
                                     $new_stock_img_id = mysqli_insert_id($conn);
 
-                                    $modified_rows = $conn->affected_rows();
+                                    $modified_rows = $conn->affected_rows;
                                     if ($modified_rows == 0) {
                                         // No rows changed - error
                                         header("Location: ".$redi_url."&error=stock_imgNoRowsChanged");
@@ -1256,7 +1261,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         } else {
                                             mysqli_stmt_bind_param($stmt_delete_item, "ss", $stock_id, $item_delete_id);
                                             mysqli_stmt_execute($stmt_delete_item);
-                                            $rows_delete_item = $conn->affected_rows();
+                                            $rows_delete_item = $conn->affected_rows;
                                             if ($rows_delete_item > 0) {
                                                 // echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
                                                 // update changelog for delete
@@ -1303,7 +1308,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         } else {
                                             mysqli_stmt_bind_param($stmt_delete_stock_img, "ss", $stock_id, $img_delete_id);
                                             mysqli_stmt_execute($stmt_delete_stock_img);
-                                            $rows_delete_stock_img = $conn->affected_rows();
+                                            $rows_delete_stock_img = $conn->affected_rows;
                                             if ($rows_delete_stock_img > 0) {
                                                 // echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
                                                 // update changelog for delete
@@ -1348,7 +1353,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         } else {
                                             mysqli_stmt_bind_param($stmt_delete_stock_label, "ss", $stock_id, $label_delete_id);
                                             mysqli_stmt_execute($stmt_delete_stock_label);
-                                            $rows_delete_stock_label = $conn->affected_rows();
+                                            $rows_delete_stock_label = $conn->affected_rows;
                                             if ($rows_delete_stock_label > 0) {
                                                 // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
                                                 // update changelog for delete
@@ -1392,7 +1397,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 } else {
                                     mysqli_stmt_bind_param($stmt_delete_stock, "s", $stock_id);
                                     mysqli_stmt_execute($stmt_delete_stock);
-                                    $rows_delete_stock = $conn->affected_rows();
+                                    $rows_delete_stock = $conn->affected_rows;
                                     if ($rows_delete_stock > 0) {
                                         // echo("<br>Stock Deleted for id: $stock_id , Row count: $rows_delete_stock<br>");
                                         // update changelog for delete

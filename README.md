@@ -473,7 +473,7 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
-<summary><h3>0.2.0-beta</h3></summary>
+<summary><h3>0.2.1-beta</h3></summary>
 <h4>Beta release 0.2.1, based on initial feedback.</h4>
 
 - Added more themes. Theme CSS now has more properties which can be adjusted.
@@ -483,6 +483,11 @@ Clone the repo first, and the follow the below steps.
 - Default theme selection now added to Global Settings of admin page
 - Themes are now in their own table in the database and theme selection is now auto generated on pages.
 - Theme test page added ad theme-test.php. This shows all relevant pages which are affected by the theme. The css can be edited, applied, downloaded and uploaded from here for new themes.
+- About page added, accessible from the footer copyright.
+- The http-headers.php is now merged into head.php. These were both being called at the same time so seemed pointless being split.
+- Name and branding changes to StockBase. This might not be the final name.
+- Footer can now be disabled from the $showFoot variable in foot.php - this will likely hidden on final release.
+- Emails now have useful content in them. It used to be just numbers but now it gives relevant info.
 
 </details>
 <details>

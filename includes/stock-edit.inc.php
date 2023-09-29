@@ -93,7 +93,7 @@ if (isset($_GET['stock_id'])) {
                                     </div>
                                     <div class="nav-row" id="sku-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
-                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c" style="width:300px" value="'.$stock['sku'].'" pattern="^[A-Za-z\s\p{P}]+$"></input></div>
+                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c" style="width:300px" value="'.$stock['sku'].'" pattern="^[A-Za-z\s\p{P}-]+$"></input></div>
                                     </div>
                                     <div class="nav-row" id="description-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>

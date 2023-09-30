@@ -229,7 +229,7 @@ function sortTable(n, header) {
         headers[i].classList.remove("sorting-asc", "sorting-desc");
     }
     header.classList.add("sorting-" + dir);
-    }
+}
 </script>
 <script>
     function navPage(url) {

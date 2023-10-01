@@ -473,6 +473,20 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.3.0-beta</h3></summary>
+<h4>Beta release 0.3.0, Adjustments for mobile width and card reader tech.</h4>
+
+- Mobile CSS in progress
+- Some HTML elements are hidden/shown based on width.
+- Admin page is not visible from mobile form factor unless the url is appended.
+- New CSS added for mobile form factor.
+- Nav now loads properl on mobile.
+- Footer now loads differently on mobile.
+- Index page now works on mobile. Less columns show to reduce clutter
+- Cablestock page now works on mobile.
+
+</details>
+<details>
 <summary><h3>0.2.1-beta</h3></summary>
 <h4>Beta release 0.2.1, based on initial feedback.</h4>
 
@@ -488,6 +502,7 @@ Clone the repo first, and the follow the below steps.
 - Name and branding changes to StockBase. This might not be the final name.
 - Footer can now be disabled from the $showFoot variable in foot.php - this will likely hidden on final release.
 - Emails now have useful content in them. It used to be just numbers but now it gives relevant info.
+- Mysql dumps updated.
 
 </details>
 <details>

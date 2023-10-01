@@ -47,6 +47,10 @@ if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
     background-color: <?php echo($current_banner_color);?> ;
     z-index:0;
 }
+.inv-nav-secondary {
+    background-color: <?php echo(adjustBrightness($current_banner_color, -0.2));?> ;
+    z-index:0;
+}
 
 </style>
 
@@ -229,7 +233,7 @@ function sortTable(n, header) {
         headers[i].classList.remove("sorting-asc", "sorting-desc");
     }
     header.classList.add("sorting-" + dir);
-    }
+}
 </script>
 <script>
     function navPage(url) {

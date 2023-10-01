@@ -273,7 +273,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     }
                     $result .= '</td>
                         <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>
-                        <td class="align-middle" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
+                        <td class="align-middle viewport-large-empty" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
                         <td class="align-middle" id="'.$stock_id.'-quantity">'; 
                     if ($stock_quantity_total == 0) {
                         $result .= '<or class="red" title="Out of Stock">0 <i class="fa fa-warning" /></or>';
@@ -282,7 +282,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     }
                     $result .= '</td>';
                     if ($site == 0) { $result .= '<td class="align-middle link gold" id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
-                    $result .= '<td class="align-middle" id="'.$stock_id.'-label">';
+                    $result .= '<td class="align-middle viewport-large-empty" id="'.$stock_id.'-label">';
                     if (is_array($stock_label_names)) {
                         for ($o=0; $o < count($stock_label_names); $o++) {
                             $divider = $o < count($stock_label_names)-1 ? ', ' : '';

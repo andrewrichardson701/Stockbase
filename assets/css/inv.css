@@ -108,6 +108,11 @@
     z-index:0;
     height:60px;
 }
+.inv-nav-secondary {
+    background-color: #72BE2A;
+    z-index:0;
+    height:60px;
+}
 
 .btn-stock {
     padding: 0px 3px 0px 3px;
@@ -391,7 +396,6 @@ select[disabled] {
 
 
 
-
 /* default dark theme styles in case someone deletes the dark theme css file */
 
 body {
@@ -402,7 +406,7 @@ body {
 .theme-dropdown { /* themed dropdown select boxes */
 	background-color:#484848 !important;
 	border-color:black !important;
-	margin:0 !important;
+	margin:0;
 	padding-left:0 !important;
 	color: white !important;
 }
@@ -450,7 +454,7 @@ body {
 
 
 
-.footer {
+.footer, .show{
     background-color: #343a40;
     color: white;
     font-size: 14px;
@@ -512,3 +516,165 @@ body {
 }
 
 /* end of default theme */
+
+
+
+
+
+
+
+
+/* Mobile format stuff */
+
+.nav-links {
+    list-style: none;
+    display: flex;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+}
+
+.burger-menu {
+    font-size: 1.5em;
+    cursor: pointer;
+    display: none;
+}
+
+.viewport-large {
+    display: flex;
+}
+
+.viewport-large-block {
+    display: block;
+}
+
+.viewport-large-empty {
+    display: '';
+}
+
+.viewport-small, .viewport-small-block {
+    display: none;
+}
+
+.index-dropdown {
+    margin-right:30px;
+}
+
+#clear-filters {
+    padding: 6 6 6 6;
+}
+
+#clear-filters i {
+    height:24px;
+}
+.zeroStockFont, .zeroStockFont p, .zeroStockFont i  {
+    font-size:12px !important;
+}
+.profile-table-row {
+    margin-top:20px;
+}
+.profile-table-row2 {
+    margin-top:30px;
+}
+.scale_1-3{
+    scale:1.3;
+}
+
+/* Media query for mobile devices */
+@media only screen and (max-width: 1000px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #333;
+        padding: 15px;
+        left:-50px;
+        min-width: max-content;
+    }
+
+    .nav-links.show {
+        display: flex;
+        z-index: 1000;
+        min-width:max-content;
+        min-height:max-content;
+    }
+
+    .burger-menu {
+        display: block;
+    }
+
+    .viewport-large, .viewport-large-block, .viewport-large-empty {
+        display: none;
+    }
+
+    .viewport-small {
+        display: flex;
+    }
+
+    .viewport-small-block {
+        display: block;
+    }
+
+    .index-dropdown {
+        margin-right: 15px;
+    }
+
+    table {
+        font-size: 8px;
+    }
+    table td, table th {
+        padding:5px !important;
+    }
+    table span, #inv-page-numbers, label, select, option, input, .btn, p {
+        font-size: 10px !important;
+    }
+    #clear-filters {
+        padding: 3 5 4 3
+    }
+    #clear-filters i {
+        height:20px;
+        width:15px;
+    }
+    .zeroStockFont, .zeroStockFont p, .zeroStockFont i  {
+        font-size:8.5px !important;
+    }
+    .btn-cableStock {
+        padding: 3 6 3 6 !important;
+    }
+    .profile-table-row {
+        margin-top:5px;
+    }
+    .profile-table-row2 {
+        margin-top:10px;
+    }
+    
+
+
+    .inv-img-main {
+        max-width: 50px;
+        max-height: 40px;
+    }
+    .inv-img-50h {
+        max-width: 40px;
+        max-height: 40px;
+    }
+    .row-dropdown {
+        font-size: 8px;
+        width:max-content !important;
+        height:max-content !important;
+    }
+}
+
+/* Mobile format stuff end */
+
+
+
+
+
+
+

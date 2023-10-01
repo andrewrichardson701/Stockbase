@@ -198,13 +198,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
 
             echo('
-                <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px;padding-top:20px">
+                <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:10px; margin-top:20px">
                     <div class="nav-row">
                         <form action="./cablestock.php" method="get" class="nav-row" style="max-width:max-content">
                             <input id="query-site" type="hidden" name="site" value="'.$site.'" />
                             <input type="hidden" name="cable" value="'.$cableType.'" />
                             <input type="hidden" name="oos" value="'.$showOOS.'" />
-                            <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
+
+                            <span id="search-input-site-span" style="margin-bottom:10px;" class="index-dropdown">
                                 <label for="search-input-site">Site</label><br>
                                 <select id="site-dropdown" name="site" class="form-control nav-v-b cw theme-dropdown"  onchange="siteChange(\'site-dropdown\')">
                                 <option value="0"'); if ($site == 0) { echo('selected'); } echo('>All</option>
@@ -222,7 +223,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             ');  
                             
                             echo('
-                            <span id="search-input-name-span" style="margin-right: 10px;margin-left:10px">
+                            <span id="search-input-name-span" style="margin-right:0.5em;margin-bottom:10px;">
                                 <label for="search-input-name">Name</label><br>
                                 <input id="search-input-name" type="text" name="name" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
                             </span>
@@ -230,12 +231,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </form>');
 
                         echo('
-                        <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
+                        <div id="clear-div" class="nav-div viewport-large-block" style="margin-bottom:10px;margin-left:5px;margin-right:0">
                             <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="navPage(\'./cablestock.php\')">
                                 <i class="fa fa-ban fa-rotate-90" style="height:24px;padding-top:4px"></i>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">');
+                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-bottom:10px;margin-left:15px;margin-right:0">');
                         if ($showOOS == 0) {
                             echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
                         } else {
@@ -247,7 +248,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <p style="margin:0;padding:0;font-size:12">0 Stock</p>
                             </button>
                         </div>
-                        <div id="add-cables-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                        <div id="add-cables-div" class="nav-div viewport-large-block" style="margin-bottom:10px;margin-left:15px;margin-right:0">
                             <button id="add-cables" class="btn btn-success nav-v-b" style="opacity:80%;color:white;padding:6 6 6 6" onclick="toggleAddDiv()" type="button">
                                 <i class="fa fa-plus" style="height:24px;padding-top:4px"></i> Add Cables
                             </button>
@@ -255,15 +256,53 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 Hide Add Cables
                             </button>
                         </div>
-                        <div id="stockBtn-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                        <div id="stockBtn-div" class="nav-div viewport-large-block" style="margin-bottom:10px;margin-left:15px;margin-right:0">
                             <button id="stockBtn" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'./\')" type="button">
                                 Item Stock
                             </button>
                         </div>
                     </div>
-                    <p style="padding-top:20px">Stock for any fixed cables (cables which always need to be in stock and have known locations).</p>
                 </div>
-            
+                <!-- mobile layout section -->
+                <div class="container viewport-small" style="margin-top:-10px;max-width:max-content">
+                    <div class="nav-row">
+                        <div id="clear-div" class="nav-div" style="margin-left:0;margin-right:0;margin-bottom:10px;">
+                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'/\')">
+                                <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
+                            </button>
+                        </div>
+                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">');
+                        if ($showOOS == 0) {
+                            echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 1 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
+                        } else {
+                            echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 1 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
+                        }
+                                echo('
+                                <span class="zeroStockFont">
+                                    <p style="margin:0;padding:0">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
+                                    <p style="margin:0;padding:0">0 Stock</p>
+                            </button>
+                        </div>
+                        <div id="add-cables-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
+                            <button id="add-cables-small" class="btn btn-success nav-v-b" style="opacity:80%;color:white;padding:6 6 6 6" onclick="toggleAddDiv()" type="button">
+                                <i class="fa fa-plus" style="padding-top:0px"></i> Add Cables
+                            </button>
+                            <button id="add-cables-hide-small" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="toggleAddDiv()" type="button" hidden>
+                                Hide Add Cables
+                            </button>
+                        </div>
+                        <div id="stockBtn-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
+                            <button id="stockBtn" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'./\')" type="button">
+                                Item Stock
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container text-center"> 
+                    <p>Stock for any fixed cables (cables that always need to be in stock).</p>
+                </div>
+
             <!-- Add Cables form section -->
             <div class="container" id="add-cables-section" style="margin-bottom:10px" hidden>
                 <div class="well-nopad theme-divBg text-center">
@@ -315,7 +354,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                             </tbody>
                             <thead>
-                            <thead>
+
+                            <!-- Large scale -->
+                            <thead class="viewport-large-empty">
                                 <tr>
                                     <th style="padding-left:5px">Name</th>
                                     <th style="padding-left:5px">Description</th>
@@ -326,7 +367,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <th style="padding-left:5px"></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="viewport-large-empty">
                                 <tr>
                                     <td>
                                         <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" required/>
@@ -401,6 +442,101 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     </td>
                                 </tr>
                             </tbody>
+                            <!-- Large scale end -->
+
+                            <!-- Small scale -->
+                            <thead class="viewport-small-empty">
+                                <tr>
+                                    <th style="padding-left:5px">Name</th>
+                                    <th style="padding-left:5px">Description</th>
+                                    <th style="padding-left:5px">Type</th>
+                                </tr>
+                            </thead>
+                            <tbody class="viewport-small-empty">
+                                <tr>
+                                    <td>
+                                        <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" required/>
+                                        <datalist id="names">');
+                                            $sql_stock_name = "SELECT * from stock WHERE is_cable=1 ORDER BY name";
+                                            $stmt_stock_name = mysqli_stmt_init($conn);
+                                            if (!mysqli_stmt_prepare($stmt_stock_name, $sql_stock_name)) {
+                                                echo("ERROR getting entries");
+                                            } else {
+                                                mysqli_stmt_execute($stmt_stock_name);
+                                                $result_stock_name = mysqli_stmt_get_result($stmt_stock_name);
+                                                $rowCount_stock_name = $result_stock_name->num_rows;
+                                                if ($rowCount_stock_name < 1) {
+                                                } else {
+                                                    while( $row_stock_name = $result_stock_name->fetch_assoc() ) {
+                                                        echo("<option>".$row_stock_name['name']."</option>");
+                                                    }
+                                                }
+                                            }
+                                        echo('
+                                        </datalist>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="text" name="stock-description" placeholder="Description" required/>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" name="cable-type" required>');
+
+                                            $sql_types = "SELECT * from cable_types
+                                                            ORDER BY parent";
+                                            $stmt_types = mysqli_stmt_init($conn);
+                                            if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
+                                                echo("ERROR getting entries");
+                                            } else {
+                                                mysqli_stmt_execute($stmt_types);
+                                                $result_types = mysqli_stmt_get_result($stmt_types);
+                                                $rowCount_types = $result_types->num_rows;
+                                                if ($rowCount_types < 1) {
+                                                    echo ("<option selected disabled>No Types Found</option> ");
+                                                } else {
+                                                    echo ("<option selected disabled>Select Type</option>");
+                                                    while( $row_types = $result_types->fetch_assoc() ) {
+                                                        echo("<option value='".$row_types['id']."'>".$row_types['name']."</option>");
+                                                    }
+                                                }
+                                            }
+
+                                        echo('
+                                        </select>
+                                    </td>
+                                    <td class="text-center"><label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a></td>
+                                </tr>
+
+                            </tbody>
+                            <thead class="viewport-small-empty">
+                                <tr>
+                                    <th style="padding-left:5px">Min. Stock</th>
+                                    <th style="padding-left:5px">Quantity</th>
+                                    <th style="padding-left:5px">Cost</th>
+                                    <th style="padding-left:5px"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="viewport-small-empty">
+                                <tr>
+                                    <td>
+                                        <input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:90px" value="10" required/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:90px" value="1" required/>
+                                    </td>
+                                    <td>
+                                        <input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:90px" value="0" required/>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan=100% class="text-center">
+                                        <input type="file" style="width: 250px;margin-top:5px" id="stock-img" name="stock-img">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <!-- Small scale end -->
                         </table>                      
                         
                     </form>
@@ -452,7 +588,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <th id="image"></th>
                                             <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(3, this)">Name</th>
                                             <th id="type-id" hidden>Type ID</th>
-                                            <th class="clickable sorting" id="type" onclick="sortTable(5, this)">Type</th>
+                                            <th class="clickable sorting viewport-large-empty" id="type" onclick="sortTable(5, this)">Type</th>
                                             <th class="clickable sorting" id="site-name" onclick="sortTable(6, this)">Site</th>
                                             <th class="clickable sorting" id="quantity" onclick="sortTable(7, this)">Quantity</th>
                                             <th id="min-stock" style="color:#8f8f8f">Min. stock</th>
@@ -503,7 +639,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 echo('</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-name"><a href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
+                                                <td class="align-middle viewport-large-empty" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
                                                 <td class="align-middle clickable link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-quantity">'); 
                                                 if ($stock_quantity_total == 0) {
@@ -516,8 +652,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 echo('</td>');
                                             echo('
                                                 <td class="align-middle" id="'.$cable_item_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" class="btn btn-success cw nav-v-b" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" class="btn btn-danger cw nav-v-b" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
+                                                <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" class="btn btn-success cw nav-v-b btn-cableStock" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
+                                                <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" class="btn btn-danger cw nav-v-b btn-cableStock" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
                                             </form>
                                         </tr>
                                     ');
@@ -611,15 +747,21 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             var div = document.getElementById('add-cables-section');
             var addButton = document.getElementById('add-cables');
             var addButtonHide = document.getElementById('add-cables-hide');
+            var addButtonSmall = document.getElementById('add-cables-small');
+            var addButtonHideSmall = document.getElementById('add-cables-hide-small');
 
             if (div.hidden === true) {
                 div.hidden = false;
                 addButton.hidden = true;
                 addButtonHide.hidden = false;
+                addButtonSmall.hidden = true;
+                addButtonHideSmall.hidden = false;
             } else {
                 div.hidden = true;
                 addButton.hidden = false;
                 addButtonHide.hidden = true;
+                addButtonSmall.hidden = false;
+                addButtonHideSmall.hidden = true;
             }
 
         }

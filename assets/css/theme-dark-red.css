@@ -9,7 +9,7 @@ body {
 .theme-dropdown { 
 	background-color:#540b0b !important;
 	border-color:black !important;
-	margin:0 !important;
+	margin:0;
 	padding-left:0 !important;
 	color: white !important;
 }
@@ -65,7 +65,7 @@ body {
     background-color: #832020 !important;
 }
 
-.footer {
+.footer, .show {
     background-color: #540b0b;
     color: white;
 }

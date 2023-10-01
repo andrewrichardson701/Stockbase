@@ -18,7 +18,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <?php // dependency PHP
     // $show_inventory = 1; // for nav.php to show the site and area on the banner - no longer used.
     ?>
-    <p class="nav-head" style="color:<?php echo($current_banner_text_color); ?>"><?php echo($current_system_name); ?></p>
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
@@ -192,14 +191,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         } else {
             // all is as expected. we have sites and areas
             echo('
-                <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:20px; padding-top:20px">
+                <div class="container" id="search-fields" style="max-width:max-content;margin-bottom:10px; margin-top:20px">
                     <div class="nav-row">
                         <form action="./" method="get" class="nav-row" style="max-width:max-content">
                             <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
                             <input id="query-area" type="hidden" name="area" value="'.$area.'" />
-                            <input id="query-oos" type="hidden" name="oos" value="'.$showOOS.'" />');
-                            echo ('
-                            <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
+                            <input id="query-oos" type="hidden" name="oos" value="'.$showOOS.'" /> 
+
+                            <span id="search-input-site-span" style="margin-bottom:10px;" class="index-dropdown">
                                 <label for="search-input-site">Site</label><br>
                                 <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
                                 <option value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
@@ -216,7 +215,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </span>
                             ');  
                             echo ('
-                            <span id="search-input-area-span" style="margin-right: 10px; padding-left:12px">
+                            <span id="search-input-area-span" style="margin-bottom:10px;" class="index-dropdown">
                                 <label for="search-input-manufacturer">Area</label><br>
                                     <select id="area-dropdown" name="area" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
                                     <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
@@ -234,19 +233,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </span>
                             ');
                             echo('
-                            <span id="search-input-name-span" style="margin-right: 10px;margin-left:10px">
+                            <span id="search-input-name-span" style="margin-right:0.5em;margin-bottom:10px;">
                                 <label for="search-input-name">Name</label><br>
                                 <input id="search-input-name" type="text" name="name" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Name" oninput="getInventory(1)" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
                             </span>
-                            <span id="search-input-sku-span" style="margin-right: 10px">
+                            <span class="viewport-large-block" id="search-input-sku-span" style="margin-right:0.5em;margin-bottom:10px;">
                                 <label for="search-input-sku">SKU</label><br>
                                 <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:160px;display:inline-block" placeholder="Search by SKU" oninput="getInventory(1)" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
                             </span>
-                            <span id="search-input-shelf-span" style="margin-right: 10px">
+                            <span class="viewport-large-block" id="search-input-shelf-span" style="margin-right:0.5em;margin-bottom:10px;">
                                 <label for="search-input-shelf">Shelf</label><br>
                                 <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Shelf" oninput="getInventory(1)" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
                             </span>
-                            <span id="search-input-manufacturer-span" style="margin-right: 10px">
+                            <span class="viewport-large-block" id="search-input-manufacturer-span" style="margin-right:0.5em;margin-bottom:10px;">
                                 <label for="search-input-manufacturer">Manufacturer</label><br>
                                 
                                 <select id="search-input-manufacturer" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Manufacturer" onchange="getInventory(1)">
@@ -266,7 +265,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('
                                 </select>
                             </span>
-                            <span id="search-input-label-span" style="margin-right: 10px">
+                            <span class="viewport-large-block" id="search-input-label-span" style="margin-right:1em;margin-bottom:10px;">
                                 <label for="search-input-label">Label</label><br>
                                 
                                 <select id="search-input-label" name="label" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Label" onchange="getInventory(1)">
@@ -290,34 +289,57 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </form>');
 
                         echo('
-                        <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
-                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black;padding:6 6 6 6" onclick="navPage(\'/\')">
-                                <i class="fa fa-ban fa-rotate-90" style="height:24px;padding-top:4px"></i>
+                        <div id="clear-div" class="nav-div viewport-large-block" style="margin-left:0;margin-right:0;margin-bottom:10px;">
+                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'/\')">
+                                <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">');
+                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">');
                         if ($showOOS == 0) {
                             echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
                         } else {
                             echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
                         }
                                 echo('
-                                <span>
-                                    <p style="margin:0;padding:0;font-size:12">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
-                                    <p style="margin:0;padding:0;font-size:12">0 Stock</p>
+                                <span class="zeroStockFont">
+                                    <p style="margin:0;padding:0">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
+                                    <p style="margin:0;padding:0">0 Stock</p>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
                             <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
                                 Fixed Cables
                             </button>
                         </div>
-                        ');
-                        
-                        echo('
                     </div>
                 </div>
-
+                <!-- mobile layout section -->
+                <div class="container viewport-small" style="margin-top:-10px;max-width:max-content;">
+                    <div class="nav-row">
+                        <div id="clear-div" class="nav-div" style="margin-left:0;margin-right:0;margin-bottom:10px;">
+                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'/\')">
+                                <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
+                            </button>
+                        </div>
+                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">');
+                        if ($showOOS == 0) {
+                            echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 1 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
+                        } else {
+                            echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 1 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
+                        }
+                                echo('
+                                <span class="zeroStockFont">
+                                    <p style="margin:0;padding:0">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
+                                    <p style="margin:0;padding:0">0 Stock</p>
+                            </button>
+                        </div>
+                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
+                            <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
+                                Fixed Cables
+                            </button>
+                        </div>
+                    </div>
+                </div>
             ');
                 
             echo('
@@ -331,16 +353,16 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
             <!-- Table -->
             <div class="container">
-                <table class="table table-dark theme-table centertable" id="inventoryTable" style="margin-bottom:0px">
+                <table class="table table-dark theme-table centertable" id="inventoryTable" style="margin-bottom:0px;">
                     <thead style="text-align: center; white-space: nowrap;">
                         <tr class="theme-tableOuter">
                             <th id="id" hidden>id</th>
                             <th id="img"></th>
                             <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
-                            <th class="clickable sorting" id="sku" onclick="sortTable(3, this)">SKU</th>
+                            <th class="clickable sorting viewport-large-empty" id="sku" onclick="sortTable(3, this)">SKU</th>
                             <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>
                             <th class="clickable sorting" id="site" onclick="sortTable(5, this)" '); if ($site == 0) { echo('hidden'); } echo('>Site</th>
-                            <th id="lables">Labels</th>
+                            <th id="labels" class="viewport-large-empty">Labels</th>
                         <th id="location">Location(s)</th>
                         </tr>
                     </thead>
@@ -370,7 +392,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     Rows: 
                                 </td>
                                 <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
-                                    <select id="tableRowCount" class="form-control" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter(\'\', \'rows\', this.value))">
+                                    <select id="tableRowCount" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter(\'\', \'rows\', this.value))">
                                         <option id="rows-10"  value="10"');  if($rowSelectValue == 10)  { echo('selected'); } echo('>10</option>
                                         <option id="rows-50"  value="50"');  if($rowSelectValue == 50)  { echo('selected'); } echo('>50</option>
                                         <option id="rows-100" value="100"'); if($rowSelectValue == 100) { echo('selected'); } echo('>100</option>
@@ -428,7 +450,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     var count = inventory[-1]['rows']-1;
                     var siteNeeded = inventory[-1]['siteNeeded'];
                     var siteHeading = document.getElementById('site');
-                    console.log(siteNeeded);
+                    // console.log(siteNeeded);
                     if (siteNeeded == 0 || siteNeeded == '0') {
                         siteHeading.hidden = true;
                     } else {

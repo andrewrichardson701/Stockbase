@@ -39,7 +39,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
     <div class="container" style="margin-top:75px">
         <div class="row">
-            <div class="col-md-6" style="margin-left:25px">
+            <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
                 <p>Please input your credentials to login.</p>
                 <p class="red">Demo LDAP username: <or class="blue">inventory</or> password: <or class="blue">DemoPass1!</or></p>

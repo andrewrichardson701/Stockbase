@@ -91,7 +91,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <td>
                                     </td>
                                 </tr>
-                                <tr class="nav-row" style="margin-top:20px" id="firstname">
+                                <tr class="nav-row profile-table-row" id="firstname">
                                     <td id="firstname_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
                                     </td>
@@ -99,7 +99,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_first_name.'</p>
                                     </td>
                                 </tr>
-                                <tr class="nav-row" style="margin-top:20px" id="lastname">
+                                <tr class="nav-row profile-table-row" id="lastname">
                                     <td id="lastname_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
                                     </td>
@@ -107,7 +107,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_last_name.'</p>
                                     </td>
                                 </tr>
-                                <tr class="nav-row" style="margin-top:20px" id="email">
+                                <tr class="nav-row profile-table-row" id="email">
                                     <td id="email_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Email:</p>
                                     </td>
@@ -115,7 +115,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_email.'</p>
                                     </td>
                                 </tr>
-                                <tr class="nav-row" style="margin-top:20px" id="role">
+                                <tr class="nav-row profile-table-row" id="role">
                                     <td id="role_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Role:</p>
                                     </td>
@@ -123,7 +123,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_role.'</p>
                                     </td>
                                 </tr>
-                                <tr class="nav-row" style="margin-top:20px" id="role">
+                                <tr class="nav-row profile-table-row" id="role">
                                     <td id="auth_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Auth:</p>
                                     </td>
@@ -131,7 +131,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                     </td>
                                 </tr>
-                                <tr class="nav-row" style="margin-top:30px">
+                                <tr class="nav-row profile-table-row2">
                                     <td id="theme_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
                                     </td>
@@ -161,12 +161,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         </select>
                                     </td>
                                     <td id="theme_header" style="width:200px;padding-left:20px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">
+                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle viewport-large-block">
                                             <a class="link align-middle" href="theme-test.php">Theme testing</a>
                                         </p>
                                     </td>
                                 </tr>
-                                <tr class="nav-row" style="margin-top:30px" id="resync">
+                                <tr class="nav-row  profile-table-row2" id="resync">
                                     <td id="resync_button_td" style="width:200px">
                                         <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
                                             <input type="password" class="form-control" name="password" id="ldap_password" placeholder="Password" />
@@ -192,7 +192,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <td>
                                 </td>
                             </tr>
-                            <tr class="nav-row" style="margin-top:20px" id="firstname">
+                            <tr class="nav-row profile-table-row" id="firstname">
                                 <td id="firstname_header" style="width:200px">
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
                                 </td>
@@ -200,7 +200,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <input type="text" class="nav-v-c align-middle form-control" name="first-name" value="'.$profile_first_name.'" placeholder="First Name" required />
                                 </td>
                             </tr>
-                            <tr class="nav-row" style="margin-top:20px" id="lastname">
+                            <tr class="nav-row profile-table-row" id="lastname">
                                 <td id="lastname_header" style="width:200px">
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
                                 </td>
@@ -208,7 +208,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <input type="text" class="nav-v-c align-middle form-control" name="last-name" value="'.$profile_last_name.'" placeholder="Last Name" required />
                                 </td>
                             </tr>
-                            <tr class="nav-row" style="margin-top:20px" id="email">
+                            <tr class="nav-row profile-table-row" id="email">
                                 <td id="email_header" style="width:200px">
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Email:</p>
                                 </td>
@@ -216,7 +216,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <input type="text" class="nav-v-c align-middle form-control" name="email" value="'.$profile_email.'" placeholder="email@domain.com" required />
                                 </td>
                             </tr>
-                            <tr class="nav-row" style="margin-top:20px" id="role">
+                            <tr class="nav-row profile-table-row" id="role">
                                 <td id="role_header" style="width:200px">
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Role:</p>
                                 </td>
@@ -224,7 +224,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_role.'</p>
                                 </td>
                             </tr>
-                            <tr class="nav-row" style="margin-top:20px" id="role">
+                            <tr class="nav-row profile-table-row" id="auth">
                                 <td id="auth_header" style="width:200px">
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Auth:</p>
                                 </td>
@@ -232,7 +232,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                 </td>
                             </tr>
-                            <tr class="nav-row" style="margin-top:30px">
+                            <tr class="nav-row profile-table-row2">
                                 <td id="theme_header" style="width:200px">
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
                                 </td>
@@ -262,7 +262,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     </select>
                                 </td>
                             </tr>
-                            <tr class="nav-row" style="margin-top:30px">
+                            <tr class="nav-row profile-table-row2">
                                 <td id="profile-submit" style="width:200px">
                                     <button class="btn btn-success align-bottom" type="submit" name="profile-submit" style="margin-left:0px" value="1">Save</button>
                                 </td>

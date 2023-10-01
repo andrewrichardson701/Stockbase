@@ -96,13 +96,16 @@ if ($showFoot == 1) {
     <div class="footer">
         <div class="container">
             <div class="row">
-                <div class="col text-center">
+                <div class="col text-center viewport-large-empty">
                     <a href="https://git.ajrich.co.uk/web/inventory" class="link" style="font-size:12px" target="_blank">GitLab</a>
                 </div>
-                <div class="col-6 text-center" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
+                <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
                     Copyright &copy; <?php echo date("Y"); ?> StockBase. All rights reserved.
                 </div>
-                <div class="col text-center">
+                <div class="col text-center viewport-small-block" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
+                    &copy; <?php echo date("Y"); ?> StockBase.
+                </div>
+                <div class="col text-center viewport-large-empty">
                     <a href="https://todo.ajrich.co.uk/#/board/16" class="link" style="font-size:12px" target="_blank">Road Map</a>
                 </div>
             </div>

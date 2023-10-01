@@ -231,7 +231,7 @@ function getCurrentURL() {
 }
 
 function addQuantity($stock_id, $cable_item_id) {
-    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email;
+    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email, $current_base_url;
     
     $type = "add";
     $reason = "Added via Fixed Cable page";
@@ -263,7 +263,7 @@ function addQuantity($stock_id, $cable_item_id) {
             $base_url = getCurrentURL();
             
             $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Added";
-            $email_body = "<p>Fixed cable stock added, for <strong><a href='//$base_url?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+            $email_body = "<p>Fixed cable stock added, for <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
             // update changelog
             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Quantity", "cable_item", $cable_item_id, "quantity", $quantity, $new_quantity);
@@ -278,7 +278,7 @@ function addQuantity($stock_id, $cable_item_id) {
 }
 
 function removeQuantity($stock_id, $cable_item_id) {
-    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email;
+    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email, $current_base_url, $current_base_url;
 
     $type = "remove";
     $reason = "Removed via Fixed Cable page";
@@ -311,7 +311,7 @@ function removeQuantity($stock_id, $cable_item_id) {
                 $base_url = getCurrentURL();
             
                 $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
-                $email_body = "<p>Fixed cable stock removed, from <strong><a href='//$base_url?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 8);
                 // update changelog
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove Quantity", "cable_item", $cable_item_id, "quantity", $quantity, $new_quantity);
@@ -319,7 +319,7 @@ function removeQuantity($stock_id, $cable_item_id) {
                 // Check if the quantity is below minimum
                 if ($new_quantity <= $stock_info['min_stock']) {
                     $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Below Minimum Stock Count at ".$item_location['site_name'].". Please Order More!";
-                    $email_body = "<p>Fixed cable stock below minimum stock count, for <strong><a href='//$base_url?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p><p style='color:red'>Please raise a PO to order more!</p>";
+                    $email_body = "<p>Fixed cable stock below minimum stock count, for <strong><a href='\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p><p style='color:red'>Please raise a PO to order more!</p>";
             
                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                 }

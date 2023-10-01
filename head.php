@@ -1,7 +1,14 @@
-<?php 
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // PAGE HEADER SETUP - SETS UP CSS, BOOTSTRAP AND OTHER STYLES AND SCRIPTS
+$versionNumber = 'v0.2.1-beta';
 
 include './includes/get-config.inc.php'; // get config options
+
 ?>
 
 <meta charset="utf-8">
@@ -16,14 +23,14 @@ include './includes/get-config.inc.php'; // get config options
 
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" id="google-font">
 <link rel="stylesheet" href="./assets/css/main.css">
 <link rel="stylesheet" href="./assets/css/inv.css">
 <?php
-if (isset($loggedin_theme)) {
-    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/theme-'.$loggedin_theme.'.css">');
-} else {
-    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/theme-dark.css">');
+if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
+    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/'.$loggedin_theme_file_name.'">');
+} elseif (isset($current_default_theme_file_name) && $current_default_theme_file_name !== ''){
+    echo('<link id="theme-css" rel="stylesheet" href="./assets/css/'.$current_default_theme_file_name.'">');
 }
 ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -42,6 +49,32 @@ if (isset($loggedin_theme)) {
 }
 
 </style>
+
+<?
+// HTTP Headers, from httpe-headers.php, now truncated to here.
+
+// HEADERS FOR PROXY AND REQUESTED URL INFO
+$requestedUrl = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? (isset(explode(', ', $_SERVER['HTTP_X_FORWARDED_HOST'])[1]) ? explode(', ', $_SERVER['HTTP_X_FORWARDED_HOST'])[1] : '') : '';
+$requestedHttp = isset($_SERVER['HTTP_X_FORWARDED_PROTO']) ? $_SERVER['HTTP_X_FORWARDED_PROTO'] : ''; // IP of host server
+$requestedPort = isset($_SERVER['HTTP_X_FORWARDED_PORT']) ? $_SERVER['HTTP_X_FORWARDED_PORT'] : '';
+$requestedHost = isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : '';
+$requestedServer = isset($_SERVER['HTTP_X_FORWARDED_SERVER']) ? $_SERVER['HTTP_X_FORWARDED_SERVER'] : '';
+$remoteIP = isset($_SERVER['HTTP_X_REAL_IP']) ? $_SERVER['HTTP_X_REAL_IP'] : ''; // IP of connector
+
+$requestedUri = isset($_SERVER['HTTP_X_REQUEST_URI']) ? $_SERVER['HTTP_X_REQUEST_URI'] : '';
+
+$serverendhttp = isset($_SERVER['HTTPS']) ? 'https' : 'http';
+if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] !== '') {
+    $queryString = $_SERVER['QUERY_STRING'];
+    $queryStringUrl = '?'.$queryString;
+} else {
+    $queryString = '';
+    $queryStringUrl = '';
+}
+
+$fullRequestedURL = $requestedHttp.'://'.$requestedUrl.$requestedUri.$queryStringUrl;
+$platform = $_SERVER["HTTP_USER_AGENT"];
+?>
 
 <script> // color-picker box json - for Admin.php
         $("input.color").each(function() {

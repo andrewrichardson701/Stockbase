@@ -1,8 +1,13 @@
-<?php 
+<?php   
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // SHOWS THE INFORMATION FOR EACH PEICE OF STOCK AND ITS LOCATIONS ETC. 
 // id QUERY STRING IS NEEDED FOR THIS
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">
@@ -713,7 +718,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 ');
                                         } else {
                                             echo('<td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
-                                            <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] != $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
+                                            <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] < $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
                                         }
                                         echo('
                                                 

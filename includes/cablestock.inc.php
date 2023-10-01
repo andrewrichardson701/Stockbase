@@ -1,4 +1,9 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // SAVING INFO FOR THE CABLESTOCK PAGE. THIS IS FOR REMOVING AND ADDING STOCK.
 
 // print_r($_POST);
@@ -114,10 +119,68 @@ function getCableItemRow($cable_item_id) {
     }
 }
 
-function addQuantity($stock_id, $cable_item_id) {
-    global $redirect_url, $queryChar, $_SESSION;
+function getCableStockInfo($stock_id) {
+    global $redirect_url, $queryChar;
 
-    include 'smtp.inc.php';
+    include 'dbh.inc.php';
+
+    $sql = "SELECT * FROM stock WHERE id=$stock_id";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location: ../".$redirect_url.$queryChar."stockID=$stock_id&error=stockTableSQLConnection");
+        exit();
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            header("Location: ../".$redirect_url.$queryChar."stockID=$stock_id&error=noRowsFound");
+            exit();
+        } elseif ($rowCount > 1) {
+            header("Location: ../".$redirect_url.$queryChar."stockID=$stock_id&error=tooManyRowsFound");
+            exit();
+        } else {
+            $row = $result->fetch_assoc();
+            return $row;
+        }
+    }
+}
+
+function getItemLocation($shelf_id) {
+    global $redirect_url, $queryChar;
+
+    include 'dbh.inc.php';
+
+    $sql = "SELECT site.id AS site_id, site.name AS site_name, 
+                    area.id AS area_id, area.name AS area_name,
+                    shelf.id AS shelf_id, shelf.name AS shelf_name
+            FROM site 
+            INNER JOIN area ON area.site_id=site.id
+            INNER JOIN shelf ON shelf.area_id=area.id
+            WHERE shelf.id=$shelf_id";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location: ../".$redirect_url.$queryChar."shelfID=$shelf_id&error=siteTableSQLConnection");
+        exit();
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            header("Location: ../".$redirect_url.$queryChar."shelfID=$shelf_id&error=noRowsFound");
+            exit();
+        } elseif ($rowCount > 1) {
+            header("Location: ../".$redirect_url.$queryChar."shelfID=$shelf_id&error=tooManyRowsFound");
+            exit();
+        } else {
+            $row = $result->fetch_assoc();
+            return $row;
+        }
+    }
+}
+
+function addQuantity($stock_id, $cable_item_id) {
+    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email;
 
     $type = "add";
     $reason = "Added via Fixed Cable page";
@@ -125,11 +188,11 @@ function addQuantity($stock_id, $cable_item_id) {
     $time = date('H:i:s'); // current time in HH:MM:SS format
     $username = $_SESSION['username'];
 
-    $row = getCableItemRow($cable_item_id);
-    $quantity = $row['quantity'];
+    $item = getCableItemRow($cable_item_id);
+    $quantity = $item['quantity'];
     $new_quantity = $quantity +1;
 
-    if ($cable_item_id == $row['id']) {
+    if ($cable_item_id == $item['id']) {
         include 'dbh.inc.php';
 
         $sql = "UPDATE cable_item SET quantity=?
@@ -144,8 +207,11 @@ function addQuantity($stock_id, $cable_item_id) {
             
             updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username);
 
+            $stock_info = getCableStockInfo($item['stock_id']);
+            $item_location = getItemLocation($item['shelf_id']);
+
             $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Added";
-            $email_body = "<p>Fixed cable stock added, for item ID: <strong>$cable_item_id</strong>!</p>";
+            $email_body = "<p>Fixed cable stock added, for <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
             // update changelog
             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Quantity", "cable_item", $cable_item_id, "quantity", $quantity, $new_quantity);
@@ -160,9 +226,7 @@ function addQuantity($stock_id, $cable_item_id) {
 }
 
 function removeQuantity($stock_id, $cable_item_id) {
-    global $redirect_url, $queryChar, $_SESSION;
-
-    include 'smtp.inc.php';
+    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email;
 
     $type = "remove";
     $reason = "Removed via Fixed Cable page";
@@ -170,12 +234,12 @@ function removeQuantity($stock_id, $cable_item_id) {
     $time = date('H:i:s'); // current time in HH:MM:SS format
     $username = $_SESSION['username'];
 
-    $row = getCableItemRow($cable_item_id);
-    $quantity = $row['quantity'];
+    $item = getCableItemRow($cable_item_id);
+    $quantity = $item['quantity'];
     if ($quantity > 0) {
         $new_quantity = $quantity -1;
 
-        if ($cable_item_id == $row['id']) { 
+        if ($cable_item_id == $item['id']) { 
             include 'dbh.inc.php';
 
             $sql = "UPDATE cable_item SET quantity=?
@@ -190,40 +254,21 @@ function removeQuantity($stock_id, $cable_item_id) {
                 
                 updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username);
 
+                $stock_info = getCableStockInfo($item['stock_id']);
+                $item_location = getItemLocation($item['shelf_id']);
+
                 $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
-                $email_body = "<p>Fixed cable stock removed, for item ID: <strong>$cable_item_id</strong>!</p>";
+                $email_body = "<p>Fixed cable stock removed, from <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 8);
                 // update changelog
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove Quantity", "cable_item", $cable_item_id, "quantity", $quantity, $new_quantity);
 
-
                 // Check if the quantity is below minimum
-                $sql = "SELECT * FROM stock WHERE id=$stock_id";
-                $stmt = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    header("Location: ../".$redirect_url.$queryChar."stockId=$stock_id&error=stockTableSQLConnection");
-                    exit();
-                } else {
-                    mysqli_stmt_execute($stmt);
-                    $result = mysqli_stmt_get_result($stmt);
-                    $rowCount = $result->num_rows;
-                    if ($rowCount < 1) {
-                        header("Location: ../".$redirect_url.$queryChar."stockId=$stock_id&error=noRowsFound");
-                        exit();
-                    } elseif ($rowCount > 1) {
-                        header("Location: ../".$redirect_url.$queryChar."stockId=$stock_id&error=tooManyRowsFound");
-                        exit();
-                    } else {
-                        $row = $result->fetch_assoc();
-                        $min_quantity = $row['min_stock'];
-
-                        if ($quantity <= $min_quantity) {
-                            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Below Minimum Stock Count. Please Order More!";
-                            $email_body = "<p>Fixed cable stock below minimum stock count, for item ID: <strong>$cable_item_id</strong>. Please order more!</p>";
-                   
-                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                        }
-                    }
+                if ($new_quantity <= $stock_info['min_stock']) {
+                    $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Below Minimum Stock Count at ".$item_location['site_name'].". Please Order More!";
+                    $email_body = "<p>Fixed cable stock below minimum stock count, for <strong><a href='stock.php?stock_id=".$stock_info['id']."'>".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p><p style='color:red'>Please raise a PO to order more!</p>";
+            
+                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                 }
 
                 header("Location: ../".$redirect_url.$queryChar."cableItemID=$cable_item_id&success=quantityRemoved");
@@ -387,7 +432,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($_POST['cable-item-id'] !== '' && $_POST['cable-item-id'] !== 0) {
                 $cable_item_id = $_POST['cable-item-id'];
                 $stock_id = $_POST['stock-id'];
-
+                include 'smtp.inc.php';
                 if ($action == "add") {
                     addQuantity ($stock_id, $cable_item_id);
                 } elseif ($action == "remove") {

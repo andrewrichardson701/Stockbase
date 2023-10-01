@@ -1,8 +1,13 @@
-<?php 
+<?php   
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // SHOWS THE INFORMATION FOR EACH PEICE OF STOCK AND ITS LOCATIONS ETC. 
 // id QUERY STRING IS NEEDED FOR THIS
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">
@@ -43,7 +48,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $_SERVER['HTTP_REFERER'] = './index.php';
         }
     echo('<div class="container" style="padding-bottom:25px">
-        <h2 class="header-small" style="padding-bottom:5px">Transactions - Stock ID: '.$_GET['stock_id'].'</h2>');
+        <h2 class="header-small" style="padding-bottom:5px">Transactions - Stock ID: '.$_GET['stock_id'].'</h2>
+        </div>');
     if (isset($_GET['stock_id'])) {
         if (is_numeric($_GET['stock_id'])) {
             if ($_GET['stock_id'] !== '') {
@@ -74,7 +80,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         exit();
                     } else {
                         echo('
-                        <table class="table table-dark theme-table centertable" id="transactions">
+                        <table class="table table-dark theme-table centertable" id="transactions" style="max-width:max-content">
                             <thead>
                                 <tr class="theme-tableOuter">
                                     <th hidden>ID</th>
@@ -83,8 +89,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <th>Type</th>
                                     <th>Date</th>
                                     <th>Time</th>
-                                    <th hidden>Shelf</th>
                                     <th>Location</th>
+                                    <th>Shelf</th>
                                     <th>Username</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
@@ -136,8 +142,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     <td id="t_type">'.ucwords($t_type).'</td>
                                     <td id="t_date">'.$t_date.'</td>
                                     <td id="t_time">'.$t_time.'</td>
-                                    <td hidden>'.$s_name.'</td>
                                     <td id="a_name">'.$a_name.'</td>
+                                    <td id="s_name">'.$s_name.'</td>
                                     <td id="t_username">'.$t_username.'</td>
                                     <td id="t_quantity">'.$t_quantity.'</td>
                                     <td>'.$currency_symbol.$t_price.'</td>
@@ -159,7 +165,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             echo ("error = non-numeric id");
         }
     }
-    echo('</div>');
     ?>
 </div>
     

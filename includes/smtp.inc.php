@@ -1,4 +1,9 @@
-<?php    
+<?php      
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
@@ -17,13 +22,10 @@ if (!isset($loggedin_username)) {
 
 include 'get-config.inc.php';
 
-// $folder = dirname($_SERVER['PHP_SELF']);
-// $folder = explode('/', $folder)[1]; // inventory folder
-
 function send_email($to, $toName, $fromName, $subject, $body, $notif_id) {
     global $current_smtp_enabled;
-    if ($current_smtp_enabled == 1) { // check if smtp is enabled.
 
+    if ($current_smtp_enabled == 1) { // check if smtp is enabled.
         if (is_numeric($notif_id)) {
 
             // get folder info to get the dbh config
@@ -171,7 +173,7 @@ $email_template_end = '
             <p>Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
         </div>
         <div style="padding-top:10px; padding-bottom:20px;text-align: center;">
-            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.'">Andrew Richardson</a>. All rights reserved.</p>
+            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.'">StockBase</a>. All rights reserved.</p>
         </div>
     </div>
 </body>

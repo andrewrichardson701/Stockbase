@@ -1,7 +1,12 @@
-<?php 
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // ADMIN PAGE - SHOWS CONFIGURATION OPTIONS AND ONLY VISIBLE TO ADMIN USERS
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 
 ?>
 
@@ -276,6 +281,43 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </td>
                             <td style="min-width:230px;margin-left:25px; padding-left:15px">
                                 <label class="nav-v-c"><span class="uni"><?php echo($default_base_url); ?></span></label>
+                            </td>
+                        </tr>
+
+                        <tr class="nav-row" style="margin-top:20px">
+                            <td id="default-theme-label" style="width:250px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="default_theme">Default Theme:</p>
+                            </td>
+                            <td id="default-theme-set" style="width:250px">
+                                <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control" style="width:150px">
+                                    <?php
+                                    $sql_theme = "SELECT * FROM theme";
+                                    $stmt_theme = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_theme);
+                                        $result_theme = mysqli_stmt_get_result($stmt_theme);
+                                        $rowCount_theme = $result_theme->num_rows;
+                                        if ($rowCount_theme < 1) {
+                                            echo ("No themes found.");
+                                        } else {
+                                            while ( $row_theme = $result_theme->fetch_assoc() ) {
+                                                $theme_id = $row_theme['id'];
+                                                $theme_name = $row_theme['name'];
+                                                $theme_file_name = $row_theme['file_name'];
+                                                echo ('<option value="'.$theme_id.'" '); if ($current_default_theme_id == $theme_id) { echo('selected'); } echo('>'.$theme_name.'</option>');
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($current_default_theme_name); ?></span></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($default_default_theme_name); ?></span></label>
                             </td>
                         </tr>
 
@@ -970,6 +1012,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 </table>
             </form>
             <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" <?php if($current_smtp_enabled == 0) { echo("hidden"); } ?>>
+                <hr style="border-color:white; margin-left:10px">
                 <table id="smtpTable">
                     <tbody>
                         <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">
@@ -1113,7 +1156,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 
         <!-- Notification Settings -->
         <div style="padding-top: 20px" id="notification" hidden>
-            <p class="red">There will be notification toggles in here eventually... Still working on how these will be stored and how they will be disabled</p>
             <?php if ($current_smtp_enabled == 1) {
                 $sql_notif = "SELECT * FROM notifications
                                 WHERE id!=0;"; 

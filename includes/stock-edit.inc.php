@@ -1,4 +1,9 @@
 <?php
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 
 if (isset($_GET['stock_id'])) {
     if (is_numeric($_GET['stock_id'])) {
@@ -88,7 +93,7 @@ if (isset($_GET['stock_id'])) {
                                     </div>
                                     <div class="nav-row" id="sku-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
-                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c" style="width:300px" value="'.$stock['sku'].'" pattern="^[A-Za-z\s\p{P}]+$"></input></div>
+                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c" style="width:300px" value="'.$stock['sku'].'" pattern="^[A-Za-z\s\p{P}-]+$"></input></div>
                                     </div>
                                     <div class="nav-row" id="description-row" style="margin-top:25px">
                                         <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>

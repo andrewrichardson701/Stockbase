@@ -1,4 +1,11 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
+// USED TO RESYNC LDAP INFORMATION FOR A USER PROFILE
+
 // print_r($_POST);
 $redirect_url = '../profile.php';
 
@@ -170,7 +177,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Re-sync') {
                                     } else {
                                         mysqli_stmt_bind_param($stmt_update, "sss", $ldap_info_firstName, $ldap_info_lastName, $ldap_info_upn);
                                         mysqli_stmt_execute($stmt_update);
-                                        $rows_update = $conn->affected_rows;
+                                        $rows_update = $conn->affected_rows();
                                         if ($rows_update == 1) {
                                             // Expected 
                                             // update changelog

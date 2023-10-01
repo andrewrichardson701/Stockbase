@@ -1,7 +1,12 @@
-<?php 
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // INVENTORY VIEW PAGE. SHOWS ALL INVENTORY ONCE LOGGED IN AND SHOWS FILTERS IN THE NAV
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">
@@ -330,7 +335,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                     <thead style="text-align: center; white-space: nowrap;">
                         <tr class="theme-tableOuter">
                             <th id="id" hidden>id</th>
-                            <th id="img"</th>
+                            <th id="img"></th>
                             <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
                             <th class="clickable sorting" id="sku" onclick="sortTable(3, this)">SKU</th>
                             <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>

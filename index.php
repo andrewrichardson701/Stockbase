@@ -376,7 +376,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             echo('
             <tbody>
             <tr class="theme-tableOuter">
-                <td colspan="100%" style="padding:0;margin:0">
+                <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
                 <div class="row">
                     <div class="col text-center"></div>
                     <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">');

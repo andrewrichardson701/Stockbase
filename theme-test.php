@@ -383,7 +383,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <td class="align-middle" id="41-name"><a class="link">Cat5e Black 1m</a></td>
                                                 <td class="align-middle" id="41-type-id" hidden="">2</td>
                                                 <td class="align-middle" id="41-type"><or title="Cat5e Copper Cable">Cat5e</or></td> 
-                                                <td class="align-middle clickable link gold" id="41-site-name">CDC ME14</td>
+                                                <td class="align-middle link gold" id="41-site-name">Site 1</td>
                                                 <td class="align-middle" id="41-quantity">11</td>
                                                 <td class="align-middle" id="41-min-stock" style="color:#8f8f8f">10</td>
                                                 <td class="align-middle" id="41-add"><button id="78-add-btn" class="btn btn-success cw nav-v-b" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
@@ -399,7 +399,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <td class="align-middle" id="42-name"><a class="link">Cat5e Black 2m</a></td>
                                                 <td class="align-middle" id="42-type-id" hidden="">2</td>
                                                 <td class="align-middle" id="42-type"><or title="Cat5e Copper Cable">Cat5e</or></td> 
-                                                <td class="align-middle clickable link gold" id="42-site-name">CDC ME14</td>
+                                                <td class="align-middle link gold" id="42-site-name">Site 1</td>
                                                 <td class="align-middle" id="42-quantity"><or class="red"><u style="border-bottom: 1px dashed #999; text-decoration: none" title="Below minimum stock count. Order more!">5</u></or></td>
                                                 <td class="align-middle" id="42-min-stock" style="color:#8f8f8f">10</td>
                                                 <td class="align-middle" id="42-add"><button id="79-add-btn" class="btn btn-success cw nav-v-b" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>

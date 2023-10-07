@@ -551,10 +551,10 @@ body {
 }
 
 .viewport-large-empty {
-    display: '';
+    display: revert;
 }
 
-.viewport-small, .viewport-small-block {
+.viewport-small, .viewport-small-block, .viewport-small-empty {
     display: none;
 }
 
@@ -578,8 +578,55 @@ body {
 .profile-table-row2 {
     margin-top:30px;
 }
-.scale_1-3{
-    scale:1.3;
+
+th.btn-cableStock {
+    width:50px
+}
+
+button.btn-cableStock {
+    padding: 6 12 6 12 !important;
+}
+
+div.stock-imageMainSolo {
+    width:315px; 
+    height:235px;
+}
+img.stock-imageMainSolo {
+    max-width:315px; 
+    max-height:235px ;
+}
+div.stock-imageMain {
+    width:235px; 
+    height:235px;
+}
+img.stock-imageMain {
+    max-width:235px; 
+    max-height:235px ;
+}
+div.stock-imageOther {
+    width:75px;
+    height:75px;
+}
+img.stock-imageOther {
+    max-width:75px;
+    max-height:75px;
+}
+.stock-imageBox {
+    margin:20 20 20 auto !important;
+    padding:0px !important;
+    width:max-content !important;
+}
+#stock-info-right {
+    margin-left:70px !important;
+}
+.stock-heading {
+    padding-bottom:25px;
+}
+.stock-modifyBtn {
+    width:110px;
+}
+.modal-imgWidth {
+    max-width:50vw !important; 
 }
 
 /* Media query for mobile devices */
@@ -620,16 +667,24 @@ body {
         display: block;
     }
 
+    .viewport-small-empty {
+        display: revert;
+    }
+
     .index-dropdown {
         margin-right: 15px;
     }
 
     table {
-        font-size: 8px;
+        font-size: 12px;
+    }
+    table tbody {
+        white-space: wrap !important;
     }
     table td, table th {
         padding:5px !important;
     }
+
     table span, #inv-page-numbers, label, select, option, input, .btn, p {
         font-size: 10px !important;
     }
@@ -643,7 +698,10 @@ body {
     .zeroStockFont, .zeroStockFont p, .zeroStockFont i  {
         font-size:8.5px !important;
     }
-    .btn-cableStock {
+    th.btn-cableStock {
+        width:max-content;
+    }
+    button.btn-cableStock {
         padding: 3 6 3 6 !important;
     }
     .profile-table-row {
@@ -652,7 +710,9 @@ body {
     .profile-table-row2 {
         margin-top:10px;
     }
-    
+    .invTablePagination {
+        padding:0 !important;
+    }
 
 
     .inv-img-main {
@@ -664,9 +724,228 @@ body {
         max-height: 40px;
     }
     .row-dropdown {
-        font-size: 8px;
+        font-size: 8px !important;
         width:max-content !important;
         height:max-content !important;
+    }
+    .scale_1-15{
+        scale:1.3;
+    }
+    div.stock-imageMainSolo {
+        width:175px; 
+        height:130px;
+    }
+    img.stock-imageMainSolo {
+        max-width:175px; 
+        max-height:130px ;
+    }
+    div.stock-imageMain {
+        width:130px; 
+        height:130px;
+    }
+    img.stock-imageMain {
+        max-width:130px; 
+        max-height:130px ;
+    }
+    div.stock-imageOther {
+        width:40px;
+        height:40px;
+    }
+    img.stock-imageOther {
+        max-width:40px;
+        max-height:40px;
+    }
+    #stock-info-table, #stock-info-left p, #stock-info-left button, #stock-info-left a {
+        font-size: 10px !important;
+    }
+    #stock-info-table th, #stock-info-table td {
+        padding:1 7 0 0 !important;
+    }
+    #stock-info-right {
+        margin-left:0px !important;
+    }
+    .stock-modifyBtn {
+        max-width:max-content;
+    }
+    .stock-heading {
+        padding-bottom:10px;
+    }
+    .header-small {
+        font-size: 26px;
+        padding-top:15px;
+        margin-bottom:0px !important;
+        padding-bottom:0px !important;
+    }
+    #stock-name {
+        font-size: 18px !important;
+        margin-top:10px !important;
+    }
+    .modal-imgWidth {
+        max-width:50vw !important; 
+    }
+    .modal-content {
+        min-width:0px !important;
+    }
+
+}
+@media only screen and (max-width: 600px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #333;
+        padding: 15px;
+        left:-50px;
+        min-width: max-content;
+    }
+
+    .nav-links.show {
+        display: flex;
+        z-index: 1000;
+        min-width:max-content;
+        min-height:max-content;
+    }
+
+    .burger-menu {
+        display: block;
+    }
+
+    .viewport-large, .viewport-large-block, .viewport-large-empty {
+        display: none;
+    }
+
+    .viewport-small {
+        display: flex;
+    }
+
+    .viewport-small-block {
+        display: block;
+    }
+
+    .viewport-small-empty {
+        display: revert;
+    }
+
+    .index-dropdown {
+        margin-right: 15px;
+    }
+
+    table {
+        font-size: 10px;
+    }
+    table tbody {
+        white-space: wrap !important;
+    }
+    table td, table th {
+        padding:5px !important;
+    }
+    #stock-info-table th, #stock-info-table td {
+        padding:1 7 0 0 !important;
+    }
+
+    table span, #inv-page-numbers, label, select, option, input, .btn, p {
+        font-size: 10px !important;
+    }
+    #clear-filters {
+        padding: 3 5 4 3
+    }
+    #clear-filters i {
+        height:20px;
+        width:15px;
+    }
+    .zeroStockFont, .zeroStockFont p, .zeroStockFont i  {
+        font-size:8.5px !important;
+    }
+    th.btn-cableStock {
+        width:max-content;
+    }
+    button.btn-cableStock {
+        padding: 3 6 3 6 !important;
+    }
+    .profile-table-row {
+        margin-top:5px;
+    }
+    .profile-table-row2 {
+        margin-top:10px;
+    }
+    .invTablePagination {
+        padding:0 !important;
+    }
+
+
+    .inv-img-main {
+        max-width: 50px;
+        max-height: 40px;
+    }
+    .inv-img-50h {
+        max-width: 40px;
+        max-height: 40px;
+    }
+    .row-dropdown {
+        font-size: 8px !important;
+        width:max-content !important;
+        height:max-content !important;
+    }
+    .scale_1-15 {
+        scale:1.15;
+    }
+    div.stock-imageMainSolo {
+        width:175px; 
+        height:130px;
+    }
+    img.stock-imageMainSolo {
+        max-width:175px; 
+        max-height:130px ;
+    }
+    div.stock-imageMain {
+        width:130px; 
+        height:130px;
+    }
+    img.stock-imageMain {
+        max-width:130px; 
+        max-height:130px ;
+    }
+    div.stock-imageOther {
+        width:40px;
+        height:40px;
+    }
+    img.stock-imageOther {
+        max-width:40px;
+        max-height:40px;
+    }
+    #stock-info-table, #stock-info-left p, #stock-info-left button, #stock-info-left a {
+        font-size: 10px !important;
+    }
+    #stock-info-table th, #stock-info-table td {
+        padding:1 7 0 0 !important;
+    }
+    #stock-info-right {
+        margin-left:0px !important;
+    }
+    .stock-modifyBtn {
+        max-width:max-content;
+    }
+    .stock-heading {
+        padding-bottom:10px;
+    }
+    .header-small {
+        font-size: 26px;
+        padding-top:15px;
+        margin-bottom:0px !important;
+        padding-bottom:0px !important;
+    }
+    #stock-name {
+        font-size: 18px !important;
+        margin-top:10px !important;
+    }
+    .modal-imgWidth {
+        max-width:50vw !important; 
+    }
+    .modal-content {
+        min-width:0px !important;
     }
 }
 

@@ -1,10 +1,15 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 
 if (!empty($_POST)) {
     if (isset($_POST['submit'])) {
         if(session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
-        }
+        } 
         $redirect_url = str_replace('includes/', '', $_SESSION['redirect_url']);
         print_r($_POST);        
         $name = isset($_POST['property-name']) ? $_POST['property-name'] : header("Location ../$redirect_url&error=nameEmpty"); // all
@@ -106,9 +111,9 @@ if (!empty($_POST)) {
 <div id="modalDivProperties" class="modal">
 <!-- <div id="modalDivProperties" style="display: block;"> -->
     <span class="close" onclick="modalCloseProperties()">&times;</span>
-    <div class="container well-nopad bg-dark" style="padding:25px">
+    <div class="container well-nopad theme-divBg" style="padding:25px">
         <!-- Label -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-label" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-label" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>
@@ -123,7 +128,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Manufacturer -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-manufacturer" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-manufacturer" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>
@@ -138,7 +143,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Site -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-site" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-site" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable" style="border-collapse: collapse;table-layout:fixed;">
                     <tbody>
@@ -157,7 +162,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Area -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-area" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-area" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>
@@ -204,7 +209,7 @@ if (!empty($_POST)) {
             </form>
         </div>
         <!-- Shelf -->
-        <div class="well-nopad bg-dark property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-shelf" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-shelf" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>

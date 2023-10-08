@@ -11,6 +11,10 @@ The purpose of this project is for stock tracking and locating.
     - php8.1-calendar, php8.1-common, php8.1-ctype, php8.1-ldap, php8.1-mysqli, php8.1-curl, php8.1-dom, php8.1-exif, php8.1-ffi, php8.1-fileinfo, php8.1-filter, php8.1-ftp, php8.1-gd, php8.1-gettext, php8.1-hash, php8.1-iconv, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-json, php8.1-ldap, php8.1-libxml, php8.1-mbstring, php8.1-mysqli, php8.1-mysqlnd, php8.1-openssl, php8.1-pcntl, php8.1-pcre, php8.1-pdo, php8.1-pdo_mysql, php8.1-phar, php8.1-posix, php8.1-readline, php8.1-redis, php8.1-reflection, php8.1-session, php8.1-shmop, php8.1-simplexml, php8.1-soap, php8.1-sockets, php8.1-sodium, php8.1-spl, php8.1-sysvmsg, php8.1-sysvsem, php8.1-sysvshm, php8.1-tokenizer, php8.1-xml, php8.1-xmlreader, php8.1-xmlrpc, php8.1-xmlwriter, php8.1-xsl, php8.1-zip, php8.1-zlib
 - MySQL Server (v8.0.34) (or similar DB using mysql syntax)
 - PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
+- Bootstrap (v4.5.2) (included in headers)
+- Jquery (v3.5.1) (included in headers)
+- Font Awesome (v6.4.0) (included in headers)
+- Google Font - Poppins (included in headers)
 
 *These packages are all installed as part of the install script at* `assets/scripts/install.bash`*.*
 
@@ -468,6 +472,89 @@ Clone the repo first, and the follow the below steps.
 
 <details>
 <summary><h2>Change Log</h2></summary>
+<details>
+<summary><h3>0.3.0-beta</h3></summary>
+<h4>Beta release 0.3.0, Adjustments for mobile width and card reader tech.</h4>
+
+- Mobile CSS in progress
+- Some HTML elements are hidden/shown based on width.
+- Admin page is not visible from mobile form factor unless the url is appended.
+- New CSS added for mobile form factor.
+- Nav now loads properl on mobile.
+- Footer now loads differently on mobile.
+- Index page now works on mobile. Less columns show to reduce clutter
+- Cablestock page now works on mobile.
+- Stock (view) page now works on mobile.
+- Stock (add) page now works on mobile.
+- Stock (remove) page now works on mobile.
+- Stock (move) page now works on mobile.
+- Stock (edit) page now works on mobile.
+- Transactions inc now working on mobile, with page numbers becoming a select field.
+- Index page pagination row is now longer being sorted with the rest of the table.
+- Swipe card prompt now shows up on mobile form factor.
+- Swipe card fields added to users table.
+- Swipe cards can now be added on the profile page.
+- Swipe cards can be re-assigned on the profile page.
+- login-card.inc.php added to handle card logins.
+- Swipe card assigning and re-assigning is handled in admin.inc.php.
+- Swipe card de-assigning is handled in admin.inc.php.
+- Bootstrap 4.5.2 CSS added in assets/css folder for redundancy.
+- Email example added to Email Notification Settings section of admin page via AJAX.
+- Some modification to the smtp.inc.php email template to allow it to be embedded in php page.
+
+</details>
+<details>
+<summary><h3>0.2.1-beta</h3></summary>
+<h4>Beta release 0.2.1, based on initial feedback.</h4>
+
+- Added more themes. Theme CSS now has more properties which can be adjusted.
+- Changelog page has been formatted better and now fills the page.
+- Email notifications can now be disabled from the admin page. Each notification type is configurable, excpet them important things, like password resets.
+- SMTP send_mail function has been updated to check if the notification type is enabled. All send_mail requests have been updated accordingly.
+- Default theme selection now added to Global Settings of admin page
+- Themes are now in their own table in the database and theme selection is now auto generated on pages.
+- Theme test page added ad theme-test.php. This shows all relevant pages which are affected by the theme. The css can be edited, applied, downloaded and uploaded from here for new themes.
+- About page added, accessible from the footer copyright.
+- The http-headers.php is now merged into head.php. These were both being called at the same time so seemed pointless being split.
+- Name and branding changes to StockBase. This might not be the final name.
+- Footer can now be disabled from the $showFoot variable in foot.php - this will likely hidden on final release.
+- Emails now have useful content in them. It used to be just numbers but now it gives relevant info.
+- Mysql dumps updated.
+
+</details>
+<details>
+<summary><h3>0.2.0-beta</h3></summary>
+<h4>Beta release 0.2.0, based on initial feedback.</h4>
+
+- Corrected the url redirects when a user tries to reach a page without being logged in. Logging in now redirects to the correct page.
+- Removed the title and welcome message from the index page and cablestock pages.
+- Moved the title into the Nav bar and linked it to the index page.
+- Corrected the issue with the offset being negative when no items are found on the index sql query. Negative numbers now default to 0.
+- Back button removed from the nav. This was creating loops where you couldnt actually go back.
+- Changed the icon in the clear button to be the fa-ban icon and rotated it 90degrees
+- Changed the serial number so it can now be copied but this may be going later down the line
+- Stock page now allows you to edit individual rows in the item table. This allows the adding of new serial numbers which were missed.
+- Images can be permenantly deleted from the admin page
+- Cable stock now relates to shelves rather than just sites. This is now added correctly too.
+- Stock page now hides irrelevant info for cables.
+- Less important info is now under the "more info" section on the stock page.
+- The "show 0 stock" button now ONLY shows 0 stock rows, now all rows.
+- Corrected the cablestock searching and formatting.
+- Dynamic searching is now in and working. Ajax based searching which updates on input.
+- Can now search with more criteria on the home page.
+- Images are now larger on the home page. This is copied throughout.
+- Cablestock page now allows you to go to the stock properies page by clicking the cable name. This is the same as normal stock items, with less important info removed. 
+- Can now change the image for cablestock with the above change.
+- Label and Manufacturer are now select boxes rather than input because this makes more sense.
+- Added deleted field to tables (item, stock, shelf, area etc) so that things can be tracked.
+- Deleting stock when the stock count is 0, no longer deletes the row from the database and instead marks deleted as 1.
+- Minimum stock count now checks against the site using the shelf of the object that the stock was removed from for the email notifications.
+- Added a light theme (for those who no longer want their eyes), which can be enabled under the user profile section.
+- Added more themes. Theme CSS now has more properties which can be adjusted.
+- Email notification settings section added to admin page. This is a work in progress.
+- Changelog section added to admin page. Moved from the hidden link and now shows 10 by default, with a link to the full page
+
+</details>
 <details>
 <summary><h3>0.1.0-beta</h3></summary>
 <h4>First beta test release of the system to be tested for install and running functionality</h4>

@@ -1,4 +1,9 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // INCLUDED IN THE STOCK PAGE FOR REMOVING STOCK OR INVENTORY TO CURRENT STOCK
 
 // Query string bits
@@ -21,7 +26,7 @@ if ($stock_id == 0 || $stock_id == '0') {
 <!-- <div style="margin-bottom:200px"></div> -->
 
 <!-- NEW STOCK -->
-<div class="container well-nopad bg-dark">
+<div class="container well-nopad theme-divBg">
     
     <?php
     if (is_numeric($stock_id)) {
@@ -47,7 +52,7 @@ if ($stock_id == 0 || $stock_id == '0') {
             include 'includes/dbh.inc.php';
             $sql = "SELECT id, name, description, sku, min_stock
                     FROM stock
-                    WHERE id=?
+                    WHERE id=? AND deleted=0
                     ORDER BY id";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -92,7 +97,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 LEFT JOIN area ON shelf.area_id=area.id 
                                 LEFT JOIN site ON area.site_id=site.id
                                 LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                WHERE stock.id=?
+                                WHERE stock.id=? AND item.deleted=0 ANd stock.deleted=0
                                 GROUP BY 
                                     stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                                     site_id, site_name, site_description, 
@@ -113,6 +118,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                             echo ('<div class="container" id="no-stock-found">No Stock Found</div>');
                         } else {
                             $stock_inv_data = [];
+                            $stock_inv_manu = [];
                             while ( $row = $result_stock->fetch_assoc() ) {
                                 $stock_id = $row['stock_id'];
                                 $stock_name = $row['stock_name'];
@@ -154,6 +160,8 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                         'manufacturer_id' => $stock_manufacturer_id,
                                                         'manufacturer_name' => $stock_manufacturer_name,
                                                         'label' => $stock_label_data);
+                                
+                                $stock_inv_manu[$stock_manufacturer_id] = array('id' => $stock_manufacturer_id, 'name' => $stock_manufacturer_name);
                             }
                             
                             $stock_id = $_GET['stock_id'];
@@ -164,7 +172,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 <input type="hidden" name="stock-remove" value="1" /> 
                                 <div class="nav-row" style="margin-bottom:10px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
-                                        <div style="width:200px;margin-right:25px"></div>
+                                        <div class="stock-inputLabelSize"></div>
                                         <div id="heading-heading">
                                             <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
                                             <p id="sku"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
@@ -175,7 +183,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 echo('<table><tbody>');
                                                 for ($l=0; $l < count($stock_inv_data); $l++) {
                                                     // if ($l == 0 || $l < count($stock_inv_data)-1) { $divider = '<br>'; } else { $divider = ''; }
-                                                    echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn btn-dark btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
+                                                    echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn serial-bg btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
                                                 }
                                                 echo('</tbody></table>');
                                             }
@@ -183,69 +191,69 @@ if ($stock_id == 0 || $stock_id == '0') {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="container well-nopad bg-dark">
+                                <div class="container well-nopad theme-divBg">
                                     <div class="row">
                                         <div class="text-left" id="stock-info-left" style="padding-left:15px">
                                             <div class="nav-row" style="margin-bottom:25px">
-                                                <input type="hidden" value="'.$stock_id.'" name="stock_id" />
+                                                <input type="hidden" id="stock-id" value="'.$stock_id.'" name="stock_id" />
                                                 <input type="hidden" value="'.$stock_sku.'" name="stock_sku" />
                                                 <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                                     <div>
-                                                        <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" required>
-                                                            <option value="" selected disabled hidden>Select Manufacturer</option>');
-                                                            $temp_manu_id = '';
-                                                            foreach ($stock_inv_data as $temp_data) {
-                                                                if ($temp_data['manufacturer_id'] !== $temp_manu_id) {
-                                                                    echo('<option value='.$temp_data['manufacturer_id'].'>'.$temp_data['manufacturer_name'].'</option>');
-                                                                }
-                                                                $temp_manu_id = $temp_data['manufacturer_id'];
+                                                        <select name="manufacturer" id="manufacturer" class="form-control stock-inputSize" onchange="populateRemoveShelves(this)" required>');
+                                                            echo('<option value="" selected disabled hidden>Select Manufacturer</option>');
+                                                            foreach ( $stock_inv_manu as $manu) {
+                                                                echo('<option value='.$manu['id'].'>'.$manu['name'].'</option>');
                                                             }
                                                         echo('
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
                                                     <div>
-                                                        <select class="form-control" id="shelf" name="shelf" style="width:300px" required>
+                                                        <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="populateSerials(this)" disabled>
                                                             <option value="" selected disabled hidden>Select Location</option>');
-                                                            $temp_site_id = '';
-                                                            foreach ($stock_inv_data as $temp_data) {
-                                                                if ($temp_data['shelf_id'] !== $temp_site_id) {
-                                                                    echo('<option value='.$temp_data['shelf_id'].'>'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'</option>');
-                                                                }
-                                                                $temp_site_id = $temp_data['shelf_id'];
-                                                            }
+                                                            // $temp_site_id = '';
+                                                            // foreach ($stock_inv_data as $temp_data) {
+                                                            //     if ($temp_data['shelf_id'] !== $temp_site_id) {
+                                                            //         echo('<option value='.$temp_data['shelf_id'].'>'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'</option>');
+                                                            //     }
+                                                            //     $temp_site_id = $temp_data['shelf_id'];
+                                                            // }
                                                         echo('
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="nav-row" id="price-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price (£)</label></div>
-                                                    <div><input type="number" name="price" placeholder="0" id="price" class="form-control nav-v-c" style="width:300px" value="0" value="'.$input_cost.'" required></input></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price (£)</label></div>
+                                                    <div><input type="number" name="price" placeholder="0" id="price" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required></input></div>
                                                 </div>
                                             </div>
                                             <hr style="border-color: gray; margin-right:15px">
                                             <div class="nav-row" style="margin-bottom:0">
                                                 <div class="nav-row" id="date-row" style="margin-top:10px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="transaction_date" id="date-label">Transaction Date</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="transaction_date" id="date-label">Transaction Date</label></div>
                                                     <div><input type="date" value="'.date('Y-m-d').'" name="transaction_date" id="transaction_date" class="form-control" style="width:150px"/></div>
                                                 </div>
-                                                <div class="nav-row" id="quantity-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
-                                                    <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
-                                                </div>
                                                 <div class="nav-row" id="serial-number-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
-                                                    <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c" style="width:300px" value="'.$input_serial_number.'"></input></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
+                                                    <div>
+                                                        <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="'.$input_serial_number.'" required>
+                                                            <option value="" selected disabled hidden>Serial...</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="nav-row" id="quantity-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
+                                                    <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="'.$input_quantity.'" min="1" required></input></div>
                                                 </div>
                                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
-                                                    <div><input type="text" name="reason" placeholder="Customer sale [CDC-ID: #XXXXXX]" id="reason" class="form-control nav-v-c" style="width:300px" value="'.$input_reason.'" required></input></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
+                                                    <div><input type="text" name="reason" placeholder="Customer sale, ID: XXXXXX" id="reason" class="form-control nav-v-c stock-inputSize" value="'.$input_reason.'" required></input></div>
                                                 </div>
                                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
-                                                    <div style="width:200px;margin-right:25px"></div>
+                                                    <div class="stock-inputLabelSize"></div>
                                                     <div>');
                                                         
                                                         $stock_quantity_total = 0;
@@ -282,7 +290,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         <input type="hidden" name="modify" id="modify" value="remove" />
                         <span class="nav-row">
                             <p class="nav-v-c" style="margin-right:20px">Search for item</p>
-                            <input class="form-control" type="text" style="width: 250px" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
+                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
                         </span>
                     </div>
                 </div>
@@ -290,12 +298,33 @@ if ($stock_id == 0 || $stock_id == '0') {
         ');
         if (isset($_GET['search']) && $_GET['search'] !== '') {
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
-            $sql = "SELECT * from stock
-                    WHERE name LIKE CONCAT('%', ?, '%')
-                    ORDER BY name;";
+            $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
+                        (SELECT SUM(quantity) 
+                            FROM item 
+                            INNER JOIN shelf ON item.shelf_id=shelf.id
+                            INNER JOIN area ON shelf.area_id=area.id
+                            WHERE item.stock_id=stock.id
+                        ) AS item_quantity,
+                        stock_img_image.stock_img_image
+                    FROM stock
+                    LEFT JOIN item ON stock.id=item.stock_id
+                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                    LEFT JOIN area ON shelf.area_id=area.id 
+                    LEFT JOIN site ON area.site_id=site.id
+                    LEFT JOIN (
+                        SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
+                        FROM stock_img
+                        GROUP BY stock_img.stock_id
+                    ) AS stock_img_image
+                        ON stock_img_image.stock_id = stock.id
+                    WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0 AND stock.name LIKE CONCAT('%', ?, '%')
+                    GROUP BY 
+                        stock.id, stock_name, stock_description, stock_sku, 
+                        stock_img_image.stock_img_image
+                    ORDER BY stock.name";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
@@ -308,32 +337,42 @@ if ($stock_id == 0 || $stock_id == '0') {
                     echo('<p>No Stock Found</p>');
                 } else {
                     echo('
-                <table class="table table-dark" style="min-width:500px;max-width:max-content">
+                <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
-                        <tr>
-                            <th style="max-width:max-content">ID</th>
+                        <tr class="theme-tableOuter">
+                            <th class="viewport-mid-large" style="max-width:max-content">ID</th>
+                            <th>Image</th>
                             <th>Stock Name</th>
                             <th>SKU</th>
+                            <th>Quantity</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody  class="align-middle" style="text-align: center; white-space: nowrap;">
                     ');
                     while ($row = $result->fetch_assoc() ) {
-                        $id = $row['id'];
-                        $name = $row['name'];
-                        $sku = $row['sku'];
+                        $id = $row['stock_id'];
+                        $name = $row['stock_name'];
+                        $sku = $row['stock_sku'];
+                        $quantity = $row['item_quantity'];
                         echo('
-                        <tr class="clickable" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$id.'\'">
-                            <td id="'.$id.'-id"  style="max-width:max-content">'.$id.'</td>
+                        <tr class="clickable vertical-align align-middle" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$id.'\'">
+                            <td class="viewport-mid-large" id="'.$id.'-id"  style="max-width:max-content">'.$id.'</td>
+                            <td class="align-middle" id="'.$id.'-img-cell">');
+                            if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
+                                echo ('<img id="'.$id.'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                            } 
+                        echo('
+                            </td>
                             <td id="'.$id.'-name">'.$name.'</td>
                             <td id="'.$id.'-sku">'.$sku.'</td>
+                            <td id="'.$id.'-quantity">'.$quantity.'</td>
                         </tr>
                         ');
                     }
                     echo('
                     </tbody>
                 </table>'); 
-                    }
+                }
             }
             echo('
             </div>
@@ -358,7 +397,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                             GROUP BY stock_img.stock_id
                         ) AS stock_img_image
                             ON stock_img_image.stock_id = stock.id
-                        WHERE stock.is_cable=0
+                        WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0
                         GROUP BY 
                             stock.id, stock_name, stock_description, stock_sku, 
                             stock_img_image.stock_img_image
@@ -387,7 +426,7 @@ if ($stock_id == 0 || $stock_id == '0') {
            $offset = ($current_page - 1) * $results_per_page;
 
             echo('
-            <div class="container well-nopad bg-dark" style="margin-top:20px;padding-left:20px">');
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">');
             include 'includes/dbh.inc.php';
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
@@ -408,7 +447,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         GROUP BY stock_img.stock_id
                     ) AS stock_img_image
                         ON stock_img_image.stock_id = stock.id
-                    WHERE stock.is_cable=0
+                    WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0
                     GROUP BY 
                         stock.id, stock_name, stock_description, stock_sku, 
                         stock_img_image.stock_img_image
@@ -427,10 +466,10 @@ if ($stock_id == 0 || $stock_id == '0') {
                 } else {
                     // rows found
                     echo('
-                    <table class="table table-dark" id="inventoryTable" style="max-width:max-content">
+                    <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
                         <thead style="text-align: center; white-space: nowrap;">
-                            <tr>
-                                <th>ID</th>
+                            <tr class="theme-tableOuter">
+                                <th class="viewport-mid-large">ID</th>
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th hidden>Descritpion</th>
@@ -446,11 +485,11 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 $quantity =  $row['item_quantity'];
                             }
                             echo('
-                            <tr class="clickable" style="vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
-                                <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
+                            <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                                <td class="align-middle viewport-mid-large" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
-                                    echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-25h thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                                    echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
                                 } 
                             echo('
                                 </td>
@@ -463,26 +502,26 @@ if ($stock_id == 0 || $stock_id == '0') {
                         }
                         if ($total_pages > 1) {
                             echo('
-                            <tr style="background-color:#21272b">
+                            <tr class="theme-tableOuter">
                                 <td colspan="100%">');
     
                             if ($current_page > 1) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                                echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
                             }
 
                             for ($i = 1; $i <= $total_pages; $i++) {
                                 if ($i == $current_page) {
-                                    echo('&nbsp;<span class="current-page">' . $i . '</span>');
+                                    echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
                                     // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
                                 } else {
-                                    echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                    echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
                                 }
                             }
 
                             if ($current_page < $total_pages) {
-                                echo('&nbsp;<or class="gold clickable" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                                echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
                             }  
-                        }
+                        } 
                     echo('    
                         </tbody>
                     </table>
@@ -505,5 +544,81 @@ if ($stock_id == 0 || $stock_id == '0') {
         if (confirmed) {
             window.location.href = url;
         }
+    }
+
+    // populate shelves from manuyfacturer
+    function populateRemoveShelves(elem) {
+        var stock = document.getElementById('stock-id').value;
+        manufacturer_id = elem.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getremoveshelves=1&stock="+stock+"&manufacturer="+manufacturer_id, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var shelves = JSON.parse(xhr.responseText);
+                var select = document.getElementById('shelf');
+                select.options.length = 0;
+                if (shelves.length === 0) {
+                    select.options[0] = new Option("", "");
+                }
+                for (var i = 0; i < shelves.length; i++) {
+                    select.options[select.options.length] = new Option(shelves[i].location, shelves[i].id);
+                }
+                select.disabled = (select.options.length === 1);
+                populateSerials(document.getElementById('shelf'));
+            }
+        };
+        xhr.send();
+    }
+
+    // populate serials
+    function populateSerials(elem) {
+        var stock = document.getElementById('stock-id').value;
+        shelf_id = elem.value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getserials=1&stock="+stock+"&shelf="+shelf_id, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var serials = JSON.parse(xhr.responseText);
+                var select = document.getElementById('serial-number');
+                select.options.length = 0;
+                if (serials.length === 0) {
+                    select.options[0] = new Option("", "");
+                }
+                for (var i = 0; i < serials.length; i++) {
+                    select.options[select.options.length] = new Option(serials[i].serial_number, serials[i].id);
+                }
+                select.disabled = (select.options.length === 1);
+            }
+        };
+        xhr.send();
+        getQuantity();
+    }
+
+    function getQuantity() {
+        var stock = document.getElementById('stock-id').value;
+        var manufacturer = document.getElementById('manufacturer').value;
+        var shelf = document.getElementById('shelf').value;
+        var serial = document.getElementById('serial-number').value;
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantity=1&stock="+stock+"&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var quantityArr = JSON.parse(xhr.responseText);
+                var quantity = document.getElementById('quantity');
+                quantity.value = 1;
+                quantity.max = quantityArr[0]['quantity'];
+
+                if (quantity.min === quantity.max) {
+                    quantity.disabled = true;
+                } else {
+                    quantity.disabled = false;
+                }
+            }
+        };
+        xhr.send();
     }
 </script>

@@ -1,10 +1,17 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 if (isset($_POST['submit'])) {
     if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password_confirm']) || !isset($_POST['first_name']) || !isset($_POST['last_name']) || !isset($_POST['email']) || !isset($_POST['role'])) {
         header("Location: ../login.php?error=emptyfields");
         exit();
     } else {
         if (isset($_POST['password']) === isset($_POST['password_confirm'])) {
+            include 'get-config.inc.php';
+            
             $new_username = $_POST["username"];
             $new_password = $_POST["password"];
             $new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
@@ -35,13 +42,13 @@ if (isset($_POST['submit'])) {
 
                     // ADD user to table
 
-                    $sql_upload = "INSERT INTO users (username, first_name, last_name, email, role_id, auth, password, enabled, password_expired) VALUES (?,?,?,?,?,?,?,?,?)";
+                    $sql_upload = "INSERT INTO users (username, first_name, last_name, email, role_id, auth, password, enabled, password_expired, theme_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
                     $stmt_upload = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                         header("Location: ../addlocaluser.php?error=sqlerror");
                         exit();
                     } else {
-                        mysqli_stmt_bind_param($stmt_upload, "sssssssss", $new_username, $new_first_name, $new_last_name, $new_email, $new_role_id, $new_auth, $new_password_hash, $new_enabled, $new_expired);
+                        mysqli_stmt_bind_param($stmt_upload, "sssssssss", $new_username, $new_first_name, $new_last_name, $new_email, $new_role_id, $new_auth, $new_password_hash, $new_enabled, $new_expired, $current_default_theme_id);
                         mysqli_stmt_execute($stmt_upload);
                         $new_id = mysqli_insert_id($conn);
                         include 'changelog.inc.php';
@@ -52,8 +59,8 @@ if (isset($_POST['submit'])) {
 
                         $baseUrl = ((str_contains($_SERVER['HTTP_REFERER'], "https")) ? 'https' : 'http') . "://".$current_base_url;
                         $email_subject = ucwords($current_system_name)." - Account created";
-                        $email_body = "<p>Your user account has been created.<br>Your temporary password is:<br><strong>$new_password</strong><br>You will be prompted to change this on login.<br>Click <a href=\"$baseUrl\">here</a> to login.</p>";
-                        send_email($new_email, ucwords($new_first_name).' '.ucwords($new_last_name), $config_smtp_from_name, $email_subject, createEmail($email_body));
+                        $email_body = "<p>Your user account has been created.<br>Your username is: <strong>$new_username</strong><br>Your temporary password is:<br><strong>$new_password</strong><br>You will be prompted to change this on login.<br>Click <a href=\"$baseUrl\">here</a> to login.</p>";
+                        send_email($new_email, ucwords($new_first_name).' '.ucwords($new_last_name), $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
 
                     }
                     header("Location: ../addlocaluser.php?user=added&username=$new_username&userId=$new_id");

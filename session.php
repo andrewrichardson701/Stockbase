@@ -1,14 +1,21 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // SETUP THE SESSION FOR ALL PAGES - THIS WILL CONFIRM IF THERE IS A LOGGED IN USER OR NOT.
 if(session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
+    session_start(); 
 }
+
 // set the redirect_url 
-if (substr($_SERVER['REQUEST_URI'], 0, strlen('/inventory/')) == '/inventory/') {
-    $_SESSION['redirect_url'] = substr($_SERVER['REQUEST_URI'], strlen('/inventory/'));
-} else {
-    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
-}
+
+$redirect_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$queryString = '?'.parse_url($_SERVER['QUERY_STRING'], PHP_URL_PATH);
+
+$_SESSION['redirect_url'] = str_contains(basename($redirect_path), '.php') ? basename($redirect_path).$queryString : "";
+
 // if session not set, go to login page
 if (!str_contains($_SERVER['REQUEST_URI'], "changepassword.inc.php")) {
     if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username'])) || ($_SESSION['username'] === '')) {
@@ -38,8 +45,12 @@ $loggedin_lastname = isset($_SESSION['last_name']) ? $_SESSION['last_name'] : ''
 $loggedin_email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
 $loggedin_role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
 $loggedin_auth = isset($_SESSION['auth']) ? $_SESSION['auth'] : '';
+$loggedin_theme_id = isset($_SESSION['theme_id']) ? $_SESSION['theme_id'] : '';
+$loggedin_theme_name = isset($_SESSION['theme_name']) ? $_SESSION['theme_name'] : '';
+$loggedin_theme_file_name = isset($_SESSION['theme_file_name']) ? $_SESSION['theme_file_name'] : '';
 $loggedin_password_expired = isset($_SESSION['password_expired']) ? $_SESSION['password_expired'] : '';
 
 $loggedin_fullname = ucwords($loggedin_firstname).' '.ucwords($loggedin_lastname);
 $profile_name = ucwords($loggedin_firstname);
+
 ?>

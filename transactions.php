@@ -1,8 +1,13 @@
-<?php 
+<?php   
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // SHOWS THE INFORMATION FOR EACH PEICE OF STOCK AND ITS LOCATIONS ETC. 
 // id QUERY STRING IS NEEDED FOR THIS
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">
@@ -43,7 +48,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             $_SERVER['HTTP_REFERER'] = './index.php';
         }
     echo('<div class="container" style="padding-bottom:25px">
-        <h2 class="header-small" style="padding-bottom:10px">Transactions - Stock ID: '.$_GET['stock_id'].'</h2>');
+        <h2 class="header-small" style="padding-bottom:5px">Transactions - Stock ID: '.$_GET['stock_id'].'</h2>
+        </div>');
     if (isset($_GET['stock_id'])) {
         if (is_numeric($_GET['stock_id'])) {
             if ($_GET['stock_id'] !== '') {
@@ -74,23 +80,23 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         exit();
                     } else {
                         echo('
-                        <table class="table table-dark centertable" id="transactions">
+                        <table class="table table-dark theme-table centertable" id="transactions" style="max-width:max-content">
                             <thead>
-                                <tr>
+                                <tr class="theme-tableOuter">
                                     <th hidden>ID</th>
                                     <th hidden>Stock ID</th>
                                     <th hidden>Item ID</th>
                                     <th>Type</th>
                                     <th>Date</th>
                                     <th>Time</th>
-                                    <th hidden>Shelf</th>
                                     <th>Location</th>
+                                    <th>Shelf</th>
                                     <th>Username</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
-                                    <th>Reason</th>
-                                    <th hidden>Serial Number</th>
+                                    <th>Serial Number</th>
                                     <th hidden>Comments</th>
+                                    <th>Reason</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,36 +120,36 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             $a_name = $row_tran['a_name'];
                             switch ($t_type) {
                                 case 'add':
-                                    $t_type_color = 'limegreen';
+                                    $t_type_color = 'transactionAdd';
                                     break;
                                 case 'remove':
-                                    $t_type_color = 'red';
+                                    $t_type_color = 'transactionRemove';
                                     break;
                                 case 'delete':
-                                    $t_type_color = 'brown';
+                                    $t_type_color = 'transactionDelete';
                                     break;
                                 case 'move':
-                                    $t_type_color = 'orange';
+                                    $t_type_color = 'transactionMove';
                                     break;
                                 default:
                                     $t_type_color = '';
                             }
                                 echo('
-                                <tr style="color:'.$t_type_color.'">
+                                <tr class="'.$t_type_color.'">
                                     <td id="t_id" hidden>'.$t_id.'</td>
                                     <td hidden>'.$t_stock_id.'</td>
                                     <td hidden>'.$t_item_id.'</td>
                                     <td id="t_type">'.ucwords($t_type).'</td>
                                     <td id="t_date">'.$t_date.'</td>
                                     <td id="t_time">'.$t_time.'</td>
-                                    <td hidden>'.$s_name.'</td>
                                     <td id="a_name">'.$a_name.'</td>
+                                    <td id="s_name">'.$s_name.'</td>
                                     <td id="t_username">'.$t_username.'</td>
                                     <td id="t_quantity">'.$t_quantity.'</td>
                                     <td>'.$currency_symbol.$t_price.'</td>
-                                    <td id="t_reason">'.$t_reason.'</td>
-                                    <td hidden>'.$t_serial_number.'</td>
+                                    <td>'.$t_serial_number.'</td>
                                     <td hidden>'.$t_comments.'</td>
+                                    <td id="t_reason">'.$t_reason.'</td>
                                 </tr>
                                 ');
 
@@ -159,7 +165,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             echo ("error = non-numeric id");
         }
     }
-    echo('</div>');
     ?>
 </div>
     

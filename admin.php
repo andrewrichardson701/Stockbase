@@ -1,7 +1,12 @@
-<?php 
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // ADMIN PAGE - SHOWS CONFIGURATION OPTIONS AND ONLY VISIBLE TO ADMIN USERS
 include 'session.php'; // Session setup and redirect if the session is not active 
-include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
+// include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 
 ?>
 
@@ -20,8 +25,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
     ?>
 
 
-    <!-- set to index.php for now as there is nothing to put here. But i will forget about it if i remove it -->
-    <a href="changelog.php" class="skip-nav-link-inv">changelog</a>
+    <!-- hidden link, commented out as no purpose currently -->
+    <!-- <a href="changelog.php" class="skip-nav-link-inv">changelog</a> -->
 
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
@@ -51,8 +56,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <div id="modalDivAdd" class="modal">
         <!-- <div id="modalDivAdd" style="display: block;"> -->
             <span class="close" onclick="modalCloseAdd()">×</span>
-            <div class="container well-nopad bg-dark" style="padding:25px">
-                <div class="well-nopad bg-dark" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <div class="container well-nopad theme-divBg" style="padding:25px">
+                <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                     <div style="display:block"> 
                         <h2 style="margin-bottom:20px">Add new Site / Area / Shelf</h2>
                         <form id="locationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
@@ -97,8 +102,8 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <div id="modalDivEdit" class="modal">
         <!-- <div id="modalDivEdit" style="display: block;"> -->
             <span class="close" onclick="modalCloseEdit()">×</span>
-            <div class="container well-nopad bg-dark" style="padding:25px">
-                <div class="well-nopad bg-dark" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <div class="container well-nopad theme-divBg" style="padding:25px">
+                <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                     <div style="display:block"> 
                         <h2 style="margin-bottom:20px">Edit Location</h2>
                         <form id="editLocationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
@@ -279,6 +284,43 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                             </td>
                         </tr>
 
+                        <tr class="nav-row" style="margin-top:20px">
+                            <td id="default-theme-label" style="width:250px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="default_theme">Default Theme:</p>
+                            </td>
+                            <td id="default-theme-set" style="width:250px">
+                                <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control" style="width:150px">
+                                    <?php
+                                    $sql_theme = "SELECT * FROM theme";
+                                    $stmt_theme = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_theme);
+                                        $result_theme = mysqli_stmt_get_result($stmt_theme);
+                                        $rowCount_theme = $result_theme->num_rows;
+                                        if ($rowCount_theme < 1) {
+                                            echo ("No themes found.");
+                                        } else {
+                                            while ( $row_theme = $result_theme->fetch_assoc() ) {
+                                                $theme_id = $row_theme['id'];
+                                                $theme_name = $row_theme['name'];
+                                                $theme_file_name = $row_theme['file_name'];
+                                                echo ('<option value="'.$theme_id.'" '); if ($current_default_theme_id == $theme_id) { echo('selected'); } echo('>'.$theme_name.'</option>');
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($current_default_theme_name); ?></span></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
+                                <label class="nav-v-c"><span class="uni"><?php echo($default_default_theme_name); ?></span></label>
+                            </td>
+                        </tr>
+
 
                         <tr class="nav-row" style="margin-top:20px;margin-left:25px">
                             <td style="width:250px">
@@ -300,12 +342,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" onclick="toggleSection(this, 'users')">Users <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
         <div style="padding-top: 20px" id="users" hidden>
-            <table id="usersTable" class="table table-dark" style="max-width:max-content">
+            <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
                     <tr id="users_table_info_tr" hidden>
                         <td colspan=8 id="users_table_info_td"></td>
                     </tr>
-                    <tr class="text-center">
+                    <tr class="text-center theme-tableOuter">
                         <th>ID</th>
                         <th>Username</th>
                         <th>First Name</th>
@@ -401,7 +443,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </td>
                                         ');
                                 }
-                                echo('<tr style="background-color:#21272b"><td></td><td colspan=8><button class="btn btn-success" type="button" onclick="navPage(\'addlocaluser.php\');"><i class="fa fa-plus"></i> Add</button></td></tr>');
+                                echo('<tr class="theme-tableOuter"><td></td><td colspan=8><button class="btn btn-success" type="button" onclick="navPage(\'addlocaluser.php\');"><i class="fa fa-plus"></i> Add</button></td></tr>');
                             }
                         }
                     ?>
@@ -412,12 +454,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="usersroles-settings" onclick="toggleSection(this, 'usersroles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
         <div style="padding-top: 20px" id="usersroles" hidden>
-            <table id="usersTable" class="table table-dark" style="max-width:max-content">
+            <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
-                    <tr id="users_table_info_tr" hidden>
-                        <td colspan=8 id="users_table_info_td"></td>
-                    </tr>
-                    <tr class="text-center">
+                    <tr class="text-center theme-tableOuter">
                         <th>ID</th>
                         <th>Name</th>
                         <th>Description</th>
@@ -454,12 +493,98 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </table>
         </div>
 
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings" onclick="toggleSection(this, 'imagemanagement')">Image Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Image Management Settings -->
+        <div style="padding-top: 20px" id="imagemanagement" hidden>
+            <div style="height:75%;overflow-x: hidden;overflow-y: auto;">
+                <table class="table table-dark theme-table" style="max-width:max-content">
+                    <thead>
+                        <tr class="theme-tableOuter">
+                            <th class="text-center" style="width:130px">Image</th>
+                            <th class="text-center">File</th>
+                            <th class="text-center">Links</th>
+                            <th class="text-center">Delete</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        $filepath = 'assets/img/stock';
+                        $files = array_values(array_diff(scandir($filepath), array('..', '.')));
+                        // print_r($files);
+                        
 
+                        for ($f=0; $f<count($files); $f++) {
+                            $filename = $files[$f];
+
+                            $sql_images = "SELECT * FROM stock_img WHERE image='$filename'";
+                            $stmt_images = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_images, $sql_images)) {
+                                echo("ERROR getting entries");
+                            } else {
+                                mysqli_stmt_execute($stmt_images);
+                                $result_images = mysqli_stmt_get_result($stmt_images);
+                                $rowCount_images = $result_images->num_rows;
+                                $links = $rowCount_images;
+                            }
+                            echo('
+                                <tr id="image-row-'.$f.'" class="align-middle">
+                                    <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="file-name" value="'.$filename.'" />
+                                        <input type="hidden" name="file-links" value="'.$links.'" />
+                                        <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
+                                        <td id="image-'.$f.'-name" class="text-center align-middle">'.$filepath.'/'.$filename.'</td>
+                                        <td class="text-center align-middle">'.$links.'</td>
+                                        <td class="text-center align-middle"><button class="btn btn-danger" type="submit" name="imagemanagement-submit" '); if ($links !== 0) { echo('disabled title="Image still linked to stock. Remove these links before deleting."'); } echo('><i class="fa fa-trash"></i></button></td>
+                                        <td class="text-center align-middle">'); if ($links !== 0) { echo('<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showImageLinks(\''.$f.'\')">Show Links</button>'); } echo('</td>
+                                    </form>
+                                </tr>
+                            ');
+                            if ($links !== 0) { 
+                                echo('
+                                    <tr id="image-row-'.$f.'-links" class="align-middle" hidden>
+                                        <td colspan=100%>
+                                            <div>
+                                                <table class="table table-dark theme-table">
+                                                    <thead>
+                                                        <tr class="theme-tableOuter">
+                                                            <th>ID</td>
+                                                            <th>Stock ID</td>
+                                                            <th>Image</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>');
+                                                    while ($row_images = $result_images->fetch_assoc()) {
+                                                        echo('
+                                                            <tr class="clickable" onclick=navPage("stock.php?stock_id='.$row_images['stock_id'].'")>
+                                                                <td>'.$row_images['id'].'</td>
+                                                                <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_id'].'</a></td>
+                                                                <td>'.$row_images['image'].'</td>
+                                                            </tr>
+                                                        ');
+                                                    }
+                                                    
+                                                    echo('
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ');
+                            }
+                        }
+                        
+
+                    ?>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Stock Location Settings -->
         <div style="padding-top: 20px" id="stocklocations" hidden>
-            <p class="red">Still needs sorting... This will show all stock sites, areas, shelves - Need to work out how the edit buttons will work (hidden cells) and how to check if the relationships are good for deletion to enable the delete buttons.</p>
-
 
             <?php
             $locations = [];
@@ -469,6 +594,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                 FROM site
                                 LEFT JOIN area ON site.id = area.site_id
                                 LEFT JOIN shelf ON area.id = shelf.area_id
+                                WHERE site.deleted=0 AND area.deleted=0 AND shelf.deleted=0
                                 ORDER BY site.id, area.id, shelf.id";
             $stmt_locations = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_locations, $sql_locations)) {
@@ -493,13 +619,11 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_name'] = $row_locations['shelf_name'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_area_id'] = $row_locations['shelf_area_id'];
                     }
-                    // print_r('<pre>');
-                    // print_r($locations);
-                    // print_r('</pre>');
+
                     $l = 0;
-                    echo('<table class="table table-dark text-center" style="max-width:max-content; vertical-align: middle;">
+                    echo('<table class="table table-dark theme-table text-center" style="max-width:max-content; vertical-align: middle;">
                             <thead>
-                                <tr>
+                                <tr class="theme-tableOuter">
                                     <th>site_id</th>
                                     <th>site_name</th>
                                     <th hidden>site_description</th>
@@ -530,7 +654,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     
                                 }
                                 if ($l > 1) {
-                                    echo('<tr style="background-color:#343a40"><td colspan=9></td></tr>');
+                                    echo('<tr class="theme-tableOuter"><td colspan=9></td></tr>');
                                 }
 
                                 $site_id_check = $site['site_id'];
@@ -545,16 +669,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     $rowCount_site_check = $result_site_check->num_rows;
                                 }
 
-                                $sql_site_check2 = "SELECT * FROM cable_item WHERE site_id=$site_id_check;";
-                                $stmt_site_check2 = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_site_check2, $sql_site_check2)) {
-                                    echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
-                                } else {
-                                    mysqli_stmt_execute($stmt_site_check2);
-                                    $result_site_check2 = mysqli_stmt_get_result($stmt_site_check2);
-                                    $rowCount_site_check2 = $result_site_check2->num_rows;
-                                }
-
                                 echo('<tr style="background-color:'.$color1.' !important; color:black">
                                         <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                             <input type="hidden" id="site-'.$site['site_id'].'-type" name="type" value="site" />
@@ -564,12 +678,12 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                             <td hidden><input id="site-'.$site['site_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.$site['site_description'].'" /></td>
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
-                                            <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                            <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                     <i class="fa fa-save"></i>
                                                 </button>
                                             </td>
-                                            <td class="stockTD" style="background-color:#21272b; ">
+                                            <td class="stockTD theme-table-blank" ">
                                                 <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$site['site_id'].'\', \'site\')">
                                                     <i class="fa fa-pencil"></i>
                                                 </button>
@@ -577,9 +691,9 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         </form>
                                         <form id="siteForm-delete-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                         <input type="hidden" name="location-id" value="'.$site_id_check.'" />
-                                            <td class="stockTD" style="background-color:#21272b; ">
+                                            <td class="stockTD theme-table-blank">
                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" '); 
-                                                if ($rowCount_site_check > 0 || $rowCount_site_check2 > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
+                                                if ($rowCount_site_check > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                 echo('>
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -604,19 +718,19 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                     <input type="hidden" id="area-'.$area['area_id'].'-type" name="type" name="type" value="area" />
                                                     <input type="hidden" id="area-'.$area['area_id'].'-id" name="id" value="'.$area['area_id'].'" />
-                                                    <td class="stockTD" style=" background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td>
+                                                    <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">'.$area['area_id'].'</td>
                                                     <td class="stockTD" style=""><input id="area-'.$area['area_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$area['area_name'].'" style="width:150px"/></td>
                                                     <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.$area['area_description'].'" /></td>
                                                     <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-parent" type="hidden" name="area-site-id" value="'.$area['area_site_id'].'" /></td>
                                                     <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
-                                                    <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                    <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                             <i class="fa fa-save"></i>
                                                         </button>
                                                     </td>
-                                                    <td class="stockTD" style="background-color:#21272b; ">
+                                                    <td class="stockTD theme-table-blank">
                                                         <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$area['area_id'].'\', \'area\')">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
@@ -624,7 +738,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                 </form>
                                                 <form id="areaForm-delete-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                 <input type="hidden" name="location-id" value="'.$area_id_check.'" />
-                                                    <td class="stockTD" style="background-color:#21272b; ">
+                                                    <td class="stockTD theme-table-blank">
                                                         <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" '); 
                                                         if ($rowCount_area_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                         echo('>
@@ -652,17 +766,17 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-site" name="site" value="'.$site['site_id'].'" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-type" name="type" value="shelf" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-id" name="id" value="'.$shelf['shelf_id'].'" />
-                                                            <td class="stockTD" style="background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> 
-                                                            <td class="stockTD" style="border-left:2px solid #454d55; background-color:#21272b"></td> <td style="background-color:#21272b"></td> <td hidden></td> <td hidden></td> <td hidden></td>
+                                                            <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td> 
+                                                            <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden></td> <td hidden></td> <td hidden></td>
                                                             <td class="stockTD" style="border-left:2px solid #454d55; ">'.$shelf['shelf_id'].'</td>
                                                             <td class="stockTD" style=""><input id="shelf-'.$shelf['shelf_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.$shelf['shelf_name'].'" style="width:150px"/></td>
                                                             <td class="stockTD" hidden><input id="shelf-'.$shelf['shelf_id'].'-parent" type="hidden" name="shelf-area-id" value="'.$shelf['shelf_area_id'].'" /></td>
-                                                            <td class="stockTD" style="background-color:#21272b; border-left:2px solid #454d55; ">
+                                                            <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                                     <i class="fa fa-save"></i>
                                                                 </button>
                                                             </td>
-                                                            <td class="stockTD" style="background-color:#21272b; ">
+                                                            <td class="stockTD theme-table-blank">
                                                                 <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit(\''.$shelf['shelf_id'].'\', \'shelf\')" >
                                                                     <i class="fa fa-pencil"></i>
                                                                 </button>
@@ -670,7 +784,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                                         </form>
                                                         <form id="shelfForm-delete-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                             <input type="hidden" name="location-id" value="'.$shelf_id_check.'" />
-                                                            <td class="stockTD" style="background-color:#21272b; ">
+                                                            <td class="stockTD theme-table-blank">
                                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="shelf" type="submit" '); 
                                                                 if ($rowCount_shelf_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                                 echo('>
@@ -683,7 +797,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                         }
                                     }
                                 }
-                                echo('<tr style="background-color:#21272b">
+                                echo('<tr class="theme-table-blank">
                                     <td colspan=6 class="stockTD">
                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px; width: 50px" onclick="modalLoadAdd(\''.$site['site_id'].'\')">
                                             <i class="fa fa-plus"></i>
@@ -693,14 +807,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                                     </td>
                                 </tr>');
                             }
-                            // echo('<tr style="background-color:#21272b">
-                            //         <td></td> <td></td> <td hidden></td> <td></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> <td></td> <td></td> <td hidden></td>
-                            //             <td>
-                            //                 <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
-                            //                     <i class="fa fa-plus"></i>
-                            //                 </button>
-                            //             </td>
-                            //         </tr>');
                     echo('  </tbody>
                         </table>');
                 }
@@ -906,6 +1012,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 </table>
             </form>
             <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" <?php if($current_smtp_enabled == 0) { echo("hidden"); } ?>>
+                <hr style="border-color:white; margin-left:10px">
                 <table id="smtpTable">
                     <tbody>
                         <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">
@@ -1045,11 +1152,151 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 </table>
             </form>
         </div>
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="notification-settings" onclick="toggleSection(this, 'notification')">Email Notification Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+
+        <!-- Notification Settings -->
+        <div style="padding-top: 20px" id="notification" hidden>
+            <?php if ($current_smtp_enabled == 1) {
+                $sql_notif = "SELECT * FROM notifications
+                                WHERE id!=0;"; 
+                $stmt_notif = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_notif, $sql_notif)) {
+                    // show error for no connection
+                    echo('<p id="notification-output"><or class="red">Error: MYSQL connection issue.</or></p>');
+                } else {
+                    mysqli_stmt_execute($stmt_notif);
+                    $result_notif = mysqli_stmt_get_result($stmt_notif);
+                    $rowCount_notif = $result_notif->num_rows;
+                    if ($rowCount_notif != 0) {
+
+                        echo('<p id="notification-output" class="last-edit-T" hidden></p>
+                            <table><tbody>');
+
+                        $n = 0;
+                        while($row_notif = $result_notif->fetch_assoc()){
+                            if ($n == 0) {
+                                echo('<tr>');
+                            }
+
+                            $notif_id = $row_notif['id'];
+                            $notif_name = $row_notif['name'];
+                            $notif_title = $row_notif['title'];
+                            $notif_description = $row_notif['description'];
+                            $notif_enabled = $row_notif['enabled'];
+                            $checked = $row_notif['enabled'] == 1 ? 'checked' : '';
+
+                            if ($n % 4 == 0) {
+                                echo('</tr><tr>');
+                            }
+
+                            echo('
+                                <td class="align-middle" style="margin-left:25px;margin-right:10px" id="notif-'.$notif_id.'">
+                                    <p style="min-height:max-content;margin:0" class="align-middle title" title="'.$notif_description.'">'.$notif_title.':</p>
+                                </td>
+                                <td class="align-middle" style="padding-left:5px;padding-right:20px" id="notif-'.$notif_id.'-toggle">
+                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
+                                        <input type="checkbox" name="'.$notif_name.'" onchange="mailNotification(this, '.$notif_id.')" '.$checked.'>
+                                        <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                    </label>
+                                </td>
+                            ');
+
+                            if ($n == $rowCount_notif-1) {
+                                echo('</tr>');
+                            }
+                            $n++;
+                        }
+                        echo('</tbody></table>');
+                        
+                    } else {
+                        // show an error for no rows
+                        echo('<p id="notification-output"><or class="red">No notifications settings found in table...</or></p>');
+                    }
+                }
+            } else {
+                echo ('<p class="blue">SMTP is disabled. All email notifications have been disabled.</p>');
+            }
+            ?>
+            <div class="well-nopad bg-dark" style="margin-top:20px">
+                <?php 
+                $example_body = urlencode("<p style='color:black !important'>Fixed cable stock added, for <strong><or class='link' style='color: #0000EE;'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
+                ?>
+                <h4>Email example</h4>
+                <input type="hidden" value="<?php echo($example_body); ?>" id="email-template-body" />
+                <div id="email-template" style="margin-top:20px">
+                </div>
+            </div>
+
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="changelog-settings" onclick="toggleSection(this, 'changelog')">Changelog <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+
+        <!-- Changelog -->
+        <div style="padding-top: 20px" id="changelog" hidden>
+            <div class="content">
+                <?php 
+                include 'includes/dbh.inc.php';
+                $sql = "SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 10";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    echo("<p class='red'>Error reaching changelog table</p>");
+                } else {
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount < 1) {
+                        echo("<p>No entries found.</p>");
+                    } else {
+                        ?>
+                        <table id="changelogTable" class="table table-dark theme-table" style="max-width:max-content">
+                            <thead>
+                                <tr class="theme-tableOuter">
+                                    <th>id</th>
+                                    <th style="min-width: 110px;">timestamp</th>
+                                    <th>user_id</th>
+                                    <th>user_username</th>
+                                    <th>action</th>
+                                    <th>table_name</th>
+                                    <th>record_id</th>
+                                    <th>field_name</th>
+                                    <th>value_old</th>
+                                    <th>value_new</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                while ($row = $result->fetch_assoc()) {
+                                    echo('
+                                    <tr>
+                                        <td>'.$row['id'].'</td>
+                                        <td>'.$row['timestamp'].'</td>
+                                        <td>'.$row['user_id'].'</td>
+                                        <td>'.$row['user_username'].'</td>
+                                        <td>'.$row['action'].'</td>
+                                        <td>'.$row['table_name'].'</td>
+                                        <td>'.$row['record_id'].'</td>
+                                        <td>'.$row['field_name'].'</td>
+                                        <td>'.$row['value_old'].'</td>
+                                        <td>'.$row['value_new'].'</td>
+                                    </tr>
+                                    ');
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                        <?php
+                    }
+                }
+                ?>
+                <a class="clickable" href="changelog.php">Full Changelog</a>
+            </div>
+            
+        </div>
     </div>
 
     <div id="modalDivResetPW" class="modal" style="display: none;">
         <span class="close" onclick="modalCloseResetPW()">×</span>
-        <div class="container well-nopad bg-dark" style="padding:25px">
+        <div class="container well-nopad theme-divBg" style="padding:25px">
             <div style="margin:auto;text-align:center;margin-top:10px">
                 <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="admin-pwreset-submit" value="set" />
@@ -1073,23 +1320,6 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             </div>
         </div>
     </div>
-    <script> // MODAL SCRIPT
-        // Get the modal
-        function resetPassword(user_id) {
-            var modal = document.getElementById("modalDivResetPW");
-
-            // Get the image and insert it inside the modal - use its "alt" text as a caption
-            modal.style.display = "block";
-            var user_id_element = document.getElementById('modal-user-id');
-            user_id_element.value = user_id;
-        }
-
-        // When the user clicks on <span> (x), close the modal or if they click the image.
-        modalCloseResetPW = function() { 
-            var modal = document.getElementById("modalDivResetPW");
-            modal.style.display = "none";
-        }
-    </script>
 
     <!-- Modal Image Div -->
     <div id="modalDiv" class="modal" onclick="modalClose()">
@@ -1119,7 +1349,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             outputPre.parentNode.removeChild(outputPre)
         }
         var newOutputPre = document.createElement("pre");
-        newOutputPre.setAttribute("class", "well-nopad bg-dark");
+        newOutputPre.setAttribute("class", "well-nopad theme-divBg");
         newOutputPre.setAttribute("id", "ldapTestOutput");
         newOutputPre.setAttribute("style", "color:white;margin-bottom:50px");
         ldapForm.parentNode.insertBefore(newOutputPre, ldapForm.nextSibling);
@@ -1180,7 +1410,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             outputPre.parentNode.removeChild(outputPre)
         }
         var newOutputPre = document.createElement("pre");
-        newOutputPre.setAttribute("class", "well-nopad bg-dark");
+        newOutputPre.setAttribute("class", "well-nopad theme-divBg");
         newOutputPre.setAttribute("id", "smtpTestOutput");
         newOutputPre.setAttribute("style", "color:white;margin-bottom:50px");
         smtpForm.parentNode.insertBefore(newOutputPre, smtpForm.nextSibling);
@@ -1236,171 +1466,195 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             }
         }
     }
+        
+    // color-picker box json - for Admin.php
+    $("input.color").each(function() {
+        var that = this;
+        $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {
+            that.type = (that.type == "color") ? "text" : "color";
+        }));
+    }).change(function() {
+        $(this).attr("data-value", this.value);
+        this.type = "text";
+    });
 
-    </script>
-    <script> // color-picker box json - for Admin.php
-        $("input.color").each(function() {
-            var that = this;
-            $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {
-                that.type = (that.type == "color") ? "text" : "color";
-            }));
-        }).change(function() {
-            $(this).attr("data-value", this.value);
-            this.type = "text";
-        });
-    </script>
+    // scripts for users modifications
+    function userRoleChange(id) {
+        var select = document.getElementById("user_"+id+"_role_select");
+        var selectedValue = select.value;
 
-    <script> // script for users modifications
-        function userRoleChange(id) {
-            var select = document.getElementById("user_"+id+"_role_select");
-            var selectedValue = select.value;
-
-            $.ajax({
-                type: "POST",
-                url: "./includes/admin.inc.php",
-                data: {
-                    user_id: id,
-                    user_new_role: selectedValue,
-                    user_role_submit: 'yes'
-                },
-                dataType: "html",
-                success: function(response) {
-                    var tr = document.getElementById('users_table_info_tr');
-                    var td = document.getElementById('users_table_info_td');
-                    tr.hidden = false;
-                    var result = response;
-                    if (result.startsWith("Error:")) {
-                        td.classList.add("red");
-                    } else {
-                        td.classList.add("green");
-                    }
-                    td.textContent = result;
-                },
-                async: true
-            });
-        }
-        function usersEnabledChange(id) {
-            var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
-            if (checkbox.checked == true) {
-                var checkboxValue = 1;
-            } else {
-                var checkboxValue = 0;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "./includes/admin.inc.php",
-                data: {
-                    user_id: id,
-                    user_new_enabled: checkboxValue,
-                    user_enabled_submit: 'yes'
-                },
-                dataType: "html",
-                success: function(response) {
-                    var tr = document.getElementById('users_table_info_tr');
-                    var td = document.getElementById('users_table_info_td');
-                    tr.hidden = false;
-                    var result = response;
-                    if (result.startsWith("Error:")) {
-                        td.classList.add("red");
-                    } else {
-                        td.classList.add("green");
-                    }
-                    td.textContent = result;
-                },
-                async: true
-            });
-        }
-        // Function to extract the anchor and split it before the first hyphen
-        function extractParamsFromAnchor(anchor) {
-            const params = anchor.split('-');
-            return {
-                param1: anchor,
-                param2: params[0],
-            };
-        }
-
-        // Check for anchors in the URL and call toggleSection function if present
-        window.onload = function () {
-            const anchor = window.location.hash.substring(1); // Remove the leading '#'
-            if (anchor) {
-                const { param1, param2 } = extractParamsFromAnchor(anchor);
-                // console.log(param1);
-                // console.log(param2);
-                toggleSection(document.getElementById(param1), param2);
-
-                // Scroll to the anchor ID after the toggleSection function is done
-                const anchorElement = document.getElementById(anchor);
-                if (anchorElement) {
-                    anchorElement.scrollIntoView({ behavior: 'smooth' });
+        $.ajax({
+            type: "POST",
+            url: "./includes/admin.inc.php",
+            data: {
+                user_id: id,
+                user_new_role: selectedValue,
+                user_role_submit: 'yes'
+            },
+            dataType: "html",
+            success: function(response) {
+                var tr = document.getElementById('users_table_info_tr');
+                var td = document.getElementById('users_table_info_td');
+                tr.hidden = false;
+                var result = response;
+                if (result.startsWith("Error:")) {
+                    td.classList.add("red");
+                } else {
+                    td.classList.add("green");
                 }
-            } else {
-                toggleSection(document.getElementById("global-settings"), "global");
+                td.textContent = result;
+            },
+            async: true
+        });
+    }
+    function usersEnabledChange(id) {
+        var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
+        if (checkbox.checked == true) {
+            var checkboxValue = 1;
+        } else {
+            var checkboxValue = 0;
+        }
 
-            }
+        $.ajax({
+            type: "POST",
+            url: "./includes/admin.inc.php",
+            data: {
+                user_id: id,
+                user_new_enabled: checkboxValue,
+                user_enabled_submit: 'yes'
+            },
+            dataType: "html",
+            success: function(response) {
+                var tr = document.getElementById('users_table_info_tr');
+                var td = document.getElementById('users_table_info_td');
+                tr.hidden = false;
+                var result = response;
+                if (result.startsWith("Error:")) {
+                    td.classList.add("red");
+                } else {
+                    td.classList.add("green");
+                }
+                td.textContent = result;
+            },
+            async: true
+        });
+    }
+    // ===
+
+
+    // Function to extract the anchor and split it before the first hyphen
+    function extractParamsFromAnchor(anchor) {
+        const params = anchor.split('-');
+        return {
+            param1: anchor,
+            param2: params[0],
         };
+    }
+
+    // Check for anchors in the URL and call toggleSection function if present
+    window.onload = function () {
+        const anchor = window.location.hash.substring(1); // Remove the leading '#'
+        if (anchor) {
+            const { param1, param2 } = extractParamsFromAnchor(anchor);
+            // console.log(param1);
+            // console.log(param2);
+            toggleSection(document.getElementById(param1), param2);
+
+            // Scroll to the anchor ID after the toggleSection function is done
+            const anchorElement = document.getElementById(anchor);
+            if (anchorElement) {
+                anchorElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        } else {
+            toggleSection(document.getElementById("global-settings"), "global");
+
+        }
+    };
 
         
-        // LDAP TOGGLE ENABLE STUFF
+    // LDAP TOGGLE ENABLE STUFF
 
-        // Get the initial state of the LDAP enable toggle checkbox
-        let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
+    // Get the initial state of the LDAP enable toggle checkbox
+    let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
 
-        // Add an event listener to the checkbox
-        document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
-            // Check if the checkbox is being unchecked
-            const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-            // If the checkbox is being unchecked, display the confirmation popup
-            if (isUncheck) {
-                const confirmed = confirm(
-                    'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
-                );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
+            );
 
-                // If the user cancels, revert the checkbox back to its previous state
-                if (!confirmed) {
-                    this.checked = true; // Revert the checkbox back to checked state
-                    return;
-                }
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
             }
+        }
 
-            // Update the initial state of the checkbox for the next change event
-            isLdapCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isLdapCheckboxChecked = this.checked;
 
-            // If the checkbox is not being unchecked or the user confirmed, submit the form
-            document.getElementById("ldapToggleForm").submit();
-        });
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("ldapToggleForm").submit();
+    });
 
-        // SMTP TOGGLE ENABLE STUFF
+    // SMTP TOGGLE ENABLE STUFF
 
-        // Get the initial state of the SMTP enable toggle checkbox
-        let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
+    // Get the initial state of the SMTP enable toggle checkbox
+    let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
 
-        // Add an event listener to the checkbox
-        document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
-            // Check if the checkbox is being unchecked
-            const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-            // If the checkbox is being unchecked, display the confirmation popup
-            if (isUncheck) {
-                const confirmed = confirm(
-                    'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
-                );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
+            );
 
-                // If the user cancels, revert the checkbox back to its previous state
-                if (!confirmed) {
-                    this.checked = true; // Revert the checkbox back to checked state
-                    return;
-                }
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
             }
+        }
 
-            // Update the initial state of the checkbox for the next change event
-            isSmtpCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isSmtpCheckboxChecked = this.checked;
 
-            // If the checkbox is not being unchecked or the user confirmed, submit the form
-            document.getElementById("smtpToggleForm").submit();
-        });
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("smtpToggleForm").submit();
+    });
 
+    // Mail notifications checkboxes
+    function mailNotification(checkbox, id) {
+        var outputBox = document.getElementById('notification-output');
+        var notification = id;
+        if (checkbox.checked) {
+            // enable the notification
+            var value = 1;
+        } else {
+            // disable the notification
+            var value = 0;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/admin.inc.php?mail-notification=1&notification="+notification+"&value="+value, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var output = JSON.parse(xhr.responseText);
+                outputBox.hidden = false;
+                outputBox.classList="last-edit-T";
+                outputBox.innerHTML = output[0];
+            }
+        };
+        xhr.send();
+    } 
     </script>
 
     <script> // MODAL SCRIPT
@@ -1417,90 +1671,7 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             modal.style.display = "none";
         }
 
-    </script>
 
-    <script>
-        function populateSites(field, current_site) {
-            // Make an AJAX request to retrieve the corresponding sites
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Parse the response and populate the shelf select box
-                    var sites = JSON.parse(xhr.responseText);
-                    var select = field;
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Site", "");
-                    select.options[0].disabled = true;
-                    for (var i = 0; i < sites.length; i++) {
-                        select.options[select.options.length] = new Option(sites[i].name, sites[i].id);
-                    }
-                    select.disabled = (select.options.length === 1);
-                    for (var i = 0; i < select.options.length; i++) {
-                        if (select.options[i].value === current_site) {
-                            select.options[i].selected = true;
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        }
-        function populateAreas(field, current_site, current_area) {
-            // Make an AJAX request to retrieve the corresponding areas
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Parse the response and populate the shelf select box
-                    var areas = JSON.parse(xhr.responseText);
-                    var select = field;
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Area", "");
-                    select.options[0].disabled = true;
-                    for (var i = 0; i < areas.length; i++) {
-                        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
-                    }
-                    select.disabled = (select.options.length === 1);
-                    for (var i = 0; i < select.options.length; i++) {
-                        if (select.options[i].value === current_area) {
-                            select.options[i].selected = true;
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        }
-        function populateAreasUpdate() {
-            // Get the selected site
-            var site = document.getElementById("location-parent-site-input").value;
-            var type = document.getElementById("location-type-input").value;
-            if (type === "shelf") {
-                // Make an AJAX request to retrieve the corresponding areas
-                var xhr = new XMLHttpRequest();
-                xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Parse the response and populate the area select box
-                        var areas = JSON.parse(xhr.responseText);
-                        var select = document.getElementById("location-parent-area-input");
-                        select.options.length = 0;
-                        select.options[0] = new Option("Select Area", "");
-                        select.options[0].disabled = true;
-                        for (var i = 0; i < areas.length; i++) {
-                            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
-                        }
-                        select.disabled = (select.options.length === 1);
-                    }
-                };
-                xhr.send();
-            }
-        }
-        document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
-    </script>
-
-    <script> // MODAL SCRIPT
         // Get the modal
         function modalLoadEdit(id, type) {
             //get the modal div with the property
@@ -1607,9 +1778,108 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
             input_description.value = '';
         }
 
+        // Get the modal
+        function resetPassword(user_id) {
+            var modal = document.getElementById("modalDivResetPW");
+
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+            var user_id_element = document.getElementById('modal-user-id');
+            user_id_element.value = user_id;
+        }
+
+        // When the user clicks on <span> (x), close the modal or if they click the image.
+        modalCloseResetPW = function() { 
+            var modal = document.getElementById("modalDivResetPW");
+            modal.style.display = "none";
+        }
+
     </script>
 
-    <script> // show input for the ShowADD section
+    <script>
+        function populateSites(field, current_site) {
+            // Make an AJAX request to retrieve the corresponding sites
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var sites = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Site", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < sites.length; i++) {
+                        select.options[select.options.length] = new Option(sites[i].name, sites[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_site) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreas(field, current_site, current_area) {
+            // Make an AJAX request to retrieve the corresponding areas
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var areas = JSON.parse(xhr.responseText);
+                    var select = field;
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Area", "");
+                    select.options[0].disabled = true;
+                    for (var i = 0; i < areas.length; i++) {
+                        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                    }
+                    select.disabled = (select.options.length === 1);
+                    for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === current_area) {
+                            select.options[i].selected = true;
+                        }
+                    }
+                }
+            };
+            xhr.send();
+        }
+        function populateAreasUpdate() {
+            // Get the selected site
+            var site = document.getElementById("location-parent-site-input").value;
+            var type = document.getElementById("location-type-input").value;
+            if (type === "shelf") {
+                // Make an AJAX request to retrieve the corresponding areas
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // Parse the response and populate the area select box
+                        var areas = JSON.parse(xhr.responseText);
+                        var select = document.getElementById("location-parent-area-input");
+                        select.options.length = 0;
+                        select.options[0] = new Option("Select Area", "");
+                        select.options[0].disabled = true;
+                        for (var i = 0; i < areas.length; i++) {
+                            select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+                        }
+                        select.disabled = (select.options.length === 1);
+                    }
+                };
+                xhr.send();
+            }
+        }
+        document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
+    </script>
+
+
+    <script> 
+    // show input for the ShowADD section
         function showInput() {
             var type = document.getElementById("addLocation-type");
             var selectedType = type.options[type.selectedIndex].value;
@@ -1625,38 +1895,78 @@ include 'http-headers.php'; // $_SERVER['HTTP_X_*']
                 modifyContainers[i].hidden = false;
             }
         }
-    </script>
 
-    <script>
         function populateParent() {
-        // Get the selected type
-        var type = document.getElementById("addLocation-type").value;
-        
-        // Make an AJAX request to retrieve the corresponding parents
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                // Parse the response and populate the area select box
-                var select = document.getElementById("addLocation-parent");
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Parent", "");
-                if (xhr.responseText !== '') {
-                    var parents = JSON.parse(xhr.responseText);
-                    for (var i = 0; i < parents.length; i++) {
-                        select.options[select.options.length] = new Option(parents[i].name, parents[i].id);
-                    }
-                    
-                } 
-                select.disabled = (select.options.length === 1);
-            }
+            // Get the selected type
+            var type = document.getElementById("addLocation-type").value;
             
-        };
-        xhr.send();
+            // Make an AJAX request to retrieve the corresponding parents
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the area select box
+                    var select = document.getElementById("addLocation-parent");
+                        select.options.length = 0;
+                        select.options[0] = new Option("Select Parent", "");
+                    if (xhr.responseText !== '') {
+                        var parents = JSON.parse(xhr.responseText);
+                        for (var i = 0; i < parents.length; i++) {
+                            select.options[select.options.length] = new Option(parents[i].name, parents[i].id);
+                        }
+                        
+                    } 
+                    select.disabled = (select.options.length === 1);
+                }
+                
+            };
+            xhr.send();
         }
         document.getElementById("addLocation-type").addEventListener("change", populateParent);
-    </script>
 
+        function showImageLinks(num) {
+            var button = document.getElementById('image-'+num+'-links');
+            var linksRow = document.getElementById('image-row-'+num+'-links');
+
+            if (linksRow.hidden === true) {
+                button.className = "btn btn-dark";
+                button.innerText = "Hide Links";
+                linksRow.hidden = false;
+            } else {
+                button.className = "btn btn-warning";
+                button.innerText = "Show Links";
+                linksRow.hidden = true;
+            }
+        }
+    </script>
+    
+    <!-- script to load the template email into page -->
+    <script>
+        function emailTemplate() {
+            var body = document.getElementById('email-template-body').value;
+            var emailDiv = document.getElementById('email-template');
+
+            // Make an AJAX request to retrieve cotnent
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/smtp.inc.php?template=echo&body="+body);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the field
+                    if (xhr.responseText !== '') {
+                        var email = xhr.responseText;
+                        emailDiv.innerHTML = email;
+                    } else {
+                        emailDiv.innerHTML = '<or class="red">AJAX Results Empty...</or>';
+                    }
+                } else {
+                    emailDiv.innerHTML = '<or class="red">XMLHttpRequest Status = '+xhr.status+'. Expected: 200</or>';
+                }
+            };
+            xhr.send();
+        }
+
+        document.onload = emailTemplate();
+    </script>
     
 <?php include 'foot.php'; ?>
 

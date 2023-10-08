@@ -1,0 +1,116 @@
+body {
+    /* base background colour */
+	background-color: #FFFDFA !important; 
+    /* base text colour */
+	color: #000000 !important; 
+}
+
+/* themed dropdown select boxes */
+.theme-dropdown { 
+	background-color:#aaa9a9 !important;
+	border-color:#505050 !important;
+	margin:0;
+	padding-left:0 !important;
+	color: black !important;
+}
+
+/* themed dropdown select box options */
+.theme-dropdown option { 
+	color: black !important;
+}
+
+/* specified text colour (used to be .cw) */
+.theme-textColor { 
+	color: black !important;
+}
+
+/* Profile page text colour */
+.theme-profileTextColor { 
+	color: black !important;
+}
+
+/* Table colouring */
+.theme-table { 
+	background-color: #F9F9F9;
+	color: black;
+}
+
+/* Table header and footer colours */
+.theme-tableOuter { 
+	background-color:#e1e1e1;
+}
+
+/* Table blank cell for the stock locations */
+.theme-table-blank { 
+    background-color:#bcbcbc;
+}
+
+/* Table selected th cells */
+.theme-th-selected { 
+    background-color: #999999;
+    border: 0px !important;
+}
+
+/* was gold, now changes based on theme - same as url links */
+.gold, a { 
+	color: blue !important;
+}
+
+/* clickable items */
+.clickable { 
+    cursor: pointer !important;
+}
+/* clickable items colours */
+.clickable:hover { 
+    background-color: #858484 !important;
+}
+
+.footer, .show {
+    background-color: #d1cfcf;
+    color: black;
+}
+
+/* selected page for paginatation */
+.pageSelected { 
+    color: black !important;
+}
+
+/* div background colours */
+.theme-divBg { 
+    background-color: #d3d3d3 !important;
+}
+
+/* div background colours (darker) */
+.theme-divBg-m { 
+    background-color: #acacac !important;
+}
+
+/* special button look */
+.theme-btn { 
+    background-color: #a6a3a3 !important;
+}
+
+/* special serial button background look */
+.serial-bg { 
+    background-color: #a6a3a3 !important;
+    color: #1f1f1f !important;
+}
+
+/*special colour - currently used for the view all in transactions and the min stock count */ 
+.specialColor { 
+    color: #a87e0b !important; 
+}
+
+/* transaction table text colours */
+.transactionAdd {
+    color: limegreen;
+}
+.transactionMove {
+    color: #ed9a00;
+}
+.transactionRemove {
+    color: #e11010;     
+}
+.transactionDelete {
+    color: brown;
+}

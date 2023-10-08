@@ -1,17 +1,17 @@
-<?php
+<?php  
+// This file is part of StockBase.
+// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+
 // LOGIN BACKEND - CHECKS IF THE USER SELECTED LOCAL OR NOT AND LOGS IN VIA EITHER LDAP OR LOCAL USER.
 
 
 // C:\Users\Administrator>dsquery user -samid *
 // "CN=Administrator,CN=Users,DC=ajrich,DC=co,DC=uk"
 
-
 // INSTALL PHP LDAP:    apt install php8.1-ldap       or       apt intall php-ldap
 
-
-
-//DEBUG
-// if (isset($_GET['submit'])) { //jumpcli.arpco.xyz/inventory/includes/login.inc.php?submit=submit&username=andrew1&password=DropsBuildsSkill12!!
 if (isset($_POST['submit'])) {
     // if (!isset($_GET['username']) || !isset($_GET['password'])) {
     if (!isset($_POST['username']) || !isset($_POST['password'])) {
@@ -35,9 +35,11 @@ if (isset($_POST['submit'])) {
                     $uid_type = "username";
                 }
 
-                $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired
+                $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired, users.theme_id AS users_theme_id, 
+                                    users_roles.name as role, users.theme_id AS users_theme_id,
                                 FROM users 
                                 INNER JOIN users_roles ON users.role_id = users_roles.id
+                                INNER JOIN theme ON users.theme_id = theme.id
                                 WHERE $uid_type=? AND auth='local'";
                 $stmt_users = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
@@ -72,6 +74,9 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['email'] = $row['email'];
                                 $_SESSION['role'] = $row['role'];
                                 $_SESSION['auth'] = $row['auth'];
+                                $_SESSION['theme_id'] = $row['users_theme_id'];
+                                $_SESSION['theme_name'] = $current_default_theme_name;
+                                $_SESSION['theme_file_name'] = $current_default_theme_file_name;
                                 $_SESSION['password_expired'] = $row['password_expired'];
                                 if (isset($_SESSION['redirect_url'])) {
                                     if (str_contains($_SESSION['redirect_url'], "?")) {
@@ -229,8 +234,11 @@ if (isset($_POST['submit'])) {
                             // Check if the user exists already in the users table
                             include 'dbh.inc.php';
 
-                            $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled FROM users 
+                            $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.theme_id AS users_theme_id,
+                                                theme.name as theme_name, theme.file_name as theme_file_name
+                                            FROM users 
                                             INNER JOIN users_roles ON users.role_id = users_roles.id
+                                            INNER JOIN theme ON users.theme_id = theme.id
                                             WHERE username=? AND auth='ldap'";
                             $stmt_users = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
@@ -261,13 +269,16 @@ if (isset($_POST['submit'])) {
                                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }
                                     session_start();
-                                    $_SESSION['user_id'] = $row['users_id'];
+                                    $_SESSION['user_id'] = $insert_id;
                                     $_SESSION['username'] = $ldap_info_samAccountName;
                                     $_SESSION['first_name'] = $ldap_info_firstName;
                                     $_SESSION['last_name'] = $ldap_info_lastName;
                                     $_SESSION['email'] = $ldap_info_upn;
                                     $_SESSION['role'] = $default_role;
                                     $_SESSION['auth'] = $auth;
+                                    $_SESSION['theme_id'] = $current_default_theme_id;
+                                    $_SESSION['theme_name'] = $current_default_theme_name;
+                                    $_SESSION['theme_file_name'] = $current_default_theme_file_name;
                                     $_SESSION['password_expired'] = 0;
                                     if (isset($_SESSION['redirect_url'])) {
                                         if (str_contains($_SESSION['redirect_url'], "?")) {
@@ -296,6 +307,9 @@ if (isset($_POST['submit'])) {
                                         $_SESSION['email'] = $row['email'];
                                         $_SESSION['role'] = $row['role'];
                                         $_SESSION['auth'] = $row['auth'];
+                                        $_SESSION['theme_id'] = $row['users_theme_id'];
+                                        $_SESSION['theme_name'] = $row['theme_name'];
+                                        $_SESSION['theme_file_name'] = $row['theme_file_name'];
                                         $_SESSION['password_expired'] = 0;
                                         if (isset($_SESSION['redirect_url'])) {
                                             if (str_contains($_SESSION['redirect_url'], "?")) {

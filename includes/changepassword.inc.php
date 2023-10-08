@@ -1,14 +1,9 @@
-<?php  
-// This file is part of StockBase.
-// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
-
-// USED TO CHANGE PASSWORD
+<?php
+print_r($_POST);
 
 if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
-} 
+}
 
 $redirect_url = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : 'index.php';
 if (strpos($redirect_url, "?")) {
@@ -165,7 +160,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                 $email_subject = ucwords($current_system_name)." - Reset your password";
                 $email_body = '<p>We recieved a password reset request for your account. <br>The link to reset your password is below. If you did not make this request, you can ignore this email.</p>
                                 <p>Here is your password reset link: </br><a href="' . $url . '">' . $url . '</a></p>';
-                send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
+                send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                 header("Location: ../login.php?resetemail=sent");
                 exit();
             }
@@ -267,7 +262,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                             $email_subject = ucwords($current_system_name)." - Password Reset!";
                                             $email_body = '<p>Your password has been reset.</p>
                                                             <p>Click <a href="' . $baseUrl . '">here</a> to login.</p>';
-                                            send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
+                                            send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body));
                                             header("Location: ../login.php?newpwd=passwordupdated");
                                         }
                                     }

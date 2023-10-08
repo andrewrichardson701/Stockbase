@@ -1,14 +1,9 @@
-<?php  
-// This file is part of StockBase.
-// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
-
+<?php 
 // USER PROFILE PAGE
 // SEE USER INFO FROM THE DATABASE BUT NOT MODIFY ANY (YET ATLEAST)
 
 include 'session.php'; // Session setup and redirect if the session is not active 
-// include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
+include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 
 if ($_SESSION['auth'] == "ldap") {
     header("Location: profile.php");

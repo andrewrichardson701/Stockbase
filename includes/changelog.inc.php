@@ -1,8 +1,4 @@
-<?php  
-// This file is part of StockBase.
-// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
+<?php
 
 function addChangelog($user_id, $user_username, $action, $table_name, $record_id, $field_name, $value_old, $value_new) {
     $timestamp = date('Y-m-d H:i:s');
@@ -43,10 +39,10 @@ function addChangelog($user_id, $user_username, $action, $table_name, $record_id
                             </tbody>
                         </table>
                         <br>
-                        <p>Please contact an administrator, or use the below SQL to add this:</p>
+                        <p>Use the below SQL to add this:</p>
                         <p style=\"font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace; \">$sql_command</p>
                         ";
-        send_email($current_smtp_to_email, "Administrator", $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
+        send_email($current_smtp_to_email, "Administrator", $config_smtp_from_name, $email_subject, createEmail($email_body));
         error_log("Unable to update changelog. please add manually using: \"$sql_command\"\n");
     } else {
     mysqli_stmt_bind_param($stmt, "sssssssss", $timestamp, $user_id, $user_username, $action, $table_name, $record_id, $field_name, $value_old, $value_new);

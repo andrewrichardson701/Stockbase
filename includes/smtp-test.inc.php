@@ -1,9 +1,4 @@
-<?php  
-// This file is part of StockBase.
-// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
-
+<?php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
@@ -193,7 +188,7 @@ if (isset($_POST['smtp_host']) && isset($_POST['smtp_port']) && isset($_POST['sm
         $testBody = $email_template_start.$email_content_test.$email_template_end;
 
         send_test_email($smtp_to_email, $smtp_to_email, $smtp_from_email, $smtp_from_name, ucwords($current_system_name).' SMTP Test', $testBody, $smtp_host, $smtp_port, $smtp_encryption, $smtp_username, $smtp_password);
-        // send_email($smtp_to_email, $smtp_from_email, $smtp_from_name, 'Inventory SMTP Test', 'email test body', 0);
+        // send_email($smtp_to_email, $smtp_from_email, $smtp_from_name, 'Inventory SMTP Test', 'email test body');
     }
 
     

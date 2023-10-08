@@ -1,9 +1,4 @@
-<?php  
-// This file is part of StockBase.
-// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
-
+<?php 
 // DEFAULT LANDING PAGE IF NOT LOGGED IN. 
 // ALLOWS USERS TO LOGIN TO THE SYSTEM TO VIEW AND MODIFY CONTENT
 session_start();
@@ -24,7 +19,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         exit();
     }
 }
-// include 'http-headers.php'; // $_SERVER['HTTP_X_*']
+include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
 <html lang="en">
@@ -37,13 +32,16 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
 
-    <div class="container" style="margin-top:75px">
+    <div class="container">
+        <h2 class="header-small"><?php echo ucwords($current_system_name);?></h2>
+    </div>
+    <div class="container" style="margin-top:20px">
         <div class="row">
-            <div class="col-md-6" style="margin-left:25px; margin-right:25px">
+            <div class="col-md-6" style="margin-left:25px">
                 <h3>Login</h3>
                 <p>Please input your credentials to login.</p>
                 <p class="red">Demo LDAP username: <or class="blue">inventory</or> password: <or class="blue">DemoPass1!</or></p>
-                <form enctype="multipart/form-data" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
+                <form enctype="multipart/form-data" action="includes/login.inc.php" method="post">
                     <div class="form-group">
                         <label>Username / Email Address</label>
                         <input type="username" name="username" class="form-control" placeholder="username@domain.com" required>
@@ -102,7 +100,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                     }
                 ?>
                 <p><a href="login.php?reset=true" id="password-reset">Forgot password?</a>
-                <button class="btn btn-info viewport-small-block" onclick="modalLoadSwipe()">Swipe card login</button>
                 <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p>
             </div>
         </div>
@@ -110,68 +107,42 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <?php
         if (isset($_GET['reset']) && $_GET['reset'] == "true") {
     ?>
-    <div id="modalDiv" class="modal" style="display:block;padding:300px;background-color: rgba(0,0,0,0.7);">
-        <span class="close" onclick="modalClose()">×</span>
-            <div class="well-nopad theme-divBg" style="position:relative; margin:auto; width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
-            <form id="locationForm" enctype="multipart/form-data" action="./includes/changepassword.inc.php" method="POST">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="align-middle">Username / Email:</td>
-                            <td class="align-middle" style="padding-left:10px"><input class="form-control" type="text" name="uid" placeholder="username / email" /></td>
-                        </tr>
-                        <tr>
-                            <td colspan=2 class="text-center" style="padding-top:20px">
-                                <input class="btn btn-success" name="reset-request-submit" value="Reset Password" type="submit"/> 
-                                <button type="button"  class="btn btn-warning" onclick="navPage('login.php')" style="margin-left:20px">Cancel</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
-            <?php
-            if (isset($_GET['sqlerror'])) {
-                echo('<p class="red">SQL Error: '.$_GET['sqlerror'].'</p>');
-            } elseif (isset($_GET['reseterror'])) {
-                if ($_GET['reseterror'] == "uidMissmatch") {
-                    echo('<p class="red">Username/email not found.</p>');
-                } elseif ($_GET['reseterror'] == "multipleUsersMatchUid") {
-                    echo('<p class="red">Multiple users found for this username/email (somehow). Contact an administrator.</p>');
-                }
-            }
-            ?>
+            <div id="modalDiv" class="modal" style="display:block;padding:300px;background-color: rgba(0,0,0,0.7);">
+                <span class="close" onclick="modalClose()">×</span>
+                    <div class="well-nopad bg-dark" style="position:relative; margin:auto; width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
+                    <form id="locationForm" enctype="multipart/form-data" action="./includes/changepassword.inc.php" method="POST">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="align-middle">Username / Email:</td>
+                                    <td class="align-middle" style="padding-left:10px"><input class="form-control" type="text" name="uid" placeholder="username / email" /></td>
+                                </tr>
+                                <tr>
+                                    <td colspan=2 class="text-center" style="padding-top:20px">
+                                        <input class="btn btn-success" name="reset-request-submit" value="Reset Password" type="submit"/> 
+                                        <button type="button"  class="btn btn-warning" onclick="navPage('login.php')" style="margin-left:20px">Cancel</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <?php
+                    if (isset($_GET['sqlerror'])) {
+                        echo('<p class="red">SQL Error: '.$_GET['sqlerror'].'</p>');
+                    } elseif (isset($_GET['reseterror'])) {
+                        if ($_GET['reseterror'] == "uidMissmatch") {
+                            echo('<p class="red">Username/email not found.</p>');
+                        } elseif ($_GET['reseterror'] == "multipleUsersMatchUid") {
+                            echo('<p class="red">Multiple users found for this username/email (somehow). Contact an administrator.</p>');
+                        }
+                    }
+                    ?>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    
     <?php
     }
     ?>
-
-    <div id="modalDivSwipe" class="modal viewport-small-block">
-    <!-- <div id="modalDivSwipe" class="modal" style="display: block !important;">  -->
-        <span class="close" onclick="modalCloseSwipe()">&times;</span>
-        <div class="container well-nopad theme-divBg" style="padding:25px">
-            <form id='cardLoginForm' action="includes/login-card.inc.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="cardData" id="cardData" />
-                <h3 class="text-center">Present swipe card to login</h3>
-                <p class="text-center" style="margin-top:20px">or <or class="link gold" onclick="modalCloseSwipe()">click here</or> to login manually.</p>
-            </form>
-        </div>
-        <script>
-            $(document).ready(function() {
-                $(document).keypress(function(event) {
-                    // Assuming the card input triggers a keypress event
-                    var cardData = String.fromCharCode(event.which);
-                    var cardData_input = document.getElementById('cardData');
-                    var cardLoginForm = document.getElementById('cardLoginForm');
-                    cardData_input.textContent = cardData;
-                    cardLoginForm.submit();
-                });
-            });
-        </script>
-    </div>
-
 <script>
 var toggle = document.getElementById("local-toggle");
 var reset = document.getElementById("password-reset");
@@ -189,18 +160,7 @@ toggle.addEventListener('change', (event) => {
     }
 })
 </script>
-<script>
-    function modalLoadSwipe() {
-        var modal = document.getElementById("modalDivSwipe");
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseSwipe = function() { 
-        var modal = document.getElementById("modalDivSwipe");
-        modal.style.display = "none";
-    }
-</script>
+    
 <?php include 'foot.php'; ?>
 
 </body>

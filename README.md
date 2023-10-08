@@ -473,6 +473,13 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.3.1-beta</h3></summary>
+<h4>Beta release 0.3.1, TBC</h4>
+
+- Transaction include page styling corrected under pagination form
+
+</details>
+<details>
 <summary><h3>0.3.0-beta</h3></summary>
 <h4>Beta release 0.3.0, Adjustments for mobile width and card reader tech.</h4>
 

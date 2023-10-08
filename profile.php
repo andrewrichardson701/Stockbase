@@ -167,12 +167,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     </td>
                                 </tr>
                                 <tr class="nav-row  profile-table-row2" id="resync">
-                                    <td id="resync_button_td" style="width:200px">
-                                        <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
-                                            <input type="password" class="form-control" name="password" id="ldap_password" placeholder="Password" />
-                                            <input type="submit" style="margin-top:10px" id="resync" name="submit" value="Re-sync" class="btn btn-warning" />
-                                        </form>
-                                    </td>
+                                    <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
+                                        <td id="resync_button_td" style="width:200px">
+                                            <input type="password" style="width:180px" class="form-control" name="password" id="ldap_password" placeholder="Password" />
+                                        </td>
+                                        <td><input type="submit" id="resync" name="submit" value="Re-sync" class="btn btn-warning" /></td>
+                                    </form>
                                 </tr>
                             ');
                 } else {
@@ -279,13 +279,98 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 } elseif (isset($_GET['error'])) {
                     echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$_GET['error'].'</p></td></tr>');
                 }
-                ?>
+
+                $sql_card = "SELECT card_primary, card_secondary FROM users WHERE id=$profile_id";
+                $stmt_card = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_card, $sql_card)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_execute($stmt_card);
+                    $result_card = mysqli_stmt_get_result($stmt_card);
+                    $rowCount_card = $result_card->num_rows;
+                    $row_card = $result_card->fetch_assoc(); 
+                    $card_primary = isset($row_card['card_primary']) ? $row_card['card_primary'] : '';
+                    $card_secondary = isset($row_card['card_secondary']) ? $row_card['card_secondary'] : '';
+                }
+                // echo('<tr class="nav-row"><th class="text-center" style="width:180px;margin-top:20px">Swipe card 1</th><th class="text-center" style="width:185px;margin-top:20px">Swipe card 2</th></tr>');
+                echo('<tr class="nav-row">');
+                if ($card_primary == '' || $card_primary == null) {
+                    echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
+                } else {
+                    echo('<td style="width:200px"><button class="btn btn-warning" style="width:180px;margin-top:20px" onclick="modalLoadSwipe(\'re-assign\', 1)">Re-assign swipe card 1</button></td>');
+                }
+                if ($card_secondary == '' || $card_secondary == null) {
+                    echo('<td><button class="btn btn-success" style="width:185px;margin-top:20px" onclick="modalLoadSwipe(\'assign\', 2)">Assign swipe card 2</button></td>');
+                } else {
+                    echo('<td><button class="btn btn-warning" style="width:185px;margin-top:20px" onclick="modalLoadSwipe(\'re-assign\', 2)">Re-assign swipe card 2</button></td>');
+                }
+                echo('</tr>');
+                if ($card_primary !== '' || $card_secondary !== '') {
+                    echo ('<tr class="nav-row">
+                    <td style="width:200px">');
+                    if ($card_primary !== '') {
+                        echo('
+                        <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                            <input type="hidden" name="card-remove" value="1" />
+                            <input type="hidden" id="removeCard" name="card" value="1" />
+                            <button class="btn btn-danger" style="width:180px;margin-top:20px" type="submit">De-assign swipe card 1</button>
+                        </form>');
+                    }
+                    echo('</td>
+                    <td>');
+                    if ($card_secondary !== '') {
+                        echo('
+                        <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                            <input type="hidden" name="card-remove" value="1" />
+                            <input type="hidden" id="removeCard" name="card" value="2" />
+                            <button class="btn btn-danger" style="width:185px;margin-top:20px" type="submit">De-assign swipe card 2</button>
+                        </form>');
+                    }
+                    echo('</td>
+                    </tr>');
+                }
+                ?>          
                         </tbody>
                     </table>
                 <?php if($_SESSION['auth'] == "ldap") { echo("</form>"); } ?>
             </div>
 
         </div>
+    </div>
+    <div id="modalDivSwipe" class="modal">
+    <!-- <div id="modalDivSwipe" class="modal" style="display: block !important;">  -->
+        <span class="close" onclick="modalCloseSwipe()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <form id='cardModifyForm' action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="card-modify" value="1" />
+                <input type="hidden" id="cardType" name="type" value="" />
+                <input type="hidden" id="cardCard" name="card" value="" />
+                <input type="hidden" name="cardData" id="cardData" value=""/>
+                <h3 class="text-center" id="cardHead"></h3>
+                <p class="text-center" style="margin-top:50px">Scan swipe card...</p>
+                <button class="btn btn-danger" onclick="document.getElementById('cardData').value='17322435'">Temp</button>
+            </form>
+        </div>
+        <script>
+            tempfunction() {
+                var cardData = document.getElementById('cardData');
+                cardData.value = '17322435';
+                var cardModifyForm = document.getElementById('cardModifyForm');
+                cardModifyForm.submit();
+            }
+        </script>
+        <script>
+            $(document).ready(function() {
+                $(document).keypress(function(event) {
+                    // Assuming the card input triggers a keypress event
+                    var cardData = String.fromCharCode(event.which);
+                    var cardData_input = document.getElementById('cardData');
+                    var cardModifyForm = document.getElementById('cardModifyForm');
+                    cardData_input.value = cardData;
+                    cardModifyForm.submit();
+                });
+            });
+        </script>
     </div>
         
 <?php include 'foot.php'; ?>
@@ -313,6 +398,34 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 }
             };
             xhr.send();
+    }
+</script>
+<script>
+    function modalLoadSwipe(type, card) {
+        var modal = document.getElementById("modalDivSwipe");
+        var cardTypeInput = document.getElementById('cardType');
+        var cardCardInput = document.getElementById('cardCard');
+        var cardHead = document.getElementById('cardHead');
+        modal.style.display = "block";
+        cardTypeInput.value = type;
+        cardCardInput.value = card;
+        if (type == 'assign') {
+            cardHead.innerText = 'Assign Swipe Card '+card;
+        } else {
+            cardHead.innerText = 'Re-assign Swipe Card '+card;
+        }
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    modalCloseSwipe = function() { 
+        var modal = document.getElementById("modalDivSwipe");
+        var cardTypeInput = document.getElementById('cardType');
+        var cardCardInput = document.getElementById('cardCard');
+        var cardHead = document.getElementById('cardHead');
+        modal.style.display = "none";
+        cardTypeInput.value = '';
+        cardCardInput.value = '';
+        cardHead.innerText = '';
     }
 </script>
 

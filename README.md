@@ -484,6 +484,20 @@ Clone the repo first, and the follow the below steps.
 - Footer now loads differently on mobile.
 - Index page now works on mobile. Less columns show to reduce clutter
 - Cablestock page now works on mobile.
+- Stock (view) page now works on mobile.
+- Stock (add) page now works on mobile.
+- Stock (remove) page now works on mobile.
+- Stock (move) page now works on mobile.
+- Stock (edit) page now works on mobile.
+- Transactions inc now working on mobile, with page numbers becoming a select field.
+- Index page pagination row is now longer being sorted with the rest of the table.
+- Swipe card prompt now shows up on mobile form factor.
+- Swipe card fields added to users table.
+- Swipe cards can now be added on the profile page.
+- Swipe cards can be re-assigned on the profile page.
+- login-card.inc.php added to handle card logins.
+- Swipe card assigning and re-assigning is handled in admin.inc.php.
+- Swipe card de-assigning is handled in admin.inc.php.
 
 </details>
 <details>

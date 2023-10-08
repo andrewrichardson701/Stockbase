@@ -554,7 +554,11 @@ body {
     display: revert;
 }
 
-.viewport-small, .viewport-small-block, .viewport-small-empty {
+.viewport-mid-large {
+    display: revert;
+}
+
+.viewport-small, .viewport-small-block, .viewport-small-empty, .viewport-small-only, .viewport-small-only-block, .viewport-small-only-empty {
     display: none;
 }
 
@@ -628,9 +632,56 @@ img.stock-imageOther {
 .modal-imgWidth {
     max-width:50vw !important; 
 }
+.stock-inputSize {
+    min-width: 150px;
+    width: 300px !important;
+}
+.stock-inputLabelSize {
+    width: 15vw;
+    margin-right:25px;
+    min-width: 70px;
+    max-width: 200px;
+}
 
+#scrollTop {
+    display: block;
+    position: fixed;
+    bottom: 35px;
+    right: -100px;
+    z-index: 99;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.scrollBtn {
+    font-size: 18px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0px 10px 0px 10px;
+    border-radius: 4px;
+    position: inline-block;
+    width: 38px;
+    height: 38px;
+    transition: width 0.2s ease; /* Apply smooth width and position transitions */
+    overflow: hidden;
+}
+
+.scrollIcon {
+    padding: 10px 0px 10px 0px;
+}
+
+.scrollBtn:hover {
+    width: 180px;
+}
+.scrollBtn span {
+    height:25px
+} 
 /* Media query for mobile devices */
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1200px) {
     .nav-links {
         display: none;
         flex-direction: column;
@@ -685,7 +736,7 @@ img.stock-imageOther {
         padding:5px !important;
     }
 
-    table span, #inv-page-numbers, label, select, option, input, .btn, p {
+    table span, #inv-page-numbers, label, select, option, input, textarea, .btn, p {
         font-size: 10px !important;
     }
     #clear-filters {
@@ -702,7 +753,7 @@ img.stock-imageOther {
         width:max-content;
     }
     button.btn-cableStock {
-        padding: 3 6 3 6 !important;
+        padding: 5 10 5 10 !important;
     }
     .profile-table-row {
         margin-top:5px;
@@ -716,8 +767,8 @@ img.stock-imageOther {
 
 
     .inv-img-main {
-        max-width: 50px;
-        max-height: 40px;
+        max-width: 75px;
+        max-height: 75px;
     }
     .inv-img-50h {
         max-width: 40px;
@@ -786,9 +837,42 @@ img.stock-imageOther {
     .modal-content {
         min-width:0px !important;
     }
+    .stock-inputSize {
+        min-width: 150px;
+        width: 15vw !important; 
+    }
+    .stock-inputLabelSize {
+        width: 15vw;
+        margin-right:25px;
+        min-width: 70px;
+    }
+    .btn-move {
+        padding: 2 5 2 5;
+    }
 
 }
 @media only screen and (max-width: 600px) {
+    /* #scrollTop {
+        bottom: 35px;
+        right: -100px;
+        font-size: 9px;
+    }
+    .scrollBtn {
+        width:19px;
+        height:19px;
+        font-size:9px;
+        padding: 0 0 0 2;
+    }
+    .scrollIcon {
+        padding: 5px 0px 5px 0px;
+    }
+    .scrollBtn:hover {
+        width: 90px;
+    }
+    .scrollBtn span {
+        height:12px
+    }  */
+
     .nav-links {
         display: none;
         flex-direction: column;
@@ -813,16 +897,24 @@ img.stock-imageOther {
         display: block;
     }
 
-    .viewport-large, .viewport-large-block, .viewport-large-empty {
+    .viewport-large, .viewport-large-block, .viewport-large-empty, .viewport-mid-large {
         display: none;
     }
 
-    .viewport-small {
+    .viewport-small, .viewport-small-only {
         display: flex;
     }
 
     .viewport-small-block {
         display: block;
+    }
+
+    .viewport-small-only-block {
+        display: block;
+    }
+
+    .viewport-small-only-empty {
+        display: revert;
     }
 
     .viewport-small-empty {
@@ -846,7 +938,7 @@ img.stock-imageOther {
         padding:1 7 0 0 !important;
     }
 
-    table span, #inv-page-numbers, label, select, option, input, .btn, p {
+    table span, #inv-page-numbers, label, select, option, input, textarea, .btn, p {
         font-size: 10px !important;
     }
     #clear-filters {
@@ -863,7 +955,7 @@ img.stock-imageOther {
         width:max-content;
     }
     button.btn-cableStock {
-        padding: 3 6 3 6 !important;
+        padding: 5 10 5 10 !important;
     }
     .profile-table-row {
         margin-top:5px;

@@ -368,46 +368,42 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     </thead>
                     <tbody id="inv-body" class="align-middle" style="text-align: center; white-space: nowrap;">
                     </tbody>
+                </table>
             ');
             // Inventory Rows
 
             // PAGE COUNT
             
             echo('
-            <tbody>
-            <tr class="theme-tableOuter">
-                <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
-                <div class="row">
-                    <div class="col text-center"></div>
-                    <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">');
-        
-                    
-
-            echo('</div>
-                <div class="col text-center">
-                    <table style="margin-left:auto; margin-right:20px">
-                        <tbody>
-                            <tr>
-                                <td class="theme-textColor align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
-                                    Rows: 
-                                </td>
-                                <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
-                                    <select id="tableRowCount" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter(\'\', \'rows\', this.value))">
-                                        <option id="rows-10"  value="10"');  if($rowSelectValue == 10)  { echo('selected'); } echo('>10</option>
-                                        <option id="rows-50"  value="50"');  if($rowSelectValue == 50)  { echo('selected'); } echo('>50</option>
-                                        <option id="rows-100" value="100"'); if($rowSelectValue == 100) { echo('selected'); } echo('>100</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div></tbody>
-            ');
-
-            // End table + body
-            echo ('
-
+                <table class="table table-dark theme-table centertable">
+                    <tbody>
+                        <tr class="theme-tableOuter">
+                            <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
+                            <div class="row">
+                                <div class="col text-center"></div>
+                                <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">
+                                </div>
+                                <div class="col text-center">
+                                    <table style="margin-left:auto; margin-right:20px">
+                                        <tbody>
+                                            <tr>
+                                                <td class="theme-textColor align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
+                                                    Rows: 
+                                                </td>
+                                                <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
+                                                    <select id="tableRowCount" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter(\'\', \'rows\', this.value))">
+                                                        <option id="rows-10"  value="10"');  if($rowSelectValue == 10)  { echo('selected'); } echo('>10</option>
+                                                        <option id="rows-50"  value="50"');  if($rowSelectValue == 50)  { echo('selected'); } echo('>50</option>
+                                                        <option id="rows-100" value="100"'); if($rowSelectValue == 100) { echo('selected'); } echo('>100</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
             ');

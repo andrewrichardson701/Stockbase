@@ -46,31 +46,46 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     <div class="col-sm text-left" id="stock-info-left">
                         <div class="nav-row">
                             <div class="nav-row" id="name-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
-                                <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c" style="width:300px" value="'.$input_name.'" required></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
+                                <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c stock-inputSize" value="'.$input_name.'" required></input></div>
                             </div>
                             <div class="nav-row" id="sku-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
-                                <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c" style="width:300px" value="'.$input_sku.'" pattern="^[A-Za-z\s\p{P}]+$"></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
+                                <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c stock-inputSize" value="'.$input_sku.'" pattern="^[A-Za-z\s\p{P}]+$"></input></div>
                             </div>
                             <div class="nav-row" id="description-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
-                                <div><textarea class="form-control nav-v-c" id="description" name="description" rows="3" cols="32" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.$input_description.'" ></textarea></div>
+                                <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
+                                <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.$input_description.'" ></textarea></div>
                             </div>
                             <div class="nav-row" id="min-stock-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
-                                <div><input type="number" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c" style="width:300px" value="'.$input_min_stock.'"></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
+                                <div><input type="number" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c stock-inputSize" value="'.$input_min_stock.'"></input></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-sm"  id="stock-info-right"> 
+                    <div class="col-sm-4" id="stock-info-right" style="margin-left:0px !important"> 
                         <div id="image-preview" style="height:150px;margin:auto;text-align:center">
                             <img class="nav-v-c" id="upload-img-pre" style="max-width:150px;max-height:150px" />
                         </div>
                         <div class="nav-row"  id="labels-row" style="margin-top:25px">
-                            <div class="nav-right" style="margin-right:25px"><label class="nav-v-c" style="width:100%" for="labels" id="labels-label">Image:</label></div>
-                            <div><input class="nav-v-c text-center" type="file" accept="image/*" style="width: 350px" id="image" name="image" onchange="loadImage(event)"></div>
+                            <table class="centertable viewport-large-empty">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-right:25px">Image:</td>
+                                        <td><input class=" text-center" type="file" accept="image/*" style="width: 300px" id="image" name="image" onchange="loadImage(event)"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="centertable viewport-small-empty">
+                                <tbody>
+                                    <tr>
+                                        <td style="padding-right:25px" class="text-center">Image</td>
+                                        </tr><tr>
+                                        <td><input class=" text-center" type="file" accept="image/*" style="max-width: 150px" id="image" name="image" onchange="loadImage(event)"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <script>
                         var loadImage = function(event) {
@@ -83,9 +98,9 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         </script>
                     </div>
                     <div class="nav-row" id="labels-row" style="margin-top:25px;padding-left:15px;padding-right:15px">
-                        <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
+                        <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
                         <div>
-                            <select class="form-control" id="labels-init" name="labels-init" style="width:300px"">
+                            <select class="form-control stock-inputSize" id="labels-init" name="labels-init">
                                 <option value="" selected disabled hidden>-- Select a label if needed --</option>');
                                 include 'includes/dbh.inc.php';
                                 $sql = "SELECT id, name
@@ -112,7 +127,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             echo('
                             </select>
 
-                            <select id="labels" name="labels[]" multiple class="form-control" style="margin-top:2px;display: inline-block;width:300px;height:40px"></select>
+                            <select id="labels" name="labels[]" multiple class="form-control stock-inputSize" style="margin-top:2px;display: inline-block;height:40px"></select>
                             <style>
                                 #labels {
                                 display: inline-block;
@@ -254,7 +269,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     echo('<form action="includes/stock-remove-existing.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                         <div class="nav-row" style="margin-bottom:10px">
                             <div class="nav-row" id="heading-row" style="margin-top:10px">
-                                <div style="width:200px;margin-right:25px"></div>
+                                <div class="stock-inputLabelSize"></div>
                                 <div id="heading-heading">
                                     <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$stock_inv_data[0]['name'].'</h2></a>
                                     <p id="sku"><strong>SKU:</strong> <or class="blue">'.$stock_inv_data[0]['sku'].'</or></p>');
@@ -289,13 +304,13 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     <div class="text-left" id="stock-info-left" style="padding-left:15px">
                         <div class="nav-row" style="margin-bottom:25px">
                             <div class="nav-row" id="upc-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="upc" id="upc-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Universal Product Code for item">UPC</or></label></div>
-                                <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c" style="width:300px" value="'.$input_upc.'"></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="upc" id="upc-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Universal Product Code for item">UPC</or></label></div>
+                                <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c stock-inputSize" value="'.$input_upc.'"></input></div>
                             </div>
                             <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
+                                <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                 <div>
-                                    <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" required>
+                                    <select name="manufacturer" id="manufacturer" class="form-control stock-inputSize" required>
                                         <option value="" selected disabled hidden>Select Manufacturer</option>');
                                         include 'includes/dbh.inc.php';
                                             $sql = "SELECT id, name
@@ -327,9 +342,9 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 </div>
                             </div>
                             <div class="nav-row" id="site-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site</label></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site</label></div>
                                 <div>
-                                    <select class="form-control" id="site" name="site" style="width:300px" required>
+                                    <select class="form-control stock-inputSize" id="site" name="site" required>
                                         <option value="" selected disabled hidden>Select Site</option>');
                                             include 'includes/dbh.inc.php';
                                             $sql = "SELECT id, name
@@ -365,9 +380,9 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             echo('
                             </div>
                             <div class="nav-row" id="area-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area</label></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area</label></div>
                                 <div>
-                                    <select class="form-control" id="area" name="area" style="width:300px" disabled required>
+                                    <select class="form-control stock-inputSize" id="area" name="area" disabled required>
                                         <option value="" selected disabled hidden>Select Area</option>
                                     </select>
                                 </div>');
@@ -378,9 +393,9 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 }
                             echo('</div>
                             <div class="nav-row" id="shelf-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
                                 <div>
-                                    <select class="form-control" id="shelf" name="shelf" style="width:300px" disabled required>
+                                    <select class="form-control stock-inputSize" id="shelf" name="shelf" disabled required>
                                         <option value="" selected disabled hidden>Select Shelf</option>
                                     </select>
                                 </div>
@@ -389,11 +404,11 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 </div>
                             </div>
                             <div class="nav-row" id="cost-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost (£)</label></div>
-                                <div><input type="number" name="cost" placeholder="0" id="cost" class="form-control nav-v-c" style="width:300px" value="0" value="'.$input_cost.'" required></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost (£)</label></div>
+                                <div><input type="number" name="cost" placeholder="0" id="cost" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required></input></div>
                             </div>');
                             // <div class="nav-row" id="comments-row" style="margin-top:25px">
-                            //     <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="comments" id="comments-label">Comments</label></div>
+                            //     <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="comments" id="comments-label">Comments</label></div>
                             //     <div><textarea class="form-control nav-v-c" id="comments" name="comments" rows="2" cols="32" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Info about the stock, if relevant"></textarea></div>
                             // </div>
                             echo('
@@ -401,19 +416,19 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         <hr style="border-color: gray; margin-right:15px">
                         <div class="nav-row" style="margin-bottom:25px">
                             <div class="nav-row" id="quantity-row" style="margin-top:10px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
-                                <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c" style="width:300px" value="1" value="'.$input_quantity.'" required></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
+                                <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="'.$input_quantity.'" required></input></div>
                             </div>
                             <div class="nav-row" id="serial-number-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
-                                <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c" style="width:300px" value="'.$input_serial_number.'"></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
+                                <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c stock-inputSize" value="'.$input_serial_number.'"></input></div>
                             </div>
                             <div class="nav-row" id="reason-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
-                                <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c" style="width:300px" value="New Stock" value="'.$input_reason.'"></input></div>
+                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
+                                <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize" value="New Stock" value="'.$input_reason.'"></input></div>
                             </div>
                             <div class="nav-row" id="submit-row" style="margin-top:25px">
-                                <div style="width:200px;margin-right:25px"></div>
+                                <div class="stock-inputLabelSize"></div>
                                 <div><input type="submit" value="Add Stock" name="submit" class="nav-v-c btn btn-success" /></div>
                             </div>
                         </div>
@@ -430,11 +445,22 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                 <div class="container" id="stock-info-left">
                     <div class="nav-row" id="search-stock-row">
                         <input type="hidden" name="modify" id="modify" value="add" />
-                        <span class="nav-row">
-                            <p class="nav-v-c" style="margin-right:20px">Search for item</p>
-                            <input class="form-control" type="text" style="width: 250px" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
-                            <p class="nav-v-c" style="margin-left:20px;margin-right:20px">or </p><a class="link btn btn-success cw nav-v-c" onclick="navPage(updateQueryParameter(\'\', \'stock_id\', 0))">Add New Stock</a>
-                        </span>
+                        
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="padding-right:20px">Search for item</td>
+                                    <td><input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.$search.'"/></td>
+                                    <td class="text-right viewport-mid-large" style="padding-left:20px;padding-right:20px">or</td>
+                                    <td class="viewport-mid-large"><a class="link btn btn-success cw" onclick="navPage(updateQueryParameter(\'\', \'stock_id\', 0))">Add New Stock</a></td>
+                                </tr>
+                                <tr class="viewport-small-only-empty">
+                                    <td class="text-right" style="padding-right:20px">or</td>
+                                    <td><a class="link btn btn-success cw" onclick="navPage(updateQueryParameter(\'\', \'stock_id\', 0))">Add New Stock</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
                     </div>
                 </div>
             </form>
@@ -444,9 +470,30 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
-            $sql = "SELECT * from stock
-                    WHERE name LIKE CONCAT('%', ?, '%') AND stock.deleted=0
-                    ORDER BY name;";
+            $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
+                        (SELECT SUM(quantity) 
+                            FROM item 
+                            INNER JOIN shelf ON item.shelf_id=shelf.id
+                            INNER JOIN area ON shelf.area_id=area.id
+                            WHERE item.stock_id=stock.id
+                        ) AS item_quantity,
+                        stock_img_image.stock_img_image
+                    FROM stock
+                    LEFT JOIN item ON stock.id=item.stock_id
+                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                    LEFT JOIN area ON shelf.area_id=area.id 
+                    LEFT JOIN site ON area.site_id=site.id
+                    LEFT JOIN (
+                        SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
+                        FROM stock_img
+                        GROUP BY stock_img.stock_id
+                    ) AS stock_img_image
+                        ON stock_img_image.stock_id = stock.id
+                    WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0 AND stock.name LIKE CONCAT('%', ?, '%')
+                    GROUP BY 
+                        stock.id, stock_name, stock_description, stock_sku, 
+                        stock_img_image.stock_img_image
+                    ORDER BY stock.name";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
@@ -459,32 +506,42 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     echo('<p>No Stock Found</p>');
                 } else {
                     echo('
-                <table class="table table-dark theme-table" style="min-width:500px;max-width:max-content">
+                <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
                         <tr class="theme-tableOuter">
-                            <th style="max-width:max-content">ID</th>
+                            <th class="viewport-mid-large" style="max-width:max-content">ID</th>
+                            <th>Image</th>
                             <th>Stock Name</th>
                             <th>SKU</th>
+                            <th>Quantity</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody  class="align-middle" style="text-align: center; white-space: nowrap;">
                     ');
                     while ($row = $result->fetch_assoc() ) {
-                        $id = $row['id'];
-                        $name = $row['name'];
-                        $sku = $row['sku'];
+                        $id = $row['stock_id'];
+                        $name = $row['stock_name'];
+                        $sku = $row['stock_sku'];
+                        $quantity = $row['item_quantity'];
                         echo('
-                        <tr class="clickable" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$id.'\'">
-                            <td id="'.$id.'-id"  style="max-width:max-content">'.$id.'</td>
+                        <tr class="clickable vertical-align align-middle" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$id.'\'">
+                            <td class="viewport-mid-large" id="'.$id.'-id"  style="max-width:max-content">'.$id.'</td>
+                            <td class="align-middle" id="'.$id.'-img-cell">');
+                            if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
+                                echo ('<img id="'.$id.'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                            } 
+                        echo('
+                            </td>
                             <td id="'.$id.'-name">'.$name.'</td>
                             <td id="'.$id.'-sku">'.$sku.'</td>
+                            <td id="'.$id.'-quantity">'.$quantity.'</td>
                         </tr>
                         ');
                     }
                     echo('
                     </tbody>
                 </table>'); 
-                    }
+                }
             }
             echo('
             </div>
@@ -583,7 +640,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
                         <thead style="text-align: center; white-space: nowrap;">
                             <tr class="theme-tableOuter">
-                                <th>ID</th>
+                                <th class="viewport-mid-large">ID</th>
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th hidden>Descritpion</th>
@@ -600,7 +657,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             }
                             echo('
                             <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
-                                <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
+                                <td class="align-middle viewport-mid-large" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
                                     echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');

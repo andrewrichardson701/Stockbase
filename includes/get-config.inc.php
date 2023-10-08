@@ -1,9 +1,4 @@
-<?php  
-// This file is part of StockBase.
-// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
-
+<?php
 // GET GLOBAL CONFIG OPTIONS TO BE APPLIED TO NAV AND OTHER OPTIONS ON THE PAGE
 // CALLED FROM THE HEAD.PHP PAGE DIRECTLY
 
@@ -14,7 +9,6 @@ $predefined_config_favicon_image = 'default/default-favicon.png';
 $predefined_config_currency = '£';
 $predefined_sku_prefix = 'ITEM-';
 $predefined_base_url = 'inventory.ajrich.co.uk';
-$predefined_default_theme_id = 1;
 
 function getWorB($hexCode) {
     // Convert the hex code to an RGB array.
@@ -33,21 +27,6 @@ function getComplement($hex) { // get inverted colour
     $complement = array(255 - $rgb[0], 255 - $rgb[1], 255 - $rgb[2]);
     $complementHex = sprintf("%02x%02x%02x", $complement[0], $complement[1], $complement[2]);
     return '#' . $complementHex;
-}
-// adjust brightness of a hex colour
-function adjustBrightness($hexCode, $adjustPercent) {
-    $hexCode = ltrim($hexCode, '#');
-    if (strlen($hexCode) == 3) {
-        $hexCode = $hexCode[0] . $hexCode[0] . $hexCode[1] . $hexCode[1] . $hexCode[2] . $hexCode[2];
-    }
-    $hexCode = array_map('hexdec', str_split($hexCode, 2));
-    foreach ($hexCode as & $color) {
-        $adjustableLimit = $adjustPercent < 0 ? $color : 255 - $color;
-        $adjustAmount = ceil($adjustableLimit * $adjustPercent);
-
-        $color = str_pad(dechex($color + $adjustAmount), 2, '0', STR_PAD_LEFT);
-    }
-    return '#' . implode($hexCode);
 }
 
 
@@ -93,8 +72,6 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
         $config_currency            = '';
         $config_sku_prefix          = '';
         $config_base_url            = '';
-        $config_default_theme_id    = '';
-
         $config_ldap_enabled        = '';
         $config_ldap_username       = '';
         // $config_ldap_password    = '';
@@ -105,7 +82,6 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
         $config_ldap_basedn         = '';
         $config_ldap_usergroup      = '';
         $config_ldap_userfilter     = '';
-
         $config_smtp_enabled        = '';
         $config_smtp_username       = '';
         // $config_smtp_password    = '';
@@ -115,7 +91,6 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
         $config_smtp_from_email     = '';
         $config_smtp_from_name      = '';
         $config_smtp_to_email       = '';
-        
     } else {
         while ( $config = $result_config->fetch_assoc() ) {
             $config_system_name         = isset($config['system_name']) ? $config['system_name'] : '';
@@ -125,7 +100,6 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_currency            = isset($config['currency']) ? $config['currency'] : '';
             $config_sku_prefix          = isset($config['sku_prefix']) ? $config['sku_prefix'] : '';
             $config_base_url            = isset($config['base_url']) ? $config['base_url'] : '';
-            $config_default_theme_id    = isset($config['default_theme_id']) ? $config['default_theme_id'] : '';
 
             $config_ldap_enabled        = isset($config['ldap_enabled']) ? $config['ldap_enabled'] : '';
             $config_ldap_username       = isset($config['ldap_username']) ? $config['ldap_username'] : '';
@@ -146,7 +120,7 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_smtp_port           = isset($config['smtp_port']) ? $config['smtp_port'] : '';       
             $config_smtp_from_email     = isset($config['smtp_from_email']) ? $config['smtp_from_email'] : ''; 
             $config_smtp_from_name      = isset($config['smtp_from_name']) ? $config['smtp_from_name'] : ''; 
-            $config_smtp_to_email       = isset($config['smtp_to_email']) ? $config['smtp_to_email'] : '';
+            $config_smtp_to_email       = isset($config['smtp_to_email']) ? $config['smtp_to_email'] : '';   
         }
     }
 }
@@ -169,7 +143,6 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_currency            = $config_d['currency'];
             $config_d_sku_prefix          = $config_d['sku_prefix'];
             $config_d_base_url            = $config_d['base_url'];
-            $config_d_default_theme_id       = $config_d['default_theme_id'];
 
             $config_d_ldap_enabled        = $config_d['ldap_enabled'];
             $config_d_ldap_username       = $config_d['ldap_username'];
@@ -195,7 +168,6 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
     }
 }
 
-
 $default_system_name         = ($config_d_system_name         !== '' ? $config_d_system_name                 : $predefined_system_name);
 $default_banner_color        = ($config_d_banner_color        !== '' ? $config_d_banner_color                : $predefined_config_banner_color);
 $default_logo_image          = ($config_d_logo_image          !== '' ? $config_d_logo_image                  : $predefined_config_logo_image);
@@ -213,7 +185,7 @@ $current_currency            = ($config_currency              !== '' ? $config_c
 $current_sku_prefix          = ($config_sku_prefix            !== '' ? $config_sku_prefix                    : $default_sku_prefix);
 $current_base_url            = ($config_base_url              !== '' ? $config_base_url                      : $default_base_url);
 $current_banner_text_color   = getWorB($current_banner_color);
-
+  
 # ---
 
 $default_ldap_enabled        = ($config_d_ldap_enabled        !== '' ? $config_d_ldap_enabled                : 'MISSING - PLEASE FIX');  
@@ -260,57 +232,7 @@ $current_smtp_from_email     = ($config_smtp_from_email       !== '' ? $config_s
 $current_smtp_from_name      = ($config_smtp_from_name        !== '' ? $config_smtp_from_name                : $default_smtp_from_name);    
 $current_smtp_to_email       = ($config_smtp_to_email         !== '' ? $config_smtp_to_email                 : $default_smtp_to_email);    
 
-# ---
 
-$default_default_theme_id    = ($config_d_default_theme_id    !== '' ? $config_d_default_theme_id            : $predefined_default_theme_id); 
-$current_default_theme_id    = ($config_default_theme_id      !== '' ? $config_default_theme_id              : $default_default_theme_id);
-
-// get theme info for defaults
-$sql_theme = "SELECT * FROM theme WHERE id=$current_default_theme_id";
-$stmt_theme = mysqli_stmt_init($conn);
-if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
-    echo("ERROR getting entries");
-} else {
-    mysqli_stmt_execute($stmt_theme);
-    $result_theme = mysqli_stmt_get_result($stmt_theme);
-    $rowCount_theme = $result_theme->num_rows;
-    if ($rowCount_theme < 1) {
-        echo ("No themes found for id: $current_default_theme_id");
-    } else {
-        while ( $row_theme = $result_theme->fetch_assoc() ) {
-            $c_theme_id = $row_theme['id'];
-            $c_theme_name = $row_theme['name'];
-            $c_theme_file_name = $row_theme['file_name'];
-        }
-    }
-}
-
-$sql_theme_d = "SELECT * FROM theme WHERE id=$default_default_theme_id";
-$stmt_theme_d = mysqli_stmt_init($conn);
-if (!mysqli_stmt_prepare($stmt_theme_d, $sql_theme_d)) {
-    echo("ERROR getting entries");
-} else {
-    mysqli_stmt_execute($stmt_theme_d);
-    $result_theme_d = mysqli_stmt_get_result($stmt_theme_d);
-    $rowCount_theme_d = $result_theme_d->num_rows;
-    if ($rowCount_theme_d < 1) {
-        echo ("No themes found for id: $default_default_theme_id");
-    } else {
-        while ( $row_theme_d = $result_theme_d->fetch_assoc() ) {
-            $c_d_theme_id = $row_theme_d['id'];
-            $c_d_theme_name = $row_theme_d['name'];
-            $c_d_theme_file_name = $row_theme_d['file_name'];
-        }
-    }
-}
-
-
-$current_default_theme_name = $c_theme_name;
-$current_default_theme_file_name = $c_theme_file_name;
-
-
-$default_default_theme_name = $c_d_theme_name;
-$default_default_theme_file_name = $c_d_theme_file_name;
 
 
 ?>

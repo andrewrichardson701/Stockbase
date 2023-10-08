@@ -133,47 +133,6 @@ hash_password() {
     hashed_password=$(php -r "echo password_hash('$gen_password', PASSWORD_DEFAULT);")
 }
 
-echo "StockBase Copyright (C) 2023 Andrew Richardson"
-echo "This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'."
-echo "This is free software, and you are welcome to redistribute it"
-echo "under certain conditions; type 'show c' for details."
-echo ""
-echo "To continue, type 'Y'"
-echo ""
-while true; do
-    # Ask for folder input and allow creating the folder if needed
-    read -p "Input: " tandc
-
-    # Check if the folder exists
-    if [ -d "$tandc" = "show w"]; then
-        echo "15. Disclaimer of Warranty."
-        echo "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. "
-        echo "EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” "
-        echo "WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, "
-        echo "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. "
-        echo "THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. "
-        echo "SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
-        echo ""
-        break
-    elif [ -d "$tandc" = "show c"]; then
-        echo "16. Limitation of Liability."
-        echo "IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, "
-        echo "OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, "
-        echo "INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO "
-        echo "USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED "
-        echo "BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR "
-        echo "OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES."
-        echo ""
-        break
-    elif [-d "$tandc" = "Y"]
-        break
-    elif [-d "$tandc" = "y"]
-        break
-    else 
-        echo "Unknown input."
-    fi
-done
-
 # Check and install necessary packages
 check_install_package php8.1
 check_install_package mysql-server

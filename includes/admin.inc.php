@@ -1,9 +1,4 @@
 <?php
-// This file is part of StockBase.
-// StockBase is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-// StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
-
 // USED FOR SUBMITTING FORMS AND DOING SQL CHANGES FOR THE ADMIN PAGE AND SOME OTHER PAGES WITH SIMILAR PROPERTIES
 // PROFILE PAGE USES THIS ALSO FOR ITS SAVING
 // ADDING NEW ROWS AND AREAS ETC ALSO USES THIS FROM INDEX PAGE WHEN THERE IS NO SITE/AREA/SHELF
@@ -15,16 +10,14 @@
 
 if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
-} 
+}
 
 if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) 
     && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) 
     && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) 
     && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit'])
-    && !isset($_POST['smtp-toggle-submit']) && !isset($_POST['imagemanagement-submit'])
-    && !isset($_POST['theme-upload']) && !isset($_GET['mail-notification']) && !isset($_POST['card-modify']) 
-    && !isset($_POST['card-remove'])) {
+    && !isset($_POST['smtp-toggle-submit'])) {
 
     header("Location: ../admin.php?error=noSubmit");
     exit();
@@ -53,40 +46,26 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 header("Location: ../admin.php?error=configConnectionSQL");
                 exit();
             } else {
+                $configCurrent = $result->fetch_assoc();
                 mysqli_stmt_execute($stmt);
-                    
-                $sql = "SELECT * FROM config";
-                $stmt = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    $errors[] = "configTableSQLConnection";
-                } else {
-                    mysqli_stmt_execute($stmt);
-                    $result = mysqli_stmt_get_result($stmt);
-                    $rowCount = $result->num_rows;
-                    $configCurrent = $result->fetch_assoc();
-                }
-                
                 // update changelog
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Create config", "config", 1, "id", null, 1);
 
             }  
         } else {
             // all good, continue.
-            $configCurrent = $result->fetch_assoc();
         }
     }
     if (isset($_POST['global-submit'])) { // GLOBAL saving in admin
-        $queryStrings = [];
         $errors = [];
          
-        $config_system_name   = isset($_POST['system_name'])             ? $_POST['system_name']             : '';
-        $config_banner_color  = isset($_POST['banner_color'])            ? $_POST['banner_color']            : '';
-        $config_logo_image    = isset($_FILES['logo_image'])             ? $_FILES['logo_image']             : '';
-        $config_favicon_image = isset($_FILES['favicon_image'])          ? $_FILES['favicon_image']          : '';
-        $config_currency      = isset($_POST['currency_selection'])      ? $_POST['currency_selection']      : '';
-        $config_sku_prefix    = isset($_POST['sku_prefix'])              ? $_POST['sku_prefix']              : '';
-        $config_base_url      = isset($_POST['base_url'])                ? $_POST['base_url']                : '';
-        $config_default_theme = isset($_POST['default_theme']) ? $_POST['default_theme'] : '';
+        $config_system_name   = isset($_POST['system_name'])        ? $_POST['system_name']        : '';
+        $config_banner_color  = isset($_POST['banner_color'])       ? $_POST['banner_color']       : '';
+        $config_logo_image    = isset($_FILES['logo_image'])        ? $_FILES['logo_image']        : '';
+        $config_favicon_image = isset($_FILES['favicon_image'])     ? $_FILES['favicon_image']     : '';
+        $config_currency      = isset($_POST['currency_selection']) ? $_POST['currency_selection'] : '';
+        $config_sku_prefix    = isset($_POST['sku_prefix'])         ? $_POST['sku_prefix']         : '';
+        $config_base_url      = isset($_POST['base_url'])           ? $_POST['base_url']           : '';
 
         if (isset($_POST['system_name']) && $config_system_name !== '') {
             $post_system_name = $_POST['system_name'];
@@ -106,25 +85,23 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
         if ( isset($_POST['banner_color']) && $config_banner_color !== '') {
             $post_banner_color = $config_banner_color;
-            if ($post_banner_color !== $configCurrent['banner_color']) {
-                if (preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $post_banner_color)) {
-                    include 'dbh.inc.php';
-                    $sql_upload = "UPDATE config SET banner_color=? WHERE id=1";
-                    $stmt_upload = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                        $errors[] = "bannercolorSqlError";
-                    } else {
-                        mysqli_stmt_bind_param($stmt_upload, "s", $post_banner_color);
-                        mysqli_stmt_execute($stmt_upload);
-                        $queryStrings[] = "bannercolorUpload=success";
-                        // update changelog
-                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "banner_color", $configCurrent['banner_color'], $post_banner_color);
-
-                    }
-                    
+            if (preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $post_banner_color)) {
+                include 'dbh.inc.php';
+                $sql_upload = "UPDATE config SET banner_color=? WHERE id=1";
+                $stmt_upload = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                    $errors[] = "bannercolorSqlError";
                 } else {
-                    $errors[] = "invalidHexFormat";
+                    mysqli_stmt_bind_param($stmt_upload, "s", $post_banner_color);
+                    mysqli_stmt_execute($stmt_upload);
+                    $queryStrings[] = "bannercolorUpload=success";
+                    // update changelog
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "banner_color", $configCurrent['banner_color'], $post_banner_color);
+
                 }
+                
+            } else {
+                $errors[] = "invalidHexFormat";
             }
         }
 
@@ -217,7 +194,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt_upload);
                         $queryStrings[] = "faviconUpload=success";
                         // update changelog
-                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "favicon_image", $configCurrent['favicon_image'], $favicon_image_name);
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "favicon_image", $configCurrent['favicon_image'], $post_favicon_image);
                     }
                 } else {
                     $errors[] = "FAVICON ERROR START";
@@ -236,18 +213,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         if (isset($_POST['currency_selection']) && $config_currency !== '') {
             $post_currency = $_POST['currency_selection'];
             include 'dbh.inc.php';
-            if ($post_currency !== $configCurrent['currency']) {
-                $sql_upload = "UPDATE config SET currency=? WHERE id=1";
-                $stmt_upload = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                    $errors[] = "currencySqlError";
-                } else {
-                    mysqli_stmt_bind_param($stmt_upload, "s", $post_currency);
-                    mysqli_stmt_execute($stmt_upload);
-                    $queryStrings[] = "currencyUpload=success";
-                    // update changelog
-                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "currency", $configCurrent['currency'], $post_currency);
-                }
+            $sql_upload = "UPDATE config SET currency=? WHERE id=1";
+            $stmt_upload = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
+                $errors[] = "currencySqlError";
+            } else {
+                mysqli_stmt_bind_param($stmt_upload, "s", $post_currency);
+                mysqli_stmt_execute($stmt_upload);
+                $queryStrings[] = "currencyUpload=success";
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "currency", $configCurrent['currency'], $post_currency);
             }
         }
 
@@ -292,46 +267,20 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "base_url", $configCurrent['base_url'], $post_base_url);
             }
         }
-
-        if (isset($_POST['default_theme']) && $config_default_theme !== '') {
-            $post_default_theme = $_POST['default_theme'];
-            include 'dbh.inc.php';
-            if ($post_default_theme !== $configCurrent['default_theme_id']) {
-                $sql_upload = "UPDATE config SET default_theme_id=? WHERE id=1";
-                $stmt_upload = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                    $errors[] = "default_themeSqlError";
-                } else {
-                    mysqli_stmt_bind_param($stmt_upload, "s", $post_default_theme);
-                    mysqli_stmt_execute($stmt_upload);
-                    $queryStrings[] = "default_themeUpload=success";
-                    // update changelog
-                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "default_theme", $configCurrent['default_theme_id'], $post_default_theme);
-                }
-            }
-        }
         
-        if (is_array($queryStrings)) {
-            if (count($queryStrings) > 1) {
-                $queryString = implode('&', $queryStrings);
-            } elseif (count($queryStrings) == 1) {
-                $queryString = $queryStrings[0];
-            } else {
-                $queryString = '';
-            }
+        if (count($queryStrings) > 1) {
+            $queryString = implode('&', $queryStrings);
+        } elseif (count($queryStrings) == 1) {
+            $queryString = $queryStrings[0];
         } else {
             $queryString = '';
         }
 
-        if (is_array($errors)) {
-            if (count($errors) >= 1) {
-                $error = implode('&', $errors);
-            } elseif (count($errors) == 1) {
-                $error = $errors[0];
-            }  else {
-                $error = '';
-            }
-        } else {
+        if (count($errors) >= 1) {
+            $error = implode('&', $errors);
+        } elseif (count($errors) == 1) {
+            $error = $errors[0];
+        }  else {
             $error = '';
         }
         
@@ -950,7 +899,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         // for the Stock Location Settings section on admin.inc.php page. This is only the deleting of the site/area/shelf
         if ($_POST['location-delete-submit'] == "site") {
             $site_id = $_POST['location-id'];
-            $sql_check = "SELECT * FROM area WHERE site_id=$site_id AND deleted=0;";
+            $sql_check = "SELECT * FROM area WHERE site_id=$site_id;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
                 header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -961,7 +910,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_check2 = "SELECT * site WHERE id=$site_id AND deleted=0;";
+                    $sql_check2 = "SELECT * FROM cable_item WHERE site_id=$site_id;";
                     $stmt_check2 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
@@ -970,25 +919,41 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt_check2);
                         $result_check2 = mysqli_stmt_get_result($stmt_check2);
                         $rowCount_check2 = $result_check2->num_rows;
-                        $row_check2 = $result_check2->fetch_assoc();
+                        
+                        if ($rowCount_check2 == 0) {
+                            $sql_check3 = "SELECT * site WHERE id=$site_id;";
+                            $stmt_check3 = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_check3, $sql_check3)) {
+                                header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_execute($stmt_check3);
+                                $result_check3 = mysqli_stmt_get_result($stmt_check3);
+                                $rowCount_check3 = $result_check3->num_rows;
+                                $row_check3 = $result_check3->fetch_assoc();
 
-                        $current_stock_name = $row_check2['name'];
+                                $current_stock_name = $row_check3['name'];
 
-                        $sql_site = "UPDATE site SET deleted=1 WHERE id=$site_id;";
-                        $stmt_site = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
-                            header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
-                            exit();
+                                $sql_site = "DELETE FROM site WHERE id=$site_id;";
+                                $stmt_site = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                                    header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_execute($stmt_site);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "name", $current_stock_name, null);
+
+                                    header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
+                                    exit();
+                                }
+                            }
+                            
                         } else {
-                            mysqli_stmt_execute($stmt_site);
-                            // update changelog
-                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "deleted", 0, 1);
-
-                            header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
+                            header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
                             exit();
                         }
-                    }
-                         
+                    }     
                 } else {
                     header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
                     exit();
@@ -996,7 +961,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } elseif ($_POST['location-delete-submit'] == "area") {
             $area_id = $_POST['location-id'];
-            $sql_check = "SELECT * FROM shelf WHERE area_id=$area_id AND deleted=0;";
+            $sql_check = "SELECT * FROM shelf WHERE area_id=$area_id;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
                 header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -1007,7 +972,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_check1 = "SELECT * FROM area WHERE id=$area_id AND deleted=0;";
+                    $sql_check1 = "SELECT * FROM area WHERE id=$area_id;";
                     $stmt_check1 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -1020,7 +985,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
                         $current_area_name = $row_check1['name'];
                         
-                        $sql_area = "UPDATE area SET deleted=1 WHERE id=$area_id;";
+                        $sql_area = "DELETE FROM area WHERE id=$area_id;";
                         $stmt_area = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
                             header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -1028,7 +993,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         } else {
                             mysqli_stmt_execute($stmt_area);
                             // update changelog
-                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "area", $area_id, "deleted", 0, 1);
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "area", $area_id, "name", $current_area_name, null);
 
                             header("Location: ../admin.php?success=areaDeleted&id=$area_id#stocklocations-settings");
                             exit();
@@ -1041,7 +1006,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } elseif ($_POST['location-delete-submit'] == "shelf") {
             $shelf_id = $_POST['location-id'];
-            $sql_check = "SELECT * FROM item WHERE shelf_id=$shelf_id AND deleted=0;";
+            $sql_check = "SELECT * FROM item WHERE id=$shelf_id;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
                 header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -1052,8 +1017,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-
-                    $sql_check1 = "SELECT * FROM cable_item WHERE shelf_id=$shelf_id AND deleted=0;";
+                    $sql_check1 = "SELECT * FROM shelf WHERE id=$shelf_id;";
                     $stmt_check1 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                         header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
@@ -1062,43 +1026,27 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt_check1);
                         $result_check1 = mysqli_stmt_get_result($stmt_check1);
                         $rowCount_check1 = $result_check1->num_rows;
+                        $row_check1 = $result_check1->fetch_assoc();
 
-                        if ($rowCount_check1 == 0) {
+                        $current_shelf_name = $row_check1['name'];
 
-                            $sql_check2 = "SELECT * FROM shelf WHERE id=$shelf_id AND deleted=0;";
-                            $stmt_check2 = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
-                                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
-                                exit();
-                            } else {
-                                mysqli_stmt_execute($stmt_check2);
-                                $result_check2 = mysqli_stmt_get_result($stmt_check2);
-                                $rowCount_check2 = $result_check2->num_rows;
-                                $row_check2 = $result_check2->fetch_assoc();
-
-                                $current_shelf_name = $row_check2['name'];
-
-                                $sql_shelf = "UPDATE shelf SET deleted=1 WHERE id=$shelf_id;";
-                                $stmt_shelf = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
-                                    header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
-                                    exit();
-                                } else {
-                                    mysqli_stmt_execute($stmt_shelf);
-                                    // update changelog
-                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "shelf", $shelf_id, "deleted", 0, 1);
-
-                                    header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
-                                    exit();
-                                }
-                            }
+                        $sql_shelf = "DELETE FROM shelf WHERE id=$shelf_id;";
+                        $stmt_shelf = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
+                            header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                            exit();
                         } else {
-                            header("Location: ../admin.php?error=shelfHasDependencies1#stocklocations-settings");
+                            mysqli_stmt_execute($stmt_shelf);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "shelf", $shelf_id, "name", $current_shelf_name, null);
+
+                            header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
                             exit();
                         }
                     }
+                    
                 } else {
-                    header("Location: ../admin.php?error=shelfHasDependencies2#stocklocations-settings");
+                    header("Location: ../admin.php?error=shelfHasDependencies#stocklocations-settings");
                     exit();
                 }
             }
@@ -1263,92 +1211,6 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=missingLocationType#stocklocations-settings");
             exit();
         }
-    } elseif (isset($_POST['imagemanagement-submit'])) { // image management section in the admin.php page
-        if (isset($_POST['file-name'])) {
-            if (isset($_POST['file-links'])) {
-                if ($_POST['file-links'] == 0) {
-                    $filename = $_POST['file-name'];
-                    exec("rm ../assets/img/stock/$filename");
-                    header("Location: ../admin.php?success=imageDeleted#imagemanagement-settings");
-                    exit();
-                } else {
-                    header("Location: ../admin.php?error=linksExist#imagemanagement-settings");
-                    exit();
-                }
-            } else {
-                header("Location: ../admin.php?error=missingFileLinks#imagemanagement-settings");
-                exit();
-            }
-        } else {
-            header("Location: ../admin.php?error=missingFileName#imagemanagement-settings");
-            exit();
-        }
-    } elseif (isset($_GET['mail-notification'])) { // mail notification section in admin.php page. this is ajax'd
-        $results = [];
-
-        function msg($text, $type) {
-            if ($type == 'error') {
-                $class="red";
-            } else {
-                $class="green";
-            }
-            $head = '<or class="'.$class.'">';
-            $foot = '</or>';
-
-            return $head.$text.$foot;
-        }
-
-        if (isset($_GET['notification'])) {
-            $notification = $_GET['notification'];
-            if (isset($_GET['value'])) {
-                $value = $_GET['value'];
-                if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
-                    include 'dbh.inc.php';
-
-                    $sql = "SELECT * FROM notifications WHERE id='$notification'";
-                    $stmt = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt, $sql)) {
-                        $results[] = msg('SQL connection issue.', 'error');
-                    } else {
-                        mysqli_stmt_execute($stmt);
-                        $result = mysqli_stmt_get_result($stmt);
-                        $rowCount = $result->num_rows;
-                        if ($rowCount == 1) {
-                            $row = $result->fetch_assoc();
-                            $id = $row['id'];
-                            $title = $row['title'];
-                            $prev_value = $row['enabled'];
-
-                            $state = $value == 1 ? 'enabled' : 'disabled';
-                            
-                            $sql_update = "UPDATE notifications SET enabled=? WHERE id='$id'";
-                            $stmt_update = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                $results[] = msg('SQL connection issue.', 'error');
-                            } else {
-                                mysqli_stmt_bind_param($stmt_update, "s", $value);
-                                mysqli_stmt_execute($stmt_update);
-                                // update changelog
-                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "notifications", $id, 'enabled', $prev_value, $value);
-                                $results[] = msg("$title notificaiton $state!", 'success');
-                            }
-                        } else {
-
-                        }
-                    }
-                } else {
-                    $results[] = msg('Invalid value specified.', 'error');
-                }
-            } else {
-                $results[] = msg('No value specified.', 'error');
-            }
-
-        } else {
-            $results[] = msg('No notification type specified.', 'error');
-        }
-
-        echo(json_encode($results));
-
     } elseif (isset($_POST['stocklocation-submit'])) { // editing location info from admin.php
         if (isset($_POST['type'])) {
             $typesArray = ['site', 'area', 'shelf'];
@@ -1474,214 +1336,6 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } else {
             header("Location: ../profile.php?error=idMissing");
-            exit();
-        }
-    } elseif (isset($_POST['card-modify'])) { // profile.php swipe cards - assigning and re-assigning.
-        if (isset($_POST['type'])) {
-            if (isset($_POST['card'])) {
-                if (isset($_POST['cardData'])) {
-                    $user_id = $_SESSION['user_id'];
-                    $card_number = $_POST['cardData'];
-                    $card_card = $_POST['card'];
-                    $card_type= $_POST['type'];
-                    if ($card_type == 'assign') {
-                        $return_q_text = 'Assigned';
-                    } else {
-                        $return_q_text = 'Reassigned';
-                    }
-                    if (is_numeric($card_number)) {
-                        if ($card_card == 1) {
-                            $card_field = 'card_primary';
-                        } elseif ($card_card == 2) {
-                            $card_field = 'card_secondary';
-                        } else {
-                            header("Location: ../profile.php?error=cardCardNoMatch");
-                            exit();
-                        }
-
-                        $sql_check = "SELECT $card_field AS card FROM users WHERE id=$user_id";
-                        $stmt_check = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
-                            header("Location: ../profile.php?sqlerror=usersTableError");
-                            exit();
-                        } else {
-                            mysqli_stmt_execute($stmt_check);
-                            $result_check = mysqli_stmt_get_result($stmt_check);
-                            $rowCount_check = $result_check->num_rows;
-                            if ($rowCount_check != 1) {
-                                header("Location: ../profile.php?error=incorrectCheckRowCount");
-                                exit();
-                            } else {
-                                $row_check = $result_check->fetch_assoc();
-                                $card_current = $row_check['card'];
-                            }
-                        }
-
-                        $sql = "UPDATE users SET $card_field='$card_number' WHERE id=$user_id";
-                        $stmt = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ../profile.php?error=usersConnectionSQL");
-                            exit();
-                        } else {
-                            mysqli_stmt_execute($stmt);
-                            // update changelog
-                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, $card_field, $card_current, $card_number);
-                            header("Location: ../profile.php?success=card$return_q_text&card=$card_card&card_number=$card_number");
-                            exit();
-                        }  
-
-                    } else {
-                        header("Location: ../profile.php?error=cardNumberNotNumeric");
-                        exit();
-                    }
-                } else {
-                    header("Location: ../profile.php?error=missingCardData");
-                    exit();
-                }
-            } else {
-                header("Location: ../profile.php?error=missingCard");
-                exit();
-            }
-        } else {
-            header("Location: ../profile.php?error=missingType");
-            exit();
-        }
-    } elseif (isset($_POST['card-remove'])) { // profile.php swipe cards - deassigning.
-        if (isset($_POST['card'])) {
-            $card_card = $_POST['card'];
-            $user_id = $_SESSION['user_id'];
-            if ($card_card == 1) {
-                $card_field = 'card_primary';
-            } elseif ($card_card == 2) {
-                $card_field = 'card_secondary';
-            } else {
-                header("Location: ../profile.php?error=cardCardNoMatch");
-                exit();
-            }
-            $sql_check = "SELECT $card_field AS card FROM users WHERE id=$user_id";
-            $stmt_check = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
-                header("Location: ../profile.php?sqlerror=usersTableError");
-                exit();
-            } else {
-                mysqli_stmt_execute($stmt_check);
-                $result_check = mysqli_stmt_get_result($stmt_check);
-                $rowCount_check = $result_check->num_rows;
-                if ($rowCount_check != 1) {
-                    header("Location: ../profile.php?error=incorrectCheckRowCount");
-                    exit();
-                } else {
-                    $row_check = $result_check->fetch_assoc();
-                    $card_current = $row_check['card'];
-                }
-            }
-
-            $sql = "UPDATE users SET $card_field=null WHERE id=$user_id";
-            $stmt = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($stmt, $sql)) {
-                header("Location: ../profile.php?error=usersConnectionSQL");
-                exit();
-            } else {
-                mysqli_stmt_execute($stmt);
-                // update changelog
-                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, $card_field, $card_current, null);
-                header("Location: ../profile.php?success=cardDeassigned&card=$card_card");
-                exit();
-            }
-        } else {
-            header("Location: ../profile.php?error=missingCard");
-            exit();
-        }
-    } elseif (isset($_POST['theme-upload'])) { // theme uploading from the theme-test page
-        if (isset($_POST['submit']) && $_POST['submit'] == 'Upload Theme') {
-            if (isset($_POST['theme-name'])) {
-                if (isset($_POST['theme-file-name'])) {
-                    if (isset($_FILES['css-file']['name']) && $_FILES['css-file']['name'] !== '') {
-                        $errors = [];
-                        
-                        if (!isset($_FILES['css-file']))           { $errors[] = "notSet-File";          }
-                        if ($_FILES['css-file']['name'] == '')     { $errors[] = "notSet-File-name";     }
-                        if ($_FILES['css-file']['size'] == '')     { $errors[] = "notSet-File-size";     }
-                        if ($_FILES['css-file']['tmp_name'] == '') { $errors[] = "notSet-File-tmp_name"; }
-                        if ($_FILES['css-file']['type'] == '')     { $errors[] = "notSet-File-type";     }
-
-                        $fileName = $_FILES['css-file']['name'];                            // Get uploaded file name
-                        $fileSize = $_FILES['css-file']['size'];                            // Get uploaded file size
-                        $explode = explode('.',$fileName);                              // Get file extension explode
-                        $fileExtension = strtolower(end($explode));                     // Get file extension
-
-                        if ($fileExtension !== "css")                { $errors[] = "wrongFileExtension";   } // File extenstion match?
-                        if ($fileSize > 10000000)                   { $errors[] = "above10MB";            } // Within Filesize limits?
-                        
-                        if (str_contains($_POST['theme-file-name'], '.'))         { $errors[] = "File-name-includes-extension"; }
-                        if (str_contains($_POST['theme-file-name'], '/')) { $errors[] = "File-name-includes-path"; }
-                        if (preg_match('/[^\p{L}\p{N}]+/u', $_POST['theme-name'])) { $errors[] = "theme-name-includes-speical-chars"; }
-        
-                        $theme_name = $_POST['theme-name'];
-                        $theme_file_name = $_POST['theme-file-name'].'.css';
-                        $file_tmp_name = $_FILES['css-file']['tmp_name'];
-        
-                        include 'dbh.inc.php';
-        
-                        $sql = "SELECT * FROM theme WHERE name='$theme_name' OR file_name='$theme_file_name'";
-                        $stmt = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ../test-theme.php?sqlerror=SQLconnection");
-                            exit();
-                        } else {
-                            mysqli_stmt_execute($stmt);
-                            $result = mysqli_stmt_get_result($stmt);
-                            $rowCount = $result->num_rows;
-                            if ($rowCount != 0) {
-                                $errors[] = 'theme-matches-existing';
-                            }
-                        }
-        
-                        if (empty($errors)) { // IF file is existing and all fields exist:;
-                            $uploadPath = '../assets/css/'.$theme_file_name;
-                            $didUpload = move_uploaded_file($_FILES['css-file']['tmp_name'], $uploadPath);
-                            if ($didUpload) {
-                                $sql_theme = "INSERT INTO theme (name, file_name) 
-                                                VALUES (?, ?)";
-                                $stmt_theme = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
-                                    header("Location: ../theme-test.php?error=SQLconnection&theme-name=$theme_name");
-                                    exit();
-                                } else {
-                                    mysqli_stmt_bind_param($stmt_theme, "ss", $theme_name, $theme_file_name);
-                                    mysqli_stmt_execute($stmt_theme);
-                                    // get new theme id
-                                    $theme_id = mysqli_insert_id($conn); // ID of the new row in the table.
-                                    // update changelog
-                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "theme", $theme_id, "name", null, $theme_name);
-                                    header("Location: ../theme-test.php?success=uploaded&theme-name=$theme_name");
-                                    exit();
-                                }
-                            } else {
-                                $errors[] = "uploadFailed";
-                                $errorQ = implode('+', $errors);
-                                header("Location: ../theme-test.php?errors=$errorQ");
-                                exit();
-                            }
-                        } else {
-                            $errorQ = implode('+', $errors);
-                            header("Location: ../theme-test.php?errors=$errorQ");
-                            exit();
-                        } 
-                    } else {
-                        header("Location: ../theme-test.php?error=uploadedFileNameMissing");
-                        exit();
-                    }
-                } else {
-                    header("Location: ../theme-test.php?error=fileNameMissing");
-                    exit();
-                }
-            } else {
-                header("Location: ../theme-test.php?error=themeNameMissing");
-                exit();
-            }
-        } else {
-            header("Location: ../theme-test.php?error=submitMissing");
             exit();
         }
     } else {

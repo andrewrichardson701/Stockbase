@@ -101,21 +101,21 @@ if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
             <tr>
                 <td>
                     <div style="margin-right:5vw">
-                        <button id="add-stock" class="btn btn-success cw nav-v-b btn-nav scale_1-3" style="width:80px;opacity:90%" onclick="navPage(updateQueryParameter('./stock.php', 'modify', 'add'))">
+                        <button id="add-stock" class="btn btn-success cw nav-v-b btn-nav scale_1-15" style="width:80px;opacity:90%" onclick="navPage(updateQueryParameter('./stock.php', 'modify', 'add'))">
                             <i class="fa fa-plus"></i> Add 
                         </button>
                     </div>
                 </td>
                 <td>
                     <div>
-                        <button id="remove-stock" class="btn btn-danger cw btn-nav scale_1-3" style="width:80px;" onclick="navPage(updateQueryParameter('./stock.php', 'modify', 'remove'))">
+                        <button id="remove-stock" class="btn btn-danger cw btn-nav scale_1-15" style="width:80px;" onclick="navPage(updateQueryParameter('./stock.php', 'modify', 'remove'))">
                             <i class="fa fa-minus"></i> Remove 
                         </button>
                     </div>
                 </td>
                 <td>
                     <div style="margin-left:5vw">
-                        <button id="transfer-stock" class="btn btn-warning btn-nav scale_1-3" style="width:80px;color:black" onclick="navPage(updateQueryParameter('./stock.php', 'modify', 'move'))">
+                        <button id="transfer-stock" class="btn btn-warning btn-nav scale_1-15" style="width:80px;color:black" onclick="navPage(updateQueryParameter('./stock.php', 'modify', 'move'))">
                             <i class="fa fa-arrows-h"></i> Move 
                         </button>
                     </div>

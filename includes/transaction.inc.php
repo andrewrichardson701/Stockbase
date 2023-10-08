@@ -85,11 +85,11 @@ if (isset($_GET['stock_id'])) {
                                 <th>Date</th>
                                 <th>Time</th>
                                 <th>Location</th>
-                                <th>Shelf</th>
-                                <th>Username</th>
+                                <th class="viewport-mid-large">Shelf</th>
+                                <th class="viewport-mid-large">Username</th>
                                 <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Serial Number</th>
+                                <th class="viewport-large-empty">Price</th>
+                                <th class="viewport-large-empty">Serial Number</th>
                                 <th hidden>Comments</th>
                                 <th>Reason</th>
                             </tr>
@@ -140,11 +140,11 @@ if (isset($_GET['stock_id'])) {
                                 <td id="t_date">' . $t_date . '</td>
                                 <td id="t_time">' . $t_time . '</td>
                                 <td id="a_name">' . $a_name . '</td>
-                                <td id="s_name">' . $s_name . '</td>
-                                <td id="t_username">' . $t_username . '</td>
+                                <td id="s_name" class="viewport-mid-large">' . $s_name . '</td>
+                                <td id="t_username" class="viewport-mid-large">' . $t_username . '</td>
                                 <td id="t_quantity">' . $t_quantity . '</td>
-                                <td>' . $currency_symbol . $t_price . '</td>
-                                <td>' . $t_serial_number . '</td>
+                                <td class="viewport-large-empty">' . $currency_symbol . $t_price . '</td>
+                                <td class="viewport-large-empty">' . $t_serial_number . '</td>
                                 <td hidden>' . $t_comments . '</td>
                                 <td id="t_reason">' . $t_reason . '</td>
                             </tr>
@@ -196,7 +196,7 @@ if (isset($_GET['stock_id'])) {
                         $row_count = $result_count->num_rows;
                         $total_pages = ceil($row_count / $results_per_page);
                         
-                        if ( $total_pages > 1){
+                        if ( $total_pages > 1 && $total_pages <= 15){
                             if ($current_page > 1) {
                                 echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
                             }
@@ -214,6 +214,27 @@ if (isset($_GET['stock_id'])) {
                                 echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
                             }  
                             echo('&nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>');
+                        } else {
+                            echo ('
+                            <form>
+                                <table class="centertable">
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding-right:10px">Page:</td>
+                                            <td style="padding-right:10px">
+                                                <select id="page-select" class="form-control row-dropdown" style="padding:0" onchange="navPage(updateQueryParameter(\'\', \'page\', document.getElementById(\'page-select\').value + \'#transactions\'))" name="page">');
+                                                for ($i = 1; $i <= $total_pages; $i++) {
+                                                    echo('<option value="'.$i.'"'); if ($i == $current_page) { echo(' selected'); } echo('>'.$i.'</option>');
+                                                }
+                                                echo('
+                                                </select>
+                                            </td>
+                                            <td><or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or></td>
+                                        <tr>
+                                    </tbody>
+                                </table>        
+                            </form>
+                            ');
                         }
                     }
                     echo('</div>');

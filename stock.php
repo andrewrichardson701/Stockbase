@@ -113,29 +113,33 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         $cable_disable = '';
                     }
                     echo('
-                        <div class="container" style="padding-bottom:25px">
+                        <div class="container stock-heading">
                             <h2 class="header-small" style="padding-bottom:5px">Stock</h2>
-                            <div class="nav-row" style="margin-top:10px">
+                            <div class="nav-row " style="margin-top:5px;">
                                 <h3 style="font-size:22px;margin-top:20px;margin-bottom:0;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
-                                <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">
-                                    <button id="edit-stock" class="btn btn-info theme-textColor nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'edit\'))">
-                                        <i class="fa fa-pencil"></i> Edit 
-                                    </button>
-                                </div> 
-                                <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                    <button id="add-stock" class="btn btn-success theme-textColor nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$cable_disable.'>
-                                        <i class="fa fa-plus"></i> Add 
-                                    </button>
-                                </div> 
-                                <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                    <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b" style="width:110px" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$cable_disable.'>
-                                        <i class="fa fa-minus"></i> Remove 
-                                    </button>
-                                </div> 
-                                <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-                                    <button id="transfer-stock" class="btn btn-warning nav-v-b" style="width:110px;color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))"'.$cable_disable.'>
-                                        <i class="fa fa-arrows-h"></i> Move 
-                                    </button>
+                                <div class="nav-div nav-right" style="padding-top:5px;margin-right:0px !important">
+                                    <div class="nav-row">
+                                        <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">
+                                            <button id="edit-stock" class="btn btn-info theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'edit\'))">
+                                                <i class="fa fa-pencil"></i><or class="viewport-large-empty"> Edit</or>
+                                            </button>
+                                        </div> 
+                                        <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
+                                            <button id="add-stock" class="btn btn-success theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$cable_disable.'>
+                                                <i class="fa fa-plus"></i><or class="viewport-large-empty"> Add</or>
+                                            </button>
+                                        </div> 
+                                        <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
+                                            <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$cable_disable.'>
+                                                <i class="fa fa-minus"></i><or class="viewport-large-empty"> Remove</or>
+                                            </button>
+                                        </div> 
+                                        <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
+                                            <button id="transfer-stock" class="btn btn-warning nav-v-b stock-modifyBtn" style="color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))"'.$cable_disable.'>
+                                                <i class="fa fa-arrows-h"></i><or class="viewport-large-empty"> Move</or>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <p id=stock-description style="margin-bottom:0px">'.$stock_description.'</p>
@@ -144,7 +148,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <!-- Modal Image Div -->
                         <div id="modalDiv" class="modal" onclick="modalClose()">
                             <span class="close" onclick="modalClose()">&times;</span>
-                            <img class="modal-content bg-trans" id="modalImg">
+                            <img class="modal-content bg-trans modal-imgWidth" id="modalImg">
                             <div id="caption" class="modal-caption"></div>
                         </div>
                         <!-- End of Modal Image Div -->
@@ -393,42 +397,42 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('
                             </div>
                             
-                            <div class="col-sm text-right" style="margin-left:70px" id="stock-info-right">');  
+                            <div class="col text-right" id="stock-info-right">');  
                             if (!empty($stock_img_data) && $stock_img_data !== null && $stock_img_data !== '') {
-                                echo('<div class="well-nopad theme-divBg nav-right" style="margin:20px;padding:0px;width:max-content">
-                                <div class="nav-row" style="width:315px">');
+                                echo('<div class="well-nopad theme-divBg nav-right stock-imageBox">
+                                <div class="nav-row stock-imageMainSolo">');
                                 for ($i=0; $i < count($stock_img_data); $i++) {
                                     $ii = $i+1;
                                     if ($i == 0) {
                                         if ($i+1 === count($stock_img_data)) {
-                                            $imgWidth = "315px";
+                                            $imgClass = "stock-imageMainSolo";
                                         } else {
-                                            $imgWidth = "235px";
+                                            $imgClass = "stock-imageMain";
                                         }
                                         echo('
-                                        <div class="thumb theme-divBg-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoadCarousel()">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-width:'.$imgWidth.'; max-height:235px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
+                                        <div class="thumb theme-divBg-m text-center '.$imgClass.'" onclick="modalLoadCarousel()">
+                                            <img class="nav-v-c '.$imgClass.'" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
                                         ');
                                     } 
                                     if ($i == 1 || $i == 2) {
                                         echo('
-                                        <div class="thumb theme-divBg-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoadCarousel()">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
+                                        <div class="thumb theme-divBg-m stock-imageOther" style="margin-bottom:5px" onclick="modalLoadCarousel()">
+                                            <img class="nav-v-c stock-imageOther" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" alt="'.$stock_name.' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
                                         </div>
                                         ');
                                     }
                                     if ($i == 3) {
                                         if ($i < (count($stock_img_data)-1)) {
                                             echo ('
-                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px">
-                                            <p class="nav-v-c text-center" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-more" style="width:75px">+'.(count($stock_img_data)-3).'</p>
+                                            <div class="thumb theme-divBg-m stock-imageOther" onclick="modalLoadCarousel()">
+                                            <p class="nav-v-c text-center stock-imageOther" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-more">+'.(count($stock_img_data)-3).'</p>
                                             ');
                                         } else {
                                             echo('
-                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px" onclick="modalLoadCarousel()">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" onclick="modalLoad(this)"/>
+                                            <div class="thumb theme-divBg-m stock-imageOther" onclick="modalLoadCarousel()">
+                                            <img class="nav-v-c stock-imageOther" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" onclick="modalLoad(this)"/>
                                             ');
                                         }
                                         echo('</div>');
@@ -448,7 +452,13 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     echo('
                                     <!-- Modal Image Div -->
                                     <div id="modalDivCarousel" class="modal" onclick="modalCloseCarousel()">
-                                        <span class="close" onclick="modalCloseCarousel()">&times;</span>
+                                        <span class="close" onclick="modalCloseCarousel()">&times;</span>');
+                                        for ($b=0; $b < count($stock_img_data); $b++) {
+                                            echo('
+                                            <img class="modal-content bg-trans modal-imgWidth" id="stock-'.$stock_img_data[$b]['stock_id'].'-img-'.$stock_img_data[$b]['id'].'" src="assets/img/stock/'.$stock_img_data[$b]['image'].'"/>
+                                            ');
+                                        }
+                                        echo('
                                         <img class="modal-content bg-trans" id="modalImg">
                                         <div id="caption" class="modal-caption"></div>
                                     </div>
@@ -462,7 +472,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <div id="modalDivCarousel" class="modal">
                                         <span class="close" onclick="modalCloseCarousel()">&times;</span>
                                         <img class="modal-content bg-trans" id="modalImg">
-                                            <div id="myCarousel" class="carousel slide" data-ride="carousel" align="center" style="margin-left:10%; margin-right:10%">
+                                            <div id="myCarousel" class="carousel slide" data-ride="carousel" align="center" style="margin-left:10vw; margin-right:10vw">
                                                 <!-- Indicators -->
                                                 <ol class="carousel-indicators">');
                                                 for ($a=0; $a < count($stock_img_data); $a++) {
@@ -479,7 +489,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     $bb = $b+1;
                                                     echo('
                                                     <div class="item'.$active.'" align="centre">
-                                                    <img class="modal-content bg-trans" id="stock-'.$stock_img_data[$b]['stock_id'].'-img-'.$stock_img_data[$b]['id'].'" src="assets/img/stock/'.$stock_img_data[$b]['image'].'" style="max-width:1000px"/>
+                                                    <img class="modal-content bg-trans modal-imgWidth" id="stock-'.$stock_img_data[$b]['stock_id'].'-img-'.$stock_img_data[$b]['id'].'" src="assets/img/stock/'.$stock_img_data[$b]['image'].'"/>
                                                         <div class="carousel-caption">
                                                             <h3></h3>
                                                             <p></p>
@@ -683,14 +693,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <th>Shelf</th>');
                                                 if ($stock_is_cable == 0) { 
                                                     echo('
-                                                    <th>Manufacturer</th>
-                                                    <th>UPC</th>
+                                                    <th class="viewport-large-empty">Manufacturer</th>
+                                                    <th class="viewport-small-empty">Manu.</th>
+                                                    <th class="viewport-large-empty">UPC</th>
                                                     <th title="Serial Numbers">Serial</th>
                                                     <th>Labels</th>
-                                                    <th>Cost</th>
-                                                    <th>Comments</th>');
+                                                    <th class="viewport-large-empty">Cost</th>
+                                                    <th class="viewport-large-empty">Comments</th>');
                                                 } else { 
-                                                    echo('<th>Cost</th>');
+                                                    echo('<th class="viewport-large-empty">Cost</th>');
                                                 }
                                                 echo('
                                                 <th>Stock</th>
@@ -709,15 +720,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         if ($stock_is_cable == 0) {
                                             echo('   
                                                 <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
-                                                <td id="item-'.$i.'-manu">'.$stock_inv_data[$i]['upc'].'</td>
+                                                <td id="item-'.$i.'-upc" class="viewport-large-empty">'.$stock_inv_data[$i]['upc'].'</td>
                                                 <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
                                                 <td id="item-'.$i.'-labels">'.$stock_inv_data[$i]['label_names'].'</td>
-                                                <td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
-                                                <td id="item-'.$i.'-comments">'.$stock_inv_data[$i]['comments'].'</td>
+                                                <td id="item-'.$i.'-cost" class="viewport-large-empty">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                <td id="item-'.$i.'-comments" class="viewport-large-empty">'.$stock_inv_data[$i]['comments'].'</td>
                                                 <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                                 ');
                                         } else {
-                                            echo('<td id="item-'.$i.'-cost">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                            echo('<td id="item-'.$i.'-cost" class="viewport-large-empty">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                             <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] < $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
                                         }
                                         echo('
@@ -814,10 +825,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </table>
                             </div>
                             
-                            <div class="container well-nopad theme-divBg" style="margin-top:5px">
+                            <div class="container well-nopad theme-divBg viewport-large-empty" style="margin-top:5px">
                                 <h2 style="font-size:22px">Transactions</h2>');
                                 include 'includes/transaction.inc.php';
-                        echo('</div>');
+                        echo('</div>
+                            <div class="container well-nopad theme-divBg viewport-small-empty text-center" style="margin-top:5px">
+                            <or class="specialColor clickable" style="font-size:12px" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">View Transactions</or>
+                            </div>
+                        ');
                         }
                     }
                 }

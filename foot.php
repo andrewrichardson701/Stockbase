@@ -11,51 +11,15 @@ $complemenent_banner_color = getComplement($current_banner_color);
 $WorB_complement_banner_color = getWorB($complemenent_banner_color);
 ?>
 <style>
-    #scrollTop {
-        display: block;
-        position: fixed;
-        bottom: 35px;
-        right: -100px;
-        z-index: 99;
-        font-size: 18px;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        overflow: hidden;
-    }
-
-    #scrollTop:hover {
-
-    }
-
     .scrollBtn {
-        font-size: 18px;
-        border: none;
-        outline: none;
         background-color: <?php echo $current_banner_color; ?>;
         color: <?php echo $WorB_banner_color; ?>;
-        cursor: pointer;
-        padding: 0px 10px 0px 10px;
-        border-radius: 4px;
-        position: inline-block;
-        width: 38px;
-        height: 38px;
-        transition: width 0.2s ease; /* Apply smooth width and position transitions */
-        overflow: hidden;
-    }
-
-    .scrollIcon {
-        padding: 10px 0px 10px 0px;
     }
 
     .scrollBtn:hover {
-        width: 180px;
         background-color: <?php echo $complemenent_banner_color; ?>;
         color: <?php echo $WorB_complement_banner_color; ?>;
     }
-    .scrollBtn span {
-        height:25px
-    } 
 
 </style>
 <div id="scrollTop" class="hideTranslate">
@@ -102,8 +66,8 @@ if ($showFoot == 1) {
                 <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
                     Copyright &copy; <?php echo date("Y"); ?> StockBase. All rights reserved.
                 </div>
-                <div class="col text-center viewport-small-block" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
-                    &copy; <?php echo date("Y"); ?> StockBase.
+                <div class="col text-center viewport-small-block" style="font-size:10px;cursor:pointer;" onclick="navPage('about.php')">
+                    &copy; <?php echo date("Y"); ?> StockBase
                 </div>
                 <div class="col text-center viewport-large-empty">
                     <a href="https://todo.ajrich.co.uk/#/board/16" class="link" style="font-size:12px" target="_blank">Road Map</a>

@@ -154,36 +154,62 @@ if (isset($override_email)) {
     }
 }
 
-$email_template_start = '
+$email_template_head = '
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">
+<body style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">';
+
+$email_template_head_template = '
+<div style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw; background-color:white;">';
+
+$email_template_start = '
     <!-- inset block -->
     <div style="padding-top:20px; background-color: '.$current_banner_color.'; text-align: center;">
         <div style="text-align: center;padding-bottom:10px">
-        <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.';"><h1>'.ucwords($current_system_name).'</h1></a>
+        <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.' !important;"><h1>'.ucwords($current_system_name).'</h1></a>
         </div>
         <div style="background-color:#e8e8e8; text-align: center;  padding-top:10px; padding-bottom:10px">
-            <h2>Hello, '.ucwords($loggedin_firstname).'!</h2>
+            <h2 style="color:black !important">Hello, '.ucwords($loggedin_firstname).'!</h2>
 ';
 
 $email_template_end = '
-            <p>Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
+            <p style="color:black !important">Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
         </div>
         <div style="padding-top:10px; padding-bottom:20px;text-align: center;">
-            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.'">StockBase</a>. All rights reserved.</p>
+            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.' !important">StockBase</a>. All rights reserved.</p>
         </div>
-    </div>
-</body>
-';
+    </div>';
+
+$email_template_foot_template = '
+</div>';
+
+$email_template_foot = '
+</body>';
 
 function createEmail ($content) {
-    global $email_template_start, $email_template_end;
-    return $email_template_start.$content.$email_template_end;
+    global $email_template_head, $email_template_start, $email_template_end, $email_template_foot;
+    return $email_template_head.$email_template_start.$content.$email_template_end.$email_template_foot;
+}
+function createEmailTemplate ($content) {
+    global $email_template_head_template, $email_template_start, $email_template_end, $email_template_foot_template;
+    return $email_template_head_template.$email_template_start.$content.$email_template_end.$email_template_foot_template;
 }
 
+if (isset($_GET['template'])) {
+    $template_usage = "Usage: smtp.inc.php?template=echo&body=&lt;p&gt;Body text&lt;/p&gt;";
+    if ($_GET['template'] == 'echo') {
+        if (isset($_GET['body'])) {
+            $template_body = $_GET['body'];
+            echo (createEmailTemplate($template_body));
+        } else {
+            echo ('<or class="red">AJAX request failed... Body missing.</or><br>'.$template_usage);
+        }
+    } else {
+        echo ('<or class="red">AJAX request failed... Incorrect Template.</or><br>'.$template_usage);
+    }
+}
 // send_email($_GET['to'], $_GET['toName'], $_GET['fromName'], $_GET['subject'], createEmail(Semail_template_start, $email_content_test, $email_template_end), 0);
 
 ?>

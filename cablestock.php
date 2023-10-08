@@ -591,9 +591,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <th class="clickable sorting viewport-large-empty" id="type" onclick="sortTable(5, this)">Type</th>
                                             <th class="clickable sorting" id="site-name" onclick="sortTable(6, this)">Site</th>
                                             <th class="clickable sorting" id="quantity" onclick="sortTable(7, this)">Quantity</th>
-                                            <th id="min-stock" style="color:#8f8f8f">Min. stock</th>
-                                            <th style="width:50px"></th>
-                                            <th style="width:50px"></th>
+                                            <th id="min-stock" class="viewport-large-empty" style="color:#8f8f8f">Min. stock</th>
+                                            <th class="viewport-small-empty" style="color:#8f8f8f">Min.</th>
+                                            <th class="btn-cableStock"></th>
+                                            <th class="btn-cableStock"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="align-middle" style="text-align: center; white-space: nowrap;">
@@ -640,7 +641,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <td class="align-middle" id="'.$cable_item_id.'-name"><a href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
                                                 <td class="align-middle viewport-large-empty" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
-                                                <td class="align-middle clickable link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>
+                                                <td class="align-middle link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-quantity">'); 
                                                 if ($stock_quantity_total == 0) {
                                                     echo("<or class='red' title='Out of Stock'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Out of stock. Order more if necessary.'>0 <i class='fa fa-warning' /></u></or>");

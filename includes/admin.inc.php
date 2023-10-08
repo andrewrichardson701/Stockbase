@@ -23,7 +23,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit'])
     && !isset($_POST['smtp-toggle-submit']) && !isset($_POST['imagemanagement-submit'])
-    && !isset($_POST['theme-upload']) && !isset($_GET['mail-notification'])) {
+    && !isset($_POST['theme-upload']) && !isset($_GET['mail-notification']) && !isset($_POST['card-modify']) 
+    && !isset($_POST['card-remove'])) {
 
     header("Location: ../admin.php?error=noSubmit");
     exit();
@@ -1473,6 +1474,122 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } else {
             header("Location: ../profile.php?error=idMissing");
+            exit();
+        }
+    } elseif (isset($_POST['card-modify'])) { // profile.php swipe cards - assigning and re-assigning.
+        if (isset($_POST['type'])) {
+            if (isset($_POST['card'])) {
+                if (isset($_POST['cardData'])) {
+                    $user_id = $_SESSION['user_id'];
+                    $card_number = $_POST['cardData'];
+                    $card_card = $_POST['card'];
+                    $card_type= $_POST['type'];
+                    if ($card_type == 'assign') {
+                        $return_q_text = 'Assigned';
+                    } else {
+                        $return_q_text = 'Reassigned';
+                    }
+                    if (is_numeric($card_number)) {
+                        if ($card_card == 1) {
+                            $card_field = 'card_primary';
+                        } elseif ($card_card == 2) {
+                            $card_field = 'card_secondary';
+                        } else {
+                            header("Location: ../profile.php?error=cardCardNoMatch");
+                            exit();
+                        }
+
+                        $sql_check = "SELECT $card_field AS card FROM users WHERE id=$user_id";
+                        $stmt_check = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                            header("Location: ../profile.php?sqlerror=usersTableError");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt_check);
+                            $result_check = mysqli_stmt_get_result($stmt_check);
+                            $rowCount_check = $result_check->num_rows;
+                            if ($rowCount_check != 1) {
+                                header("Location: ../profile.php?error=incorrectCheckRowCount");
+                                exit();
+                            } else {
+                                $row_check = $result_check->fetch_assoc();
+                                $card_current = $row_check['card'];
+                            }
+                        }
+
+                        $sql = "UPDATE users SET $card_field='$card_number' WHERE id=$user_id";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../profile.php?error=usersConnectionSQL");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, $card_field, $card_current, $card_number);
+                            header("Location: ../profile.php?success=card$return_q_text&card=$card_card&card_number=$card_number");
+                            exit();
+                        }  
+
+                    } else {
+                        header("Location: ../profile.php?error=cardNumberNotNumeric");
+                        exit();
+                    }
+                } else {
+                    header("Location: ../profile.php?error=missingCardData");
+                    exit();
+                }
+            } else {
+                header("Location: ../profile.php?error=missingCard");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=missingType");
+            exit();
+        }
+    } elseif (isset($_POST['card-remove'])) { // profile.php swipe cards - deassigning.
+        if (isset($_POST['card'])) {
+            $card_card = $_POST['card'];
+            $user_id = $_SESSION['user_id'];
+            if ($card_card == 1) {
+                $card_field = 'card_primary';
+            } elseif ($card_card == 2) {
+                $card_field = 'card_secondary';
+            } else {
+                header("Location: ../profile.php?error=cardCardNoMatch");
+                exit();
+            }
+            $sql_check = "SELECT $card_field AS card FROM users WHERE id=$user_id";
+            $stmt_check = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                header("Location: ../profile.php?sqlerror=usersTableError");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_check);
+                $result_check = mysqli_stmt_get_result($stmt_check);
+                $rowCount_check = $result_check->num_rows;
+                if ($rowCount_check != 1) {
+                    header("Location: ../profile.php?error=incorrectCheckRowCount");
+                    exit();
+                } else {
+                    $row_check = $result_check->fetch_assoc();
+                    $card_current = $row_check['card'];
+                }
+            }
+
+            $sql = "UPDATE users SET $card_field=null WHERE id=$user_id";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ../profile.php?error=usersConnectionSQL");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt);
+                // update changelog
+                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, $card_field, $card_current, null);
+                header("Location: ../profile.php?success=cardDeassigned&card=$card_card");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=missingCard");
             exit();
         }
     } elseif (isset($_POST['theme-upload'])) { // theme uploading from the theme-test page

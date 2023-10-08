@@ -178,7 +178,7 @@ $currency_symbol = '£';
                             $stock_id = $_GET['stock_id'];
                             echo('<div class="nav-row" style="margin-top: 2px; margin-bottom:5px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
-                                        <div id="heading-heading" style="margin-left:225px;">
+                                        <div id="heading-heading" style="margin-left:15vw;">
                                             <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
                                             <p id="sku" style="margin-bottom:0px;padding-bottom:0px"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
                                             <p class="green"');
@@ -200,11 +200,12 @@ $currency_symbol = '£';
                                                 <th>Site</th>
                                                 <th>Location</th>
                                                 <th>Shelf</th>
-                                                <th>Manufacturer</th>
-                                                <th>UPC</th>
+                                                <th class="viewport-mid-large">Manufacturer</th>
+                                                <th class="viewport-small-only-empty">Manu.</th>
+                                                <th class="viewport-mid-large">UPC</th>
                                                 <th title="Serial Numbers">Serial</th>
                                                 <th>Cost</th>
-                                                <th>Comments</th>
+                                                <th class="viewport-mid-large">Comments</th>
                                                 <th>Stock</th>
                                             </tr>
                                         </thead>
@@ -218,16 +219,16 @@ $currency_symbol = '£';
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
                                                 <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
-                                                <td id="item-'.$i.'-manu">'.$stock_inv_data[$i]['upc'].'</td>
+                                                <td id="item-'.$i.'-upc" class="viewport-mid-large">'.$stock_inv_data[$i]['upc'].'</td>
                                                 <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
                                                 <td id="item-'.$i.'-cost">'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
-                                                <td id="item-'.$i.'-comments">'.$stock_inv_data[$i]['comments'].'</td>
+                                                <td id="item-'.$i.'-comments" class="viewport-mid-large">'.$stock_inv_data[$i]['comments'].'</td>
                                                 <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                             </tr>
                                             <tr class="move-hide" id="item-'.$i.'-edit" hidden>
                                                 <td colspan=100%>
-                                                    <div class="container">
-                                                        <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                    <div class="container">                                                       
+                                                        <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                                             <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                                             <input type="hidden" name="stock-move" value="1" />
                                                             <input type="hidden" id="'.$i.'-c-i" name="current_i" value="'.$i.'" />
@@ -245,60 +246,64 @@ $currency_symbol = '£';
                                                                 <tbody>
                                                                     <tr>
                                                                         <td>
-                                                                            <label style="padding-top:5px">To:</label>
-                                                                        </td>
-                                                                        <td>
-                                                                            <select class="form-control" id="'.$i.'-n-site" name="site" style="min-width:100px" required onchange="populateAreas(\''.$i.'\')">
-                                                                                <option value="" selected disabled hidden>Select Site</option>');
-                                                                                    include 'includes/dbh.inc.php';
-                                                                                    $sql = "SELECT id, name
-                                                                                            FROM site
-                                                                                            WHERE site.deleted=0
-                                                                                            ORDER BY id";
-                                                                                    $stmt = mysqli_stmt_init($conn);
-                                                                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                                                                        // fails to connect
-                                                                                    } else {
-                                                                                        mysqli_stmt_execute($stmt);
-                                                                                        $result = mysqli_stmt_get_result($stmt);
-                                                                                        $rowCount = $result->num_rows;
-                                                                                        if ($rowCount < 1) {
-                                                                                            echo('<option value="0">No Sites Found...</option>');
-                                                                                        } else {
-                                                                                            // rows found
-                                                                                            while ($row = $result->fetch_assoc()) {
-                                                                                                $sites_id = $row['id'];
-                                                                                                $sites_name = $row['name'];
-                                                                                                echo('<option value="'.$sites_id.'">'.$sites_name.'</option>');
+                                                                            <div class="row">
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <label class="nav-v-c">To:</label>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-site" name="site" style="min-width:50px; padding:2 0 2 0;  width:max-content !important" required onchange="populateAreas(\''.$i.'\')">
+                                                                                        <option value="" selected disabled hidden>Site</option>');
+                                                                                            include 'includes/dbh.inc.php';
+                                                                                            $sql = "SELECT id, name
+                                                                                                    FROM site
+                                                                                                    WHERE site.deleted=0
+                                                                                                    ORDER BY id";
+                                                                                            $stmt = mysqli_stmt_init($conn);
+                                                                                            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                                                                                // fails to connect
+                                                                                            } else {
+                                                                                                mysqli_stmt_execute($stmt);
+                                                                                                $result = mysqli_stmt_get_result($stmt);
+                                                                                                $rowCount = $result->num_rows;
+                                                                                                if ($rowCount < 1) {
+                                                                                                    echo('<option value="0">No Sites Found...</option>');
+                                                                                                } else {
+                                                                                                    // rows found
+                                                                                                    while ($row = $result->fetch_assoc()) {
+                                                                                                        $sites_id = $row['id'];
+                                                                                                        $sites_name = $row['name'];
+                                                                                                        echo('<option value="'.$sites_id.'">'.$sites_name.'</option>');
+                                                                                                    }
+                                                                                                }
                                                                                             }
-                                                                                        }
-                                                                                    }
-                                                                            echo('
-                                                                            </select>
+                                                                                    echo('
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-area" name="area" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled required onchange="populateShelves(\''.$i.'\')">
+                                                                                        <option value="" selected disabled hidden>Area</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-shelf" name="shelf" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled required>
+                                                                                        <option value="" selected disabled hidden>Shelf</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <label class="nav-v-c" for="'.$i.'-n-quantity">Quantity: </label>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-serial" name="serial" style="min-width: 80px; padding: 2 7 2 7; width:max-content; max-width:90px" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled /> 
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$i.'-n-submit" value="Move" style="opacity:80%; name="submit" required />
+                                                                                </div>
+                                                                            </div>
                                                                         </td>
-                                                                        <td>
-                                                                            <select class="form-control" id="'.$i.'-n-area" name="area" style="min-width:100px" disabled required onchange="populateShelves(\''.$i.'\')">
-                                                                                <option value="" selected disabled hidden>Select Area</option>
-                                                                            </select>
-                                                                        </td>
-                                                                        <td>
-                                                                            <select class="form-control" id="'.$i.'-n-shelf" name="shelf" style="min-width:100px" disabled required>
-                                                                                <option value="" selected disabled hidden>Select Shelf</option>
-                                                                            </select>
-                                                                        </td>
-                                                                        <td>
-                                                                            <label style="padding-top:5px" for="'.$i.'-n-quantity">Quantity: </label>
-                                                                        </td>
-                                                                        <td>
-                                                                            <input type="number" class="form-control" id="'.$i.'-n-quantity" name="quantity" style="min-width: 50px; max-width:70px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
-                                                                        </td>
-                                                                        <td>
-                                                                            <input type="number" class="form-control" id="'.$i.'-n-serial" name="serial" style="min-width: 160px; max-width:70px;" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled />
-                                                                        </td>
-                                                                        <td>
-                                                                            <input type="submit" class="btn btn-warning" id="'.$i.'-n-submit" value="Move" style="opacity:80%" name="submit" required />
-                                                                        </td>
-                                                                    </tr>
+                                                                    </td>
                                                                 </tbody>
                                                             </table>
                                                         </form>
@@ -332,7 +337,7 @@ $currency_symbol = '£';
                         <input type="hidden" name="modify" id="modify" value="move" />
                         <span class="nav-row">
                             <p class="nav-v-c" style="margin-right:20px">Search for item</p>
-                            <input class="form-control" type="text" style="width: 250px" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
+                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
                         </span>
                     </div>
                 </div>
@@ -343,9 +348,30 @@ $currency_symbol = '£';
             <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
-            $sql = "SELECT * from stock
-                    WHERE name LIKE CONCAT('%', ?, '%') AND stock.deleted=0
-                    ORDER BY name;";
+            $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
+                        (SELECT SUM(quantity) 
+                            FROM item 
+                            INNER JOIN shelf ON item.shelf_id=shelf.id
+                            INNER JOIN area ON shelf.area_id=area.id
+                            WHERE item.stock_id=stock.id
+                        ) AS item_quantity,
+                        stock_img_image.stock_img_image
+                    FROM stock
+                    LEFT JOIN item ON stock.id=item.stock_id
+                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                    LEFT JOIN area ON shelf.area_id=area.id 
+                    LEFT JOIN site ON area.site_id=site.id
+                    LEFT JOIN (
+                        SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
+                        FROM stock_img
+                        GROUP BY stock_img.stock_id
+                    ) AS stock_img_image
+                        ON stock_img_image.stock_id = stock.id
+                    WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0 AND stock.name LIKE CONCAT('%', ?, '%')
+                    GROUP BY 
+                        stock.id, stock_name, stock_description, stock_sku, 
+                        stock_img_image.stock_img_image
+                    ORDER BY stock.name";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
@@ -358,32 +384,42 @@ $currency_symbol = '£';
                     echo('<p>No Stock Found</p>');
                 } else {
                     echo('
-                <table class="table table-dark theme-table" style="min-width:500px;max-width:max-content">
+                <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
                         <tr class="theme-tableOuter">
-                            <th style="max-width:max-content">ID</th>
+                            <th class="viewport-mid-large" style="max-width:max-content">ID</th>
+                            <th>Image</th>
                             <th>Stock Name</th>
                             <th>SKU</th>
+                            <th>Quantity</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody  class="align-middle" style="text-align: center; white-space: nowrap;">
                     ');
                     while ($row = $result->fetch_assoc() ) {
-                        $id = $row['id'];
-                        $name = $row['name'];
-                        $sku = $row['sku'];
+                        $id = $row['stock_id'];
+                        $name = $row['stock_name'];
+                        $sku = $row['stock_sku'];
+                        $quantity = $row['item_quantity'];
                         echo('
-                        <tr class="clickable" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$id.'\'">
-                            <td id="'.$id.'-id"  style="max-width:max-content">'.$id.'</td>
+                        <tr class="clickable vertical-align align-middle" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$id.'\'">
+                            <td class="viewport-mid-large" id="'.$id.'-id"  style="max-width:max-content">'.$id.'</td>
+                            <td class="align-middle" id="'.$id.'-img-cell">');
+                            if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
+                                echo ('<img id="'.$id.'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                            } 
+                        echo('
+                            </td>
                             <td id="'.$id.'-name">'.$name.'</td>
                             <td id="'.$id.'-sku">'.$sku.'</td>
+                            <td id="'.$id.'-quantity">'.$quantity.'</td>
                         </tr>
                         ');
                     }
                     echo('
                     </tbody>
                 </table>'); 
-                    }
+                }
             }
             echo('
             </div>
@@ -495,7 +531,7 @@ $currency_symbol = '£';
                     <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
                         <thead style="text-align: center; white-space: nowrap;">
                             <tr class="theme-tableOuter">
-                                <th>ID</th>
+                                <th class="viewport-mid-large">ID</th>
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th hidden>Descritpion</th>
@@ -512,7 +548,7 @@ $currency_symbol = '£';
                             }
                             echo('
                             <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
-                                <td class="align-middle" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
+                                <td class="align-middle viewport-mid-large" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
                                 <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
                                 if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
                                     echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');

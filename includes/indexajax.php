@@ -281,7 +281,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                         $result .= $stock_quantity_total;
                     }
                     $result .= '</td>';
-                    if ($site == 0) { $result .= '<td class="align-middle link gold" id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
+                    if ($site == 0) { $result .= '<td class="align-middle link gold" style="white-space: nowrap !important;"id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
                     $result .= '<td class="align-middle viewport-large-empty" id="'.$stock_id.'-label">';
                     if (is_array($stock_label_names)) {
                         for ($o=0; $o < count($stock_label_names); $o++) {

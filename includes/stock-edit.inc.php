@@ -83,29 +83,29 @@ if (isset($_GET['stock_id'])) {
                                 <input type="hidden" name="stock-edit" value="1" />
                                 <div class="nav-row" style="margin-bottom:25px">
                                     <div class="nav-row" id="id-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="id" id="id-label">ID</label></div>
-                                        <div><input type="text" name="id-visible" placeholder="X" id="id-visible" class="form-control nav-v-c" style="width:300px;color:black;background-color:#adadad !important" value="'.$stock['id'].'" disabled></input></div>
+                                        <div class="stock-inputLabelSize" style="max-width:200px"><label class="nav-v-c text-right" style="width:100%" for="id" id="id-label">ID</label></div>
+                                        <div><input type="text" name="id-visible" placeholder="X" id="id-visible" class="form-control nav-v-c stock-inputSize" style="color:black;background-color:#adadad !important" value="'.$stock['id'].'" disabled></input></div>
                                         <input type="hidden" name="id" id="id" value="'.$stock['id'].'" />
                                     </div>
                                     <div class="nav-row" id="name-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
-                                        <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c" style="width:300px" value="'.$stock['name'].'" required></input></div>
+                                        <div class="stock-inputLabelSize" style="max-width:200px"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
+                                        <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c stock-inputSize" value="'.$stock['name'].'" required></input></div>
                                     </div>
                                     <div class="nav-row" id="sku-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
-                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c" style="width:300px" value="'.$stock['sku'].'" pattern="^[A-Za-z\s\p{P}-]+$"></input></div>
+                                        <div class="stock-inputLabelSize" style="max-width:200px"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
+                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c stock-inputSize" value="'.$stock['sku'].'" pattern="^[A-Za-z\s\p{P}-]+$"></input></div>
                                     </div>
                                     <div class="nav-row" id="description-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
-                                        <div><textarea class="form-control nav-v-c" id="description" name="description" rows="3" cols="32" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.$stock['description'].'" >'.$stock['description'].'</textarea></div>
+                                        <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
+                                        <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.$stock['description'].'" >'.$stock['description'].'</textarea></div>
                                     </div>');
                                     if ($stock['is_cable'] == 0) {
                                         echo('
                                         <div class="nav-row" id="labels-row" style="margin-top:25px">
-                                            <div style="width:200px;margin-right:25px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
+                                            <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
                                             <div id="labels-group">
                                             <input id="labels-selected" name="labels-selected" type="hidden" />
-                                            <select id="labels" name="labels[]" multiple class="form-control nav-trans" style="border: 1px solid grey;display: inline-block;width:300px;height:40px">');
+                                            <select id="labels" name="labels[]" multiple class="form-control nav-trans stock-inputSize" style="border: 1px solid grey;display: inline-block;height:40px">');
                                                 if (is_array($stock_label_data)) {
                                                     for ($l=0; $l<count($stock_label_data); $l++) {
                                                         // echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'">'.$stock_label_data[$l]['name'].' &#xf057;</option> ');
@@ -116,7 +116,7 @@ if (isset($_GET['stock_id'])) {
                                                 }
                                             echo('
                                             </select>
-                                            <select class="form-control" id="labels-init" name="labels-init" style="width:300px;margin-top:2px">
+                                            <select class="form-control stock-inputSize" id="labels-init" name="labels-init" style="margin-top:2px">
                                                 <option value="" selected>-- Add Labels --</option>');
                                                 include 'includes/dbh.inc.php';
                                                 $sql = "SELECT id, name
@@ -144,24 +144,31 @@ if (isset($_GET['stock_id'])) {
                                             echo('
                                             </select>
                                             </div>
-                                            <div>
+                                            <div class="viewport-large">
+                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
+                                            </div>
+                                        </div>
+                                        <div class="nav-row viewport-small" id="labels-row-add">
+                                            <div class="stock-inputLabelSize" style="max-width:200px">
+                                            </div>
+                                            <div style="width:max-content">
                                                 <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
                                             </div>
                                         </div>');
                                     }
                                     echo('
                                     <div class="nav-row" id="min-stock-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
-                                        <div><input type="number" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c" style="width:300px" value="'.$stock['min_stock'].'"></input></div>
+                                        <div class="stock-inputLabelSize" style="max-width:200px"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
+                                        <div><input type="number" name="min-stock" placeholder="Default = 0" id="min-stock" class="form-control nav-v-c stock-inputSize" value="'.$stock['min_stock'].'"></input></div>
                                     </div>
                                     <div class="nav-row" id="submit-row" style="margin-top:25px">
-                                        <div style="width:200px;margin-right:25px"></div>
-                                        <div><input id="form-submit" type="submit" value="Save" name="submit" class="nav-v-c btn btn-success" /></div>
+                                        <div class="stock-inputLabelSize" style="max-width:200px"></div>
+                                        <div class="stock-inputSize"><input id="form-submit" type="submit" value="Save" name="submit" class="nav-v-c btn btn-success" /></div>
                                         <div>');
                                         if (isset($_GET['images']) && ($_GET['images'] == 'edit')) {
                                             // echo('<button type="button" style="margin-left:150px" class="nav-v-c btn btn-warning" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'images\', \'\'), \'modify\', \'\'))">Cancel</button>');
                                         } else {
-                                            echo('<button type="button" style="margin-left:150px" class="nav-v-c btn btn-warning" onclick="navPage(updateQueryParameter(\'\', \'modify\', \'\'))">Cancel</button>');
+                                            echo('<button type="button" class="nav-v-c btn btn-warning" onclick="navPage(updateQueryParameter(\'\', \'modify\', \'\'))">Cancel</button>');
                                         }
                                         echo('</div>
                                     </div>
@@ -236,44 +243,43 @@ if (isset($_GET['stock_id'])) {
                             </form>
                         </div>
                         
-
-                        <div class="col-sm text-right"  id="stock-info-right"> ');
+                        <div class="col text-right" id="stock-info-right">');  
                         if (!isset($_GET['images']) || ($_GET['images'] !== 'edit')) {
-                            if (!empty($stock_img_data)) {
-                                echo('<div class="well-nopad theme-divBg nav-right" style="margin:20px;padding:0px;width:max-content;margin-left:70px">
-                                <div class="nav-row" style="width:315px">');
+                            if (!empty($stock_img_data) && $stock_img_data !== null && $stock_img_data !== '') {
+                                echo('<div class="well-nopad theme-divBg nav-right stock-imageBox">
+                                <div class="nav-row stock-imageMainSolo">');
                                 for ($i=0; $i < count($stock_img_data); $i++) {
                                     $ii = $i+1;
                                     if ($i == 0) {
                                         if ($i+1 === count($stock_img_data)) {
-                                            $imgWidth = "315px";
+                                            $imgClass = "stock-imageMainSolo";
                                         } else {
-                                            $imgWidth = "235px";
+                                            $imgClass = "stock-imageMain";
                                         }
                                         echo('
-                                        <div class="thumb theme-divBg-m text-center" style="width:'.$imgWidth.';height:235px" onclick="modalLoadCarousel()">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-width:'.$imgWidth.';max-height:235px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
+                                        <div class="thumb theme-divBg-m text-center '.$imgClass.'" onclick="modalLoadCarousel()">
+                                            <img class="nav-v-c '.$imgClass.'" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" />
                                         </div>
                                         <span id="side-images" style="margin-left:5px">
                                         ');
                                     } 
                                     if ($i == 1 || $i == 2) {
                                         echo('
-                                        <div class="thumb theme-divBg-m" style="width:75px;height:75px;margin-bottom:5px" onclick="modalLoadCarousel()">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
+                                        <div class="thumb theme-divBg-m stock-imageOther" style="margin-bottom:5px" onclick="modalLoadCarousel()">
+                                            <img class="nav-v-c stock-imageOther" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
                                         </div>
                                         ');
                                     }
                                     if ($i == 3) {
                                         if ($i < (count($stock_img_data)-1)) {
                                             echo ('
-                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px">
-                                            <p class="nav-v-c text-center" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-more" style="width:75px">+'.(count($stock_img_data)-3).'</p>
+                                            <div class="thumb theme-divBg-m stock-imageOther" onclick="modalLoadCarousel()">
+                                            <p class="nav-v-c text-center stock-imageOther" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-more">+'.(count($stock_img_data)-3).'</p>
                                             ');
                                         } else {
                                             echo('
-                                            <div class="thumb theme-divBg-m" style="width:75px;height:75px" onclick="modalLoadCarousel()">
-                                            <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" onclick="modalLoad(this)"/>
+                                            <div class="thumb theme-divBg-m stock-imageOther" onclick="modalLoadCarousel()">
+                                            <img class="nav-v-c stock-imageOther" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'" onclick="modalLoad(this)"/>
                                             ');
                                         }
                                         echo('</div>');
@@ -284,17 +290,22 @@ if (isset($_GET['stock_id'])) {
                                 }
                                 echo('</div>
                                 </div>');
-                                echo('<div id="edit-images-div" class="nav-div-mid">
-                                    <a id="edit-images" class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" onclick="navPage(updateQueryParameter(\'\', \'images\', \'edit\'))">
-                                        <i class="fa fa-pencil"></i> Edit images
-                                    </a>
-                                </div> ');
-
+                                // echo('<div id="edit-images-div" class="nav-div-mid">
+                                //     <button id="edit-images" class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
+                                //         <i class="fa fa-pencil"></i> Edit images
+                                //     </button>
+                                // </div> ');
                                 if (count($stock_img_data) == 1) {
                                     echo('
                                     <!-- Modal Image Div -->
                                     <div id="modalDivCarousel" class="modal" onclick="modalCloseCarousel()">
-                                        <span class="close" onclick="modalCloseCarousel()">&times;</span>
+                                        <span class="close" onclick="modalCloseCarousel()">&times;</span>');
+                                        for ($b=0; $b < count($stock_img_data); $b++) {
+                                            echo('
+                                            <img class="modal-content bg-trans modal-imgWidth" id="stock-'.$stock_img_data[$b]['stock_id'].'-img-'.$stock_img_data[$b]['id'].'" src="assets/img/stock/'.$stock_img_data[$b]['image'].'"/>
+                                            ');
+                                        }
+                                        echo('
                                         <img class="modal-content bg-trans" id="modalImg">
                                         <div id="caption" class="modal-caption"></div>
                                     </div>
@@ -308,7 +319,7 @@ if (isset($_GET['stock_id'])) {
                                     <div id="modalDivCarousel" class="modal">
                                         <span class="close" onclick="modalCloseCarousel()">&times;</span>
                                         <img class="modal-content bg-trans" id="modalImg">
-                                            <div id="myCarousel" class="carousel slide" data-ride="carousel" align="center" style="margin-left:10%; margin-right:10%">
+                                            <div id="myCarousel" class="carousel slide" data-ride="carousel" align="center" style="margin-left:10vw; margin-right:10vw">
                                                 <!-- Indicators -->
                                                 <ol class="carousel-indicators">');
                                                 for ($a=0; $a < count($stock_img_data); $a++) {
@@ -325,7 +336,7 @@ if (isset($_GET['stock_id'])) {
                                                     $bb = $b+1;
                                                     echo('
                                                     <div class="item'.$active.'" align="centre">
-                                                    <img class="modal-content bg-trans" id="stock-'.$stock_img_data[$b]['stock_id'].'-img-'.$stock_img_data[$b]['id'].'" alt="'.$stock['name'].' - image '.$bb.'" src="assets/img/stock/'.$stock_img_data[$b]['image'].'" style="max-width:1000px"/>
+                                                    <img class="modal-content bg-trans modal-imgWidth" id="stock-'.$stock_img_data[$b]['stock_id'].'-img-'.$stock_img_data[$b]['id'].'" src="assets/img/stock/'.$stock_img_data[$b]['image'].'"/>
                                                         <div class="carousel-caption">
                                                             <h3></h3>
                                                             <p></p>
@@ -353,9 +364,9 @@ if (isset($_GET['stock_id'])) {
                                 }
                             } else {
                                 echo('<div id="edit-images-div" class="nav-div-mid nav-v-c">
-                                    <a id="edit-images" class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px" onclick="navPage(updateQueryParameter(\'\', \'images\', \'edit\'))">
+                                    <button id="edit-images" class="btn btn-success theme-textColor nav-v-b" style="padding: 3px 6px 3px 6px" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'modify\', \'edit\'), \'images\', \'edit\'))">
                                         <i class="fa fa-plus"></i> Add images
-                                    </a>
+                                    </button>
                                 </div> ');
                             }
                         } else {

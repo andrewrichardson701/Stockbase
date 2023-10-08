@@ -498,6 +498,9 @@ Clone the repo first, and the follow the below steps.
 - login-card.inc.php added to handle card logins.
 - Swipe card assigning and re-assigning is handled in admin.inc.php.
 - Swipe card de-assigning is handled in admin.inc.php.
+- Bootstrap 4.5.2 CSS added in assets/css folder for redundancy.
+- Email example added to Email Notification Settings section of admin page via AJAX.
+- Some modification to the smtp.inc.php email template to allow it to be embedded in php page.
 
 </details>
 <details>

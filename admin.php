@@ -1217,6 +1217,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 echo ('<p class="blue">SMTP is disabled. All email notifications have been disabled.</p>');
             }
             ?>
+            <div class="well-nopad bg-dark" style="margin-top:20px">
+                <?php 
+                $example_body = urlencode("<p style='color:black !important'>Fixed cable stock added, for <strong><or class='link' style='color: #0000EE;'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
+                ?>
+                <h4>Email example</h4>
+                <input type="hidden" value="<?php echo($example_body); ?>" id="email-template-body" />
+                <div id="email-template" style="margin-top:20px">
+                </div>
+            </div>
 
         </div>
 
@@ -1888,30 +1897,30 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
 
         function populateParent() {
-        // Get the selected type
-        var type = document.getElementById("addLocation-type").value;
-        
-        // Make an AJAX request to retrieve the corresponding parents
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                // Parse the response and populate the area select box
-                var select = document.getElementById("addLocation-parent");
-                    select.options.length = 0;
-                    select.options[0] = new Option("Select Parent", "");
-                if (xhr.responseText !== '') {
-                    var parents = JSON.parse(xhr.responseText);
-                    for (var i = 0; i < parents.length; i++) {
-                        select.options[select.options.length] = new Option(parents[i].name, parents[i].id);
-                    }
-                    
-                } 
-                select.disabled = (select.options.length === 1);
-            }
+            // Get the selected type
+            var type = document.getElementById("addLocation-type").value;
             
-        };
-        xhr.send();
+            // Make an AJAX request to retrieve the corresponding parents
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the area select box
+                    var select = document.getElementById("addLocation-parent");
+                        select.options.length = 0;
+                        select.options[0] = new Option("Select Parent", "");
+                    if (xhr.responseText !== '') {
+                        var parents = JSON.parse(xhr.responseText);
+                        for (var i = 0; i < parents.length; i++) {
+                            select.options[select.options.length] = new Option(parents[i].name, parents[i].id);
+                        }
+                        
+                    } 
+                    select.disabled = (select.options.length === 1);
+                }
+                
+            };
+            xhr.send();
         }
         document.getElementById("addLocation-type").addEventListener("change", populateParent);
 
@@ -1930,7 +1939,34 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
         }
     </script>
+    
+    <!-- script to load the template email into page -->
+    <script>
+        function emailTemplate() {
+            var body = document.getElementById('email-template-body').value;
+            var emailDiv = document.getElementById('email-template');
 
+            // Make an AJAX request to retrieve cotnent
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/smtp.inc.php?template=echo&body="+body);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the field
+                    if (xhr.responseText !== '') {
+                        var email = xhr.responseText;
+                        emailDiv.innerHTML = email;
+                    } else {
+                        emailDiv.innerHTML = '<or class="red">AJAX Results Empty...</or>';
+                    }
+                } else {
+                    emailDiv.innerHTML = '<or class="red">XMLHttpRequest Status = '+xhr.status+'. Expected: 200</or>';
+                }
+            };
+            xhr.send();
+        }
+
+        document.onload = emailTemplate();
+    </script>
     
 <?php include 'foot.php'; ?>
 

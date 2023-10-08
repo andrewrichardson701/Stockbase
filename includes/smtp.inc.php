@@ -163,17 +163,17 @@ $email_template_start = '
     <!-- inset block -->
     <div style="padding-top:20px; background-color: '.$current_banner_color.'; text-align: center;">
         <div style="text-align: center;padding-bottom:10px">
-        <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.';"><h1>'.ucwords($current_system_name).'</h1></a>
+        <a href="//'.$current_base_url.'" style="color:'.$comp_url_color.' !important;"><h1>'.ucwords($current_system_name).'</h1></a>
         </div>
         <div style="background-color:#e8e8e8; text-align: center;  padding-top:10px; padding-bottom:10px">
-            <h2>Hello, '.ucwords($loggedin_firstname).'!</h2>
+            <h2 style="color:black !important">Hello, '.ucwords($loggedin_firstname).'!</h2>
 ';
 
 $email_template_end = '
-            <p>Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
+            <p style="color:black !important">Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
         </div>
         <div style="padding-top:10px; padding-bottom:20px;text-align: center;">
-            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.'">StockBase</a>. All rights reserved.</p>
+            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.' !important">StockBase</a>. All rights reserved.</p>
         </div>
     </div>
 </body>
@@ -184,6 +184,19 @@ function createEmail ($content) {
     return $email_template_start.$content.$email_template_end;
 }
 
+if (isset($_GET['template'])) {
+    $template_usage = "Usage: smtp.inc.php?template=echo&body=&lt;p&gt;Body text&lt;/p&gt;";
+    if ($_GET['template'] == 'echo') {
+        if (isset($_GET['body'])) {
+            $template_body = $_GET['body'];
+            echo (createEmail($template_body));
+        } else {
+            echo ('<or class="red">AJAX request failed... Body missing.</or><br>'.$template_usage);
+        }
+    } else {
+        echo ('<or class="red">AJAX request failed... Incorrect Template.</or><br>'.$template_usage);
+    }
+}
 // send_email($_GET['to'], $_GET['toName'], $_GET['fromName'], $_GET['subject'], createEmail(Semail_template_start, $email_content_test, $email_template_end), 0);
 
 ?>

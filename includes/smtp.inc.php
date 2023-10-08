@@ -154,12 +154,17 @@ if (isset($override_email)) {
     }
 }
 
-$email_template_start = '
+$email_template_head = '
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">
+<body style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">';
+
+$email_template_head_template = '
+<div style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">';
+
+$email_template_start = '
     <!-- inset block -->
     <div style="padding-top:20px; background-color: '.$current_banner_color.'; text-align: center;">
         <div style="text-align: center;padding-bottom:10px">
@@ -175,13 +180,21 @@ $email_template_end = '
         <div style="padding-top:10px; padding-bottom:20px;text-align: center;">
             <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/inventory" style="color:'.$comp_url_color.' !important">StockBase</a>. All rights reserved.</p>
         </div>
-    </div>
-</body>
-';
+    </div>';
+
+$email_template_foot_template = '
+</div>';
+
+$email_template_foot = '
+</body>';
 
 function createEmail ($content) {
-    global $email_template_start, $email_template_end;
-    return $email_template_start.$content.$email_template_end;
+    global $email_template_head, $email_template_start, $email_template_end, $email_template_foot;
+    return $email_template_head.$email_template_start.$content.$email_template_end.$email_template_foot;
+}
+function createEmailTemplate ($content) {
+    global $email_template_head_template, $email_template_start, $email_template_end, $email_template_foot_template;
+    return $email_template_head_template.$email_template_start.$content.$email_template_end.$email_template_foot_template;
 }
 
 if (isset($_GET['template'])) {
@@ -189,7 +202,7 @@ if (isset($_GET['template'])) {
     if ($_GET['template'] == 'echo') {
         if (isset($_GET['body'])) {
             $template_body = $_GET['body'];
-            echo (createEmail($template_body));
+            echo (createEmailTemplate($template_body));
         } else {
             echo ('<or class="red">AJAX request failed... Body missing.</or><br>'.$template_usage);
         }

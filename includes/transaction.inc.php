@@ -216,13 +216,13 @@ if (isset($_GET['stock_id'])) {
                             echo('&nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>');
                         } else {
                             echo ('
-                            <form>
+                            <form style="margin-bottom:0px">
                                 <table class="centertable">
                                     <tbody>
                                         <tr>
                                             <td style="padding-right:10px">Page:</td>
                                             <td style="padding-right:10px">
-                                                <select id="page-select" class="form-control row-dropdown" style="padding:0" onchange="navPage(updateQueryParameter(\'\', \'page\', document.getElementById(\'page-select\').value + \'#transactions\'))" name="page">');
+                                                <select id="page-select" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" onchange="navPage(updateQueryParameter(\'\', \'page\', document.getElementById(\'page-select\').value + \'#transactions\'))" name="page">');
                                                 for ($i = 1; $i <= $total_pages; $i++) {
                                                     echo('<option value="'.$i.'"'); if ($i == $current_page) { echo(' selected'); } echo('>'.$i.'</option>');
                                                 }

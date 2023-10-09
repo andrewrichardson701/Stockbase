@@ -295,6 +295,11 @@ if (isset($_GET['stock_id'])) {
                                 //         <i class="fa fa-pencil"></i> Edit images
                                 //     </button>
                                 // </div> ');
+                                echo('<div id="edit-images-div" class="nav-right text-center stock-imageMainSolo" style="margin-right:20px; height:max-content !important">
+                                    <a id="edit-images" class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" onclick="navPage(updateQueryParameter(\'\', \'images\', \'edit\'))">
+                                        <i class="fa fa-pencil"></i> Edit images
+                                    </a>
+                                </div> ');
                                 if (count($stock_img_data) == 1) {
                                     echo('
                                     <!-- Modal Image Div -->

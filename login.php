@@ -153,9 +153,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         <span class="close" onclick="modalCloseSwipe()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <form id='cardLoginForm' action="includes/login-card.inc.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="submit" value="1" />
                 <input type="hidden" name="cardData" id="cardData" />
                 <h3 class="text-center">Present swipe card to login</h3>
                 <p class="text-center" style="margin-top:20px">or <or class="link gold" onclick="modalCloseSwipe()">click here</or> to login manually.</p>
+                <button class="btn btn-danger" onclick="document.getElementById('cardData').value='17322435'">Temp</button>
             </form>
         </div>
         <script>

@@ -38,7 +38,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             theme.name as theme_name, theme.file_name as theme_file_name
                         FROM users 
                         INNER JOIN users_roles ON users.role_id = users_roles.id
-                        INNER JOIN theme ON users.theme_id = theme.id
+                        LEFT JOIN theme ON users.theme_id = theme.id
                         WHERE username=?";
         $stmt_users = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
@@ -51,7 +51,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             $rowCount = $result->num_rows;
             if ($rowCount < 1) {
                 $userFound = 0;
-
+                header("Location: ../index.php?sqlerror=multipleentries");
+                exit();
             } elseif ($rowCount == 1) {
                 while ($row = $result->fetch_assoc()){
                     $profile_id = $row['users_id'];

@@ -477,6 +477,7 @@ Clone the repo first, and the follow the below steps.
 <h4>Beta release 0.3.1, TBC</h4>
 
 - Transaction include page styling corrected under pagination form
+- Swipe card login now working. Testing pending once card reader is obtained.
 
 </details>
 <details>

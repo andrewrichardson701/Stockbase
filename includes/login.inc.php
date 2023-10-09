@@ -13,6 +13,7 @@
 // INSTALL PHP LDAP:    apt install php8.1-ldap       or       apt intall php-ldap
 
 if (isset($_POST['submit'])) {
+    include 'get-config.inc.php';
     // if (!isset($_GET['username']) || !isset($_GET['password'])) {
     if (!isset($_POST['username']) || !isset($_POST['password'])) {
         header("Location: ../login.php?error=emptyfields");
@@ -37,9 +38,10 @@ if (isset($_POST['submit'])) {
 
                 $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired, users.theme_id AS users_theme_id, 
                                     users_roles.name as role, users.theme_id AS users_theme_id,
+                                    theme.name as theme_name, theme.file_name as theme_file_name
                                 FROM users 
                                 INNER JOIN users_roles ON users.role_id = users_roles.id
-                                INNER JOIN theme ON users.theme_id = theme.id
+                                LEFT JOIN theme ON users.theme_id = theme.id
                                 WHERE $uid_type=? AND auth='local'";
                 $stmt_users = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
@@ -75,8 +77,8 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['role'] = $row['role'];
                                 $_SESSION['auth'] = $row['auth'];
                                 $_SESSION['theme_id'] = $row['users_theme_id'];
-                                $_SESSION['theme_name'] = $current_default_theme_name;
-                                $_SESSION['theme_file_name'] = $current_default_theme_file_name;
+                                $_SESSION['theme_name'] = $row['theme_name'];
+                                $_SESSION['theme_file_name'] = $row['theme_file_name'];
                                 $_SESSION['password_expired'] = $row['password_expired'];
                                 if (isset($_SESSION['redirect_url'])) {
                                     if (str_contains($_SESSION['redirect_url'], "?")) {
@@ -238,7 +240,7 @@ if (isset($_POST['submit'])) {
                                                 theme.name as theme_name, theme.file_name as theme_file_name
                                             FROM users 
                                             INNER JOIN users_roles ON users.role_id = users_roles.id
-                                            INNER JOIN theme ON users.theme_id = theme.id
+                                            LEFT JOIN theme ON users.theme_id = theme.id
                                             WHERE username=? AND auth='ldap'";
                             $stmt_users = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {

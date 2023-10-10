@@ -482,6 +482,11 @@ Clone the repo first, and the follow the below steps.
 - Users with no theme saved can now login. Fixed the SQL query to make a LEFT JOIN for theme.
 - DB install extras updated in db_extras.sql.
 - Fulldump run and saved.
+- Adjustments made to various pages based on installation bash script.
+- Edit images button added back in to the stock edit page.
+- Login page is now working for the card reader, still needs a full test but now doesnt try to login when pressing any button.
+- MySQL scripts updated to add the needed info to the DB.
+- Bash script updated with some more prompts and fixed the first prompt with a case instead of else if.
 
 </details>
 <details>

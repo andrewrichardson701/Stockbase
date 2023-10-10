@@ -114,9 +114,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         if (!$siteCount > 0 || !$areaCount > 0 || !$shelfCount > 0) {
             // missing sites or areas
             echo('
-
-                <div class="container">
-                    
+                <div class="container" style="margin-top:20px">
+                    <h2 style="padding-bottom:20px;padding-top:20px">Add First Locations</h2>
                     <form id="addLocations" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                         <input type="hidden" name="index" value="1"/>
                         <table id="area-table">

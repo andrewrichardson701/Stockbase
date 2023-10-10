@@ -411,126 +411,128 @@ if ($stock_id == 0 || $stock_id == '0') {
                 $totalRowCount = $result_total->num_rows;
             }
 
-           // Pagination settings
-           $results_per_page = 10; // row count to show
-           $total_pages = ceil($totalRowCount / $results_per_page);
-
-           $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-           if ($current_page < 1) {
-               $current_page = 1;
-           } elseif ($current_page > $total_pages) {
-               $current_page = $total_pages;
-           } 
-           
-           // Calculate the offset for the query
-           $offset = ($current_page - 1) * $results_per_page;
-
-            echo('
-            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">');
-            include 'includes/dbh.inc.php';
-            $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
-                        (SELECT SUM(quantity) 
-                            FROM item 
-                            INNER JOIN shelf ON item.shelf_id=shelf.id
-                            INNER JOIN area ON shelf.area_id=area.id
-                            WHERE item.stock_id=stock.id
-                        ) AS item_quantity,
-                        stock_img_image.stock_img_image
-                    FROM stock
-                    LEFT JOIN item ON stock.id=item.stock_id
-                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
-                    LEFT JOIN area ON shelf.area_id=area.id 
-                    LEFT JOIN site ON area.site_id=site.id
-                    LEFT JOIN (
-                        SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
-                        FROM stock_img
-                        GROUP BY stock_img.stock_id
-                    ) AS stock_img_image
-                        ON stock_img_image.stock_id = stock.id
-                    WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0
-                    GROUP BY 
-                        stock.id, stock_name, stock_description, stock_sku, 
-                        stock_img_image.stock_img_image
-                    ORDER BY stock.name
-                    LIMIT $results_per_page OFFSET $offset;";
-            $stmt = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($stmt, $sql)) {
-                echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
-            } else {
-                mysqli_stmt_execute($stmt);
-                $result = mysqli_stmt_get_result($stmt);
-                $rowCount = $result->num_rows;
-
-                if ($rowCount < 1) {
-                    echo('<p>No Stock Found</p>');
-                } else {
-                    // rows found
-                    echo('
-                    <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
-                        <thead style="text-align: center; white-space: nowrap;">
-                            <tr class="theme-tableOuter">
-                                <th class="viewport-mid-large">ID</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th hidden>Descritpion</th>
-                                <th>SKU</th>
-                                <th>Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody class="align-middle" style="text-align: center; white-space: nowrap;">');
-                        while($row = $result->fetch_assoc()){
-                            if ($row['item_quantity'] == null || $row['item_quantity'] == 0 || $row['item_quantity'] == '') {
-                                $quantity = '<or class="red">0</or>';
-                            } else {
-                                $quantity =  $row['item_quantity'];
-                            }
-                            echo('
-                            <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
-                                <td class="align-middle viewport-mid-large" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
-                                <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
-                                if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
-                                    echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
-                                } 
-                            echo('
-                                </td>
-                                <td class="align-middle" id="'.$row['stock_id'].'-name">'.$row['stock_name'].'</td>
-                                <td class="align-middle" id="'.$row['stock_id'].'-description" hidden>'.$row['stock_description'].'</td>
-                                <td class="align-middle" id="'.$row['stock_id'].'-sku">'.$row['stock_sku'].'</td>
-                                <td class="align-middle" id="'.$row['stock_id'].'-quantity">'.$quantity.'</td>
-                            </tr>
-                            ');
-                        }
-                        if ($total_pages > 1) {
-                            echo('
-                            <tr class="theme-tableOuter">
-                                <td colspan="100%">');
+            if ($totalRowCount > 0) {
+                // Pagination settings
+                $results_per_page = 10; // row count to show
+                $total_pages = ceil($totalRowCount / $results_per_page);
     
-                            if ($current_page > 1) {
-                                echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
-                            }
+                $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+                if ($current_page < 1) {
+                    $current_page = 1;
+                } elseif ($current_page > $total_pages) {
+                    $current_page = $total_pages;
+                } 
+                
+                // Calculate the offset for the query
+                $offset = ($current_page - 1) * $results_per_page;
 
-                            for ($i = 1; $i <= $total_pages; $i++) {
-                                if ($i == $current_page) {
-                                    echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
-                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                echo('
+                <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">');
+                include 'includes/dbh.inc.php';
+                $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
+                            (SELECT SUM(quantity) 
+                                FROM item 
+                                INNER JOIN shelf ON item.shelf_id=shelf.id
+                                INNER JOIN area ON shelf.area_id=area.id
+                                WHERE item.stock_id=stock.id
+                            ) AS item_quantity,
+                            stock_img_image.stock_img_image
+                        FROM stock
+                        LEFT JOIN item ON stock.id=item.stock_id
+                        LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                        LEFT JOIN area ON shelf.area_id=area.id 
+                        LEFT JOIN site ON area.site_id=site.id
+                        LEFT JOIN (
+                            SELECT stock_img.stock_id, MIN(stock_img.image) AS stock_img_image
+                            FROM stock_img
+                            GROUP BY stock_img.stock_id
+                        ) AS stock_img_image
+                            ON stock_img_image.stock_id = stock.id
+                        WHERE stock.is_cable=0 AND stock.deleted=0 AND item.deleted=0
+                        GROUP BY 
+                            stock.id, stock_name, stock_description, stock_sku, 
+                            stock_img_image.stock_img_image
+                        ORDER BY stock.name
+                        LIMIT $results_per_page OFFSET $offset;";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+                } else {
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+
+                    if ($rowCount < 1) {
+                        echo('<p>No Stock Found</p>');
+                    } else {
+                        // rows found
+                        echo('
+                        <table class="table table-dark theme-table" id="inventoryTable" style="max-width:max-content">
+                            <thead style="text-align: center; white-space: nowrap;">
+                                <tr class="theme-tableOuter">
+                                    <th class="viewport-mid-large">ID</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th hidden>Descritpion</th>
+                                    <th>SKU</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody class="align-middle" style="text-align: center; white-space: nowrap;">');
+                            while($row = $result->fetch_assoc()){
+                                if ($row['item_quantity'] == null || $row['item_quantity'] == 0 || $row['item_quantity'] == '') {
+                                    $quantity = '<or class="red">0</or>';
                                 } else {
-                                    echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                    $quantity =  $row['item_quantity'];
                                 }
+                                echo('
+                                <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                                    <td class="align-middle viewport-mid-large" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
+                                    <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
+                                    if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
+                                        echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                                    } 
+                                echo('
+                                    </td>
+                                    <td class="align-middle" id="'.$row['stock_id'].'-name">'.$row['stock_name'].'</td>
+                                    <td class="align-middle" id="'.$row['stock_id'].'-description" hidden>'.$row['stock_description'].'</td>
+                                    <td class="align-middle" id="'.$row['stock_id'].'-sku">'.$row['stock_sku'].'</td>
+                                    <td class="align-middle" id="'.$row['stock_id'].'-quantity">'.$quantity.'</td>
+                                </tr>
+                                ');
                             }
+                            if ($total_pages > 1) {
+                                echo('
+                                <tr class="theme-tableOuter">
+                                    <td colspan="100%">');
+        
+                                if ($current_page > 1) {
+                                    echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                                }
 
-                            if ($current_page < $total_pages) {
-                                echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
-                            }  
-                        } 
-                    echo('    
-                        </tbody>
-                    </table>
-                    ');
+                                for ($i = 1; $i <= $total_pages; $i++) {
+                                    if ($i == $current_page) {
+                                        echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
+                                        // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                    } else {
+                                        echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                    }
+                                }
+
+                                if ($current_page < $total_pages) {
+                                    echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                                }  
+                            } 
+                        echo('    
+                            </tbody>
+                        </table>
+                        ');
+                    }
                 }
+                echo('
+                </div>
+                ');
             }
-            echo('
-            </div>
-            ');
         }
 
     }

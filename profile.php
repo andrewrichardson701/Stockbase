@@ -262,6 +262,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     echo('
                                     </select>
                                 </td>
+                                <td id="theme_header" style="width:200px;padding-left:20px">
+                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle viewport-large-block">
+                                        <a class="link align-middle" href="theme-test.php">Theme testing</a>
+                                    </p>
+                                </td>
                             </tr>
                             <tr class="nav-row profile-table-row2">
                                 <td id="profile-submit" style="width:200px">
@@ -352,14 +357,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <button class="btn btn-danger" onclick="document.getElementById('cardData').value='17322435'">Temp</button>
             </form>
         </div>
-        <script>
-            tempfunction() {
-                var cardData = document.getElementById('cardData');
-                cardData.value = '17322435';
-                var cardModifyForm = document.getElementById('cardModifyForm');
-                cardModifyForm.submit();
-            }
-        </script>
         <script>
             $(document).ready(function() {
                 $(document).keypress(function(event) {

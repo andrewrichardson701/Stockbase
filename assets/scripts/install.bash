@@ -133,6 +133,7 @@ hash_password() {
     hashed_password=$(php -r "echo password_hash('$gen_password', PASSWORD_DEFAULT);")
 }
 
+echo ""
 echo "StockBase Copyright (C) 2023 Andrew Richardson"
 echo "This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'."
 echo "This is free software, and you are welcome to redistribute it"
@@ -144,34 +145,34 @@ while true; do
     # Ask for folder input and allow creating the folder if needed
     read -p "Input: " tandc
 
-    # Check if the folder exists
-    if [ -d "$tandc" = "show w"]; then
-        echo "15. Disclaimer of Warranty."
-        echo "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. "
-        echo "EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” "
-        echo "WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, "
-        echo "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. "
-        echo "THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. "
-        echo "SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
-        echo ""
-        break
-    elif [ -d "$tandc" = "show c"]; then
-        echo "16. Limitation of Liability."
-        echo "IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, "
-        echo "OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, "
-        echo "INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO "
-        echo "USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED "
-        echo "BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR "
-        echo "OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES."
-        echo ""
-        break
-    elif [-d "$tandc" = "Y"]
-        break
-    elif [-d "$tandc" = "y"]
-        break
-    else 
-        echo "Unknown input."
-    fi
+    case $tandc in
+        "show w")
+            echo "15. Disclaimer of Warranty."
+            echo "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. "
+            echo "EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” "
+            echo "WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, "
+            echo "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. "
+            echo "THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. "
+            echo "SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
+            echo ""
+            ;;
+        "show c")
+            echo "16. Limitation of Liability."
+            echo "IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, "
+            echo "OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, "
+            echo "INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO "
+            echo "USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED "
+            echo "BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR "
+            echo "OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES."
+            echo ""
+            ;;
+        "Y" | "y")
+            break
+            ;;
+        *)
+            echo "Unknown input."
+            ;;
+    esac
 done
 
 # Check and install necessary packages
@@ -380,7 +381,7 @@ if [ -f "$sql_setup_script" ]; then
     mysql -u root < "$sql_setup_script"
     echo "MySQL setup script executed."
     echo "Updating base_url with the selected web url..."
-    mysql -u root -e "UPDATE config SET base_url='$web_domain' WHERE id=1;";
+    mysql -u root -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;";
     echo "Done!"
 else
     echo "MySQL setup script not found at $sql_setup_script."
@@ -437,7 +438,7 @@ if [ -n "$user_exists" ]; then
             [Nn]* ) 
                     echo ""
                     while true; do
-                        read -p "Enter the password for 'inventory' user: " inventory_user_password;
+                        read -s -p "Enter the password for 'inventory' user: " inventory_user_password;
                         if mysql -u inventory -p"$inventory_user_password" -e ";" 2>/dev/null; then
                             echo "Password matches."
                             correct_password="Y"
@@ -539,8 +540,8 @@ while true; do
             done
             break;;
         [Nn]* ) 
-            ldap-enabled=0
-            mysql -u root -e "UPDATE config SET ldap_enabled=$ldap_enabled WHERE id=1;"
+            ldap_enabled=0
+            mysql -u root -e "UPDATE inventory.config SET ldap_enabled=$ldap_enabled WHERE id=1;"
             echo "LDAP disabled."
             break;;
         * ) echo "Please answer Y or N.";;

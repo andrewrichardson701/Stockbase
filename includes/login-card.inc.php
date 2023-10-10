@@ -6,7 +6,7 @@
 
 // SWIPE CARD LOGIN BACKEND - gets yuser info from the swipe card scanned and logs in.
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submitHidden'])) {
     if (isset($_POST['cardData'])) {
         $cardData = $_POST['cardData'];
 

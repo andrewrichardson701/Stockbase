@@ -474,10 +474,14 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.3.1-beta</h3></summary>
-<h4>Beta release 0.3.1, TBC</h4>
+<h4>Beta release 0.3.1, Script updates, swipe card login.</h4>
 
 - Transaction include page styling corrected under pagination form
 - Swipe card login now working. Testing pending once card reader is obtained.
+- Card login page is now complete and working. Test buttons in place for passes until pass reader in place.
+- Users with no theme saved can now login. Fixed the SQL query to make a LEFT JOIN for theme.
+- DB install extras updated in db_extras.sql.
+- Fulldump run and saved.
 
 </details>
 <details>

@@ -638,7 +638,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     echo('<img id="'.$cable_item_id.'-img" class="inv-img-50h thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
                                                 }
                                                 echo('</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-name"><a href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
+                                                <td class="align-middle" id="'.$cable_item_id.'-name"><a class="link" href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
                                                 <td class="align-middle viewport-large-empty" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
                                                 <td class="align-middle link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>

@@ -165,76 +165,76 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             <form id="globalForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                 <table id="globalTable">
                     <tbody>
-                        <tr class="nav-row" id="ldap-headings" style="margin-bottom:10px">
-                            <th style="width:250px;margin-left:25px"></th>
-                            <th style="width: 250px">Change</th>
-                            <th style="min-width:230px;margin-left:25px">Custom</th>
-                            <th style="min-width:230px;margin-left:25px">Default</th>
+                        <tr class="" id="ldap-headings">
+                            <th style="width:250px;margin-left:25px;padding-bottom:20px"></th>
+                            <th style="width: 250px;padding-bottom:20px">Change</th>
+                            <th style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">Custom</th>
+                            <th style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">Default</th>
                         </tr>
-                        <tr class="nav-row">
-                            <td id="system_name-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="system_name">System Name:</p>
+                        <tr class="">
+                            <td id="system_name-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="system_name">System Name:</p>
                             </td>
-                            <td id="system_name-set" style="width:250px">
-                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="system_name" name="system_name">
+                            <td id="system_name-set" style="width:250px;padding-bottom:20px">
+                                <input class="form-control " type="text" style="width: 150px" id="system_name" name="system_name">
                             </td>
-                            <td style="min-width:230px;margin-left:10px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_system_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:10px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_system_name); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_system_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_system_name); ?></span></label>
                             </td>
                         </tr>
-                        <tr class="nav-row" id="banner-color" style="margin-top:20px">
-                            <td id="banner-color-label" style="width:250px;margin-left:25px">
+                        <tr class="" id="banner-color" style="margin-top:20px">
+                            <td id="banner-color-label" style="width:250px;margin-left:25px;padding-bottom:20px">
                                 <!-- Custodian Colour: #72BE2A -->
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="banner_color">Banner Colour:</p>
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="banner_color">Banner Colour:</p>
                             </td>
-                            <td id="banner-color-picker" style="width:250px">
+                            <td id="banner-color-picker" style="width:250px;padding-bottom:20px">
                                 <label class="label-color">
                                     <input class="form-control input-color color" id="banner_color" name="banner_color" placeholder="#XXXXXX" data-value="#xxxxxx" value="<?php echo($current_banner_color); ?>"/>
                                 </label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($current_banner_color)); ?>;background-color:<?php echo($current_banner_color); ?>"><?php echo($current_banner_color); ?></span></label>
+                            <td style="min-width:230px;padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni" style="color:<?php echo(getWorB($current_banner_color)); ?>;background-color:<?php echo($current_banner_color); ?>"><?php echo($current_banner_color); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($default_banner_color)); ?>;background-color:<?php echo($default_banner_color); ?>"><?php echo($default_banner_color); ?></span></label>
+                            <td style="min-width:230px;padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni" style="color:<?php echo(getWorB($default_banner_color)); ?>;background-color:<?php echo($default_banner_color); ?>"><?php echo($default_banner_color); ?></span></label>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="banner-logo">
-                            <td id="banner-logo-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="logo_image">Banner Logo:</p>
+                        <tr class="" style="margin-top:20px" id="banner-logo">
+                            <td id="banner-logo-label" style="width:250px;margin-left:25px;padding-bottom:20px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="logo_image">Banner Logo:</p>
                             </td>
                             <td id="banner-logo-file">
-                                <input class="nav-v-c" type="file" style="width: 250px" id="logo_image" name="logo_image">
+                                <input class="" type="file" style="width: 250px;padding-bottom:20px" id="logo_image" name="logo_image">
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($current_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($current_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($default_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="favicon-image">
-                            <td id="favicon-image-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="favicon_image">Favicon Image:</p>
-                            </td>
-                            <td id="favicon-image-file">
-                                <input class="nav-v-c" type="file" style="width: 250px" id="favicon_image" name="favicon_image">
-                            </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($current_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
-                            </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($default_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($default_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="currency-selector-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="currency_selection">Currency:</p>
+                        <tr class="" style="margin-top:20px" id="favicon-image">
+                            <td id="favicon-image-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="favicon_image">Favicon Image:</p>
                             </td>
-                            <td id="currency-selector" style="width:250px">
+                            <td id="favicon-image-file" style="padding-bottom:20px">
+                                <input class="" type="file" style="width: 250px" id="favicon_image" name="favicon_image">
+                            </td>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($current_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($default_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
+                            </td>
+                        </tr>
+                        <tr class="" style="margin-top:20px">
+                            <td id="currency-selector-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="currency_selection">Currency:</p>
+                            </td>
+                            <td id="currency-selector" style="width:250px;padding-bottom:20px">
                                 <select id="currency_selection" name="currency_selection" placeholder="£" class="form-control" style="width:150px">
                                     <option alt="Pounds Sterling" value="£" <?php if ($current_currency == "£") { echo("selected"); } ?>>£ (Pound)</option>
                                     <option alt="Dollar"          value="$" <?php if ($current_currency == "$") { echo("selected"); } ?>>$ (Dollar)</option>
@@ -247,48 +247,48 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <option alt="Lira"            value="₺" <?php if ($current_currency == "₺") { echo("selected"); } ?>>₺ (Lira)</option>
                                 </select>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_currency); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_currency); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_currency); ?></span></label>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="sku-prefix-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="sku_prefix">SKU Prefix:</p>
-                            </td>
-                            <td id="sku-prefix-set" style="width:250px">
-                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
-                            </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_sku_prefix); ?></span></label>
-                            </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_sku_prefix); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_currency); ?></span></label>
                             </td>
                         </tr>
-
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="base-url-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="base_url">Base URL:</p>
+                        <tr class="" style="margin-top:20px">
+                            <td id="sku-prefix-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="sku_prefix">SKU Prefix:</p>
                             </td>
-                            <td id="base-url-set" style="width:250px">
-                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="base_url" name="base_url">
+                            <td id="sku-prefix-set" style="width:250px;padding-bottom:20px">
+                                <input class="form-control " type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_base_url); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_sku_prefix); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_base_url); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_sku_prefix); ?></span></label>
                             </td>
                         </tr>
 
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="default-theme-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="default_theme">Default Theme:</p>
+                        <tr class="" style="margin-top:20px">
+                            <td id="base-url-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="base_url">Base URL:</p>
                             </td>
-                            <td id="default-theme-set" style="width:250px">
+                            <td id="base-url-set" style="width:250px;padding-bottom:20px">
+                                <input class="form-control " type="text" style="width: 150px" id="base_url" name="base_url">
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_base_url); ?></span></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_base_url); ?></span></label>
+                            </td>
+                        </tr>
+
+                        <tr class="" style="margin-top:20px">
+                            <td id="default-theme-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="default_theme">Default Theme:</p>
+                            </td>
+                            <td id="default-theme-set" style="width:250px;padding-bottom:20px">
                                 <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control" style="width:150px">
                                     <?php
                                     $sql_theme = "SELECT * FROM theme";
@@ -313,25 +313,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     ?>
                                 </select>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_default_theme_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_default_theme_name); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_default_theme_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_default_theme_name); ?></span></label>
                             </td>
                         </tr>
 
 
-                        <tr class="nav-row" style="margin-top:20px;margin-left:25px">
+                        <tr class="" style="margin-top:20px;margin-left:25px;padding-bottom:20px">
                             <td style="width:250px">
                                 <input id="global-submit" type="submit" name="global-submit" class="btn btn-success" value="Save" />
                             </td>
-                            <td style="width:250px">
+                            <td style="width:250px;padding-bottom:20px">
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px">
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <input id="global-restore-defaults" type="submit" name="global-restore-defaults" class="btn btn-danger" style="margin-left:25px" value="Restore Default" />
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px">
+                                <input id="global-restore-defaults" type="submit" name="global-restore-defaults" class="btn btn-danger" style="margin-left:15px" value="Restore Default" />
                             </td>
                         </tr>
                     </tbody>

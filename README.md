@@ -487,6 +487,10 @@ Clone the repo first, and the follow the below steps.
 - Login page is now working for the card reader, still needs a full test but now doesnt try to login when pressing any button.
 - MySQL scripts updated to add the needed info to the DB.
 - Bash script updated with some more prompts and fixed the first prompt with a case instead of else if.
+- Admin global settings is now a more cleaned up table.
+- Transactions now support cable_transaction table.
+- Transaction include page now supports cable_transaction page.
+- Updated cable_transaction table to now include the shelf_id. SQL queries updated.
 
 </details>
 <details>

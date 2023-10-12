@@ -505,14 +505,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                         // Transaction update
                         $type = 'add';
-                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username) 
-                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username, shelf_id) 
+                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt_trans = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                             header("Location: ../".$redirect_url.$redirect_queries."&error=transactionConnectionSQL");
                             exit();
                         } else {
-                            mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $id, $item_id, $type, $quantity_one, $cost, $serial_number_input, $reason, $date, $time, $username);
+                            mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $id, $item_id, $type, $quantity_one, $cost, $serial_number_input, $reason, $date, $time, $username, $shelf);
                             mysqli_stmt_execute($stmt_trans);
                             if ($i == (int)$quantity) {
                                 $stock_info = getItemStockInfo($id);
@@ -631,15 +631,15 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                 $time = date('H:i:s'); // current time in HH:MM:SS format
                                                 $username = $_SESSION['username'];
                                                 $neg_stock_quantity = -1;
-                                                $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
-                                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                                $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username, shelf_id) 
+                                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                                 $stmt_trans = mysqli_stmt_init($conn);
                                                 if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                                                     $errors[] = 'trans transaction table error - SQL connection';
                                                     header("Location: $redirect_url&error=TransactionConnectionIssue");
                                                     exit();
                                                 } else {
-                                                    mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $delete_id, $type, $stock_shelf, $neg_stock_quantity, $stock_price, $stock_serial_number, $stock_transaction_reason, $date, $time, $username);
+                                                    mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $delete_id, $type, $neg_stock_quantity, $stock_price, $stock_serial_number, $stock_transaction_reason, $date, $time, $username, $stock_shelf);
                                                     mysqli_stmt_execute($stmt_trans);
                                                     echo("Transaction Added");
                                                 }

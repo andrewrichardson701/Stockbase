@@ -75,18 +75,18 @@ function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
     }
 }
 
-function updateCableTransactions($stock_id, $item_id, $type, $quantity, $reason, $date, $time, $username) {
+function updateCableTransactions($stock_id, $item_id, $type, $quantity, $reason, $date, $time, $username, $shelf_id) {
     global $redirect_url, $queryChar;
     include 'dbh.inc.php';
     $cost = 0;
-    $sql_trans = "INSERT INTO cable_transaction (stock_id, item_id, type, quantity, reason, date, time, username) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql_trans = "INSERT INTO cable_transaction (stock_id, item_id, type, quantity, reason, date, time, username, shelf_id) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt_trans = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
         header("Location: ../".$redirect_url.$queryChar."error=cable_transactionConnectionSQL");
         exit();
     } else {
-        mysqli_stmt_bind_param($stmt_trans, "ssssssss", $stock_id, $item_id, $type, $quantity, $reason, $date, $time, $username);
+        mysqli_stmt_bind_param($stmt_trans, "sssssssss", $stock_id, $item_id, $type, $quantity, $reason, $date, $time, $username, $shelf_id);
         mysqli_stmt_execute($stmt_trans);
         echo ("transaction added");
     }  
@@ -233,6 +233,7 @@ function getCurrentURL() {
 function addQuantity($stock_id, $cable_item_id) {
     global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email, $current_base_url;
     
+    $shelf_id = getCableItemRow($cable_item_id)['shelf_id'];
     $type = "add";
     $reason = "Added via Fixed Cable page";
     $date = date('Y-m-d'); // current date in YYY-MM-DD format
@@ -256,7 +257,7 @@ function addQuantity($stock_id, $cable_item_id) {
             mysqli_stmt_bind_param($stmt, "ss", $new_quantity, $cable_item_id);
             mysqli_stmt_execute($stmt);
             
-            updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username);
+            updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username, $shelf_id);
 
             $stock_info = getCableStockInfo($item['stock_id']);
             $item_location = getItemLocation($item['shelf_id']);
@@ -279,7 +280,8 @@ function addQuantity($stock_id, $cable_item_id) {
 
 function removeQuantity($stock_id, $cable_item_id) {
     global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email, $current_base_url, $current_base_url;
-
+    
+    $shelf_id = getCableItemRow($cable_item_id)['shelf_id'];
     $type = "remove";
     $reason = "Removed via Fixed Cable page";
     $date = date('Y-m-d'); // current date in YYY-MM-DD format
@@ -304,7 +306,7 @@ function removeQuantity($stock_id, $cable_item_id) {
                 mysqli_stmt_bind_param($stmt, "ss", $new_quantity, $cable_item_id);
                 mysqli_stmt_execute($stmt);
                 
-                updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username);
+                updateCableTransactions($stock_id, $cable_item_id, $type, $new_quantity, $reason, $date, $time, $username, $shelf_id);
 
                 $stock_info = getCableStockInfo($item['stock_id']);
                 $item_location = getItemLocation($item['shelf_id']);
@@ -388,7 +390,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $date = date('Y-m-d'); // current date in YYY-MM-DD format
                         $time = date('H:i:s'); // current time in HH:MM:SS format
                         $username = $_SESSION['username'];
-                        updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username);
+                        updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username, $shelf_id);
                         // update changelog
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "stock_id", null, $stock_id);
 
@@ -460,7 +462,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 $date = date('Y-m-d'); // current date in YYY-MM-DD format
                                 $time = date('H:i:s'); // current time in HH:MM:SS format
                                 $username = $_SESSION['username'];
-                                updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username);
+                                updateCableTransactions($stock_id, $cable_item_id, $type, $item_quantity, $reason, $date, $time, $username, $shelf_id);
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "quantity", null, $item_quantity);
 

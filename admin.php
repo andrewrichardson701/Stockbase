@@ -168,7 +168,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <tr class="" id="ldap-headings">
                             <th style="width:250px;margin-left:25px;padding-bottom:20px"></th>
                             <th style="width: 250px;padding-bottom:20px">Change</th>
-                            <th style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">Custom</th>
+                            <th style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">Current</th>
                             <th style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">Default</th>
                         </tr>
                         <tr class="">

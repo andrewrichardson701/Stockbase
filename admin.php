@@ -1217,14 +1217,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 echo ('<p class="blue">SMTP is disabled. All email notifications have been disabled.</p>');
             }
             ?>
-            <div class="well-nopad bg-dark" style="margin-top:20px">
+            <div class="well-nopad theme-divBg" style="margin-top:20px">
                 <?php 
-                $example_body = urlencode("<p style='color:black !important'>Fixed cable stock added, for <strong><or class='link' style='color: #0000EE;'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
+                $example_body = urlencode("<p style='color:black !important'>Fixed cable stock added, for <strong><a class='link' style='color: #0000EE !important;' href='stock.php?stock_id=1'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
                 ?>
                 <h4>Email example</h4>
                 <input type="hidden" value="<?php echo($example_body); ?>" id="email-template-body" />
-                <div id="email-template" style="margin-top:20px">
+                <div id="email-template" style="margin-top:20px;margin-bottom:10px">
                 </div>
+                <a style="margin-left:5px" href="includes/smtp.inc.php?template=echo&body=<?php echo ($example_body); ?>" target="_blank">View in new tab</a>
             </div>
 
         </div>

@@ -162,7 +162,7 @@ $email_template_head = '
 <body style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw">';
 
 $email_template_head_template = '
-<div style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw; background-color:white;">';
+<div style="font-family: \'Poppins\', sans-serif; padding-left:10vw; padding-right:10vw; background-color:white;" class="theme-divBg-m">';
 
 $email_template_start = '
     <!-- inset block -->

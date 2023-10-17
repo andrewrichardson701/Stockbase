@@ -353,7 +353,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['global-restore-defaults'])) { // restore global settings in admin
         include 'dbh.inc.php';
 
-        $sql_config = "SELECT system_name, base_url, banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
+        $sql_config = "SELECT system_name, base_url, banner_color, logo_image, favicon_image, currency, sku_prefix, default_theme_id FROM config_default ORDER BY id LIMIT 1";
         $stmt_config = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             header("Location: ../admin.php?error=sqlerror&table=config_default&file=".__FILE__."&line=".__LINE__."&section=global-settings&purpose=getEntries#global-settings");
@@ -374,14 +374,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $restore_favicon_image = $config['favicon_image'];
                     $restore_currency      = $config['currency'];
                     $restore_sku_prefix    = $config['sku_prefix'];
+                    $restore_default_theme = $config['default_theme_id'];
                 }
-                $sql_upload = "UPDATE config SET system_name=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=?, base_url=? WHERE id=1";
+                $sql_upload = "UPDATE config SET system_name=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=?, base_url=?, default_theme_id=? WHERE id=1";
                 $stmt_upload = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                     header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&section=global-settings&purpose=configRestore#global-settings");
                     exit();
                 } else {
-                    mysqli_stmt_bind_param($stmt_upload, "sssssss", $restore_system_name, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix, $restore_base_url);
+                    mysqli_stmt_bind_param($stmt_upload, "ssssssss", $restore_system_name, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix, $restore_base_url, $restore_default_theme);
                     mysqli_stmt_execute($stmt_upload);
                     // update changelog
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "system_name", $configCurrent['system_name'], $restore_system_name);
@@ -391,6 +392,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "currency", $configCurrent['currency'], $restore_currency);
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "sku_prefix", $configCurrent['sku_prefix'], $restore_sku_prefix);
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "base_url", $configCurrent['base_url'], $restore_base_url);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "default_theme_id", $configCurrent['default_theme_id'], $restore_base_url);
 
                     $sql_sku = "SELECT sku_prefix FROM config ORDER BY id LIMIT 1";
                     $stmt_sku = mysqli_stmt_init($conn);

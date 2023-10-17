@@ -491,6 +491,7 @@ Clone the repo first, and the follow the below steps.
 - Transactions now support cable_transaction table.
 - Transaction include page now supports cable_transaction page.
 - Updated cable_transaction table to now include the shelf_id. SQL queries updated.
+- Added error checking from urls to the pages where they are needed and adjusted the error query strings to be more useful.
 
 </details>
 <details>

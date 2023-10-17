@@ -42,8 +42,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         WHERE username=?";
         $stmt_users = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-            header("Location: ../index.php?error=sqlerror_getUsersList");
-            exit();
+            echo('<p class="red">ERROR: SQL Error. Table = users. Check '.__FILE__.' at line:'.__LINE__.'.');
+            // header("Location: ../index.php?error=sqlerror&table=users");
+            // exit();
         } else {
             mysqli_stmt_bind_param($stmt_users, "s", $_SESSION['username']);
             mysqli_stmt_execute($stmt_users);
@@ -51,8 +52,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             $rowCount = $result->num_rows;
             if ($rowCount < 1) {
                 $userFound = 0;
-                header("Location: ../index.php?sqlerror=multipleentries");
-                exit();
+                echo('<p class="red">ERROR: No user found. Check '.__FILE__.' at line:'.__LINE__.'.');
+                // header("Location: ../index.php?sqlerror=noEntries");
+                // exit();
             } elseif ($rowCount == 1) {
                 while ($row = $result->fetch_assoc()){
                     $profile_id = $row['users_id'];
@@ -67,8 +69,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     $profile_theme_file_name = $row['theme_file_name'];
                 }  
             } else { // if there are somehow too many rows matching the sql
-                header("Location: ../index.php?sqlerror=multipleentries");
-                exit();
+                echo('<p class="red">ERROR: Multiple entries found. Check '.__FILE__.' at line:'.__LINE__.'.');
+                // header("Location: ../index.php?sqlerror=multipleEntries");
+                // exit();
             }
         }
         ?>
@@ -278,12 +281,91 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 }
                 if (isset($_GET['success'])) {
                     if ($_GET['success'] == "PasswordChanged") {
-                        echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">Password Changed Successfully.</p></td></tr>');
+                        $successInfo = 'Password Changed Successfully.</p></td></tr>';
                     } elseif ($_GET['success'] == "profileUpdated") {
-                        echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">Profile Updated Successfully.</p></td></tr>');
+                        $successInfo = 'Profile Updated Successfully.</p></td></tr>';
+                    } elseif ($_GET['success'] == 'cardUpdated') {
+                        $successInfo = 'Card Updated!';
+                        if (isset($_GET['type'])) {
+                            $successInfo .= ' Card '.$_GET['type'].'.';  
+                        }
+                        if (isset($_GET['card'])) {
+                            $successInfo .= ' Card: '.$_GET['card'].'.';
+                        }
+                        if (isset($_GET['card_number'])) {
+                            $successInfo .= ' Card number: '.$_GET['card_number'].'.';
+                        }
+                    } elseif ($_GET['success'] == 'cardDeassigned') {
+                        $successInfo = 'Card Updated!';
+                        if (isset($_GET['card'])) {
+                            $successInfo .= ' Card: '.$_GET['card'].'.';
+                        }
+                    } else {
+                        $successInfo = $_GET['success'];
                     }
-                } elseif (isset($_GET['error'])) {
-                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$_GET['error'].'</p></td></tr>');
+                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">'.$successInfo.'</p></td></tr>');
+                } 
+                if (isset($_GET['error'])) {
+                    if ($_GET['error'] == 'sqlerror') {
+                        $errorExtraInfo = 'SQL Error.';
+                        if (isset($_GET['table'])) {
+                            $errorExtraInfo .= ' Table = '.$_GET['table'];
+                        }
+                        if (isset($_GET['file'])) {
+                            $errorExtraInfo .= ' File = '.$_GET['file'];
+                        }
+                        if (isset($_GET['line'])) {
+                            $errorExtraInfo .= ' Line = '.$_GET['line'];
+                        }
+                        if (isset($_GET['purpose'])) {
+                            $errorExtraInfo .= ' Purpose = '.$_GET['purpose'];
+                        }
+                        
+                    } elseif ($_GET['error'] == 'emailFormat') {
+                        $errorExtraInfo = 'Invalid email format.';
+                    } elseif ($_GET['error'] == 'emptyFields') {
+                        $errorExtraInfo = 'Empty fields present in the form.';
+                    } elseif ($_GET['error'] == 'missingFields') {
+                        $errorExtraInfo = 'Missing fields present in the form.';
+                    } elseif ($_GET['error'] == 'idMissmatch') {
+                        $errorExtraInfo = 'ID missmatch found.';
+                    } elseif ($_GET['error'] == 'idMissing') {
+                        $errorExtraInfo = 'ID missing.';
+                    } elseif ($_GET['error'] == 'cardNoMatch') {
+                        $errorExtraInfo = 'Incorrect card number.';
+                    } elseif ($_GET['error'] == 'cardNumberNotNumeric') {
+                        $errorExtraInfo = 'Card ID not numeric.';
+                    } elseif ($_GET['error'] == 'missingCardData') {
+                        $errorExtraInfo = 'Missing card data.';
+                    } elseif ($_GET['error'] == 'missingCard') {
+                        $errorExtraInfo = 'Missing card.';
+                    } elseif ($_GET['error'] == 'missingType') {
+                        $errorExtraInfo = 'Type missing.';
+                    } else {
+                        $errorExtraInfo = $_GET['error'];
+                    }
+                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$errorExtraInfo.'</p></td></tr>');
+                }
+                if (isset($_GET['sqlerror'])) {
+                    if ($_GET['sqlerror'] == 'multipleEntries') {
+                        $errorExtraInfo = 'Multiple entries found.';
+                        if (isset($_GET['table'])) {
+                            $errorExtraInfo .= ' table: '.$_GET['table'];
+                        }
+                    } elseif ($_GET['sqlerror'] == 'emailExists') {
+                        $errorExtraInfo = 'Email already in use.';
+                        if (isset($_GET['email'])) {
+                            $errorExtraInfo .= ' Email: '.$_GET['email'];
+                        }
+                    } elseif ($_GET['sqlerror'] == 'incorrectRowCount') {
+                        $errorExtraInfo = 'Incorrect row count in table.';
+                        if (isset($_GET['email'])) {
+                            $errorExtraInfo .= ' Email: '.$_GET['email'];
+                        }
+                    } else {
+                        $errorExtraInfo = $_GET['sqlerror'];
+                    }
+                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$errorExtraInfo.'</p></td></tr>');
                 }
 
                 $sql_card = "SELECT card_primary, card_secondary FROM users WHERE id=$profile_id";

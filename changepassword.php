@@ -4,7 +4,7 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
-// USER PROFILE PAGE
+// CHANGE PASSWORD PAGE
 // SEE USER INFO FROM THE DATABASE BUT NOT MODIFY ANY (YET ATLEAST)
 
 include 'session.php'; // Session setup and redirect if the session is not active 
@@ -44,8 +44,9 @@ if ($_SESSION['auth'] == "ldap") {
                         WHERE username=?";
         $stmt_users = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-            header("Location: ../index.php?error=sqlerror_getUsersList");
-            exit();
+            echo('<p class="red">ERROR: SQL Error. Table = users. Check '.__FILE__.' at line:'.__LINE__.'.');
+            // header("Location: ../profile.php?error=sqlerror&table=users");
+            // exit();
         } else {
             mysqli_stmt_bind_param($stmt_users, "s", $_SESSION['username']);
             mysqli_stmt_execute($stmt_users);
@@ -53,7 +54,7 @@ if ($_SESSION['auth'] == "ldap") {
             $rowCount = $result->num_rows;
             if ($rowCount < 1) {
                 $userFound = 0;
-
+                echo('<p class="red">ERROR: No user found. Check '.__FILE__.' at line:'.__LINE__.'.');
             } elseif ($rowCount == 1) {
                 while ($row = $result->fetch_assoc()){
                     $profile_id = $row['users_id'];
@@ -65,8 +66,9 @@ if ($_SESSION['auth'] == "ldap") {
                     $profile_password_expired = $row['password_expired'];
                 }  
             } else { // if there are somehow too many rows matching the sql
-                header("Location: ../index.php?sqlerror=multipleentries");
-                exit();
+                echo('<p class="red">ERROR: Multiple entries found. Check '.__FILE__.' at line:'.__LINE__.'.');
+                // header("Location: ../profile.php?sqlerror=multipleEntries&table=users");
+                // exit();
             }
         }
         ?>

@@ -36,6 +36,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h2 class="header-small">Admin</h2>
     </div>
 
+
     <script> // Toggle hide/show section
         function toggleSection(element, section) {
             var div = document.getElementById(section);
@@ -52,7 +53,157 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
     </script>
     <div class="container content">
-
+        <?php
+        $errorPprefix = '<p class="red">Error: ';
+        $errorPsuffix = '</p>';
+        $successPprefix = '<p class="green">';
+        $successPsuffix = '</p>';
+        $errorPtext = '';
+        $sqlerrorPtext = '';
+        $successPtext = '';
+        if (isset($_GET['error'])) {
+            // admin.inc.php
+            if ($_GET['error'] == 'submitIssue') {
+                $errorPtext = 'Submission issue. Check your form for any submit values required.';
+            } elseif ($_GET['error'] == 'emptyFields') {
+                $errorPtext = 'Empty fields present in the form.';
+            } elseif ($_GET['error'] == 'sqlerror') {
+                $errorPtext = 'SQL Error.';
+                if (isset($_GET['table'])) {
+                    $errorPtext .= ' Table = '.$_GET['table'];
+                }
+                if (isset($_GET['file'])) {
+                    $errorPtext .= ' File = '.$_GET['file'];
+                }
+                if (isset($_GET['line'])) {
+                    $errorPtext .= ' Line = '.$_GET['line'];
+                }
+                if (isset($_GET['purpose'])) {
+                    $errorPtext .= ' Purpose = '.$_GET['purpose'];
+                }
+            } elseif ($_GET['error'] == 'passwordMatchesCurrent') {
+                $errorPtext = 'New password matches current.';
+            } elseif ($_GET['error'] == 'invalidPermissions') {
+                $errorPtext = 'Invalid permissions to complete.';
+            } elseif ($_GET['error'] == 'userIdMissing') {
+                $errorPtext = 'User ID missing.';
+            } elseif ($_GET['error'] == 'passwordMismatch') {
+                $errorPtext = 'Passwords do not match.';
+            } elseif ($_GET['error'] == 'noSubmit') {
+                $errorPtext = 'Form submit condition not met.';
+            } elseif ($_GET['error'] == 'incorrectLocationType') {
+                $errorPtext = 'Incorrect location type submitted.';
+            } elseif ($_GET['error'] == 'missingLocationType') {
+                $errorPtext = 'Missing location type.';
+            } elseif ($_GET['error'] == 'missingLocationDescription') {
+                $errorPtext = 'Location Description missing.';
+            } elseif ($_GET['error'] == 'missingLocationName') {
+                $errorPtext = 'Location Name missing.';
+            } elseif ($_GET['error'] == 'missingLocationId') {
+                $errorPtext = 'Location ID missing.';
+            } elseif ($_GET['error'] == 'dependenciesPresent') {
+                $errorPtext = 'Dependencies in place on this object. No changes made.';
+            } elseif ($_GET['error'] == 'linksExist') {
+                $errorPtext = 'Links in place on this object. No changes made.';
+            } elseif ($_GET['error'] == 'missingFileLinks') {
+                $errorPtext = 'File Links unknown.';
+            } elseif ($_GET['error'] == 'missingFileName') {
+                $errorPtext = 'File Name missing.';
+            } elseif ($_GET['error'] == 'unknwonType') {
+                $errorPtext = 'Unkown type submitted.';
+            } elseif ($_GET['error'] == 'missingType') {
+                $errorPtext = 'Missing type.';
+            } else {
+                $errorPtext = $_GET['error'];
+            }
+            
+        }
+        if (isset($_GET['sqlerror'])) {
+            // admin.inc.php
+            if ($_GET['sqlerror'] == 'tooManyConfigRows') {
+                $sqlerrorPtext = 'Too many config rows in table. Please correct this.';
+            } elseif ($_GET['sqlerror'] == 'noEntries') {
+                $sqlerrorPtext = 'No entries found in table. Please correct this.';
+                if (isset($_GET['field'])) {
+                    $sqlerrorPtext .= ' Field = '.$_GET['field'];
+                }
+                if (isset($_GET['table'])) {
+                    $sqlerrorPtext .= ' Table = '.$_GET['table'];
+                }
+            } elseif ($_GET['sqlerror'] == 'noID1') {
+                $sqlerrorPtext = 'No row found with ID 1.';
+            } elseif ($_GET['sqlerror'] == 'noUserFound') {
+                $sqlerrorPtext = 'No user found in table.';
+            } elseif ($_GET['sqlerror'] == 'tooManyUserFound') {
+                $sqlerrorPtext = 'Multiple users found in table.';
+            } elseif ($_GET['sqlerror'] == 'failedToChangeSkuPrefix') {
+                $sqlerrorPtext = 'Failed to update SKU prefixes in stock table.';
+            } else {
+                $sqlerrorPtext = $_GET['sqlerror'];
+            }
+            if (isset($_GET['table'])) {
+                $sqlerrorPtext .= ' Table = '.$_GET['table'];
+            }
+            if (isset($_GET['file'])) {
+                $sqlerrorPtext .= ' File = '.$_GET['file'];
+            }
+            if (isset($_GET['line'])) {
+                $sqlerrorPtext .= ' Line = '.$_GET['line'];
+            }
+            if (isset($_GET['purpose'])) {
+                $sqlerrorPtext .= ' Purpose = '.$_GET['purpose'];
+            }
+        }
+        if (isset($_GET['success'])) {
+            // admin.inc.php
+            if ($_GET['success'] == 'restored') {
+                $successPtext = 'Successfully restored!';
+            } elseif ($_GET['success'] == 'passwordChanged') {
+                $successPtext = 'Password Changed!';
+            } elseif ($_GET['success'] == 'enabled') {
+                $successPtext = 'Enabled!';
+            } elseif ($_GET['success'] == 'disabled') {
+                $successPtext = 'Disabled!';
+            } elseif ($_GET['success'] == 'deleted') {
+                $successPtext = 'Deleted!';
+                if (isset($_GET['type'])) {
+                    $successPtext = ' Type = '.ucwords($_GET['type']);
+                }
+                if (isset($_GET['id'])) {
+                    $successPtext = ' ID = '.ucwords($_GET['id']);
+                }
+            } elseif ($_GET['success'] == 'updated') {
+                $successPtext = 'Updated!';
+                if (isset($_GET['type'])) {
+                    $successPtext = ' Type = '.ucwords($_GET['type']);
+                }
+                if (isset($_GET['id'])) {
+                    $successPtext = ' ID = '.ucwords($_GET['id']);
+                }
+            } elseif ($_GET['success'] == 'locationAdded') {
+                $successPtext = 'Updated!';
+                if (isset($_GET['locationType'])) {
+                    if (isset($_GET['locationID'])) {
+                        $sqlerrorPtext .= ' '.ucwords($_GET['locationType']).' ID = '.$_GET['locationID'];
+                    }
+                }
+            } else {
+                $successPtext = $_GET['success'];
+            }
+        }
+        if (!isset($_GET['section']) || (isset($_GET['section']) && $_GET['section'] == 'none')) {
+            if ($errorPtext !== '') {
+                echo $errorPprefix.$errorPtext.$errorPsuffix;
+            }
+            if ($sqlerrorPtext !== '') {
+                echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+            }
+            if ($successPtext !== '') {
+                echo $successPprefix.$successPtext.$successPsuffix;
+            }
+        }
+        
+        ?>
         <div id="modalDivAdd" class="modal">
         <!-- <div id="modalDivAdd" style="display: block;"> -->
             <span class="close" onclick="modalCloseAdd()">×</span>
@@ -162,6 +313,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="font-size:22px" id="global-settings" onclick="toggleSection(this, 'global')">Global Settings <i class="fa-solid fa-chevron-up fa-2xs" style="margin-left:10px"></i></h3>
         <!-- Global Settings -->
         <div style="padding-top: 20px" id="global" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'global-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <form id="globalForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                 <table id="globalTable">
                     <tbody>
@@ -342,6 +506,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" onclick="toggleSection(this, 'users')">Users <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
         <div style="padding-top: 20px" id="users" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'users')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
                     <tr id="users_table_info_tr" hidden>
@@ -452,8 +629,21 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </div>
 
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="usersroles-settings" onclick="toggleSection(this, 'usersroles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
-        <!-- Users Settings -->
+        <!-- Users Roles -->
         <div style="padding-top: 20px" id="usersroles" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'users-roles')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
                     <tr class="text-center theme-tableOuter">
@@ -496,6 +686,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings" onclick="toggleSection(this, 'imagemanagement')">Image Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Image Management Settings -->
         <div style="padding-top: 20px" id="imagemanagement" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'imagemanagement')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <div style="height:75%;overflow-x: hidden;overflow-y: auto;">
                 <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
@@ -585,8 +788,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Stock Location Settings -->
         <div style="padding-top: 20px" id="stocklocations" hidden>
-
             <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'stocklocation-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+           
             $locations = [];
             $sql_locations = "SELECT site.id AS site_id, site.name AS site_name, site.description AS site_description,
                                     area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.parent_id AS area_parent_id,
@@ -824,10 +1038,31 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- LDAP Settings -->
         <div style="padding-top: 20px" id="ldap" hidden>
-            <?php 
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'ldap-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+    
             if (isset($_GET['error'])) {
                 echo ('<p id="error-output" class="red" style="margin-left:25px">');
-                if ($_GET['error'] == 'emptyFields') { echo('Empty fields in config.'); }
+                if ($_GET['error'] == 'emptyFields') { 
+                    echo('Empty fields in config.'); 
+                } elseif ($_GET['error'] == 'sqlerror') {
+                    if (isset($_GET['table'])) { 
+                        $extraErrorInfo = ' SQL table: users_roles'; 
+                    } else { 
+                        $extraErrorInfo = ''; 
+                    }
+                    echo ('SQL Error.'.$extraErrorInfo);
+                }
                 echo('</p>');
             }
             if (isset($_GET['ldapUpload'])) {
@@ -993,6 +1228,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- SMTP Settings -->
         <div style="padding-top: 20px" id="smtp" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'smtp-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <form id="smtpToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                 <input type="hidden" name="smtp-toggle-submit" value="set" />
                 <table id="smtpToggleTable">
@@ -1156,7 +1404,20 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- Notification Settings -->
         <div style="padding-top: 20px" id="notification" hidden>
-            <?php if ($current_smtp_enabled == 1) {
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'notification-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+ 
+            if ($current_smtp_enabled == 1) {
                 $sql_notif = "SELECT * FROM notifications
                                 WHERE id!=0;"; 
                 $stmt_notif = mysqli_stmt_init($conn);
@@ -1234,6 +1495,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- Changelog -->
         <div style="padding-top: 20px" id="changelog" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'changelog')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <div class="content">
                 <?php 
                 include 'includes/dbh.inc.php';

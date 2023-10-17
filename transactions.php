@@ -35,8 +35,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 }
                 
             }
-        } elseif (isset($_GET['modify'])) {
-
         } else {
             header("Location: ./?error=noStockSelected");
             exit();

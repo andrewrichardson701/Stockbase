@@ -36,6 +36,37 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container">
             <div class="row">
                 <div class="col-md-6" style="margin-left:25px">
+                    <?php
+                    if (isset($_GET['error'])) {
+                        $errorPprefix = '<p class="red">Error: ';
+                        $errorPsuffix = '</p>';
+                        if ($_GET['error'] == 'emptyFields') {
+                            $errorPtext = 'Empty fields present in the form.';
+                        } elseif ($_GET['error'] == 'sqlerror') {
+                            $errorPtext = 'SQL Error.';
+                            if (isset($_GET['table'])) {
+                                $errorPtext .= ' Table = '.$_GET['table'];
+                            }
+                            if (isset($_GET['file'])) {
+                                $errorPtext .= ' File = '.$_GET['file'];
+                            }
+                            if (isset($_GET['line'])) {
+                                $errorPtext .= ' Line = '.$_GET['line'];
+                            }
+                        } elseif ($_GET['error'] == 'userExists') {
+                            $errorPtext = 'Matching user already exists.';
+                        } elseif ($_GET['error'] == 'multipleEntries') {
+                            $errorPtext = 'Multiple matching users already exists.';
+                        } elseif ($_GET['error'] == 'passwordMismatch') {
+                            $errorPtext = 'Passwords do not match.';
+                        } elseif ($_GET['error'] == 'submitNotSet') {
+                            $errorPtext = 'Form submit condition not met.';
+                        } else {
+                            $errorPtext = $_GET['error'];
+                        }
+                        echo $errorPprefix.$errorPtext.$errorPsuffix;
+                    }
+                    ?>
                     <p>Please fill in the below to add a local user.</p>
                     <form enctype="multipart/form-data" action="./includes/addlocaluser.inc.php" method="post">
                         <div class="form-group">
@@ -71,7 +102,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     $sql_users = "SELECT * FROM users_roles;";
                                     $stmt_users = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-                                        header("Location: ../login.php?error=sqlerror_getUsersList");
+                                        header("Location: ../admin.php?error=sqlerror&table=users_roles");
                                         exit();
                                     } else {
                                         mysqli_stmt_execute($stmt_users);

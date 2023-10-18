@@ -433,7 +433,7 @@ if [ -f "$sql_setup_script" ]; then
     while true; do    
         echo "Checking base_url is set..."
         # Query to get the base_url value from the config table
-        config_base_url=$(mysql -u root -e "SELECT base_url FROM inventory.config WHERE id=1;")
+        config_base_url=$(mysql -u root --skip-column-names -e "SELECT base_url FROM inventory.config WHERE id=1;")
         sleep 1
 
         # Check if base_url is equal to the desired web_domain

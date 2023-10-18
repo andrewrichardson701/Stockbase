@@ -181,12 +181,14 @@ echo "Checking installed packages..."
 echo ""
 echo "Checking php8.1..."
 check_install_package php8.1
+sleep 1
 echo ""
 echo "Checking mysql-server..."
 check_install_package mysql-server
 echo ""
 echo "Done!"
 echo ""
+sleep 1
 
 # Check if MySQL is installed
 if ! dpkg -l | grep -q "mysql-server"; then
@@ -194,9 +196,10 @@ if ! dpkg -l | grep -q "mysql-server"; then
     sudo apt-get update
     sudo apt-get install -y mysql-server >/dev/null 2>&1 &
     echo "MySQL installed!"
+    sleep 1
     sudo mysql_secure_installation
 fi
-echo ""
+slep 1
 echo ""
 # Ask for folder input and check if it exists
 while true; do
@@ -208,6 +211,7 @@ while true; do
         echo "Moving files from $root_path to $folder_name..."
         #cp "$0" "$folder_name"  # Copy the script itself
         mv "$root_path"/* "$folder_name"/   # Move all files except the script
+        sleep 1
         echo "Files moved successfully to $folder_name."
         break
     else
@@ -219,9 +223,11 @@ while true; do
             if [ "$create_folder" = "yes" ]; then
                 mkdir -p "$folder_name"
                 echo "Folder created."
+                sleep 1
                 echo "Moving files to $folder_name..."
                 #cp "$0" "$folder_name"  # Copy the script itself
                 mv "$root_path"/* "$folder_name"/   # Move all files except the script
+                sleep 1
                 echo "Files moved successfully to $folder_name."
                 break
             else
@@ -240,6 +246,7 @@ read -p "Enter the Fully Qualified Domain Name (FQDN) to access the site: " web_
 
 echo ""
 echo "Web Domain: $web_domain"
+sleep 1
 echo ""
 
 # Ask if SSL should be used
@@ -264,6 +271,7 @@ if [ "$use_ssl" = true ]; then
 else
     echo "SSL is not enabled."
 fi
+sleep 1
 echo ""
 
 # Check if Apache2 or Nginx is already installed
@@ -284,6 +292,7 @@ else
 fi
 
 echo "Using $web_server as the web server."
+sleep 1
 echo ""
 echo "Checking for $web_server package..."
 
@@ -291,6 +300,8 @@ echo "Checking for $web_server package..."
 check_install_package "$web_server"
 
 echo "Done!"
+sleep 1
+echo ""
 
 # Create a web server configuration file with or without SSL
 if [ "$web_server" = "apache2" ]; then
@@ -354,9 +365,11 @@ fi
 # Check if MySQL setup has been completed before
 if ! mysql -u root -e ";" 2>/dev/null; then
     echo "Running MySQL secure installation..."
+    sleep 1
     sudo mysql_secure_installation
 fi
 
+sleep 1
 echo ""
 # Verify MySQL root password
 while true; do
@@ -379,6 +392,7 @@ if mysql -u root -e "USE inventory;" 2>/dev/null; then
     if [ "$remove_database" = "yes" ]; then
         echo "Removing existing 'inventory' database..."
         mysql -u root -e "DROP DATABASE inventory;"
+        sleep 1
         echo "Database removed."
     else
         echo "Database needs to be created to continue."
@@ -439,6 +453,7 @@ if [ -f "$sql_setup_script" ]; then
 else
     echo "MySQL setup script not found at $sql_setup_script."
 fi
+sleep 1
 echo ""
 
 # Create "inventory" user and set password
@@ -448,7 +463,7 @@ echo "User needed to access the database."
 echo "Checking if inventory user exists..."
 echo ""
 user_exists=$(mysql -u root -e "SELECT User FROM mysql.user WHERE User='inventory' AND Host='localhost';" --skip-column-names)
-
+sleep 1
 if [ -n "$user_exists" ]; then
     # The 'inventory' user exists, prompt the user for action
     echo "Inventory user already exists. Do you want to drop the user and re-create it?"
@@ -527,13 +542,16 @@ if [ "$correct_password" = "Y" ]; then
 else
     echo "Password issue for inventory user..."
 fi
+sleep 1
 echo ""
 
 # Generate and hash password
 echo "Generating new root user password..."
 generate_password
+sleep 0.5
 echo "Hashing new root user password..."
 hash_password
+sleep 0.5
 
 # get system hostname
 hostname=$(hostname --fqdn)
@@ -543,7 +561,7 @@ echo "Creating root user for site login..."
 mysql -u root -e "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '$hashed_password');"
 mysql -u root -e "UPDATE inventory.users SET id=0 where id=1;"
 mysql -u root -e "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"   
-
+sleep 1
 echo "Done!"
 echo ""
 
@@ -591,6 +609,7 @@ while true; do
         * ) echo "Please answer Y or N.";;
     esac
 done
+sleep 0.5
 echo ""
 
 while true; do
@@ -652,6 +671,7 @@ done
 echo ""
 echo "Setting permissions..."
 chmod 777 $folder_name -R
+sleep 0.5
 echo "Done!"
 echo ""
 

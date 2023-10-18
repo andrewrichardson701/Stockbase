@@ -387,6 +387,7 @@ else
     echo "Database will be created."
 fi
 
+sleep 1
 echo ""
 # Run the mysql_setup.sql script
 sql_setup_script="$folder_name/assets/sql/db_setup.sql"
@@ -396,8 +397,32 @@ if [ -f "$sql_setup_script" ]; then
     mysql -u root < "$sql_setup_script"
     echo "MySQL setup script executed."
     echo "Updating base_url with the selected web url..."
+    sleep 5
     mysql -u root -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;";
+    sleep 1
     echo "Done!"
+    echo ""
+
+    while true; do    
+        echo "Checking base_url is set..."
+        # Query to get the base_url value from the config table
+        config_base_url=$(mysql -u root -e "SELECT base_url FROM inventory.config WHERE id=1;")
+        sleep 1
+
+        # Check if base_url is equal to the desired web_domain
+        if [ "$config_base_url" = "$web_domain" ]; then
+            echo "base_url is set correctly: $config_base_url."
+            break  # Exit the loop if the condition is true
+        else
+            echo "base_url is not set correctly: $config_base_url."
+            echo "Retrying..."
+            mysql -u root -p -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;"
+            echo "Done!"
+        fi
+
+        # Add a delay before retrying (to avoid rapid and unnecessary retries)
+        sleep 5
+    done
 else
     echo "MySQL setup script not found at $sql_setup_script."
 fi

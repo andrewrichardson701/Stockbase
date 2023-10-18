@@ -176,9 +176,17 @@ while true; do
 done
 
 # Check and install necessary packages
+echo ""
+echo "Checking installed packages..."
+echo ""
+echo "Checking php8.1..."
 check_install_package php8.1
+echo ""
+echo "Checking mysql-server..."
 check_install_package mysql-server
-
+echo ""
+echo "Done!"
+echo ""
 
 # Check if MySQL is installed
 if ! dpkg -l | grep -q "mysql-server"; then
@@ -272,9 +280,13 @@ else
 fi
 
 echo "Using $web_server as the web server."
+echo ""
+echo "Checking for $web_server package..."
 
 # Check and install necessary packages
 check_install_package "$web_server"
+
+echo "Done!"
 
 # Create a web server configuration file with or without SSL
 if [ "$web_server" = "apache2" ]; then
@@ -355,6 +367,8 @@ while true; do
     fi
 done
 
+echo "Checking for 'inventory' database..."
+echo ""
 # Check if "inventory" database exists
 if mysql -u root -e "USE inventory;" 2>/dev/null; then
     read -p "The 'inventory' database already exists. Do you want to remove it and install the new one? (yes/no): " remove_database
@@ -370,6 +384,7 @@ if mysql -u root -e "USE inventory;" 2>/dev/null; then
     fi
 else
     echo "The 'inventory' database does not exist."
+    echo "Database will be created."
 fi
 
 echo ""

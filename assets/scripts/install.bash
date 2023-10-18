@@ -621,6 +621,10 @@ while true; do
     esac
 done
 echo ""
+echo "Setting permissions..."
+chmod 777 $folder_name -R
+echo "Done!"
+echo ""
 
 # Display the web URL for accessing the system
 

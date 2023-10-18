@@ -24,10 +24,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
     <div class="content">
         <?php // Error section
-        $errorPprefix = '<p class="red">Error: ';
-        $errorPsuffix = '</p>';
-        $successPprefix = '<p class="green">';
-        $successPsuffix = '</p>';
+        $errorPprefix = '<div class="container"><p class="red" style="padding-top:10px">Error: ';
+        $errorPsuffix = '</p></div>';
+        $successPprefix = '<div class="container"><p class="green" style="padding-top:10px">';
+        $successPsuffix = '</p></div>';
         $errorPtext = '';
         $sqlerrorPtext = '';
         $successPtext = '';

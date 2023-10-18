@@ -199,7 +199,7 @@ if ! dpkg -l | grep -q "mysql-server"; then
     sleep 1
     sudo mysql_secure_installation
 fi
-slep 1
+sleep 1
 echo ""
 # Ask for folder input and check if it exists
 while true; do

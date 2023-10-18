@@ -238,6 +238,10 @@ echo ""
 # Ask for FQDN
 read -p "Enter the Fully Qualified Domain Name (FQDN) to access the site: " web_domain
 
+echo ""
+echo "Web Domain: $web_domain"
+echo ""
+
 # Ask if SSL should be used
 while true; do
     read -p "Do you want to use SSL for secure connections? (Y/N): " use_ssl
@@ -395,9 +399,23 @@ sql_extras_script="$folder_name/assets/sql/db_extras.sql"
 if [ -f "$sql_setup_script" ]; then
     echo "Running MySQL setup script from assets..."
     mysql -u root < "$sql_setup_script"
-    echo "MySQL setup script executed."
-    echo "Updating base_url with the selected web url..."
     sleep 5
+    echo "MySQL setup script executed."
+    if [ -f "$sql_extras_script" ]; then
+        echo "Running MySQL setup extras script from assets..."
+        mysql -u root < "$sql_extras_script"
+        sleep 5
+        echo "MySQL setup extras script executed."
+    else
+        echo "MySQL setup extras script not found at $sql_extras_script."
+    fi
+    echo ""
+    echo "Initialising the config table"
+    mysql -u root -e "INSERT INTO inventory.config SELECT * FROM inventory.config_default WHERE id=1";
+    sleep 1
+    echo "Done"
+    echo ""
+    echo "Updating base_url with the selected web url..."
     mysql -u root -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;";
     sleep 1
     echo "Done!"
@@ -425,15 +443,6 @@ if [ -f "$sql_setup_script" ]; then
     done
 else
     echo "MySQL setup script not found at $sql_setup_script."
-fi
-echo ""
-
-if [ -f "$sql_extras_script" ]; then
-    echo "Running MySQL setup extras script from assets..."
-    mysql -u root < "$sql_extras_script"
-    echo "MySQL setup extras script executed."
-else
-    echo "MySQL setup extras script not found at $sql_extras_script."
 fi
 echo ""
 

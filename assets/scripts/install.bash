@@ -410,11 +410,6 @@ if [ -f "$sql_setup_script" ]; then
         echo "MySQL setup extras script not found at $sql_extras_script."
     fi
     echo ""
-    echo "Initialising the config table"
-    mysql -u root -e "INSERT INTO inventory.config SELECT * FROM inventory.config_default WHERE id=1";
-    sleep 1
-    echo "Done"
-    echo ""
     echo "Updating base_url with the selected web url..."
     mysql -u root -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;";
     sleep 1

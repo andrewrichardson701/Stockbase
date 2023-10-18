@@ -33,9 +33,6 @@ ALTER TABLE transaction AUTO_INCREMENT = 1;
 ALTER TABLE theme AUTO_INCREMENT = 1;
 ALTER TABLE notifications AUTO_INCREMENT = 1;
 
--- Add blank config to config table ready to be edited
-INSERT INTO config (id) VALUES (1);
-
 -- Add config_default to the table 
 INSERT INTO config_default 
 (banner_color, logo_image, favicon_image, ldap_enabled, ldap_username, ldap_password, 
@@ -47,6 +44,9 @@ VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 1,
 'cn=Users', '(objectClass=User)', '£', 'ITEM-', 'mail.ajrich.co.uk', 587, 'starttls', 'RGVtb1Bhc3MxIQ==',
 'inventory@ajrich.co.uk', 'StockBase', 'inventory@ajrich.co.uk', 'inventory@ajrich.co.uk', 'StockBase', '10.0.2.2', 
 'inventory.ajrich.co.uk', 0, 1);
+
+-- Duplicaye the config_default table to config table
+INSERT INTO config SELECT * FROM config_default;
 
 -- Add user roles to the user roles table
 INSERT INTO users_roles (id, name, description, is_admin, is_root) 

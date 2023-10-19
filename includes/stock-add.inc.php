@@ -69,20 +69,14 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             <img class="nav-v-c" id="upload-img-pre" style="max-width:150px;max-height:150px" />
                         </div>
                         <div class="nav-row"  id="labels-row" style="margin-top:25px">
-                            <table class="centertable viewport-large-empty">
+                            <table class="centertable">
                                 <tbody>
                                     <tr>
-                                        <td style="padding-right:25px">Image:</td>
-                                        <td><input class=" text-center" type="file" accept="image/*" style="width: 300px" id="image" name="image" onchange="loadImage(event)"></td>
+                                        <td style="padding-right:25px" class="text-center viewport-small-empty">Image</td>
                                     </tr>
-                                </tbody>
-                            </table>
-                            <table class="centertable viewport-small-empty">
-                                <tbody>
                                     <tr>
-                                        <td style="padding-right:25px" class="text-center">Image</td>
-                                        </tr><tr>
-                                        <td><input class=" text-center" type="file" accept="image/*" style="max-width: 150px" id="image" name="image" onchange="loadImage(event)"></td>
+                                        <td style="padding-right:25px" class="viewport-large-empty">Image:</td>
+                                        <td><input class=" text-center" type="file" accept="image/*" style="width: 15vw" id="image" name="image" onchange="loadImage(event)"></td>
                                     </tr>
                                 </tbody>
                             </table>

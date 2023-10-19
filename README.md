@@ -494,6 +494,7 @@ Clone the repo first, and the follow the below steps.
 - Updated cable_transaction table to now include the shelf_id. SQL queries updated.
 - Added error checking from urls to the pages where they are needed and adjusted the error query strings to be more useful.
 - Admin global settings restore defaults now restores the default theme too.
+- Fixed some of the forms not working due to some mobile css format things. There might be some more to find yet.
 
 </details>
 <details>

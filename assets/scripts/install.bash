@@ -250,8 +250,10 @@ sleep 1
 echo ""
 
 # Ask if SSL should be used
+echo "Do you want to use SSL for secure connections?"
+echo "WARNING: You will be required to provide the Certificate locations now."
 while true; do
-    read -p "Do you want to use SSL for secure connections? (Y/N): " use_ssl
+    read -p "Use SSL (Y/N): " use_ssl
     case "$use_ssl" in
         [Yy]* ) use_ssl=true;
             read -p "Enter the path to the SSL certificate file: " ssl_cert_file;

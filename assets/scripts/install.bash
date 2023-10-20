@@ -53,12 +53,12 @@ check_install_package() {
             echo ""
             sudo apt install -y "${prefixed_packages[@]}" >/dev/null 2>&1 &
 
-            sleep 1
+            sleep 2
 
             echo ""
             # Loop through the modules and enable each one
             echo "Enabling PHP modules..."
-            sleep 1
+            sleep 2
             for module in "${modules[@]}"; do
                 sudo phpenmod -v "$phpversion" "$module"
                 echo "Enabled php$phpversion-$module"

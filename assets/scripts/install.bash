@@ -53,14 +53,14 @@ check_install_package() {
             echo ""
             sudo apt install -y "${prefixed_packages[@]}"
 
-            duration=10
-            echo ""
-            echo "Time remaining: $duration seconds"
-            # Loop through the countdown
-            for ((i = duration-1; i >= 1; i--)); do
-                echo "$i"
-                sleep 1
-            done
+            # duration=10
+            # echo ""
+            # echo "Time remaining: $duration seconds"
+            # # Loop through the countdown
+            # for ((i = duration-1; i >= 1; i--)); do
+            #     echo "$i"
+            #     sleep 1
+            # done
 
             echo ""
             # Loop through the modules and enable each one
@@ -91,14 +91,14 @@ check_install_package() {
 
         sleep 1
 
-        duration=10
-        echo ""
-        echo "Time remaining: $duration seconds"
-        # Loop through the countdown
-        for ((i = duration-1; i >= 1; i--)); do
-            echo "$i"
-            sleep 1
-        done
+        # duration=10
+        # echo ""
+        # echo "Time remaining: $duration seconds"
+        # # Loop through the countdown
+        # for ((i = duration-1; i >= 1; i--)); do
+        #     echo "$i"
+        #     sleep 1
+        # done
 
         echo ""
         # Loop through the modules and enable each one
@@ -526,6 +526,7 @@ if mysql -u root -e ";" 2>/dev/null; then
             * ) echo "Please answer Y or N.";;
         esac
     done
+fi
 sleep 1
 echo ""
 # Verify MySQL root password
@@ -715,7 +716,7 @@ hostname=$(hostname --fqdn)
 
 echo "Creating root user for site login..."
 # Insert new user to table
-mysql -u root -e "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '$hashed_password');"
+mysql -u root -e "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname.local', 'local', 0, 1, 1, '$hashed_password');"
 mysql -u root -e "UPDATE inventory.users SET id=0 where id=1;"
 mysql -u root -e "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"   
 sleep 1

@@ -1455,9 +1455,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         } else {
                                             mysqli_stmt_execute($stmt);
                                             // update changelog
-                                            if ($row_check1['first_name'] !== $first_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "first_name", $row_check1['first_name'], $first_name); }
-                                            if ($row_check1['last_name'] !== $last_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "last_name", $row_check1['last_name'], $last_name); }
-                                            if ($row_check1['email'] !== $email) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "email", $row_check1['email'], $email); }
+                                            if ($row_check1['first_name'] !== $first_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "first_name", $row_check1['first_name'], $first_name); $_SESSION['first_name'] = $first_name;}
+                                            if ($row_check1['last_name'] !== $last_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "last_name", $row_check1['last_name'], $last_name); $_SESSION['last_name'] = $last_name;}
+                                            if ($row_check1['email'] !== $email) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "email", $row_check1['email'], $email); $_SESSION['email'] = $email;}
                                             header("Location: ../profile.php?success=profileUpdated");
                                             exit();
                                         }  

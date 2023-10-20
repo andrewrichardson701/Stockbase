@@ -266,7 +266,7 @@ if ! dpkg -l | grep -q "mysql-server"; then
     sudo apt-get install -y mysql-server >/dev/null 2>&1 &
     echo "MySQL installed!"
 fi
-sleep 1
+sleep 2
 echo ""
 # Ask for FQDN
 read -p "Enter the Fully Qualified Domain Name (FQDN) to access the site: " web_domain
@@ -433,7 +433,7 @@ EOL
 fi
 
 # Check if MySQL setup has been completed before
-if ! mysql -u root -e ";" 2>/dev/null; then
+if mysql -u root -e ";" 2>/dev/null; then
     echo "Running MySQL secure installation..."
     sleep 1
     #sudo mysql_secure_installation

@@ -7,7 +7,7 @@
 phpversion=8.1;
 
 # List of php modules without the php version prefix
-modules=("apache2handler" "calendar" "ctype" "curl" "date" "dom" "exif" "fileinfo" "filter" "ftp" "gd" "gettext" "hash" "iconv" "igbinary" "imagick" "imap" "intl" "json" "ldap" "libxml" "mbstring" "mysqli" "mysqlnd" "openssl" "pcre" "pdo_mysql" "posix" "readline" "redis" "session" "shmop" "soap" "sockets" "sodium" "standard" "sysvmsg" "sysvsem" "sysvshm" "tokenizer" "xml" "xmlreader" "xmlrpc" "xmlwriter" "xsl" "zip")
+modules=("curl" "fpm" "gd" "igbinary" "imagick" "imap" "intl" "ldap" "mbstring" "mysql" "readline" "redis" "soap" "xml" "xsl" "zip")
 
 # Prefix each package with "phpX.X-"
 prefixed_packages=()
@@ -36,6 +36,8 @@ check_install_package() {
             sudo apt update
             sudo apt install lsb-release ca-certificates apt-transport-https software-properties-common -y
             sudo add-apt-repository ppa:ondrej/php
+            sudo add-apt-repository ppa:ondrej/nginx-mainline
+            sudo add-apt-repository ppa:ondrej/apache2
             sudo apt update
             #sudo apt install -y "$package_name" php8.1-cli php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib >/dev/null 2>&1 &
             echo ""

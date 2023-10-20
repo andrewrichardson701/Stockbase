@@ -8,7 +8,7 @@ The purpose of this project is for stock tracking and locating.
 - Linux 
 - Apache2 / Nginx (user choice, or whichever is installed)
 - PHP 8.1 (v8.1.22)
-    - php8.1-calendar, php8.1-common, php8.1-ctype, php8.1-ldap, php8.1-mysqli, php8.1-curl, php8.1-dom, php8.1-exif, php8.1-ffi, php8.1-fileinfo, php8.1-filter, php8.1-ftp, php8.1-gd, php8.1-gettext, php8.1-hash, php8.1-iconv, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-json, php8.1-ldap, php8.1-libxml, php8.1-mbstring, php8.1-mysqli, php8.1-mysqlnd, php8.1-openssl, php8.1-pcntl, php8.1-pcre, php8.1-pdo, php8.1-pdo_mysql, php8.1-phar, php8.1-posix, php8.1-readline, php8.1-redis, php8.1-reflection, php8.1-session, php8.1-shmop, php8.1-simplexml, php8.1-soap, php8.1-sockets, php8.1-sodium, php8.1-spl, php8.1-sysvmsg, php8.1-sysvsem, php8.1-sysvshm, php8.1-tokenizer, php8.1-xml, php8.1-xmlreader, php8.1-xmlrpc, php8.1-xmlwriter, php8.1-xsl, php8.1-zip, php8.1-zlib
+    - php8.1, php-8.1-cli php8.1-common, php8.1-curl, php8.1-fpm, php8.1-gd, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-ldap, php8.1-mbstring, php8.1-mysql, php8.1-readline, php8.1-redis, php8.1-soap, php8.1-xml, php8.1-xsl, php8.1-zip
 - MySQL Server (v8.0.34) (or similar DB using mysql syntax)
 - PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
 - Bootstrap (v4.5.2) (included in headers)
@@ -48,12 +48,14 @@ Clone the repo first, and the follow the below steps.
     ```
     sudo apt install lsb-release ca-certificates apt-transport-https software-properties-common -y
     sudo add-apt-repository ppa:ondrej/php
+    sudo add-apt-repository ppa:ondrej/nginx-mainline
+    sudo add-apt-repository ppa:ondrej/apache2
     sudo apt update 
     ```
 
     b. Install the package and dependencies
     ```
-    sudo apt install -y php8.1 php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib php-curl
+    sudo apt install -y php8.1 php8.1-cli php8.1-common php8.1-curl php8.1-fpm php8.1-gd php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-ldap php8.1-mbstring php8.1-mysql php8.1-readline php8.1-redis php8.1-soap php8.1-xml php8.1-xsl php8.1-zip
     ```
 
 3. Install MySQL Server and run first setup

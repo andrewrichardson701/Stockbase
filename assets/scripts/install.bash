@@ -44,16 +44,23 @@ check_install_package() {
 
             # Install php packages
             echo "Installing PHP version $phpversion."
-            sudo apt install -y php$phpversion php$phpversion-common php$phpversion-cli >/dev/null 2>&1 &
+            sudo apt install -y php$phpversion php$phpversion-common php$phpversion-cli
             echo "Installing the following php packages:"
             echo "${prefixed_packages[@]}";
 
             sleep "1"
 
             echo ""
-            sudo apt install -y "${prefixed_packages[@]}" >/dev/null 2>&1 &
+            sudo apt install -y "${prefixed_packages[@]}"
 
-            sleep 2
+            duration=10
+            echo ""
+            echo "Time remaining: $duration seconds"
+            # Loop through the countdown
+            for ((i = duration-1; i >= 1; i--)); do
+                echo "$i"
+                sleep 1
+            done
 
             echo ""
             # Loop through the modules and enable each one
@@ -65,24 +72,33 @@ check_install_package() {
             done
         else 
             sudo apt-get update
-            sudo apt-get install -y "$package_name" >/dev/null 2>&1 &
+            sudo apt-get install -y "$package_name" 
         fi
         echo "$package_name installed!"
     elif [ "$package_name" = "php$phpversion" ]; then
         sudo apt update
         #sudo apt install -y "$package_name" php8.1-cli php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib >/dev/null 2>&1 &
         # Install php packages
-        echo "Installing PHP version $phpversion."
-        sudo apt install -y php$phpversion php$phpversion-common php$phpversion-cli >/dev/null 2>&1 &
+        echo "Updating PHP version $phpversion."
+        sudo apt install -y php$phpversion php$phpversion-common php$phpversion-cli
         echo "Installing the following php packages:"
         echo "${prefixed_packages[@]}";
 
         sleep "1"
 
         echo ""
-        sudo apt install -y "${prefixed_packages[@]}" >/dev/null 2>&1 &
+        sudo apt install -y "${prefixed_packages[@]}"
 
         sleep 1
+
+        duration=10
+        echo ""
+        echo "Time remaining: $duration seconds"
+        # Loop through the countdown
+        for ((i = duration-1; i >= 1; i--)); do
+            echo "$i"
+            sleep 1
+        done
 
         echo ""
         # Loop through the modules and enable each one
@@ -263,7 +279,7 @@ sleep 1
 if ! dpkg -l | grep -q "mysql-server"; then
     echo "MySQL is not installed. Installing now..."
     sudo apt-get update
-    sudo apt-get install -y mysql-server >/dev/null 2>&1 &
+    sudo apt-get install -y mysql-server
     echo "MySQL installed!"
 fi
 sleep 2
@@ -432,8 +448,12 @@ EOL
     fi
 fi
 
+
+
 # Check if MySQL setup has been completed before
 if mysql -u root -e ";" 2>/dev/null; then
+    sleep 1
+    echo ""
     echo "Running MySQL secure installation..."
     sleep 1
     #sudo mysql_secure_installation
@@ -483,7 +503,6 @@ if mysql -u root -e ";" 2>/dev/null; then
             * ) echo "Please answer Y or N.";;
         esac
     done
-
     while true; do
         read -p "Remove test database and access to it? (Y/N): " remove_test_db
         case "$remove_test_db" in
@@ -507,21 +526,6 @@ if mysql -u root -e ";" 2>/dev/null; then
             * ) echo "Please answer Y or N.";;
         esac
     done
-    
-    
-    # Make sure that NOBODY can access the server without a password
-    mysql -e "UPDATE mysql.user SET Password = PASSWORD('CHANGEME') WHERE User = 'root'"
-    # Kill the anonymous users
-    mysql -e "DROP USER ''@'localhost'"
-    # Because our hostname varies we'll use some Bash magic here.
-    mysql -e "DROP USER ''@'$(hostname)'"
-    # Kill off the demo database
-    mysql -e "DROP DATABASE test"
-    # Make our changes take effect
-    mysql -e "FLUSH PRIVILEGES"
-    # Any subsequent tries to run queries this way will get access denied because lack of usr/pwd param
-fi
-
 sleep 1
 echo ""
 # Verify MySQL root password
@@ -613,13 +617,13 @@ echo ""
 echo "User needed to access the database."
 
 # Check if 'inventory' user exists
-echo "Checking if inventory user exists..."
+echo "Checking if inventory database user exists..."
 echo ""
 user_exists=$(mysql -u root -e "SELECT User FROM mysql.user WHERE User='inventory' AND Host='localhost';" --skip-column-names)
 sleep 1
 if [ -n "$user_exists" ]; then
     # The 'inventory' user exists, prompt the user for action
-    echo "Inventory user already exists. Do you want to drop the user and re-create it?"
+    echo "Inventory database user already exists. Do you want to drop the user and re-create it?"
     echo "Selecting 'N' will prompt for the password."
     while true; do
         read -p "Do you want to drop the user? (Y/N): " drop_user
@@ -630,12 +634,12 @@ if [ -n "$user_exists" ]; then
                     echo "User 'inventory' dropped."
                     echo ""
                     while true; do
-                        read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
+                        read -s -p "Enter a password for the 'inventory' database user: " inventory_user_password
                         echo
-                        read -s -p "Confirm the password for the 'inventory' user: " inventory_user_password_confirm
+                        read -s -p "Confirm the password for the 'inventory' database user: " inventory_user_password_confirm
                         echo
                         if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
-                                echo "Creating 'inventory' user..."
+                                echo "Creating 'inventory' database user..."
                                 mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
                                 mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
                                 mysql -u root -e "FLUSH PRIVILEGES;"
@@ -666,12 +670,12 @@ if [ -n "$user_exists" ]; then
 else 
     echo ""
     while true; do
-        read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
+        read -s -p "Enter a password for the 'inventory' database user: " inventory_user_password
         echo
-        read -s -p "Confirm the password for the 'inventory' user: " inventory_user_password_confirm
+        read -s -p "Confirm the password for the 'inventory' database user: " inventory_user_password_confirm
         echo
         if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
-                echo "Creating 'inventory' user..."
+                echo "Creating 'inventory' database user..."
                 mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
                 mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
                 mysql -u root -e "FLUSH PRIVILEGES;"

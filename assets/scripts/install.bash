@@ -11,8 +11,8 @@ modules=("apache2handler" "calendar" "ctype" "curl" "date" "dom" "exif" "fileinf
 
 # Prefix each package with "phpX.X-"
 prefixed_packages=()
-for package in "${modules[@]}"; do
-    prefixed_packages+=("php$phpversion-$modules")
+for module in "${modules[@]}"; do
+    prefixed_packages+=("php$phpversion-$module")
 done
 
 #---------------------------------------------------------------------------------

@@ -201,46 +201,6 @@ if ! dpkg -l | grep -q "mysql-server"; then
 fi
 sleep 1
 echo ""
-# Ask for folder input and check if it exists
-while true; do
-    # Ask for folder input and allow creating the folder if needed
-    read -p "Enter the folder name to install to (e.g. /var/www/html/inventory): " folder_name
-
-    # Check if the folder exists
-    if [ -d "$folder_name" ]; then
-        echo "Moving files from $root_path to $folder_name..."
-        #cp "$0" "$folder_name"  # Copy the script itself
-        mv "$root_path"/* "$folder_name"/   # Move all files except the script
-        sleep 1
-        echo "Files moved successfully to $folder_name."
-        break
-    else
-        # Get the parent directory
-        parent_dir="$(dirname "$folder_name")"
-        # Check if the parent directory exists
-        if [ -d "$parent_dir" ]; then
-            read -p "The folder doesn't exist. Do you want to create it? (yes/no): " create_folder
-            if [ "$create_folder" = "yes" ]; then
-                mkdir -p "$folder_name"
-                echo "Folder created."
-                sleep 1
-                echo "Moving files to $folder_name..."
-                #cp "$0" "$folder_name"  # Copy the script itself
-                mv "$root_path"/* "$folder_name"/   # Move all files except the script
-                sleep 1
-                echo "Files moved successfully to $folder_name."
-                break
-            else
-                echo "Folder not created. Exiting."
-                exit 1
-            fi
-        else
-            echo "The path leading up to the folder does not exist."
-        fi
-    fi
-done
-echo ""
-
 # Ask for FQDN
 read -p "Enter the Fully Qualified Domain Name (FQDN) to access the site: " web_domain
 
@@ -302,6 +262,47 @@ echo "Checking for $web_server package..."
 check_install_package "$web_server"
 
 echo "Done!"
+sleep 1
+echo ""
+
+# Ask for folder input and check if it exists
+while true; do
+    # Ask for folder input and allow creating the folder if needed
+    read -p "Enter the folder name to install to (e.g. /var/www/html/inventory): " folder_name
+
+    # Check if the folder exists
+    if [ -d "$folder_name" ]; then
+        echo "Moving files from $root_path to $folder_name..."
+        #cp "$0" "$folder_name"  # Copy the script itself
+        mv "$root_path"/* "$folder_name"/   # Move all files except the script
+        sleep 1
+        echo "Files moved successfully to $folder_name."
+        break
+    else
+        # Get the parent directory
+        parent_dir="$(dirname "$folder_name")"
+        # Check if the parent directory exists
+        if [ -d "$parent_dir" ]; then
+            read -p "The folder doesn't exist. Do you want to create it? (yes/no): " create_folder
+            if [ "$create_folder" = "yes" ]; then
+                mkdir -p "$folder_name"
+                echo "Folder created."
+                sleep 1
+                echo "Moving files to $folder_name..."
+                #cp "$0" "$folder_name"  # Copy the script itself
+                mv "$root_path"/* "$folder_name"/   # Move all files except the script
+                sleep 1
+                echo "Files moved successfully to $folder_name."
+                break
+            else
+                echo "Folder not created. Exiting."
+                exit 1
+            fi
+        else
+            echo "The path leading up to the folder does not exist."
+        fi
+    fi
+done
 sleep 1
 echo ""
 

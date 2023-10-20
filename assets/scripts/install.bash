@@ -265,8 +265,6 @@ if ! dpkg -l | grep -q "mysql-server"; then
     sudo apt-get update
     sudo apt-get install -y mysql-server >/dev/null 2>&1 &
     echo "MySQL installed!"
-    sleep 1
-    sudo mysql_secure_installation
 fi
 sleep 1
 echo ""
@@ -438,7 +436,90 @@ fi
 if ! mysql -u root -e ";" 2>/dev/null; then
     echo "Running MySQL secure installation..."
     sleep 1
-    sudo mysql_secure_installation
+    #sudo mysql_secure_installation
+    while true; do
+        read -p "Set root password? (Y/N): " set_root_password
+        case "$set_root_password" in
+            [Yy]* ) 
+                    while true; do
+                        read -s -p "Enter a password for the 'root' user: " mysql_install_root_password
+                        echo
+                        read -s -p "Confirm the password for the 'inventory' user: " mysql_install_root_password_confirm
+                        echo
+                        if [ "$mysql_install_root_password" = "$mysql_install_root_password_confirm" ]; then
+                                # Make sure that NOBODY can access the server without a password
+                                mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';"
+                            break
+                        else
+                            echo "Passwords do not match. Please try again."
+                        fi
+                    done
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    while true; do
+        read -p "Remove anonymous users? (Y/N): " remove_anon_users
+        case "$remove_anon_users" in
+            [Yy]* ) 
+                    mysql -e "DROP USER ''@'localhost'"
+                    mysql -e "DROP USER ''@'$(hostname)'"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    while true; do
+        read -p "Disallow root login remotely? (Y/N): " remote_root_login
+        case "$remote_root_login" in
+            [Yy]* ) 
+                    mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+
+    while true; do
+        read -p "Remove test database and access to it? (Y/N): " remove_test_db
+        case "$remove_test_db" in
+            [Yy]* ) 
+                    mysql -e "DROP DATABASE IF EXISTS test" 
+                    mysql -e  "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    while true; do
+        read -p "Reload privilege tables now?(Y/N): " reload_priv
+        case "$reload_priv" in
+            [Yy]* ) 
+                    mysql -e "FLUSH PRIVILEGES"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    
+    
+    # Make sure that NOBODY can access the server without a password
+    mysql -e "UPDATE mysql.user SET Password = PASSWORD('CHANGEME') WHERE User = 'root'"
+    # Kill the anonymous users
+    mysql -e "DROP USER ''@'localhost'"
+    # Because our hostname varies we'll use some Bash magic here.
+    mysql -e "DROP USER ''@'$(hostname)'"
+    # Kill off the demo database
+    mysql -e "DROP DATABASE test"
+    # Make our changes take effect
+    mysql -e "FLUSH PRIVILEGES"
+    # Any subsequent tries to run queries this way will get access denied because lack of usr/pwd param
 fi
 
 sleep 1

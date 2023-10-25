@@ -22,7 +22,7 @@ The purpose of this project is for stock tracking and locating.
 ### Automated Deployment
 For automated deployment, run the below command to clone the repository and run the install script:
 
-`git clone http://git.ajrich.co.uk/web/inventory.git && ./inventory/assets/scripts/install.bash`
+`git clone http://git.ajrich.co.uk/web/inventory.git && /bin/bash inventory/assets/scripts/install.bash`
 
 This will run the setup for the system and provide a username and password to login with.
 
@@ -497,6 +497,8 @@ Clone the repo first, and the follow the below steps.
 - Added error checking from urls to the pages where they are needed and adjusted the error query strings to be more useful.
 - Admin global settings restore defaults now restores the default theme too.
 - Fixed some of the forms not working due to some mobile css format things. There might be some more to find yet.
+- Corrected the README with correct PHP modules to match the install bash script
+- Fixed the install bash script to install the correct modules based on testing. Now installs correctly.
 
 </details>
 <details>

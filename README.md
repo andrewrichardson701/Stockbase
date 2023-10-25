@@ -499,6 +499,7 @@ Clone the repo first, and the follow the below steps.
 - Fixed some of the forms not working due to some mobile css format things. There might be some more to find yet.
 - Corrected the README with correct PHP modules to match the install bash script
 - Fixed the install bash script to install the correct modules based on testing. Now installs correctly.
+- Added the start of an udpate script. This will be perfected in the next minor patch ready for the final release in 0.4.0-beta
 
 </details>
 <details>

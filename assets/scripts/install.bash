@@ -516,7 +516,7 @@ if mysql -u root -e ";" 2>/dev/null; then
         esac
     done
     while true; do
-        read -p "Reload privilege tables now?(Y/N): " reload_priv
+        read -p "Reload privilege tables now? (Y/N): " reload_priv
         case "$reload_priv" in
             [Yy]* ) 
                     mysql -e "FLUSH PRIVILEGES"
@@ -828,7 +828,10 @@ while true; do
 done
 echo ""
 echo "Setting permissions..."
-chmod 777 $folder_name -R
+chown www-data:www-data $folder_name -R
+chmod 700 $folder_name -R
+# chown www:data $folder_name -R
+# chmod 700 $folder_name -R
 sleep 0.5
 echo "Done!"
 echo ""

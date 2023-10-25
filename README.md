@@ -475,6 +475,13 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.3.2-beta</h3></summary>
+<h4>Beta release 0.3.2, Update scripts for version management</h4>
+
+- Update script in place. Testing required for full version changing, but this will be more relevant when the database structure changes.
+
+</details>
+<details>
 <summary><h3>0.3.1-beta</h3></summary>
 <h4>Beta release 0.3.1, Script updates, swipe card login.</h4>
 

@@ -26,7 +26,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['theme-upload']) && !isset($_GET['mail-notification']) && !isset($_POST['card-modify']) 
     && !isset($_POST['card-remove'])) {
 
-    header("Location: ../admin.php?error=noSubmit");
+    header("Location: ../admin.php?error=noSubmit&section=none");
     exit();
 } else {
     include 'changelog.inc.php'; // for updating the changelog table
@@ -36,13 +36,14 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     $sql = "SELECT * FROM config";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
-        $errors[] = "configTableSQLConnection";
+        header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=getConfig&section=none");
+        exit();
     } else {
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $rowCount = $result->num_rows;
         if ($rowCount > 1) {
-            header("Location: ../admin.php?error=tooManyConfigRows");
+            header("Location: ../admin.php?sqlerror=tooManyConfigRows&section=none");
             exit();
         } elseif ($rowCount < 1) {
             // add a blank row to the table
@@ -50,7 +51,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 VALUES (1)";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
-                header("Location: ../admin.php?error=configConnectionSQL");
+                header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=insertConfig&section=none");
                 exit();
             } else {
                 mysqli_stmt_execute($stmt);
@@ -58,7 +59,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $sql = "SELECT * FROM config";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                    $errors[] = "configTableSQLConnection";
+                    header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=getConfig&section=none");
+                    exit();
                 } else {
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
@@ -345,23 +347,23 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         
         $queryString = '?'.$queryString.$error;
 
-        header("Location: ../admin.php$queryString#global-settings");
+        header("Location: ../admin.php$queryString&section=global-settings#global-settings");
         exit();
 
     } elseif (isset($_POST['global-restore-defaults'])) { // restore global settings in admin
         include 'dbh.inc.php';
 
-        $sql_config = "SELECT system_name, base_url, banner_color, logo_image, favicon_image, currency, sku_prefix FROM config_default ORDER BY id LIMIT 1";
+        $sql_config = "SELECT system_name, base_url, banner_color, logo_image, favicon_image, currency, sku_prefix, default_theme_id FROM config_default ORDER BY id LIMIT 1";
         $stmt_config = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
-            header("Location: ../admin.php?sqlerror=config_default_getEntries#global-settings");
+            header("Location: ../admin.php?error=sqlerror&table=config_default&file=".__FILE__."&line=".__LINE__."&section=global-settings&purpose=getEntries#global-settings");
             exit();
         } else {
             mysqli_stmt_execute($stmt_config);
             $result_config = mysqli_stmt_get_result($stmt_config);
             $rowCount_config = $result_config->num_rows;
             if ($rowCount_config < 1) {
-                header("Location: ../admin.php?sqlerror=config_default_noID1#global-settings");
+                header("Location: ../admin.php?sqlerror=noID1&table=config_default&file=".__FILE__."&line=".__LINE__."&section=global-settings&purpose=noID1#global-settings");
                 exit();
             } else {
                 while ( $config = $result_config->fetch_assoc() ) {
@@ -372,14 +374,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $restore_favicon_image = $config['favicon_image'];
                     $restore_currency      = $config['currency'];
                     $restore_sku_prefix    = $config['sku_prefix'];
+                    $restore_default_theme = $config['default_theme_id'];
                 }
-                $sql_upload = "UPDATE config SET system_name=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=?, base_url-? WHERE id=1";
+                $sql_upload = "UPDATE config SET system_name=?, banner_color=?, logo_image=?, favicon_image=?, currency=?, sku_prefix=?, base_url=?, default_theme_id=? WHERE id=1";
                 $stmt_upload = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                    header("Location: ../admin.php?sqlerror=config_noUpdate#global-settings");
+                    header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&section=global-settings&purpose=configRestore#global-settings");
                     exit();
                 } else {
-                    mysqli_stmt_bind_param($stmt_upload, "sssssss", $restore_system_name, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix, $restore_base_url);
+                    mysqli_stmt_bind_param($stmt_upload, "ssssssss", $restore_system_name, $restore_banner_color, $restore_logo_image, $restore_favicon_image, $restore_currency, $restore_sku_prefix, $restore_base_url, $restore_default_theme);
                     mysqli_stmt_execute($stmt_upload);
                     // update changelog
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "system_name", $configCurrent['system_name'], $restore_system_name);
@@ -389,18 +392,19 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "currency", $configCurrent['currency'], $restore_currency);
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "sku_prefix", $configCurrent['sku_prefix'], $restore_sku_prefix);
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "base_url", $configCurrent['base_url'], $restore_base_url);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "default_theme_id", $configCurrent['default_theme_id'], $restore_base_url);
 
                     $sql_sku = "SELECT sku_prefix FROM config ORDER BY id LIMIT 1";
                     $stmt_sku = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_sku, $sql_sku)) {
-                        header("Location: ../admin.php?sqlerror=config_getEntries#global-settings");
+                        header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&section=global-settings&purpose=get-sku_prefix#global-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_sku);
                         $result_sku = mysqli_stmt_get_result($stmt_sku);
                         $rowCount_sku = $result_sku->num_rows;
                         if ($rowCount_sku < 1) {
-                            header("Location: ../admin.php?sqlerror=config_noID1#global-settings");
+                            header("Location: ../admin.php?sqlerror=noEntries&field=sku_prefix&section=global-settings#global-settings");
                             exit();
                         } else {
                             $row_sku = $result_sku->fetch_assoc();
@@ -411,11 +415,11 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $sql_change = "UPDATE stock SET sku = REPLACE(sku, '$current_sku_prefix', '$restore_sku_prefix');";
                     $stmt_change = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_change, $sql_change)) {
-                        header("Location: ../admin.php?sqlerror=failedToChangeSkuPrefixInTable#global-settings");
+                        header("Location: ../admin.php?sqlerror=failedToChangeSkuPrefix&table=stock&file=".__FILE__."&line=".__LINE__."&section=global-settings&purpose=updateSKU#global-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_change);
-                        header("Location: ../admin.php?restore=globalSuccess#global-settings");
+                        header("Location: ../admin.php?success=restored&section=global-settings#global-settings");
                         exit();
                     }
                     
@@ -443,7 +447,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 WHERE users.id=? AND users_roles.name NOT IN ($admin_roles)";
                 $stmt_users = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-                    header("Location: ../admin.php?error=usersTableIssue#users-settings");
+                    header("Location: ../admin.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&section=users&purpose=getUsers#users");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt_users, "s", $user_id);
@@ -451,10 +455,10 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $result = mysqli_stmt_get_result($stmt_users);
                     $rowCount = $result->num_rows;
                     if ($rowCount < 1) {
-                        header("Location: ../admin.php?error=noUserFound#users-settings");
+                        header("Location: ../admin.php?sqlerror=noUserFound&section=users#users-settings");
                         exit();
                     } elseif ($rowCount > 1) {
-                        header("Location: ../admin.php?error=tooManyUserFound#users-settings");
+                        header("Location: ../admin.php?sqlerror=tooManyUserFound&section=users#users-settings");
                         exit();
                     } else {
                         // 1 user found - continue
@@ -464,13 +468,13 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $current_password_expired = $row['password_expired'];
 
                         if ($current_password_hash === $new_password_hash) {
-                            header("Location: ../admin.php?error=passwordMatchesCurrent#users-settings");
+                            header("Location: ../admin.php?error=passwordMatchesCurrent&section=users#users-settings");
                             exit();
                         } else {
                             $sql_upload = "UPDATE users SET password='$new_password_hash', password_expired=1 WHERE id=?";
                             $stmt_upload = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                                header("Location: ../admin.php?error=passwordResetSQLError#users-settings");
+                                header("Location: ../admin.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&section=users&purpose=resetPassword#users");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_upload, "s", $user_id);
@@ -478,7 +482,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Reset Password", "users", $user_id, "password", '****', '****');
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Reset Password", "users", $user_id, "password_expired", $current_password_expired, 1);
-                                header("Location: ../admin.php?success=PasswordChanged#users-settings");
+                                header("Location: ../admin.php?success=passwordChanged&section=users#users-settings");
                                 exit();
                             }
                         }
@@ -486,15 +490,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     }
                 }
             } else {
-                header("Location: ../admin.php?error=wrongUserRole#users-settings");
+                header("Location: ../admin.php?error=invalidPermissions&section=users#users-settings");
                 exit();
             }
         } else {
-            header("Location: ../admin.php?error=userIdMissing#users-settings");
+            header("Location: ../admin.php?error=userIdMissing&section=users#users-settings");
             exit();
         }
     } elseif (isset($_POST['ldap-toggle-submit'])) { // enable/disable LDAP
-        print_r($_POST);
+        // print_r($_POST);
         $ldap_enabled_post = isset($_POST['ldap-enabled']) ? $_POST['ldap-enabled'] : "off";
 
         if ($ldap_enabled_post == "on") {
@@ -508,14 +512,19 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         $stmt_upload = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
             $errors[] = "ldapUploadSQLerror";
-            header("Location: ../admin.php?error=ldapEnabled#ldap-settings");
+            header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=ldapEnable&section=ldap-settings#ldap-settings");
             exit();
         } else {
             mysqli_stmt_bind_param($stmt_upload, "s", $ldap_enabled);
             mysqli_stmt_execute($stmt_upload);
             // update changelog
             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_enabled", $configCurrent['ldap_enabled'], $ldap_enabled);
-            header("Location: ../admin.php?ldapEnabled=success#ldap-settings");
+            if ($ldap_enabled == 1) {
+                $outcome = 'enabled';
+            } else {
+                $outcome = 'disabled';
+            }
+            header("Location: ../admin.php?success=$ouctome&section=ldap-settings#ldap-settings");
             exit();
         }
     } elseif (isset($_POST['ldap-submit'])) { // LDAP saving in admin page
@@ -535,7 +544,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             // DO NOT CONTINUE
             if ($config_ldap_password !== '') { $passwordSet = 'Set'; } else { $passwordSet = 'NotSet'; }
             if ($config_ldap_password === $config_ldap_password_confirm) { $passwordMatch = 'Match'; } else { $passwordMatch ='NoMatch'; }
-            header("Location: ../admin.php?error=emptyFields&auth-domain=$config_ldap_username&auth-password=$passwordSet&auth-password-confirm=$passwordMatch&auth-domain=$config_ldap_domain&auth-host=$config_ldap_host&auth-port=$config_ldap_port&auth-basedn=$config_ldap_basedn&auth-usergroup=$config_ldap_usergroup&auth-userfliter=$config_ldap_userfilter#ldap-settings");
+            header("Location: ../admin.php?error=emptyFields&auth-domain=$config_ldap_username&auth-password=$passwordSet&auth-password-confirm=$passwordMatch&auth-domain=$config_ldap_domain&auth-host=$config_ldap_host&auth-port=$config_ldap_port&auth-basedn=$config_ldap_basedn&auth-usergroup=$config_ldap_usergroup&auth-userfliter=$config_ldap_userfilter&section=ldap-settings#ldap-settings");
             exit();
         } else {
             if ($config_ldap_password === $config_ldap_password_confirm) { 
@@ -545,7 +554,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $stmt_upload = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                     $errors[] = "ldapUploadSQLerror";
-                    header("Location: ../admin.php?error=ldapUpload#ldap-settings");
+                    header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=updateLDAP&section=ldap-settings#ldap-settings");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt_upload, "sssssssss", $config_ldap_username, $config_ldap_password, $config_ldap_domain, $config_ldap_host, $config_ldap_host_secondary, $config_ldap_port, $config_ldap_basedn, $config_ldap_usergroup, $config_ldap_userfilter);
@@ -561,11 +570,11 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     if ($config_ldap_usergroup      !== $configCurrent['ldap_usergroup'])      { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_usergroup", $configCurrent['ldap_usergroup'], $config_ldap_usergroup); }
                     if ($config_ldap_userfilter     !== $configCurrent['ldap_userfilter'])     { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "ldap_userfilter", $configCurrent['ldap_userfilter'], $config_ldap_userfilter); }
 
-                    header("Location: ../admin.php?ldapUpload=success#ldap-settings");
+                    header("Location: ../admin.php?success=updated&section=ldap-settings#ldap-settings");
                     exit();
                 }
             } else { 
-                header("Location: ../admin.php?error=passwordMatch");
+                header("Location: ../admin.php?error=passwordMismatch&section=ldap-settings#ldap-settings");
                 exit();
             }
             
@@ -577,14 +586,14 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         $sql_config = "SELECT ldap_username, ldap_password, ldap_domain, ldap_host, ldap_host_secondary, ldap_port, ldap_basedn, ldap_usergroup, ldap_userfilter FROM config_default ORDER BY id LIMIT 1";
         $stmt_config = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
-            header("Location: ../admin.php?sqlerror=config_default_getEntries_ldap#ldap-settings");
+            header("Location: ../admin.php?error=sqlerror&table=config_default&file=".__FILE__."&line=".__LINE__."&purpose=get-config_default&section=ldap-settings");
             exit();
         } else {
             mysqli_stmt_execute($stmt_config);
             $result_config = mysqli_stmt_get_result($stmt_config);
             $rowCount_config = $result_config->num_rows;
             if ($rowCount_config < 1) {
-                header("Location: ../admin.php?sqlerror=config_default_noID1_ldap#ldap-settings");
+                header("Location: ../admin.php?sqlerror=noID1&section=ldap-settings#ldap-settings");
                 exit();
             } else {
                 while ( $config = $result_config->fetch_assoc() ) {
@@ -602,7 +611,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $stmt_upload = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                     $errors[] = "ldapUploadSQLerror";
-                    header("Location: ../admin.php?error=ldapRestoreUpload#ldap-settings");
+                    header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=updateLDAP&section=ldap-settings#ldap-settings");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt_upload, "sssssssss", $restore_ldap_username, $restore_ldap_password, $restore_ldap_domain, $restore_ldap_host, $restore_ldap_host_secondary, $restore_ldap_port, $restore_ldap_basedn, $restore_ldap_usergroup, $restore_ldap_userfilter);
@@ -617,13 +626,13 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_basedn", $configCurrent['ldap_basedn'], $restore_ldap_basedn);
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_usergroup", $configCurrent['ldap_usergroup'], $restore_ldap_usergroup);
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "ldap_userfilter", $configCurrent['ldap_userfilter'], $restore_ldap_userfilter);
-                    header("Location: ../admin.php?ldapUpload=configRestored#ldap-settings");
+                    header("Location: ../admin.php?success=restored&section=ldap-settings#ldap-settings");
                     exit();
                 }
             }
         }
     } elseif (isset($_POST['smtp-toggle-submit'])) { // enable/disable SMTP
-        print_r($_POST);
+        // print_r($_POST);
         $smtp_enabled_post = isset($_POST['smtp-enabled']) ? $_POST['smtp-enabled'] : "off";
 
         if ($smtp_enabled_post == "on") {
@@ -637,12 +646,17 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         $stmt_upload = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
             $errors[] = "smtpUploadSQLerror";
-            header("Location: ../admin.php?error=smtpEnabled#smtp-settings");
+            header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=ldapEnable&section=smtp-settings#smtp-settings");
             exit();
         } else {
             mysqli_stmt_bind_param($stmt_upload, "s", $smtp_enabled);
             mysqli_stmt_execute($stmt_upload);
-            header("Location: ../admin.php?smtpEnabled=success#smtp-settings");
+            if ($smtp_enabled == 1) {
+                $outcome = 'enabled';
+            } else {
+                $outcome = 'disabled';
+            }
+            header("Location: ../admin.php?success=$ouctome&section=ldap-settings#ldap-settings");
             exit();
         }
     } elseif (isset($_POST['smtp-submit'])) { // save smtp info in smtp section of admin page
@@ -657,7 +671,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
         if ($config_smtp_username === '' || $config_smtp_password === '' || $config_smtp_encryption === '' || $config_smtp_host === '' || $config_smtp_port === '' || $config_smtp_from_email === '' || $config_smtp_from_name === '' || $config_smtp_to_email === '') {
             // DO NOT CONTINUE
-            header("Location: ../admin.php?error=emptyFields");
+            header("Location: ../admin.php?error=emptyFields&section=smtp-settings#smtp-settings");
             exit();
         } else {
             include 'dbh.inc.php';
@@ -665,7 +679,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             $stmt_upload = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                 $errors[] = "smtpUploadSQLerror";
-                header("Location: ../admin.php?error=smtpUpload#smtp-settings");
+                header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=updateSMTP&section=smtp-settings#smtp-settings");
                 exit();
             } else {
                 mysqli_stmt_bind_param($stmt_upload, "ssssssss", $config_smtp_username, $config_smtp_password, $config_smtp_encryption, $config_smtp_host, $config_smtp_port, $config_smtp_from_email, $config_smtp_from_name, $config_smtp_to_email);
@@ -679,7 +693,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 if ($config_smtp_from_email !== $configCurrent['smtp_from_email']) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_from_email", $configCurrent['smtp_from_email'], $config_smtp_from_email); }
                 if ($config_smtp_from_name  !== $configCurrent['smtp_from_name'])  { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_from_name", $configCurrent['smtp_from_name'], $config_smtp_from_name); }
                 if ($config_smtp_to_email   !== $configCurrent['smtp_to_email'])   { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, "smtp_to_email", $configCurrent['smtp_to_email'], $config_smtp_to_email); }
-                header("Location: ../admin.php?smtpUpload=success#smtp-settings");
+                header("Location: ../admin.php?success=updated&section=smtp-settings#smtp-settings");
                 exit();
             }
         }
@@ -690,14 +704,14 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         $sql_config = "SELECT smtp_username, smtp_password, smtp_encryption, smtp_host, smtp_port, smtp_from_email, smtp_from_name, smtp_to_email FROM config_default ORDER BY id LIMIT 1";
         $stmt_config = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
-            header("Location: ../admin.php?sqlerror=config_default_getEntries_smtp#smtp-settings");
+            header("Location: ../admin.php?error=sqlerror&table=config_default&file=".__FILE__."&line=".__LINE__."&purpose=get-config_default&section=smtp-settings#smtp-settings");
             exit();
         } else {
             mysqli_stmt_execute($stmt_config);
             $result_config = mysqli_stmt_get_result($stmt_config);
             $rowCount_config = $result_config->num_rows;
             if ($rowCount_config < 1) {
-                header("Location: ../admin.php?sqlerror=config_default_noID1_smtp#smtp-settings");
+                header("Location: ../admin.php?sqlerror=noID1&section=smtp-settings#smtp-settings");
                 exit();
             } else {
                 while ( $config = $result_config->fetch_assoc() ) {
@@ -714,7 +728,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $stmt_upload = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                     $errors[] = "smtpUploadSQLerror";
-                    header("Location: ../admin.php?error=smtpRestoreUpload#smtp-settings");
+                    header("Location: ../admin.php?error=sqlerror&table=config&file=".__FILE__."&line=".__LINE__."&purpose=updateSMTP&section=smtp-settings#smtp-settings");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt_upload, "ssssssss", $restore_smtp_username, $restore_smtp_password, $restore_smtp_encryption, $restore_smtp_host, $restore_smtp_port, $restore_smtp_from_email, $restore_smtp_from_name, $restore_smtp_to_email);
@@ -728,7 +742,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_from_email", $configCurrent['smtp_from_email'], $restore_smtp_from_email); 
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_from_name", $configCurrent['smtp_from_name'], $restore_smtp_from_name); 
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore defaults", "config", 1, "smtp_to_email", $configCurrent['smtp_to_email'], $restore_smtp_to_email); 
-                    header("Location: ../admin.php?smtpUpload=configRestored#smtp-settings");
+                    header("Location: ../admin.php?success=restored&section=smtp-settings#smtp-settings");
                     exit();
                 }
             }
@@ -781,8 +795,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 }
             }
         } else {
-            header("Location: ../admin.php?error=noUserSubmit#Users");
-            exit();
+            echo('Error: Unable to submit form.');
         }
     } elseif (isset($_POST['user_enabled_submit'])) { // enabling / disabling users from the admin users section
         if (isset($_POST['user_id']) && isset($_POST['user_new_enabled'])) {
@@ -832,8 +845,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 }
             }
         } else {
-            header("Location: ../admin.php?error=noUserSubmit#Users");
-            exit();
+            echo('Error: Unable to submit form.');
         }
     } elseif (isset($_POST['location-submit'])) { // adding locations e.g. sites/areas/shelves
         if (isset($_POST['index'])) { // come from the index page - this only happens when there are no sites/areas/shelves
@@ -859,7 +871,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             VALUES (?, ?)";
             $stmt_site = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
-                header("Location: ../index.php?error=siteSQLConnection");
+                header("Location: ../index.php?error=sqlerror&table=site&file=".__FILE__."&line=".__LINE__."&purpose=insert-site");
                 exit();
             } else {
                 mysqli_stmt_bind_param($stmt_site, "ss", $site_name, $site_description);
@@ -874,7 +886,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             VALUES (?, ?, ?)";
                 $stmt_area = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
-                    header("Location: ../index.php?error=areaSQLConnection");
+                    header("Location: ../index.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=insert-area");
                     exit();
                 } else {
                     mysqli_stmt_bind_param($stmt_area, "sss", $area_name, $area_description, $site_id);
@@ -890,8 +902,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 VALUES (?, ?)";
                     $stmt_shelf = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
-                        header("Location: ../index.php?error=shelfSQLConnection");
-                        exit();
+                        header("Location: ../index.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=insert-shelf");
+                    exit();
                     } else {
                         mysqli_stmt_bind_param($stmt_shelf, "ss", $shelf_name, $area_id);
                         mysqli_stmt_execute($stmt_shelf);
@@ -901,7 +913,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "shelf", $shelf_id, "name", null, $shelf_name);
 
                         // redirect back - all worked
-                        header("Location: ../index.php?success=allAdded&site_id=$site_id&area_id=$area_id&shelf_id=$shelf_id");
+                        header("Location: ../index.php?success=locationAdded&site_id=$site_id&area_id=$area_id&shelf_id=$shelf_id");
                         exit();
                     }
                 }
@@ -921,13 +933,13 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $location_parent = $_POST['parent'];
                     $sql_location = "INSERT INTO $location_type (name, area_id) VALUES('$location_name', $location_parent)";
                 } else {
-                    header("Location: ../admin.php?error=incorrectType#stocklocations-settings");
+                    header("Location: ../admin.php?error=incorrectLocationType&section=stocklocations-settings#stocklocations-settings");
                     exit();
                 }
                 $stmt_location = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_location, $sql_location)) {
-                    header("Location: ../admin.php?error=".$type."SQLConnection#stocklocations-settings");
-                    exit();
+                    header("Location: ../admin.php?error=sqlerror&table=$location_type&file=".__FILE__."&line=".__LINE__."&purpose=insert-$location_type&section=stocklocations-settings#stocklocations-settings");
+                    exit(); 
                 } else {
                     mysqli_stmt_execute($stmt_location);
                     // get new site id
@@ -935,15 +947,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     // update changelog
                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "$location_type", $location_id, "name", null, $location_name);
 
-                    header("Location: ../admin.php?success=".$location_type."LocationAdded&".$location_type."-id=$location_id#stocklocations-settings");
+                    header("Location: ../admin.php?success=locationAdded&locationType=".$location_type."&locationID=$location_id&section=stocklocations-settings#stocklocations-settings");
                     exit();
                 }
             } else {
-                header("Location: ../admin.php?error=typeMissing#stocklocations-settings");
+                header("Location: ../admin.php?error=missingLocationType&section=stocklocations-settings#stocklocations-settings");
                 exit();
             }
         } else {
-            header("Location: ../admin.php?error=location-submitIssue#stocklocations-settings");
+            header("Location: ../admin.php?error=noSubmit&section=stocklocations-settings#stocklocations-settings");
             exit();
         }
     } elseif (isset($_POST['location-delete-submit'])) { // section for the location deleting in admin.inc.php
@@ -953,7 +965,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             $sql_check = "SELECT * FROM area WHERE site_id=$site_id AND deleted=0;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
-                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=get-area&section=stocklocations-settings#stocklocations-settings");
                 exit();
             } else {
                 mysqli_stmt_execute($stmt_check);
@@ -964,7 +976,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $sql_check2 = "SELECT * site WHERE id=$site_id AND deleted=0;";
                     $stmt_check2 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
-                        header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                        header("Location: ../admin.php?error=sqlerror&table=site&file=".__FILE__."&line=".__LINE__."&purpose=get-site&section=stocklocations-settings#stocklocations-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_check2);
@@ -977,20 +989,20 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $sql_site = "UPDATE site SET deleted=1 WHERE id=$site_id;";
                         $stmt_site = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
-                            header("Location: ../admin.php?error=sqlIssueReachingTable2#stocklocations-settings");
+                            header("Location: ../admin.php?error=sqlerror&table=site&file=".__FILE__."&line=".__LINE__."&purpose=update-site&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         } else {
                             mysqli_stmt_execute($stmt_site);
                             // update changelog
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "deleted", 0, 1);
 
-                            header("Location: ../admin.php?success=siteDeleted&id=$site_id#stocklocations-settings");
+                            header("Location: ../admin.php?success=deleted&type=site&id=$site_id&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         }
                     }
                          
                 } else {
-                    header("Location: ../admin.php?error=siteHasDependencies#stocklocations-settings");
+                    header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
                     exit();
                 }
             }
@@ -999,7 +1011,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             $sql_check = "SELECT * FROM shelf WHERE area_id=$area_id AND deleted=0;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
-                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=get-shelf&section=stocklocations-settings#stocklocations-settings");
                 exit();
             } else {
                 mysqli_stmt_execute($stmt_check);
@@ -1010,7 +1022,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $sql_check1 = "SELECT * FROM area WHERE id=$area_id AND deleted=0;";
                     $stmt_check1 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
-                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                        header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=get-area&section=stocklocations-settings#stocklocations-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_check1);
@@ -1023,19 +1035,19 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $sql_area = "UPDATE area SET deleted=1 WHERE id=$area_id;";
                         $stmt_area = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
-                            header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                            header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=update-area&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         } else {
                             mysqli_stmt_execute($stmt_area);
                             // update changelog
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "area", $area_id, "deleted", 0, 1);
 
-                            header("Location: ../admin.php?success=areaDeleted&id=$area_id#stocklocations-settings");
+                            header("Location: ../admin.php?success=deleted&type=area&id=$area_id&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         }
                     }
                 } else {
-                    header("Location: ../admin.php?error=areaHasDependencies#stocklocations-settings");
+                    header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
                     exit();
                 }
             }
@@ -1044,7 +1056,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             $sql_check = "SELECT * FROM item WHERE shelf_id=$shelf_id AND deleted=0;";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
-                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                header("Location: ../admin.php?error=sqlerror&table=item&file=".__FILE__."&line=".__LINE__."&purpose=get-item&section=stocklocations-settings#stocklocations-settings");
                 exit();
             } else {
                 mysqli_stmt_execute($stmt_check);
@@ -1056,7 +1068,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     $sql_check1 = "SELECT * FROM cable_item WHERE shelf_id=$shelf_id AND deleted=0;";
                     $stmt_check1 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
-                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                        header("Location: ../admin.php?error=sqlerror&table=cable_item&file=".__FILE__."&line=".__LINE__."&purpose=get-cable_item&section=stocklocations-settings#stocklocations-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_check1);
@@ -1068,7 +1080,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             $sql_check2 = "SELECT * FROM shelf WHERE id=$shelf_id AND deleted=0;";
                             $stmt_check2 = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
-                                header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=get-shelf&section=stocklocations-settings#stocklocations-settings");
                                 exit();
                             } else {
                                 mysqli_stmt_execute($stmt_check2);
@@ -1081,29 +1093,29 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 $sql_shelf = "UPDATE shelf SET deleted=1 WHERE id=$shelf_id;";
                                 $stmt_shelf = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
-                                    header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                    header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=stocklocations-settings#stocklocations-settings");
                                     exit();
                                 } else {
                                     mysqli_stmt_execute($stmt_shelf);
                                     // update changelog
                                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "shelf", $shelf_id, "deleted", 0, 1);
 
-                                    header("Location: ../admin.php?success=shelfDeleted&id=$shelf_id#stocklocations-settings");
+                                    header("Location: ../admin.php?success=deleted&type=shelf&id=$shelf_id&section=stocklocations-settings#stocklocations-settings");
                                     exit();
                                 }
                             }
                         } else {
-                            header("Location: ../admin.php?error=shelfHasDependencies1#stocklocations-settings");
+                            header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         }
                     }
                 } else {
-                    header("Location: ../admin.php?error=shelfHasDependencies2#stocklocations-settings");
+                    header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
                     exit();
                 }
             }
         } else {
-            header("Location: ../admin.php?error=unknownLocationDeleteType#stocklocations-settings");
+            header("Location: ../admin.php?error=incorrectLocationType&section=stocklocations-settings#stocklocations-settings");
             exit();
         }
 
@@ -1126,7 +1138,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     $sql_check1 = "SELECT * FROM shelf WHERE id=$location_id;";
                                     $stmt_check1 = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
-                                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                        header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=get-shelf&section=stocklocations-settings#stocklocations-settings");
                                         exit();
                                     } else {
                                         mysqli_stmt_execute($stmt_check1);
@@ -1141,8 +1153,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                                 WHERE id=?";
                                         $stmt = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                            header("Location: ../admin.php?error=sqlError&table=shelf#stocklocations-settings");
-                                            
+                                            header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=stocklocations-settings#stocklocations-settings");
+                                            exit();
                                         } else {
                                             mysqli_stmt_bind_param($stmt, "si", $location_area_id, $location_id);
                                             mysqli_stmt_execute($stmt);
@@ -1150,8 +1162,6 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "shelf", $location_id, "area_id", $current_area_id, $location_area_id);
                                         }  
                                     }
-
-                                    
                                 }
                                 
                             } elseif ($location_type == "area") {
@@ -1162,7 +1172,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     $sql_check1 = "SELECT * FROM area WHERE id=$location_id;";
                                     $stmt_check1 = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
-                                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                        header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=get-area&section=stocklocations-settings#stocklocations-settings");
                                         exit();
                                     } else {
                                         mysqli_stmt_execute($stmt_check1);
@@ -1177,8 +1187,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                                 WHERE id=?";
                                         $stmt = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                            header("Location: ../admin.php?error=sqlError&table=area#stocklocations-settings");
-                                            
+                                            header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=update-area&section=stocklocations-settings#stocklocations-settings");
+                                            exit();
                                         } else {
                                             mysqli_stmt_bind_param($stmt, "si", $location_site_id, $location_id);
                                             mysqli_stmt_execute($stmt);
@@ -1196,7 +1206,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             
                             $stmt = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                header("Location: ../admin.php?error=sqlError&table=$location_type#stocklocations-settings");
+                                header("Location: ../admin.php?error=sqlerror&table=$location_type&file=".__FILE__."&line=".__LINE__."&purpose=get-$location_type&section=stocklocations-settings#stocklocations-settings");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt, "i", $location_id);
@@ -1204,7 +1214,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 $result = mysqli_stmt_get_result($stmt);
                                 $rowCount = mysqli_num_rows($result);
                                 if ($rowCount < 1) {
-                                    header("Location: ../admin.php?error=noRowsFound&table=$location_type#stocklocations-settings");
+                                    header("Location: ../admin.php?sqlerror=noEntries&table=$location_type&section=stocklocations-settings#stocklocations-settings");
                                     exit();
                                 } else {
                                     $row = $result->fetch_assoc();
@@ -1219,10 +1229,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                             WHERE id=?";
                                     }
                                     
-                                    
                                     $stmt = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                        header("Location: ../admin.php?error=sqlError&table=$location_type#stocklocations-settings");
+                                        header("Location: ../admin.php?error=sqlerror&table=$location_type&file=".__FILE__."&line=".__LINE__."&purpose=update-$location_type&section=stocklocations-settings#stocklocations-settings");
                                         exit();
                                     } else {
                                         if ($location_type !== "shelf") {
@@ -1238,29 +1247,29 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                             if ($row['description'] !== $location_description) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "$location_type", $location_id, "description", $row['description'], $location_description); }
                                         }
                         
-                                        header("Location: ../admin.php?success=updated&type=$location_type&id=$location_id#stocklocations-settings");
+                                        header("Location: ../admin.php?success=updated&type=$location_type&id=$location_id&section=stocklocations-settings#stocklocations-settings");
                                         exit();
                                     }  
                                 }
                             }
                         } else {
-                            header("Location: ../admin.php?error=missingLocationDescription#stocklocations-settings");
+                            header("Location: ../admin.php?error=missingLocationDescription&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         }
                     } else {
-                        header("Location: ../admin.php?error=missingLocationName#stocklocations-settings");
+                        header("Location: ../admin.php?error=missingLocationName&section=stocklocations-settings#stocklocations-settings");
                         exit();
                     }
                 } else {
-                    header("Location: ../admin.php?error=missingLocationId#stocklocations-settings");
+                    header("Location: ../admin.php?error=missingLocationId&section=stocklocations-settings#stocklocations-settings");
                     exit();
                 }
             } else {
-                header("Location: ../admin.php?error=incorrectLocationType#stocklocations-settings");
+                header("Location: ../admin.php?error=incorrectLocationType&section=stocklocations-settings#stocklocations-settings");
                 exit();
             }
         } else {
-            header("Location: ../admin.php?error=missingLocationType#stocklocations-settings");
+            header("Location: ../admin.php?error=missingLocationType&section=stocklocations-settings#stocklocations-settings");
             exit();
         }
     } elseif (isset($_POST['imagemanagement-submit'])) { // image management section in the admin.php page
@@ -1269,18 +1278,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 if ($_POST['file-links'] == 0) {
                     $filename = $_POST['file-name'];
                     exec("rm ../assets/img/stock/$filename");
-                    header("Location: ../admin.php?success=imageDeleted#imagemanagement-settings");
+                    header("Location: ../admin.php?success=deleted&section=imagemanagement-settings#imagemanagement-settings");
                     exit();
                 } else {
-                    header("Location: ../admin.php?error=linksExist#imagemanagement-settings");
+                    header("Location: ../admin.php?error=linksExist&section=#imagemanagement-settings#imagemanagement-settings");
                     exit();
                 }
             } else {
-                header("Location: ../admin.php?error=missingFileLinks#imagemanagement-settings");
+                header("Location: ../admin.php?error=missingFileLinks&section=#imagemanagement-settings#imagemanagement-settings");
                 exit();
             }
         } else {
-            header("Location: ../admin.php?error=missingFileName#imagemanagement-settings");
+            header("Location: ../admin.php?error=missingFileName&section=#imagemanagement-settings#imagemanagement-settings");
             exit();
         }
     } elseif (isset($_GET['mail-notification'])) { // mail notification section in admin.php page. this is ajax'd
@@ -1360,8 +1369,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
 
                     $sql_check1 = "SELECT * FROM $type WHERE id=$id;";
                     $stmt_check1 = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
-                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {             
+                        header("Location: ../admin.php?error=sqlerror&table=$type&file=".__FILE__."&line=".__LINE__."&purpose=get-$type&section=stocklocations-settings#stocklocations-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_check1);
@@ -1374,28 +1383,28 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $sql = "UPDATE $type SET name='$name' WHERE id=$id";
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ../admin.php?error=".$type."ConnectionSQL#stocklocations-settings");
+                            header("Location: ../admin.php?error=sqlerror&table=$type&file=".__FILE__."&line=".__LINE__."&purpose=update-$type&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         } else {
                             mysqli_stmt_execute($stmt);
                             // update changelog
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "$type", $id, "name", $current_name, $name);
 
-                            header("Location: ../admin.php?success=updated&type=$type&id=$id#stocklocations-settings");
+                            header("Location: ../admin.php?success=updated&type=$type&id=$id&section=stocklocations-settings#stocklocations-settings");
                             exit();
                         }  
                     }
                     
                 } else {
-                    header("Location: ../admin.php?error=propertyMissing#stocklocations-settings");
+                    header("Location: ../admin.php?error=emptyFields&section=stocklocations-settings#stocklocations-settings");
                     exit();
                 }            
             } else {
-                header("Location: ../admin.php?error=unknwonType#stocklocations-settings");
+                header("Location: ../admin.php?error=unknwonType&section=stocklocations-settings#stocklocations-settings");
                 exit();
             }
         } else {
-            header("Location: ../admin.php?error=noType#stocklocations-settings");
+            header("Location: ../admin.php?error=missingType&section=stocklocations-settings#stocklocations-settings");
             exit();
         }
     } elseif (isset($_POST['profile-submit'])) { // profile.php info e.g. email and name updates
@@ -1416,7 +1425,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                             WHERE email='$email' AND auth='local' AND id!=$id";
                             $stmt_users = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-                                header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
+                                header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=update-users&email=$email&first_name=$first_name&last_name=$last_name");
                                 exit();
                             } else {
                                 mysqli_stmt_execute($stmt_users);
@@ -1430,7 +1439,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     $sql_check1 = "SELECT first_name, last_name, email FROM users WHERE id=$id;";
                                     $stmt_check1 = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
-                                        header("Location: ../admin.php?error=sqlIssueReachingTable#stocklocations-settings");
+                                        header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=get-users&email=$email&first_name=$first_name&last_name=$last_name");
                                         exit();
                                     } else {
                                         mysqli_stmt_execute($stmt_check1);
@@ -1441,14 +1450,14 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
                                         $stmt = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                            header("Location: ../profile.php?error=usersConnectionSQL&email=$email&first_name=$first_name&last_name=$last_name");
+                                            header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=update-users&email=$email&first_name=$first_name&last_name=$last_name");
                                             exit();
                                         } else {
                                             mysqli_stmt_execute($stmt);
                                             // update changelog
-                                            if ($row_check1['first_name'] !== $first_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "first_name", $row_check1['first_name'], $first_name); }
-                                            if ($row_check1['last_name'] !== $last_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "last_name", $row_check1['last_name'], $last_name); }
-                                            if ($row_check1['email'] !== $email) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "email", $row_check1['email'], $email); }
+                                            if ($row_check1['first_name'] !== $first_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "first_name", $row_check1['first_name'], $first_name); $_SESSION['first_name'] = $first_name;}
+                                            if ($row_check1['last_name'] !== $last_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "last_name", $row_check1['last_name'], $last_name); $_SESSION['last_name'] = $last_name;}
+                                            if ($row_check1['email'] !== $email) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "email", $row_check1['email'], $email); $_SESSION['email'] = $email;}
                                             header("Location: ../profile.php?success=profileUpdated");
                                             exit();
                                         }  
@@ -1495,21 +1504,21 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         } elseif ($card_card == 2) {
                             $card_field = 'card_secondary';
                         } else {
-                            header("Location: ../profile.php?error=cardCardNoMatch");
+                            header("Location: ../profile.php?error=cardNoMatch");
                             exit();
                         }
 
                         $sql_check = "SELECT $card_field AS card FROM users WHERE id=$user_id";
                         $stmt_check = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
-                            header("Location: ../profile.php?sqlerror=usersTableError");
+                            header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=get-users");
                             exit();
                         } else {
                             mysqli_stmt_execute($stmt_check);
                             $result_check = mysqli_stmt_get_result($stmt_check);
                             $rowCount_check = $result_check->num_rows;
                             if ($rowCount_check != 1) {
-                                header("Location: ../profile.php?error=incorrectCheckRowCount");
+                                header("Location: ../profile.php?sqlerror=incorrectRowCount");
                                 exit();
                             } else {
                                 $row_check = $result_check->fetch_assoc();
@@ -1520,13 +1529,13 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $sql = "UPDATE users SET $card_field='$card_number' WHERE id=$user_id";
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ../profile.php?error=usersConnectionSQL");
+                            header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=update-users");
                             exit();
                         } else {
                             mysqli_stmt_execute($stmt);
                             // update changelog
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, $card_field, $card_current, $card_number);
-                            header("Location: ../profile.php?success=card$return_q_text&card=$card_card&card_number=$card_number");
+                            header("Location: ../profile.php?success=cardUpdated&type=$return_q_text&card=$card_card&card_number=$card_number");
                             exit();
                         }  
 
@@ -1555,20 +1564,20 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             } elseif ($card_card == 2) {
                 $card_field = 'card_secondary';
             } else {
-                header("Location: ../profile.php?error=cardCardNoMatch");
+                header("Location: ../profile.php?error=cardNoMatch");
                 exit();
             }
             $sql_check = "SELECT $card_field AS card FROM users WHERE id=$user_id";
             $stmt_check = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
-                header("Location: ../profile.php?sqlerror=usersTableError");
+                header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=get-users");
                 exit();
             } else {
                 mysqli_stmt_execute($stmt_check);
                 $result_check = mysqli_stmt_get_result($stmt_check);
                 $rowCount_check = $result_check->num_rows;
                 if ($rowCount_check != 1) {
-                    header("Location: ../profile.php?error=incorrectCheckRowCount");
+                    header("Location: ../profile.php?sqlerror=incorrectRowCount");
                     exit();
                 } else {
                     $row_check = $result_check->fetch_assoc();
@@ -1579,7 +1588,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             $sql = "UPDATE users SET $card_field=null WHERE id=$user_id";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
-                header("Location: ../profile.php?error=usersConnectionSQL");
+                header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=update-users");
                 exit();
             } else {
                 mysqli_stmt_execute($stmt);
@@ -1626,14 +1635,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $sql = "SELECT * FROM theme WHERE name='$theme_name' OR file_name='$theme_file_name'";
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
-                            header("Location: ../test-theme.php?sqlerror=SQLconnection");
+                            header("Location: ../test-theme.php?error=sqlerror&table=theme&file=".__FILE__."&line=".__LINE__."&purpose=get-theme");
                             exit();
                         } else {
                             mysqli_stmt_execute($stmt);
                             $result = mysqli_stmt_get_result($stmt);
                             $rowCount = $result->num_rows;
                             if ($rowCount != 0) {
-                                $errors[] = 'theme-matches-existing';
+                                header("Location: ../admin.php?sqlerror=matchingThemeFound");
+                                exit();
                             }
                         }
         
@@ -1645,8 +1655,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                                 VALUES (?, ?)";
                                 $stmt_theme = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
-                                    header("Location: ../theme-test.php?error=SQLconnection&theme-name=$theme_name");
-                                    exit();
+                                    header("Location: ../test-theme.php?error=sqlerror&table=theme&file=".__FILE__."&line=".__LINE__."&purpose=insert-theme");
+                            exit();
                                 } else {
                                     mysqli_stmt_bind_param($stmt_theme, "ss", $theme_name, $theme_file_name);
                                     mysqli_stmt_execute($stmt_theme);

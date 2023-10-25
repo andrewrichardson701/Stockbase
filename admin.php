@@ -36,6 +36,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h2 class="header-small">Admin</h2>
     </div>
 
+
     <script> // Toggle hide/show section
         function toggleSection(element, section) {
             var div = document.getElementById(section);
@@ -52,7 +53,157 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
     </script>
     <div class="container content">
-
+        <?php
+        $errorPprefix = '<p class="red">Error: ';
+        $errorPsuffix = '</p>';
+        $successPprefix = '<p class="green">';
+        $successPsuffix = '</p>';
+        $errorPtext = '';
+        $sqlerrorPtext = '';
+        $successPtext = '';
+        if (isset($_GET['error'])) {
+            // admin.inc.php
+            if ($_GET['error'] == 'submitIssue') {
+                $errorPtext = 'Submission issue. Check your form for any submit values required.';
+            } elseif ($_GET['error'] == 'emptyFields') {
+                $errorPtext = 'Empty fields present in the form.';
+            } elseif ($_GET['error'] == 'sqlerror') {
+                $errorPtext = 'SQL Error.';
+                if (isset($_GET['table'])) {
+                    $errorPtext .= ' Table = '.$_GET['table'];
+                }
+                if (isset($_GET['file'])) {
+                    $errorPtext .= ' File = '.$_GET['file'];
+                }
+                if (isset($_GET['line'])) {
+                    $errorPtext .= ' Line = '.$_GET['line'];
+                }
+                if (isset($_GET['purpose'])) {
+                    $errorPtext .= ' Purpose = '.$_GET['purpose'];
+                }
+            } elseif ($_GET['error'] == 'passwordMatchesCurrent') {
+                $errorPtext = 'New password matches current.';
+            } elseif ($_GET['error'] == 'invalidPermissions') {
+                $errorPtext = 'Invalid permissions to complete.';
+            } elseif ($_GET['error'] == 'userIdMissing') {
+                $errorPtext = 'User ID missing.';
+            } elseif ($_GET['error'] == 'passwordMismatch') {
+                $errorPtext = 'Passwords do not match.';
+            } elseif ($_GET['error'] == 'noSubmit') {
+                $errorPtext = 'Form submit condition not met.';
+            } elseif ($_GET['error'] == 'incorrectLocationType') {
+                $errorPtext = 'Incorrect location type submitted.';
+            } elseif ($_GET['error'] == 'missingLocationType') {
+                $errorPtext = 'Missing location type.';
+            } elseif ($_GET['error'] == 'missingLocationDescription') {
+                $errorPtext = 'Location Description missing.';
+            } elseif ($_GET['error'] == 'missingLocationName') {
+                $errorPtext = 'Location Name missing.';
+            } elseif ($_GET['error'] == 'missingLocationId') {
+                $errorPtext = 'Location ID missing.';
+            } elseif ($_GET['error'] == 'dependenciesPresent') {
+                $errorPtext = 'Dependencies in place on this object. No changes made.';
+            } elseif ($_GET['error'] == 'linksExist') {
+                $errorPtext = 'Links in place on this object. No changes made.';
+            } elseif ($_GET['error'] == 'missingFileLinks') {
+                $errorPtext = 'File Links unknown.';
+            } elseif ($_GET['error'] == 'missingFileName') {
+                $errorPtext = 'File Name missing.';
+            } elseif ($_GET['error'] == 'unknwonType') {
+                $errorPtext = 'Unkown type submitted.';
+            } elseif ($_GET['error'] == 'missingType') {
+                $errorPtext = 'Missing type.';
+            } else {
+                $errorPtext = $_GET['error'];
+            }
+            
+        }
+        if (isset($_GET['sqlerror'])) {
+            // admin.inc.php
+            if ($_GET['sqlerror'] == 'tooManyConfigRows') {
+                $sqlerrorPtext = 'Too many config rows in table. Please correct this.';
+            } elseif ($_GET['sqlerror'] == 'noEntries') {
+                $sqlerrorPtext = 'No entries found in table. Please correct this.';
+                if (isset($_GET['field'])) {
+                    $sqlerrorPtext .= ' Field = '.$_GET['field'];
+                }
+                if (isset($_GET['table'])) {
+                    $sqlerrorPtext .= ' Table = '.$_GET['table'];
+                }
+            } elseif ($_GET['sqlerror'] == 'noID1') {
+                $sqlerrorPtext = 'No row found with ID 1.';
+            } elseif ($_GET['sqlerror'] == 'noUserFound') {
+                $sqlerrorPtext = 'No user found in table.';
+            } elseif ($_GET['sqlerror'] == 'tooManyUserFound') {
+                $sqlerrorPtext = 'Multiple users found in table.';
+            } elseif ($_GET['sqlerror'] == 'failedToChangeSkuPrefix') {
+                $sqlerrorPtext = 'Failed to update SKU prefixes in stock table.';
+            } else {
+                $sqlerrorPtext = $_GET['sqlerror'];
+            }
+            if (isset($_GET['table'])) {
+                $sqlerrorPtext .= ' Table = '.$_GET['table'];
+            }
+            if (isset($_GET['file'])) {
+                $sqlerrorPtext .= ' File = '.$_GET['file'];
+            }
+            if (isset($_GET['line'])) {
+                $sqlerrorPtext .= ' Line = '.$_GET['line'];
+            }
+            if (isset($_GET['purpose'])) {
+                $sqlerrorPtext .= ' Purpose = '.$_GET['purpose'];
+            }
+        }
+        if (isset($_GET['success'])) {
+            // admin.inc.php
+            if ($_GET['success'] == 'restored') {
+                $successPtext = 'Successfully restored!';
+            } elseif ($_GET['success'] == 'passwordChanged') {
+                $successPtext = 'Password Changed!';
+            } elseif ($_GET['success'] == 'enabled') {
+                $successPtext = 'Enabled!';
+            } elseif ($_GET['success'] == 'disabled') {
+                $successPtext = 'Disabled!';
+            } elseif ($_GET['success'] == 'deleted') {
+                $successPtext = 'Deleted!';
+                if (isset($_GET['type'])) {
+                    $successPtext = ' Type = '.ucwords($_GET['type']);
+                }
+                if (isset($_GET['id'])) {
+                    $successPtext = ' ID = '.ucwords($_GET['id']);
+                }
+            } elseif ($_GET['success'] == 'updated') {
+                $successPtext = 'Updated!';
+                if (isset($_GET['type'])) {
+                    $successPtext = ' Type = '.ucwords($_GET['type']);
+                }
+                if (isset($_GET['id'])) {
+                    $successPtext = ' ID = '.ucwords($_GET['id']);
+                }
+            } elseif ($_GET['success'] == 'locationAdded') {
+                $successPtext = 'Updated!';
+                if (isset($_GET['locationType'])) {
+                    if (isset($_GET['locationID'])) {
+                        $sqlerrorPtext .= ' '.ucwords($_GET['locationType']).' ID = '.$_GET['locationID'];
+                    }
+                }
+            } else {
+                $successPtext = $_GET['success'];
+            }
+        }
+        if (!isset($_GET['section']) || (isset($_GET['section']) && $_GET['section'] == 'none')) {
+            if ($errorPtext !== '') {
+                echo $errorPprefix.$errorPtext.$errorPsuffix;
+            }
+            if ($sqlerrorPtext !== '') {
+                echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+            }
+            if ($successPtext !== '') {
+                echo $successPprefix.$successPtext.$successPsuffix;
+            }
+        }
+        
+        ?>
         <div id="modalDivAdd" class="modal">
         <!-- <div id="modalDivAdd" style="display: block;"> -->
             <span class="close" onclick="modalCloseAdd()">×</span>
@@ -162,79 +313,92 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="font-size:22px" id="global-settings" onclick="toggleSection(this, 'global')">Global Settings <i class="fa-solid fa-chevron-up fa-2xs" style="margin-left:10px"></i></h3>
         <!-- Global Settings -->
         <div style="padding-top: 20px" id="global" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'global-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <form id="globalForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                 <table id="globalTable">
                     <tbody>
-                        <tr class="nav-row" id="ldap-headings" style="margin-bottom:10px">
-                            <th style="width:250px;margin-left:25px"></th>
-                            <th style="width: 250px">Change</th>
-                            <th style="min-width:230px;margin-left:25px">Custom</th>
-                            <th style="min-width:230px;margin-left:25px">Default</th>
+                        <tr class="" id="ldap-headings">
+                            <th style="width:250px;margin-left:25px;padding-bottom:20px"></th>
+                            <th style="width: 250px;padding-bottom:20px">Change</th>
+                            <th style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">Current</th>
+                            <th style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">Default</th>
                         </tr>
-                        <tr class="nav-row">
-                            <td id="system_name-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="system_name">System Name:</p>
+                        <tr class="">
+                            <td id="system_name-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="system_name">System Name:</p>
                             </td>
-                            <td id="system_name-set" style="width:250px">
-                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="system_name" name="system_name">
+                            <td id="system_name-set" style="width:250px;padding-bottom:20px">
+                                <input class="form-control " type="text" style="width: 150px" id="system_name" name="system_name">
                             </td>
-                            <td style="min-width:230px;margin-left:10px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_system_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:10px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_system_name); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_system_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_system_name); ?></span></label>
                             </td>
                         </tr>
-                        <tr class="nav-row" id="banner-color" style="margin-top:20px">
-                            <td id="banner-color-label" style="width:250px;margin-left:25px">
+                        <tr class="" id="banner-color" style="margin-top:20px">
+                            <td id="banner-color-label" style="width:250px;margin-left:25px;padding-bottom:20px">
                                 <!-- Custodian Colour: #72BE2A -->
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="banner_color">Banner Colour:</p>
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="banner_color">Banner Colour:</p>
                             </td>
-                            <td id="banner-color-picker" style="width:250px">
+                            <td id="banner-color-picker" style="width:250px;padding-bottom:20px">
                                 <label class="label-color">
                                     <input class="form-control input-color color" id="banner_color" name="banner_color" placeholder="#XXXXXX" data-value="#xxxxxx" value="<?php echo($current_banner_color); ?>"/>
                                 </label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($current_banner_color)); ?>;background-color:<?php echo($current_banner_color); ?>"><?php echo($current_banner_color); ?></span></label>
+                            <td style="min-width:230px;padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni" style="color:<?php echo(getWorB($current_banner_color)); ?>;background-color:<?php echo($current_banner_color); ?>"><?php echo($current_banner_color); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><span class="uni" style="color:<?php echo(getWorB($default_banner_color)); ?>;background-color:<?php echo($default_banner_color); ?>"><?php echo($default_banner_color); ?></span></label>
+                            <td style="min-width:230px;padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni" style="color:<?php echo(getWorB($default_banner_color)); ?>;background-color:<?php echo($default_banner_color); ?>"><?php echo($default_banner_color); ?></span></label>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="banner-logo">
-                            <td id="banner-logo-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="logo_image">Banner Logo:</p>
+                        <tr class="" style="margin-top:20px" id="banner-logo">
+                            <td id="banner-logo-label" style="width:250px;margin-left:25px;padding-bottom:20px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="logo_image">Banner Logo:</p>
                             </td>
                             <td id="banner-logo-file">
-                                <input class="nav-v-c" type="file" style="width: 250px" id="logo_image" name="logo_image">
+                                <input class="" type="file" style="width: 250px;padding-bottom:20px" id="logo_image" name="logo_image">
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($current_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($current_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($default_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="favicon-image">
-                            <td id="favicon-image-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="favicon_image">Favicon Image:</p>
-                            </td>
-                            <td id="favicon-image-file">
-                                <input class="nav-v-c" type="file" style="width: 250px" id="favicon_image" name="favicon_image">
-                            </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($current_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
-                            </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <label class="nav-v-c"><img class="thumb" src="./assets/img/config/<?php echo($default_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($default_logo_image); ?>" style="width:50px" onclick="modalLoad(this)" /></label>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="currency-selector-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="currency_selection">Currency:</p>
+                        <tr class="" style="margin-top:20px" id="favicon-image">
+                            <td id="favicon-image-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="favicon_image">Favicon Image:</p>
                             </td>
-                            <td id="currency-selector" style="width:250px">
+                            <td id="favicon-image-file" style="padding-bottom:20px">
+                                <input class="" type="file" style="width: 250px" id="favicon_image" name="favicon_image">
+                            </td>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($current_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px;padding-left:15px">
+                                <label class=""><img class="thumb" src="./assets/img/config/<?php echo($default_favicon_image); ?>" style="width:32px" onclick="modalLoad(this)" /></label>
+                            </td>
+                        </tr>
+                        <tr class="" style="margin-top:20px">
+                            <td id="currency-selector-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="currency_selection">Currency:</p>
+                            </td>
+                            <td id="currency-selector" style="width:250px;padding-bottom:20px">
                                 <select id="currency_selection" name="currency_selection" placeholder="£" class="form-control" style="width:150px">
                                     <option alt="Pounds Sterling" value="£" <?php if ($current_currency == "£") { echo("selected"); } ?>>£ (Pound)</option>
                                     <option alt="Dollar"          value="$" <?php if ($current_currency == "$") { echo("selected"); } ?>>$ (Dollar)</option>
@@ -247,48 +411,48 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <option alt="Lira"            value="₺" <?php if ($current_currency == "₺") { echo("selected"); } ?>>₺ (Lira)</option>
                                 </select>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_currency); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_currency); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_currency); ?></span></label>
-                            </td>
-                        </tr>
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="sku-prefix-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="sku_prefix">SKU Prefix:</p>
-                            </td>
-                            <td id="sku-prefix-set" style="width:250px">
-                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
-                            </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_sku_prefix); ?></span></label>
-                            </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_sku_prefix); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_currency); ?></span></label>
                             </td>
                         </tr>
-
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="base-url-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="base_url">Base URL:</p>
+                        <tr class="" style="margin-top:20px">
+                            <td id="sku-prefix-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="sku_prefix">SKU Prefix:</p>
                             </td>
-                            <td id="base-url-set" style="width:250px">
-                                <input class="form-control nav-v-c" type="text" style="width: 150px" id="base_url" name="base_url">
+                            <td id="sku-prefix-set" style="width:250px;padding-bottom:20px">
+                                <input class="form-control " type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_base_url); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_sku_prefix); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_base_url); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_sku_prefix); ?></span></label>
                             </td>
                         </tr>
 
-                        <tr class="nav-row" style="margin-top:20px">
-                            <td id="default-theme-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="default_theme">Default Theme:</p>
+                        <tr class="" style="margin-top:20px">
+                            <td id="base-url-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="base_url">Base URL:</p>
                             </td>
-                            <td id="default-theme-set" style="width:250px">
+                            <td id="base-url-set" style="width:250px;padding-bottom:20px">
+                                <input class="form-control " type="text" style="width: 150px" id="base_url" name="base_url">
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_base_url); ?></span></label>
+                            </td>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_base_url); ?></span></label>
+                            </td>
+                        </tr>
+
+                        <tr class="" style="margin-top:20px">
+                            <td id="default-theme-label" style="width:250px;margin-left:25px;padding-bottom:20px">
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="default_theme">Default Theme:</p>
+                            </td>
+                            <td id="default-theme-set" style="width:250px;padding-bottom:20px">
                                 <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control" style="width:150px">
                                     <?php
                                     $sql_theme = "SELECT * FROM theme";
@@ -313,25 +477,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     ?>
                                 </select>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($current_default_theme_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($current_default_theme_name); ?></span></label>
                             </td>
-                            <td style="min-width:230px;margin-left:25px; padding-left:15px">
-                                <label class="nav-v-c"><span class="uni"><?php echo($default_default_theme_name); ?></span></label>
+                            <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
+                                <label class=""><span class="uni"><?php echo($default_default_theme_name); ?></span></label>
                             </td>
                         </tr>
 
 
-                        <tr class="nav-row" style="margin-top:20px;margin-left:25px">
+                        <tr class="" style="margin-top:20px;margin-left:25px;padding-bottom:20px">
                             <td style="width:250px">
                                 <input id="global-submit" type="submit" name="global-submit" class="btn btn-success" value="Save" />
                             </td>
-                            <td style="width:250px">
+                            <td style="width:250px;padding-bottom:20px">
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px">
                             </td>
-                            <td style="min-width:230px;margin-left:25px">
-                                <input id="global-restore-defaults" type="submit" name="global-restore-defaults" class="btn btn-danger" style="margin-left:25px" value="Restore Default" />
+                            <td style="min-width:230px;margin-left:25px;padding-bottom:20px">
+                                <input id="global-restore-defaults" type="submit" name="global-restore-defaults" class="btn btn-danger" style="margin-left:15px" value="Restore Default" />
                             </td>
                         </tr>
                     </tbody>
@@ -342,6 +506,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" onclick="toggleSection(this, 'users')">Users <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
         <div style="padding-top: 20px" id="users" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'users')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
                     <tr id="users_table_info_tr" hidden>
@@ -452,8 +629,21 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </div>
 
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="usersroles-settings" onclick="toggleSection(this, 'usersroles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
-        <!-- Users Settings -->
+        <!-- Users Roles -->
         <div style="padding-top: 20px" id="usersroles" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'users-roles')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
                 <thead>
                     <tr class="text-center theme-tableOuter">
@@ -496,6 +686,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings" onclick="toggleSection(this, 'imagemanagement')">Image Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Image Management Settings -->
         <div style="padding-top: 20px" id="imagemanagement" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'imagemanagement')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <div style="height:75%;overflow-x: hidden;overflow-y: auto;">
                 <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
@@ -585,8 +788,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Stock Location Settings -->
         <div style="padding-top: 20px" id="stocklocations" hidden>
-
             <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'stocklocation-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+           
             $locations = [];
             $sql_locations = "SELECT site.id AS site_id, site.name AS site_name, site.description AS site_description,
                                     area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.parent_id AS area_parent_id,
@@ -824,10 +1038,31 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- LDAP Settings -->
         <div style="padding-top: 20px" id="ldap" hidden>
-            <?php 
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'ldap-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+    
             if (isset($_GET['error'])) {
                 echo ('<p id="error-output" class="red" style="margin-left:25px">');
-                if ($_GET['error'] == 'emptyFields') { echo('Empty fields in config.'); }
+                if ($_GET['error'] == 'emptyFields') { 
+                    echo('Empty fields in config.'); 
+                } elseif ($_GET['error'] == 'sqlerror') {
+                    if (isset($_GET['table'])) { 
+                        $extraErrorInfo = ' SQL table: users_roles'; 
+                    } else { 
+                        $extraErrorInfo = ''; 
+                    }
+                    echo ('SQL Error.'.$extraErrorInfo);
+                }
                 echo('</p>');
             }
             if (isset($_GET['ldapUpload'])) {
@@ -993,6 +1228,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- SMTP Settings -->
         <div style="padding-top: 20px" id="smtp" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'smtp-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <form id="smtpToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                 <input type="hidden" name="smtp-toggle-submit" value="set" />
                 <table id="smtpToggleTable">
@@ -1156,7 +1404,20 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- Notification Settings -->
         <div style="padding-top: 20px" id="notification" hidden>
-            <?php if ($current_smtp_enabled == 1) {
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'notification-settings')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+ 
+            if ($current_smtp_enabled == 1) {
                 $sql_notif = "SELECT * FROM notifications
                                 WHERE id!=0;"; 
                 $stmt_notif = mysqli_stmt_init($conn);
@@ -1217,14 +1478,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 echo ('<p class="blue">SMTP is disabled. All email notifications have been disabled.</p>');
             }
             ?>
-            <div class="well-nopad bg-dark" style="margin-top:20px">
+            <div class="well-nopad theme-divBg" style="margin-top:20px">
                 <?php 
-                $example_body = urlencode("<p style='color:black !important'>Fixed cable stock added, for <strong><or class='link' style='color: #0000EE;'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
+                $example_body = urlencode("<p style='color:black !important'>Fixed cable stock added, for <strong><a class='link' style='color: #0000EE !important;' href='stock.php?stock_id=1'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
                 ?>
                 <h4>Email example</h4>
                 <input type="hidden" value="<?php echo($example_body); ?>" id="email-template-body" />
-                <div id="email-template" style="margin-top:20px">
+                <div id="email-template" style="margin-top:20px;margin-bottom:10px">
                 </div>
+                <a style="margin-left:5px" href="includes/smtp.inc.php?template=echo&body=<?php echo ($example_body); ?>" target="_blank">View in new tab</a>
             </div>
 
         </div>
@@ -1233,6 +1495,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- Changelog -->
         <div style="padding-top: 20px" id="changelog" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'changelog')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
             <div class="content">
                 <?php 
                 include 'includes/dbh.inc.php';

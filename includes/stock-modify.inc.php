@@ -402,12 +402,20 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             exit();
                         }
                     } else {
-                        usort($PRE_skus, function($a, $b) { // sort the array 
-                            return strnatcmp($a, $b);
-                        });
-                        preg_match_all('/\d+/', end($PRE_skus), $max_sku_number_temp);
-                        $max_sku_number = $max_sku_number_temp[0][0];
-                        $new_PRE_sku_number = $max_sku_number +1; 
+                        if (empty($PRES_skus) || count($PRE_skus) == 0) {
+                            $new_PRE_sku_number = 1;
+                        } else {
+                            usort($PRE_skus, function($a, $b) { // sort the array 
+                                return strnatcmp($a, $b);
+                            });
+                            preg_match_all('/\d+/', end($PRE_skus), $max_sku_number_temp);
+                            if (!empty($max_sku_number_temp)) {
+                                $max_sku_number = $max_sku_number_temp[0][0];
+                                $new_PRE_sku_number = $max_sku_number +1; 
+                            } else {
+                                $new_PRE_sku_number = 1;
+                            }
+                        }
 
                         $new_PRE_skus = $current_sku_prefix . str_pad($new_PRE_sku_number, 5, '0', STR_PAD_LEFT);
                         $sku = $new_PRE_skus;
@@ -505,14 +513,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                         // Transaction update
                         $type = 'add';
-                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username) 
-                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username, shelf_id) 
+                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt_trans = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                             header("Location: ../".$redirect_url.$redirect_queries."&error=transactionConnectionSQL");
                             exit();
                         } else {
-                            mysqli_stmt_bind_param($stmt_trans, "ssssssssss", $id, $item_id, $type, $quantity_one, $cost, $serial_number_input, $reason, $date, $time, $username);
+                            mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $id, $item_id, $type, $quantity_one, $cost, $serial_number_input, $reason, $date, $time, $username, $shelf);
                             mysqli_stmt_execute($stmt_trans);
                             if ($i == (int)$quantity) {
                                 $stock_info = getItemStockInfo($id);
@@ -538,10 +546,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             $errors = [];
 
             if ($_POST['submit'] == 'Remove Stock') {
-                // print_r('<pre>');
-                // print_r($_POST);
-                // print_r('</pre>');
-        
+                print_r('<pre>');
+                print_r($_POST);
+                print_r('</pre>');
+                
                 $stock_id                 = isset($_POST['stock_id'])         ? $_POST['stock_id']         : '' ;
                 $stock_sku                = isset($_POST['stock_sku'])        ? $_POST['stock_sku']        : '' ;
                 $stock_manufacturer       = isset($_POST['manufacturer'])     ? $_POST['manufacturer']     : '' ;
@@ -551,7 +559,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 $stock_quantity           = isset($_POST['quantity'])         ? $_POST['quantity']         : 1 ;
                 $stock_serial_number      = isset($_POST['serial-number'])    ? $_POST['serial-number']    : '' ;
                 $stock_transaction_reason = isset($_POST['reason'])           ? $_POST['reason']           : '' ;
-        
+
                 // function to check the current row and if 0 quantity, remove it.
                 
         
@@ -631,15 +639,15 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                 $time = date('H:i:s'); // current time in HH:MM:SS format
                                                 $username = $_SESSION['username'];
                                                 $neg_stock_quantity = -1;
-                                                $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
-                                                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                                $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username, shelf_id) 
+                                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                                 $stmt_trans = mysqli_stmt_init($conn);
                                                 if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                                                     $errors[] = 'trans transaction table error - SQL connection';
                                                     header("Location: $redirect_url&error=TransactionConnectionIssue");
                                                     exit();
                                                 } else {
-                                                    mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $delete_id, $type, $stock_shelf, $neg_stock_quantity, $stock_price, $stock_serial_number, $stock_transaction_reason, $date, $time, $username);
+                                                    mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $delete_id, $type, $neg_stock_quantity, $stock_price, $stock_serial_number, $stock_transaction_reason, $date, $time, $username, $stock_shelf);
                                                     mysqli_stmt_execute($stmt_trans);
                                                     echo("Transaction Added");
                                                 }
@@ -918,7 +926,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         } else {
                             mysqli_stmt_bind_param($stmt_delete_stock_img, "ss", $stock_id, $img_id);
                             mysqli_stmt_execute($stmt_delete_stock_img);
-                            $rows_delete_stock_img = $conn->affected_rows();
+                            $rows_delete_stock_img = $conn->affected_rows;
                             if ($rows_delete_stock_img == 0) {
                                 // No Rows deleted.
                                 header("Location: ".$redi_url."&error=noImgRemoved");
@@ -988,7 +996,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     mysqli_stmt_execute($stmt);
                                     $new_stock_img_id = mysqli_insert_id($conn);
 
-                                    $modified_rows = $conn->affected_rows();
+                                    $modified_rows = $conn->affected_rows;
                                     if ($modified_rows == 0) {
                                         // No rows changed - error
                                         header("Location: ".$redi_url."&error=stock_imgNoRowsChanged");
@@ -1429,7 +1437,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         } else {
                                             mysqli_stmt_bind_param($stmt_delete_item, "ss", $stock_id, $item_delete_id);
                                             mysqli_stmt_execute($stmt_delete_item);
-                                            $rows_delete_item = $conn->affected_rows();
+                                            $rows_delete_item = $conn->affected_rows;
                                             if ($rows_delete_item > 0) {
                                                 // echo("<br>Item(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_item<br>");
                                                 // update changelog for delete
@@ -1476,7 +1484,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         } else {
                                             mysqli_stmt_bind_param($stmt_delete_stock_img, "ss", $stock_id, $img_delete_id);
                                             mysqli_stmt_execute($stmt_delete_stock_img);
-                                            $rows_delete_stock_img = $conn->affected_rows();
+                                            $rows_delete_stock_img = $conn->affected_rows;
                                             if ($rows_delete_stock_img > 0) {
                                                 // echo("<br>stock_img(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_img<br>");
                                                 // update changelog for delete
@@ -1521,7 +1529,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         } else {
                                             mysqli_stmt_bind_param($stmt_delete_stock_label, "ss", $stock_id, $label_delete_id);
                                             mysqli_stmt_execute($stmt_delete_stock_label);
-                                            $rows_delete_stock_label = $conn->affected_rows();
+                                            $rows_delete_stock_label = $conn->affected_rows;
                                             if ($rows_delete_stock_label > 0) {
                                                 // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
                                                 // update changelog for delete
@@ -1565,7 +1573,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 } else {
                                     mysqli_stmt_bind_param($stmt_delete_stock, "s", $stock_id);
                                     mysqli_stmt_execute($stmt_delete_stock);
-                                    $rows_delete_stock = $conn->affected_rows();
+                                    $rows_delete_stock = $conn->affected_rows;
                                     if ($rows_delete_stock > 0) {
                                         // echo("<br>Stock Deleted for id: $stock_id , Row count: $rows_delete_stock<br>");
                                         // update changelog for delete

@@ -39,6 +39,71 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         include 'includes/dbh.inc.php';
 
+        $errorPprefix = '<tr><td colspan=100% class="red">Error: ';
+        $errorPsuffix = '</td></tr>';
+        $successPprefix = '<tr><td colspan=100% class="green">';
+        $successPsuffix = '</td></tr>';
+        $errorPtext = '';
+        $sqlerrorPtext = '';
+        $successPtext = '';
+        if (isset($_GET['error'])) {
+            // admin.inc.php
+            if ($_GET['error'] == 'emptyFields') {
+                $errorPtext = 'Empty fields present in the form.';
+            } elseif ($_GET['error'] == 'sqlerror') {
+                $errorPtext = 'SQL Error.';
+                if (isset($_GET['table'])) {
+                    $errorPtext .= ' Table = '.$_GET['table'];
+                }
+                if (isset($_GET['file'])) {
+                    $errorPtext .= ' File = '.$_GET['file'];
+                }
+                if (isset($_GET['line'])) {
+                    $errorPtext .= ' Line = '.$_GET['line'];
+                }
+                if (isset($_GET['purpose'])) {
+                    $errorPtext .= ' Purpose = '.$_GET['purpose'];
+                }
+            } elseif ($_GET['error'] == 'uploadedFileNameMissing') {
+                $errorPtext = 'Uploaded file name missing.';
+            } elseif ($_GET['error'] == 'fileNameMissing') {
+                $errorPtext = 'File name missing.';
+            } elseif ($_GET['error'] == 'submitMissing') {
+                $errorPtext = 'Submit not set. Unauthorised.';
+            } else {
+                $errorPtext = $_GET['error'];
+            }
+            
+        }
+        if (isset($_GET['sqlerror'])) {
+            // admin.inc.php
+            if ($_GET['sqlerror'] == 'matchingThemeFound') {
+                $sqlerrorPtext = 'Theme already exists.';
+            } else {
+                $sqlerrorPtext = $_GET['sqlerror'];
+            }
+            if (isset($_GET['table'])) {
+                $sqlerrorPtext .= ' Table = '.$_GET['table'];
+            }
+            if (isset($_GET['file'])) {
+                $sqlerrorPtext .= ' File = '.$_GET['file'];
+            }
+            if (isset($_GET['line'])) {
+                $sqlerrorPtext .= ' Line = '.$_GET['line'];
+            }
+            if (isset($_GET['purpose'])) {
+                $sqlerrorPtext .= ' Purpose = '.$_GET['purpose'];
+            }
+        }
+        if (isset($_GET['success'])) {
+            // admin.inc.php
+            if ($_GET['success'] == 'uploaded') {
+                $successPtext = 'Successfully uploaded!';
+            } else {
+                $successPtext = $_GET['success'];
+            }
+        }
+
         ?>
         <table class="centertable" style="margin-bottom:20px">
             <thead>
@@ -162,6 +227,18 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <input type="submit" id="upload-theme" class="btn btn-success" style="margin-top:10px" name="submit" value="Upload Theme" />
                                         </td>
                                     </tr>
+                                    <?php 
+                                    if ($errorPtext !== '') {
+                                        echo $errorPprefix.$errorPtext.$errorPsuffix;
+                                    }
+                                    if ($sqlerrorPtext !== '') {
+                                        echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                                    }
+                                    if ($successPtext !== '') {
+                                        echo $successPprefix.$successPtext.$successPsuffix;
+                                    }
+                                    
+                                    ?>
                                 </tbody>
                             </table>
                         </form>

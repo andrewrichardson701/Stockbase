@@ -6,7 +6,7 @@
 
 if (isset($_POST['submit'])) {
     if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password_confirm']) || !isset($_POST['first_name']) || !isset($_POST['last_name']) || !isset($_POST['email']) || !isset($_POST['role'])) {
-        header("Location: ../login.php?error=emptyfields");
+        header("Location: ../addlocaluser.php?error=emptyFields");
         exit();
     } else {
         if (isset($_POST['password']) === isset($_POST['password_confirm'])) {
@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
             $sql_users = "SELECT * FROM users WHERE username=? AND auth='local'";
             $stmt_users = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
-                header("Location: ../login.php?error=sqlerror_getUsersList");
+                header("Location: ../addlocaluser.php?error=sqlerror&table=users&line=".__LINE__."&file=".__FILE__);
                 exit();
             } else {
                 mysqli_stmt_bind_param($stmt_users, "s", $new_username);
@@ -45,7 +45,7 @@ if (isset($_POST['submit'])) {
                     $sql_upload = "INSERT INTO users (username, first_name, last_name, email, role_id, auth, password, enabled, password_expired, theme_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
                     $stmt_upload = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
-                        header("Location: ../addlocaluser.php?error=sqlerror");
+                        header("Location: ../addlocaluser.php?error=sqlerror&table=users&line=".__LINE__."&file=".__FILE__);
                         exit();
                     } else {
                         mysqli_stmt_bind_param($stmt_upload, "sssssssss", $new_username, $new_first_name, $new_last_name, $new_email, $new_role_id, $new_auth, $new_password_hash, $new_enabled, $new_expired, $current_default_theme_id);
@@ -70,16 +70,16 @@ if (isset($_POST['submit'])) {
                     header("Location: ../addlocaluser.php?error=userExists");
                     exit();
                 } else { // if there are somehow too many rows matching the sql
-                    header("Location: ../login.php?sqlerror=multipleentries");
+                    header("Location: ../addlocaluser.php?sqlerror=multipleEntries");
                     exit();
                 }
             }
         } else {
-            header("Location: ../login.php?error=passwordMismatch");
+            header("Location: ../addlocaluser.php?error=passwordMismatch");
         }
     } 
 } else {
-    header("Location: ../login.php?error=submitNotSet");
+    header("Location: ../addlocaluser.php?error=submitNotSet");
     exit();
 }
 ?>

@@ -6,10 +6,10 @@
 
 // DB CONNECTION INFO AND CREDENTIALS 
 
-$servername = "localhost";
+$servername = 'localhost';
 $dBUsername = 'admin';
 $dBPassword = 'admin';
-$dBName = "inventory_dev";
+$dBName = 'inventory_dev';
 
 $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
 

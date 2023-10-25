@@ -1,28 +1,113 @@
 #!/bin/bash
 
+#---------------------------------------------------------------------------------
+# PHP Bits
+#---------------------------------------------------------------------------------
+
+phpversion=8.1;
+
+# List of php modules without the php version prefix
+modules=("curl" "fpm" "gd" "igbinary" "imagick" "imap" "intl" "ldap" "mbstring" "mysql" "readline" "redis" "soap" "xml" "xsl" "zip")
+
+# Prefix each package with "phpX.X-"
+prefixed_packages=()
+for module in "${modules[@]}"; do
+    prefixed_packages+=("php$phpversion-$module")
+done
+
+#---------------------------------------------------------------------------------
+# Directory Bits
+#---------------------------------------------------------------------------------
+
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 assets_dir="$( cd "$( dirname "$script_dir" )" &> /dev/null && pwd )"
 root_path="$( cd "$( dirname "$assets_dir" )" &> /dev/null && pwd )"
+
+#---------------------------------------------------------------------------------
+# Script Start
+#---------------------------------------------------------------------------------
 
 # Function to check and install necessary packages
 check_install_package() {
     local package_name="$1"
     if ! dpkg -l | grep -q "$package_name"; then
         echo "Installing $package_name..."
-        if [ "$package_name" = "php8.1" ]; then
+        if [ "$package_name" = "php$phpversion" ]; then
             sudo apt update
             sudo apt install lsb-release ca-certificates apt-transport-https software-properties-common -y
             sudo add-apt-repository ppa:ondrej/php
+            sudo add-apt-repository ppa:ondrej/nginx-mainline
+            sudo add-apt-repository ppa:ondrej/apache2
             sudo apt update
-            sudo apt install -y "$package_name" php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib >/dev/null 2>&1 &
+            #sudo apt install -y "$package_name" php8.1-cli php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib >/dev/null 2>&1 &
+            echo ""
+
+            # Install php packages
+            echo "Installing PHP version $phpversion."
+            sudo apt install -y php$phpversion php$phpversion-common php$phpversion-cli
+            echo "Installing the following php packages:"
+            echo "${prefixed_packages[@]}";
+
+            sleep "1"
+
+            echo ""
+            sudo apt install -y "${prefixed_packages[@]}"
+
+            # duration=10
+            # echo ""
+            # echo "Time remaining: $duration seconds"
+            # # Loop through the countdown
+            # for ((i = duration-1; i >= 1; i--)); do
+            #     echo "$i"
+            #     sleep 1
+            # done
+
+            echo ""
+            # Loop through the modules and enable each one
+            echo "Enabling PHP modules..."
+            sleep 2
+            for module in "${modules[@]}"; do
+                sudo phpenmod -v "$phpversion" "$module"
+                echo "Enabled php$phpversion-$module"
+            done
         else 
             sudo apt-get update
-            sudo apt-get install -y "$package_name" >/dev/null 2>&1 &
+            sudo apt-get install -y "$package_name" 
         fi
         echo "$package_name installed!"
-    elif [ "$package_name" = "php8.1" ]; then
+    elif [ "$package_name" = "php$phpversion" ]; then
         sudo apt update
-        sudo apt install -y "$package_name" php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib >/dev/null 2>&1 &
+        #sudo apt install -y "$package_name" php8.1-cli php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib >/dev/null 2>&1 &
+        # Install php packages
+        echo "Updating PHP version $phpversion."
+        sudo apt install -y php$phpversion php$phpversion-common php$phpversion-cli
+        echo "Installing the following php packages:"
+        echo "${prefixed_packages[@]}";
+
+        sleep "1"
+
+        echo ""
+        sudo apt install -y "${prefixed_packages[@]}"
+
+        sleep 1
+
+        # duration=10
+        # echo ""
+        # echo "Time remaining: $duration seconds"
+        # # Loop through the countdown
+        # for ((i = duration-1; i >= 1; i--)); do
+        #     echo "$i"
+        #     sleep 1
+        # done
+
+        echo ""
+        # Loop through the modules and enable each one
+        echo "Enabling PHP modules..."
+        sleep 1
+        for module in "${modules[@]}"; do
+            sudo phpenmod -v "$phpversion" "$module"
+            echo "Enabled php$phpversion-$module"
+        done
     else
         echo "$package_name is already installed."
     fi
@@ -89,7 +174,7 @@ server {
 
     location ~ \.php$ {
         include fastcgi_params;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/var/run/php/$phpversion-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
@@ -113,7 +198,7 @@ server {
 
     location ~ \.php$ {
         include fastcgi_params;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php$phpversion-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
@@ -133,6 +218,7 @@ hash_password() {
     hashed_password=$(php -r "echo password_hash('$gen_password', PASSWORD_DEFAULT);")
 }
 
+echo ""
 echo "StockBase Copyright (C) 2023 Andrew Richardson"
 echo "This program comes with ABSOLUTELY NO WARRANTY; for details type 'show w'."
 echo "This is free software, and you are welcome to redistribute it"
@@ -144,94 +230,73 @@ while true; do
     # Ask for folder input and allow creating the folder if needed
     read -p "Input: " tandc
 
-    # Check if the folder exists
-    if [ -d "$tandc" = "show w"]; then
-        echo "15. Disclaimer of Warranty."
-        echo "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. "
-        echo "EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” "
-        echo "WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, "
-        echo "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. "
-        echo "THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. "
-        echo "SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
-        echo ""
-        break
-    elif [ -d "$tandc" = "show c"]; then
-        echo "16. Limitation of Liability."
-        echo "IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, "
-        echo "OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, "
-        echo "INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO "
-        echo "USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED "
-        echo "BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR "
-        echo "OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES."
-        echo ""
-        break
-    elif [-d "$tandc" = "Y"]
-        break
-    elif [-d "$tandc" = "y"]
-        break
-    else 
-        echo "Unknown input."
-    fi
+    case $tandc in
+        "show w")
+            echo "15. Disclaimer of Warranty."
+            echo "THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. "
+            echo "EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” "
+            echo "WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, "
+            echo "THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. "
+            echo "THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. "
+            echo "SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
+            echo ""
+            ;;
+        "show c")
+            echo "16. Limitation of Liability."
+            echo "IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, "
+            echo "OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, "
+            echo "INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO "
+            echo "USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED "
+            echo "BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR "
+            echo "OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES."
+            echo ""
+            ;;
+        "Y" | "y")
+            break
+            ;;
+        *)
+            echo "Unknown input."
+            ;;
+    esac
 done
 
 # Check and install necessary packages
-check_install_package php8.1
+echo ""
+echo "Checking installed packages..."
+echo ""
+echo "Checking php$phpversion..."
+check_install_package php$phpversion
+sleep 1
+echo ""
+echo "Checking mysql-server..."
 check_install_package mysql-server
-
+echo ""
+echo "Done!"
+echo ""
+sleep 1
 
 # Check if MySQL is installed
 if ! dpkg -l | grep -q "mysql-server"; then
     echo "MySQL is not installed. Installing now..."
     sudo apt-get update
-    sudo apt-get install -y mysql-server >/dev/null 2>&1 &
+    sudo apt-get install -y mysql-server
     echo "MySQL installed!"
-    sudo mysql_secure_installation
 fi
+sleep 2
 echo ""
-echo ""
-# Ask for folder input and check if it exists
-while true; do
-    # Ask for folder input and allow creating the folder if needed
-    read -p "Enter the folder name to install to (e.g. /var/www/html/inventory): " folder_name
-
-    # Check if the folder exists
-    if [ -d "$folder_name" ]; then
-        echo "Moving files from $root_path to $folder_name..."
-        #cp "$0" "$folder_name"  # Copy the script itself
-        mv "$root_path"/* "$folder_name"/   # Move all files except the script
-        echo "Files moved successfully to $folder_name."
-        break
-    else
-        # Get the parent directory
-        parent_dir="$(dirname "$folder_name")"
-        # Check if the parent directory exists
-        if [ -d "$parent_dir" ]; then
-            read -p "The folder doesn't exist. Do you want to create it? (yes/no): " create_folder
-            if [ "$create_folder" = "yes" ]; then
-                mkdir -p "$folder_name"
-                echo "Folder created."
-                echo "Moving files to $folder_name..."
-                #cp "$0" "$folder_name"  # Copy the script itself
-                mv "$root_path"/* "$folder_name"/   # Move all files except the script
-                echo "Files moved successfully to $folder_name."
-                break
-            else
-                echo "Folder not created. Exiting."
-                exit 1
-            fi
-        else
-            echo "The path leading up to the folder does not exist."
-        fi
-    fi
-done
-echo ""
-
 # Ask for FQDN
 read -p "Enter the Fully Qualified Domain Name (FQDN) to access the site: " web_domain
 
+echo ""
+echo "Web Domain: $web_domain"
+sleep 1
+echo ""
+
 # Ask if SSL should be used
+echo "Do you want to use SSL for secure connections?"
+echo "WARNING: You will be required to provide the Certificate locations now."
 while true; do
-    read -p "Do you want to use SSL for secure connections? (Y/N): " use_ssl
+    read -p "Use SSL (Y/N): " use_ssl
     case "$use_ssl" in
         [Yy]* ) use_ssl=true;
             read -p "Enter the path to the SSL certificate file: " ssl_cert_file;
@@ -251,6 +316,7 @@ if [ "$use_ssl" = true ]; then
 else
     echo "SSL is not enabled."
 fi
+sleep 1
 echo ""
 
 # Check if Apache2 or Nginx is already installed
@@ -271,9 +337,57 @@ else
 fi
 
 echo "Using $web_server as the web server."
+sleep 1
+echo ""
+echo "Checking for $web_server package..."
 
 # Check and install necessary packages
 check_install_package "$web_server"
+
+echo "Done!"
+sleep 1
+echo ""
+
+# Ask for folder input and check if it exists
+while true; do
+    # Ask for folder input and allow creating the folder if needed
+    read -p "Enter the folder name to install to (e.g. /var/www/html/inventory): " folder_name
+
+    # Check if the folder exists
+    if [ -d "$folder_name" ]; then
+        echo "Moving files from $root_path to $folder_name..."
+        #cp "$0" "$folder_name"  # Copy the script itself
+        mv "$root_path"/* "$folder_name"/   # Move all files except the script
+        sleep 1
+        echo "Files moved successfully to $folder_name."
+        break
+    else
+        # Get the parent directory
+        parent_dir="$(dirname "$folder_name")"
+        # Check if the parent directory exists
+        if [ -d "$parent_dir" ]; then
+            read -p "The folder doesn't exist. Do you want to create it? (yes/no): " create_folder
+            if [ "$create_folder" = "yes" ]; then
+                mkdir -p "$folder_name"
+                echo "Folder created."
+                sleep 1
+                echo "Moving files to $folder_name..."
+                #cp "$0" "$folder_name"  # Copy the script itself
+                mv "$root_path"/* "$folder_name"/   # Move all files except the script
+                sleep 1
+                echo "Files moved successfully to $folder_name."
+                break
+            else
+                echo "Folder not created. Exiting."
+                exit 1
+            fi
+        else
+            echo "The path leading up to the folder does not exist."
+        fi
+    fi
+done
+sleep 1
+echo ""
 
 # Create a web server configuration file with or without SSL
 if [ "$web_server" = "apache2" ]; then
@@ -320,7 +434,7 @@ server {
 
     location ~ \.php$ {
         include fastcgi_params;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php$phpversion-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
     }
@@ -334,12 +448,86 @@ EOL
     fi
 fi
 
-# Check if MySQL setup has been completed before
-if ! mysql -u root -e ";" 2>/dev/null; then
-    echo "Running MySQL secure installation..."
-    sudo mysql_secure_installation
-fi
 
+
+# Check if MySQL setup has been completed before
+if mysql -u root -e ";" 2>/dev/null; then
+    sleep 1
+    echo ""
+    echo "Running MySQL secure installation..."
+    sleep 1
+    #sudo mysql_secure_installation
+    while true; do
+        read -p "Set root password? (Y/N): " set_root_password
+        case "$set_root_password" in
+            [Yy]* ) 
+                    while true; do
+                        read -s -p "Enter a password for the 'root' user: " mysql_install_root_password
+                        echo
+                        read -s -p "Confirm the password for the 'inventory' user: " mysql_install_root_password_confirm
+                        echo
+                        if [ "$mysql_install_root_password" = "$mysql_install_root_password_confirm" ]; then
+                                # Make sure that NOBODY can access the server without a password
+                                mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';"
+                            break
+                        else
+                            echo "Passwords do not match. Please try again."
+                        fi
+                    done
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    while true; do
+        read -p "Remove anonymous users? (Y/N): " remove_anon_users
+        case "$remove_anon_users" in
+            [Yy]* ) 
+                    mysql -e "DROP USER ''@'localhost'"
+                    mysql -e "DROP USER ''@'$(hostname)'"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    while true; do
+        read -p "Disallow root login remotely? (Y/N): " remote_root_login
+        case "$remote_root_login" in
+            [Yy]* ) 
+                    mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    while true; do
+        read -p "Remove test database and access to it? (Y/N): " remove_test_db
+        case "$remove_test_db" in
+            [Yy]* ) 
+                    mysql -e "DROP DATABASE IF EXISTS test" 
+                    mysql -e  "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+    while true; do
+        read -p "Reload privilege tables now? (Y/N): " reload_priv
+        case "$reload_priv" in
+            [Yy]* ) 
+                    mysql -e "FLUSH PRIVILEGES"
+                    break;;
+            [Nn]* ) 
+                    break;;
+            * ) echo "Please answer Y or N.";;
+        esac
+    done
+fi
+sleep 1
 echo ""
 # Verify MySQL root password
 while true; do
@@ -354,12 +542,15 @@ while true; do
     fi
 done
 
+echo "Checking for 'inventory' database..."
+echo ""
 # Check if "inventory" database exists
 if mysql -u root -e "USE inventory;" 2>/dev/null; then
     read -p "The 'inventory' database already exists. Do you want to remove it and install the new one? (yes/no): " remove_database
     if [ "$remove_database" = "yes" ]; then
         echo "Removing existing 'inventory' database..."
         mysql -u root -e "DROP DATABASE inventory;"
+        sleep 1
         echo "Database removed."
     else
         echo "Database needs to be created to continue."
@@ -369,8 +560,10 @@ if mysql -u root -e "USE inventory;" 2>/dev/null; then
     fi
 else
     echo "The 'inventory' database does not exist."
+    echo "Database will be created."
 fi
 
+sleep 1
 echo ""
 # Run the mysql_setup.sql script
 sql_setup_script="$folder_name/assets/sql/db_setup.sql"
@@ -378,35 +571,60 @@ sql_extras_script="$folder_name/assets/sql/db_extras.sql"
 if [ -f "$sql_setup_script" ]; then
     echo "Running MySQL setup script from assets..."
     mysql -u root < "$sql_setup_script"
+    sleep 5
     echo "MySQL setup script executed."
+    if [ -f "$sql_extras_script" ]; then
+        echo "Running MySQL setup extras script from assets..."
+        mysql -u root < "$sql_extras_script"
+        sleep 5
+        echo "MySQL setup extras script executed."
+    else
+        echo "MySQL setup extras script not found at $sql_extras_script."
+    fi
+    echo ""
     echo "Updating base_url with the selected web url..."
-    mysql -u root -e "UPDATE config SET base_url='$web_domain' WHERE id=1;";
+    mysql -u root -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;";
+    sleep 1
     echo "Done!"
+    echo ""
+
+    while true; do    
+        echo "Checking base_url is set..."
+        # Query to get the base_url value from the config table
+        config_base_url=$(mysql -u root --skip-column-names -e "SELECT base_url FROM inventory.config WHERE id=1;")
+        sleep 1
+
+        # Check if base_url is equal to the desired web_domain
+        if [ "$config_base_url" = "$web_domain" ]; then
+            echo "base_url is set correctly: $config_base_url."
+            break  # Exit the loop if the condition is true
+        else
+            echo "base_url is not set correctly: $config_base_url."
+            echo "Retrying..."
+            mysql -u root -p -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;"
+            echo "Done!"
+        fi
+
+        # Add a delay before retrying (to avoid rapid and unnecessary retries)
+        sleep 5
+    done
 else
     echo "MySQL setup script not found at $sql_setup_script."
 fi
-echo ""
-
-if [ -f "$sql_extras_script" ]; then
-    echo "Running MySQL setup extras script from assets..."
-    mysql -u root < "$sql_extras_script"
-    echo "MySQL setup extras script executed."
-else
-    echo "MySQL setup extras script not found at $sql_extras_script."
-fi
+sleep 1
 echo ""
 
 # Create "inventory" user and set password
 echo "User needed to access the database."
 
 # Check if 'inventory' user exists
-echo "Checking if inventory user exists..."
+echo "Checking if inventory database user exists..."
 echo ""
 user_exists=$(mysql -u root -e "SELECT User FROM mysql.user WHERE User='inventory' AND Host='localhost';" --skip-column-names)
-
+sleep 1
 if [ -n "$user_exists" ]; then
     # The 'inventory' user exists, prompt the user for action
-    echo "Inventory user already exists. Do you want to drop the user and re-create it?"
+    echo "Inventory database user already exists. Do you want to drop the user and re-create it?"
     echo "Selecting 'N' will prompt for the password."
     while true; do
         read -p "Do you want to drop the user? (Y/N): " drop_user
@@ -417,12 +635,12 @@ if [ -n "$user_exists" ]; then
                     echo "User 'inventory' dropped."
                     echo ""
                     while true; do
-                        read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
+                        read -s -p "Enter a password for the 'inventory' database user: " inventory_user_password
                         echo
-                        read -s -p "Confirm the password for the 'inventory' user: " inventory_user_password_confirm
+                        read -s -p "Confirm the password for the 'inventory' database user: " inventory_user_password_confirm
                         echo
                         if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
-                                echo "Creating 'inventory' user..."
+                                echo "Creating 'inventory' database user..."
                                 mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
                                 mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
                                 mysql -u root -e "FLUSH PRIVILEGES;"
@@ -437,7 +655,7 @@ if [ -n "$user_exists" ]; then
             [Nn]* ) 
                     echo ""
                     while true; do
-                        read -p "Enter the password for 'inventory' user: " inventory_user_password;
+                        read -s -p "Enter the password for 'inventory' user: " inventory_user_password;
                         if mysql -u inventory -p"$inventory_user_password" -e ";" 2>/dev/null; then
                             echo "Password matches."
                             correct_password="Y"
@@ -453,12 +671,12 @@ if [ -n "$user_exists" ]; then
 else 
     echo ""
     while true; do
-        read -s -p "Enter a password for the 'inventory' user: " inventory_user_password
+        read -s -p "Enter a password for the 'inventory' database user: " inventory_user_password
         echo
-        read -s -p "Confirm the password for the 'inventory' user: " inventory_user_password_confirm
+        read -s -p "Confirm the password for the 'inventory' database user: " inventory_user_password_confirm
         echo
         if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
-                echo "Creating 'inventory' user..."
+                echo "Creating 'inventory' database user..."
                 mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
                 mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
                 mysql -u root -e "FLUSH PRIVILEGES;"
@@ -482,23 +700,26 @@ if [ "$correct_password" = "Y" ]; then
 else
     echo "Password issue for inventory user..."
 fi
+sleep 1
 echo ""
 
 # Generate and hash password
 echo "Generating new root user password..."
 generate_password
+sleep 0.5
 echo "Hashing new root user password..."
 hash_password
+sleep 0.5
 
 # get system hostname
 hostname=$(hostname --fqdn)
 
 echo "Creating root user for site login..."
 # Insert new user to table
-mysql -u root -e "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '$hashed_password');"
+mysql -u root -e "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname.local', 'local', 0, 1, 1, '$hashed_password');"
 mysql -u root -e "UPDATE inventory.users SET id=0 where id=1;"
 mysql -u root -e "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"   
-
+sleep 1
 echo "Done!"
 echo ""
 
@@ -539,13 +760,14 @@ while true; do
             done
             break;;
         [Nn]* ) 
-            ldap-enabled=0
-            mysql -u root -e "UPDATE config SET ldap_enabled=$ldap_enabled WHERE id=1;"
+            ldap_enabled=0
+            mysql -u root -e "UPDATE inventory.config SET ldap_enabled=$ldap_enabled WHERE id=1;"
             echo "LDAP disabled."
             break;;
         * ) echo "Please answer Y or N.";;
     esac
 done
+sleep 0.5
 echo ""
 
 while true; do
@@ -604,6 +826,14 @@ while true; do
         * ) echo "Please answer Y or N.";;
     esac
 done
+echo ""
+echo "Setting permissions..."
+chown www-data:www-data $folder_name -R
+chmod 700 $folder_name -R
+# chown www:data $folder_name -R
+# chmod 700 $folder_name -R
+sleep 0.5
+echo "Done!"
 echo ""
 
 # Display the web URL for accessing the system

@@ -8,7 +8,7 @@ The purpose of this project is for stock tracking and locating.
 - Linux 
 - Apache2 / Nginx (user choice, or whichever is installed)
 - PHP 8.1 (v8.1.22)
-    - php8.1-calendar, php8.1-common, php8.1-ctype, php8.1-ldap, php8.1-mysqli, php8.1-curl, php8.1-dom, php8.1-exif, php8.1-ffi, php8.1-fileinfo, php8.1-filter, php8.1-ftp, php8.1-gd, php8.1-gettext, php8.1-hash, php8.1-iconv, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-json, php8.1-ldap, php8.1-libxml, php8.1-mbstring, php8.1-mysqli, php8.1-mysqlnd, php8.1-openssl, php8.1-pcntl, php8.1-pcre, php8.1-pdo, php8.1-pdo_mysql, php8.1-phar, php8.1-posix, php8.1-readline, php8.1-redis, php8.1-reflection, php8.1-session, php8.1-shmop, php8.1-simplexml, php8.1-soap, php8.1-sockets, php8.1-sodium, php8.1-spl, php8.1-sysvmsg, php8.1-sysvsem, php8.1-sysvshm, php8.1-tokenizer, php8.1-xml, php8.1-xmlreader, php8.1-xmlrpc, php8.1-xmlwriter, php8.1-xsl, php8.1-zip, php8.1-zlib
+    - php8.1, php-8.1-cli php8.1-common, php8.1-curl, php8.1-fpm, php8.1-gd, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-ldap, php8.1-mbstring, php8.1-mysql, php8.1-readline, php8.1-redis, php8.1-soap, php8.1-xml, php8.1-xsl, php8.1-zip
 - MySQL Server (v8.0.34) (or similar DB using mysql syntax)
 - PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
 - Bootstrap (v4.5.2) (included in headers)
@@ -22,7 +22,7 @@ The purpose of this project is for stock tracking and locating.
 ### Automated Deployment
 For automated deployment, run the below command to clone the repository and run the install script:
 
-`git clone http://git.ajrich.co.uk/web/inventory.git && ./inventory/assets/scripts/install.bash`
+`git clone http://git.ajrich.co.uk/web/inventory.git && /bin/bash inventory/assets/scripts/install.bash`
 
 This will run the setup for the system and provide a username and password to login with.
 
@@ -48,12 +48,14 @@ Clone the repo first, and the follow the below steps.
     ```
     sudo apt install lsb-release ca-certificates apt-transport-https software-properties-common -y
     sudo add-apt-repository ppa:ondrej/php
+    sudo add-apt-repository ppa:ondrej/nginx-mainline
+    sudo add-apt-repository ppa:ondrej/apache2
     sudo apt update 
     ```
 
     b. Install the package and dependencies
     ```
-    sudo apt install -y php8.1 php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib
+    sudo apt install -y php8.1 php8.1-cli php8.1-common php8.1-curl php8.1-fpm php8.1-gd php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-ldap php8.1-mbstring php8.1-mysql php8.1-readline php8.1-redis php8.1-soap php8.1-xml php8.1-xsl php8.1-zip
     ```
 
 3. Install MySQL Server and run first setup
@@ -474,9 +476,30 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.3.1-beta</h3></summary>
-<h4>Beta release 0.3.1, TBC</h4>
+<h4>Beta release 0.3.1, Script updates, swipe card login.</h4>
 
 - Transaction include page styling corrected under pagination form
+- Swipe card login now working. Testing pending once card reader is obtained.
+- Card login page is now complete and working. Test buttons in place for passes until pass reader in place.
+- Users with no theme saved can now login. Fixed the SQL query to make a LEFT JOIN for theme.
+- DB install extras updated in db_extras.sql.
+- Fulldump run and saved.
+- Adjustments made to various pages based on installation bash script.
+- Edit images button added back in to the stock edit page.
+- Login page is now working for the card reader, still needs a full test but now doesnt try to login when pressing any button.
+- MySQL scripts updated to add the needed info to the DB.
+- Bash script updated with some more prompts and fixed the first prompt with a case instead of else if.
+- Bash script now checks whether the base_url is correct and has some delay added in for the scripts to run.
+- Admin global settings is now a more cleaned up table.
+- Transactions now support cable_transaction table.
+- Transaction include page now supports cable_transaction page.
+- Updated cable_transaction table to now include the shelf_id. SQL queries updated.
+- Added error checking from urls to the pages where they are needed and adjusted the error query strings to be more useful.
+- Admin global settings restore defaults now restores the default theme too.
+- Fixed some of the forms not working due to some mobile css format things. There might be some more to find yet.
+- Corrected the README with correct PHP modules to match the install bash script
+- Fixed the install bash script to install the correct modules based on testing. Now installs correctly.
+- Added the start of an udpate script. This will be perfected in the next minor patch ready for the final release in 0.4.0-beta
 
 </details>
 <details>

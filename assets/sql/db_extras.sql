@@ -18,6 +18,7 @@ ALTER TABLE area AUTO_INCREMENT = 1;
 ALTER TABLE cable_item AUTO_INCREMENT = 1;
 ALTER TABLE cable_transaction AUTO_INCREMENT = 1;
 ALTER TABLE cable_types AUTO_INCREMENT = 1;
+ALTER TABLE changelog AUTO_INCREMENT = 1;
 ALTER TABLE config AUTO_INCREMENT = 1;
 ALTER TABLE config_default AUTO_INCREMENT = 1;
 ALTER TABLE item AUTO_INCREMENT = 1;
@@ -29,22 +30,23 @@ ALTER TABLE stock AUTO_INCREMENT = 1;
 ALTER TABLE stock_img AUTO_INCREMENT = 1;
 ALTER TABLE stock_label AUTO_INCREMENT = 1;
 ALTER TABLE transaction AUTO_INCREMENT = 1;
-
-
--- Add blank config to config table ready to be edited
-INSERT INTO config (id) VALUES (1);
+ALTER TABLE theme AUTO_INCREMENT = 1;
+ALTER TABLE notifications AUTO_INCREMENT = 1;
 
 -- Add config_default to the table 
 INSERT INTO config_default 
 (banner_color, logo_image, favicon_image, ldap_enabled, ldap_username, ldap_password, 
 ldap_domain, ldap_host, ldap_port, ldap_basedn, ldap_usergroup, ldap_userfilter, currency, 
 sku_prefix, smtp_host, smtp_port, smtp_encryption, smtp_password, smtp_from_email, 
-smtp_from_name, smtp_to_email, smtp_username, system_name, ldap_host_secondary, base_url)
+smtp_from_name, smtp_to_email, smtp_username, system_name, ldap_host_secondary, base_url, smtp_enabled, default_theme_id)
 VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 1, 'ldapauth', 
 'RHJvcHNCdWlsZHNTa2lsbDEyISE=', 'ajrich.co.uk', '10.0.2.2', 389, 'DC=ajrich,DC=co,DC=uk', 
 'cn=Users', '(objectClass=User)', '£', 'ITEM-', 'mail.ajrich.co.uk', 587, 'starttls', 'RGVtb1Bhc3MxIQ==',
-'inventory@ajrich.co.uk', 'Inventory System', 'inventory@ajrich.co.uk', 'inventory@ajrich.co.uk', 'Inventory System', '10.0.2.2', 
-'inventory.ajrich.co.uk');
+'inventory@ajrich.co.uk', 'StockBase', 'inventory@ajrich.co.uk', 'inventory@ajrich.co.uk', 'StockBase', '10.0.2.2', 
+'inventory.ajrich.co.uk', 0, 1);
+
+-- Duplicaye the config_default table to config table
+INSERT INTO config SELECT * FROM config_default;
 
 -- Add user roles to the user roles table
 INSERT INTO users_roles (id, name, description, is_admin, is_root) 
@@ -69,3 +71,26 @@ VALUES
     (10, 'MM LC-SC', 'Multi Mode LC to SC Fibre Cable', 'Fibre'),
     (11, 'Power', 'Generic Power Cable', 'Power'),
     (12, 'Other', 'Other Generic Cable', 'Other');
+
+INSERT INTO notifications (id, name, title, description, enabled) 
+VALUES 
+    (1, 'stock-added', 'Stock Added', 'Adding stock to the system.', 1),
+    (2, 'stock-removed', 'Stock Removed', 'Removing stock from the system.', 1),
+    (3, 'stock-deleted', 'Stock Deleted', 'Deleting stock from the system.', 1),
+    (4, 'stock-moved', 'Stock Moved', 'Moving stock within the system.', 1),
+    (5, 'stock-edited', 'Stock Edited', 'Editing of stock details within the system.', 1),
+    (6, 'stock-images', 'Stock Image Linking', 'Modification of stock image linking within the system.', 1),
+    (7, 'cablestock-added', 'Fixed Stock Added', 'Adding fixed stock to the system.', 1),
+    (8, 'cablestock-removed', 'Fixed Stock Removed', 'Removing fixed stock from the system.', 1),
+    (9, 'minstock-warning', 'Minimum Stock Warnings', 'Warning for stock being below the minimum stock count.', 1),
+    (10, 'important', 'Important', 'Important notifications. These need to be enabled', 1);
+
+UPDATE notifications SET id=0 WHERE id=10;
+ALTER TABLE notifications AUTO_INCREMENT = 10;
+
+INSERT INTO theme (id, name, file_name)
+VALUES
+    (1, 'Dark', 'theme-dark.css'),
+    (2, 'Light', 'theme-light.css'),
+    (3, 'Light Blue', 'theme-light-blue.css'),
+    (4, 'Dark Red', 'theme-dark-red.css');

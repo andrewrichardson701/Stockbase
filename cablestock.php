@@ -354,189 +354,78 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                             </tbody>
                             <thead>
-
-                            <!-- Large scale -->
-                            <thead class="viewport-large-empty">
+                            <tbody>
                                 <tr>
-                                    <th style="padding-left:5px">Name</th>
-                                    <th style="padding-left:5px">Description</th>
-                                    <th style="padding-left:5px">Type</th>
-                                    <th style="padding-left:5px">Min. Stock</th>
-                                    <th style="padding-left:5px">Quantity</th>
-                                    <th style="padding-left:5px">Cost</th>
-                                    <th style="padding-left:5px"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="viewport-large-empty">
-                                <tr>
-                                    <td>
-                                        <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" required/>
-                                        <datalist id="names">');
-                                            $sql_stock_name = "SELECT * from stock WHERE is_cable=1 ORDER BY name";
-                                            $stmt_stock_name = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt_stock_name, $sql_stock_name)) {
-                                                echo("ERROR getting entries");
-                                            } else {
-                                                mysqli_stmt_execute($stmt_stock_name);
-                                                $result_stock_name = mysqli_stmt_get_result($stmt_stock_name);
-                                                $rowCount_stock_name = $result_stock_name->num_rows;
-                                                if ($rowCount_stock_name < 1) {
-                                                } else {
-                                                    while( $row_stock_name = $result_stock_name->fetch_assoc() ) {
-                                                        echo("<option>".$row_stock_name['name']."</option>");
+                                    <td colspan=100%>
+                                        <div class="row" style="margin-right:25px">
+                                            <div class="col">
+                                                <div>Name</div>
+                                                <div>
+                                                    <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" style="min-width:120px" required/>
+                                                    <datalist id="names">');
+                                                        $sql_stock_name = "SELECT * from stock WHERE is_cable=1 ORDER BY name";
+                                                        $stmt_stock_name = mysqli_stmt_init($conn);
+                                                        if (!mysqli_stmt_prepare($stmt_stock_name, $sql_stock_name)) {
+                                                            echo("ERROR getting entries");
+                                                        } else {
+                                                            mysqli_stmt_execute($stmt_stock_name);
+                                                            $result_stock_name = mysqli_stmt_get_result($stmt_stock_name);
+                                                            $rowCount_stock_name = $result_stock_name->num_rows;
+                                                            if ($rowCount_stock_name < 1) {
+                                                            } else {
+                                                                while( $row_stock_name = $result_stock_name->fetch_assoc() ) {
+                                                                    echo("<option>".$row_stock_name['name']."</option>");
+                                                                }
+                                                            }
+                                                        }
+                                                    echo('
+                                                    </datalist>
+                                                </div>
+                                            </div>
+                                            <div class="col"><div>Description</div><div><input class="form-control" type="text" name="stock-description" style="min-width:120px" placeholder="Description" required/></div></div>
+                                            <div class="col">
+                                                <div>Type</div>
+                                                <div>
+                                                    <select class="form-control" name="cable-type" style="min-width:100px" required>');
+                                                    $sql_types = "SELECT * from cable_types
+                                                                    ORDER BY parent";
+                                                    $stmt_types = mysqli_stmt_init($conn);
+                                                    if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
+                                                        echo("ERROR getting entries");
+                                                    } else {
+                                                        mysqli_stmt_execute($stmt_types);
+                                                        $result_types = mysqli_stmt_get_result($stmt_types);
+                                                        $rowCount_types = $result_types->num_rows;
+                                                        if ($rowCount_types < 1) {
+                                                            echo ("<option selected disabled>No Types Found</option> ");
+                                                        } else {
+                                                            echo ("<option selected disabled>Select Type</option>");
+                                                            while( $row_types = $result_types->fetch_assoc() ) {
+                                                                echo("<option value='".$row_types['id']."'>".$row_types['name']."</option>");
+                                                            }
+                                                        }
                                                     }
-                                                }
-                                            }
-                                        echo('
-                                        </datalist>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" name="stock-description" placeholder="Description" required/>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="cable-type" required>');
 
-                                            $sql_types = "SELECT * from cable_types
-                                                            ORDER BY parent";
-                                            $stmt_types = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
-                                                echo("ERROR getting entries");
-                                            } else {
-                                                mysqli_stmt_execute($stmt_types);
-                                                $result_types = mysqli_stmt_get_result($stmt_types);
-                                                $rowCount_types = $result_types->num_rows;
-                                                if ($rowCount_types < 1) {
-                                                    echo ("<option selected disabled>No Types Found</option> ");
-                                                } else {
-                                                    echo ("<option selected disabled>Select Type</option>");
-                                                    while( $row_types = $result_types->fetch_assoc() ) {
-                                                        echo("<option value='".$row_types['id']."'>".$row_types['name']."</option>");
-                                                    }
-                                                }
-                                            }
-
-                                        echo('
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:90px" value="10" required/>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:90px" value="1" required/>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:90px" value="0" required/>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan=2></td>
-                                    <td class="text-center"><label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a></td>
-                                    <td colspan=4</td>
-                                </tr>
-                                <tr>
-                                    <td colspan=8 class="text-center">
-                                        <input type="file" style="width: 250px;margin-top:5px" id="stock-img" name="stock-img">
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <!-- Large scale end -->
-
-                            <!-- Small scale -->
-                            <thead class="viewport-small-empty">
-                                <tr>
-                                    <th style="padding-left:5px">Name</th>
-                                    <th style="padding-left:5px">Description</th>
-                                    <th style="padding-left:5px">Type</th>
-                                </tr>
-                            </thead>
-                            <tbody class="viewport-small-empty">
-                                <tr>
-                                    <td>
-                                        <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" required/>
-                                        <datalist id="names">');
-                                            $sql_stock_name = "SELECT * from stock WHERE is_cable=1 ORDER BY name";
-                                            $stmt_stock_name = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt_stock_name, $sql_stock_name)) {
-                                                echo("ERROR getting entries");
-                                            } else {
-                                                mysqli_stmt_execute($stmt_stock_name);
-                                                $result_stock_name = mysqli_stmt_get_result($stmt_stock_name);
-                                                $rowCount_stock_name = $result_stock_name->num_rows;
-                                                if ($rowCount_stock_name < 1) {
-                                                } else {
-                                                    while( $row_stock_name = $result_stock_name->fetch_assoc() ) {
-                                                        echo("<option>".$row_stock_name['name']."</option>");
-                                                    }
-                                                }
-                                            }
-                                        echo('
-                                        </datalist>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="text" name="stock-description" placeholder="Description" required/>
-                                    </td>
-                                    <td>
-                                        <select class="form-control" name="cable-type" required>');
-
-                                            $sql_types = "SELECT * from cable_types
-                                                            ORDER BY parent";
-                                            $stmt_types = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
-                                                echo("ERROR getting entries");
-                                            } else {
-                                                mysqli_stmt_execute($stmt_types);
-                                                $result_types = mysqli_stmt_get_result($stmt_types);
-                                                $rowCount_types = $result_types->num_rows;
-                                                if ($rowCount_types < 1) {
-                                                    echo ("<option selected disabled>No Types Found</option> ");
-                                                } else {
-                                                    echo ("<option selected disabled>Select Type</option>");
-                                                    while( $row_types = $result_types->fetch_assoc() ) {
-                                                        echo("<option value='".$row_types['id']."'>".$row_types['name']."</option>");
-                                                    }
-                                                }
-                                            }
-
-                                        echo('
-                                        </select>
-                                    </td>
-                                    <td class="text-center"><label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a></td>
-                                </tr>
-
-                            </tbody>
-                            <thead class="viewport-small-empty">
-                                <tr>
-                                    <th style="padding-left:5px">Min. Stock</th>
-                                    <th style="padding-left:5px">Quantity</th>
-                                    <th style="padding-left:5px">Cost</th>
-                                    <th style="padding-left:5px"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="viewport-small-empty">
-                                <tr>
-                                    <td>
-                                        <input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:90px" value="10" required/>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:90px" value="1" required/>
-                                    </td>
-                                    <td>
-                                        <input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:90px" value="0" required/>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button>
+                                                    echo('
+                                                    </select>
+                                                </div>
+                                                <div class="text-center">
+                                                    <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a>
+                                                </div>
+                                            </div>
+                                            <div class="col" style="max-width:max-content"><div>Min.Stock</div><div><input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:70px" value="10" required/></div></div>
+                                            <div class="col" style="max-width:max-content"><div>Quantity</div><div><input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:70px" value="1" required/></div></div>
+                                            <div class="col" style="max-width:max-content"><div>Cost</div><div><input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:70px" value="0" required/></div></div>
+                                            <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button></div></div>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan=100% class="text-center">
-                                        <input type="file" style="width: 250px;margin-top:5px" id="stock-img" name="stock-img">
+                                        <input type="file" style="width: 250px;margin-top:10px" id="stock-img" name="stock-img">
                                     </td>
                                 </tr>
                             </tbody>
-                            <!-- Small scale end -->
                         </table>                      
                         
                     </form>
@@ -638,7 +527,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     echo('<img id="'.$cable_item_id.'-img" class="inv-img-50h thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
                                                 }
                                                 echo('</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-name"><a href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
+                                                <td class="align-middle" id="'.$cable_item_id.'-name"><a class="link" href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
                                                 <td class="align-middle viewport-large-empty" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
                                                 <td class="align-middle link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>

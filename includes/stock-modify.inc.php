@@ -385,7 +385,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         }
                     }
                     
-                    $current_sku_prefix = isset($config_sku_prefix) ? $config_sku_prefix : 'ITEM-';
+                    $current_sku_prefix = isset($config_sku_prefix) ? $config_sku_prefix : $config_d_sku_prefix;
 
                     $regex = '/^'.$current_sku_prefix.'\d{5}$/';
                     $PRE_skus = preg_grep($regex, $skus);
@@ -402,7 +402,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             exit();
                         }
                     } else {
-                        if (empty($PRES_skus) || count($PRE_skus) == 0) {
+                        if (empty($PRE_skus) || count($PRE_skus) == 0) {
                             $new_PRE_sku_number = 1;
                         } else {
                             usort($PRE_skus, function($a, $b) { // sort the array 
@@ -814,7 +814,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         $rowCount_stock = $result_stock->num_rows;
                         if ($rowCount_stock > 0) {
                             // SKU exists, issue.
-                            header("Location: ".$_SERVER['REQUEST_URI']."&error=duplicateSKU");
+                            header("Location: ".$redirect_url."&error=duplicateSKU");
                             exit();
                         } else {
                             //SKU not found, continue.
@@ -823,7 +823,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             $sql_update = "UPDATE stock SET name=?, description=?, sku=?, min_stock=? WHERE id=?";
                             $stmt_update = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                header("Location: ".$_SERVER['REQUEST_URI']."&error=updateStockSQL");
+                                header("Location: ".$redirect_url."&error=updateStockSQL");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_update, "sssss", $stock_name, $stock_description, $stock_sku, $stock_min_stock, $stock_id);
@@ -831,6 +831,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                                 // add labels to the stock_labels table
                                 function addLabel($stock_id, $label_id) {
+                                    global $_SESSION;
                                     include 'dbh.inc.php';
                                     $sql_add = "INSERT INTO stock_label (stock_id, label_id) VALUES (?, ?)";
                                     $stmt_add = mysqli_stmt_init($conn);
@@ -846,8 +847,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     }
                                 }
                                 function cleanupLabels($stock_id) {
+                                    global $_SESSION;
                                     include 'dbh.inc.php';
-                                    include 'changelog.inc.php';
 
                                     $sql = "SELECT id FROM stock_label WHERE stock_id=$stock_id";
                                     $stmt = mysqli_stmt_init($conn);

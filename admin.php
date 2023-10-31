@@ -85,6 +85,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 $errorPtext = 'New password matches current.';
             } elseif ($_GET['error'] == 'invalidPermissions') {
                 $errorPtext = 'Invalid permissions to complete.';
+            } elseif ($_GET['error'] == 'roleMissing') {
+                $errorPtext = 'Current user role missing.';
             } elseif ($_GET['error'] == 'userIdMissing') {
                 $errorPtext = 'User ID missing.';
             } elseif ($_GET['error'] == 'passwordMismatch') {
@@ -113,6 +115,16 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 $errorPtext = 'Unkown type submitted.';
             } elseif ($_GET['error'] == 'missingType') {
                 $errorPtext = 'Missing type.';
+            } elseif ($_GET['error'] == 'missingAttributeType') {
+                $errorPtext = 'Missing attribute type.';
+            } elseif ($_GET['error'] == 'incorrectAttributeType') {
+                $errorPtext = 'Incorrect attribute type.';
+            } elseif ($_GET['error'] == 'missingAttributeID') {
+                $errorPtext = 'Missing attribute ID.';
+            } elseif ($_GET['error'] == 'sessionRoleMissing') {
+                $errorPtext = 'Role missing from session details. Please logout and back in.';
+            } elseif ($_GET['error'] == 'incorrectRole') {
+                $errorPtext = 'Incorrect user permissions to perform this action.';
             } else {
                 $errorPtext = $_GET['error'];
             }
@@ -138,6 +150,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 $sqlerrorPtext = 'Multiple users found in table.';
             } elseif ($_GET['sqlerror'] == 'failedToChangeSkuPrefix') {
                 $sqlerrorPtext = 'Failed to update SKU prefixes in stock table.';
+            } elseif ($_GET['sqlerror'] == 'noRowsFound') {
+                $sqlerrorPtext = 'No rows found.';
             } else {
                 $sqlerrorPtext = $_GET['sqlerror'];
             }
@@ -167,18 +181,18 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             } elseif ($_GET['success'] == 'deleted') {
                 $successPtext = 'Deleted!';
                 if (isset($_GET['type'])) {
-                    $successPtext = ' Type = '.ucwords($_GET['type']);
+                    $successPtext .= ' Type = '.ucwords($_GET['type']);
                 }
                 if (isset($_GET['id'])) {
-                    $successPtext = ' ID = '.ucwords($_GET['id']);
+                    $successPtext .= ' ID = '.ucwords($_GET['id']);
                 }
             } elseif ($_GET['success'] == 'updated') {
                 $successPtext = 'Updated!';
                 if (isset($_GET['type'])) {
-                    $successPtext = ' Type = '.ucwords($_GET['type']);
+                    $successPtext .= ' Type = '.ucwords($_GET['type']);
                 }
                 if (isset($_GET['id'])) {
-                    $successPtext = ' ID = '.ucwords($_GET['id']);
+                    $successPtext .= ' ID = '.ucwords($_GET['id']);
                 }
             } elseif ($_GET['success'] == 'locationAdded') {
                 $successPtext = 'Updated!';
@@ -420,7 +434,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </tr>
                         <tr class="" style="margin-top:20px">
                             <td id="sku-prefix-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="sku_prefix">SKU Prefix:</p>
+                                <p style="min-height:max-content;margin:0" class=" align-middle" for="sku_prefix"><or class="title" title="Prefix for SKU element on stock. e.g. ITEM-00001 or SKU-00001">SKU Prefix:</or></p>
                             </td>
                             <td id="sku-prefix-set" style="width:250px;padding-bottom:20px">
                                 <input class="form-control " type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
@@ -435,7 +449,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                         <tr class="" style="margin-top:20px">
                             <td id="base-url-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="base_url">Base URL:</p>
+                                <p style="min-height:max-content;margin:0" class="align-middle" for="base_url"><or class="title" title="This only changes the URL for any links or emails, not the web connection url. This needs to be changed in the web config file.">Base URL:</or></p>
                             </td>
                             <td id="base-url-set" style="width:250px;padding-bottom:20px">
                                 <input class="form-control " type="text" style="width: 150px" id="base_url" name="base_url">
@@ -534,6 +548,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <th>Auth</th>
                         <th>Enabled</th>
                         <th></th>
+                        <?php if ($_SESSION['role'] == "Root") { echo ("<th></th>"); }?>
                     </tr>
                 </thead>
                 <tbody>
@@ -615,12 +630,23 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             }
                                         echo(' onchange="usersEnabledChange(\''.$user_id.'\')"/>
                                         </td>
-                                        <td>
+                                        <td style="vertical-align: middle;">
                                             <button class="btn btn-warning" id="user_'.$user_id.'_pwreset" onclick="resetPassword(\''.$user_id.'\')"'); if ($user_auth == "ldap" || $user_role == "Admin" || $user_role == "Root") { echo("disabled"); } echo('>Reset Password</button>
                                         </td>
                                         ');
+                                        if ($_SESSION['role'] == 'Root') {
+                                            echo('
+                                            <td style="vertical-align: middle;">   
+                                                <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0;margin:0">
+                                                    <button type="submit" class="btn btn-info" id="user_'.$user_id.'_impersonate" title="Impersonate"><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
+                                                    <input type="hidden" name="user-impersonate" value="impersonate"/>
+                                                    <input type="hidden" name="role" value="Root" />
+                                                    <input type="hidden" name="user-id" value="'.$user_id.'" />
+                                                </form>
+                                            ');
+                                        }
                                 }
-                                echo('<tr class="theme-tableOuter"><td></td><td colspan=8><button class="btn btn-success" type="button" onclick="navPage(\'addlocaluser.php\');"><i class="fa fa-plus"></i> Add</button></td></tr>');
+                                echo('<tr class="theme-tableOuter"><td></td><td colspan=100%><button class="btn btn-success" type="button" onclick="navPage(\'addlocaluser.php\');"><i class="fa fa-plus"></i> Add</button></td></tr>');
                             }
                         }
                     ?>
@@ -699,15 +725,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 }
             }
             ?>
-            <div style="height:75%;overflow-x: hidden;overflow-y: auto;">
+            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                 <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
                         <tr class="theme-tableOuter">
-                            <th class="text-center" style="width:130px">Image</th>
-                            <th class="text-center">File</th>
-                            <th class="text-center">Links</th>
-                            <th class="text-center">Delete</th>
-                            <th></th>
+                            <th class="text-center theme-tableOuter" style="width:130px; position: sticky; top: -1;">Image</th>
+                            <th class="text-center theme-tableOuter" style="position: sticky; top: -1;">File</th>
+                            <th class="text-center theme-tableOuter" style="position: sticky; top: -1;">Links</th>
+                            <th class="text-center theme-tableOuter" style="position: sticky; top: -1; z-index:10">Delete</th>
+                            <th class="text-center theme-tableOuter" style="position: sticky; top: -1;">&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -720,7 +746,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         for ($f=0; $f<count($files); $f++) {
                             $filename = $files[$f];
 
-                            $sql_images = "SELECT * FROM stock_img WHERE image='$filename'";
+                            $sql_images = "SELECT stock_img.id AS id, stock_img.stock_id AS stock_id, stock_img.image AS image,
+                                                stock.name AS stock_name
+                                            FROM stock_img 
+                                            LEFT JOIN stock ON stock_img.stock_id=stock.id ANd stock.deleted=0
+                                            WHERE image='$filename'";
                             $stmt_images = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_images, $sql_images)) {
                                 echo("ERROR getting entries");
@@ -739,7 +769,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <td id="image-'.$f.'-name" class="text-center align-middle">'.$filepath.'/'.$filename.'</td>
                                         <td class="text-center align-middle">'.$links.'</td>
                                         <td class="text-center align-middle"><button class="btn btn-danger" type="submit" name="imagemanagement-submit" '); if ($links !== 0) { echo('disabled title="Image still linked to stock. Remove these links before deleting."'); } echo('><i class="fa fa-trash"></i></button></td>
-                                        <td class="text-center align-middle">'); if ($links !== 0) { echo('<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showImageLinks(\''.$f.'\')">Show Links</button>'); } echo('</td>
+                                        <td class="text-center align-middle">'); if ($links !== 0) { echo('<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showLinks(\'image\', \''.$f.'\')">Show Links</button>'); } echo('</td>
                                     </form>
                                 </tr>
                             ');
@@ -751,8 +781,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <table class="table table-dark theme-table">
                                                     <thead>
                                                         <tr class="theme-tableOuter">
-                                                            <th>ID</td>
-                                                            <th>Stock ID</td>
+                                                            <th>ID</th>
+                                                            <th>Stock ID</th>
+                                                            <th>Stock Name</th>
                                                             <th>Image</th>
                                                         </tr>
                                                     </thead>
@@ -762,6 +793,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             <tr class="clickable" onclick=navPage("stock.php?stock_id='.$row_images['stock_id'].'")>
                                                                 <td>'.$row_images['id'].'</td>
                                                                 <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_id'].'</a></td>
+                                                                <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_name'].'</a></td>
                                                                 <td>'.$row_images['image'].'</td>
                                                             </tr>
                                                         ');
@@ -783,6 +815,449 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="attributemanagement-settings" onclick="toggleSection(this, 'attributemanagement')">Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Attribute Management Settings -->
+        <div style="padding-top: 20px" id="attributemanagement" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement')) {
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+            }
+            ?>
+
+            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Labels</h4>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement-label')) {
+                echo('<div style="margin-right: 10px; margin-left: 10px">');
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+                echo('</div>');
+            }
+            ?>
+            
+                    <?php   
+                        $labels = [];
+                        $labels_links = [];
+
+                        $l_d = 0;
+
+                        $sql_labels = "SELECT 
+                                            label.id AS label_id, 
+                                            label.name AS label_name, 
+                                            label.deleted AS label_deleted,
+                                            stock_label.id AS stock_label_id, 
+                                            stock_label.stock_id AS stock_id, 
+                                            stock_label.label_id AS stock_label_label_id,
+                                            stock.name AS stock_name
+                                        FROM 
+                                            label
+                                        LEFT JOIN 
+                                            stock_label ON label.id = stock_label.label_id
+                                        LEFT JOIN 
+                                            stock ON stock_label.stock_id = stock.id AND stock.deleted=0;";                         
+                        $stmt_labels = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
+                            echo("ERROR getting entries");
+                        } else {
+                            mysqli_stmt_execute($stmt_labels);
+                            $result_labels = mysqli_stmt_get_result($stmt_labels);
+                            $rowCount_labels = $result_labels->num_rows;
+                            while ($row_labels = $result_labels->fetch_assoc()) {
+                                if ($row_labels['label_deleted'] == 1) {
+                                    $l_d++;
+                                }
+                                if (!array_key_exists($row_labels['label_id'], $labels)) {
+                                    $labels[$row_labels['label_id']] = array('id' =>  $row_labels['label_id'], 'name' => $row_labels['label_name'], 'deleted' => $row_labels['label_deleted']);
+                                }
+                                if (isset($row_labels['stock_label_id']) && $row_labels['stock_label_id'] !== NULL && $row_labels['stock_label_label_id'] !== '') {
+                                    $labels_links[$row_labels['label_id']][] = array('id' => $row_labels['stock_label_id'], 'stock_id' => $row_labels['stock_id'], 
+                                                                                        'stock_name' => $row_labels['stock_name'], 'label_id' => $row_labels['stock_label_label_id']);
+                                }
+                            }
+                            ?>
+                            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                                <table class="table table-dark theme-table" style="max-width:max-content">
+                                    <thead>
+                                        <tr class="theme-tableOuter">
+                                            <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">ID</th>
+                                            <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                            <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
+                                            <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
+                                            <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
+                                                <button id="show-deleted-label" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('label', 1)" <?php if ($l_d == 0) { echo "hidden"; } ?> >
+                                                    <span class="zeroStockFont">
+                                                        <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                                        
+                                                    </span>
+                                                </button>
+                                                <button id="hide-deleted-label" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('label', 0)" hidden>
+                                                    <span class="zeroStockFont">
+                                                        <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                                    </span>
+                                                
+                                                </button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                            <?php
+                            foreach ($labels as $label) {
+                                $l = $label['id'];
+                                $label_deleted = $label['deleted'];
+                                $label_deleted_class = '';
+                                if ($label_deleted == 1) {
+                                    $label_deleted_class = 'red theme-divBg label-deleted';
+                                }
+                                if (array_key_exists($l, $labels_links)) {
+                                    $label_link_count = count($labels_links[$l]);
+                                } else {
+                                    $label_link_count = 0;
+                                }
+                                
+                                echo('
+                                    <tr id="label-row-'.$l.'" class="align-middle '.$label_deleted_class.'"'); if ($label_deleted == 1) { echo(' hidden'); } echo('>
+                                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                            <input type="hidden" name="attribute-type" value="label"/>
+                                            <input type="hidden" name="id" value="'.$l.'">
+                                            <td id="label-'.$l.'-id" class="text-center align-middle">'.$l.'</td>
+                                            <td id="label-'.$l.'-name" class="text-center align-middle">'.$label['name'].'</td>
+                                            <td class="text-center align-middle">'.$label_link_count.'</td>
+                                            <td class="text-center align-middle">');
+                                            if ($label_deleted !== 1) {
+                                                echo('<button class="btn btn-danger" type="submit" name="attributemanagement-submit" '); 
+                                                    if ($label_link_count !== 0) { echo('disabled title="Label still linked to stock. Remove these links before deleting."'); } 
+                                                    echo('><i class="fa fa-trash"></i></button></td>');
+                                            } else {
+                                                echo('<button class="btn btn-success" type="submit" name="attributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
+                                            }
+                                            echo('<td class="text-center align-middle">'); 
+                                                if ($label_deleted !== 1) {
+                                                    if ($label_link_count !== 0) { echo('<button class="btn btn-warning" id="label-'.$l.'-links" type="button" onclick="showLinks(\'label\', \''.$l.'\')">Show Links</button>'); }
+                                                } else {
+                                                    echo('<or class="green">Restore?</or>');
+                                                }
+                                            echo('</td>');
+                                    echo('</form>
+                                    </tr>
+                                ');
+                                if ($label_link_count !== 0) { 
+                                    echo('
+                                        <tr id="label-row-'.$l.'-links" class="align-middle" hidden>
+                                            <td colspan=100%>
+                                                <div>
+                                                    <table class="table table-dark theme-table">
+                                                        <thead>
+                                                            <tr class="theme-tableOuter">
+                                                                <th>ID</th>
+                                                                <th>Stock ID</th>
+                                                                <th>Stock Name</th>
+                                                                <th>Label ID</th>
+                                                                <th>Label Name</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>');
+                                                        $links = $labels_links[$l];
+                                                        foreach ($links as $ll) {
+                                                            echo('
+                                                                <tr class="clickable" onclick=navPage("stock.php?stock_id='.$ll['stock_id'].'")>
+                                                                    <td class="text-center">'.$ll['id'].'</td>
+                                                                    <td class="text-center"><a href="stock.php?stock_id='.$ll['stock_id'].'">'.$ll['stock_id'].'</a></td>
+                                                                    <td class="text-center"><a href="stock.php?stock_id='.$ll['stock_id'].'">'.$ll['stock_name'].'</a></td>
+                                                                    <td class="text-center">'.$ll['label_id'].'</td>
+                                                                    <td class="text-center">'.$labels[$ll['label_id']]['name'].'</td>
+    
+                                                                </tr>
+                                                            ');
+                                                        }                                                    
+                                                        echo('
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ');
+                                }
+                            }
+                            ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <?php
+                        }     
+                        ?>
+
+            <hr style="border-color:white; margin-left:10px">
+
+            <h4 style="margin-left:10px; margin-right:10px; margin-top:20px; font-size:20px; margin-bottom:10px">Manufacturers</h4>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement-manufacturer')) {
+                echo('<div style="margin-right: 10px; margin-left: 10px">');
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+                echo('</div>');
+            }
+
+            $manufacturers = [];
+            $manufacturers_links = [];
+
+            $m_d = 0;
+
+            $sql_manufacturers = "SELECT 
+                                    manufacturer.id AS manufacturer_id, 
+                                    manufacturer.name AS manufacturer_name, 
+                                    manufacturer.deleted AS manufacturer_deleted,
+                                    item.id AS item_id, item.stock_id AS item_stock_id, item.manufacturer_id AS item_manufacturer_id,
+                                    stock.id AS stock_id, stock.name AS stock_name
+                                FROM 
+                                    manufacturer
+                                LEFT JOIN
+                                    item ON manufacturer.id=item.manufacturer_id    
+                                LEFT JOIN 
+                                    stock ON stock.id=item.stock_id AND stock.deleted=0";                  
+            $stmt_manufacturers = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_manufacturers, $sql_manufacturers)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_manufacturers);
+                $result_manufacturers = mysqli_stmt_get_result($stmt_manufacturers);
+                $rowCount_manufacturers = $result_manufacturers->num_rows;
+                while ($row_manufacturers = $result_manufacturers->fetch_assoc()) {
+                    if ($row_manufacturers['manufacturer_deleted'] == 1) {
+                        $m_d++;
+                    }
+                    if (!array_key_exists($row_manufacturers['manufacturer_id'], $manufacturers)) {
+                        $manufacturers[$row_manufacturers['manufacturer_id']] = array('id' =>  $row_manufacturers['manufacturer_id'], 'name' => $row_manufacturers['manufacturer_name'], 'deleted' => $row_manufacturers['manufacturer_deleted']);
+                    }
+                    if (isset($row_manufacturers['item_manufacturer_id']) && $row_manufacturers['item_manufacturer_id'] !== NULL && $row_manufacturers['item_manufacturer_id'] !== '') {
+                        $manufacturers_links[$row_manufacturers['manufacturer_id']][] = array('id' => $row_manufacturers['item_manufacturer_id'], 'stock_id' => $row_manufacturers['stock_id'], 
+                                                                            'stock_name' => $row_manufacturers['stock_name'], 'manufacturer_id' => $row_manufacturers['item_manufacturer_id']);
+                    }
+                }
+                ?>
+                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                    <table class="table table-dark theme-table" style="max-width:max-content">
+                        <thead>
+                            <tr class="theme-tableOuter">
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">ID</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
+                                    <button id="show-deleted-manufacturer" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('manufacturer', 1)" <?php if($m_d == 0) { echo "hidden"; } ?> >
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            
+                                        </span>
+                                    </button>
+                                    <button id="hide-deleted-manufacturer" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('manufacturer', 0)" hidden>
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                        </span>
+                                    
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    <?php
+                        foreach ($manufacturers as $manufacturer) {
+                            $m = $manufacturer['id'];
+                            $manufacturer_deleted = $manufacturer['deleted'];
+                            $manufacturer_deleted_class = '';
+                            if ($manufacturer_deleted == 1) {
+                                $manufacturer_deleted_class = 'red theme-divBg manufacturer-deleted';
+                            }
+                            if (array_key_exists($m, $manufacturers_links)) {
+                                $manufacturer_link_count = count($manufacturers_links[$m]);
+                            } else {
+                                $manufacturer_link_count = 0;
+                            }
+                            
+                            echo('
+                                <tr id="manufacturer-row-'.$m.'" class="align-middle '.$manufacturer_deleted_class.'"'); if ($manufacturer_deleted == 1) { echo(' hidden'); } echo('>
+                                    <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="attribute-type" value="manufacturer"/>
+                                        <input type="hidden" name="id" value="'.$m.'">
+                                        <td id="manufacturer-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
+                                        <td id="manufacturer-'.$m.'-name" class="text-center align-middle">'.$manufacturer['name'].'</td>
+                                        <td class="text-center align-middle">'.$manufacturer_link_count.'</td>
+                                        <td class="text-center align-middle">');
+                                        if ($manufacturer_deleted !== 1) {
+                                            echo('<button class="btn btn-danger" type="submit" name="attributemanagement-submit" '); 
+                                                if ($manufacturer_link_count !== 0) { echo('disabled title="manufacturer still linked to stock. Remove these links before deleting."'); } 
+                                                echo('><i class="fa fa-trash"></i></button></td>');
+                                        } else {
+                                            echo('<button class="btn btn-success" type="submit" name="attributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
+                                        }
+                                        echo('<td class="text-center align-middle">'); 
+                                            if ($manufacturer_deleted !== 1) {
+                                                if ($manufacturer_link_count !== 0) { echo('<button class="btn btn-warning" id="manufacturer-'.$m.'-links" type="button" onclick="showLinks(\'manufacturer\', \''.$m.'\')">Show Links</button>'); }
+                                            } else {
+                                                echo('<or class="green">Restore?</or>');
+                                            }
+                                        echo('</td>');
+                                echo('</form>
+                                </tr>
+                            ');
+                            if ($manufacturer_link_count !== 0) { 
+                                echo('
+                                    <tr id="manufacturer-row-'.$m.'-links" class="align-middle" hidden>
+                                        <td colspan=100%>
+                                            <div>
+                                                <table class="table table-dark theme-table">
+                                                    <thead>
+                                                        <tr class="theme-tableOuter">
+                                                            <th>ID</th>
+                                                            <th>Stock ID</th>
+                                                            <th>Stock Name</th>
+                                                            <th>manufacturer ID</th>
+                                                            <th>manufacturer Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>');
+                                                    $links = $manufacturers_links[$m];
+                                                    foreach ($links as $mm) {
+                                                        echo('
+                                                            <tr class="clickable" onclick=navPage("stock.php?stock_id='.$mm['stock_id'].'")>
+                                                                <td class="text-center">'.$mm['id'].'</td>
+                                                                <td class="text-center"><a href="stock.php?stock_id='.$mm['stock_id'].'">'.$mm['stock_id'].'</a></td>
+                                                                <td class="text-center"><a href="stock.php?stock_id='.$mm['stock_id'].'">'.$mm['stock_name'].'</a></td>
+                                                                <td class="text-center">'.$mm['manufacturer_id'].'</td>
+                                                                <td class="text-center">'.$manufacturers[$mm['manufacturer_id']]['name'].'</td>
+                                                            </tr>
+                                                        ');
+                                                    }                                                    
+                                                    echo('
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ');
+                            }
+                        }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php
+            }  
+        ?>                         
+        </div>
+
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stockmanagement-settings" onclick="toggleSection(this, 'stockmanagement')">Stock Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Stock Management Settings -->
+        <div style="padding-top: 20px" id="stockmanagement" hidden>
+            <h4 style="margin-left:10px; margin-right:10px; margin-top:20px; font-size:20px; margin-bottom:10px">Deleted Stock</h4>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'stockmanagement')) {
+                echo('<div style="margin-right: 10px; margin-left: 10px">');
+                if ($errorPtext !== '') {
+                    echo $errorPprefix.$errorPtext.$errorPsuffix;
+                }
+                if ($sqlerrorPtext !== '') {
+                    echo $errorPprefix.$sqlerrorPtext.$errorPsuffix;
+                }
+                if ($successPtext !== '') {
+                    echo $successPprefix.$successPtext.$successPsuffix;
+                }
+                echo('</div>');
+            }
+            $sql_stock = "SELECT 
+                            stock.id AS stock_id, 
+                            stock.name AS stock_name, 
+                            stock.deleted AS stock_deleted,
+                            stock.description AS stock_description,
+                            stock.is_cable AS stock_is_cable,
+                            stock.sku AS stock_sku
+                        FROM 
+                            stock
+                        WHERE
+                            stock.deleted=1";                  
+            $stmt_stock = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_stock);
+                $result_stock = mysqli_stmt_get_result($stmt_stock);
+                $rowCount_stock = $result_stock->num_rows;
+                if ($rowCount_stock !== 0) {
+                    ?>
+                    <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                        <table class="table table-dark theme-table" style="max-width:max-content">
+                            <thead>
+                                <tr class="theme-tableOuter">
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">ID</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">SKU</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Description</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Cable?</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Restore</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                                while ($row_stock = $result_stock->fetch_assoc()) {
+                                    $s_id = $row_stock['stock_id'];
+                                    $s_name = $row_stock['stock_name'];
+                                    $s_sku = $row_stock['stock_sku'];
+                                    $s_description = $row_stock['stock_description'];
+                                    $s_short_description = strlen($s_description) > 30 ? substr($s_description,0,27).'...' : $s_description;
+                                    $s_is_cable = $row_stock['stock_is_cable'] == 1 ? '<or class="green">Yes</or>' : '<or class="red">No</or>';
+                                    $s_d_l = 0; // this is used to determine if the stock description length is too long.
+                                    if (strlen($s_description) > 30) {
+                                        $s_d_l = 1;
+                                    }
+
+                                    echo('
+                                        <tr id="deleted-stock-row-'.$s_id.' class="align-middle">
+                                            <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                <input type="hidden" name="stockmanagement-type" value="deleted"/>
+                                                <input type="hidden" name="id" value="'.$s_id.'">
+                                                <td class="align-middle text-center">'.$s_id.'</td>
+                                                <td class="align-middle text-center">'.$s_name.'</td>
+                                                <td class="align-middle text-center">'.$s_sku.'</td>
+                                                <td class="align-middle text-center"><or'); if ($s_d_l == 1) {echo (' title="'.$s_description.'" class="title"');} echo('>'.$s_short_description.'</td>
+                                                <td class="align-middle text-center">'.$s_is_cable.'</td>
+                                                <td class="align-middle text-center"><button class="btn btn-success" type="submit" name="stockmanagement-restore"><i class="fa fa-trash-restore"></i></button></td>
+                                            </form>
+                                        </tr>
+                                    ');
+                                }
+                            ?>
+                            </tbody>
+                        </table>
+                    </div>
+            <?php
+                } else {
+                    echo('<p style="margin-left:10px; margin-right:10px">No deleted stock found.</p>');
+                }
+            }
+            ?>
+            
         </div>
 
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
@@ -2070,6 +2545,30 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
 
     </script>
+    <script>
+        function toggleDeletedAttributes(type, show) {
+            var identifier = type+'-deleted';
+            var attributes = document.getElementsByClassName(identifier);
+            var showbutton = document.getElementById('show-deleted-'+type);
+            var hidebutton = document.getElementById('hide-deleted-'+type);
+            console.log(attributes);
+            for (i=0; i<attributes.length; i++) {
+                var attribute = attributes[i]
+                if (show == 1) {
+                    attribute.hidden = false
+                } else {
+                    attribute.hidden = true;
+                }
+            }
+            if (show == 1) {
+                showbutton.hidden = true;
+                hidebutton.hidden = false;
+            } else {
+                showbutton.hidden = false;
+                hidebutton.hidden = true;
+            }
+        }
+    </script>
 
     <script>
         function populateSites(field, current_site) {
@@ -2199,9 +2698,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
         document.getElementById("addLocation-type").addEventListener("change", populateParent);
 
-        function showImageLinks(num) {
-            var button = document.getElementById('image-'+num+'-links');
-            var linksRow = document.getElementById('image-row-'+num+'-links');
+        function showLinks(type, num) {
+            var button = document.getElementById(type+'-'+num+'-links');
+            var linksRow = document.getElementById(type+'-row-'+num+'-links');
 
             if (linksRow.hidden === true) {
                 button.className = "btn btn-dark";

@@ -10,14 +10,16 @@ if (!empty($_POST)) {
         if(session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         } 
+        include 'changelog.inc.php';
         $redirect_url = str_replace('includes/', '', $_SESSION['redirect_url']);
         print_r($_POST);        
         $name = isset($_POST['property-name']) ? $_POST['property-name'] : header("Location ../$redirect_url&error=nameEmpty"); // all
         $description = isset($_POST['description']) ? $_POST['description'] : ''; // site/area
         $site_id = isset($_POST['site_id']) ? $_POST['site_id'] : ''; // area
         $area_id = isset($_POST['area_id']) ? $_POST['area_id'] : ''; // shelf
+        $type=$_POST['type'];
 
-        switch ($_POST['type']) {
+        switch ($type) {
             case 'label':
                 $sqlCheck = "SELECT * FROM label WHERE name='$name'";
                 $sql = "INSERT INTO label (name) VALUES ('$name')";
@@ -59,6 +61,8 @@ if (!empty($_POST)) {
                     exit();
                 } else {
                     mysqli_stmt_execute($stmt);
+                    $new_id = mysqli_insert_id($conn);
+                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "$type", $new_id, "name", null, "$name");
                     header("Location: ../$redirect_url&property=Added");
                     exit();
                 } 

@@ -17,14 +17,18 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 } 
 
-if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) && !isset($_POST['ldap-submit']) 
-    && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) 
-    && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['ldap-toggle-submit']) 
-    && !isset($_POST['admin-pwreset-submit']) && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) 
-    && !isset($_POST['profile-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit'])
-    && !isset($_POST['smtp-toggle-submit']) && !isset($_POST['imagemanagement-submit'])
-    && !isset($_POST['theme-upload']) && !isset($_GET['mail-notification']) && !isset($_POST['card-modify']) 
-    && !isset($_POST['card-remove'])) {
+if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults']) 
+    && !isset($_POST['ldap-submit']) && !isset($_POST['ldap-restore-defaults']) && !isset($_POST['ldap-toggle-submit'])
+    && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['smtp-toggle-submit'])
+    && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['user-impersonate']) && !isset($_POST['user-stop-impersonate']) 
+    && !isset($_POST['admin-pwreset-submit']) 
+    && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit']) 
+    && !isset($_POST['profile-submit']) && !isset($_POST['card-modify']) && !isset($_POST['card-remove']) 
+    && !isset($_POST['theme-upload'])
+    && !isset($_GET['mail-notification'])
+    && !isset($_POST['imagemanagement-submit'])
+    && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
+    && !isset($_POST['stockmanagement-restore'])) {
 
     header("Location: ../admin.php?error=noSubmit&section=none");
     exit();
@@ -524,7 +528,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             } else {
                 $outcome = 'disabled';
             }
-            header("Location: ../admin.php?success=$ouctome&section=ldap-settings#ldap-settings");
+            header("Location: ../admin.php?success=$outcome&section=ldap-settings#ldap-settings");
             exit();
         }
     } elseif (isset($_POST['ldap-submit'])) { // LDAP saving in admin page
@@ -656,7 +660,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             } else {
                 $outcome = 'disabled';
             }
-            header("Location: ../admin.php?success=$ouctome&section=ldap-settings#ldap-settings");
+            header("Location: ../admin.php?success=$outcome&section=ldap-settings#ldap-settings");
             exit();
         }
     } elseif (isset($_POST['smtp-submit'])) { // save smtp info in smtp section of admin page
@@ -847,11 +851,112 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         } else {
             echo('Error: Unable to submit form.');
         }
+    } elseif (isset($_POST['user-impersonate'])) { // impersonating a user as Root only. This living in the admin users section
+        if (isset($_POST['user-id'])) {
+            $user_id = $_POST['user-id'];
+            if (isset($_POST['role'])) {
+                if (isset($_SESSION['role'])) {
+                    $sessionRole = $_SESSION['role'];
+                    $formRole = $_POST['role'];
+                    if ($sessionRole === $formRole && $sessionRole === "Root") {
+                        // roles match and you are a root user
+                        $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, users.enabled as enabled, users.password as password, users.password_expired AS password_expired, users.theme_id AS users_theme_id, 
+                                            users_roles.name as role, users.theme_id AS users_theme_id,
+                                            theme.name as theme_name, theme.file_name as theme_file_name
+                                        FROM users 
+                                        INNER JOIN users_roles ON users.role_id = users_roles.id
+                                        LEFT JOIN theme ON users.theme_id = theme.id
+                                        WHERE users.id=?";
+                        $stmt_users = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
+                            header("Location: ../login.php?error=sqlerror_getUsersList");
+                            exit();
+                        } else {
+                            mysqli_stmt_bind_param($stmt_users, "s", $user_id);
+                            mysqli_stmt_execute($stmt_users);
+                            $result = mysqli_stmt_get_result($stmt_users);
+                            $rowCount = $result->num_rows;
+                            if ($rowCount < 1) {
+                                $userFound = 0;
+                                header("Location: ../login.php?error=invalidCredentials1");
+                                exit();
+                            } elseif ($rowCount == 1) {
+                                $row = $result->fetch_assoc();
+                                $_SESSION['real-user_id'] = $_SESSION['user_id'];
+                                $_SESSION['real-username'] = $_SESSION['username'];
+                                $_SESSION['real-first_name'] = $_SESSION['first_name'];
+                                $_SESSION['real-last_name'] = $_SESSION['last_name'];
+                                $_SESSION['real-email'] = $_SESSION['email'];
+                                $_SESSION['real-role'] = $_SESSION['role'] ;
+                                $_SESSION['real-auth'] =  $_SESSION['auth'];
+                                $_SESSION['real-theme_id'] = $_SESSION['theme_id'];
+                                $_SESSION['real-theme_name'] = $_SESSION['theme_name'];
+                                $_SESSION['real-theme_file_name'] = $_SESSION['theme_file_name'];
+                                $_SESSION['real-password_expired'] = 0;
+                                $_SESSION['real-impersonate'] = 0; 
+
+                                $_SESSION['user_id'] = $row['users_id'];
+                                $_SESSION['username'] = $row['username'];
+                                $_SESSION['first_name'] = $row['first_name'];
+                                $_SESSION['last_name'] = $row['last_name'];
+                                $_SESSION['email'] = $row['email'];
+                                $_SESSION['role'] = $row['role'];
+                                $_SESSION['auth'] = $row['auth'];
+                                $_SESSION['theme_id'] = $row['users_theme_id'];
+                                $_SESSION['theme_name'] = $row['theme_name'];
+                                $_SESSION['theme_file_name'] = $row['theme_file_name'];
+                                $_SESSION['password_expired'] = 0;
+                                $_SESSION['impersonate'] = 1;
+
+                                header("Location: ../admin.php?impersonating-id=".$_SESSION['user_id']."&impersonating-username=".$_SESSION['username']);
+                                exit();
+                                        
+                            } else { // if there are somehow too many rows matching the sql
+                                header("Location: ../admin.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=get-users&section=users#users-settings");
+                                exit();
+                            }
+                        }
+                    } else {
+                        header("Location: ../admin.php?error=incorrectRole&section=users#users-settings");
+                        exit();
+                    }
+                } else {
+                    header("Location: ../admin.php?error=sessionRoleMissing&section=users#users-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=roleMissing&section=users#users-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=userIdMissing&section=users#users-settings");
+            exit();
+        }
+    } elseif (isset($_POST['user-stop-impersonate'])) { // impersonating a user as Root only. This living in the admin users section
+        if (isset($_SESSION['real-user_id']) && isset($_SESSION['real-username']) && isset($_SESSION['real-first_name']) 
+        && isset($_SESSION['real-last_name']) && isset($_SESSION['real-email']) && isset($_SESSION['real-role']) 
+        && isset($_SESSION['real-auth'])) {
+
+                $_SESSION['user_id']          = $_SESSION['real-user_id'];
+                $_SESSION['username']         = $_SESSION['real-username'];
+                $_SESSION['first_name']       = $_SESSION['real-first_name'];
+                $_SESSION['last_name']        = $_SESSION['real-last_name'];
+                $_SESSION['email']            = $_SESSION['real-email'];
+                $_SESSION['role']             = $_SESSION['real-role'] ;
+                $_SESSION['auth']             = $_SESSION['real-auth'];
+                $_SESSION['theme_id']         = $_SESSION['real-theme_id'];
+                $_SESSION['theme_name']       = $_SESSION['real-theme_name'];
+                $_SESSION['theme_file_name']  = $_SESSION['real-theme_file_name'];
+                $_SESSION['password_expired'] = 0;
+                $_SESSION['impersonate']      = 0; 
+                header("Location: ../admin.php");
+                exit();
+        } else {
+            header("Location: ../logout.php");
+            exit();
+        }
     } elseif (isset($_POST['location-submit'])) { // adding locations e.g. sites/areas/shelves
         if (isset($_POST['index'])) { // come from the index page - this only happens when there are no sites/areas/shelves
-            // print_r($_POST);
-            // exit();
-
             if (!isset($_POST['site-name']))        { header("Location: ../index.php?error=missingSiteName");        exit(); }
             if (!isset($_POST['site-description'])) { header("Location: ../index.php?error=missingSiteDescription"); exit(); }
             if (!isset($_POST['area-name']))        { header("Location: ../index.php?error=missingAreaName");        exit(); }
@@ -1290,6 +1395,309 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } else {
             header("Location: ../admin.php?error=missingFileName&section=#imagemanagement-settings#imagemanagement-settings");
+            exit();
+        }
+    } elseif (isset($_POST['attributemanagement-submit'])) { // attribute management section in the admin.php page
+        if (isset($_POST['attribute-type'])) {
+            $attribute_type = $_POST['attribute-type'];
+            if ($attribute_type == 'label') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $labels = [];
+                    $labels_links = [];
+
+                    $sql_labels = "SELECT 
+                                        label.id AS label_id, 
+                                        label.name AS label_name, 
+                                        stock_label.id AS stock_label_id, 
+                                        stock_label.stock_id AS stock_id, 
+                                        stock_label.label_id AS stock_label_label_id,
+                                        stock.name AS stock_name
+                                    FROM 
+                                        label
+                                    LEFT JOIN 
+                                        stock_label ON label.id = stock_label.label_id
+                                    LEFT JOIN 
+                                        stock ON stock_label.stock_id = stock.id AND stock.deleted=0
+                                    WHERE label.deleted=0
+                                        AND label.id=$attribute_id;";                         
+                    $stmt_labels = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
+                        header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=get-label&section=stocklocations-settings#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_labels);
+                        $result_labels = mysqli_stmt_get_result($stmt_labels);
+                        $rowCount_labels = $result_labels->num_rows;
+                        if ($rowCount_labels !== 0) {
+                            while ($row_labels = $result_labels->fetch_assoc()) {
+                                if (!array_key_exists($row_labels['label_id'], $labels)) {
+                                    $labels[$row_labels['label_id']] = array('id' =>  $row_labels['label_id'], 'name' => $row_labels['label_name']);
+                                }
+                                if (isset($row_labels['stock_label_id']) && $row_labels['stock_label_id'] !== NULL && $row_labels['stock_label_label_id'] !== '') {
+                                    $labels_links[$row_labels['label_id']][] = array('id' => $row_labels['stock_label_id'], 'stock_id' => $row_labels['stock_id'], 
+                                                                                        'stock_name' => $row_labels['stock_name'], 'label_id' => $row_labels['stock_label_label_id']);
+                                }
+                            }
+                            if (array_key_exists($attribute_id, $labels_links)) {
+                                header("Location: ../admin.php?error=dependenciesPresent&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                                exit();
+                            } else {
+                                $value=1;
+                                $sql_update = "UPDATE label SET deleted=? WHERE id='$attribute_id'";
+                                $stmt_update = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                    header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-label&section=stocklocations-settings#stocklocations-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                    mysqli_stmt_execute($stmt_update);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "label", $attribute_id, 'deleted', 0, 1);
+                                    header("Location: ../admin.php?success=deleted&id=$attribute_id&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                                    exit();
+                                }
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=attributemanagement-$attribute_types#attributemanagement-settings");
+                            exit();
+                        }
+                    }    
+                } else {
+                    header("Location: ../admin.php?error=missingAttributeID&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                    exit();
+                }
+            } elseif ($attribute_type == 'manufacturer') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $manufacturers = [];
+                    $manufacturers_links = [];
+
+                    $sql_manufacturers = "SELECT 
+                                            manufacturer.id AS manufacturer_id, 
+                                            manufacturer.name AS manufacturer_name, 
+                                            item.id AS item_id, item.stock_id AS item_stock_id, item.manufacturer_id AS item_manufacturer_id,
+                                            stock.id AS stock_id, stock.name AS stock_name
+                                        FROM 
+                                            manufacturer
+                                        LEFT JOIN
+                                            item ON manufacturer.id=item.manufacturer_id    
+                                        LEFT JOIN 
+                                            stock ON stock.id=item.stock_id AND stock.deleted=0
+                                        WHERE manufacturer.deleted=0
+                                            AND manufacturer.id=$attribute_id;";                   
+                    $stmt_manufacturers = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_manufacturers, $sql_manufacturers)) {
+                        header("Location: ../admin.php?error=sqlerror&table=manufacturer&file=".__FILE__."&line=".__LINE__."&purpose=get-manufacturer&section=stocklocations-settings#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_manufacturers);
+                        $result_manufacturers = mysqli_stmt_get_result($stmt_manufacturers);
+                        $rowCount_manufacturers = $result_manufacturers->num_rows;
+                        if ($rowCount_manufacturers !== 0) {
+                            while ($row_manufacturers = $result_manufacturers->fetch_assoc()) {
+                                if (!array_key_exists($row_manufacturers['manufacturer_id'], $manufacturers)) {
+                                    $manufacturers[$row_manufacturers['manufacturer_id']] = array('id' =>  $row_manufacturers['manufacturer_id'], 'name' => $row_manufacturers['manufacturer_name']);
+                                }
+                                if (isset($row_manufacturers['item_manufacturer_id']) && $row_manufacturers['item_manufacturer_id'] !== NULL && $row_manufacturers['item_manufacturer_id'] !== '') {
+                                    $manufacturers_links[$row_manufacturers['manufacturer_id']][] = array('id' => $row_manufacturers['item_manufacturer_id'], 'stock_id' => $row_manufacturers['stock_id'], 
+                                                                                        'stock_name' => $row_manufacturers['stock_name'], 'manufacturer_id' => $row_manufacturers['item_manufacturer_id']);
+                                }
+                            }
+                            if (array_key_exists($attribute_id, $manufacturers_links)) {
+                                header("Location: ../admin.php?error=dependenciesPresent&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                                exit();
+                            } else {
+                                $value=1;
+                                $sql_update = "UPDATE manufacturer SET deleted=? WHERE id='$attribute_id'";
+                                $stmt_update = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                    header("Location: ../admin.php?error=sqlerror&table=manufacturer&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-manudacturer&section=stocklocations-settings#stocklocations-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                    mysqli_stmt_execute($stmt_update);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "manufacturer", $attribute_id, 'deleted', 0, 1);
+                                    header("Location: ../admin.php?success=deleted&id=$attribute_id&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                                    exit();
+                                }
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=attributemanagement-$attribute_types#attributemanagement-settings");
+                            exit();
+                        }
+                    }    
+
+                } else {
+                    header("Location: ../admin.php?error=missingAttributeID&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=incorrectAttributeType&section=attributemanagement#attributemanagement-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=missingAttributeType&section=attributemanagement#attributemanagement-settings");
+            exit();
+        }
+    } elseif (isset($_POST['attributemanagement-restore'])) { // attribute management section in the admin.php page
+        if (isset($_POST['attribute-type'])) {
+            $attribute_type = $_POST['attribute-type'];
+            if ($attribute_type == 'label') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $labels = [];
+
+                    $sql_labels = "SELECT 
+                                        label.id AS label_id, 
+                                        label.name AS label_name
+                                    FROM 
+                                        label
+                                    WHERE label.deleted=1
+                                        AND label.id=$attribute_id;";                         
+                    $stmt_labels = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
+                        header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=get-label&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_labels);
+                        $result_labels = mysqli_stmt_get_result($stmt_labels);
+                        $rowCount_labels = $result_labels->num_rows;
+                        if ($rowCount_labels !== 0) {
+                            $row_labels = $result_labels->fetch_assoc();
+                            $label[$row_labels['label_id']] = array('id' =>  $row_labels['label_id'], 'name' => $row_labels['label_name']);
+
+                            $value=0;
+                            $sql_update = "UPDATE label SET deleted=? WHERE id='$attribute_id'";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-label&section=stocklocations-settings#stocklocations-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "label", $attribute_id, 'deleted', 1, 0);
+                                header("Location: ../admin.php?success=restored&id=$attribute_id&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                                exit();
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=attributemanagement-$attribute_types#attributemanagement-settings");
+                            exit();
+                        }
+                    }
+                }
+            } elseif ($attribute_type == 'manufacturer') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $manufacturers = [];
+
+                    $sql_manufacturers = "SELECT 
+                                        manufacturer.id AS manufacturer_id, 
+                                        manufacturer.name AS manufacturer_name
+                                    FROM 
+                                        manufacturer
+                                    WHERE manufacturer.deleted=1
+                                        AND manufacturer.id=$attribute_id;";                         
+                    $stmt_manufacturers = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_manufacturers, $sql_manufacturers)) {
+                        header("Location: ../admin.php?error=sqlerror&table=manufacturer&file=".__FILE__."&line=".__LINE__."&purpose=get-manufacturer&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_manufacturers);
+                        $result_manufacturers = mysqli_stmt_get_result($stmt_manufacturers);
+                        $rowCount_manufacturers = $result_manufacturers->num_rows;
+                        if ($rowCount_manufacturers !== 0) {
+                            $row_manufacturers = $result_manufacturers->fetch_assoc();
+                            $manufacturer[$row_manufacturers['manufacturer_id']] = array('id' =>  $row_manufacturers['manufacturer_id'], 'name' => $row_manufacturers['manufacturer_name']);
+
+                            $value=0;
+                            $sql_update = "UPDATE manufacturer SET deleted=? WHERE id='$attribute_id'";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                header("Location: ../admin.php?error=sqlerror&table=manufacturer&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-manufacturer&section=stocklocations-settings#stocklocations-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "manufacturer", $attribute_id, 'deleted', 1, 0);
+                                header("Location: ../admin.php?success=restored&id=$attribute_id&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                                exit();
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=attributemanagement-$attribute_types#attributemanagement-settings");
+                            exit();
+                        }
+                    }
+                }
+            } else {
+                header("Location: ../admin.php?error=incorrectAttributeType&section=attributemanagement#attributemanagement-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=missingAttributeType&section=attributemanagement#attributemanagement-settings");
+            exit();
+        }
+    } elseif (isset($_POST['stockmanagement-restore'])) { // attribute management section in the admin.php page
+        if (isset($_POST['stockmanagement-type'])) {
+            $stockmanagement_type = $_POST['stockmanagement-type'];
+            if ($stockmanagement_type == 'deleted') {
+                if (isset($_POST['id'])) {
+                    $id = $_POST['id'];
+
+                    $stock = [];
+
+                    $sql_stock = "SELECT 
+                                        stock.id AS stock_id, 
+                                        stock.name AS stock_name
+                                    FROM 
+                                        stock
+                                    WHERE stock.deleted=1
+                                        AND stock.id=$id;";                         
+                    $stmt_stock = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
+                        header("Location: ../admin.php?error=sqlerror&table=stock&file=".__FILE__."&line=".__LINE__."&purpose=get-stock&section=stockmanagement#stockmanagement-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_stock);
+                        $result_stock = mysqli_stmt_get_result($stmt_stock);
+                        $rowCount_stock = $result_stock->num_rows;
+                        if ($rowCount_stock !== 0) {
+                            $row_stock = $result_stock->fetch_assoc();
+                            $stock[$row_stock['stock_id']] = array('id' =>  $row_stock['stock_id'], 'name' => $row_stock['stock_name']);
+
+                            $value=0;
+                            $sql_update = "UPDATE stock SET deleted=? WHERE id='$id'";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                header("Location: ../admin.php?error=sqlerror&table=stock&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-stock&section=stocklocations-settings#stocklocations-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "stock", $id, 'deleted', 1, 0);
+                                header("Location: ../admin.php?success=restored&id=$id&section=stockmanagement#stockmanagement-settings");
+                                exit();
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=attributemanagement-$attribute_types#attributemanagement-settings");
+                            exit();
+                        }
+                    }
+                }
+            } else {
+                header("Location: ../admin.php?error=incorrectAttributeType&section=stockmanagement#stockmanagement-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=missingAttributeType&section=stockmanagement#stockmanagement-settings");
             exit();
         }
     } elseif (isset($_GET['mail-notification'])) { // mail notification section in admin.php page. this is ajax'd

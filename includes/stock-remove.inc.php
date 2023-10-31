@@ -201,7 +201,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                     <div class="text-left" id="stock-info-left" style="padding-left:15px">
                                         <div class="nav-row" style="margin-bottom:25px">
                                             <input type="hidden" id="stock-id" value="'.$stock_id.'" name="stock_id" />
-                                            <input type="hidden" value="'.$stock_sku.'" name="stock_sku" />
+                                            <input type="hidden" value="'.$data_sku.'" name="stock_sku" />
                                             <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                                 <div>
@@ -242,9 +242,9 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 <div><input type="date" value="'.date('Y-m-d').'" name="transaction_date" id="transaction_date" class="form-control" style="width:150px" required'.$disabled.'/></div>
                                             </div>
                                             <div class="nav-row" id="serial-number-row" style="margin-top:25px">
-                                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
+                                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Number to be tracked.">Serial Numbers</or></label></div>
                                                 <div>
-                                                    <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="'.$input_serial_number.'" required'.$disabled.' onchange="getQuantity()">
+                                                    <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="'.$input_serial_number.'" '.$disabled.' onchange="getQuantity()">
                                                         <option value="" selected disabled hidden>Serial...</option>
                                                     </select>
                                                 </div>
@@ -269,7 +269,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                         echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" />');
                                                     } else {
                                                         echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />');
-                                                        echo('<a href="#" onclick="confirmAction(\''.$stock_name.'\', \''.$stock_sku.'\', \'includes/stock-modify.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
+                                                        echo('<a href="#" onclick="confirmAction(\''.$data_name.'\', \''.$data_sku.'\', \'includes/stock-modify.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
                                                     }
                                                 echo('
                                                 </div>
@@ -628,7 +628,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                 var quantity = document.getElementById('quantity');
                 quantity.value = 1;
                 quantity.max = quantityArr[0]['quantity'];
-                console.log(quantity.max[0]);
+                // console.log(quantity.max[0]);
 
                 if (quantity.min === quantity.max) {
                     quantity.disabled = true;

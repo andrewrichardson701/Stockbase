@@ -680,6 +680,24 @@ img.stock-imageOther {
 .scrollBtn span {
     height:25px
 } 
+
+.fixTableHead { 
+    overflow-y: auto; 
+    height: 110px; 
+} 
+.fixTableHead thead th { 
+    position: sticky; 
+    top: 0; 
+} 
+table { 
+    border-collapse: collapse;         
+} 
+
+
+
+
+
+
 /* Media query for mobile devices */
 @media only screen and (max-width: 1200px) {
     .nav-links {

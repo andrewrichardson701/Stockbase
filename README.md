@@ -479,7 +479,6 @@ Clone the repo first, and the follow the below steps.
 <h4>Beta release 0.3.2, Update scripts for version management and some small feature changes.</h4>
 
 - Update script in place. Testing required for full version changing, but this will be more relevant when the database structure changes.
-- Version and update checker added to the admin page. <<<<< THIS NEEDS DOING
 - Added Stock Management section to admin page. This allows you to recover/restore deleted stock objects instead of creating new ones.
 - Added Atrribute Management section to admin page. This allows you to delete and recover labels and manufacturers. This may extend in the future.
 - Changelog event added to stock-new-properties.inc.php. This is for adding labels, manufacturers and locations.

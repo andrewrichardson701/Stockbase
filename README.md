@@ -489,7 +489,8 @@ Clone the repo first, and the follow the below steps.
 - Can now restore stock after deleting instead of re-creating the stock item again.
 - Added responsehandler.inc.php page to handle errors/success responses from page redirects. This now means the file only need to be included on the page and a function placed where the output should be seen.
 - Collected all current error messages hard coded into files and moved them to the response handler page.
-- 
+- Stock page now shows items that are deleted. A new prompt shows up warning you it is deleted.
+- Stock buttons are disabled when the stock item is deleted=1.
 
 </details>
 <details>

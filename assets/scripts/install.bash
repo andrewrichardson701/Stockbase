@@ -35,9 +35,9 @@ check_install_package() {
         if [ "$package_name" = "php$phpversion" ]; then
             sudo apt update
             sudo apt install lsb-release ca-certificates apt-transport-https software-properties-common -y
-            sudo add-apt-repository ppa:ondrej/php
-            sudo add-apt-repository ppa:ondrej/nginx-mainline
-            sudo add-apt-repository ppa:ondrej/apache2
+            sudo add-apt-repository --yes ppa:ondrej/php
+            sudo add-apt-repository --yes ppa:ondrej/nginx-mainline
+            sudo add-apt-repository --yes ppa:ondrej/apache2
             sudo apt update
             #sudo apt install -y "$package_name" php8.1-cli php8.1-calendar php8.1-common php8.1-ctype php8.1-ldap php8.1-mysqli php8.1-curl php8.1-dom php8.1-exif php8.1-ffi php8.1-fileinfo php8.1-filter php8.1-ftp php8.1-gd php8.1-gettext php8.1-hash php8.1-iconv php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-json php8.1-ldap php8.1-libxml php8.1-mbstring php8.1-mysqli php8.1-mysqlnd php8.1-openssl php8.1-pcntl php8.1-pcre php8.1-pdo php8.1-pdo_mysql php8.1-phar php8.1-posix php8.1-readline php8.1-redis php8.1-reflection php8.1-session php8.1-shmop php8.1-simplexml php8.1-soap php8.1-sockets php8.1-sodium php8.1-spl php8.1-sysvmsg php8.1-sysvsem php8.1-sysvshm php8.1-tokenizer php8.1-xml php8.1-xmlreader php8.1-xmlrpc php8.1-xmlwriter php8.1-xsl php8.1-zip php8.1-zlib >/dev/null 2>&1 &
             echo ""
@@ -284,6 +284,21 @@ if ! dpkg -l | grep -q "mysql-server"; then
 fi
 sleep 2
 echo ""
+# Ask for system name
+read -p "Enter a name custom name for the system (default: StockBase): " system_name
+case "$system_name" in
+    "") 
+        system_name='StockBase'
+        break;;
+
+    *)
+        break;;
+esac
+echo ""
+echo "System Name: $system_name"
+
+sleep 1
+echo ""
 # Ask for FQDN
 read -p "Enter the Fully Qualified Domain Name (FQDN) to access the site: " web_domain
 
@@ -464,7 +479,7 @@ if mysql -u root -e ";" 2>/dev/null; then
                     while true; do
                         read -s -p "Enter a password for the 'root' user: " mysql_install_root_password
                         echo
-                        read -s -p "Confirm the password for the 'inventory' user: " mysql_install_root_password_confirm
+                        read -s -p "Confirm the password for the 'root' user: " mysql_install_root_password_confirm
                         echo
                         if [ "$mysql_install_root_password" = "$mysql_install_root_password_confirm" ]; then
                                 # Make sure that NOBODY can access the server without a password
@@ -581,6 +596,35 @@ if [ -f "$sql_setup_script" ]; then
     else
         echo "MySQL setup extras script not found at $sql_extras_script."
     fi
+
+    echo ""
+    echo "Updating system_name with the selected system name..."
+    mysql -u root -e "UPDATE inventory.config SET system_name='$system_name' WHERE id=1;";
+    sleep 1
+    echo "Done!"
+    echo ""
+
+    while true; do    
+        echo "Checking system_name is set..."
+        # Query to get the base_url value from the config table
+        config_system_name=$(mysql -u root --skip-column-names -e "SELECT system_name FROM inventory.config WHERE id=1;")
+        sleep 1
+
+        # Check if base_url is equal to the desired web_domain
+        if [ "$config_system_name" = "$system_name" ]; then
+            echo "system_name is set correctly: $config_system_name."
+            break  # Exit the loop if the condition is true
+        else
+            echo "system_name is not set correctly: $config_system_name."
+            echo "Retrying..."
+            mysql -u root -p -e "UPDATE inventory.config SET system_name='$system_name' WHERE id=1;"
+            echo "Done!"
+        fi
+
+        # Add a delay before retrying (to avoid rapid and unnecessary retries)
+        sleep 5
+    done
+
     echo ""
     echo "Updating base_url with the selected web url..."
     mysql -u root -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;";
@@ -815,7 +859,7 @@ while true; do
                 echo
                     smtp_password_hash=$(echo -n "$smtp_password" | base64)
                     echo "Pushing settings to config..."
-                    mysql -u root -e "UPDATE inventory.config SET smtp_host='$smtp_host', smtp_port=$smtp_port, smtp_encryption='$smtp_encryption', smtp_username='$smtp_username', smtp_password='$smtp_password_hash', smtp_from_email='$smtp_from_email', smtp_from_name='$smtp_from_name', smtp_to_email='$smtp_to_email' WHERE id=1;"
+                    mysql -u root -e "UPDATE inventory.config SET smtp_enabled=1, smtp_host='$smtp_host', smtp_port=$smtp_port, smtp_encryption='$smtp_encryption', smtp_username='$smtp_username', smtp_password='$smtp_password_hash', smtp_from_email='$smtp_from_email', smtp_from_name='$smtp_from_name', smtp_to_email='$smtp_to_email' WHERE id=1;"
                     echo "Config Saved."
                 break
             done

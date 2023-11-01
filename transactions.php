@@ -146,6 +146,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             case 'delete':
                                                 $t_type_color = 'transactionDelete';
                                                 break;
+                                            case 'restore':
+                                                $t_type_color = 'transactionDelete';
+                                                break;
                                             case 'move':
                                                 $t_type_color = 'transactionMove';
                                                 break;

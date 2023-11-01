@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
     include 'get-config.inc.php';
     // if (!isset($_GET['username']) || !isset($_GET['password'])) {
     if (!isset($_POST['username']) || !isset($_POST['password'])) {
-        header("Location: ../login.php?error=emptyfields");
+        header("Location: ../login.php?error=emptyFields");
         exit();
     } else {
         // $login_username = $_GET["username"];
@@ -80,6 +80,7 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['theme_name'] = $row['theme_name'];
                                 $_SESSION['theme_file_name'] = $row['theme_file_name'];
                                 $_SESSION['password_expired'] = $row['password_expired'];
+                                $_SESSION['impersonate'] = 0;
                                 if (isset($_SESSION['redirect_url'])) {
                                     if (str_contains($_SESSION['redirect_url'], "?")) {
                                         header("Location: ../".$_SESSION['redirect_url']."&login=success");
@@ -282,6 +283,7 @@ if (isset($_POST['submit'])) {
                                     $_SESSION['theme_name'] = $current_default_theme_name;
                                     $_SESSION['theme_file_name'] = $current_default_theme_file_name;
                                     $_SESSION['password_expired'] = 0;
+                                    $_SESSION['impersonate'] = 0;
                                     if (isset($_SESSION['redirect_url'])) {
                                         if (str_contains($_SESSION['redirect_url'], "?")) {
                                             header("Location: ../".$_SESSION['redirect_url']."&login=success");
@@ -313,6 +315,7 @@ if (isset($_POST['submit'])) {
                                         $_SESSION['theme_name'] = $row['theme_name'];
                                         $_SESSION['theme_file_name'] = $row['theme_file_name'];
                                         $_SESSION['password_expired'] = 0;
+                                        $_SESSION['impersonate'] = 0;
                                         if (isset($_SESSION['redirect_url'])) {
                                             if (str_contains($_SESSION['redirect_url'], "?")) {
                                                 header("Location: ../".$_SESSION['redirect_url']."&login=success");

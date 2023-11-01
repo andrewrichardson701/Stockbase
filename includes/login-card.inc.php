@@ -51,6 +51,7 @@ if (isset($_POST['submitHidden'])) {
                     $_SESSION['theme_name'] = $row['theme_name'];
                     $_SESSION['theme_file_name'] = $row['theme_file_name'];
                     $_SESSION['password_expired'] = $row['password_expired'];
+                    $_SESSION['impersonate'] = 0;
                     if (isset($_SESSION['redirect_url'])) {
                         if (str_contains($_SESSION['redirect_url'], "?")) {
                             header("Location: ../".$_SESSION['redirect_url']."&login=success");

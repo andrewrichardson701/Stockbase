@@ -6,6 +6,8 @@
 
 // RESET PASSWORD 
 // ALLOWS USERS TO RESET THEIR PASSWORD IF LOGGED IN
+include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings.
+
 session_start();
 
 // if session not set, go to login page
@@ -76,24 +78,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                             echo '<p class="red">Password confirm doesn\'t match.</p>';
                         }
                     }
-                    if (isset($_GET["error"])) {
-                        if ($_GET["error"] == "resubmit") {
-                            echo '<p class="red">Error occured, please re-submit.</p>';
-                        } elseif ($_GET["error"] == "resubmitDate") {
-                            echo '<p class="red">Error occured with the date, please re-submit.</p>';
-                        } elseif ($_GET["error"] == "resubmitToken") {
-                            echo '<p class="red">Error occured with the token, please re-submit.</p>';
-                        } elseif ($_GET["error"] == "resubmitResults") {
-                            echo '<p class="red">Error occured with the results, please re-submit.</p>';
-                        } elseif ($_GET["error"] == "selectorMissing") {
-                            echo '<p class="red">Error occured: selector missing.</p>';
-                        } elseif ($_GET["error"] == "validatorMissing") {
-                            echo '<p class="red">Error occured: validator missing.</p>';
-                        }
-                    }
-                    if (isset($_GET["sqlerror"])) {
-                        echo '<p class="red">SQL error. Check URL!</p>';
-                    }
+                    showResponse();
                 ?>
             </div>
         </div>

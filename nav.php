@@ -36,10 +36,23 @@
             
             $nav_right_set = 0;
 
+            if (isset($_SESSION['impersonate'])) {
+                $impersonate = $_SESSION['impersonate'];
+                if ($impersonate == 1) {
+                    echo('
+                    <div id="impersonate-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                        <form enctype="multipart/form-data" class="nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0;padding:0">
+                            <input type="hidden" name="user-stop-impersonate" value="1"/>
+                            <button type="submit" id="impersonate" style="border-radius: 8px;padding-left:10px;padding-right:10px;margin-top:2.5%;height:80%;color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important;margin-bottom:10%">Stop Impersonating</button>
+                        </form>
+                    </div> 
+                    ');
+                }
+            }
             if (isset($profile_name)) {
                 echo('
                 <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                    <button id="profile" class="nav-v-c nav-trans" style="color:'.$current_banner_text_color.'" onclick="window.location=\'./profile.php\';">'.$profile_name.'</button>
+                    <button id="profile" class="nav-v-c nav-trans" style="height:100%;color:'.$current_banner_text_color.'" onclick="window.location=\'./profile.php\';">'.$profile_name.'</button>
                 </div> 
                 ');
             }
@@ -47,15 +60,15 @@
                 if (in_array($loggedin_role, $config_admin_roles_array)) {
                     echo('
                     <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <button id="admin" class="nav-v-c nav-trans" style="color:'.$current_banner_text_color.'" onclick="window.location=\'./admin.php\';">Admin</button>
+                        <button id="admin" class="nav-v-c nav-trans" style="height:100%;color:'.$current_banner_text_color.'" onclick="window.location=\'./admin.php\';">Admin</button>
                     </div> 
                     ');
                 }
             }
             if (isset($profile_name)) {
                 echo ('
-                    <div id="logout-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo('nav-div">
-                        <button id="logout" class="nav-v-c nav-trans" style="color:'.$current_banner_text_color.'" onclick="window.location=\'./logout.php\';">Logout</button>
+                    <div id="logout-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                        <button id="logout" class="nav-v-c nav-trans" style="height:100%;color:'.$current_banner_text_color.'" onclick="window.location=\'./logout.php\';">Logout</button>
                     </div> 
                 ');
             }
@@ -70,11 +83,25 @@
                 <img class="logo" src="assets/img/config/<?php echo($current_logo_image); ?>" />
             </a>
         </div>
+        
         <?php
-            echo('<div class="nav-div nav-right">');
+            $nav_right = 0;
+            if (isset($_SESSION['impersonate'])) {
+                $impersonate = $_SESSION['impersonate'];
+                if ($impersonate == 1) {
+                    echo('<div id="impersonate-div" class="'); if($nav_right == 0) { echo('nav-right'); $nav_right = 1; } echo(' nav-div" style="margin-right:0">
+                            <form enctype="multipart/form-data" class="nav-v-c nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0;padding:0">
+                                <input type="hidden" name="user-stop-impersonate" value="1"/>
+                                <button type="submit" style="border-radius: 8px; height:90%;color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important; >Stop <i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
+                            </form>
+                        </div>');
+                }
+            }
+            echo('<div class="nav-div '); if($nav_right == 0) { echo('nav-right'); $nav_right = 1; } echo('">');
             if (isset($profile_name)) { 
                 echo('
                     <ul class="nav-links">
+                        <li style="color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important"<a href="/">Stop </a></li>
                         <li><a href="./profile.php">'.$profile_name.'</a></li>');
                         // if (isset($loggedin_role)) {
                         //     if (in_array($loggedin_role, $config_admin_roles_array)) {

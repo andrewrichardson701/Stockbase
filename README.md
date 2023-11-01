@@ -476,9 +476,20 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.3.2-beta</h3></summary>
-<h4>Beta release 0.3.2, Update scripts for version management</h4>
+<h4>Beta release 0.3.2, Update scripts for version management and some small feature changes.</h4>
 
 - Update script in place. Testing required for full version changing, but this will be more relevant when the database structure changes.
+- Added Stock Management section to admin page. This allows you to recover/restore deleted stock objects instead of creating new ones.
+- Added Atrribute Management section to admin page. This allows you to delete and recover labels and manufacturers. This may extend in the future.
+- Changelog event added to stock-new-properties.inc.php. This is for adding labels, manufacturers and locations.
+- Added an impersonation feature for the root user only. This means the root user can become the user they select from the users list.
+- Impersonation can be cancelled by clicking the button on the nav bar.
+- Added new email notification for restoring deleted stock.
+- Can now restore stock after deleting instead of re-creating the stock item again.
+- Added responsehandler.inc.php page to handle errors/success responses from page redirects. This now means the file only need to be included on the page and a function placed where the output should be seen.
+- Collected all current error messages hard coded into files and moved them to the response handler page.
+- Stock page now shows items that are deleted. A new prompt shows up warning you it is deleted.
+- Stock buttons are disabled when the stock item is deleted=1.
 
 </details>
 <details>

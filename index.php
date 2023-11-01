@@ -28,48 +28,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $errorPsuffix = '</p></div>';
         $successPprefix = '<div class="container"><p class="green" style="padding-top:10px">';
         $successPsuffix = '</p></div>';
-        $errorPtext = '';
-        $sqlerrorPtext = '';
-        $successPtext = '';
-        if (isset($_GET['error'])) {
-            if ($_GET['error'] == 'noStockSelected') {
-                $errorPtext = 'No stock item selected.';
-            } elseif ($_GET['error'] == 'sqlerror') { // admin.inc.php location-submit
-                $errorPtext = 'SQL Error.';
-                if (isset($_GET['table'])) {
-                    $errorPtext .= ' Table = '.$_GET['table'];
-                }
-                if (isset($_GET['file'])) {
-                    $errorPtext .= ' File = '.$_GET['file'];
-                }
-                if (isset($_GET['line'])) {
-                    $errorPtext .= ' Line = '.$_GET['line'];
-                }
-                if (isset($_GET['purpose'])) {
-                    $errorPtext .= ' Purpose = '.$_GET['purpose'];
-                }
-            } else {
-                $errorPtext = $_GET['error'];
-            }
-            echo $errorPprefix.$errorPtext.$errorPsuffix;
-        }
-        if (isset($_GET['success'])) {
-            if ($_GET['success'] == 'locationAdded') { // admin.inc.php location-submit
-                $successPtext = 'Location added!';
-                if (isset($_GET['site_id'])) {
-                    $successPtext .= ' Site ID = '.$_GET['site_id'];
-                }
-                if (isset($_GET['area_id'])) {
-                    $successPtext .= ' Area ID = '.$_GET['area_id'];
-                }
-                if (isset($_GET['shelf_id'])) {
-                    $successPtext .= ' Shelf ID = '.$_GET['shelf_id'];
-                }
-            } else {
-                $successPtext = $_GET['success'];
-            }
-            echo $successPprefix.$successPtext.$successPsuffix;
-        }
+
+        include 'includes/responsehandling.inc.php';
+        showResponse(); // 
+
         ?>
         <!-- Get Inventory -->
         <?php

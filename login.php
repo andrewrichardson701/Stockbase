@@ -36,12 +36,16 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
-
+    <?php 
+    
+    $_SESSION['redirect_url'];
+    include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings. ?>
+    
     <div class="container" style="margin-top:75px">
         <div class="row">
             <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
-                <p>Please input your credentials to login.</p>
+                <p style="margin-top:2vh;margin-bottom:3vh">Please input your credentials to login.</p>
                 <p class="red">Demo LDAP username: <or class="blue">inventory</or> password: <or class="blue">DemoPass1!</or></p>
                 <form enctype="multipart/form-data" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
                     <div class="form-group">
@@ -76,24 +80,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                         
                 </form>
                 <?php
+                    showResponse();
                     if (isset($_GET["newpwd"])) {
                         if ($_GET["newpwd"] == "passwordupdated") {
                             echo '<p class="green">Your password has been changed!</p>';
                         }
-                    }
-                    if (isset($_GET["error"])) {
-                        if ($_GET["error"] == "invalidCredentials") {
-                            echo '<p class="red">Invalid Username / Password...</p>';
-                        } elseif ($_GET["error"] == "submitNotSet") {
-                            echo '<p class="red">Form submission required.</p>';
-                        } elseif ($_GET["error"] == "sqlerror") {
-                            echo '<p class="red">SQL error.</p>';
-                        } elseif ($_GET["error"] == "emptyfields") {
-                            echo '<p class="red">Missing fields...</p>';
-                        }
-                    }
-                    if (isset($_GET["sqlerror"])) {
-                        echo '<p class="red">SQL error. Check URL!</p>';
                     }
                     if (isset($_GET['resetemail'])) {
                         if ($_GET['resetemail'] == "sent") {
@@ -103,7 +94,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 ?>
                 <p><a href="login.php?reset=true" id="password-reset">Forgot password?</a>
                 <button class="btn btn-info viewport-small-block" onclick="modalLoadSwipe()">Swipe card login</button>
-                <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p>
+                <!-- <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p> -->
             </div>
         </div>
 	</div>
@@ -130,9 +121,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 </table>
             </form>
             <?php
-            if (isset($_GET['sqlerror'])) {
-                echo('<p class="red">SQL Error: '.$_GET['sqlerror'].'</p>');
-            } elseif (isset($_GET['reseterror'])) {
+            if (isset($_GET['reseterror'])) {
                 if ($_GET['reseterror'] == "uidMissmatch") {
                     echo('<p class="red">Username/email not found.</p>');
                 } elseif ($_GET['reseterror'] == "multipleUsersMatchUid") {

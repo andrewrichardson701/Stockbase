@@ -6,6 +6,7 @@
 
 // ADMIN PAGE - SHOWS CONFIGURATION OPTIONS AND ONLY VISIBLE TO ADMIN USERS
 include 'session.php'; // Session setup and redirect if the session is not active 
+include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings.
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 
 
@@ -36,37 +37,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container">
             <div class="row">
                 <div class="col-md-6" style="margin-left:25px">
-                    <?php
-                    if (isset($_GET['error'])) {
-                        $errorPprefix = '<p class="red">Error: ';
-                        $errorPsuffix = '</p>';
-                        if ($_GET['error'] == 'emptyFields') {
-                            $errorPtext = 'Empty fields present in the form.';
-                        } elseif ($_GET['error'] == 'sqlerror') {
-                            $errorPtext = 'SQL Error.';
-                            if (isset($_GET['table'])) {
-                                $errorPtext .= ' Table = '.$_GET['table'];
-                            }
-                            if (isset($_GET['file'])) {
-                                $errorPtext .= ' File = '.$_GET['file'];
-                            }
-                            if (isset($_GET['line'])) {
-                                $errorPtext .= ' Line = '.$_GET['line'];
-                            }
-                        } elseif ($_GET['error'] == 'userExists') {
-                            $errorPtext = 'Matching user already exists.';
-                        } elseif ($_GET['error'] == 'multipleEntries') {
-                            $errorPtext = 'Multiple matching users already exists.';
-                        } elseif ($_GET['error'] == 'passwordMismatch') {
-                            $errorPtext = 'Passwords do not match.';
-                        } elseif ($_GET['error'] == 'submitNotSet') {
-                            $errorPtext = 'Form submit condition not met.';
-                        } else {
-                            $errorPtext = $_GET['error'];
-                        }
-                        echo $errorPprefix.$errorPtext.$errorPsuffix;
-                    }
-                    ?>
                     <p>Please fill in the below to add a local user.</p>
                     <form enctype="multipart/form-data" action="./includes/addlocaluser.inc.php" method="post">
                         <div class="form-group">
@@ -128,6 +98,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </div>
                     </form>
                     <?php
+                        showResponse();
                         if (isset($_GET["user"])) {
                             if ($_GET["user"] == "added") {
                                 if (isset($_GET['username'])) {
@@ -141,25 +112,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 }
                             }
                         }
-                        if (isset($_GET["sqlerror"])) {
-                            echo '<p class="red">SQL error, check URL...</p>';
-                        }
                         if (isset($_GET["newpwd"])) {
                             if ($_GET["newpwd"] == "passwordupdated") {
                                 echo '<p class="green">Your password has been changed!</p>';
-                            }
-                        }
-                        if (isset($_GET["error"])) {
-                            if ($_GET["error"] == "invalidCredentials") {
-                                echo '<p class="red">Invalid Username / Password...</p>';
-                            } elseif ($_GET["error"] == "submitNotSet") {
-                                echo '<p class="red">Form submission required.</p>';
-                            } elseif ($_GET["error"] == "sqlerror") {
-                                echo '<p class="red">SQL error.</p>';
-                            } elseif ($_GET["error"] == "emptyfields") {
-                                echo '<p class="red">Missing fields...</p>';
-                            } else {
-                                echo '<p class="red">Error, check URL...</p>';
                             }
                         }
                     ?>

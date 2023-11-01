@@ -7,6 +7,7 @@
 // THEME TEST PAGE
 // EVERYTHING HERE IS HARD CODED IN SO IF THE FORMAT OF THINGS CHANGE, THIS WILL LIKELY NEED TO CHANGE TOO.
 include 'session.php'; // Session setup and redirect if the session is not active 
+include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings.
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 ?>
 
@@ -46,64 +47,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $errorPtext = '';
         $sqlerrorPtext = '';
         $successPtext = '';
-        if (isset($_GET['error'])) {
-            // admin.inc.php
-            if ($_GET['error'] == 'emptyFields') {
-                $errorPtext = 'Empty fields present in the form.';
-            } elseif ($_GET['error'] == 'sqlerror') {
-                $errorPtext = 'SQL Error.';
-                if (isset($_GET['table'])) {
-                    $errorPtext .= ' Table = '.$_GET['table'];
-                }
-                if (isset($_GET['file'])) {
-                    $errorPtext .= ' File = '.$_GET['file'];
-                }
-                if (isset($_GET['line'])) {
-                    $errorPtext .= ' Line = '.$_GET['line'];
-                }
-                if (isset($_GET['purpose'])) {
-                    $errorPtext .= ' Purpose = '.$_GET['purpose'];
-                }
-            } elseif ($_GET['error'] == 'uploadedFileNameMissing') {
-                $errorPtext = 'Uploaded file name missing.';
-            } elseif ($_GET['error'] == 'fileNameMissing') {
-                $errorPtext = 'File name missing.';
-            } elseif ($_GET['error'] == 'submitMissing') {
-                $errorPtext = 'Submit not set. Unauthorised.';
-            } else {
-                $errorPtext = $_GET['error'];
-            }
-            
-        }
-        if (isset($_GET['sqlerror'])) {
-            // admin.inc.php
-            if ($_GET['sqlerror'] == 'matchingThemeFound') {
-                $sqlerrorPtext = 'Theme already exists.';
-            } else {
-                $sqlerrorPtext = $_GET['sqlerror'];
-            }
-            if (isset($_GET['table'])) {
-                $sqlerrorPtext .= ' Table = '.$_GET['table'];
-            }
-            if (isset($_GET['file'])) {
-                $sqlerrorPtext .= ' File = '.$_GET['file'];
-            }
-            if (isset($_GET['line'])) {
-                $sqlerrorPtext .= ' Line = '.$_GET['line'];
-            }
-            if (isset($_GET['purpose'])) {
-                $sqlerrorPtext .= ' Purpose = '.$_GET['purpose'];
-            }
-        }
-        if (isset($_GET['success'])) {
-            // admin.inc.php
-            if ($_GET['success'] == 'uploaded') {
-                $successPtext = 'Successfully uploaded!';
-            } else {
-                $successPtext = $_GET['success'];
-            }
-        }
 
+        showResponse();
         ?>
         <table class="centertable" style="margin-bottom:20px">
             <thead>
@@ -525,8 +470,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </thead>
                                 <tbody>
                                     <tr style="background-color:#6abad6 !important; color:black">
-                                            <td class="stockTD" style="">1</td>
-                                            <td class="stockTD" style=""><input id="site-1-name" class="form-control stockTD-input" name="name" type="text" value="Site 1" style="width:150px"></td>
+                                            <td class="stockTD">1</td>
+                                            <td class="stockTD"><input id="site-1-name" class="form-control stockTD-input" name="name" type="text" value="Site 1" style="width:150px"></td>
                                             <td hidden=""><input id="site-1-description" class="form-control stockTD-input" type="text" name="description" value="Custodian Data Centers, Maidstone"></td>
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td> 
                                             <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td>
@@ -551,7 +496,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <tr style="background-color:#99d4ef !important; color:black">
                                         <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td>
                                         <td class="stockTD" style="border-left:2px solid #454d55; ">1</td>
-                                        <td class="stockTD" style=""><input id="area-1-name" class="form-control stockTD-input" type="text" name="name" value="Store room 1" style="width:150px"></td>
+                                        <td class="stockTD"><input id="area-1-name" class="form-control stockTD-input" type="text" name="name" value="Store room 1" style="width:150px"></td>
                                         <td class="stockTD" hidden=""><input id="area-1-description" class="form-control stockTD-input" type="text" name="description" value="Store Room 1"></td>
                                         <td class="stockTD" hidden=""><input id="area-1-parent" type="hidden" name="area-site-id" value="1"></td>
                                         <td class="stockTD" hidden=""></td>
@@ -579,7 +524,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td> 
                                         <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td>
                                         <td class="stockTD" style="border-left:2px solid #454d55; ">1</td>
-                                        <td class="stockTD" style=""><input id="shelf-1-name" class="form-control stockTD-input" type="text" name="name" value="Shelf 1" style="width:150px"></td>
+                                        <td class="stockTD"><input id="shelf-1-name" class="form-control stockTD-input" type="text" name="name" value="Shelf 1" style="width:150px"></td>
                                         <td class="stockTD" hidden=""><input id="shelf-1-parent" type="hidden" name="shelf-area-id" value="1"></td>
                                         <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                             <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
@@ -609,8 +554,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     </tr>
                                     <tr class="theme-tableOuter"><td colspan="9"></td></tr>
                                     <tr style="background-color:#F4BB44 !important; color:black">
-                                        <td class="stockTD" style="">2</td>
-                                        <td class="stockTD" style=""><input id="site-2-name" class="form-control stockTD-input" name="name" type="text" value="Site 2" style="width:150px"></td>
+                                        <td class="stockTD">2</td>
+                                        <td class="stockTD"><input id="site-2-name" class="form-control stockTD-input" name="name" type="text" value="Site 2" style="width:150px"></td>
                                         <td hidden=""><input id="site-2-description" class="form-control stockTD-input" type="text" name="description" value="Custodian Data Centers, Dartford"></td>
                                         <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td> 
                                         <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td>
@@ -635,7 +580,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <tr style="background-color:#ffe47a !important; color:black">
                                         <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td>
                                         <td class="stockTD" style="border-left:2px solid #454d55; ">4</td>
-                                        <td class="stockTD" style=""><input id="area-4-name" class="form-control stockTD-input" type="text" name="name" value="Store room A" style="width:150px"></td>
+                                        <td class="stockTD"><input id="area-4-name" class="form-control stockTD-input" type="text" name="name" value="Store room A" style="width:150px"></td>
                                         <td class="stockTD" hidden=""><input id="area-4-description" class="form-control stockTD-input" type="text" name="description" value="Sote room A"></td>
                                         <td class="stockTD" hidden=""><input id="area-4-parent" type="hidden" name="area-site-id" value="2"></td>
                                         <td class="stockTD" hidden=""></td>
@@ -661,7 +606,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td> 
                                         <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td>
                                         <td class="stockTD" style="border-left:2px solid #454d55; ">10</td>
-                                        <td class="stockTD" style=""><input id="shelf-10-name" class="form-control stockTD-input" type="text" name="name" value="Shelf A-1" style="width:150px"></td>
+                                        <td class="stockTD"><input id="shelf-10-name" class="form-control stockTD-input" type="text" name="name" value="Shelf A-1" style="width:150px"></td>
                                         <td class="stockTD" hidden=""><input id="shelf-10-parent" type="hidden" name="shelf-area-id" value="4"></td>
                                         <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                             <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">

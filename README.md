@@ -484,6 +484,12 @@ Clone the repo first, and the follow the below steps.
 - Added Atrribute Management section to admin page. This allows you to delete and recover labels and manufacturers. This may extend in the future.
 - Changelog event added to stock-new-properties.inc.php. This is for adding labels, manufacturers and locations.
 - Added an impersonation feature for the root user only. This means the root user can become the user they select from the users list.
+- Impersonation can be cancelled by clicking the button on the nav bar.
+- Added new email notification for restoring deleted stock.
+- Can now restore stock after deleting instead of re-creating the stock item again.
+- Added responsehandler.inc.php page to handle errors/success responses from page redirects. This now means the file only need to be included on the page and a function placed where the output should be seen.
+- Collected all current error messages hard coded into files and moved them to the response handler page.
+- 
 
 </details>
 <details>

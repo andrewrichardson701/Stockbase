@@ -1644,62 +1644,6 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=missingAttributeType&section=attributemanagement#attributemanagement-settings");
             exit();
         }
-    } elseif (isset($_POST['stockmanagement-restore'])) { // attribute management section in the admin.php page
-        if (isset($_POST['stockmanagement-type'])) {
-            $stockmanagement_type = $_POST['stockmanagement-type'];
-            if ($stockmanagement_type == 'deleted') {
-                if (isset($_POST['id'])) {
-                    $id = $_POST['id'];
-
-                    $stock = [];
-
-                    $sql_stock = "SELECT 
-                                        stock.id AS stock_id, 
-                                        stock.name AS stock_name
-                                    FROM 
-                                        stock
-                                    WHERE stock.deleted=1
-                                        AND stock.id=$id;";                         
-                    $stmt_stock = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
-                        header("Location: ../admin.php?error=sqlerror&table=stock&file=".__FILE__."&line=".__LINE__."&purpose=get-stock&section=stockmanagement#stockmanagement-settings");
-                        exit();
-                    } else {
-                        mysqli_stmt_execute($stmt_stock);
-                        $result_stock = mysqli_stmt_get_result($stmt_stock);
-                        $rowCount_stock = $result_stock->num_rows;
-                        if ($rowCount_stock !== 0) {
-                            $row_stock = $result_stock->fetch_assoc();
-                            $stock[$row_stock['stock_id']] = array('id' =>  $row_stock['stock_id'], 'name' => $row_stock['stock_name']);
-
-                            $value=0;
-                            $sql_update = "UPDATE stock SET deleted=? WHERE id='$id'";
-                            $stmt_update = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                header("Location: ../admin.php?error=sqlerror&table=stock&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-stock&section=stocklocations-settings#stocklocations-settings");
-                                exit();
-                            } else {
-                                mysqli_stmt_bind_param($stmt_update, "s", $value);
-                                mysqli_stmt_execute($stmt_update);
-                                // update changelog
-                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "stock", $id, 'deleted', 1, 0);
-                                header("Location: ../admin.php?success=restored&id=$id&section=stockmanagement#stockmanagement-settings");
-                                exit();
-                            }
-                        } else {
-                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=attributemanagement-$attribute_types#attributemanagement-settings");
-                            exit();
-                        }
-                    }
-                }
-            } else {
-                header("Location: ../admin.php?error=incorrectAttributeType&section=stockmanagement#stockmanagement-settings");
-                exit();
-            }
-        } else {
-            header("Location: ../admin.php?error=missingAttributeType&section=stockmanagement#stockmanagement-settings");
-            exit();
-        }
     } elseif (isset($_GET['mail-notification'])) { // mail notification section in admin.php page. this is ajax'd
         $results = [];
 

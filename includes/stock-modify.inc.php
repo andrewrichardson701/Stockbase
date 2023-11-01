@@ -716,7 +716,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             if ($stock_min_stock > $new_quantity) {
                                                 $email_subject = ucwords($current_system_name)." - Stock Needs Re-ordering at $site_name.";
                                                 $email_body = "<p>Stock is below minimum stock count, for <strong><a href=\"https://$base_url?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p><p style='color:red'>Please raise a PO to order more!</p>";
-                                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 10);
                                             }
                                 
                                             $email_subject = ucwords($current_system_name)." - Stock inventory removed.";
@@ -896,7 +896,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             
                                 $email_subject = ucwords($current_system_name)." - Stock information edited";
                                 $email_body = "<p>Stock details updated for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> and successfully saved!</p>";
-                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 5);
+                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
                                 header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
                                 exit();
                             }
@@ -939,7 +939,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             
                                 $email_subject = ucwords($current_system_name)." - Image unlinked from stock";
                                 $email_body = "<p>Image with ID: <strong>$img_id</strong> unlinked from <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>.</p>";
-                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
+                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_img", $img_id, "stock_id", $stock_id, null);
 
@@ -1009,7 +1009,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             
                                         $email_subject = ucwords($current_system_name)." - Stock image added";
                                         $email_body = "<p>Image successfully added to <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>!</p>";
-                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
+                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
                                         // update changelog
                                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_img", $new_stock_img_id, "image", null, $_POST['img-file-name']);
 
@@ -1053,7 +1053,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             
                         $email_subject = ucwords($current_system_name)." - Stock image uploaded";
                         $email_body = "<p>Image successfully uploaded for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>!</p>";
-                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
                         header("Location: ".$redi_url."&success=fileUploaded");
                         exit();
                     } else {
@@ -1206,7 +1206,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 $base_url = getCurrentURL();
             
                                 $move_body = "<p><strong>".$move_quantity."</strong> stock moved from <strong>".$current_location['site_name']."</strong>, <strong>".$current_location['area_name']."</strong>, <strong>".$current_location['shelf_name']."</strong> to <strong>".$new_location['site_name']."</strong>, <strong>".$new_location['area_name']."</strong>, <strong>".$new_location['shelf_name']."</strong> for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>.</p>";
-                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail($move_body), 4);
+                                send_email($to, $toName, $fromName, ucwords($current_system_name).' - Stock Moved', createEmail($move_body), 5);
                                 header("Location: $redirect_url&success=stockMoved&edited=$current_i&newItemId=$new_item_id"); // Final redirect - for success and stock is moved.
                                 exit();
                             } else {
@@ -1338,9 +1338,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
         exit();
     }
 } elseif (isset($_GET['type']) && $_GET['type'] == "delete") { // delete bits from the stock-remove-existing.inc.php - need to add a hidden input with name="stock-delete" for this
-    //
-    // STILL  NEED TO WORK THE MINIMUM STOCK INTO THE CHECKER FOR REMOVING STOCK
-    //
+    include 'smtp.inc.php';
+    $base_url = getCurrentURL();
+
     if (isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
         $errors =[];
 
@@ -1604,6 +1604,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 } else {
                                     mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $empty_item_id, $type, $stock_shelf, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
                                     mysqli_stmt_execute($stmt_trans);
+
+                                    $email_subject = ucwords($current_system_name)." - Stock inventory deleted";
+                                    $email_body = "<p>Stock inventory deleted: <strong><a href=\"https://$base_url/stock.php?stock_id=".$checkID_id."\">".$checkID_name."</a></strong>.<br>To undo this change, navigate to <a href='https://$base_url/admin.php#stockmanagement-settings'>Admin > Stock Management</a> and restore the object.";
+                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 3);
                                     header("Location: ../stock.php?modify=remove&success=stockDeleted&old_stock_id=$stock_id");
                                     exit();
                                 } 
@@ -1630,6 +1634,91 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
         }
     } else {
         header("Location: ".$redirect_url."&error=noLogin");
+        exit();
+    }
+} elseif (isset($_POST['stockmanagement-restore'])) { // attribute management section in the admin.php page
+    if (isset($_POST['stockmanagement-type'])) {
+        $stockmanagement_type = $_POST['stockmanagement-type'];
+        if ($stockmanagement_type == 'deleted') {
+            if (isset($_POST['id'])) {
+                include 'smtp.inc.php';
+
+                $id = $_POST['id'];
+
+                $stock = [];
+
+                $sql_stock = "SELECT 
+                                    stock.id AS stock_id, 
+                                    stock.name AS stock_name
+                                FROM 
+                                    stock
+                                WHERE stock.deleted=1
+                                    AND stock.id=$id;";                         
+                $stmt_stock = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
+                    header("Location: ../admin.php?error=sqlerror&table=stock&file=".__FILE__."&line=".__LINE__."&purpose=get-stock&section=stockmanagement#stockmanagement-settings");
+                    exit();
+                } else {
+                    mysqli_stmt_execute($stmt_stock);
+                    $result_stock = mysqli_stmt_get_result($stmt_stock);
+                    $rowCount_stock = $result_stock->num_rows;
+                    if ($rowCount_stock !== 0) {
+                        $row_stock = $result_stock->fetch_assoc();
+                        $stock[$row_stock['stock_id']] = array('id' =>  $row_stock['stock_id'], 'name' => $row_stock['stock_name']);
+                        $stock_name = $row_stock['stock_name'];
+
+                        $value=0;
+                        $sql_update = "UPDATE stock SET deleted=? WHERE id='$id'";
+                        $stmt_update = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                            header("Location: ../admin.php?error=sqlerror&table=stock&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-stock&section=stocklocations-settings#stocklocations-settings");
+                            exit();
+                        } else {
+                            mysqli_stmt_bind_param($stmt_update, "s", $value);
+                            mysqli_stmt_execute($stmt_update);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "stock", $id, 'deleted', 1, 0);
+
+                            $type = 'restore';
+                            $zeroquant = 0;
+                            $empty_item_id = 0;
+                            $empty_cost = 0;
+                            $empty_serial_number = '';
+                            $reason = "Stock restored from deletion.";
+                            $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                            $time = date('H:i:s'); // current time in HH:MM:SS format
+                            $username = $_SESSION['username'];
+                            $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
+                                                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            $stmt_trans = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
+                                header("Location: $redirect_url&error=TransactionConnectionIssue");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $id, $empty_item_id, $type, $stock_shelf, $zeroquant, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
+                                mysqli_stmt_execute($stmt_trans);
+                                
+                                $base_url = getCurrentURL();
+
+                                $email_subject = ucwords($current_system_name)." - Stock inventory restored from deletion";
+                                $email_body = "<p>Stock inventory restored from deletion: <strong><a href=\"https://$base_url/stock.php?stock_id=".$id."\">".$stock_name."</a></strong>.</p>";
+                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 4);
+                                header("Location: ../admin.php?success=restored&id=$id&section=stockmanagement#stockmanagement-settings");
+                                exit();
+                            }
+                        }
+                    } else {
+                        header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=stockmanagement#stockmanagement-settings");
+                        exit();
+                    }
+                }
+            }
+        } else {
+            header("Location: ../admin.php?error=incorrectAttributeType&section=stockmanagement#stockmanagement-settings");
+            exit();
+        }
+    } else {
+        header("Location: ../admin.php?error=missingAttributeType&section=stockmanagement#stockmanagement-settings");
         exit();
     }
 } else {

@@ -348,6 +348,9 @@ if (isset($_GET['stock_id'])) {
                                         case 'delete':
                                             $t_type_color = 'transactionDelete';
                                             break;
+                                        case 'restore':
+                                            $t_type_color = 'transactionDelete';
+                                            break;
                                         case 'move':
                                             $t_type_color = 'transactionMove';
                                             break;

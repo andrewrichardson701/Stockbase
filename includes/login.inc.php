@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
     include 'get-config.inc.php';
     // if (!isset($_GET['username']) || !isset($_GET['password'])) {
     if (!isset($_POST['username']) || !isset($_POST['password'])) {
-        header("Location: ../login.php?error=emptyfields");
+        header("Location: ../login.php?error=emptyFields");
         exit();
     } else {
         // $login_username = $_GET["username"];

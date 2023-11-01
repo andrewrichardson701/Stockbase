@@ -7,6 +7,7 @@
 // USER PROFILE PAGE
 // SEE USER INFO FROM THE DATABASE. LOCAL USERS CAN ALSO RESET THEIR PASSWORDS HERE
 include 'session.php'; // Session setup and redirect if the session is not active 
+include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings.
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 ?> 
 
@@ -279,94 +280,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </tr>  
                     ');
                 }
-                if (isset($_GET['success'])) {
-                    if ($_GET['success'] == "PasswordChanged") {
-                        $successInfo = 'Password Changed Successfully.</p></td></tr>';
-                    } elseif ($_GET['success'] == "profileUpdated") {
-                        $successInfo = 'Profile Updated Successfully.</p></td></tr>';
-                    } elseif ($_GET['success'] == 'cardUpdated') {
-                        $successInfo = 'Card Updated!';
-                        if (isset($_GET['type'])) {
-                            $successInfo .= ' Card '.$_GET['type'].'.';  
-                        }
-                        if (isset($_GET['card'])) {
-                            $successInfo .= ' Card: '.$_GET['card'].'.';
-                        }
-                        if (isset($_GET['card_number'])) {
-                            $successInfo .= ' Card number: '.$_GET['card_number'].'.';
-                        }
-                    } elseif ($_GET['success'] == 'cardDeassigned') {
-                        $successInfo = 'Card Updated!';
-                        if (isset($_GET['card'])) {
-                            $successInfo .= ' Card: '.$_GET['card'].'.';
-                        }
-                    } else {
-                        $successInfo = $_GET['success'];
-                    }
-                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="green">'.$successInfo.'</p></td></tr>');
-                } 
-                if (isset($_GET['error'])) {
-                    if ($_GET['error'] == 'sqlerror') {
-                        $errorExtraInfo = 'SQL Error.';
-                        if (isset($_GET['table'])) {
-                            $errorExtraInfo .= ' Table = '.$_GET['table'];
-                        }
-                        if (isset($_GET['file'])) {
-                            $errorExtraInfo .= ' File = '.$_GET['file'];
-                        }
-                        if (isset($_GET['line'])) {
-                            $errorExtraInfo .= ' Line = '.$_GET['line'];
-                        }
-                        if (isset($_GET['purpose'])) {
-                            $errorExtraInfo .= ' Purpose = '.$_GET['purpose'];
-                        }
-                        
-                    } elseif ($_GET['error'] == 'emailFormat') {
-                        $errorExtraInfo = 'Invalid email format.';
-                    } elseif ($_GET['error'] == 'emptyFields') {
-                        $errorExtraInfo = 'Empty fields present in the form.';
-                    } elseif ($_GET['error'] == 'missingFields') {
-                        $errorExtraInfo = 'Missing fields present in the form.';
-                    } elseif ($_GET['error'] == 'idMissmatch') {
-                        $errorExtraInfo = 'ID missmatch found.';
-                    } elseif ($_GET['error'] == 'idMissing') {
-                        $errorExtraInfo = 'ID missing.';
-                    } elseif ($_GET['error'] == 'cardNoMatch') {
-                        $errorExtraInfo = 'Incorrect card number.';
-                    } elseif ($_GET['error'] == 'cardNumberNotNumeric') {
-                        $errorExtraInfo = 'Card ID not numeric.';
-                    } elseif ($_GET['error'] == 'missingCardData') {
-                        $errorExtraInfo = 'Missing card data.';
-                    } elseif ($_GET['error'] == 'missingCard') {
-                        $errorExtraInfo = 'Missing card.';
-                    } elseif ($_GET['error'] == 'missingType') {
-                        $errorExtraInfo = 'Type missing.';
-                    } else {
-                        $errorExtraInfo = $_GET['error'];
-                    }
-                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$errorExtraInfo.'</p></td></tr>');
-                }
-                if (isset($_GET['sqlerror'])) {
-                    if ($_GET['sqlerror'] == 'multipleEntries') {
-                        $errorExtraInfo = 'Multiple entries found.';
-                        if (isset($_GET['table'])) {
-                            $errorExtraInfo .= ' table: '.$_GET['table'];
-                        }
-                    } elseif ($_GET['sqlerror'] == 'emailExists') {
-                        $errorExtraInfo = 'Email already in use.';
-                        if (isset($_GET['email'])) {
-                            $errorExtraInfo .= ' Email: '.$_GET['email'];
-                        }
-                    } elseif ($_GET['sqlerror'] == 'incorrectRowCount') {
-                        $errorExtraInfo = 'Incorrect row count in table.';
-                        if (isset($_GET['email'])) {
-                            $errorExtraInfo .= ' Email: '.$_GET['email'];
-                        }
-                    } else {
-                        $errorExtraInfo = $_GET['sqlerror'];
-                    }
-                    echo('<tr class="nav-row" style="margin-top:30px"><td><p class="red">'.$errorExtraInfo.'</p></td></tr>');
-                }
+                $errorPprefix = '<tr class="nav-row" style="margin-top:30px"><td><p class="red">Error: ';
+                $errorPsuffix = '</p></td></tr>';
+                $successPprefix = '<tr class="nav-row" style="margin-top:30px"><td><p class="green">';
+                $successPsuffix = '</p></td></tr>';
+
+                showResponse();
 
                 $sql_card = "SELECT card_primary, card_secondary FROM users WHERE id=$profile_id";
                 $stmt_card = mysqli_stmt_init($conn);

@@ -12,7 +12,7 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
 // set the redirect_url 
 
 $redirect_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$queryString = '?'.parse_url($_SERVER['QUERY_STRING'], PHP_URL_PATH);
+$queryString = isset($_SERVER['QUERY_STRING']) ? '?'.parse_url($_SERVER['QUERY_STRING'], PHP_URL_PATH) : '';
 
 $_SESSION['redirect_url'] = str_contains(basename($redirect_path), '.php') ? basename($redirect_path).$queryString : "";
 

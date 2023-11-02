@@ -20,9 +20,9 @@ if (!empty($_POST)) {
         $type=$_POST['type'];
 
         switch ($type) {
-            case 'label':
-                $sqlCheck = "SELECT * FROM label WHERE name='$name'";
-                $sql = "INSERT INTO label (name) VALUES ('$name')";
+            case 'tag':
+                $sqlCheck = "SELECT * FROM tag WHERE name='$name'";
+                $sql = "INSERT INTO tag (name) VALUES ('$name')";
                 break;
             case 'manufacturer':
                 $sqlCheck = "SELECT * FROM manufacturer WHERE name='$name'";
@@ -116,16 +116,16 @@ if (!empty($_POST)) {
 <!-- <div id="modalDivProperties" style="display: block;"> -->
     <span class="close" onclick="modalCloseProperties()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
-        <!-- Label -->
+        <!-- Tag -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-label" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row">
-                            <td><label for="label-name" class="nav-v-c align-middle">New Label:</label></td>
+                            <td><label for="tag-name" class="nav-v-c align-middle">New Tag:</label></td>
                             <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="label-name" name="property-name" /></td>           
-                            <td style="margin-left:5px"><input type="submit" name="submit" value="Add Label" class="btn btn-success"/></td>
-                            <td hidden><input type="hidden" name="type" value="label" /></td>
+                            <td style="margin-left:5px"><input type="submit" name="submit" value="Add Tag" class="btn btn-success"/></td>
+                            <td hidden><input type="hidden" name="type" value="tag" /></td>
                         </tr>
                     </tbody>
                 </table>

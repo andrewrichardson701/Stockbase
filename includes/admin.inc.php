@@ -1400,61 +1400,61 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['attributemanagement-submit'])) { // attribute management section in the admin.php page
         if (isset($_POST['attribute-type'])) {
             $attribute_type = $_POST['attribute-type'];
-            if ($attribute_type == 'label') {
+            if ($attribute_type == 'tag') {
                 if (isset($_POST['id'])) {
                     $attribute_id = $_POST['id'];
 
-                    $labels = [];
-                    $labels_links = [];
+                    $tags = [];
+                    $tags_links = [];
 
-                    $sql_labels = "SELECT 
-                                        label.id AS label_id, 
-                                        label.name AS label_name, 
-                                        stock_label.id AS stock_label_id, 
-                                        stock_label.stock_id AS stock_id, 
-                                        stock_label.label_id AS stock_label_label_id,
+                    $sql_tags = "SELECT 
+                                        tag.id AS tag_id, 
+                                        tag.name AS tag_name, 
+                                        stock_tag.id AS stock_tag_id, 
+                                        stock_tag.stock_id AS stock_id, 
+                                        stock_tag.tag_id AS stock_tag_tag_id,
                                         stock.name AS stock_name
                                     FROM 
-                                        label
+                                        tag
                                     LEFT JOIN 
-                                        stock_label ON label.id = stock_label.label_id
+                                        stock_tag ON tag.id = stock_tag.tag_id
                                     LEFT JOIN 
-                                        stock ON stock_label.stock_id = stock.id AND stock.deleted=0
-                                    WHERE label.deleted=0
-                                        AND label.id=$attribute_id;";                         
-                    $stmt_labels = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
-                        header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=get-label&section=stocklocations-settings#stocklocations-settings");
+                                        stock ON stock_tag.stock_id = stock.id AND stock.deleted=0
+                                    WHERE tag.deleted=0
+                                        AND tag.id=$attribute_id;";                         
+                    $stmt_tags = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_tags, $sql_tags)) {
+                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=stocklocations-settings#stocklocations-settings");
                         exit();
                     } else {
-                        mysqli_stmt_execute($stmt_labels);
-                        $result_labels = mysqli_stmt_get_result($stmt_labels);
-                        $rowCount_labels = $result_labels->num_rows;
-                        if ($rowCount_labels !== 0) {
-                            while ($row_labels = $result_labels->fetch_assoc()) {
-                                if (!array_key_exists($row_labels['label_id'], $labels)) {
-                                    $labels[$row_labels['label_id']] = array('id' =>  $row_labels['label_id'], 'name' => $row_labels['label_name']);
+                        mysqli_stmt_execute($stmt_tags);
+                        $result_tags = mysqli_stmt_get_result($stmt_tags);
+                        $rowCount_tags = $result_tags->num_rows;
+                        if ($rowCount_tags !== 0) {
+                            while ($row_tags = $result_tags->fetch_assoc()) {
+                                if (!array_key_exists($row_tags['tag_id'], $tags)) {
+                                    $tags[$row_tags['tag_id']] = array('id' =>  $row_tags['tag_id'], 'name' => $row_tags['tag_name']);
                                 }
-                                if (isset($row_labels['stock_label_id']) && $row_labels['stock_label_id'] !== NULL && $row_labels['stock_label_label_id'] !== '') {
-                                    $labels_links[$row_labels['label_id']][] = array('id' => $row_labels['stock_label_id'], 'stock_id' => $row_labels['stock_id'], 
-                                                                                        'stock_name' => $row_labels['stock_name'], 'label_id' => $row_labels['stock_label_label_id']);
+                                if (isset($row_tags['stock_tag_id']) && $row_tags['stock_tag_id'] !== NULL && $row_tags['stock_tag_tag_id'] !== '') {
+                                    $tags_links[$row_tags['tag_id']][] = array('id' => $row_tags['stock_tag_id'], 'stock_id' => $row_tags['stock_id'], 
+                                                                                        'stock_name' => $row_tags['stock_name'], 'tag_id' => $row_tags['stock_tag_tag_id']);
                                 }
                             }
-                            if (array_key_exists($attribute_id, $labels_links)) {
+                            if (array_key_exists($attribute_id, $tags_links)) {
                                 header("Location: ../admin.php?error=dependenciesPresent&section=attributemanagement-$attribute_type#attributemanagement-settings");
                                 exit();
                             } else {
                                 $value=1;
-                                $sql_update = "UPDATE label SET deleted=? WHERE id='$attribute_id'";
+                                $sql_update = "UPDATE tag SET deleted=? WHERE id='$attribute_id'";
                                 $stmt_update = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                    header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-label&section=stocklocations-settings#stocklocations-settings");
+                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=stocklocations-settings#stocklocations-settings");
                                     exit();
                                 } else {
                                     mysqli_stmt_bind_param($stmt_update, "s", $value);
                                     mysqli_stmt_execute($stmt_update);
                                     // update changelog
-                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "label", $attribute_id, 'deleted', 0, 1);
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "tag", $attribute_id, 'deleted', 0, 1);
                                     header("Location: ../admin.php?success=deleted&id=$attribute_id&section=attributemanagement-$attribute_type#attributemanagement-settings");
                                     exit();
                                 }
@@ -1546,42 +1546,42 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['attributemanagement-restore'])) { // attribute management section in the admin.php page
         if (isset($_POST['attribute-type'])) {
             $attribute_type = $_POST['attribute-type'];
-            if ($attribute_type == 'label') {
+            if ($attribute_type == 'tag') {
                 if (isset($_POST['id'])) {
                     $attribute_id = $_POST['id'];
 
-                    $labels = [];
+                    $tags = [];
 
-                    $sql_labels = "SELECT 
-                                        label.id AS label_id, 
-                                        label.name AS label_name
+                    $sql_tags = "SELECT 
+                                        tag.id AS tag_id, 
+                                        tag.name AS tag_name
                                     FROM 
-                                        label
-                                    WHERE label.deleted=1
-                                        AND label.id=$attribute_id;";                         
-                    $stmt_labels = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
-                        header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=get-label&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                                        tag
+                                    WHERE tag.deleted=1
+                                        AND tag.id=$attribute_id;";                         
+                    $stmt_tags = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_tags, $sql_tags)) {
+                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=attributemanagement-$attribute_type#attributemanagement-settings");
                         exit();
                     } else {
-                        mysqli_stmt_execute($stmt_labels);
-                        $result_labels = mysqli_stmt_get_result($stmt_labels);
-                        $rowCount_labels = $result_labels->num_rows;
-                        if ($rowCount_labels !== 0) {
-                            $row_labels = $result_labels->fetch_assoc();
-                            $label[$row_labels['label_id']] = array('id' =>  $row_labels['label_id'], 'name' => $row_labels['label_name']);
+                        mysqli_stmt_execute($stmt_tags);
+                        $result_tags = mysqli_stmt_get_result($stmt_tags);
+                        $rowCount_tags = $result_tags->num_rows;
+                        if ($rowCount_tags !== 0) {
+                            $row_tags = $result_tags->fetch_assoc();
+                            $tag[$row_tags['tag_id']] = array('id' =>  $row_tags['tag_id'], 'name' => $row_tags['tag_name']);
 
                             $value=0;
-                            $sql_update = "UPDATE label SET deleted=? WHERE id='$attribute_id'";
+                            $sql_update = "UPDATE tag SET deleted=? WHERE id='$attribute_id'";
                             $stmt_update = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                header("Location: ../admin.php?error=sqlerror&table=label&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-label&section=stocklocations-settings#stocklocations-settings");
+                                header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-tag&section=stocklocations-settings#stocklocations-settings");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_update, "s", $value);
                                 mysqli_stmt_execute($stmt_update);
                                 // update changelog
-                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "label", $attribute_id, 'deleted', 1, 0);
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "tag", $attribute_id, 'deleted', 1, 0);
                                 header("Location: ../admin.php?success=restored&id=$attribute_id&section=attributemanagement-$attribute_type#attributemanagement-settings");
                                 exit();
                             }

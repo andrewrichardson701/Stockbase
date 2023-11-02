@@ -34,7 +34,7 @@ $currency_symbol = '£';
         $input_sku           = isset($_GET['sku'])           ? $_GET['sku'] : '';
         $input_description   = isset($_GET['description'])   ? $_GET['description'] : '';
         $input_min_stock     = isset($_GET['min_stock'])     ? $_GET['min_stock'] : '';
-        $input_labels        = isset($_GET['labels'])        ? $_GET['labels'] : '';
+        $input_tags          = isset($_GET['tags'])          ? $_GET['tags'] : '';
          
         $input_upc           = isset($_GET['upc'])           ? $_GET['upc'] : '';
         $input_manufacturer  = isset($_GET['manufacturer'])  ? $_GET['manufacturer'] : '';
@@ -84,18 +84,18 @@ $currency_symbol = '£';
                                                 AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments AND item.deleted=0
                                         ) AS item_quantity,
                                         manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
-                                        (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
-                                            FROM stock_label 
-                                            INNER JOIN label ON stock_label.label_id = label.id 
-                                            WHERE stock_label.stock_id = stock.id
-                                            ORDER BY label.name
-                                        ) AS label_names,
-                                        (SELECT GROUP_CONCAT(DISTINCT label.id ORDER BY label.name SEPARATOR ', ') 
-                                            FROM stock_label
-                                            INNER JOIN label ON stock_label.label_id = label.id
-                                            WHERE stock_label.stock_id = stock.id
-                                            ORDER BY label.name
-                                        ) AS label_ids
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                            FROM stock_tag 
+                                            INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                            WHERE stock_tag.stock_id = stock.id
+                                            ORDER BY tag.name
+                                        ) AS tag_names,
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                            FROM stock_tag
+                                            INNER JOIN tag ON stock_tag.tag_id = tag.id
+                                            WHERE stock_tag.stock_id = stock.id
+                                            ORDER BY tag.name
+                                        ) AS tag_ids
                                     FROM stock
                                     LEFT JOIN item ON stock.id=item.stock_id
                                     LEFT JOIN shelf ON item.shelf_id=shelf.id 
@@ -141,18 +141,18 @@ $currency_symbol = '£';
                                 $item_cost = $row['item_cost'];
                                 $item_comments = $row['item_comments'];
                                 $item_serial_number = $row['item_serial_number'];
-                                $stock_label_ids = $row['label_ids'];
-                                $stock_label_names = $row['label_names'];
+                                $stock_tag_ids = $row['tag_ids'];
+                                $stock_tag_names = $row['tag_names'];
                                 
-                                $stock_label_data = [];
+                                $stock_tag_data = [];
 
-                                if ($stock_label_ids !== null) {
-                                    for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
-                                        $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
-                                                                            'name' => explode(", ", $stock_label_names)[$n]);
+                                if ($stock_tag_ids !== null) {
+                                    for ($n=0; $n < count(explode(", ", $stock_tag_ids)); $n++) {
+                                        $stock_tag_data[$n] = array('id' => explode(", ", $stock_tag_ids)[$n],
+                                                                            'name' => explode(", ", $stock_tag_names)[$n]);
                                     }
                                 } else {
-                                    $stock_label_data = '';
+                                    $stock_tag_data = '';
                                 }
                                 
 
@@ -172,7 +172,7 @@ $currency_symbol = '£';
                                                         'cost' => $item_cost,
                                                         'comments' => $item_comments,
                                                         'serial_number' => $item_serial_number,
-                                                        'label' => $stock_label_data);
+                                                        'tag' => $stock_tag_data);
                             }
                             
                             $stock_id = $_GET['stock_id'];

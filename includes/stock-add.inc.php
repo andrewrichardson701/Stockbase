@@ -21,7 +21,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         $input_sku           = isset($_GET['sku'])           ? $_GET['sku'] : '';
         $input_description   = isset($_GET['description'])   ? $_GET['description'] : '';
         $input_min_stock     = isset($_GET['min_stock'])     ? $_GET['min_stock'] : '';
-        $input_labels        = isset($_GET['labels'])        ? $_GET['labels'] : '';
+        $input_tags           = isset($_GET['tags'])         ? $_GET['tags'] : '';
          
         $input_upc           = isset($_GET['upc'])           ? $_GET['upc'] : '';
         $input_manufacturer  = isset($_GET['manufacturer'])  ? $_GET['manufacturer'] : '';
@@ -36,7 +36,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
 
         echo('<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">');
         if ($stock_id == 0 || $stock_id == '0') {
-            //<input type="text" name="labels" placeholder="Labels - allow multiple" id="labels" class="form-control nav-v-c" style="width:300px" value="'.$input_labels.'"></input>
+            //<input type="text" name="tags" placeholder="Labels - allow multiple" id="tags" class="form-control nav-v-c" style="width:300px" value="'.$input_tags.'"></input>
             echo('
             <!-- this is for the stock-modify.inc.php page -->
             <input type="hidden" name="stock-add" value="1" /> 
@@ -68,7 +68,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         <div id="image-preview" style="height:150px;margin:auto;text-align:center">
                             <img class="nav-v-c" id="upload-img-pre" style="max-width:150px;max-height:150px" />
                         </div>
-                        <div class="nav-row"  id="labels-row" style="margin-top:25px">
+                        <div class="nav-row"  id="images-row" style="margin-top:25px">
                             <table class="centertable">
                                 <tbody>
                                     <tr>
@@ -91,14 +91,14 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         };
                         </script>
                     </div>
-                    <div class="nav-row" id="labels-row" style="margin-top:25px;padding-left:15px;padding-right:15px">
-                        <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
+                    <div class="nav-row" id="tags-row" style="margin-top:25px;padding-left:15px;padding-right:15px">
+                        <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="tags" id="labels-tag">Tags</label></div>
                         <div>
-                            <select class="form-control stock-inputSize" id="labels-init" name="labels-init">
-                                <option value="" selected disabled hidden>-- Select a label if needed --</option>');
+                            <select class="form-control stock-inputSize" id="tags-init" name="tags-init">
+                                <option value="" selected disabled hidden>-- Select a tag if needed --</option>');
                                 include 'includes/dbh.inc.php';
                                 $sql = "SELECT id, name
-                                        FROM label
+                                        FROM tag
                                         ORDER BY id";
                                 $stmt = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -112,25 +112,25 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     } else {
                                         // rows found
                                         while ($row = $result->fetch_assoc()) {
-                                            $label_id = $row['id'];
-                                            $label_name = $row['name'];
-                                            echo('<option value="'.$label_id.'">'.$label_name.'</option>');
+                                            $tag_id = $row['id'];
+                                            $tag_name = $row['name'];
+                                            echo('<option value="'.$tag_id.'">'.$tag_name.'</option>');
                                         }
                                     }
                                 }
                             echo('
                             </select>
 
-                            <select id="labels" name="labels[]" multiple class="form-control stock-inputSize" style="margin-top:2px;display: inline-block;height:40px"></select>
+                            <select id="tags" name="tags[]" multiple class="form-control stock-inputSize" style="margin-top:2px;display: inline-block;height:40px"></select>
                             <style>
-                                #labels {
+                                #tags {
                                 display: inline-block;
                                 padding-top:2px;
                                 padding-bottom:2px;
                                 width: auto;
                                 }
                                 
-                                #labels option {
+                                #tags option {
                                 display: inline-block;
                                 padding: 3px;
                                 margin-right: 10px;
@@ -140,8 +140,8 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 }
                             </style>
                             <script>
-                            var selectBox = document.getElementById("labels-init");
-                            var selectedBox = document.getElementById("labels");
+                            var selectBox = document.getElementById("tags-init");
+                            var selectedBox = document.getElementById("tags");
 
                             selectBox.addEventListener("change", function() {
                             var selectedOption = selectBox.options[selectBox.selectedIndex];
@@ -160,7 +160,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             </script>
                         </div>
                         <div>
-                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
+                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'tag\')">Add New</label>
                         </div>
                     </div>
                 </div>
@@ -180,15 +180,15 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 WHERE item.stock_id = stock.id AND item.shelf_id = shelf.id
                             ) AS item_quantity,
                             manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
-                            (SELECT GROUP_CONCAT(DISTINCT label.name SEPARATOR ', ') 
-                                FROM stock_label 
-                                INNER JOIN label ON stock_label.label_id = label.id 
-                                WHERE stock_label.stock_id = stock.id
-                            ) AS label_names,
-                            (SELECT GROUP_CONCAT(DISTINCT label_id SEPARATOR ', ') 
-                                FROM stock_label
-                                WHERE stock_label.stock_id = stock.id
-                            ) AS label_ids
+                            (SELECT GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') 
+                                FROM stock_tag 
+                                INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                WHERE stock_tag.stock_id = stock.id
+                            ) AS tag_names,
+                            (SELECT GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') 
+                                FROM stock_tag
+                                WHERE stock_tag.stock_id = stock.id
+                            ) AS tag_ids
                         FROM stock
                         LEFT JOIN item ON stock.id=item.stock_id
                         LEFT JOIN shelf ON item.shelf_id=shelf.id 
@@ -229,18 +229,18 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         $stock_site_name = $row['site_name'];
                         $stock_manufacturer_id = $row['manufacturer_id'];
                         $stock_manufacturer_name = $row['manufacturer_name'];
-                        $stock_label_ids = $row['label_ids'];
-                        $stock_label_names = $row['label_names'];
+                        $stock_tag_ids = $row['tag_ids'];
+                        $stock_tag_names = $row['tag_names'];
                         
-                        $stock_label_data = [];
+                        $stock_tag_data = [];
 
-                        if ($stock_label_ids !== null) {
-                            for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
-                                $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
-                                                                    'name' => explode(", ", $stock_label_names)[$n]);
+                        if ($stock_tag_ids !== null) {
+                            for ($n=0; $n < count(explode(", ", $stock_tag_ids)); $n++) {
+                                $stock_tag_data[$n] = array('id' => explode(", ", $stock_tag_ids)[$n],
+                                                                    'name' => explode(", ", $stock_tag_names)[$n]);
                             }
                         } else {
-                            $stock_label_data = '';
+                            $stock_tag_data = '';
                         }
                         
 
@@ -256,7 +256,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                 'site_name' => $stock_site_name,
                                                 'manufacturer_id' => $stock_manufacturer_id,
                                                 'manufacturer_name' => $stock_manufacturer_name,
-                                                'label' => $stock_label_data);
+                                                'tag' => $stock_tag_data);
                     }
                     
                     $stock_id = $_GET['stock_id'];

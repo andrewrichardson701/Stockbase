@@ -204,7 +204,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <p style="min-height:max-content;margin:0" class=" align-middle" for="banner_color">Banner Colour:</p>
                             </td>
                             <td id="banner-color-picker" style="width:250px;padding-bottom:20px">
-                                <label class="label-color">
+                                <label class="tag-color">
                                     <input class="form-control input-color color" id="banner_color" name="banner_color" placeholder="#XXXXXX" data-value="#xxxxxx" value="<?php echo($current_banner_color); ?>"/>
                                 </label>
                             </td>
@@ -637,9 +637,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             }
             ?>
 
-            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Labels</h4>
+            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags</h4>
             <?php
-            if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement-label')) {
+            if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement-tag')) {
                 echo('<div style="margin-right: 10px; margin-left: 10px">');
                 showResponse();
                 echo('</div>');
@@ -647,42 +647,42 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             ?>
             
                     <?php   
-                        $labels = [];
-                        $labels_links = [];
+                        $tags = [];
+                        $tags_links = [];
 
                         $l_d = 0;
 
-                        $sql_labels = "SELECT 
-                                            label.id AS label_id, 
-                                            label.name AS label_name, 
-                                            label.deleted AS label_deleted,
-                                            stock_label.id AS stock_label_id, 
-                                            stock_label.stock_id AS stock_id, 
-                                            stock_label.label_id AS stock_label_label_id,
+                        $sql_tags = "SELECT 
+                                            tag.id AS tag_id, 
+                                            tag.name AS tag_name, 
+                                            tag.deleted AS tag_deleted,
+                                            stock_tag.id AS stock_tag_id, 
+                                            stock_tag.stock_id AS stock_id, 
+                                            stock_tag.tag_id AS stock_tag_tag_id,
                                             stock.name AS stock_name
                                         FROM 
-                                            label
+                                            tag
                                         LEFT JOIN 
-                                            stock_label ON label.id = stock_label.label_id
+                                            stock_tag ON tag.id = stock_tag.tag_id
                                         LEFT JOIN 
-                                            stock ON stock_label.stock_id = stock.id AND stock.deleted=0;";                         
-                        $stmt_labels = mysqli_stmt_init($conn);
-                        if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
+                                            stock ON stock_tag.stock_id = stock.id AND stock.deleted=0;";                         
+                        $stmt_tags = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_tags, $sql_tags)) {
                             echo("ERROR getting entries");
                         } else {
-                            mysqli_stmt_execute($stmt_labels);
-                            $result_labels = mysqli_stmt_get_result($stmt_labels);
-                            $rowCount_labels = $result_labels->num_rows;
-                            while ($row_labels = $result_labels->fetch_assoc()) {
-                                if ($row_labels['label_deleted'] == 1) {
+                            mysqli_stmt_execute($stmt_tags);
+                            $result_tags = mysqli_stmt_get_result($stmt_tags);
+                            $rowCount_tags = $result_tags->num_rows;
+                            while ($row_tags = $result_tags->fetch_assoc()) {
+                                if ($row_tags['tag_deleted'] == 1) {
                                     $l_d++;
                                 }
-                                if (!array_key_exists($row_labels['label_id'], $labels)) {
-                                    $labels[$row_labels['label_id']] = array('id' =>  $row_labels['label_id'], 'name' => $row_labels['label_name'], 'deleted' => $row_labels['label_deleted']);
+                                if (!array_key_exists($row_tags['tag_id'], $tags)) {
+                                    $tags[$row_tags['tag_id']] = array('id' =>  $row_tags['tag_id'], 'name' => $row_tags['tag_name'], 'deleted' => $row_tags['tag_deleted']);
                                 }
-                                if (isset($row_labels['stock_label_id']) && $row_labels['stock_label_id'] !== NULL && $row_labels['stock_label_label_id'] !== '') {
-                                    $labels_links[$row_labels['label_id']][] = array('id' => $row_labels['stock_label_id'], 'stock_id' => $row_labels['stock_id'], 
-                                                                                        'stock_name' => $row_labels['stock_name'], 'label_id' => $row_labels['stock_label_label_id']);
+                                if (isset($row_tags['stock_tag_id']) && $row_tags['stock_tag_id'] !== NULL && $row_tags['stock_tag_tag_id'] !== '') {
+                                    $tags_links[$row_tags['tag_id']][] = array('id' => $row_tags['stock_tag_id'], 'stock_id' => $row_tags['stock_id'], 
+                                                                                        'stock_name' => $row_tags['stock_name'], 'tag_id' => $row_tags['stock_tag_tag_id']);
                                 }
                             }
                             ?>
@@ -695,13 +695,13 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
                                             <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
                                             <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
-                                                <button id="show-deleted-label" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('label', 1)" <?php if ($l_d == 0) { echo "hidden"; } ?> >
+                                                <button id="show-deleted-tag" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('tag', 1)" <?php if ($l_d == 0) { echo "hidden"; } ?> >
                                                     <span class="zeroStockFont">
                                                         <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
                                                         
                                                     </span>
                                                 </button>
-                                                <button id="hide-deleted-label" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('label', 0)" hidden>
+                                                <button id="hide-deleted-tag" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('tag', 0)" hidden>
                                                     <span class="zeroStockFont">
                                                         <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
                                                     </span>
@@ -712,38 +712,38 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     </thead>
                                     <tbody>
                             <?php
-                            foreach ($labels as $label) {
-                                $l = $label['id'];
-                                $label_deleted = $label['deleted'];
-                                $label_deleted_class = '';
-                                if ($label_deleted == 1) {
-                                    $label_deleted_class = 'red theme-divBg label-deleted';
+                            foreach ($tags as $tag) {
+                                $l = $tag['id'];
+                                $tag_deleted = $tag['deleted'];
+                                $tag_deleted_class = '';
+                                if ($tag_deleted == 1) {
+                                    $tag_deleted_class = 'red theme-divBg tag-deleted';
                                 }
-                                if (array_key_exists($l, $labels_links)) {
-                                    $label_link_count = count($labels_links[$l]);
+                                if (array_key_exists($l, $tags_links)) {
+                                    $tag_link_count = count($tags_links[$l]);
                                 } else {
-                                    $label_link_count = 0;
+                                    $tag_link_count = 0;
                                 }
                                 
                                 echo('
-                                    <tr id="label-row-'.$l.'" class="align-middle '.$label_deleted_class.'"'); if ($label_deleted == 1) { echo(' hidden'); } echo('>
+                                    <tr id="tag-row-'.$l.'" class="align-middle '.$tag_deleted_class.'"'); if ($tag_deleted == 1) { echo(' hidden'); } echo('>
                                         <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                            <input type="hidden" name="attribute-type" value="label"/>
+                                            <input type="hidden" name="attribute-type" value="tag"/>
                                             <input type="hidden" name="id" value="'.$l.'">
-                                            <td id="label-'.$l.'-id" class="text-center align-middle">'.$l.'</td>
-                                            <td id="label-'.$l.'-name" class="text-center align-middle">'.$label['name'].'</td>
-                                            <td class="text-center align-middle">'.$label_link_count.'</td>
+                                            <td id="tag-'.$l.'-id" class="text-center align-middle">'.$l.'</td>
+                                            <td id="tag-'.$l.'-name" class="text-center align-middle">'.$tag['name'].'</td>
+                                            <td class="text-center align-middle">'.$tag_link_count.'</td>
                                             <td class="text-center align-middle">');
-                                            if ($label_deleted !== 1) {
+                                            if ($tag_deleted !== 1) {
                                                 echo('<button class="btn btn-danger" type="submit" name="attributemanagement-submit" '); 
-                                                    if ($label_link_count !== 0) { echo('disabled title="Label still linked to stock. Remove these links before deleting."'); } 
+                                                    if ($tag_link_count !== 0) { echo('disabled title="tag still linked to stock. Remove these links before deleting."'); } 
                                                     echo('><i class="fa fa-trash"></i></button></td>');
                                             } else {
                                                 echo('<button class="btn btn-success" type="submit" name="attributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
                                             }
                                             echo('<td class="text-center align-middle">'); 
-                                                if ($label_deleted !== 1) {
-                                                    if ($label_link_count !== 0) { echo('<button class="btn btn-warning" id="label-'.$l.'-links" type="button" onclick="showLinks(\'label\', \''.$l.'\')">Show Links</button>'); }
+                                                if ($tag_deleted !== 1) {
+                                                    if ($tag_link_count !== 0) { echo('<button class="btn btn-warning" id="tag-'.$l.'-links" type="button" onclick="showLinks(\'tag\', \''.$l.'\')">Show Links</button>'); }
                                                 } else {
                                                     echo('<or class="green">Restore?</or>');
                                                 }
@@ -751,9 +751,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     echo('</form>
                                     </tr>
                                 ');
-                                if ($label_link_count !== 0) { 
+                                if ($tag_link_count !== 0) { 
                                     echo('
-                                        <tr id="label-row-'.$l.'-links" class="align-middle" hidden>
+                                        <tr id="tag-row-'.$l.'-links" class="align-middle" hidden>
                                             <td colspan=100%>
                                                 <div>
                                                     <table class="table table-dark theme-table">
@@ -762,20 +762,20 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                                 <th>ID</th>
                                                                 <th>Stock ID</th>
                                                                 <th>Stock Name</th>
-                                                                <th>Label ID</th>
-                                                                <th>Label Name</th>
+                                                                <th>tag ID</th>
+                                                                <th>tag Name</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>');
-                                                        $links = $labels_links[$l];
+                                                        $links = $tags_links[$l];
                                                         foreach ($links as $ll) {
                                                             echo('
                                                                 <tr class="clickable" onclick=navPage("stock.php?stock_id='.$ll['stock_id'].'")>
                                                                     <td class="text-center">'.$ll['id'].'</td>
                                                                     <td class="text-center"><a href="stock.php?stock_id='.$ll['stock_id'].'">'.$ll['stock_id'].'</a></td>
                                                                     <td class="text-center"><a href="stock.php?stock_id='.$ll['stock_id'].'">'.$ll['stock_name'].'</a></td>
-                                                                    <td class="text-center">'.$ll['label_id'].'</td>
-                                                                    <td class="text-center">'.$labels[$ll['label_id']]['name'].'</td>
+                                                                    <td class="text-center">'.$ll['tag_id'].'</td>
+                                                                    <td class="text-center">'.$tags[$ll['tag_id']]['name'].'</td>
     
                                                                 </tr>
                                                             ');

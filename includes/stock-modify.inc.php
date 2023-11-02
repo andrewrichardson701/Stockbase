@@ -308,14 +308,14 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $sku = $_POST['sku'];
                     $description = $_POST['description'];
                     $min_stock = $_POST['min-stock'] == '' ? 0 : $_POST['min-stock'];
-                    $labels = isset($_POST['labels']) ? $_POST['labels'] : '';
+                    $tags = isset($_POST['tags']) ? $_POST['tags'] : '';
                     $image = $_FILES['image'];
-                    if (is_array($labels)) {
-                        $labelsQ = implode(',', $labels);
+                    if (is_array($tags)) {
+                        $tagsQ = implode(',', $tags);
                     } else {
-                        $labelsQ = $labels;
+                        $tagsQ = $tags;
                     }
-                    $redirect_queries .= "&name=$name&sku=$sku&description=$description&min_stock=$min_stock&labels=$labelsQ";
+                    $redirect_queries .= "&name=$name&sku=$sku&description=$description&min_stock=$min_stock&tags=$tagsQ";
 
                     // check if SKU is set
                     // if it is set, check it doesnt already exist, divert back with error if it does.
@@ -445,36 +445,36 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             }
                         }
 
-                        // label linking
-                        if (is_array($labels)) {
-                            foreach($labels as $label) {
-                                $sql = "INSERT INTO stock_label (stock_id, label_id) VALUES (?, ?)";
+                        // tag linking
+                        if (is_array($tags)) {
+                            foreach($tags as $tag) {
+                                $sql = "INSERT INTO stock_tag (stock_id, tag_id) VALUES (?, ?)";
                                 $stmt = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                                     header("Location: ../".$redirect_url.$redirect_queries."&error=stockTableSQLConnection");
                                     exit();
                                 } else {
-                                    mysqli_stmt_bind_param($stmt, "ss", $id, $label);
+                                    mysqli_stmt_bind_param($stmt, "ss", $id, $tag);
                                     mysqli_stmt_execute($stmt);
-                                    $label_insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+                                    $tag_insert_id = mysqli_insert_id($conn); // ID of the new row in the table
 
                                     // update changelog
-                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_label", $label_insert_id, "stock_id", null, $id);
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_tag", $tag_insert_id, "stock_id", null, $id);
                                 }
                             }
-                        } elseif ($labels !== '') {
-                            $sql = "INSERT INTO stock_label (stock_id, label_id) VALUES (?, ?)";
+                        } elseif ($tags !== '') {
+                            $sql = "INSERT INTO stock_tag (stock_id, tag_id) VALUES (?, ?)";
                             $stmt = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt, $sql)) {
                                 header("Location: ../".$redirect_url.$redirect_queries."&error=stockTableSQLConnection");
                                 exit();
                             } else {
-                                mysqli_stmt_bind_param($stmt, "ss", $id, $labels);
+                                mysqli_stmt_bind_param($stmt, "ss", $id, $tags);
                                 mysqli_stmt_execute($stmt);
-                                $label_insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+                                $tag_insert_id = mysqli_insert_id($conn); // ID of the new row in the table
                                     
                                 // update changelog
-                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_label", $label_insert_id, "stock_id", null, $id);
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_tag", $tag_insert_id, "stock_id", null, $id);
                             }
                         }
                     }
@@ -771,33 +771,33 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $stock_name = $_POST['name'];
                     $stock_sku = $_POST['sku'];
                     $stock_description = isset($_POST['description'])? $_POST['description'] : '';
-                    $stock_labels = isset($_POST['labels'])? $_POST['labels'] : '';
-                    $stock_labels_init = isset($_POST['labels-init'])? $_POST['labels-init'] : '';
-                    $stock_labels_selected = isset($_POST['labels-selected'])? $_POST['labels-selected'] : '';
+                    $stock_tags = isset($_POST['tags'])? $_POST['tags'] : '';
+                    $stock_tags_init = isset($_POST['tags-init'])? $_POST['tags-init'] : '';
+                    $stock_tags_selected = isset($_POST['tags-selected'])? $_POST['tags-selected'] : '';
                     $stock_min_stock = isset($_POST['min-stock'])? $_POST['min-stock'] : 0;
                     
-                    $stock_labels_selected = explode(', ', $stock_labels_selected);
+                    $stock_tags_selected = explode(', ', $stock_tags_selected);
 
-                    $labels_temp_array = [];
-                    $labels_selected_temp_array = [];
+                    $tags_temp_array = [];
+                    $tags_selected_temp_array = [];
 
-                    if (is_array($stock_labels_selected)) {
-                        foreach ($stock_labels_selected as $l) {
-                            array_push($labels_temp_array, $l);
+                    if (is_array($stock_tags_selected)) {
+                        foreach ($stock_tags_selected as $l) {
+                            array_push($tags_temp_array, $l);
                         }
                     } else {
-                        array_push($labels_temp_array, $stock_labels_selected);
+                        array_push($tags_temp_array, $stock_tags_selected);
                     }
 
-                    if (is_array($stock_labels)) {
-                        foreach ($stock_labels as $ll) {
-                            array_push($labels_temp_array, $ll);
+                    if (is_array($stock_tags)) {
+                        foreach ($stock_tags as $ll) {
+                            array_push($tags_temp_array, $ll);
                         }
                     } else {
-                        array_push($labels_temp_array, $stock_labels);
+                        array_push($tags_temp_array, $stock_tags);
                     }
 
-                    $stock_labels_selected = array_unique(array_merge($labels_selected_temp_array, $labels_temp_array), SORT_REGULAR);
+                    $stock_tags_selected = array_unique(array_merge($tags_selected_temp_array, $tags_temp_array), SORT_REGULAR);
 
                     // echo ("<br>id: $stock_id<br>name: $stock_name<br>sku: $stock_sku<br>description: $stock_description<br>min stock: $stock_min_stock<br>");
                     
@@ -829,28 +829,28 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 mysqli_stmt_bind_param($stmt_update, "sssss", $stock_name, $stock_description, $stock_sku, $stock_min_stock, $stock_id);
                                 mysqli_stmt_execute($stmt_update);
 
-                                // add labels to the stock_labels table
-                                function addLabel($stock_id, $label_id) {
+                                // add tags to the stock_tags table
+                                function addTag($stock_id, $tag_id) {
                                     global $_SESSION;
                                     include 'dbh.inc.php';
-                                    $sql_add = "INSERT INTO stock_label (stock_id, label_id) VALUES (?, ?)";
+                                    $sql_add = "INSERT INTO stock_tag (stock_id, tag_id) VALUES (?, ?)";
                                     $stmt_add = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_add, $sql_add)) {
                                         echo ("error");
                                     } else {
-                                        mysqli_stmt_bind_param($stmt_add, "ss", $stock_id, $label_id);
+                                        mysqli_stmt_bind_param($stmt_add, "ss", $stock_id, $tag_id);
                                         mysqli_stmt_execute($stmt_add);
                                         $insert_id = mysqli_insert_id($conn);
 
                                         // update changelog
-                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_label", $insert_id, "stock_id", null, $stock_id);
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_tag", $insert_id, "stock_id", null, $stock_id);
                                     }
                                 }
-                                function cleanupLabels($stock_id) {
+                                function cleanupTags($stock_id) {
                                     global $_SESSION;
                                     include 'dbh.inc.php';
 
-                                    $sql = "SELECT id FROM stock_label WHERE stock_id=$stock_id";
+                                    $sql = "SELECT id FROM stock_tag WHERE stock_id=$stock_id";
                                     $stmt = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt, $sql)) {
                                         echo("ERROR getting entries");
@@ -861,7 +861,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                                         while ($row = $result->fetch_assoc()) {
                                             $id = $row['id'];
-                                            $sql_clean = "DELETE FROM stock_label WHERE stock_id=$stock_id AND id=$id";
+                                            $sql_clean = "DELETE FROM stock_tag WHERE stock_id=$stock_id AND id=$id";
                                             $stmt_clean = mysqli_stmt_init($conn);
                                             if (!mysqli_stmt_prepare($stmt_clean, $sql_clean)) {
                                                 echo ("error");
@@ -869,7 +869,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                 mysqli_stmt_execute($stmt_clean);
 
                                                 // update changelog
-                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_label", $id, "stock_id", $stock_id, null);
+                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_tag", $id, "stock_id", $stock_id, null);
                                             }
                                         }
                                     }
@@ -877,17 +877,17 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                             
 
-                                if ($stock_labels_selected != '') { 
-                                    cleanupLabels($stock_id);
-                                    if (is_array($stock_labels_selected) && !empty($stock_labels_selected)) {
-                                        foreach ($stock_labels_selected as $label) {
-                                            if ($label != '' && $label != null) {
-                                                addLabel($stock_id, $label);
+                                if ($stock_tags_selected != '') { 
+                                    cleanupTags($stock_id);
+                                    if (is_array($stock_tags_selected) && !empty($stock_tags_selected)) {
+                                        foreach ($stock_tags_selected as $tag) {
+                                            if ($tag != '' && $tag != null) {
+                                                addTag($stock_id, $tag);
                                             }
                                         }
                                     } else {
-                                        if ($stock_labels_selected != '' && $stock_labels_selected != null) {
-                                            addLabel($stock_id, $stock_labels_selected);
+                                        if ($stock_tags_selected != '' && $stock_tags_selected != null) {
+                                            addTag($stock_id, $stock_tags_selected);
                                         }
                                     }
                                 }
@@ -1504,42 +1504,42 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 
 
                                 // CLEAR STOCK_LABEL TABEL
-                                $sql_delete_label_check = "SELECT id FROM stock_label
+                                $sql_delete_tag_check = "SELECT id FROM stock_tag
                                                 WHERE stock_id=?
                                                 ORDER BY id";
-                                $stmt_delete_label_check = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_delete_label_check, $sql_delete_label_check)) {
+                                $stmt_delete_tag_check = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_delete_tag_check, $sql_delete_tag_check)) {
                                     $errors[] = 'delete item table error - SQL connection';
                                     header("Location: $redirect_url&error=itemTableSQLConnection");
                                     exit();
                                 } else {
-                                    mysqli_stmt_bind_param($stmt_delete_label_check, "s", $stock_id);
-                                    mysqli_stmt_execute($stmt_delete_label_check);
-                                    $result_delete_label_check = mysqli_stmt_get_result($stmt_delete_label_check);
-                                    $rowCount_delete_label_check = $result_delete_label_check->num_rows;
+                                    mysqli_stmt_bind_param($stmt_delete_tag_check, "s", $stock_id);
+                                    mysqli_stmt_execute($stmt_delete_tag_check);
+                                    $result_delete_tag_check = mysqli_stmt_get_result($stmt_delete_tag_check);
+                                    $rowCount_delete_tag_check = $result_delete_tag_check->num_rows;
 
-                                    while ($row_delete_label_check = $result_delete_label_check->fetch_assoc()) {
-                                        $label_delete_id = $row_delete_label_check['id'];
+                                    while ($row_delete_tag_check = $result_delete_tag_check->fetch_assoc()) {
+                                        $tag_delete_id = $row_delete_tag_check['id'];
 
-                                        $sql_delete_stock_label = "DELETE FROM stock_label WHERE stock_id=? AND id=?";
-                                        $stmt_delete_stock_label = mysqli_stmt_init($conn);
-                                        if (!mysqli_stmt_prepare($stmt_delete_stock_label, $sql_delete_stock_label)) {
-                                            $errors[] = 'delete stock_label table error - SQL connection';
-                                            header("Location: $redirect_url&error=stock_labelTableSQLConnection");
+                                        $sql_delete_stock_tag = "DELETE FROM stock_tag WHERE stock_id=? AND id=?";
+                                        $stmt_delete_stock_tag = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_delete_stock_tag, $sql_delete_stock_tag)) {
+                                            $errors[] = 'delete stock_tag table error - SQL connection';
+                                            header("Location: $redirect_url&error=stock_tagTableSQLConnection");
                                             exit();
                                         } else {
-                                            mysqli_stmt_bind_param($stmt_delete_stock_label, "ss", $stock_id, $label_delete_id);
-                                            mysqli_stmt_execute($stmt_delete_stock_label);
-                                            $rows_delete_stock_label = $conn->affected_rows;
-                                            if ($rows_delete_stock_label > 0) {
-                                                // echo("<br>stock_label(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_label<br>");
+                                            mysqli_stmt_bind_param($stmt_delete_stock_tag, "ss", $stock_id, $tag_delete_id);
+                                            mysqli_stmt_execute($stmt_delete_stock_tag);
+                                            $rows_delete_stock_tag = $conn->affected_rows;
+                                            if ($rows_delete_stock_tag > 0) {
+                                                // echo("<br>stock_tag(s) Deleted for stock_id: $stock_id , Row count: $rows_delete_stock_tag<br>");
                                                 // update changelog for delete
-                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_label", $label_delete_id, "stock_id", $stock_id, null);
+                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_tag", $tag_delete_id, "stock_id", $stock_id, null);
                                             } else {
-                                                // There wont always be labels to delete, so ignore for now.
+                                                // There wont always be tags to delete, so ignore for now.
 
-                                                // echo("<br>No stock_labels Deleted for stock_id: $stock_id... <br>");
-                                                // header("Location: $redirect_url&error=deleteStock_labelTable-NoRowsDeleted");
+                                                // echo("<br>No stock_tags Deleted for stock_id: $stock_id... <br>");
+                                                // header("Location: $redirect_url&error=deleteStock_tagTable-NoRowsDeleted");
                                                 // exit();
                                             }
                                             

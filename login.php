@@ -38,7 +38,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <!-- End of Header and Nav -->
     <?php 
     
-    $_SESSION['redirect_url'];
     include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings. ?>
     
     <div class="container" style="margin-top:75px">

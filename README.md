@@ -475,6 +475,13 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.4.0-beta</h3></summary>
+<h4>Beta release 0.4.0, Label to Tag.</h4>
+
+- Renamed the stock_label and label table to stock_tag and tag. Moving away from the term 'label' as it is not a fit name.
+- Changed all references of label to tag in the codebase. 
+
+</details>
 <summary><h3>0.3.2-beta</h3></summary>
 <h4>Beta release 0.3.2, Update scripts for version management and some small feature changes.</h4>
 

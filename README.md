@@ -479,7 +479,9 @@ Clone the repo first, and the follow the below steps.
 <h4>Beta release 0.4.0, Label to Tag.</h4>
 
 - Renamed the stock_label and label table to stock_tag and tag. Moving away from the term 'label' as it is not a fit name.
+- renamed the stock_tag table column 'label_id' to 'tag_id' to match the theme.
 - Changed all references of label to tag in the codebase. 
+- Added tags.php page to show all tags and their connections. This is not reachable without url currently.
 
 </details>
 <summary><h3>0.3.2-beta</h3></summary>

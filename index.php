@@ -291,6 +291,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         echo('<option value="'.$row_tags['name'].'" '); if (isset($_GET['tag']) && $_GET['tag'] == $row_tags['name']) { echo ('selected'); } echo('>'.$row_tags['name'].'</option>');
                                     }
                                 }
+                                echo('<option value="tags" class="gold link theme-tableOuter">view tags</option>');
                                 echo('
                                 </select>
                             </span>
@@ -438,11 +439,20 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             var sku = document.getElementById('search-input-sku').value;
             var shelf = document.getElementById('search-input-shelf').value;
             var manufacturer = document.getElementById('search-input-manufacturer').value;
+            var tagSelect = document.getElementById('search-input-tag');
             var tag = document.getElementById('search-input-tag').value;
             var page = document.getElementById('hidden-page-number').value;
             var rows = document.getElementById('hidden-row-count').value;
 
             var areaSelect = document.getElementById('area-dropdown');
+
+            if (tag == "tags") {
+                url = window.location.pathname + window.location.search
+                tagSelect.options[0].selected=true;
+                getInventory(1); // run again to reset the filter if tags is stored.
+                // console.log(url);
+                window.location.href = './tags.php?return='+encodeURIComponent(url);
+            }
 
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "includes/indexajax.php?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);

@@ -117,7 +117,7 @@ if (!empty($_POST)) {
     <span class="close" onclick="modalCloseProperties()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <!-- Tag -->
-        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-label" hidden>
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-tag" hidden>
             <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
                 <table class="centertable">
                     <tbody>

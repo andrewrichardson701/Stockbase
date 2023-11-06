@@ -637,7 +637,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             }
             ?>
 
-            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags</h4>
+            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags<a class="align-middle link" style="margin-left:30px;font-size:12" href="tags.php">View all</a></h4>
             <?php
             if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement-tag')) {
                 echo('<div style="margin-right: 10px; margin-left: 10px">');
@@ -863,7 +863,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <span class="zeroStockFont">
                                             <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
                                         </span>
-                                    
                                     </button>
                                 </th>
                             </tr>
@@ -1042,19 +1041,23 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Stock Location Settings -->
         <div style="padding-top: 20px" id="stocklocations" hidden>
+            <style>
+                .location-deleted{
+                    color: red !important;
+                }
+            </style>
             <?php
             if ((isset($_GET['section']) && $_GET['section'] == 'stocklocation-settings')) {
                 showResponse();
             }
            
             $locations = [];
-            $sql_locations = "SELECT site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                                    area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.parent_id AS area_parent_id,
-                                    shelf.id AS shelf_id, shelf.name AS shelf_name, shelf.area_id AS shelf_area_id
+            $sql_locations = "SELECT site.id AS site_id, site.name AS site_name, site.description AS site_description, site.deleted AS site_deleted,
+                                    area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.parent_id AS area_parent_id, area.deleted AS area_deleted,
+                                    shelf.id AS shelf_id, shelf.name AS shelf_name, shelf.area_id AS shelf_area_id, shelf.deleted AS shelf_deleted
                                 FROM site
                                 LEFT JOIN area ON site.id = area.site_id
                                 LEFT JOIN shelf ON area.id = shelf.area_id
-                                WHERE site.deleted=0 AND area.deleted=0 AND shelf.deleted=0
                                 ORDER BY site.id, area.id, shelf.id";
             $stmt_locations = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_locations, $sql_locations)) {
@@ -1066,18 +1069,31 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 if ($rowCount_locations < 1) {
                     echo ("No sites found");
                 } else {
+                    $locations_deleted_count = 0;
                     while( $row_locations = $result_locations->fetch_assoc() ) {  
+                        if ($row_locations['site_deleted'] == 1) {
+                            $locations_deleted_count ++;
+                        }
+                        if ($row_locations['area_deleted'] == 1) {
+                            $locations_deleted_count ++;
+                        }
+                        if ($row_locations['shelf_deleted'] == 1) {
+                            $locations_deleted_count ++;
+                        }
                         $locations[$row_locations['site_id']]['site_id'] = $row_locations['site_id'];
                         $locations[$row_locations['site_id']]['site_name'] = $row_locations['site_name'];
                         $locations[$row_locations['site_id']]['site_description'] = $row_locations['site_description'];
+                        $locations[$row_locations['site_id']]['site_deleted'] = $row_locations['site_deleted'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_id'] = $row_locations['area_id'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_name'] = $row_locations['area_name'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_description'] = $row_locations['area_description'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_site_id'] = $row_locations['area_site_id'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_parent_id'] = $row_locations['area_parent_id'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_deleted'] = $row_locations['area_deleted'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_id'] = $row_locations['shelf_id'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_name'] = $row_locations['shelf_name'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_area_id'] = $row_locations['shelf_area_id'];
+                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_deleted'] = $row_locations['shelf_deleted'];
                     }
 
                     $l = 0;
@@ -1095,9 +1111,18 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <th style="border-left:2px solid #95999c">shelf_id</th>
                                     <th>shelf_name</th>
                                     <th hidden>shelf_area_id</th>
-                                    <th style="border-left:2px solid #95999c"></th>
-                                    <th></th>
-                                    <th></th>
+                                    <th style="border-left:2px solid #95999c" colspan=3>
+                                        <button id="show-deleted-location" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes(\'location\', 1) '); if ($locations_deleted_count == 0) { echo('hidden'); } echo('">
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                        </span>
+                                        </button>
+                                        <button id="hide-deleted-location" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes(\'location\', 0)" hidden>
+                                            <span class="zeroStockFont">
+                                                <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                            </span>
+                                        </button>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>');
@@ -1129,7 +1154,17 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     $rowCount_site_check = $result_site_check->num_rows;
                                 }
 
-                                echo('<tr style="background-color:'.$color1.' !important; color:black">
+                                if ($site['site_deleted'] == 1) {
+                                    $site_deleted_class = ' location-deleted';
+                                    $site_deleted_hidden = ' hidden';
+                                    $color = '#7e1515';
+                                } else {
+                                    $site_deleted_class = '';
+                                    $site_deleted_hidden = '';
+                                    $color = $color1;
+                                }
+
+                                echo('<tr class="'.$site_deleted_class.'" style="background-color:'.$color.' !important; color:black"'.$site_deleted_hidden.'>
                                         <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                             <input type="hidden" id="site-'.$site['site_id'].'-type" name="type" value="site" />
                                             <input type="hidden" id="site-'.$site['site_id'].'-id" name="id" value="'.$site['site_id'].'" />
@@ -1151,12 +1186,23 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         </form>
                                         <form id="siteForm-delete-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                         <input type="hidden" name="location-id" value="'.$site_id_check.'" />
-                                            <td class="stockTD theme-table-blank">
+                                            <td class="stockTD theme-table-blank">');
+                                            if ($site['site_deleted'] !== 1) {
+                                                echo('
                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" '); 
                                                 if ($rowCount_site_check > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                 echo('>
                                                     <i class="fa fa-trash"></i>
                                                 </button>
+                                                ');
+                                            } else {
+                                                echo('
+                                                <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-restore-submit" value="site" type="submit" title="Restore object">
+                                                    <i class="fa fa-trash-restore"></i>
+                                                </button>
+                                                ');
+                                            }
+                                            echo('
                                             </td>
                                         </form>
                                     </tr>');
@@ -1174,7 +1220,19 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             $rowCount_area_check = $result_area_check->num_rows;
                                         }
 
-                                        echo('<tr style="background-color:'.$color2.' !important; color:black">
+                                        if ($area['area_deleted'] == 1) {
+                                            $area_deleted_class = ' location-deleted';
+                                            $area_deleted_hidden = ' hidden';
+                                            $color = '#7e1515';
+                                        } else {
+                                            $area_deleted_class = '';
+                                            $area_deleted_hidden = '';
+                                            $color = $color2;
+                                        }
+
+                                        
+
+                                        echo('<tr class="'.$area_deleted_class.'" style="background-color:'.$color.' !important; color:black"'.$area_deleted_hidden.'>
                                                 <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                     <input type="hidden" id="area-'.$area['area_id'].'-type" name="type" name="type" value="area" />
                                                     <input type="hidden" id="area-'.$area['area_id'].'-id" name="id" value="'.$area['area_id'].'" />
@@ -1198,12 +1256,23 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                 </form>
                                                 <form id="areaForm-delete-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                 <input type="hidden" name="location-id" value="'.$area_id_check.'" />
-                                                    <td class="stockTD theme-table-blank">
+                                                    <td class="stockTD theme-table-blank">');
+                                                    if ($area['area_deleted'] !== 1) {
+                                                        echo('
                                                         <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" '); 
-                                                        if ($rowCount_area_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
+                                                        if ($rowCount_area_check > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                         echo('>
                                                             <i class="fa fa-trash"></i>
                                                         </button>
+                                                        ');
+                                                    } else {
+                                                        echo('
+                                                        <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-restore-submit" value="area" type="submit" title="Restore object">
+                                                            <i class="fa fa-trash-restore"></i>
+                                                        </button>
+                                                        ');
+                                                    }
+                                                    echo('
                                                     </td>
                                                 </form>
                                             </tr>');
@@ -1220,8 +1289,17 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                     $result_shelf_check = mysqli_stmt_get_result($stmt_shelf_check);
                                                     $rowCount_shelf_check = $result_shelf_check->num_rows;
                                                 }
+                                                if ($shelf['shelf_deleted'] == 1) {
+                                                    $shelf_deleted_class = ' location-deleted';
+                                                    $shelf_deleted_hidden = ' hidden';
+                                                    $color = '#7e1515';
+                                                } else {
+                                                    $shelf_deleted_class = '';
+                                                    $shelf_deleted_hidden = '';
+                                                    $color = $color3;
+                                                }
 
-                                                echo('<tr style="background-color:'.$color3.' !important; color:black">
+                                                echo('<tr class="'.$shelf_deleted_class.'" style="background-color:'.$color.' !important; color:black"'.$shelf_deleted_hidden.'>
                                                         <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-site" name="site" value="'.$site['site_id'].'" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-type" name="type" value="shelf" />
@@ -1244,12 +1322,23 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                         </form>
                                                         <form id="shelfForm-delete-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                             <input type="hidden" name="location-id" value="'.$shelf_id_check.'" />
-                                                            <td class="stockTD theme-table-blank">
+                                                            <td class="stockTD theme-table-blank">');
+                                                            if ($shelf['shelf_deleted'] !== 1) {
+                                                                echo('
                                                                 <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="shelf" type="submit" '); 
-                                                                if ($rowCount_shelf_check != 0) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
+                                                                if ($rowCount_shelf_check > 0 ) { echo('disabled title="Dependencies exist for this object."'); } else { echo('title="Delete object"'); } 
                                                                 echo('>
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>
+                                                                ');
+                                                            } else {
+                                                                echo('
+                                                                <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-restore-submit" value="shelf" type="submit" title="Restore object">
+                                                                    <i class="fa fa-trash-restore"></i>
+                                                                </button>
+                                                                ');
+                                                            }
+                                                            echo('
                                                             </td>
                                                         </form>
                                                     </tr>');
@@ -1844,35 +1933,35 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         ldapForm.parentNode.insertBefore(newOutputPre, ldapForm.nextSibling);
 
         $.ajax({
-        type: "POST",
-        url: "./includes/ldap-test.inc.php",
-        data: {ldap_username: ldap_username, 
-            ldap_password: ldap_password, 
-            ldap_password_confirm: ldap_password_confirm, 
-            ldap_domain: ldap_domain,
-            ldap_host: ldap_host,
-            ldap_host_secondary: ldap_host_secondary,
-            ldap_port: ldap_port,
-            ldap_basedn: ldap_basedn,
-            ldap_usergroup: ldap_usergroup,
-            ldap_userfilter: ldap_userfilter
-        },
-        dataType: "json",
-        success: function(response){
-            var userlist = response;
-            var div = document.getElementById('ldapTestOutput');
-            // console.log(response);
-            if (Array.isArray(userlist)) {
-                for (var i = 0; i < userlist.length; i++) {
-                var user = userlist[i];
-                // console.log(user);
-                div.textContent += user+"\n";
-                }
-            } else {
-                div.textContent += userlist+"\n";
-            } 
-        },
-        async: false // <- this turns it into synchronous
+            type: "POST",
+            url: "./includes/ldap-test.inc.php",
+            data: {ldap_username: ldap_username, 
+                ldap_password: ldap_password, 
+                ldap_password_confirm: ldap_password_confirm, 
+                ldap_domain: ldap_domain,
+                ldap_host: ldap_host,
+                ldap_host_secondary: ldap_host_secondary,
+                ldap_port: ldap_port,
+                ldap_basedn: ldap_basedn,
+                ldap_usergroup: ldap_usergroup,
+                ldap_userfilter: ldap_userfilter
+            },
+            dataType: "json",
+            success: function(response){
+                var userlist = response;
+                var div = document.getElementById('ldapTestOutput');
+                // console.log(response);
+                if (Array.isArray(userlist)) {
+                    for (var i = 0; i < userlist.length; i++) {
+                    var user = userlist[i];
+                    // console.log(user);
+                    div.textContent += user+"\n";
+                    }
+                } else {
+                    div.textContent += userlist+"\n";
+                } 
+            },
+            async: false // <- this turns it into synchronous
         });
     }
 

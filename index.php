@@ -288,7 +288,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     $result_tags = mysqli_stmt_get_result($stmt_tags);
                                     $rowCount_tags = $result_tags->num_rows;
                                     while ($row_tags = $result_tags->fetch_assoc()) {
-                                        echo('<option value="'.$row_tags['name'].'" '); if (isset($_GET['tag']) && $_GET['tag'] == $row_tags['name']) { echo ('selected'); } echo('>'.$row_tags['name'].'</option>');
+                                        echo('<option value="'.$row_tags['name'].'" title="'.$row_tags['description'].'" '); if (isset($_GET['tag']) && $_GET['tag'] == $row_tags['name']) { echo ('selected'); } echo('>'.$row_tags['name'].'</option>');
                                     }
                                 }
                                 echo('<option value="tags" class="gold link theme-tableOuter">view tags</option>');

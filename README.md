@@ -482,6 +482,9 @@ Clone the repo first, and the follow the below steps.
 - renamed the stock_tag table column 'label_id' to 'tag_id' to match the theme.
 - Changed all references of label to tag in the codebase. 
 - Added tags.php page to show all tags and their connections. This is not reachable without url currently.
+- Stock Locations in admin page now allows you to see deleted locations and restore them, similar to attributes.
+- Adding properties is now an ajax request (e.g. adding tags, manufacturewrs, shelves areas and sites in the add new stock section). This means the page doesnt refresh.
+- Added description to the tag table for editing on the tags page.
 
 </details>
 <summary><h3>0.3.2-beta</h3></summary>

@@ -94,30 +94,30 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     <div class="nav-row" id="tags-row" style="margin-top:25px;padding-left:15px;padding-right:15px">
                         <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="tags" id="labels-tag">Tags</label></div>
                         <div>
-                            <select class="form-control stock-inputSize" id="tags-init" name="tags-init">
+                            <select class="form-control stock-inputSize" id="tag-select" name="tags-init">
                                 <option value="" selected disabled hidden>-- Select a tag if needed --</option>');
-                                include 'includes/dbh.inc.php';
-                                $sql = "SELECT id, name
-                                        FROM tag
-                                        ORDER BY id";
-                                $stmt = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                    // fails to connect
-                                } else {
-                                    mysqli_stmt_execute($stmt);
-                                    $result = mysqli_stmt_get_result($stmt);
-                                    $rowCount = $result->num_rows;
-                                    if ($rowCount < 1) {
-                                        echo('<option value="0">No Lables Found...</option>');
-                                    } else {
-                                        // rows found
-                                        while ($row = $result->fetch_assoc()) {
-                                            $tag_id = $row['id'];
-                                            $tag_name = $row['name'];
-                                            echo('<option value="'.$tag_id.'">'.$tag_name.'</option>');
-                                        }
-                                    }
-                                }
+                                // include 'includes/dbh.inc.php';
+                                // $sql = "SELECT id, name
+                                //         FROM tag
+                                //         ORDER BY id";
+                                // $stmt = mysqli_stmt_init($conn);
+                                // if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                //     // fails to connect
+                                // } else {
+                                //     mysqli_stmt_execute($stmt);
+                                //     $result = mysqli_stmt_get_result($stmt);
+                                //     $rowCount = $result->num_rows;
+                                //     if ($rowCount < 1) {
+                                //         echo('<option value="0">No Lables Found...</option>');
+                                //     } else {
+                                //         // rows found
+                                //         while ($row = $result->fetch_assoc()) {
+                                //             $tag_id = $row['id'];
+                                //             $tag_name = $row['name'];
+                                //             echo('<option value="'.$tag_id.'">'.$tag_name.'</option>');
+                                //         }
+                                //     }
+                                // }
                             echo('
                             </select>
 
@@ -140,7 +140,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 }
                             </style>
                             <script>
-                            var selectBox = document.getElementById("tags-init");
+                            var selectBox = document.getElementById("tag-select");
                             var selectedBox = document.getElementById("tags");
 
                             selectBox.addEventListener("change", function() {
@@ -304,30 +304,31 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                                 <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                 <div>
-                                    <select name="manufacturer" id="manufacturer" class="form-control stock-inputSize" required>
+                                    <select name="manufacturer" id="manufacturer-select" class="form-control stock-inputSize" required>
                                         <option value="" selected disabled hidden>Select Manufacturer</option>');
-                                        include 'includes/dbh.inc.php';
-                                            $sql = "SELECT id, name
-                                                    FROM manufacturer
-                                                    ORDER BY id";
-                                            $stmt = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                                // fails to connect
-                                            } else {
-                                                mysqli_stmt_execute($stmt);
-                                                $result = mysqli_stmt_get_result($stmt);
-                                                $rowCount = $result->num_rows;
-                                                if ($rowCount < 1) {
-                                                    echo('<option value="0">No Manufacturers Found...</option>');
-                                                } else {
-                                                    // rows found
-                                                    while ($row = $result->fetch_assoc()) {
-                                                        $manufacturers_id = $row['id'];
-                                                        $manufacturers_name = $row['name'];
-                                                        echo('<option value="'.$manufacturers_id.'">'.$manufacturers_name.'</option>');
-                                                    }
-                                                }
-                                            }
+                                        // include 'includes/dbh.inc.php';
+                                        //     $sql = "SELECT id, name
+                                        //             FROM manufacturer
+                                        //             WHERE manufacturer.deleted=0
+                                        //             ORDER BY id";
+                                        //     $stmt = mysqli_stmt_init($conn);
+                                        //     if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        //         // fails to connect
+                                        //     } else {
+                                        //         mysqli_stmt_execute($stmt);
+                                        //         $result = mysqli_stmt_get_result($stmt);
+                                        //         $rowCount = $result->num_rows;
+                                        //         if ($rowCount < 1) {
+                                        //             echo('<option value="0">No Manufacturers Found...</option>');
+                                        //         } else {
+                                        //             // rows found
+                                        //             while ($row = $result->fetch_assoc()) {
+                                        //                 $manufacturers_id = $row['id'];
+                                        //                 $manufacturers_name = $row['name'];
+                                        //                 echo('<option value="'.$manufacturers_id.'">'.$manufacturers_name.'</option>');
+                                        //             }
+                                        //         }
+                                        //     }
                                     echo('
                                     </select>
                                 </div>
@@ -707,7 +708,41 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
     ?>
     <?php include 'includes/stock-new-properties.inc.php'; ?>
 </div>
-
+<script>
+    function loadProperty(property) {
+        var select = document.getElementById(property+'-select');
+        var upperProperty = property[0].toUpperCase() + property.substring(1);
+        $.ajax({
+            type: "POST",
+            url: "./includes/stock-new-properties.inc.php",
+            data: {
+                load_property: '1',
+                type: property,
+                submit: '1'
+            },
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+                var rows = response;
+                if (Array.isArray(rows)) {
+                    select.options.length = 0;
+                    select.options[0] = new Option('Select '+upperProperty, '');
+                    for (var j = 1; j <= rows.length; j++) {
+                        select.options[j] = new Option(rows[j].name, rows[j].id);
+                    }
+                    select.options[0].disaled = true;
+                    select.options[1].selected = true;
+                } else {
+                    console.log('error - check loadProperty function');
+                }
+            },
+            async: true
+        });
+    }
+    document.onload = loadProperty('manufacturer');
+    document.onload = loadProperty('tag');
+    
+</script>
 <script> // for the select boxes
 function populateAreas() {
   // Get the selected site

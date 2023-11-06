@@ -38,7 +38,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <?php
         $sql = "SELECT
-                    t.id AS t_id, t.name AS t_name,
+                    t.id AS t_id, t.name AS t_name, t.description AS t_description,
                     (SELECT COUNT(s_t.id)
                     FROM stock_tag AS s_t
                     WHERE s_t.tag_id = t.id) AS object_count,
@@ -66,7 +66,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 WHERE
                     t.deleted = 0 
                 GROUP BY
-                    t_id, t_name, object_count, 
+                    t_id, t_name, t_description, object_count, 
                     s_id, s_name, s_description, s_sku, item_count
                 ORDER BY
                     t_name, s_name;
@@ -89,7 +89,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <tr class="theme-tableOuter">
                                 <th>ID</th>
                                 <th>Name</th>
+                                <th>Description</th>
                                 <th>Objects</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -100,50 +102,60 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 while ($row = $result->fetch_assoc()) {
                     if (!array_key_exists($row['t_id'], $tag_array)) {
                         // $tag_array[$row['t_id']] = array('id' => $row['t_id'], 'name' => $row['t_name'], 'description' => $row['t_description'], 'count' => $row['object_count']);
-                        $tag_array[$row['t_id']] = array('id' => $row['t_id'], 'name' => $row['t_name'], 'count' => $row['object_count']);
+                        $tag_array[$row['t_id']] = array('id' => $row['t_id'], 'name' => $row['t_name'], 'description' => $row['t_description'], 'count' => $row['object_count']);
                     }
-                    if ($row['s_id'] !== '') {
+                    if ((isset($row['s_id'])) && $row['s_id'] !== '') {
                         $tag_array[$row['t_id']]['stock'][] = array('id' => $row['s_id'], 'name' => $row['s_name'], 'description' => $row['s_description'], 
                                                                         'sku' => $row['s_sku'], 'count' => $row['item_count'], 
                                                                         'img_id' => $row['img_id'], 'img_image' => $row['img_image']);                   
                     }
                 }
 
-                // print_r('<pre>');
-                // print_r($tag_array);
-                // print_r('</pre>');
-
-                ?>
-                <script>
-                    function toggleHiddenCollection(clicked, id) {
-                        var hiddenID = 'tag-'+id+'-stock';
-                        var hiddenRow = document.getElementById(hiddenID);
-                        if (hiddenRow.hidden == false) {
-                            hiddenRow.hidden=true;
-                            clicked.innerText='+';
-                        } else {
-                            hiddenRow.hidden=false;
-                            clicked.innerText='-';
-                        }
-                    }
-                </script>
-                <?php
-
+                print_r('<pre hidden>');
+                print_r($tag_array);
+                print_r('</pre>');
 
                 foreach ($tag_array as $col) {
-                    $tag_id = $col['id'];
-                    $tag_name = $col['name'];
-                    $tag_count = $col['count'];
-                    $tag_stock = $col['stock'];
+                    $tag_id = isset($col['id']) ? $col['id'] : '';
+                    $tag_name = isset($col['name']) ? $col['name'] : '';
+                    $tag_count = isset($col['count']) ? $col['count'] : '';
+                    $tag_description = isset($col['description']) ? $col['description'] : '';
+                    $tag_stock = array_key_exists('stock', $col) ? $col['stock'] : '';
+                    if (isset($tag_stock) && !empty($tag_stock) && count($tag_stock) > 0 && $tag_stock !== '') {
+                        $toggle = '+';
+                        $toggle_class = ' clickable';
+                    } else {
+                        $toggle = '&nbsp;';
+                        $toggle_class = '';
+                    }
+                    if ($tag_count < 1) {
+                        $tag_color = ' red';
+                    } else {
+                        $tag_color = '';
+                    }
                     echo ('
                             <tr id="tag-'.$tag_id.'">
                                 <td class="text-center align-middle">'.$tag_id.'</td>
-                                <td class="text-center align-middle">'.$tag_name.'</td>
-                                <td class="text-center align-middle">'.$tag_count.'</td>
-                                <th class="text-center align-middle clickable" onclick="toggleHiddenCollection(this, \''.$tag_id.'\')">+</th>
+                                <td class="text-center align-middle" style="width:300px">'.$tag_name.'</td>
+                                <td class="text-center align-middle">'.$tag_description.'</td>
+                                <td class="text-center align-middle'.$tag_color.'">'.$tag_count.'</td>
+                                <td class="text-center align-middle"><button class="btn btn-info" name="submit" title="Edit" onclick="toggleEditTag(\''.$tag_id.'\')"><i class="fa fa-pencil"></i></td>
+                                <th class="text-center align-middle'.$toggle_class.'" style="width:50px" id="tag-'.$tag_id.'-toggle" onclick="toggleHiddenTag(\''.$tag_id.'\')">'.$toggle.'</th>
+                            </tr>
+                            <tr id="tag-'.$tag_id.'-edit" hidden>
+                                <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="tag_edit_submit" value="1" />
+                                    <input type="hidden" name="tag_id" value="'.$tag_id.'" />
+                                    <td class="text-center align-middle">'.$tag_id.'</td>
+                                    <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center" style="max-width:100%" name="tag_name" value="'.$tag_name.'"></td>
+                                    <td class="text-center align-middle"><input type="text" class="form-control text-center" style="max-width:100%" name="tag_description" value="'.$tag_description.'"></td>
+                                    <td class="text-center align-middle'.$tag_color.'">'.$tag_count.'</td>
+                                    <td class="text-center align-middle" style=""><span><button class="btn btn-success" title="Save" style="margin-right:10px" name="submit"><i class="fa fa-save"></i></button><button type="button" class="btn btn-warning" name="submit" style="padding:3px 12px 3px 12px" onclick="toggleEditTag(\''.$tag_id.'\')">Cancel</button></span></td>
+                                    <th class="text-center align-middle'.$toggle_class.'" style="width:50px" id="tag-'.$tag_id.'-edit-toggle" onclick="toggleHiddenTag(\''.$tag_id.'\')">'.$toggle.'</th>
+                                </form>
                             </tr>
                     ');
-                    if (!empty($tag_stock) || count($tag_stock) > 0){
+                    if (isset($tag_stock) && !empty($tag_stock) && count($tag_stock) > 0 && $tag_stock !== '') {
                         echo('
                             <tr id="tag-'.$tag_id.'-stock" hidden>
                                 <td colspan=100%>
@@ -199,86 +211,36 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
 
         ?>
-
-        <!-- <div class="container">
-            <table class="table table-dark theme-table centertable" style="margin-bottom:0px;">
-                <thead style="text-align: center; white-space: nowrap;">
-                    <tr class="theme-tableOuter">
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Objects</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="text-center align-middle">1</td>
-                        <td class="text-center align-middle">6500 Parts</td>
-                        <td class="text-center align-middle">Parts and spares for Cisco 6500 chassis</td>
-                        <td class="text-center align-middle">12</td>
-                        <td class="text-center align-middle">+</td>
-                    </tr>
-                    <tr>
-                        <td class="text-center align-middle">2</td>
-                        <td class="text-center align-middle">ASR 9k Parts</td>
-                        <td class="text-center align-middle">Parts and spares for Cisco ASR9k chassis</td>
-                        <td class="text-center align-middle">4</td>
-                        <td class="text-center align-middle">-</td>
-                    </tr>
-                    <tr>
-                        <td colspan=100%>
-                            <div style="margin: 5px 20px 10px 20px">
-                                <table class="table table-dark theme-table centertable" style="margin:0px;max-width:100%;border: 1px solid #454d55;">
-                                    <thead style="text-align: center; white-space: nowrap;">
-                                        <tr class="theme-tableOuter">
-                                            <th></th>
-                                            <th>Stock ID</th>
-                                            <th>Stock Name</th>
-                                            <th>Quantity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-center align-middle"><img class="inv-img-main thumb" src="./assets/img/stock/stock-126-img-311023154334.jpg"></td>
-                                            <td class="text-center align-middle">11</td>
-                                            <td class="text-center align-middle gold">Cisco 6500 Chassis</td>
-                                            <td class="text-center align-middle">1</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center align-middle"><img class="inv-img-main thumb" src="./assets/img/stock/stock-124-img-311023143150.jpg"></td>
-                                            <td class="text-center align-middle">12</td>
-                                            <td class="text-center align-middle gold">Example part 1</td>
-                                            <td class="text-center align-middle">11</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center align-middle"><img class="inv-img-main thumb" src="./assets/img/stock/stock-124-img-311023143150.jpg"></td>
-                                            <td class="text-center align-middle">13</td>
-                                            <td class="text-center align-middle gold">Example part 2</td>
-                                            <td class="text-center align-middle">3</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-center align-middle"><img class="inv-img-main thumb" src="./assets/img/stock/stock-124-img-311023143150.jpg"></td>
-                                            <td class="text-center align-middle">14</td>
-                                            <td class="text-center align-middle gold">Example part 3</td>
-                                            <td class="text-center align-middle">4</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="text-center align-middle">3</td>
-                        <td class="text-center align-middle">Example Collection</td>
-                        <td class="text-center align-middle">Parts and spares for example</td>
-                        <td class="text-center align-middle">2</td>
-                        <td class="text-center align-middle">+</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div> -->
     </div>
+    
+    <script>
+        function toggleEditTag(id) {
+            var row = document.getElementById('tag-'+id);
+            var rowEdit = document.getElementById('tag-'+id+'-edit');
+            if (rowEdit.hidden == true) {
+                row.hidden=true;
+                rowEdit.hidden=false;
+            } else {
+                row.hidden=false;
+                rowEdit.hidden=true;
+            }
+        }
+        function toggleHiddenTag(id) {
+            var button = document.getElementById('tag-'+id+'-toggle');
+            var buttonEdit = document.getElementById('tag-'+id+'-edit-toggle');
+            var hiddenID = 'tag-'+id+'-stock';
+            var hiddenRow = document.getElementById(hiddenID);
+            if (hiddenRow.hidden == false) {
+                hiddenRow.hidden=true;
+                button.innerText='+';
+                buttonEdit.innerText='+';
+            } else {
+                hiddenRow.hidden=false;
+                button.innerText='-';
+                buttonEdit.innerText='-';
+            }
+        }
+    </script>
 
     <?php include 'foot.php'; ?>
 </body>

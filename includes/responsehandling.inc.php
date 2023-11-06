@@ -117,6 +117,14 @@ if (isset($_GET['error'])) {
 		$errorPtext = 'Error occured: selector missing.';
 	} elseif ($_GET["error"] == "validatorMissing") {
 		$errorPtext = 'Error occured: validator missing.';
+	} elseif ($_GET["error"] == "missingID") {
+		$errorPtext = 'Error: Missing ID';
+	} elseif ($_GET["error"] == "missingName") {
+		$errorPtext = 'Error: Missing Name';
+	} elseif ($_GET["error"] == "missingDescription") {
+		$errorPtext = 'Error: Missing Description';
+	} elseif ($_GET["error"] == "noChangeNeeded") {
+		$errorPtext = 'No Changes Needed.';
 	} else {
         $errorPtext = $_GET['error'];
     }

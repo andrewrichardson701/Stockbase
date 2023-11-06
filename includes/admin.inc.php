@@ -22,11 +22,12 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['smtp-submit']) && !isset($_POST['smtp-restore-defaults']) && !isset($_POST['smtp-toggle-submit'])
     && !isset($_POST['user_role_submit']) && !isset($_POST['user_enabled_submit']) && !isset($_POST['user-impersonate']) && !isset($_POST['user-stop-impersonate']) 
     && !isset($_POST['admin-pwreset-submit']) 
-    && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit']) 
+    && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['location-delete-submit']) && isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['card-modify']) && !isset($_POST['card-remove']) 
     && !isset($_POST['theme-upload'])
     && !isset($_GET['mail-notification'])
     && !isset($_POST['imagemanagement-submit'])
+    && !isset($_POST['tag_edit_submit'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
     && !isset($_POST['stockmanagement-restore'])) {
 
@@ -1224,6 +1225,165 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
 
+    } elseif (isset($_POST['location-restore-submit'])) { // section for the location restoring in admin.inc.php
+        if ($_POST['location-restore-submit'] == "site") {
+            $site_id = $_POST['location-id'];
+            $sql_check = "SELECT * FROM area WHERE site_id=$site_id AND deleted=1;";
+            $stmt_check = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=get-area&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_check);
+                $result_check = mysqli_stmt_get_result($stmt_check);
+                $rowCount_check = $result_check->num_rows;
+
+                if ($rowCount_check == 0) {
+                    $sql_check2 = "SELECT * site WHERE id=$site_id AND deleted=1;";
+                    $stmt_check2 = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
+                        header("Location: ../admin.php?error=sqlerror&table=site&file=".__FILE__."&line=".__LINE__."&purpose=get-site&section=stocklocations-settings#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_check2);
+                        $result_check2 = mysqli_stmt_get_result($stmt_check2);
+                        $rowCount_check2 = $result_check2->num_rows;
+                        $row_check2 = $result_check2->fetch_assoc();
+
+                        $current_stock_name = $row_check2['name'];
+
+                        $sql_site = "UPDATE site SET deleted=0 WHERE id=$site_id;";
+                        $stmt_site = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                            header("Location: ../admin.php?error=sqlerror&table=site&file=".__FILE__."&line=".__LINE__."&purpose=update-site&section=stocklocations-settings#stocklocations-settings");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt_site);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "site", $site_id, "deleted", 1, 0);
+
+                            header("Location: ../admin.php?success=restored&type=site&id=$site_id&section=stocklocations-settings#stocklocations-settings");
+                            exit();
+                        }
+                    }
+                         
+                } else {
+                    header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
+                    exit();
+                }
+            }
+        } elseif ($_POST['location-restore-submit'] == "area") {
+            $area_id = $_POST['location-id'];
+            $sql_check = "SELECT * FROM shelf WHERE area_id=$area_id AND deleted=1;";
+            $stmt_check = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=get-shelf&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_check);
+                $result_check = mysqli_stmt_get_result($stmt_check);
+                $rowCount_check = $result_check->num_rows;
+
+                if ($rowCount_check == 0) {
+                    $sql_check1 = "SELECT * FROM area WHERE id=$area_id AND deleted=1;";
+                    $stmt_check1 = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
+                        header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=get-area&section=stocklocations-settings#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_check1);
+                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                        $rowCount_check1 = $result_check1->num_rows;
+                        $row_check1 = $result_check1->fetch_assoc();
+
+                        $current_area_name = $row_check1['name'];
+                        
+                        $sql_area = "UPDATE area SET deleted=0 WHERE id=$area_id;";
+                        $stmt_area = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
+                            header("Location: ../admin.php?error=sqlerror&table=area&file=".__FILE__."&line=".__LINE__."&purpose=update-area&section=stocklocations-settings#stocklocations-settings");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt_area);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "area", $area_id, "deleted", 1, 0);
+
+                            header("Location: ../admin.php?success=restored&type=area&id=$area_id&section=stocklocations-settings#stocklocations-settings");
+                            exit();
+                        }
+                    }
+                } else {
+                    header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
+                    exit();
+                }
+            }
+        } elseif ($_POST['location-restore-submit'] == "shelf") {
+            $shelf_id = $_POST['location-id'];
+            $sql_check = "SELECT * FROM item WHERE shelf_id=$shelf_id AND deleted=1;";
+            $stmt_check = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                header("Location: ../admin.php?error=sqlerror&table=item&file=".__FILE__."&line=".__LINE__."&purpose=get-item&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt_check);
+                $result_check = mysqli_stmt_get_result($stmt_check);
+                $rowCount_check = $result_check->num_rows;
+
+                if ($rowCount_check == 0) {
+
+                    $sql_check1 = "SELECT * FROM cable_item WHERE shelf_id=$shelf_id AND deleted=1;";
+                    $stmt_check1 = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
+                        header("Location: ../admin.php?error=sqlerror&table=cable_item&file=".__FILE__."&line=".__LINE__."&purpose=get-cable_item&section=stocklocations-settings#stocklocations-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_check1);
+                        $result_check1 = mysqli_stmt_get_result($stmt_check1);
+                        $rowCount_check1 = $result_check1->num_rows;
+
+                        if ($rowCount_check1 == 0) {
+
+                            $sql_check2 = "SELECT * FROM shelf WHERE id=$shelf_id AND deleted=1;";
+                            $stmt_check2 = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
+                                header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=get-shelf&section=stocklocations-settings#stocklocations-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_execute($stmt_check2);
+                                $result_check2 = mysqli_stmt_get_result($stmt_check2);
+                                $rowCount_check2 = $result_check2->num_rows;
+                                $row_check2 = $result_check2->fetch_assoc();
+
+                                $current_shelf_name = $row_check2['name'];
+
+                                $sql_shelf = "UPDATE shelf SET deleted=0 WHERE id=$shelf_id;";
+                                $stmt_shelf = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
+                                    header("Location: ../admin.php?error=sqlerror&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=stocklocations-settings#stocklocations-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_execute($stmt_shelf);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "shelf", $shelf_id, "deleted", 1, 0);
+
+                                    header("Location: ../admin.php?success=restored&type=shelf&id=$shelf_id&section=stocklocations-settings#stocklocations-settings");
+                                    exit();
+                                }
+                            }
+                        } else {
+                            header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
+                            exit();
+                        }
+                    }
+                } else {
+                    header("Location: ../admin.php?error=dependenciesPresent&section=stocklocations-settings#stocklocations-settings");
+                    exit();
+                }
+            }
+        } else {
+            header("Location: ../admin.php?error=incorrectLocationType&section=stocklocations-settings#stocklocations-settings");
+            exit();
+        }
     } elseif (isset($_POST['location-edit-submit'])) { // editing location descriptions on admin.php modal edit popup
         if (isset($_POST['location-type'])) {
             if ($_POST['location-type'] == "site" || $_POST['location-type'] == "area" || $_POST['location-type'] == "shelf") {
@@ -2044,6 +2204,91 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         } else {
             header("Location: ../theme-test.php?error=submitMissing");
+            exit();
+        }
+    } elseif (isset($_POST['tag_edit_submit'])) { // Saving tag info on tags.php
+        if (isset($_POST['tag_id'])) {
+            if (isset($_POST['tag_name'])) {
+                if (isset($_POST['tag_description'])) {
+                    $id = $_POST['tag_id'];
+                    $name = $_POST['tag_name'];
+                    $description = $_POST['tag_description'];
+
+                    $sql_check = "SELECT *
+                            FROM tag
+                            WHERE id=?";
+                    $stmt_check = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                        header("Location: ../tags.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt_check, "i", $id);
+                        mysqli_stmt_execute($stmt_check);
+                        $result_check = mysqli_stmt_get_result($stmt_check);
+                        $rowCount_check = mysqli_num_rows($result_check);
+                        if ($rowCount_check < 1) {
+                            header("Location: ../tags.php?sqlerror=noEntries&table=tag");
+                            exit();
+                        } else {
+                            $row_check = $result_check->fetch_assoc();
+
+                            $check_id = $row_check['id'];
+                            $check_name = $row_check['name'];
+                            $check_description = $row_check['description'];
+
+                            if ($check_id == $id) {
+                                if ($check_name == $name && $check_description == $description) {
+                                    header("Location: ../tags.php?error=noChangeNeeded");
+                                    exit();
+                                }
+                                if ($check_name !== $name) {
+                                    $sql = "UPDATE tag 
+                                            SET name=?
+                                            WHERE id=?";
+                                    $stmt = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        header("Location: ../tags.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=update-tag");
+                                        exit();
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt, "si", $name, $id);
+                                        mysqli_stmt_execute($stmt);
+                                        // update changelog
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "tag", $id, "name", $check_name, $name);
+                                    } 
+                                }   
+                                if ($check_description !== $description) {
+                                    $sql = "UPDATE tag 
+                                            SET description=?
+                                            WHERE id=?";
+                                    $stmt = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                        header("Location: ../tags.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=update-tag");
+                                        exit();
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt, "si", $description, $id);
+                                        mysqli_stmt_execute($stmt);
+                                        // update changelog
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "tag", $id, "description", $check_description, $description);
+                                    } 
+                                } 
+                                header("Location: ../tags.php?success=updated&id=$id");
+                                exit();
+                            } else {
+                                header("Location: ../tags.php?error=idMissmatch");
+                                exit();
+                            }
+                        }
+                    }
+                } else {
+                    header("Location: ../tags.php?error=missingDescription");
+                    exit();
+                }
+            } else {
+                header("Location: ../tags.php?error=missingName");
+                exit();
+            }
+        } else {
+            header("Location: ../tags.php?error=missingID");
             exit();
         }
     } else {

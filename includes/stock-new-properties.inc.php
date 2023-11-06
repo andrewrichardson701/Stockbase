@@ -23,7 +23,7 @@ if (!empty($_POST)) {
             switch ($type) {
                 case 'tag':
                     $sqlCheck = "SELECT * FROM tag WHERE name='$name'";
-                    $sql = "INSERT INTO tag (name) VALUES ('$name')";
+                    $sql = "INSERT INTO tag (name, description) VALUES ('$name', '$description')";
                     break;
                 case 'manufacturer':
                     $sqlCheck = "SELECT * FROM manufacturer WHERE name='$name'";
@@ -146,10 +146,18 @@ if (!empty($_POST)) {
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row">
-                            <td><label for="tag_name" class="nav-v-c align-middle">New Tag:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="tag_name" name="property_name" /></td>           
+                            <td style="width: 150px"><label for="tag_name" class="nav-v-c align-middle">Tag Name:</label></td>
+                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="tag_name" name="property_name" /></td>
+                            <td></td>
+                        </tr>
+                        <tr class="nav-row">
+                            <td style="width: 150px"><label for="tag_description" class="nav-v-c align-middle">Tag Description:</label></td>
+                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="tag_description" name="description" /></td>              
                             <!-- <td style="margin-left:5px"><input type="submit" name="submit" value="Add Tag" class="btn btn-success"/></td> -->
-                            <td style="margin-left:5px"><button type="submit" name="submit" value="Add Tag" class="btn btn-success" onclick="addProperty('tag')">Add Tag</button></td>
+                        </tr>
+                        <tr class="nav-row">
+                            <td style="width:150px"></td>
+                            <td style="margin-top:10px;margin-left:10px"><button type="submit" name="submit" value="Add Tag" class="btn btn-success" onclick="addProperty('tag')">Add Tag</button></td>
                             <td hidden><input id="tag_type" type="hidden" name="type" value="tag" /></td>
                         </tr>
                     </tbody>
@@ -330,7 +338,11 @@ if (!empty($_POST)) {
                         populateAreas();
                     }  
                     if (property !== 'area' && property !== 'shelf') {
-                        loadProperty(property);
+                        if (typeof loadProperty === "function") {
+                            loadProperty(property);
+                        } else {
+                            location.reload()
+                        }
                     }  
                     
                 },

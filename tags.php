@@ -86,13 +86,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <div class="container">
                     <table class="table table-dark theme-table centertable" style="margin-bottom:0px;">
                         <thead style="text-align: center; white-space: nowrap;">
-                            <tr class="theme-tableOuter">
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Objects</th>
-                                <th></th>
-                                <th></th>
+                            <tr class="theme-tableOuter align-middle">
+                                <th class="align-middle">ID</th>
+                                <th class="align-middle">Name</th>
+                                <th class="align-middle">Description</th>
+                                <th class="align-middle">Objects</th>
+                                <th colspan=2 class="align-middle"><button type="button" style="padding: 3px 6px 3px 6px" class="btn btn-success" onclick="modalLoadProperties('tag')">+ Add New</button></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -205,6 +204,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 </div>
                 
                 <?php
+                include 'includes/stock-new-properties.inc.php';
             }
         }
 

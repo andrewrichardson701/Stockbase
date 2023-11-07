@@ -178,7 +178,7 @@ $currency_symbol = '£';
                             $stock_id = $_GET['stock_id'];
                             echo('<div class="nav-row" style="margin-top: 2px; margin-bottom:5px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
-                                        <div id="heading-heading" style="margin-left:15vw;">
+                                        <div id="heading-heading" style="margin-left:10vw;">
                                             <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
                                             <p id="sku" style="margin-bottom:0px;padding-bottom:0px"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
                                             <p class="green"');
@@ -299,7 +299,7 @@ $currency_symbol = '£';
                                                                                     <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-serial" name="serial" style="min-width: 80px; padding: 2 7 2 7; width:max-content; max-width:90px" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled /> 
                                                                                 </div>
                                                                                 <div class="col" style="max-width:max-content !important">
-                                                                                    <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$i.'-n-submit" value="Move" style="opacity:80%; name="submit" required />
+                                                                                    <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$i.'-n-submit" value="Move" style="opacity:80%;" name="submit" required />
                                                                                 </div>
                                                                             </div>
                                                                         </td>

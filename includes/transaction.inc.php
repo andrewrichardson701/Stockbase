@@ -76,7 +76,7 @@ if (isset($_GET['stock_id'])) {
                                         t.shelf_id,
                                         s.name,
                                         a.name
-                                    ORDER BY t.date desc, t.time desc
+                                    ORDER BY t.date desc, t.time desc, t_quantity desc
                                     LIMIT ?, ?";
                         
                         $stmt_tran = mysqli_stmt_init($conn);
@@ -203,7 +203,7 @@ if (isset($_GET['stock_id'])) {
                                                 t.shelf_id,
                                                 s.name,
                                                 a.name
-                                            ORDER BY t.date desc, t.time desc";
+                                            ORDER BY t.date desc, t.time desc, t_quantity desc ";
                                 $stmt_count = mysqli_stmt_init($conn);
                                 if (mysqli_stmt_prepare($stmt_count, $sql_count)) {
                                     mysqli_stmt_bind_param($stmt_count, "s", $stock_id);
@@ -290,7 +290,7 @@ if (isset($_GET['stock_id'])) {
                                         t.shelf_id,
                                         s.name,
                                         a.name
-                                    ORDER BY t.date desc, t.time desc
+                                    ORDER BY t.date desc, t.time desc,  t_quantity desc
                                     LIMIT ?, ?";
                         
                         $stmt_tran = mysqli_stmt_init($conn);
@@ -404,7 +404,7 @@ if (isset($_GET['stock_id'])) {
                                                 t.shelf_id,
                                                 s.name,
                                                 a.name
-                                            ORDER BY t.date desc, t.time desc";
+                                            ORDER BY t.date desc, t.time desc, t_quantity desc";
                                 $stmt_count = mysqli_stmt_init($conn);
                                 if (mysqli_stmt_prepare($stmt_count, $sql_count)) {
                                     mysqli_stmt_bind_param($stmt_count, "s", $stock_id);

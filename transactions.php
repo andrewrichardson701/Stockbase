@@ -84,7 +84,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         LEFT JOIN shelf AS s ON i.shelf_id=s.id
                                         LEFT JOIN area AS a ON s.area_id=a.id
                                         WHERE t.stock_id=?
-                                        ORDER BY t_date DESC , t_time DESC";
+                                        ORDER BY t_date DESC , t_time DESC, t_quantity DESC";
                             $stmt_tran = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_tran, $sql_tran)) {
                                 echo("ERROR getting entries");
@@ -190,7 +190,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         LEFT JOIN shelf AS s ON i.shelf_id=s.id
                                         LEFT JOIN area AS a ON s.area_id=a.id
                                         WHERE t.stock_id=?
-                                        ORDER BY t_date DESC , t_time DESC";
+                                        ORDER BY t_date DESC , t_time DESC, t_quantity DESC";
                             $stmt_tran = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_tran, $sql_tran)) {
                                 echo("ERROR getting entries");

@@ -22,6 +22,13 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
     <div class="content">
         <?php // dependency PHP
+        $errorPprefix = '<p class="red" style="margin-bottom:0px">Error: ';
+        $errorPsuffix = '</p>';
+        $successPprefix = '<p class="green" style="margin-bottom:0px">';
+        $successPsuffix = '</p>';
+
+        include 'includes/responsehandling.inc.php';
+
         $show_inventory = 0; // for nav.php to show the site and area on the banner
         if (isset($_GET['stock_id'])) {
             if (is_numeric($_GET['stock_id'])) {
@@ -57,12 +64,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         if (isset($stock_modify) && in_array(strtolower($stock_modify), $stock_modify_values)) {
             echo('<div class="container" style="padding-bottom:25px">
             <h2 class="header-small" style="padding-bottom:5px">Stock - '.ucwords($stock_modify).'</h2>');
-            if (isset($_GET['error'])) {
-                $error = $_GET['error'];
-                if ($_GET['error'] == 'SKUexists') { $error = 'SKU "<or class="blue">'.$_GET['sku'].'</or>" already exists. Please pick another, or leave empty to generate a new one'; }
-                if ($_GET['error'] == 'multipleItemsFound') { $error = 'Multiple item rows found in the items table. Something needs corecting in the database. <br>To continue, change one of:<br>&nbsp;<or class="blue">UPC</or>,<br>&nbsp;<or class="blue">Serial Numbers</or>,<br>&nbsp;<or class="blue">Item Cost</or>,<br>&nbsp;<or class="blue">Shelf/Location</or>'; }
-                echo('<p class="red" style="margin-bottom:0">ERROR: '.$error.'.</p>');
-            }
+            showResponse(); 
             echo('</div>');
             include 'includes/stock-'.$stock_modify.'.inc.php';
 
@@ -120,7 +122,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     }
                     echo('
                         <div class="container stock-heading">
-                            <h2 class="header-small" style="padding-bottom:5px">Stock</h2>
+                            <h2 class="header-small" style="padding-bottom:5px">Stock</h2>');                            
+                            showResponse(); 
+                            echo('
                             <div class="nav-row " style="margin-top:5px;">
                                 <h3 style="font-size:22px;margin-top:20px;margin-bottom:0;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
                                 <div class="nav-div nav-right" style="padding-top:5px;margin-right:0px !important">

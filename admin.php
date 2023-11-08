@@ -1378,20 +1378,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 showResponse();
             }
     
-            if (isset($_GET['error'])) {
-                echo ('<p id="error-output" class="red" style="margin-left:25px">');
-                if ($_GET['error'] == 'emptyFields') { 
-                    echo('Empty fields in config.'); 
-                } elseif ($_GET['error'] == 'sqlerror') {
-                    if (isset($_GET['table'])) { 
-                        $extraErrorInfo = ' SQL table: users_roles'; 
-                    } else { 
-                        $extraErrorInfo = ''; 
-                    }
-                    echo ('SQL Error.'.$extraErrorInfo);
-                }
-                echo('</p>');
-            }
             if (isset($_GET['ldapUpload'])) {
                 echo ('<p id="success-output" class="green" style="margin-left:25px">');
                 if ($_GET['ldapUpload'] == 'success') { echo('LDAP config uploaded!'); }

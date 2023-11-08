@@ -136,7 +136,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         }
     ?>
 
-    <div id="modalDivSwipe" class="modal viewport-small-block"<?php if ($_GET['reset'] == 'true') { echo(' hidden');}?> >
+    <div id="modalDivSwipe" class="modal viewport-small-block"<?php if (isset($_GET['reset']) && $_GET['reset'] == 'true') { echo(' hidden');}?> >
     <!-- <div id="modalDivSwipe" class="modal" style="display: block !important;">  -->
         <span class="close" onclick="modalCloseSwipe()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">

@@ -382,7 +382,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     </datalist>
                                                 </div>
                                             </div>
-                                            <div class="col"><div>Description</div><div><input class="form-control" type="text" name="stock-description" style="min-width:120px" placeholder="Description" required/></div></div>
+                                            <div class="col"><div>Description</div><div><input class="form-control" type="text" name="stock-description" style="min-width:120px" placeholder="Description"/></div></div>
                                             <div class="col">
                                                 <div>Type</div>
                                                 <div>

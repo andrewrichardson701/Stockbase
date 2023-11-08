@@ -89,6 +89,13 @@ if (isset($_GET['error'])) {
 		$errorPtext = 'Multiple matching users already exists.';
 	} elseif ($_GET['error'] == 'submitNotSet') {
 		$errorPtext = 'Form submit condition not met.';
+	} elseif ($_GET['error'] == 'SKUexists') {
+		$errorPtext = 'SKU already exists. Please pick another, or leave empty to generate a new one.';
+        if (isset($_GEt['sku'])) {
+            $errorPtext .= ' <or class="blue">'.$_GET['sku'].'</or>.';
+        }
+	} elseif ($_GET['error'] == 'multipleItemsFound') {
+		$errorPtext = 'Multiple item rows found in the items table. Something needs corecting in the database. <br>To continue, change one of:<br>&nbsp;<or class="blue">UPC</or>,<br>&nbsp;<or class="blue">Serial Numbers</or>,<br>&nbsp;<or class="blue">Item Cost</or>,<br>&nbsp;<or class="blue">Shelf/Location</or>';
 	} elseif ($_GET['error'] == 'emailFormat') {
 		$errorPtext = 'Invalid email format.';
 	} elseif ($_GET['error'] == 'missingFields') {
@@ -188,6 +195,8 @@ if (isset($_GET['success'])) {
     // admin.inc.php
     if ($_GET['success'] == 'restored') {
         $successPtext = 'Successfully restored!';
+    } elseif ($_GET['success'] == 'changesSaved') {
+        $successPtext = 'Changes Saved!';
     } elseif ($_GET['success'] == 'passwordChanged' || $_GET['success'] == 'PasswordChanged') {
         $successPtext = 'Password Changed!';
     } elseif ($_GET['success'] == "profileUpdated") {

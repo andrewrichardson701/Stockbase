@@ -481,6 +481,7 @@ Clone the repo first, and the follow the below steps.
 - Fixed some page redirects for the edit stock page. Now diverts you to the stock main page if all is successful, else drops you back on the edit page.
 - Cablestock description is now optional. This is not always relevant to the item.
 - Stock.php now has response handling built in. This means that error messages will show correctly.
+- LDAP settings on the admin page now has the correct error checkind and response handling. There are a couple of unique ones left in place.
 
 </details>
 <details>

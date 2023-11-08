@@ -485,6 +485,9 @@ Clone the repo first, and the follow the below steps.
 - Stock Locations in admin page now allows you to see deleted locations and restore them, similar to attributes.
 - Adding properties is now an ajax request (e.g. adding tags, manufacturewrs, shelves areas and sites in the add new stock section). This means the page doesnt refresh.
 - Added description to the tag table for editing on the tags page.
+- Stock edit script now seperately checks for each change.
+- Stock edit script now only removes the tags that are no longer linked.
+- Stock edit script now only sends emails if there have been changes.
 
 </details>
 <summary><h3>0.3.2-beta</h3></summary>

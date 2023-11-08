@@ -709,10 +709,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             <th class="viewport-large-empty">UPC</th>
                                                             <th title="Serial Numbers">Serial</th>
                                                             <th>Tags</th>
-                                                            <th class="viewport-large-empty">Cost</th>
+                                                            <th class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
                                                             <th class="viewport-large-empty">Comments</th>');
                                                         } else { 
-                                                            echo('<th class="viewport-large-empty">Cost</th>');
+                                                            echo('<th class="viewport-large-empty"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>Cost</th>');
                                                         }
                                                         echo('
                                                         <th>Stock</th>
@@ -734,12 +734,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         <td id="item-'.$i.'-upc" class="viewport-large-empty">'.$stock_inv_data[$i]['upc'].'</td>
                                                         <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
                                                         <td id="item-'.$i.'-tags">'.$stock_inv_data[$i]['tag_names'].'</td>
-                                                        <td id="item-'.$i.'-cost" class="viewport-large-empty">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                        <td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                         <td id="item-'.$i.'-comments" class="viewport-large-empty">'.$stock_inv_data[$i]['comments'].'</td>
                                                         <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                                         ');
                                                 } else {
-                                                    echo('<td id="item-'.$i.'-cost" class="viewport-large-empty">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                    echo('<td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                     <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] < $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
                                                 }
                                                 echo('
@@ -761,7 +761,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                             <th>Manufacturer</th>
                                                                             <th>UPC</th>
                                                                             <th>Serial</th>
-                                                                            <th>Cost ('.$current_currency.')</th>
+                                                                            <th'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost ('.$current_currency.')</th>
                                                                             <th>Comments</th>
                                                                             <th>Stock</th>
                                                                             <th></th>
@@ -811,7 +811,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                         <td class="align-middle">'.$row_hidden['manufacturer_name'].'</td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:100px" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
-                                                                                        <td class="align-middle"><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
+                                                                                        <td class="align-middle"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_comments'].'" name="comments" /></td>
                                                                                         <td class="align-middle">'.$row_hidden['item_quantity'].'</td>
                                                                                         <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Save" /> </td>

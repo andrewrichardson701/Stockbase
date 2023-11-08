@@ -957,6 +957,34 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stockmanagement-settings" onclick="toggleSection(this, 'stockmanagement')">Stock Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Stock Management Settings -->
         <div style="padding-top: 20px" id="stockmanagement" hidden>
+            <h4 style="margin-left:10px; margin-right:10px; margin-top:5px; font-size:20px; margin-bottom:10px">Cost Enablement</h4>
+            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                <p id="cost-output" class="last-edit-T" hidden></p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="normal-cost">
+                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Cost/Pricing for normal stock items.">Normal Stock Cost:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="normal-cost-toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                    <input type="checkbox" name="normal-cost" onchange="toggleCost(this, 1)" <?php if ($current_cost_enable_normal == 1) { echo("checked");} ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="cable-cost">
+                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Cost/Pricing for cable stock items.">Cable Stock Cost:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="cable-cost-toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                    <input type="checkbox" name="cable-cost" onchange="toggleCost(this, 2)" <?php if ($current_cost_enable_cable == 1) { echo("checked");} ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <h4 style="margin-left:10px; margin-right:10px; margin-top:20px; font-size:20px; margin-bottom:10px">Deleted Stock</h4>
             <?php
             if ((isset($_GET['section']) && $_GET['section'] == 'stockmanagement')) {
@@ -964,6 +992,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 showResponse();
                 echo('</div>');
             }
+            // cost/price toggles for both normal stock and cable stock
+            ?>
+            <?php
             $sql_stock = "SELECT 
                             stock.id AS stock_id, 
                             stock.name AS stock_name, 
@@ -2195,6 +2226,30 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         // If the checkbox is not being unchecked or the user confirmed, submit the form
         document.getElementById("smtpToggleForm").submit();
     });
+
+    // Cost toggle checkboxes
+    function toggleCost(checkbox, id) {
+        var outputBox = document.getElementById('cost-output');
+        var type = id;
+        if (checkbox.checked) {
+            // enable the type
+            var value = 1;
+        } else {
+            // disable the type
+            var value = 0;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/admin.inc.php?cost-toggle=1&type="+type+"&value="+value, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var output = JSON.parse(xhr.responseText);
+                outputBox.hidden = false;
+                outputBox.classList="last-edit-T";
+                outputBox.innerHTML = output[0];
+            }
+        };
+        xhr.send();
+    } 
 
     // Mail notifications checkboxes
     function mailNotification(checkbox, id) {

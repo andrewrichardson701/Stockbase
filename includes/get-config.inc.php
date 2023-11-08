@@ -115,6 +115,9 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
         $config_smtp_from_email     = '';
         $config_smtp_from_name      = '';
         $config_smtp_to_email       = '';
+
+        $config_cost_enable_normal  = '';
+        $config_cost_enable_cable   = '';
         
     } else {
         while ( $config = $result_config->fetch_assoc() ) {
@@ -147,6 +150,9 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
             $config_smtp_from_email     = isset($config['smtp_from_email']) ? $config['smtp_from_email'] : ''; 
             $config_smtp_from_name      = isset($config['smtp_from_name']) ? $config['smtp_from_name'] : ''; 
             $config_smtp_to_email       = isset($config['smtp_to_email']) ? $config['smtp_to_email'] : '';
+
+            $config_cost_enable_normal  = isset($config['cost_enable_normal']) ? $config['cost_enable_normal'] : '';
+            $config_cost_enable_cable   = isset($config['cost_enable_cable']) ? $config['cost_enable_cable'] : '';
         }
     }
 }
@@ -191,6 +197,9 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_smtp_from_email     = $config_d['smtp_from_email']; 
             $config_d_smtp_from_name      = $config_d['smtp_from_name']; 
             $config_d_smtp_to_email       = $config_d['smtp_to_email']; 
+
+            $config_d_cost_enable_normal  = $config_d['cost_enable_normal']; 
+            $config_d_cost_enable_cable   = $config_d['cost_enable_cable']; 
         }
     }
 }
@@ -263,7 +272,16 @@ $current_smtp_to_email       = ($config_smtp_to_email         !== '' ? $config_s
 # ---
 
 $default_default_theme_id    = ($config_d_default_theme_id    !== '' ? $config_d_default_theme_id            : $predefined_default_theme_id); 
+
 $current_default_theme_id    = ($config_default_theme_id      !== '' ? $config_default_theme_id              : $default_default_theme_id);
+
+# ---
+
+$default_cost_enable_normal  = ($config_d_cost_enable_normal  !== '' ? $config_d_cost_enable_normal          : 1); 
+$default_cost_enable_cable   = ($config_d_cost_enable_cable   !== '' ? $config_d_cost_enable_cable           : 1); 
+
+$current_cost_enable_normal  = ($config_cost_enable_normal    !== '' ? $config_cost_enable_normal            : $default_cost_enable_normal);
+$current_cost_enable_cable   = ($config_cost_enable_cable     !== '' ? $config_cost_enable_cable             : $default_cost_enable_cable);
 
 // get theme info for defaults
 $sql_theme = "SELECT * FROM theme WHERE id=$current_default_theme_id";

@@ -475,6 +475,13 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.4.2-beta</h3></summary>
+<h4>Beta release 0.4.2, NEEDS UPDATING</h4>
+
+- 
+
+</details>
+<details>
 <summary><h3>0.4.1-beta</h3></summary>
 <h4>Beta release 0.4.1, Cost toggles and quality of life changes.</h4>
 

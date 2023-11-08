@@ -476,7 +476,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.4.1-beta</h3></summary>
-<h4>Beta release 0.4.1, NEEDS UPDATING</h4>
+<h4>Beta release 0.4.1, Cost toggles and quality of life changes.</h4>
 
 - Fixed some page redirects for the edit stock page. Now diverts you to the stock main page if all is successful, else drops you back on the edit page.
 - Cablestock description is now optional. This is not always relevant to the item.

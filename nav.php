@@ -101,7 +101,6 @@
             if (isset($profile_name)) { 
                 echo('
                     <ul class="nav-links">
-                        <li style="color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important"<a href="/">Stop </a></li>
                         <li><a href="./profile.php">'.$profile_name.'</a></li>');
                         // if (isset($loggedin_role)) {
                         //     if (in_array($loggedin_role, $config_admin_roles_array)) {

@@ -110,7 +110,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         Colour picker:
                                     </td>
                                     <td>
-                                        <label class="label-color">
+                                        <label class="tag-color">
                                             <input class="form-control input-color color" placeholder="#XXXXXX" data-value="#xxxxxx" value="<?php echo($current_banner_color); ?>"/>
                                         </label>
                                     </td>
@@ -271,7 +271,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <th class="clickable sorting" id="sku">SKU</th>
                                         <th class="clickable sorting" id="quantity">Quantity</th>
                                         <th class="clickable sorting" id="site">Site</th>
-                                        <th id="lables">Labels</th>
+                                        <th id="lables">Tags</th>
                                         <th id="location">Location(s)</th>
                                     </tr>
                                 </thead>
@@ -794,8 +794,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         
                                             <p class="clickable gold" id="extra-info-dropdown">More Info <i class="fa-solid fa-2xs fa-chevron-up" style="margin-left:10px"></i></p> 
                                             <div id="extra-info">
-                                                <p id="labels-head"><strong>Labels</strong></p>
-                                                <p id="labels"><button class="btn theme-btn btn-stock-click gold" id="label-3">cisco</button> <button class="btn theme-btn btn-stock-click gold" id="label-1">switch</button> 
+                                                <p id="tags-head"><strong>Tag</strong></p>
+                                                <p id="tags"><button class="btn theme-btn btn-stock-click gold" id="tag-3">cisco</button> <button class="btn theme-btn btn-stock-click gold" id="tag-1">switch</button> 
                                                 </p><p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers"><button class="btn theme-btn btn-stock-click gold" id="manufacturer-1">Cisco</button> <button class="btn theme-btn btn-stock-click gold" id="manufacturer-3">HP</button> </p><p id="serial-numbers-head"><strong>Serial Numbers</strong></p><p><a class="serial-bg" id="serialNumber1">testing</a></p></div>
                                     </div>
                                     

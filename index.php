@@ -42,7 +42,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $sku = isset($_GET['sku']) ? $_GET['sku'] : "";
         $location = isset($_GET['location']) ? $_GET['location'] : "";
         $shelf = isset($_GET['shelf']) ? $_GET['shelf'] : "";
-        $label = isset($_GET['label']) ? $_GET['label'] : "";
+        $tag = isset($_GET['tag']) ? $_GET['tag'] : "";
         $manufacturer = isset($_GET['manufacturer']) ? $_GET['manufacturer'] : "";
         $page = isset($_GET['page']) ? $_GET['page'] : 1;
         if ($page == '' || $page < 1) {
@@ -268,29 +268,30 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
                                     $rowCount_manufacturer = $result_manufacturer->num_rows;
                                     while ($row_manufacturer = $result_manufacturer->fetch_assoc()) {
-                                        echo('<option value="'.$row_manufacturer['name'].'" '); if (isset($_GET['label']) && $_GET['manufacturer'] == $row_manufacturer['name']) { echo ('selected'); } echo('>'.$row_manufacturer['name'].'</option>');
+                                        echo('<option value="'.$row_manufacturer['name'].'" '); if (isset($_GET['tag']) && $_GET['manufacturer'] == $row_manufacturer['name']) { echo ('selected'); } echo('>'.$row_manufacturer['name'].'</option>');
                                     }
                                 }
                                 echo('
                                 </select>
                             </span>
                             <span class="viewport-large-block" id="search-input-label-span" style="margin-right:1em;margin-bottom:10px;">
-                                <label for="search-input-label">Label</label><br>
+                                <label for="search-input-label">Tag</label><br>
                                 
-                                <select id="search-input-label" name="label" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Label" onchange="getInventory(1)">
-                                <option value="" '); if (!isset($_GET['label']) || $_GET['label'] == '') { echo('selected'); } echo('>All</option>');
-                                $sql_labels = "SELECT * FROM label";
-                                $stmt_labels = mysqli_stmt_init($conn);
-                                if (!mysqli_stmt_prepare($stmt_labels, $sql_labels)) {
+                                <select id="search-input-tag" name="tag" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Tag" onchange="getInventory(1)">
+                                <option value="" '); if (!isset($_GET['tag']) || $_GET['tag'] == '') { echo('selected'); } echo('>All</option>');
+                                $sql_tags = "SELECT * FROM tag";
+                                $stmt_tags = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_tags, $sql_tags)) {
                                     echo("ERROR getting entries");
                                 } else {
-                                    mysqli_stmt_execute($stmt_labels);
-                                    $result_labels = mysqli_stmt_get_result($stmt_labels);
-                                    $rowCount_labels = $result_labels->num_rows;
-                                    while ($row_labels = $result_labels->fetch_assoc()) {
-                                        echo('<option value="'.$row_labels['name'].'" '); if (isset($_GET['label']) && $_GET['label'] == $row_labels['name']) { echo ('selected'); } echo('>'.$row_labels['name'].'</option>');
+                                    mysqli_stmt_execute($stmt_tags);
+                                    $result_tags = mysqli_stmt_get_result($stmt_tags);
+                                    $rowCount_tags = $result_tags->num_rows;
+                                    while ($row_tags = $result_tags->fetch_assoc()) {
+                                        echo('<option value="'.$row_tags['name'].'" title="'.$row_tags['description'].'" '); if (isset($_GET['tag']) && $_GET['tag'] == $row_tags['name']) { echo ('selected'); } echo('>'.$row_tags['name'].'</option>');
                                     }
                                 }
+                                echo('<option value="tags" class="gold link theme-tableOuter">view tags</option>');
                                 echo('
                                 </select>
                             </span>
@@ -371,7 +372,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <th class="clickable sorting viewport-large-empty" id="sku" onclick="sortTable(3, this)">SKU</th>
                             <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>
                             <th class="clickable sorting" id="site" onclick="sortTable(5, this)" '); if ($site == 0) { echo('hidden'); } echo('>Site</th>
-                            <th id="labels" class="viewport-large-empty">Labels</th>
+                            <th id="tags" class="viewport-large-empty">Tags</th>
                         <th id="location">Location(s)</th>
                         </tr>
                     </thead>
@@ -438,14 +439,23 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             var sku = document.getElementById('search-input-sku').value;
             var shelf = document.getElementById('search-input-shelf').value;
             var manufacturer = document.getElementById('search-input-manufacturer').value;
-            var label = document.getElementById('search-input-label').value;
+            var tagSelect = document.getElementById('search-input-tag');
+            var tag = document.getElementById('search-input-tag').value;
             var page = document.getElementById('hidden-page-number').value;
             var rows = document.getElementById('hidden-row-count').value;
 
             var areaSelect = document.getElementById('area-dropdown');
 
+            if (tag == "tags") {
+                url = window.location.pathname + window.location.search
+                tagSelect.options[0].selected=true;
+                getInventory(1); // run again to reset the filter if tags is stored.
+                // console.log(url);
+                window.location.href = './tags.php?return='+encodeURIComponent(url);
+            }
+
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/indexajax.php?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&label="+label+"&rows="+rows+"&page="+page, true);
+            xhr.open("GET", "includes/indexajax.php?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     // Parse the response and populate the shelf select box

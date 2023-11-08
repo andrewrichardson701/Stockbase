@@ -475,6 +475,22 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.4.0-beta</h3></summary>
+<h4>Beta release 0.4.0, Label to Tag.</h4>
+
+- Renamed the stock_label and label table to stock_tag and tag. Moving away from the term 'label' as it is not a fit name.
+- renamed the stock_tag table column 'label_id' to 'tag_id' to match the theme.
+- Changed all references of label to tag in the codebase. 
+- Added tags.php page to show all tags and their connections. This is not reachable without url currently.
+- Stock Locations in admin page now allows you to see deleted locations and restore them, similar to attributes.
+- Adding properties is now an ajax request (e.g. adding tags, manufacturers, shelves areas and sites in the add new stock section). This means the page doesnt refresh.
+- Added description to the tag table for editing on the tags page.
+- Stock edit script now separately checks for each change.
+- Stock edit script now only removes the tags that are no longer linked.
+- Stock edit script now only sends emails if there have been changes.
+- Password reset modal div now works on mobile format.
+
+</details>
 <summary><h3>0.3.2-beta</h3></summary>
 <h4>Beta release 0.3.2, Update scripts for version management and some small feature changes.</h4>
 

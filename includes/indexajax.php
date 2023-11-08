@@ -17,7 +17,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
     $sku = isset($_GET['sku']) ? $_GET['sku'] : "";
     $location = isset($_GET['location']) ? $_GET['location'] : "";
     $shelf = isset($_GET['shelf']) ? $_GET['shelf'] : "";
-    $label = isset($_GET['label']) ? $_GET['label'] : "";
+    $tag = isset($_GET['tag']) ? $_GET['tag'] : "";
     $manufacturer = isset($_GET['manufacturer']) ? $_GET['manufacturer'] : "";
 
     $area_array = [];
@@ -108,8 +108,8 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
         $sql_inv_count .=       " AND shelf.area_id=area_id_global";
     }
     $sql_inv_count .=   " ) AS item_quantity,
-                    label_names.label_names AS label_names,
-                    label_ids.label_ids AS label_ids,
+                    tag_names.tag_names AS tag_names,
+                    tag_ids.tag_ids AS tag_ids,
                     stock_img_image.stock_img_image
                 FROM stock
                 LEFT JOIN item ON stock.id=item.stock_id
@@ -123,15 +123,15 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     GROUP BY stock_img.stock_id
                 ) AS stock_img_image
                     ON stock_img_image.stock_id = stock.id
-                LEFT JOIN (SELECT stock_label.stock_id, GROUP_CONCAT(DISTINCT label.name SEPARATOR ', ') AS label_names
-                        FROM stock_label 
-                        INNER JOIN label ON stock_label.label_id = label.id
-                        GROUP BY stock_label.stock_id) AS label_names
-                    ON label_names.stock_id = stock.id
-                LEFT JOIN (SELECT stock_label.stock_id, GROUP_CONCAT(DISTINCT label_id SEPARATOR ', ') AS label_ids
-                        FROM stock_label
-                        GROUP BY stock_label.stock_id) AS label_ids
-                    ON label_ids.stock_id = stock.id
+                LEFT JOIN (SELECT stock_tag.stock_id, GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names
+                        FROM stock_tag 
+                        INNER JOIN tag ON stock_tag.tag_id = tag.id
+                        GROUP BY stock_tag.stock_id) AS tag_names
+                    ON tag_names.stock_id = stock.id
+                LEFT JOIN (SELECT stock_tag.stock_id, GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids
+                        FROM stock_tag
+                        GROUP BY stock_tag.stock_id) AS tag_ids
+                    ON tag_ids.stock_id = stock.id
                     WHERE stock.is_cable=0 AND stock.deleted=0 ";
     $sql_inv_add = '';
     if ($site !== '0') { $sql_inv_add  .= " AND site.id=$site";} 
@@ -140,7 +140,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
     if ($sku !== '') { $sql_inv_add  .= " AND stock.sku LIKE CONCAT('%', '$sku', '%')";}
     if ($location !== '') { $sql_inv_add  .= " AND area.name LIKE CONCAT('%', '$location', '%')";}
     if ($shelf !== '') { $sql_inv_add  .= " AND shelf.name LIKE CONCAT('%', '$shelf', '%')";}
-    if ($label !== '') { $sql_inv_add  .= " AND label_names LIKE CONCAT('%', '$label', '%')";}
+    if ($tag !== '') { $sql_inv_add  .= " AND tag_names LIKE CONCAT('%', '$tag', '%')";}
     if ($manufacturer !== '') { $sql_inv_add  .= " AND manufacturer.name LIKE CONCAT('%', '$manufacturer', '%')";}
     if ($showOOS == 0) { 
         $sql_inv_add  .= " AND item.deleted=0 AND 
@@ -233,13 +233,13 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
             $results[-1]['name'] = $name;
             $results[-1]['sku'] = $sku;
             $results[-1]['location'] = $location;
-            $results[-1]['label'] = $label;
+            $results[-1]['tag'] = $tag;
             $results[-1]['manufacturer'] = $manufacturer;
             $results[-1]['total-pages'] = $total_pages;
             $results[-1]['page-number-area'] = $pageNumberArea;
             $results[-1]['page'] = $current_page;
             $results[-1]['rows'] = $rowSelectValue;
-            $results[-1]['url'] = "./?oos=$showOOS&site=$site&area=$area&name=$name&sku=$sku&shelf=$shelf&manufacturer=$manufacturer&label=$label&page=$current_page&rows=$rowSelectValue";
+            $results[-1]['url'] = "./?oos=$showOOS&site=$site&area=$area&name=$name&sku=$sku&shelf=$shelf&manufacturer=$manufacturer&tag=$tag&page=$current_page&rows=$rowSelectValue";
             $results[-1]['sql'] = $sql_inv;
             $results[-1]['areas'] = $area_array;
             
@@ -258,7 +258,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     $stock_locations = $row['area_names'];
                     $stock_site_id = $row['site_id'];
                     $stock_site_name = $row['site_name'];
-                    $stock_label_names = ($row['label_names'] !== null) ? explode(", ", $row['label_names']) : '---';
+                    $stock_tag_names = ($row['tag_names'] !== null) ? explode(", ", $row['tag_names']) : '---';
                     
 
                     // Echo each row (inside of SQL results)
@@ -282,11 +282,11 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     }
                     $result .= '</td>';
                     if ($site == 0) { $result .= '<td class="align-middle link gold" style="white-space: nowrap !important;"id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
-                    $result .= '<td class="align-middle viewport-large-empty" id="'.$stock_id.'-label">';
-                    if (is_array($stock_label_names)) {
-                        for ($o=0; $o < count($stock_label_names); $o++) {
-                            $divider = $o < count($stock_label_names)-1 ? ', ' : '';
-                            $result .= '<or class="gold link" onclick="navPage(updateQueryParameter(\'\', \'label\', \''.$stock_label_names[$o].'\'))">'.$stock_label_names[$o].'</or>'.$divider;
+                    $result .= '<td class="align-middle viewport-large-empty" id="'.$stock_id.'-tag">';
+                    if (is_array($stock_tag_names)) {
+                        for ($o=0; $o < count($stock_tag_names); $o++) {
+                            $divider = $o < count($stock_tag_names)-1 ? ', ' : '';
+                            $result .= '<or class="gold link" onclick="navPage(updateQueryParameter(\'\', \'tag\', \''.$stock_tag_names[$o].'\'))">'.$stock_tag_names[$o].'</or>'.$divider;
                         }
                     } 
                     $result .= '</td>

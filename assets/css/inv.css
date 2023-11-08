@@ -241,7 +241,7 @@
 
 
 /* colour picker */
-.label-color {
+.tag-color {
     font-family: sans-serif;
     width: 105px;
     display: block;
@@ -348,10 +348,10 @@ select[disabled] {
     cursor: pointer;
 }
 
-/* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px){
+/* 90vw Image Width on Smaller Screens */
+@media only screen and (max-width: 1100px){
     .modal-content {
-        width: 100%;
+        width: 90vw;
     }
 }
 /* MODAL FINISH */

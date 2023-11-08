@@ -115,11 +115,21 @@ if [ "$new_branch" \< "1.3.2-beta" ]; then
     exit
 fi
 
+dbh='../../includes/dbh.inc.php'
+db_username=$(grep -oP "(?<=\$dBUsername = ')[^']+" "$dbh")
+db_password=$(grep -oP "(?<=\$dBPassword = ')[^']+" "$dbh
+")
 # run the correct function based on the new branch
 case "$new_branch" in
     0.3.2-beta|0.3.3-beta ) 
             0.3.X-beta "$current_branch"
             break;;
+    0.4.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - 'label' table becomes 'tag'"
+            echo " - 'stock_label' table becomes 'stock_tag'"
+            echo "    - 'stock_label.label_id' becomes 'stock_tag.tag_id'"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE label RENAME tag; ALTER TABLE stock_label RENAME stock_tag; ALTER TABLE stock_tag RENAME COLUMN label_id TO tag_id;"
 esac
 
 
@@ -135,6 +145,12 @@ esac
     0.3.2-beta|0.3.3-beta ) 
             echo "No SQL changes to be made."
             break;;
+    0.4.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - 'tag' table becomes 'label'"
+            echo " - 'stock_tag' table becomes 'stock_label'"
+            echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
     esac 
     
 }

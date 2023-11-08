@@ -45,25 +45,25 @@ if (isset($_GET['stock_id'])) {
                     }
                 }
 
-                $sql_label = "SELECT stock_label.id AS stock_label_id, stock_label.stock_id AS stock_label_stock_id, stock_label.label_id AS stock_label_label_id,
-                                    label.id AS label_id, label.name AS label_name
-                                FROM stock_label 
-                                INNER JOIN label ON stock_label.label_id=label.id
+                $sql_tag = "SELECT stock_tag.id AS stock_tag_id, stock_tag.stock_id AS stock_tag_stock_id, stock_tag.tag_id AS stock_tag_tag_id,
+                                    tag.id AS tag_id, tag.name AS tag_name
+                                FROM stock_tag 
+                                INNER JOIN tag ON stock_tag.tag_id=tag.id
                                 WHERE stock_id=?";
-                $stmt_label = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt_label, $sql_label)) {
+                $stmt_tag = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_tag, $sql_tag)) {
                     echo("ERROR getting entries");
                 } else {
-                    mysqli_stmt_bind_param($stmt_label, "s", $stock_id);
-                    mysqli_stmt_execute($stmt_label);
-                    $result_label = mysqli_stmt_get_result($stmt_label);
-                    $rowCount_label = $result_label->num_rows;
-                    if ($rowCount_label < 1) {
+                    mysqli_stmt_bind_param($stmt_tag, "s", $stock_id);
+                    mysqli_stmt_execute($stmt_tag);
+                    $result_tag = mysqli_stmt_get_result($stmt_tag);
+                    $rowCount_tag = $result_tag->num_rows;
+                    if ($rowCount_tag < 1) {
                         //no images
-                        $stock_label_data = '';
+                        $stock_tag_data = '';
                     } else {
-                        while ($row_label = $result_label->fetch_assoc()) {
-                            $stock_label_data[] = array('id' => $row_label['label_id'], 'name' => $row_label['label_name'], 'stock_id' => $row_label['stock_label_stock_id']);
+                        while ($row_tag = $result_tag->fetch_assoc()) {
+                            $stock_tag_data[] = array('id' => $row_tag['tag_id'], 'name' => $row_tag['tag_name'], 'stock_id' => $row_tag['stock_tag_stock_id']);
                         }
                     }
                 }
@@ -101,27 +101,27 @@ if (isset($_GET['stock_id'])) {
                                     </div>');
                                     if ($stock['is_cable'] == 0) {
                                         echo('
-                                        <div class="nav-row" id="labels-row" style="margin-top:25px">
-                                            <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="labels" id="labels-label">Labels</label></div>
-                                            <div id="labels-group">
-                                            <input id="labels-selected" name="labels-selected" type="hidden" />
-                                            <select id="labels" name="labels[]" multiple class="form-control nav-trans stock-inputSize" style="border: 1px solid grey;display: inline-block;height:40px">');
-                                                if (is_array($stock_label_data)) {
-                                                    for ($l=0; $l<count($stock_label_data); $l++) {
-                                                        // echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'">'.$stock_label_data[$l]['name'].' &#xf057;</option> ');
-                                                        echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$stock_label_data[$l]['id'].'" selected>'.$stock_label_data[$l]['name'].'</option> ');
+                                        <div class="nav-row" id="tags-row" style="margin-top:25px">
+                                            <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="tags" id="tags-label">Tags</label></div>
+                                            <div id="tags-group">
+                                            <input id="tags-selected" name="tags-selected" type="hidden" />
+                                            <select id="tags" name="tags[]" multiple class="form-control nav-trans stock-inputSize" style="border: 1px solid grey;display: inline-block;height:40px">');
+                                                if (is_array($stock_tag_data)) {
+                                                    for ($l=0; $l<count($stock_tag_data); $l++) {
+                                                        // echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_tag_data[$l]['id'].'">'.$stock_tag_data[$l]['name'].' &#xf057;</option> ');
+                                                        echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$stock_tag_data[$l]['id'].'" selected>'.$stock_tag_data[$l]['name'].'</option> ');
                                                     }
                                                 } else {
                                                     //echo('None');
                                                 }
                                             echo('
                                             </select>
-                                            <select class="form-control stock-inputSize" id="labels-init" name="labels-init" style="margin-top:2px">
-                                                <option value="" selected>-- Add Labels --</option>');
+                                            <select class="form-control stock-inputSize" id="tags-init" name="tags-init" style="margin-top:2px">
+                                                <option value="" selected>-- Add Tags --</option>');
                                                 include 'includes/dbh.inc.php';
                                                 $sql = "SELECT id, name
-                                                        FROM label
-                                                        WHERE label.id NOT IN (SELECT label_id FROM stock_label WHERE stock_id = '$stock_id')
+                                                        FROM tag
+                                                        WHERE tag.id NOT IN (SELECT tag_id FROM stock_tag WHERE stock_id = '$stock_id')
                                                         ORDER BY id";
                                                 $stmt = mysqli_stmt_init($conn);
                                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -135,9 +135,9 @@ if (isset($_GET['stock_id'])) {
                                                     } else {
                                                         // rows found
                                                         while ($row = $result->fetch_assoc()) {
-                                                            $label_id = $row['id'];
-                                                            $label_name = $row['name'];
-                                                            echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$label_id.'">'.$label_name.'</option>');
+                                                            $tag_id = $row['id'];
+                                                            $tag_name = $row['name'];
+                                                            echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$tag_id.'">'.$tag_name.'</option>');
                                                         }
                                                     }
                                                 }
@@ -145,14 +145,14 @@ if (isset($_GET['stock_id'])) {
                                             </select>
                                             </div>
                                             <div class="viewport-large">
-                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
+                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'tag\')">Add New</label>
                                             </div>
                                         </div>
-                                        <div class="nav-row viewport-small" id="labels-row-add">
+                                        <div class="nav-row viewport-small" id="tags-row-add">
                                             <div class="stock-inputLabelSize" style="max-width:200px">
                                             </div>
                                             <div style="width:max-content">
-                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'label\')">Add New</label>
+                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'tag\')">Add New</label>
                                             </div>
                                         </div>');
                                     }
@@ -173,14 +173,14 @@ if (isset($_GET['stock_id'])) {
                                         echo('</div>
                                     </div>
                                     <style>
-                                            #labels {
+                                            #tags {
                                             display: inline-block;
                                             padding-top:2px;
                                             padding-bottom:2px;
                                             width: auto;
                                             }
                                             
-                                            #labels option {
+                                            #tags option {
                                             display: inline-block;
                                             padding: 3px;
                                             margin-right: 10px;
@@ -190,9 +190,9 @@ if (isset($_GET['stock_id'])) {
                                             }
                                         </style>
                                         <script>
-                                        var selectBox = document.getElementById("labels-init");
-                                        var selectedBox = document.getElementById("labels");
-                                        var labelsSelected = document.getElementById("labels-selected");
+                                        var selectBox = document.getElementById("tags-init");
+                                        var selectedBox = document.getElementById("tags");
+                                        var tagsSelected = document.getElementById("tags-selected");
                                         
                                         selectBox.addEventListener("change", function() {
                                             var selectedOption = selectBox.options[selectBox.selectedIndex];
@@ -220,7 +220,7 @@ if (isset($_GET['stock_id'])) {
                                             });
 
                                             // Assign the selected values to the input field
-                                            labelsSelected.value = selectedValues.join(", "); // Use desired separator if needed
+                                            tagsSelected.value = selectedValues.join(", "); // Use desired separator if needed
                                         });
 
                                         selectBox.addEventListener("change", function() {
@@ -234,7 +234,7 @@ if (isset($_GET['stock_id'])) {
                                             });
 
                                             // Assign the selected values to the input field
-                                            labelsSelected.value = selectedValues.join(", "); // Use desired separator if needed
+                                            tagsSelected.value = selectedValues.join(", "); // Use desired separator if needed
                                         });
 
 

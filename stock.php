@@ -163,7 +163,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <!-- End of Modal Image Div -->
 
                     ');
-                    
+
                     if ($stock_is_cable == 0) { // not a cable
                         $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                     area.id AS area_id, area.name AS area_name,
@@ -182,18 +182,18 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
                                         WHERE item.stock_id = stock.id
                                     ) AS manufacturer_ids,
-                                    (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
-                                        FROM stock_label 
-                                        INNER JOIN label ON stock_label.label_id = label.id 
-                                        WHERE stock_label.stock_id = stock.id
-                                        ORDER BY label.name
-                                    ) AS label_names,
-                                    (SELECT GROUP_CONCAT(DISTINCT label.id ORDER BY label.name SEPARATOR ', ') 
-                                        FROM stock_label
-                                        INNER JOIN label ON stock_label.label_id = label.id
-                                        WHERE stock_label.stock_id = stock.id
-                                        ORDER BY label.name
-                                    ) AS label_ids
+                                    (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                        FROM stock_tag 
+                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                        WHERE stock_tag.stock_id = stock.id
+                                        ORDER BY tag.name
+                                    ) AS tag_names,
+                                    (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                        FROM stock_tag
+                                        INNER JOIN tag ON stock_tag.tag_id = tag.id
+                                        WHERE stock_tag.stock_id = stock.id
+                                        ORDER BY tag.name
+                                    ) AS tag_ids
                                 FROM stock
                                 LEFT JOIN item ON stock.id=item.stock_id
                                 LEFT JOIN shelf ON item.shelf_id=shelf.id 
@@ -255,17 +255,17 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 if ($stock_is_cable == 0) {
                                     $stock_manufacturer_ids = $row['manufacturer_ids'];
                                     $stock_manufacturer_names = $row['manufacturer_names'];
-                                    $stock_label_ids = $row['label_ids'];
-                                    $stock_label_names = $row['label_names'];
+                                    $stock_tag_ids = $row['tag_ids'];
+                                    $stock_tag_names = $row['tag_names'];
                                     
-                                    $stock_label_data = [];
-                                    if ($stock_label_ids !== null) {
-                                        for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
-                                            $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
-                                                                                'name' => explode(", ", $stock_label_names)[$n]);
+                                    $stock_tag_data = [];
+                                    if ($stock_tag_ids !== null) {
+                                        for ($n=0; $n < count(explode(", ", $stock_tag_ids)); $n++) {
+                                            $stock_tag_data[$n] = array('id' => explode(", ", $stock_tag_ids)[$n],
+                                                                                'name' => explode(", ", $stock_tag_names)[$n]);
                                         }
                                     } else {
-                                        $stock_label_data = '';
+                                        $stock_tag_data = '';
                                     }
 
                                     $stock_manufacturer_data = [];
@@ -279,7 +279,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     }
                                 } else {
                                     $stock_manufacturer_data = '';
-                                    $stock_label_data = '';
+                                    $stock_tag_data = '';
                                 }
                                 
                                 $stock_inv_data[] = array('id' => $stock_id,
@@ -293,7 +293,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         'site_id' => $stock_site_id,
                                                         'site_name' => $stock_site_name,
                                                         'manufacturer' => $stock_manufacturer_data,
-                                                        'label' => $stock_label_data);
+                                                        'tag' => $stock_tag_data);
                             }
                             
                             // Inventory Rows
@@ -356,11 +356,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             echo('
                                             <p class="clickable gold" id="extra-info-dropdown" onclick="toggleSection(this, \'extra-info\')">More Info <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></p> 
                                             <div id="extra-info" hidden>
-                                                <p id="labels-head"><strong>Labels</strong></p>
-                                                <p id="labels">');
-                                                if (is_array($stock_inv_data[0]['label'])) {
-                                                    for ($l=0; $l < count($stock_inv_data[0]['label']); $l++) {
-                                                        echo('<button class="btn theme-btn btn-stock-click gold" id="label-'.$stock_inv_data[0]['label'][$l]['id'].'" onclick="window.location.href=\'./?label='.$stock_inv_data[0]['label'][$l]['name'].'\'">'.$stock_inv_data[0]['label'][$l]['name'].'</button> ');
+                                                <p id="tags-head"><strong>Tags</strong></p>
+                                                <p id="tags">');
+                                                if (is_array($stock_inv_data[0]['tag'])) {
+                                                    for ($l=0; $l < count($stock_inv_data[0]['tag']); $l++) {
+                                                        echo('<button class="btn theme-btn btn-stock-click gold" id="tag-'.$stock_inv_data[0]['tag'][$l]['id'].'" onclick="window.location.href=\'./?tag='.$stock_inv_data[0]['tag'][$l]['name'].'\'">'.$stock_inv_data[0]['tag'][$l]['name'].'</button> ');
                                                     }
                                                 } else {
                                                     echo('None');
@@ -547,18 +547,18 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments
                                                     ) AS item_quantity,
                                                     manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
-                                                    (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
-                                                        FROM stock_label 
-                                                        INNER JOIN label ON stock_label.label_id = label.id 
-                                                        WHERE stock_label.stock_id = stock.id
-                                                        ORDER BY label.name
-                                                    ) AS label_names,
-                                                    (SELECT GROUP_CONCAT(DISTINCT label.id ORDER BY label.name SEPARATOR ', ') 
-                                                        FROM stock_label
-                                                        INNER JOIN label ON stock_label.label_id = label.id
-                                                        WHERE stock_label.stock_id = stock.id
-                                                        ORDER BY label.name
-                                                    ) AS label_ids
+                                                    (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                                        FROM stock_tag 
+                                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                                        WHERE stock_tag.stock_id = stock.id
+                                                        ORDER BY tag.name
+                                                    ) AS tag_names,
+                                                    (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                                        FROM stock_tag
+                                                        INNER JOIN tag ON stock_tag.tag_id = tag.id
+                                                        WHERE stock_tag.stock_id = stock.id
+                                                        ORDER BY tag.name
+                                                    ) AS tag_ids
                                                 FROM stock
                                                 LEFT JOIN item ON stock.id=item.stock_id
                                                 LEFT JOIN shelf ON item.shelf_id=shelf.id 
@@ -583,18 +583,18 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         FROM cable_item 
                                                         WHERE cable_item.stock_id = stock.id AND cable_item.shelf_id=shelf.id
                                                     ) AS item_quantity,
-                                                    (SELECT GROUP_CONCAT(DISTINCT label.name ORDER BY label.name SEPARATOR ', ') 
-                                                        FROM stock_label 
-                                                        INNER JOIN label ON stock_label.label_id = label.id 
-                                                        WHERE stock_label.stock_id = stock.id
-                                                        ORDER BY label.name
-                                                    ) AS label_names,
-                                                    (SELECT GROUP_CONCAT(DISTINCT label.id ORDER BY label.name SEPARATOR ', ') 
-                                                        FROM stock_label
-                                                        INNER JOIN label ON stock_label.label_id = label.id
-                                                        WHERE stock_label.stock_id = stock.id
-                                                        ORDER BY label.name
-                                                    ) AS label_ids
+                                                    (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                                        FROM stock_tag 
+                                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                                        WHERE stock_tag.stock_id = stock.id
+                                                        ORDER BY tag.name
+                                                    ) AS tag_names,
+                                                    (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                                        FROM stock_tag
+                                                        INNER JOIN tag ON stock_tag.tag_id = tag.id
+                                                        WHERE stock_tag.stock_id = stock.id
+                                                        ORDER BY tag.name
+                                                    ) AS tag_ids
                                                 FROM stock
                                                 LEFT JOIN cable_item ON stock.id=cable_item.stock_id
                                                 LEFT JOIN shelf ON cable_item.shelf_id=shelf.id 
@@ -641,18 +641,18 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 $item_serial_number = $row['item_serial_number'];
                                             }
                                             $item_cost = $row['item_cost'];
-                                            $stock_label_ids = $row['label_ids'];
-                                            $stock_label_names = $row['label_names'];
+                                            $stock_tag_ids = $row['tag_ids'];
+                                            $stock_tag_names = $row['tag_names'];
                                             
-                                            $stock_label_data = [];
+                                            $stock_tag_data = [];
 
-                                            if ($stock_label_ids !== null) {
-                                                for ($n=0; $n < count(explode(", ", $stock_label_ids)); $n++) {
-                                                    $stock_label_data[$n] = array('id' => explode(", ", $stock_label_ids)[$n],
-                                                                                        'name' => explode(", ", $stock_label_names)[$n]);
+                                            if ($stock_tag_ids !== null) {
+                                                for ($n=0; $n < count(explode(", ", $stock_tag_ids)); $n++) {
+                                                    $stock_tag_data[$n] = array('id' => explode(", ", $stock_tag_ids)[$n],
+                                                                                        'name' => explode(", ", $stock_tag_names)[$n]);
                                                 }
                                             } else {
-                                                $stock_label_data = '';
+                                                $stock_tag_data = '';
                                             }
                                             
                                             if ($stock_is_cable == 0) {
@@ -672,8 +672,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                     'cost' => $item_cost,
                                                                     'comments' => $item_comments,
                                                                     'serial_number' => $item_serial_number,
-                                                                    'label_names' => $stock_label_names,
-                                                                    'label' => $stock_label_data);
+                                                                    'tag_names' => $stock_tag_names,
+                                                                    'tag' => $stock_tag_data);
                                             } else {
                                                 $stock_inv_data[] = array('id' => $stock_id,
                                                                     'name' => $stock_name,
@@ -704,7 +704,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             <th class="viewport-small-empty">Manu.</th>
                                                             <th class="viewport-large-empty">UPC</th>
                                                             <th title="Serial Numbers">Serial</th>
-                                                            <th>Labels</th>
+                                                            <th>Tags</th>
                                                             <th class="viewport-large-empty">Cost</th>
                                                             <th class="viewport-large-empty">Comments</th>');
                                                         } else { 
@@ -729,7 +729,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
                                                         <td id="item-'.$i.'-upc" class="viewport-large-empty">'.$stock_inv_data[$i]['upc'].'</td>
                                                         <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                        <td id="item-'.$i.'-labels">'.$stock_inv_data[$i]['label_names'].'</td>
+                                                        <td id="item-'.$i.'-tags">'.$stock_inv_data[$i]['tag_names'].'</td>
                                                         <td id="item-'.$i.'-cost" class="viewport-large-empty">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                         <td id="item-'.$i.'-comments" class="viewport-large-empty">'.$stock_inv_data[$i]['comments'].'</td>
                                                         <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>

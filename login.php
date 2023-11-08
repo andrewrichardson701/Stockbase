@@ -38,7 +38,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <!-- End of Header and Nav -->
     <?php 
     
-    $_SESSION['redirect_url'];
     include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings. ?>
     
     <div class="container" style="margin-top:75px">
@@ -101,9 +100,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <?php
         if (isset($_GET['reset']) && $_GET['reset'] == "true") {
     ?>
-    <div id="modalDiv" class="modal" style="display:block;padding:300px;background-color: rgba(0,0,0,0.7);">
+    <div id="modalDiv" class="modal" style="display:block;padding:auto;background-color: rgba(0,0,0,0.7);">
         <span class="close" onclick="modalClose()">×</span>
-            <div class="well-nopad theme-divBg" style="position:relative; margin:auto; width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
+            <div class="well-nopad theme-divBg" style="position:relative; margin:auto; min-width:200px;max-width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
             <form id="locationForm" enctype="multipart/form-data" action="./includes/changepassword.inc.php" method="POST">
                 <table>
                     <tbody>
@@ -134,10 +133,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     </div>
     
     <?php
-    }
+        }
     ?>
 
-    <div id="modalDivSwipe" class="modal viewport-small-block">
+    <div id="modalDivSwipe" class="modal viewport-small-block"<?php if ($_GET['reset'] == 'true') { echo(' hidden');}?> >
     <!-- <div id="modalDivSwipe" class="modal" style="display: block !important;">  -->
         <span class="close" onclick="modalCloseSwipe()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
@@ -191,6 +190,7 @@ toggle.addEventListener('change', (event) => {
     function modalLoadSwipe() {
         var modal = document.getElementById("modalDivSwipe");
         modal.style.display = "block";
+        modal.hidden = false;
     }
 
     // When the user clicks on <span> (x), close the modal or if they click the image.

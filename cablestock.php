@@ -382,7 +382,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     </datalist>
                                                 </div>
                                             </div>
-                                            <div class="col"><div>Description</div><div><input class="form-control" type="text" name="stock-description" style="min-width:120px" placeholder="Description" required/></div></div>
+                                            <div class="col"><div>Description</div><div><input class="form-control" type="text" name="stock-description" style="min-width:120px" placeholder="Description"/></div></div>
                                             <div class="col">
                                                 <div>Type</div>
                                                 <div>
@@ -415,7 +415,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             </div>
                                             <div class="col" style="max-width:max-content"><div>Min.Stock</div><div><input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:70px" value="10" required/></div></div>
                                             <div class="col" style="max-width:max-content"><div>Quantity</div><div><input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:70px" value="1" required/></div></div>
-                                            <div class="col" style="max-width:max-content"><div>Cost</div><div><input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:70px" value="0" required/></div></div>
+                                            <div class="col" style="max-width:max-content"'); if ($current_cost_enable_cable == 0) { echo(' hidden'); } echo('><div>Cost</div><div><input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:70px" value="0" required/></div></div>
                                             <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button></div></div>
                                         </div>
                                     </td>

@@ -30,7 +30,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $successPsuffix = '</p></div>';
 
         include 'includes/responsehandling.inc.php';
-        showResponse(); // 
+        showResponse(); 
 
         ?>
         <!-- Get Inventory -->

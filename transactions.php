@@ -111,7 +111,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <th>Shelf</th>
                                                 <th>Username</th>
                                                 <th>Quantity</th>
-                                                <th>Price</th>
+                                                <th'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Price</th>
                                                 <th>Serial Number</th>
                                                 <th hidden>Comments</th>
                                                 <th>Reason</th>
@@ -167,7 +167,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <td id="s_name">'.$s_name.'</td>
                                                 <td id="t_username">'.$t_username.'</td>
                                                 <td id="t_quantity">'.$t_quantity.'</td>
-                                                <td>'.$currency_symbol.$t_price.'</td>
+                                                <td'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$currency_symbol.$t_price.'</td>
                                                 <td>'.$t_serial_number.'</td>
                                                 <td hidden>'.$t_comments.'</td>
                                                 <td id="t_reason">'.$t_reason.'</td>
@@ -186,7 +186,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             t.date AS t_date, t.time AS t_time, t.username as t_username,
                                             s.name AS s_name, a.name AS a_name
                                         FROM cable_transaction AS t
-                                        LEFT JOIN item AS i ON t.item_id=i.id
+                                        LEFT JOIN cable_item AS i ON t.item_id=i.id
                                         LEFT JOIN shelf AS s ON i.shelf_id=s.id
                                         LEFT JOIN area AS a ON s.area_id=a.id
                                         WHERE t.stock_id=?

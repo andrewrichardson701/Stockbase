@@ -727,11 +727,11 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                 if (Array.isArray(rows)) {
                     select.options.length = 0;
                     select.options[0] = new Option('Select '+upperProperty, '');
-                    for (var j = 1; j <= rows.length; j++) {
-                        select.options[j] = new Option(rows[j].name, rows[j].id);
+                    for (var j = 0; j < rows.length; j++) {
+                        select.options[j+1] = new Option(rows[j].name, rows[j].id);
                     }
                     select.options[0].disaled = true;
-                    select.options[1].selected = true;
+                    select.options[0].selected = true;
                 } else {
                     console.log('error - check loadProperty function');
                 }

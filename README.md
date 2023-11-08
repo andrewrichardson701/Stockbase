@@ -475,6 +475,17 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.4.1-beta</h3></summary>
+<h4>Beta release 0.4.1, Cost toggles and quality of life changes.</h4>
+
+- Fixed some page redirects for the edit stock page. Now diverts you to the stock main page if all is successful, else drops you back on the edit page.
+- Cablestock description is now optional. This is not always relevant to the item.
+- Stock.php now has response handling built in. This means that error messages will show correctly.
+- LDAP settings on the admin page now has the correct error checkind and response handling. There are a couple of unique ones left in place.
+- Can now disabld / enable the cost for items. This is not always needed so can be toggled off under stock managemet in admin.php.
+
+</details>
+<details>
 <summary><h3>0.4.0-beta</h3></summary>
 <h4>Beta release 0.4.0, Label to Tag.</h4>
 

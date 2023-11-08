@@ -1038,10 +1038,10 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                 $c++;
                                             }
                                                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
-                                            header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
+                                            header("Location: ../stock.php?stock_id=$stock_id&success=changesSaved");
                                             exit();
                                         } else {
-                                            header("Location: ../stock.php?stock_id=$stock_id&modify=edit&error=noChangeNeeded");
+                                            header("Location: ../stock.php?stock_id=$stock_id&error=noChangeNeeded");
                                             exit();
                                         }
                                     }                                    

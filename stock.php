@@ -22,6 +22,13 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
     <div class="content">
         <?php // dependency PHP
+        $errorPprefix = '<p class="red" style="margin-bottom:0px">Error: ';
+        $errorPsuffix = '</p>';
+        $successPprefix = '<p class="green" style="margin-bottom:0px">';
+        $successPsuffix = '</p>';
+
+        include 'includes/responsehandling.inc.php';
+
         $show_inventory = 0; // for nav.php to show the site and area on the banner
         if (isset($_GET['stock_id'])) {
             if (is_numeric($_GET['stock_id'])) {
@@ -57,12 +64,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         if (isset($stock_modify) && in_array(strtolower($stock_modify), $stock_modify_values)) {
             echo('<div class="container" style="padding-bottom:25px">
             <h2 class="header-small" style="padding-bottom:5px">Stock - '.ucwords($stock_modify).'</h2>');
-            if (isset($_GET['error'])) {
-                $error = $_GET['error'];
-                if ($_GET['error'] == 'SKUexists') { $error = 'SKU "<or class="blue">'.$_GET['sku'].'</or>" already exists. Please pick another, or leave empty to generate a new one'; }
-                if ($_GET['error'] == 'multipleItemsFound') { $error = 'Multiple item rows found in the items table. Something needs corecting in the database. <br>To continue, change one of:<br>&nbsp;<or class="blue">UPC</or>,<br>&nbsp;<or class="blue">Serial Numbers</or>,<br>&nbsp;<or class="blue">Item Cost</or>,<br>&nbsp;<or class="blue">Shelf/Location</or>'; }
-                echo('<p class="red" style="margin-bottom:0">ERROR: '.$error.'.</p>');
-            }
+            showResponse(); 
             echo('</div>');
             include 'includes/stock-'.$stock_modify.'.inc.php';
 
@@ -120,7 +122,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     }
                     echo('
                         <div class="container stock-heading">
-                            <h2 class="header-small" style="padding-bottom:5px">Stock</h2>
+                            <h2 class="header-small" style="padding-bottom:5px">Stock</h2>');                            
+                            showResponse(); 
+                            echo('
                             <div class="nav-row " style="margin-top:5px;">
                                 <h3 style="font-size:22px;margin-top:20px;margin-bottom:0;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
                                 <div class="nav-div nav-right" style="padding-top:5px;margin-right:0px !important">
@@ -705,10 +709,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             <th class="viewport-large-empty">UPC</th>
                                                             <th title="Serial Numbers">Serial</th>
                                                             <th>Tags</th>
-                                                            <th class="viewport-large-empty">Cost</th>
+                                                            <th class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
                                                             <th class="viewport-large-empty">Comments</th>');
                                                         } else { 
-                                                            echo('<th class="viewport-large-empty">Cost</th>');
+                                                            echo('<th class="viewport-large-empty"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>Cost</th>');
                                                         }
                                                         echo('
                                                         <th>Stock</th>
@@ -730,12 +734,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         <td id="item-'.$i.'-upc" class="viewport-large-empty">'.$stock_inv_data[$i]['upc'].'</td>
                                                         <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
                                                         <td id="item-'.$i.'-tags">'.$stock_inv_data[$i]['tag_names'].'</td>
-                                                        <td id="item-'.$i.'-cost" class="viewport-large-empty">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                        <td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                         <td id="item-'.$i.'-comments" class="viewport-large-empty">'.$stock_inv_data[$i]['comments'].'</td>
                                                         <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                                         ');
                                                 } else {
-                                                    echo('<td id="item-'.$i.'-cost" class="viewport-large-empty">'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                    echo('<td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                     <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] < $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
                                                 }
                                                 echo('
@@ -757,7 +761,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                             <th>Manufacturer</th>
                                                                             <th>UPC</th>
                                                                             <th>Serial</th>
-                                                                            <th>Cost ('.$current_currency.')</th>
+                                                                            <th'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost ('.$current_currency.')</th>
                                                                             <th>Comments</th>
                                                                             <th>Stock</th>
                                                                             <th></th>
@@ -807,7 +811,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                         <td class="align-middle">'.$row_hidden['manufacturer_name'].'</td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:100px" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
-                                                                                        <td class="align-middle"><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
+                                                                                        <td class="align-middle"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_comments'].'" name="comments" /></td>
                                                                                         <td class="align-middle">'.$row_hidden['item_quantity'].'</td>
                                                                                         <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Save" /> </td>

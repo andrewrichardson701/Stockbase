@@ -775,6 +775,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $stock_tags_init = isset($_POST['tags-init'])? $_POST['tags-init'] : '';
                     $stock_tags_selected = isset($_POST['tags-selected'])? $_POST['tags-selected'] : '';
                     $stock_min_stock = isset($_POST['min-stock'])? $_POST['min-stock'] : 0;
+                    if ($stock_min_stock == '') {
+                        $stock_min_stock = 0;
+                    }
                     
                     $stock_tags_selected = explode(', ', $stock_tags_selected);
 
@@ -819,88 +822,231 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         } else {
                             //SKU not found, continue.
 
-                            //update the content
-                            $sql_update = "UPDATE stock SET name=?, description=?, sku=?, min_stock=? WHERE id=?";
-                            $stmt_update = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                header("Location: ".$redirect_url."&error=updateStockSQL");
-                                exit();
+                            $sql_check = "SELECT * FROM stock WHERE id=?";
+                            $stmt_check = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                                echo("ERROR getting entries");
                             } else {
-                                mysqli_stmt_bind_param($stmt_update, "sssss", $stock_name, $stock_description, $stock_sku, $stock_min_stock, $stock_id);
-                                mysqli_stmt_execute($stmt_update);
+                                mysqli_stmt_bind_param($stmt_check, "s", $stock_id);
+                                mysqli_stmt_execute($stmt_check);
+                                $result_check = mysqli_stmt_get_result($stmt_check);
+                                $rowCount_check = $result_check->num_rows;
+                                if ($rowCount_check < 1) {
+                                    header("Location: ".$redirect_url."&error=noRowsFound");
+                                    exit();
+                                } else {
+                                    $row_check = $result_check->fetch_assoc();
 
-                                // add tags to the stock_tags table
-                                function addTag($stock_id, $tag_id) {
-                                    global $_SESSION;
-                                    include 'dbh.inc.php';
-                                    $sql_add = "INSERT INTO stock_tag (stock_id, tag_id) VALUES (?, ?)";
-                                    $stmt_add = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_add, $sql_add)) {
-                                        echo ("error");
-                                    } else {
-                                        mysqli_stmt_bind_param($stmt_add, "ss", $stock_id, $tag_id);
-                                        mysqli_stmt_execute($stmt_add);
-                                        $insert_id = mysqli_insert_id($conn);
+                                    //update the content
 
-                                        // update changelog
-                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_tag", $insert_id, "stock_id", null, $stock_id);
+                                    $current_name = $row_check['name'];
+                                    $current_description = $row_check['description'];
+                                    $current_sku = $row_check['sku'];
+                                    $current_min_stock = $row_check['min_stock'];
+                                    $changes = [];
+
+                                    if ($current_name !== $stock_name) {
+                                        $sql_update = "UPDATE stock SET name=? WHERE id=?";
+                                        $stmt_update = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                            header("Location: ".$redirect_url."&error=updateStockSQL");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_update, "ss", $stock_name, $stock_id);
+                                            mysqli_stmt_execute($stmt_update);
+                                            $changes[] = "<li>Stock name changed from <strong>$current_name</strong> to <strong>$stock_name</strong>.</li>";
+                                            // update changelog
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "stock", $stock_id, "name", $current_name, $stock_name);
+                                        }
                                     }
-                                }
-                                function cleanupTags($stock_id) {
-                                    global $_SESSION;
-                                    include 'dbh.inc.php';
+                                    if ($current_description !== $stock_description) {
+                                        $sql_update = "UPDATE stock SET description=? WHERE id=?";
+                                        $stmt_update = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                            header("Location: ".$redirect_url."&error=updateStockSQL");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_update, "ss", $stock_description, $stock_id);
+                                            mysqli_stmt_execute($stmt_update);
+                                            $changes[] = "<li>Stock description changed from <strong>$current_description</strong> to <strong>$stock_description</strong>.</li>";
+                                            // update changelog
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "stock", $stock_id, "description", $current_description, $stock_description);
+                                        }
+                                    }
+                                    if ($current_sku !== $stock_sku) {
+                                        $sql_update = "UPDATE stock SET sku=? WHERE id=?";
+                                        $stmt_update = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                            header("Location: ".$redirect_url."&error=updateStockSQL");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_update, "ss", $stock_sku, $stock_id);
+                                            mysqli_stmt_execute($stmt_update);
+                                            $changes[] = "<li>Stock sku changed from <strong>$current_sku</strong> to <strong>$stock_sku</strong>.</li>";
+                                            // update changelog
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "stock", $stock_id, "sku", $current_sku, $stock_sku);
+                                        }
+                                    }
+                                    if ((int)$current_min_stock !== (int)$stock_min_stock) {
+                                        $sql_update = "UPDATE stock SET min_stock=? WHERE id=?";
+                                        $stmt_update = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                            header("Location: ".$redirect_url."&error=updateStockSQL");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_update, "ss", $stock_min_stock, $stock_id);
+                                            mysqli_stmt_execute($stmt_update);
+                                            $changes[] = "<li>Stock minimum stock changed from <strong>$current_min_stock</strong> to <strong>$stock_min_stock</strong>.</li>";
+                                            // update changelog
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "stock", $stock_id, "min_stock", $current_min_stock, $stock_min_stock);
+                                        }
+                                    }
+                                    // add tags to the stock_tags table
+                                    function addTag($array, $stock_id) {
+                                        global $_SESSION, $changes;
+                                        include 'dbh.inc.php';
+                                        foreach ($array as $tag_id) {
+                                            if ($tag_id !== '') {
+                                                $sql_add = "INSERT INTO stock_tag (stock_id, tag_id) VALUES (?, ?)";
+                                                $stmt_add = mysqli_stmt_init($conn);
+                                                if (!mysqli_stmt_prepare($stmt_add, $sql_add)) {
+                                                    echo ("error");
+                                                } else {
+                                                    mysqli_stmt_bind_param($stmt_add, "ss", $stock_id, $tag_id);
+                                                    mysqli_stmt_execute($stmt_add);
+                                                    $insert_id = mysqli_insert_id($conn);
+                                                    
+                                                    $sql_check = "SELECT * FROM tag WHERE id=?";
+                                                    $stmt_check = mysqli_stmt_init($conn);
+                                                    if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                                                        echo("ERROR getting entries");
+                                                    } else {
+                                                        mysqli_stmt_bind_param($stmt_check, "s", $tag_id);
+                                                        mysqli_stmt_execute($stmt_check);
+                                                        $result_check = mysqli_stmt_get_result($stmt_check);
+                                                        $rowCount_check = $result_check->num_rows;
+                                                        if ($rowCount_check != 0) {
+                                                            $row = $result_check->fetch_assoc();
+                                                            $tag_name = $row['name'];
+                                                            $changes[] = "<li>Stock tag added: <strong>$tag_name</strong>.</li>";
 
-                                    $sql = "SELECT id FROM stock_tag WHERE stock_id=$stock_id";
-                                    $stmt = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                                            // update changelog
+                                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock_tag", $insert_id, "stock_id", null, $stock_id);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    function cleanupTags($array, $stock_id) {
+                                        global $_SESSION, $changes;
+                                        include 'dbh.inc.php';
+
+                                        foreach ($array as $tag_id) {
+                                            if ($tag_id !== '') {
+                                                $sql = "SELECT id FROM stock_tag WHERE tag_id=$tag_id AND stock_id=$stock_id";
+                                                $stmt = mysqli_stmt_init($conn);
+                                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                                    echo("ERROR getting entries");
+                                                } else {
+                                                    mysqli_stmt_execute($stmt);
+                                                    $result = mysqli_stmt_get_result($stmt);
+                                                    $rowCount = $result->num_rows;
+
+                                                    while ($row = $result->fetch_assoc()) {
+                                                        $row_id = $row['id'];
+                                                        $sql_clean = "DELETE FROM stock_tag WHERE stock_id=$stock_id AND id=$row_id";
+                                                        $stmt_clean = mysqli_stmt_init($conn);
+                                                        if (!mysqli_stmt_prepare($stmt_clean, $sql_clean)) {
+                                                            echo ("error");
+                                                        } else {
+                                                            mysqli_stmt_execute($stmt_clean);
+
+                                                            $sql_check = "SELECT * FROM tag WHERE id=?";
+                                                            $stmt_check = mysqli_stmt_init($conn);
+                                                            if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                                                                echo("ERROR getting entries");
+                                                            } else {
+                                                                mysqli_stmt_bind_param($stmt_check, "s", $tag_id);
+                                                                mysqli_stmt_execute($stmt_check);
+                                                                $result_check = mysqli_stmt_get_result($stmt_check);
+                                                                $rowCount_check = $result_check->num_rows;
+                                                                if ($rowCount_check != 0) {
+                                                                    $row = $result_check->fetch_assoc();
+                                                                    $tag_name = $row['name'];
+                                                                    $changes[] = "<li>Stock tag removed: <strong>$tag_name</strong>.</li>";
+
+                                                                    // update changelog
+                                                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_tag", $row_id, "stock_id", $stock_id, null);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    $current_tags_full = [];
+                                    $current_tags = [];
+
+                                    $sql_tag = "SELECT * FROM stock_tag WHERE stock_id=?";
+                                    $stmt_tag = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_tag, $sql_tag)) {
                                         echo("ERROR getting entries");
                                     } else {
-                                        mysqli_stmt_execute($stmt);
-                                        $result = mysqli_stmt_get_result($stmt);
-                                        $rowCount = $result->num_rows;
-
-                                        while ($row = $result->fetch_assoc()) {
-                                            $id = $row['id'];
-                                            $sql_clean = "DELETE FROM stock_tag WHERE stock_id=$stock_id AND id=$id";
-                                            $stmt_clean = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt_clean, $sql_clean)) {
-                                                echo ("error");
-                                            } else {
-                                                mysqli_stmt_execute($stmt_clean);
-
-                                                // update changelog
-                                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "stock_tag", $id, "stock_id", $stock_id, null);
+                                        mysqli_stmt_bind_param($stmt_tag, "s", $stock_id);
+                                        mysqli_stmt_execute($stmt_tag);
+                                        $result_tag = mysqli_stmt_get_result($stmt_tag);
+                                        $rowCount_tag = $result_tag->num_rows;
+                                        if ($rowCount_tag == 0) {
+                                            // none found
+                                        } else {
+                                            while ($row_tag = $result_tag->fetch_assoc()) {
+                                                $current_tags_full[$row_tag['tag_id']] = array('id' => $row_tag['id'], 'tag_id' => $row_tag['tag_id'], 'stock_id' => $row_tag['stock_id']);
+                                                $current_tags[] = $row_tag['tag_id'];
                                             }
                                         }
-                                    }
-                                }
+                                        // Matching tags
+                                        // $matching_tags = array_intersect($current_tags, $stock_tags_selected);
+                                        // Non-matching elements in current_tags
+                                        $remove_tags = array_diff($current_tags, $stock_tags_selected);
+                                        // Non-matching elements in stock_tags_selected
+                                        $add_tags = array_diff($stock_tags_selected, $current_tags);
+                                        // print_r($current_tags);
+                                        // print_r($stock_tags_selected);
+                                        // print_r($remove_tags);
+                                        // print_r($add_tags);
+                                        // exit();
+                                        cleanupTags($remove_tags, $stock_id);
+                                        addTag($add_tags, $stock_id);
 
-                            
-
-                                if ($stock_tags_selected != '') { 
-                                    cleanupTags($stock_id);
-                                    if (is_array($stock_tags_selected) && !empty($stock_tags_selected)) {
-                                        foreach ($stock_tags_selected as $tag) {
-                                            if ($tag != '' && $tag != null) {
-                                                addTag($stock_id, $tag);
+                                        $stock_info = getItemStockInfo($stock_id);
+                                        $base_url = getCurrentURL();
+                                        if (count($changes) !== 0) {
+                                            $email_subject = ucwords($current_system_name)." - Stock information edited";
+                                            $email_body = "<p>Stock details updated for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> and successfully saved!</p>";
+                                            $c = 1;
+                                            foreach ($changes as $change) {
+                                                if ($c == 1) {
+                                                    $email_body .= '<p>';
+                                                }
+                                                $email_body .= $change;
+                                                if ($c == count($changes)) {
+                                                    $email_body .= '</p>';
+                                                }
+                                                $c++;
                                             }
+                                                send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
+                                            header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
+                                            exit();
+                                        } else {
+                                            header("Location: ../stock.php?stock_id=$stock_id&modify=edit&error=noChangeNeeded");
+                                            exit();
                                         }
-                                    } else {
-                                        if ($stock_tags_selected != '' && $stock_tags_selected != null) {
-                                            addTag($stock_id, $stock_tags_selected);
-                                        }
-                                    }
+                                    }                                    
                                 }
-                                $stock_info = getItemStockInfo($stock_id);
-                                $base_url = getCurrentURL();
-            
-                                $email_subject = ucwords($current_system_name)." - Stock information edited";
-                                $email_body = "<p>Stock details updated for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> and successfully saved!</p>";
-                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 6);
-                                header("Location: ../stock.php?stock_id=$stock_id&modify=edit&success=changesSaved");
-                                exit();
                             }
-
                         }
                     }
                 }

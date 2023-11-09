@@ -127,7 +127,7 @@ case "$new_branch" in
     0.4.0-beta )
             0.4.0-beta "$current_branch"
             break;;
-    0.4.1-beta )
+    0.4.1-beta|0.4.2-beta )
             0.4.1-beta "$current_branch"
             break;;
 esac
@@ -152,7 +152,7 @@ esac
             echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
             break;;
-    0.4.1-beta )
+    0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
             echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
             echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
@@ -178,7 +178,7 @@ esac
     0.4.0-beta )
             echo "No SQL changes to be made."
             break;;
-    0.4.1-beta )
+    0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
             echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
             echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
@@ -208,7 +208,7 @@ esac
             echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default DROP COLUMN cost_enable_normal; ALTER TABLE config_default DROP COLUMN cost_enable_cable; ALTER TABLE config DROP COLUMN cost_enable_normal; ALTER TABLE config DROP COLUMN cost_enable_cable;"
             break;;
-    0.4.1-beta )
+    0.4.1-beta|0.4.2-beta )
             echo "No SQL changes to be made."
             break;;
     esac 

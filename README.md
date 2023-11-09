@@ -475,6 +475,15 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.4.2-beta</h3></summary>
+<h4>Beta release 0.4.2, Update script web server checking.</h4>
+
+- Install script now checks which web servers are installed and asks which to use and whether to disable the other if there are multiple.
+- If only one web server is installed, it uses it by default. This will be apache2 if no web server was installed initially, due to PHP installing apache2.
+- Update script updated to accomodate 0.4.0-beta and 0.4.1-beta. 0.4.1-beta and 0.4.2-beta are the same.
+
+</details>
+<details>
 <summary><h3>0.4.1-beta</h3></summary>
 <h4>Beta release 0.4.1, Cost toggles and quality of life changes.</h4>
 

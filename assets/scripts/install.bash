@@ -335,11 +335,47 @@ sleep 1
 echo ""
 
 # Check if Apache2 or Nginx is already installed
+apache2=0
+nginx=0
 if dpkg -l | grep -q "apache2"; then
+    apache2=1
+fi
+if dpkg -l | grep -q "nginx"; then
+    nginx=1
+fi
+
+if [[ "$apache2" = 1 && "$nginx" = 0 ]]; then
     web_server="apache2"
-elif dpkg -l | grep -q "nginx"; then
+elif [[ "$apache2" = 0 && "$nginx" = 1 ]]; then
     web_server="nginx"
-else
+elif [[ "$apache2" = 1 && "$nginx" = 1 ]]; then
+    options=("apache2" "nginx")
+    PS3="Select the web server to use: "
+    select web_server in "${options[@]}"; do
+        if [ -n "$web_server" ]; then
+            if [ "$web_server" = "apache2" ]; then
+                not_web_server="nginx"
+            elif [ "$web_server" = "nginx" ]; then
+                not_web_server="apache2"
+            fi
+            while true; do
+                read -p "Diasable and stop "$not_web_server"? (Y/N): " disable_web
+                case "$disable_web" in
+                    [Yy]* ) 
+                            systemctl stop "$not_web_server"
+                            systemctl disable "$not_web_server"
+                            break;;
+                    [Nn]* ) 
+                            break;;
+                    * ) echo "Please answer Y or N.";;
+                esac
+            done
+            break
+        else
+            echo "Invalid choice. Please select a valid option."
+        fi
+    done
+else 
     options=("apache2" "nginx")
     PS3="Select the web server to use: "
     select web_server in "${options[@]}"; do
@@ -350,6 +386,23 @@ else
         fi
     done
 fi
+
+# # Check if Apache2 or Nginx is already installed
+# if dpkg -l | grep -q "apache2"; then
+#     web_server="apache2"
+# elif dpkg -l | grep -q "nginx"; then
+#     web_server="nginx"
+# else
+#     options=("apache2" "nginx")
+#     PS3="Select the web server to use: "
+#     select web_server in "${options[@]}"; do
+#         if [ -n "$web_server" ]; then
+#             break
+#         else
+#             echo "Invalid choice. Please select a valid option."
+#         fi
+#     done
+# fi
 
 echo "Using $web_server as the web server."
 sleep 1

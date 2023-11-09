@@ -125,17 +125,10 @@ case "$new_branch" in
             0.3.X-beta "$current_branch"
             break;;
     0.4.0-beta )
-            echo "SQL Changes to be made:"
-            echo " - 'label' table becomes 'tag'"
-            echo " - 'stock_label' table becomes 'stock_tag'"
-            echo "    - 'stock_label.label_id' becomes 'stock_tag.tag_id'"
-            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE label RENAME tag; ALTER TABLE stock_label RENAME stock_tag; ALTER TABLE stock_tag RENAME COLUMN label_id TO tag_id;"
+            0.4.0-beta "$current_branch"
             break;;
-    0.4.1-beta )
-            echo "SQL Changes to be made:"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added to config table"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added to config_default table"
-            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;"
+    0.4.1-beta|0.4.2-beta )
+            0.4.1-beta "$current_branch"
             break;;
 esac
 
@@ -159,12 +152,64 @@ esac
             echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
             break;;
-    0.4.1-beta )
+    0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
             echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
             echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default DROP COLUMN cost_enable_normal; ALTER TABLE config_default DROP COLUMN cost_enable_cable; ALTER TABLE config DROP COLUMN cost_enable_normal; ALTER TABLE config DROP COLUMN cost_enable_cable;"
             break;;
     esac 
-    
+}
+
+0.4.0-beta() {
+    # This is for all 0.3.X-beta branches/versions past 0.3.2-beta
+
+    current_branch=$1
+
+    case "$current_branch" in
+    0.3.2-beta|0.3.3-beta ) 
+            echo "SQL Changes to be made:"
+            echo " - 'tag' table becomes 'label'"
+            echo " - 'stock_tag' table becomes 'stock_label'"
+            echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
+            break;;
+            
+    0.4.0-beta )
+            echo "No SQL changes to be made."
+            break;;
+    0.4.1-beta|0.4.2-beta )
+            echo "SQL Changes to be made:"
+            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
+            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default DROP COLUMN cost_enable_normal; ALTER TABLE config_default DROP COLUMN cost_enable_cable; ALTER TABLE config DROP COLUMN cost_enable_normal; ALTER TABLE config DROP COLUMN cost_enable_cable;"
+            break;;
+    esac 
+}
+
+0.4.1-beta() {
+    # This is for all 0.3.X-beta branches/versions past 0.3.2-beta
+
+    current_branch=$1
+
+    case "$current_branch" in
+    0.3.2-beta|0.3.3-beta ) 
+            echo "SQL Changes to be made:"
+            echo " - 'tag' table becomes 'label'"
+            echo " - 'stock_tag' table becomes 'stock_label'"
+            echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
+            0.4.1-beta "0.4.0-beta"
+            break;;
+            
+    0.4.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
+            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default DROP COLUMN cost_enable_normal; ALTER TABLE config_default DROP COLUMN cost_enable_cable; ALTER TABLE config DROP COLUMN cost_enable_normal; ALTER TABLE config DROP COLUMN cost_enable_cable;"
+            break;;
+    0.4.1-beta|0.4.2-beta )
+            echo "No SQL changes to be made."
+            break;;
+    esac 
 }

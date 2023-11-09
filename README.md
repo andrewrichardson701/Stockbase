@@ -481,6 +481,7 @@ Clone the repo first, and the follow the below steps.
 - Install script now checks which web servers are installed and asks which to use and whether to disable the other if there are multiple.
 - If only one web server is installed, it uses it by default. This will be apache2 if no web server was installed initially, due to PHP installing apache2.
 - Update script updated to accomodate 0.4.0-beta and 0.4.1-beta. 0.4.1-beta and 0.4.2-beta are the same.
+- Manufacturer can now be changed on a per item basis under the stock page.
 
 </details>
 <details>

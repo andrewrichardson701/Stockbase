@@ -268,6 +268,7 @@ if (isset($_POST['submit'])) {
                                         mysqli_stmt_bind_param($stmt_upload, "ssssss", $ldap_info_samAccountName, $ldap_info_firstName, $ldap_info_lastName, $ldap_info_upn, $default_role, $auth);
                                         mysqli_stmt_execute($stmt_upload);
                                         $insert_id = mysqli_insert_id($conn);
+                                        include 'changelog.inc.php';
                                         // update changelog
                                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }

@@ -45,7 +45,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
                 <p style="margin-top:2vh;margin-bottom:3vh">Please input your credentials to login.</p>
-                <p class="red">Demo LDAP username: <or class="blue">inventory</or> password: <or class="blue">DemoPass1!</or></p>
+                <p class="red">Demo LDAP username: <or class="blue">demo</or> password: <or class="blue">InventoryPass1!</or></p>
                 <form enctype="multipart/form-data" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
                     <div class="form-group">
                         <label>Username / Email Address</label>

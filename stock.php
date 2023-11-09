@@ -808,7 +808,27 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                         <td hidden>'.$row_hidden['site_name'].'</td>
                                                                                         <td hidden>'.$row_hidden['area_name'].'</td>
                                                                                         <td hidden>'.$row_hidden['shelf_name'].'</td>
-                                                                                        <td class="align-middle">'.$row_hidden['manufacturer_name'].'</td>
+                                                                                        <td class="align-middle">
+                                                                                            <select class="form-control" name="manufacturer_id" style="max-width:max-content">');
+                                                                                            $sql_manufacturer = "SELECT * FROM manufacturer;";
+                                                                                            $stmt_manufacturer = mysqli_stmt_init($conn);
+                                                                                            if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
+                                                                                                echo("ERROR getting entries");
+                                                                                            } else {
+                                                                                                mysqli_stmt_execute($stmt_manufacturer);
+                                                                                                $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
+                                                                                                $rowCount_manufacturer = $result_manufacturer->num_rows;
+                                                                                                if ($rowCount_manufacturer == 0){
+                                                                                                    echo('<option value="" selected disabled>No Manufacturers Found...</option>');
+                                                                                                } else {
+                                                                                                    while ($row_manufacturer = $result_manufacturer->fetch_assoc()) {
+                                                                                                        echo('<option value="'.$row_manufacturer['id'].'"'); if ($row_hidden['manufacturer_id'] == $row_manufacturer['id']) { echo(' selected'); } echo('>'.$row_manufacturer['name'].'</option>');
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        echo('
+                                                                                            </select>
+                                                                                        </td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:100px" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
                                                                                         <td class="align-middle"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>

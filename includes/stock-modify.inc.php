@@ -1394,6 +1394,23 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         exit();
                     } else {
                         $row = $result->fetch_assoc();
+                        
+                        if ($row['manufacturer_id'] !== $_POST['manufacturer_id']) {
+                            $manufacturer_id = $_POST['manufacturer_id'];
+                            $sql_manufacturer_id = "UPDATE item SET manufacturer_id='$manufacturer_id' WHERE id=?";
+                            $stmt_manufacturer_id = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_manufacturer_id, $sql_manufacturer_id)) {
+                                $errors[] = 'remove_row item table error - SQL connection';
+                                header("Location: $redirect_url&error=itemTableSQLConnection");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_manufacturer_id, "s", $_POST['item-id']);
+                                mysqli_stmt_execute($stmt_manufacturer_id);
+
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "item", $_POST['item-id'], "manufacturer_id", $row['manufacturer_id'], $_POST['manufacturer_id']);
+                            }
+                        }
 
                         if ($row['upc'] !== $_POST['upc']) {
                             $upc = $_POST['upc'];

@@ -282,7 +282,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     }
                     $result .= '</td>';
                     if ($site == 0) { $result .= '<td class="align-middle link gold" style="white-space: nowrap !important;"id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
-                    $result .= '<td class="align-middle viewport-large-empty" id="'.$stock_id.'-tag">';
+                    $result .= '<td class="align-middle viewport-large-empty" style="white-space: wrap" id="'.$stock_id.'-tag">';
                     if (is_array($stock_tag_names)) {
                         for ($o=0; $o < count($stock_tag_names); $o++) {
                             $divider = $o < count($stock_tag_names)-1 ? ', ' : '';

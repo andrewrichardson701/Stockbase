@@ -105,11 +105,11 @@ if (isset($_GET['stock_id'])) {
                                             <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="tags" id="tags-label">Tags</label></div>
                                             <div id="tags-group">
                                             <input id="tags-selected" name="tags-selected" type="hidden" />
-                                            <select id="tags" name="tags[]" multiple class="form-control nav-trans stock-inputSize" style="border: 1px solid grey;display: inline-block;height:40px">');
+                                            <select id="tags" name="tags[]" multiple class="form-control nav-trans stock-inputSize" style="border: 1px solid grey;display: inline-block; height:90px; white-space:wrap">');
                                                 if (is_array($stock_tag_data)) {
                                                     for ($l=0; $l<count($stock_tag_data); $l++) {
                                                         // echo('<option class="btn btn-dark btn-stock gold fafont" style="margin-top:4px;border:1px solid gray" value="'.$stock_tag_data[$l]['id'].'">'.$stock_tag_data[$l]['name'].' &#xf057;</option> ');
-                                                        echo('<option class="btn-stock" style="margin-top:1px;border:1px solid gray" value="'.$stock_tag_data[$l]['id'].'" selected>'.$stock_tag_data[$l]['name'].'</option> ');
+                                                        echo('<option class="btn-stock clickable" style="margin-top:1px;border:1px solid gray" value="'.$stock_tag_data[$l]['id'].'" selected>'.$stock_tag_data[$l]['name'].' ✕</option> ');
                                                     }
                                                 } else {
                                                     //echo('None');
@@ -131,7 +131,7 @@ if (isset($_GET['stock_id'])) {
                                                     $result = mysqli_stmt_get_result($stmt);
                                                     $rowCount = $result->num_rows;
                                                     if ($rowCount < 1) {
-                                                        echo('<option value="0" selected>No Manufacturers Found...</option>');
+                                                        echo('<option value="0" selected disabled>No Tags Remaining</option>');
                                                     } else {
                                                         // rows found
                                                         while ($row = $result->fetch_assoc()) {
@@ -196,6 +196,8 @@ if (isset($_GET['stock_id'])) {
                                         
                                         selectBox.addEventListener("change", function() {
                                             var selectedOption = selectBox.options[selectBox.selectedIndex];
+                                            selectedOption.innerHTML += " ✕";
+                                            selectedOption.classList.add("clickable");
                                             if (selectedOption.value !== "") {
                                                 selectedBox.add(selectedOption);
                                             }
@@ -203,6 +205,10 @@ if (isset($_GET['stock_id'])) {
 
                                         selectedBox.addEventListener("change", function() {
                                             var removedOption = selectedBox.options[selectedBox.selectedIndex];
+                                            var tempHTML = removedOption.innerHTML;
+                                            var newHTML = tempHTML.replace(" ✕", "");
+                                            removedOption.innerHTML = newHTML;
+                                            removedOption.classList.remove("clickable");
                                             if (removedOption.value !== "") {
                                                 selectBox.add(removedOption);
                                                 selectedBox.remove(selectedBox.selectedIndex);

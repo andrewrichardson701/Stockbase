@@ -640,3 +640,64 @@ if ($stock_id == 0 || $stock_id == '0') {
         xhr.send();
     }
 </script>
+<script>
+    // Script to populare the remove fields from clicking the remove button in the stock table.
+    document.onload=populateFields();
+    async function populateFields() {
+        const queryParams = new URLSearchParams(window.location.search);
+        for (const key of queryParams.keys()) {
+            console.log(key);
+        }
+        setTimeout(function () {
+            if (queryParams.keys('manufacturer')) {
+                // console.log(queryParams.get('manufacturer'));
+                var manufacturerValue = queryParams.get('manufacturer');
+                var manufacturerSelect = document.getElementById('manufacturer');
+                for (let i = 0; i < manufacturerSelect.options.length; i++) {
+                    const option = manufacturerSelect.options[i];
+                    // Check if the option's value matches the 'manufacturer' query string parameter
+                    if (option.value === manufacturerValue) {
+                        // Set the 'selected' attribute if there is a match
+                        option.selected = true;
+                        break; // Exit the loop since we found the matching option
+                    }
+                }
+                populateRemoveShelves(manufacturerSelect);
+                setTimeout(function () {
+                    if (queryParams.keys('shelf')) {
+                        // console.log(queryParams.get('shelf'));
+                        var shelfValue = queryParams.get('shelf');
+                        var shelfSelect = document.getElementById('shelf');
+                        for (let i = 0; i < shelfSelect.options.length; i++) {
+                            const option = shelfSelect.options[i];
+                            // Check if the option's value matches the 'shelf' query string parameter
+                            if (option.value === shelfValue) {
+                                // Set the 'selected' attribute if there is a match
+                                option.selected = true;
+                                break; // Exit the loop since we found the matching option
+                            }
+                        }
+                        populateSerials(shelfSelect);
+                        setTimeout(function () {
+                            if (queryParams.keys('serial')) {
+                                // console.log(queryParams.get('serial'));
+                                var serialValue = queryParams.get('serial');
+                                var serialSelect = document.getElementById('serial-number');
+                                for (let i = 0; i < serialSelect.options.length; i++) {
+                                    const option = serialSelect.options[i];
+                                    // Check if the option's value matches the 'serial' query string parameter
+                                    if (option.value === serialValue) {
+                                        // Set the 'selected' attribute if there is a match
+                                        option.selected = true;
+                                        break; // Exit the loop since we found the matching option
+                                    }
+                                }
+                                getQuantity();
+                            }
+                        }, 500);
+                    }
+                }, 500);
+            }
+        }, 300);
+    }
+</script>

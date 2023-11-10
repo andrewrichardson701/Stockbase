@@ -195,6 +195,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             .theme-dropdown<br>
                             .theme-dropdown option<br>
                             .clickable<br>
+                            .highlight<br>
                             .gold, a<br>
                             .pageSelected
                         </p>
@@ -276,7 +277,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     </tr>
                                 </thead>
                                 <tbody id="inv-body" class="align-middle" style="text-align: center; white-space: nowrap;">
-                                    <tr class="vertical-align align-middle" id="1">
+                                    <tr class="vertical-align align-middle highlight" id="1">
                                         <td class="align-middle" id="1-id" hidden="">1</td>
                                         <td class="align-middle" id="1-img-td">
                                             <img id="1-img" class="inv-img-main thumb"
@@ -291,7 +292,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         </td>
                                         <td class="align-middle" id="1-location">Store room 1, Store room 2</td>
                                     </tr>
-                                    <tr class="vertical-align align-middle" id="1">
+                                    <tr class="vertical-align align-middle highlight" id="1">
                                         <td class="align-middle" id="1-id" hidden="">1</td>
                                         <td class="align-middle" id="1-img-td">
                                             <img id="1-img" class="inv-img-main thumb"

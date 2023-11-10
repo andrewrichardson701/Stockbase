@@ -515,7 +515,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     }
 
                                     echo('
-                                        <tr class="vertical-align align-middle'.$last_edited.'" id="'.$cable_item_id.'">
+                                        <tr class="vertical-align align-middle'.$last_edited.' highlight" id="'.$cable_item_id.'">
                                             <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
                                                 <input type="hidden" name="stock-id" value="'.$stock_id.'" />
                                                 <input type="hidden" name="cable-item-id" value="'.$cable_item_id.'" />

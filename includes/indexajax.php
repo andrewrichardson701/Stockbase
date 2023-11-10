@@ -264,7 +264,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     // Echo each row (inside of SQL results)
 
                     $result =
-                    '<tr class="vertical-align align-middle"id="'.$stock_id.'">
+                    '<tr class="vertical-align align-middle highlight" id="'.$stock_id.'">
                         <td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>
                         <td class="align-middle" id="'.$stock_id.'-img-td">
                         ';

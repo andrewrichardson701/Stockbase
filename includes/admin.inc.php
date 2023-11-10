@@ -973,6 +973,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             include 'dbh.inc.php';
 
             //insert to site
+            $site_name = mysqli_real_escape_string($conn, $site_name); // escape the special characters
+            $site_description = mysqli_real_escape_string($conn, $site_description); // escape the special characters
+
             $sql_site = "INSERT INTO site (name, description) 
                             VALUES (?, ?)";
             $stmt_site = mysqli_stmt_init($conn);
@@ -988,6 +991,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "site", $site_id, "name", null, $site_name);
 
                 //insert to area 
+                $area_name = mysqli_real_escape_string($conn, $area_name); // escape the special characters
+                $area_description = mysqli_real_escape_string($conn, $area_description); // escape the special characters
+
                 $sql_area = "INSERT INTO area (name, description, site_id) 
                             VALUES (?, ?, ?)";
                 $stmt_area = mysqli_stmt_init($conn);
@@ -1004,6 +1010,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     
 
                     //insert to area 
+                    $shelf_name = mysqli_real_escape_string($conn, $shelf_name); // escape the special characters
+            
                     $sql_shelf = "INSERT INTO shelf (name, area_id) 
                                 VALUES (?, ?)";
                     $stmt_shelf = mysqli_stmt_init($conn);
@@ -1028,12 +1036,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             if (isset($_POST['type']) && $_POST['type'] !== '') {
                 $location_type = $_POST['type'];
                 $location_name = $_POST['name'];
+                $location_name = mysqli_real_escape_string($conn, $location_name); // escape the special characters
                 if ($location_type == "site") {
                     $location_description = $_POST['description'];
+                    $location_description = mysqli_real_escape_string($conn, $location_description); // escape the special characters
                     $sql_location = "INSERT INTO $location_type (name, description) VALUES('$location_name', '$location_description')";
                 } elseif ($location_type == "area") {
                     $location_parent = $_POST['parent'];
                     $location_description = $_POST['description'];
+                    $location_description = mysqli_real_escape_string($conn, $location_description); // escape the special characters
                     $sql_location = "INSERT INTO $location_type (name, description, site_id) VALUES('$location_name', '$location_description', $location_parent)";
                 } elseif ($location_type == "shelf") {
                     $location_parent = $_POST['parent'];

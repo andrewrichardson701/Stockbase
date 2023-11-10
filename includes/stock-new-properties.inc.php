@@ -20,6 +20,9 @@ if (!empty($_POST)) {
             $area_id = isset($_POST['area_id']) ? $_POST['area_id'] : ''; // shelf
             $type=$_POST['type'];
 
+            $name = mysqli_real_escape_string($conn, $name); // escape the special characters
+            $description = mysqli_real_escape_string($conn, $description); // escape the special characters
+
             switch ($type) {
                 case 'tag':
                     $sqlCheck = "SELECT * FROM tag WHERE name='$name'";

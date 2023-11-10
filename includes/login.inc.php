@@ -259,6 +259,9 @@ if (isset($_POST['submit'])) {
                                     $default_role = 1;
                                     $auth = 'ldap';
 
+                                    $ldap_info_firstName = mysqli_real_escape_string($conn, $ldap_info_firstName); // escape the special characters
+                                    $ldap_info_lastName = mysqli_real_escape_string($conn, $ldap_info_lastName); // escape the special characters
+                                    
                                     $sql_upload = "INSERT INTO users (username, first_name, last_name, email, role_id, auth) VALUES (?,?,?,?,?,?)";
                                     $stmt_upload = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {

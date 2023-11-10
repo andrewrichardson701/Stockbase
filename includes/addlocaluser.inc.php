@@ -41,7 +41,8 @@ if (isset($_POST['submit'])) {
                     $userFound = 0;
 
                     // ADD user to table
-
+                    $first_name = mysqli_real_escape_string($conn, $first_name); // escape the special characters
+                    $last_name = mysqli_real_escape_string($conn, $last_name); // escape the special characters
                     $sql_upload = "INSERT INTO users (username, first_name, last_name, email, role_id, auth, password, enabled, password_expired, theme_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
                     $stmt_upload = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {

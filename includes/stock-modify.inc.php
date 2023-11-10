@@ -424,6 +424,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     // echo("To be added:<br>name = $name<br>description = $description<br>sku = $sku<br>min_stock = $min_stock");
 
                     // ADD STOCK to stock table
+                    $name = mysqli_real_escape_string($conn, $name); // escape the special characters
+                    $description = mysqli_real_escape_string($conn, $description); // escape the special characters
+
                     $sql = "INSERT INTO stock (name, description, sku, min_stock) VALUES (?, ?, ?, ?)";
                     $stmt = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -497,6 +500,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $serial_number_input = key_exists($j, $serial_number_array) ? $serial_number_array[$j] : ''; // get the serial that matches
 
                     $quantity_one = 1;
+                    $comments = mysqli_real_escape_string($conn, $comments); // escape the special characters
+
                     $sql = "INSERT INTO item (stock_id, upc, quantity, cost, serial_number, comments, manufacturer_id, shelf_id) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt = mysqli_stmt_init($conn);
@@ -513,6 +518,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                         // Transaction update
                         $type = 'add';
+                        $reason = mysqli_real_escape_string($conn, $reason); // escape the special characters
                         $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username, shelf_id) 
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt_trans = mysqli_stmt_init($conn);
@@ -639,6 +645,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                                 $time = date('H:i:s'); // current time in HH:MM:SS format
                                                 $username = $_SESSION['username'];
                                                 $neg_stock_quantity = -1;
+                                                $stock_transaction_reason = mysqli_real_escape_string($conn, $stock_transaction_reason); // escape the special characters
                                                 $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, quantity, price, serial_number, reason,  date, time, username, shelf_id) 
                                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                                 $stmt_trans = mysqli_stmt_init($conn);
@@ -1263,6 +1270,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     function updateTransactions($stock_id, $item_id, $type, $quantity, $shelf_id, $serial_number, $reason, $date, $time, $username) {
                         include 'dbh.inc.php';
                         $cost = 0;
+                        $reason = mysqli_real_escape_string($conn, $reason); // escape the special characters
                         $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt_trans = mysqli_stmt_init($conn);
@@ -1329,6 +1337,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         updateTransactions($current_stock_id, $selected_id, 'move', -1, $current_shelf_id, $current_serial_number, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
 
                                         // add new row in new location
+                                        $current_comments = mysqli_real_escape_string($conn, $current_comments); // escape the special characters
+
                                         $sql = "INSERT INTO item (stock_id, upc, cost, serial_number, comments, manufacturer_id, shelf_id, quantity, deleted) 
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0)";
                                         $stmt = mysqli_stmt_init($conn);
@@ -1394,7 +1404,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         exit();
                     } else {
                         $row = $result->fetch_assoc();
-                        
+
                         if ($row['manufacturer_id'] !== $_POST['manufacturer_id']) {
                             $manufacturer_id = $_POST['manufacturer_id'];
                             $sql_manufacturer_id = "UPDATE item SET manufacturer_id='$manufacturer_id' WHERE id=?";
@@ -1758,6 +1768,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 $date = date('Y-m-d'); // current date in YYY-MM-DD format
                                 $time = date('H:i:s'); // current time in HH:MM:SS format
                                 $username = $_SESSION['username'];
+                                $reason = mysqli_real_escape_string($conn, $reason); // escape the special characters
+                                
                                 $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
                                                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                 $stmt_trans = mysqli_stmt_init($conn);

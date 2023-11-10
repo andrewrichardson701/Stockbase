@@ -268,7 +268,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
                                     $rowCount_manufacturer = $result_manufacturer->num_rows;
                                     while ($row_manufacturer = $result_manufacturer->fetch_assoc()) {
-                                        echo('<option value="'.$row_manufacturer['name'].'" '); if (isset($_GET['tag']) && $_GET['manufacturer'] == $row_manufacturer['name']) { echo ('selected'); } echo('>'.$row_manufacturer['name'].'</option>');
+                                        echo('<option value="'.$row_manufacturer['name'].'" '); if (isset($_GET['manufacturer']) && $_GET['manufacturer'] == $row_manufacturer['name']) { echo ('selected'); } echo('>'.$row_manufacturer['name'].'</option>');
                                     }
                                 }
                                 echo('

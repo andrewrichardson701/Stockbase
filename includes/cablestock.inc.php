@@ -426,6 +426,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
                         // insert into stock table
+                        $stock_name = mysqli_real_escape_string($conn, $stock_name); // escape the special characters
+                        $stock_description = mysqli_real_escape_string($conn, $stock_description); // escape the special characters
                         $sql_add = "INSERT INTO stock (name, description, sku, min_stock, is_cable) VALUES (?, ?, ?, ?, 1)";
                         $stmt_add = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_add, $sql_add)) {
@@ -538,7 +540,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $rowCount = $result->num_rows;
                         if ($rowCount < 1) {
                             // no match found, continue to add.
-                            $sql_insert = "INSERT INTO cable_types (name, description, parent) VALUES (?, ?, ?)";
+                            $name = mysqli_real_escape_string($conn, $name); // escape the special characters
+                            $description = mysqli_real_escape_string($conn, $description); // escape the special characters
+                            $sql_insert = "INSERT INTO cable_types (name, , parent) VALUES (?, ?, ?)";
                             $stmt_insert = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_insert, $sql_insert)) {
                                 header("Location: ".$redirect_url.$redirect_queries."&error=cable_typesTableSQLConnection");

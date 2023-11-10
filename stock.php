@@ -708,7 +708,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             <th class="viewport-small-empty">Manu.</th>
                                                             <th class="viewport-large-empty">UPC</th>
                                                             <th title="Serial Numbers">Serial</th>
-                                                            <th>Tags</th>
+                                                            <th hidden>Tags</th>
                                                             <th class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
                                                             <th class="viewport-large-empty">Comments</th>');
                                                         } else { 
@@ -722,7 +722,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             ');
                                             for ($i=0; $i<count($stock_inv_data); $i++) {
                                                 echo('
-                                                    <tr id="item-'.$i.'" ');if ($stock_is_cable == 0) { echo('class="clickable" onclick="toggleHiddenStock(\''.$i.'\')"'); } echo('>
+                                                    <tr id="item-'.$i.'" ');if ($stock_is_cable == 0) { echo('class="clickable row-show" onclick="toggleHiddenStock(\''.$i.'\')"'); } echo('>
                                                         <td hidden>'.$i.'</td>
                                                         <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                         <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
@@ -733,7 +733,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
                                                         <td id="item-'.$i.'-upc" class="viewport-large-empty">'.$stock_inv_data[$i]['upc'].'</td>
                                                         <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                        <td id="item-'.$i.'-tags">'.$stock_inv_data[$i]['tag_names'].'</td>
+                                                        <td id="item-'.$i.'-tags" hidden>'.$stock_inv_data[$i]['tag_names'].'</td>
                                                         <td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                         <td id="item-'.$i.'-comments" class="viewport-large-empty">'.$stock_inv_data[$i]['comments'].'</td>
                                                         <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
@@ -764,6 +764,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                             <th'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost ('.$current_currency.')</th>
                                                                             <th>Comments</th>
                                                                             <th>Stock</th>
+                                                                            <th></th>
                                                                             <th></th>
                                                                         </tr>
                                                                     </thead>
@@ -834,7 +835,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                         <td class="align-middle"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_comments'].'" name="comments" /></td>
                                                                                         <td class="align-middle">'.$row_hidden['item_quantity'].'</td>
-                                                                                        <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Save" /> </td>
+                                                                                        <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Update" /> </td>
+                                                                                        <td><button type="button" class="btn btn-danger" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'&manufacturer='.$stock_inv_data[$i]['manufacturer_id'].'&shelf='.$stock_inv_data[$i]['shelf_id'].'&serial='.$stock_inv_data[$i]['serial_number'].'\', \'modify\', \'remove\'))">Remove</button></td>
                                                                                     </form>
                                                                                 </tr>
                                                                                 ');
@@ -913,16 +915,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     </script>
     <script>
     function toggleHiddenStock(id) {
-        var hiddenID = 'item-'+id+'-hidden';
-        var hiddenRow = document.getElementById(hiddenID);
+        var Row = document.getElementById('item-'+id);
+        var hiddenRow = document.getElementById('item-'+id+'-hidden');
+        var allRows = document.getElementsByClassName('row-show');
         var allHiddenRows = document.getElementsByClassName('row-hide');
         if (hiddenRow.hidden == false) {
             hiddenRow.hidden=true;
+            hiddenRow.classList.remove('theme-th-selected');
+            Row.classList.remove('theme-th-selected');
         } else {
-            for(var i = 0; i < allHiddenRows.length; i++) {
-            allHiddenRows[i].hidden=true;
+            for (var i = 0; i < allHiddenRows.length; i++) {
+                allHiddenRows[i].hidden=true;
+                allHiddenRows[i].classList.remove('theme-th-selected');
+            }   
+            for (var j = 0; j < allRows.length; j++) {
+                allRows[j].classList.remove('theme-th-selected');
             }   
             hiddenRow.hidden=false;
+            hiddenRow.classList.add('theme-th-selected');
+            Row.classList.add('theme-th-selected');
         }
     }
     </script>

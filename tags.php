@@ -146,8 +146,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <input type="hidden" name="tag_edit_submit" value="1" />
                                     <input type="hidden" name="tag_id" value="'.$tag_id.'" />
                                     <td class="text-center align-middle">'.$tag_id.'</td>
-                                    <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center" style="max-width:100%" name="tag_name" value="'.$tag_name.'"></td>
-                                    <td class="text-center align-middle"><input type="text" class="form-control text-center" style="max-width:100%" name="tag_description" value="'.$tag_description.'"></td>
+                                    <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center" style="max-width:100%" name="tag_name" value="'.htmlspecialchars($tag_name, ENT_QUOTES, 'UTF-8').'"></td>
+                                    <td class="text-center align-middle"><input type="text" class="form-control text-center" style="max-width:100%" name="tag_description" value="'.htmlspecialchars($tag_description, ENT_QUOTES, 'UTF-8').'"></td>
                                     <td class="text-center align-middle'.$tag_color.'">'.$tag_count.'</td>
                                     <td class="text-center align-middle" style=""><span><button class="btn btn-success" title="Save" style="margin-right:10px" name="submit"><i class="fa fa-save"></i></button><button type="button" class="btn btn-warning" name="submit" style="padding:3px 12px 3px 12px" onclick="toggleEditTag(\''.$tag_id.'\')">Cancel</button></span></td>
                                     <th class="text-center align-middle'.$toggle_class.'" style="width:50px" id="tag-'.$tag_id.'-edit-toggle" onclick="toggleHiddenTag(\''.$tag_id.'\')">'.$toggle.'</th>

@@ -240,7 +240,7 @@ $currency_symbol = '£';
                                                             <input type="hidden" id="'.$i.'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
                                                             <input type="hidden" id="'.$i.'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
                                                             <input type="hidden" id="'.$i.'-c-cost" name="current_cost" value="'.$stock_inv_data[$i]['cost'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-comments" name="current_comments" value="'.$stock_inv_data[$i]['comments'].'" />
+                                                            <input type="hidden" id="'.$i.'-c-comments" name="current_comments" value="'.htmlspecialchars($stock_inv_data[$i]['comments'], ENT_QUOTES, 'UTF-8').'" />
                                                             <input type="hidden" id="'.$i.'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
                                                             <table style="border: 1px solid #454d55;">
                                                                 <tbody>
@@ -337,7 +337,7 @@ $currency_symbol = '£';
                         <input type="hidden" name="modify" id="modify" value="move" />
                         <span class="nav-row">
                             <p class="nav-v-c" style="margin-right:20px">Search for item</p>
-                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
+                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.htmlspecialchars($search, ENT_QUOTES, 'UTF-8').'"/>
                         </span>
                     </div>
                 </div>
@@ -348,6 +348,8 @@ $currency_symbol = '£';
             <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
+            $search = mysqli_real_escape_string($conn, $search); // escape special characters
+            
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
                             FROM item 

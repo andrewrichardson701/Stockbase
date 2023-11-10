@@ -774,6 +774,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                     $hidden_serial = $stock_inv_data[$i]['serial_number']; 
                                                                     $hidden_cost = $stock_inv_data[$i]['cost'];
                                                                     $hidden_comments = $stock_inv_data[$i]['comments'];
+                                                                    $hidden_comments = mysqli_real_escape_string($conn, $hidden_comments); // escape the special characters
+                            
                                                                     $sql_hidden = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                                                                 area.id AS area_id, area.name AS area_name,
                                                                                 shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
@@ -833,7 +835,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:100px" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
                                                                                         <td class="align-middle"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
-                                                                                        <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_comments'].'" name="comments" /></td>
+                                                                                        <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.htmlspecialchars($row_hidden['item_comments'], ENT_QUOTES, 'UTF-8').'" name="comments" /></td>
                                                                                         <td class="align-middle">'.$row_hidden['item_quantity'].'</td>
                                                                                         <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Update" /> </td>
                                                                                         <td><button type="button" class="btn btn-danger" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'&manufacturer='.$stock_inv_data[$i]['manufacturer_id'].'&shelf='.$stock_inv_data[$i]['shelf_id'].'&serial='.$stock_inv_data[$i]['serial_number'].'\', \'modify\', \'remove\'))">Remove</button></td>

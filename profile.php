@@ -202,7 +202,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
                                 </td>
                                 <td id="firstname_info">
-                                <input type="text" class="nav-v-c align-middle form-control" name="first-name" value="'.$profile_first_name.'" placeholder="First Name" required />
+                                <input type="text" class="nav-v-c align-middle form-control" name="first-name" value="'.htmlspecialchars($profile_first_name, ENT_QUOTES, 'UTF-8').'" placeholder="First Name" required />
                                 </td>
                             </tr>
                             <tr class="nav-row profile-table-row" id="lastname">
@@ -210,7 +210,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
                                 </td>
                                 <td id="lastname_info">
-                                    <input type="text" class="nav-v-c align-middle form-control" name="last-name" value="'.$profile_last_name.'" placeholder="Last Name" required />
+                                    <input type="text" class="nav-v-c align-middle form-control" name="last-name" value="'.htmlspecialchars($profile_last_name, ENT_QUOTES, 'UTF-8').'" placeholder="Last Name" required />
                                 </td>
                             </tr>
                             <tr class="nav-row profile-table-row" id="email">

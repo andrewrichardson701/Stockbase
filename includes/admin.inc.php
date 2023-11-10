@@ -1495,6 +1495,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 } else {
                                     $row = $result->fetch_assoc();
 
+                                    $location_name = mysqli_real_escape_string($conn, $location_name); // escape the special characters
+                                    $location_description = mysqli_real_escape_string($conn, $location_description); // escape the special characters
+
                                     if ($location_type !== "shelf") {
                                         $sql = "UPDATE $location_type 
                                             SET name=?, description=? 
@@ -1972,6 +1975,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $row_check1 = $result_check1->fetch_assoc();
 
                         $current_name = $row_check1['name'];
+                        $name = mysqli_real_escape_string($conn, $name); // escape the special characters
 
                         $sql = "UPDATE $type SET name='$name' WHERE id=$id";
                         $stmt = mysqli_stmt_init($conn);
@@ -2039,6 +2043,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         $result_check1 = mysqli_stmt_get_result($stmt_check1);
                                         $rowCount_check1 = $result_check1->num_rows;
                                         $row_check1 = $result_check1->fetch_assoc();
+
+                                        $first_name = mysqli_real_escape_string($conn, $first_name); // escape the special characters
+                                        $last_name = mysqli_real_escape_string($conn, $last_name); // escape the special characters
 
                                         $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
                                         $stmt = mysqli_stmt_init($conn);
@@ -2323,6 +2330,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     exit();
                                 }
                                 if ($check_name !== $name) {
+                                    $name = mysqli_real_escape_string($conn, $name); // escape the special characters
+
                                     $sql = "UPDATE tag 
                                             SET name=?
                                             WHERE id=?";
@@ -2338,6 +2347,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     } 
                                 }   
                                 if ($check_description !== $description) {
+                                    $description = mysqli_real_escape_string($conn, $description); // escape the special characters
+                                    
                                     $sql = "UPDATE tag 
                                             SET description=?
                                             WHERE id=?";

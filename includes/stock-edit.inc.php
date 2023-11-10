@@ -75,7 +75,6 @@ if (isset($_GET['stock_id'])) {
                 echo ('
                 
                 <div class="container well-nopad theme-divBg" style="margin-bottom:5px">
-                    <h3 style="font-size:22px; margin-left:25pxq">Edit Existing Stock</h3>
                     <div class="row">
                         <div class="col-sm-7 text-left" id="stock-info-left">
                             <form id="edit-form" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
@@ -89,7 +88,7 @@ if (isset($_GET['stock_id'])) {
                                     </div>
                                     <div class="nav-row" id="name-row" style="margin-top:25px">
                                         <div class="stock-inputLabelSize" style="max-width:200px"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
-                                        <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c stock-inputSize" value="'.$stock['name'].'" required></input></div>
+                                        <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c stock-inputSize" value="'.htmlspecialchars($stock['name'], ENT_QUOTES, 'UTF-8').'" required></input></div>
                                     </div>
                                     <div class="nav-row" id="sku-row" style="margin-top:25px">
                                         <div class="stock-inputLabelSize" style="max-width:200px"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
@@ -97,7 +96,7 @@ if (isset($_GET['stock_id'])) {
                                     </div>
                                     <div class="nav-row" id="description-row" style="margin-top:25px">
                                         <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
-                                        <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.$stock['description'].'" >'.$stock['description'].'</textarea></div>
+                                        <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.htmlspecialchars($stock['description'], ENT_QUOTES, 'UTF-8').'" >'.$stock['description'].'</textarea></div>
                                     </div>');
                                     if ($stock['is_cable'] == 0) {
                                         echo('

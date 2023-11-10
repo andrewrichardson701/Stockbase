@@ -853,6 +853,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     $changes = [];
 
                                     if ($current_name !== $stock_name) {
+                                        $stock_name = mysqli_real_escape_string($conn, $stock_name); // escape the special characters
+
                                         $sql_update = "UPDATE stock SET name=? WHERE id=?";
                                         $stmt_update = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
@@ -867,6 +869,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         }
                                     }
                                     if ($current_description !== $stock_description) {
+                                        $stock_description = mysqli_real_escape_string($conn, $stock_description); // escape the special characters
+
                                         $sql_update = "UPDATE stock SET description=? WHERE id=?";
                                         $stmt_update = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
@@ -1289,6 +1293,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     include 'dbh.inc.php';
                     
                     $found_ids = [];
+                    $current_comments = mysqli_real_escape_string($conn, $current_comments); // escape the special characters
 
                     $sql = "SELECT * 
                             FROM item 
@@ -1479,6 +1484,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                         if ($row['comments'] !== $_POST['comments']) {
                             $comments = $_POST['comments'];
+                            $comments = mysqli_real_escape_string($conn, $comments); // escape the special characters
+
                             $sql_comments = "UPDATE item SET comments='$comments' WHERE id=?";
                             $stmt_comments = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_comments, $sql_comments)) {
@@ -1769,7 +1776,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 $time = date('H:i:s'); // current time in HH:MM:SS format
                                 $username = $_SESSION['username'];
                                 $reason = mysqli_real_escape_string($conn, $reason); // escape the special characters
-                                
+
                                 $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
                                                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                 $stmt_trans = mysqli_stmt_init($conn);
@@ -1863,6 +1870,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             $date = date('Y-m-d'); // current date in YYY-MM-DD format
                             $time = date('H:i:s'); // current time in HH:MM:SS format
                             $username = $_SESSION['username'];
+                            $reason = mysqli_real_escape_string($conn, $reason); // escape the special characters
+
                             $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
                                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                             $stmt_trans = mysqli_stmt_init($conn);

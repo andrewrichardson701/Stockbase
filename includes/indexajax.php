@@ -136,12 +136,27 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
     $sql_inv_add = '';
     if ($site !== '0') { $sql_inv_add  .= " AND site.id=$site";} 
     if ($area !== '0') { $sql_inv_add  .= " AND area.id=$area";} 
-    if ($name !== '') { $sql_inv_add  .= " AND stock.name LIKE CONCAT('%', '$name', '%')";}
+    if ($name !== '') { 
+        $name = mysqli_real_escape_string($conn, $name); // escape the special characters; 
+        $sql_inv_add  .= " AND stock.name LIKE CONCAT('%', '$name', '%')";
+    }
     if ($sku !== '') { $sql_inv_add  .= " AND stock.sku LIKE CONCAT('%', '$sku', '%')";}
-    if ($location !== '') { $sql_inv_add  .= " AND area.name LIKE CONCAT('%', '$location', '%')";}
-    if ($shelf !== '') { $sql_inv_add  .= " AND shelf.name LIKE CONCAT('%', '$shelf', '%')";}
-    if ($tag !== '') { $sql_inv_add  .= " AND tag_names LIKE CONCAT('%', '$tag', '%')";}
-    if ($manufacturer !== '') { $sql_inv_add  .= " AND manufacturer.name LIKE CONCAT('%', '$manufacturer', '%')";}
+    if ($location !== '') { 
+        $location = mysqli_real_escape_string($conn, $location); // escape the special characters
+        $sql_inv_add  .= " AND area.name LIKE CONCAT('%', '$location', '%')";
+    }
+    if ($shelf !== '') { 
+        $shelf = mysqli_real_escape_string($conn, $shelf); // escape the special characters
+        $sql_inv_add  .= " AND shelf.name LIKE CONCAT('%', '$shelf', '%')";
+    }
+    if ($tag !== '') { 
+        $tag = mysqli_real_escape_string($conn, $tag); // escape the special characters
+        $sql_inv_add  .= " AND tag_names LIKE CONCAT('%', '$tag', '%')";
+    }
+    if ($manufacturer !== '') { 
+        $manufacturer = mysqli_real_escape_string($conn, $manufacturer); // escape the special characters
+        $sql_inv_add  .= " AND manufacturer.name LIKE CONCAT('%', '$manufacturer', '%')";
+    }
     if ($showOOS == 0) { 
         $sql_inv_add  .= " AND item.deleted=0 AND 
             (SELECT SUM(quantity) 

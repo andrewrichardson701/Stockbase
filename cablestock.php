@@ -116,6 +116,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             $sql_inv_add  .= " AND cable_item.quantity!=0";
         } 
         if ($name !== '') { 
+            $name = mysqli_real_escape_string($conn, $name); // escape the special characters
             $sql_inv_add  .= " AND stock.name LIKE '%$name%'";
         }
         if (isset($cableType)) {

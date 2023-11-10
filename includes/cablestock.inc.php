@@ -358,6 +358,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             include 'dbh.inc.php';
             
             // check for duplicate names
+            $stock_name = mysqli_real_escape_string($conn, $stock_name);
 
             $sql_stock = "SELECT * FROM stock WHERE name='$stock_name' LIMIT 1";
             $stmt_stock = mysqli_stmt_init($conn);
@@ -524,6 +525,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $parent = $_POST['type-parent'];
                     $description = $_POST['type-description'];
 
+                    $name = mysqli_real_escape_string($conn, $name); // escape special characters
+                    $description = mysqli_real_escape_string($conn, $description); // escape special characters
+                    
                     // check if it already exists
                     include 'dbh.inc.php';
 

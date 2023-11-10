@@ -47,7 +47,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         <div class="nav-row">
                             <div class="nav-row" id="name-row" style="margin-top:25px">
                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
-                                <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c stock-inputSize" value="'.$input_name.'" required></input></div>
+                                <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c stock-inputSize" value="'.htmlspecialchars($input_name, ENT_QUOTES, 'UTF-8').'" required></input></div>
                             </div>
                             <div class="nav-row" id="sku-row" style="margin-top:25px">
                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
@@ -55,7 +55,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             </div>
                             <div class="nav-row" id="description-row" style="margin-top:25px">
                                 <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
-                                <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.$input_description.'" ></textarea></div>
+                                <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.htmlspecialchars($input_description, ENT_QUOTES, 'UTF-8').'" ></textarea></div>
                             </div>
                             <div class="nav-row" id="min-stock-row" style="margin-top:25px">
                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="min-stock" id="min-stock-label">Minimum Stock Count</label></div>
@@ -420,7 +420,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             </div>
                             <div class="nav-row" id="reason-row" style="margin-top:25px">
                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
-                                <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize" value="New Stock" value="'.$input_reason.'"></input></div>
+                                <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize" value="New Stock" value="'.htmlspecialchars($input_reason, ENT_QUOTES, 'UTF-8').'"></input></div>
                             </div>
                             <div class="nav-row" id="submit-row" style="margin-top:25px">
                                 <div class="stock-inputLabelSize"></div>
@@ -445,7 +445,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             <tbody>
                                 <tr>
                                     <td style="padding-right:20px">Search for item</td>
-                                    <td><input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.$search.'"/></td>
+                                    <td><input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.htmlspecialchars($search, ENT_QUOTES, 'UTF-8').'"/></td>
                                     <td class="text-right viewport-mid-large" style="padding-left:20px;padding-right:20px">or</td>
                                     <td class="viewport-mid-large"><a class="link btn btn-success cw" onclick="navPage(updateQueryParameter(\'\', \'stock_id\', 0))">Add New Stock</a></td>
                                 </tr>
@@ -465,6 +465,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
+            $search = mysqli_real_escape_string($conn, $search); // escape special characters
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
                             FROM item 

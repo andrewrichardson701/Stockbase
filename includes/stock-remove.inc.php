@@ -255,7 +255,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             </div>
                                             <div class="nav-row" id="reason-row" style="margin-top:25px">
                                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
-                                                <div><input type="text" name="reason" placeholder="Customer sale, ID: XXXXXX" id="reason" class="form-control nav-v-c stock-inputSize" value="'.$input_reason.'" required'.$disabled.'></input></div>
+                                                <div><input type="text" name="reason" placeholder="Customer sale, ID: XXXXXX" id="reason" class="form-control nav-v-c stock-inputSize" value="'.htmlspecialchars($input_reason, ENT_QUOTES, 'UTF-8').'" required'.$disabled.'></input></div>
                                             </div>
                                             <div class="nav-row" id="reason-row" style="margin-top:25px">
                                                 <div class="stock-inputLabelSize"></div>
@@ -294,7 +294,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         <input type="hidden" name="modify" id="modify" value="remove" />
                         <span class="nav-row">
                             <p class="nav-v-c" style="margin-right:20px">Search for item</p>
-                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
+                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.htmlspecialchars($search, ENT_QUOTES, 'UTF-8').'"/>
                         </span>
                     </div>
                 </div>
@@ -305,6 +305,7 @@ if ($stock_id == 0 || $stock_id == '0') {
             <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
+            $search = mysqli_real_escape_string($conn, $search); // escape the special characters
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
                             FROM item 

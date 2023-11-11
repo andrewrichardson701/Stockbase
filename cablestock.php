@@ -90,10 +90,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $sql_inv = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, 
                         stock.sku as stock_sku, stock.min_stock as stock_min_stock, stock.is_cable as stock_is_cable,
                         cable_item.id as cable_item_id, cable_item.stock_id as cable_item_stock_id, cable_item.quantity as cable_item_quantity,
-                        cable_item.cost AS cable_item_cost, cable_item.shelf_id AS cable_item_site_id, cable_item.type_id as cable_item_type_id,
+                        cable_item.cost AS cable_item_cost, cable_item.shelf_id AS cable_item_shelf_id, cable_item.type_id as cable_item_type_id,
                         cable_types.id AS cable_types_id, cable_types.name AS cable_types_name, cable_types.description AS cable_types_description,
                         cable_types.parent AS cable_types_parent,
                         site.id AS site_id, site.name AS site_name,
+                        area.id AS area_id,
                         stock_img_image.stock_img_image
                     FROM cable_item
                     LEFT JOIN stock ON cable_item.stock_id=stock.id 
@@ -485,6 +486,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <th class="viewport-small-empty" style="color:#8f8f8f">Min.</th>
                                             <th class="btn-cableStock"></th>
                                             <th class="btn-cableStock"></th>
+                                            <th class="btn-cableStock"></th>
                                         </tr>
                                     </thead>
                                     <tbody class="align-middle" style="text-align: center; white-space: nowrap;">
@@ -500,9 +502,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     $stock_sku = $row['stock_sku'];
                                     $stock_quantity_total = $row['cable_item_quantity'];
                                     $stock_site_id = $row['site_id'];
+                                    $stock_area_id = $row['area_id'];
+                                    $stock_shelf_id = $row['cable_item_shelf_id'];
                                     $stock_site_name = $row['site_name'];
                                     $stock_min_stock = $row['stock_min_stock'];
                                     $cable_item_id = $row['cable_item_id'];
+                                    $cable_item_cost = $row['cable_item_cost'];
                                     $cable_types_id = $row['cable_types_id'];
                                     $cable_types_name = $row['cable_types_name'];
                                     $cable_types_description = $row['cable_types_description']; 
@@ -516,7 +521,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     }
 
                                     echo('
-                                        <tr class="vertical-align align-middle'.$last_edited.' highlight" id="'.$cable_item_id.'">
+                                        <tr class="vertical-align align-middle'.$last_edited.' row-show highlight" id="'.$cable_item_id.'">
                                             <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
                                                 <input type="hidden" name="stock-id" value="'.$stock_id.'" />
                                                 <input type="hidden" name="cable-item-id" value="'.$cable_item_id.'" />
@@ -545,7 +550,64 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <td class="align-middle" id="'.$cable_item_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" class="btn btn-success cw nav-v-b btn-cableStock" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
                                                 <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" class="btn btn-danger cw nav-v-b btn-cableStock" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
+                                                <td class="align-middle" id="'.$cable_item_id.'-move"><button id="'.$stock_id.'-remove-btn" class="btn btn-warning cw nav-v-b btn-cableStock" type="button" value="move" onclick="toggleHidden(\''.$cable_item_id.'\')" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-arrows-h" style="color:black"></i></button></td>
                                             </form>
+                                        </tr>
+                                        <tr class="vertical-align align-middle'.$last_edited.' move-hide" id="'.$cable_item_id.'-move-hidden" hidden>
+                                            <td colspan=100%>
+                                                <div class="container">
+                                                <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                    <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
+                                                    <input type="hidden" name="cablestock-move" value="1">
+                                                    <input type="hidden" id="'.$stock_id.'-c-stock" name="current_cable_item" value="'.$cable_item_id.'">
+                                                    <input type="hidden" id="'.$stock_id.'-c-stock" name="current_stock" value="'.$stock_id.'">
+                                                    <input type="hidden" id="'.$stock_id.'-c-site" name="current_site" value="'.$stock_site_id.'">
+                                                    <input type="hidden" id="'.$stock_id.'-c-area" name="current_area" value="'.$stock_area_id.'">
+                                                    <input type="hidden" id="'.$stock_id.'-c-shelf" name="current_shelf" value="'.$stock_shelf_id.'">
+                                                    <input type="hidden" id="'.$stock_id.'-c-cost" name="current_cost" value="'.$cable_item_cost.'">
+                                                    <input type="hidden" id="'.$stock_id.'-c-quantity" name="current_quantity" value="'.$stock_quantity_total.'">
+                                                        <table style="border: 1px solid #454d55; width:100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="container">
+                                                                            <div class="row">
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <label class="nav-v-c">To:</label>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2 0 2 0;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
+                                                                                        <option value="" selected="" disabled="" hidden="">Site</option><option value="1">CDC ME14</option><option value="2">CDC DA2</option><option value="4">TestSite</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">
+                                                                                        <option value="" selected="" disabled="" hidden="">Area</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-shelf" name="shelf" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required>
+                                                                                        <option value="" selected="" disabled="" hidden="">Shelf</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <label class="nav-v-c" for="0-n-quantity">Quantity: </label>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_quantity_total.'" required>
+                                                                                </div>
+                                                                                <div class="col" style="max-width:max-content !important">
+                                                                                    <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$stock_id.'-n-submit" value="Move" style="opacity:80%;" name="submit" required="">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </form>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ');
                                 }
@@ -716,6 +778,76 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     }
     document.getElementById("site").addEventListener("change", populateAreas);
     document.getElementById("area").addEventListener("change", populateShelves);
+
+    function toggleHidden(id) {
+        var Row = document.getElementById(id);
+        var hiddenID = id+'-move-hidden';
+        var hiddenRow = document.getElementById(hiddenID);
+        var allRows = document.getElementsByClassName('row-show');
+        var allHiddenRows = document.getElementsByClassName('move-hide');
+        if (hiddenRow.hidden == false) {
+            hiddenRow.hidden=true;
+            hiddenRow.classList.remove('theme-th-selected');
+            Row.classList.remove('theme-th-selected');
+        } else {
+            for(var i = 0; i < allHiddenRows.length; i++) {
+                allHiddenRows[i].hidden=true;
+                allHiddenRows[i].classList.remove('theme-th-selected');
+            }  
+            for (var j = 0; j < allRows.length; j++) {
+                allRows[j].classList.remove('theme-th-selected');
+            }   
+            hiddenRow.hidden=false;
+            hiddenRow.classList.add('theme-th-selected');
+            Row.classList.add('theme-th-selected');
+        }
+    }
+
+    function populateAreasMove(id) {
+        // console.log(id);
+        // Get the selected site
+        var site = document.getElementById(id+"-n-site").value;
+        
+        // Make an AJAX request to retrieve the corresponding areas
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+            // Parse the response and populate the area select box
+            var areas = JSON.parse(xhr.responseText);
+            var select = document.getElementById(id+"-n-area");
+            select.options.length = 0;
+            select.options[0] = new Option("Select Area", "");
+            for (var i = 0; i < areas.length; i++) {
+                select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+            }
+            select.disabled = (select.options.length === 1);
+            }
+        };
+        xhr.send();
+    }
+    function populateShelvesMove(id) {
+        // Get the selected area
+        var area = document.getElementById(id+"-n-area").value;
+        
+        // Make an AJAX request to retrieve the corresponding shelves
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?area=" + area, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+            // Parse the response and populate the shelf select box
+            var shelves = JSON.parse(xhr.responseText);
+            var select = document.getElementById(id+"-n-shelf");
+            select.options.length = 0;
+            select.options[0] = new Option("Select Shelf", "");
+            for (var i = 0; i < shelves.length; i++) {
+                select.options[select.options.length] = new Option(shelves[i].name, shelves[i].id);
+            }
+            select.disabled = (select.options.length === 1);
+            }
+        };
+        xhr.send();
+    }
     </script>
         
     <?php include 'foot.php'; ?>

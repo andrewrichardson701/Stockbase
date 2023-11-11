@@ -25,7 +25,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['location-delete-submit']) && isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['card-modify']) && !isset($_POST['card-remove']) 
     && !isset($_POST['theme-upload'])
-    && !isset($_GET['mail-notification'])
+    && !isset($_GET['mail-notification']) && !isset($_GET['cost-toggle'])
     && !isset($_POST['imagemanagement-submit'])
     && !isset($_POST['tag_edit_submit'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
@@ -2348,7 +2348,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 }   
                                 if ($check_description !== $description) {
                                     $description = mysqli_real_escape_string($conn, $description); // escape the special characters
-                                    
+
                                     $sql = "UPDATE tag 
                                             SET description=?
                                             WHERE id=?";

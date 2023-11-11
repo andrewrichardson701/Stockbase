@@ -279,7 +279,7 @@ function addQuantity($stock_id, $cable_item_id) {
 }
 
 function removeQuantity($stock_id, $cable_item_id) {
-    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email, $current_base_url, $current_base_url;
+    global $redirect_url, $queryChar, $_SESSION, $current_smtp_enabled, $current_smtp_to_email, $config_smtp_from_name, $current_system_name, $loggedin_fullname, $loggedin_email, $current_base_url, $current_base_url;
     
     $shelf_id = getCableItemRow($cable_item_id)['shelf_id'];
     $type = "remove";
@@ -319,11 +319,12 @@ function removeQuantity($stock_id, $cable_item_id) {
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove Quantity", "cable_item", $cable_item_id, "quantity", $quantity, $new_quantity);
 
                 // Check if the quantity is below minimum
-                if ($new_quantity <= $stock_info['min_stock']) {
+                if ($new_quantity < $stock_info['min_stock']) {
                     $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Below Minimum Stock Count at ".$item_location['site_name'].". Please Order More!";
                     $email_body = "<p>Fixed cable stock below minimum stock count, for <strong><a href='\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p><p style='color:red'>Please raise a PO to order more!</p>";
             
                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 10);
+                    send_email($current_smtp_to_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 10);
                 }
 
                 header("Location: ../".$redirect_url.$queryChar."cableItemID=$cable_item_id&success=quantityRemoved");

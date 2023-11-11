@@ -204,7 +204,7 @@ $currency_symbol = '£';
                                                 <th class="viewport-small-only-empty">Manu.</th>
                                                 <th class="viewport-mid-large">UPC</th>
                                                 <th title="Serial Numbers">Serial</th>
-                                                <th>Cost</th>
+                                                <th'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
                                                 <th class="viewport-mid-large">Comments</th>
                                                 <th>Stock</th>
                                             </tr>
@@ -213,7 +213,7 @@ $currency_symbol = '£';
                                     ');
                                     for ($i=0; $i<count($stock_inv_data); $i++) {
                                         echo('
-                                            <tr id="item-'.$i.'" class="clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $i) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$i.'\')">
+                                            <tr id="item-'.$i.'" class="row-show clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $i) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$i.'\')">
                                                 <td hidden>'.$i.'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
@@ -221,11 +221,11 @@ $currency_symbol = '£';
                                                 <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
                                                 <td id="item-'.$i.'-upc" class="viewport-mid-large">'.$stock_inv_data[$i]['upc'].'</td>
                                                 <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                <td id="item-'.$i.'-cost">'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
+                                                <td id="item-'.$i.'-cost"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
                                                 <td id="item-'.$i.'-comments" class="viewport-mid-large">'.$stock_inv_data[$i]['comments'].'</td>
                                                 <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                             </tr>
-                                            <tr class="move-hide" id="item-'.$i.'-edit" hidden>
+                                            <tr class="row-hide" id="item-'.$i.'-edit" hidden>
                                                 <td colspan=100%>
                                                     <div class="container">                                                       
                                                         <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
@@ -653,16 +653,25 @@ function populateShelves(id) {
 </script>
 <script> // toggle hidden row below current
 function toggleHidden(id) {
+    var Row = document.getElementById('item-'+id);
     var hiddenID = 'item-'+id+'-edit';
     var hiddenRow = document.getElementById(hiddenID);
-    var allHiddenRows = document.getElementsByClassName('move-hide');
+    var allRows = document.getElementsByClassName('row-show');
+    var allHiddenRows = document.getElementsByClassName('row-hide');
     if (hiddenRow.hidden == false) {
         hiddenRow.hidden=true;
+        hiddenRow.classList.remove('theme-th-selected');
+        Row.classList.remove('theme-th-selected');
     } else {
         for(var i = 0; i < allHiddenRows.length; i++) {
-        allHiddenRows[i].hidden=true;
-        }   
+            allHiddenRows[i].hidden=true;
+        } 
+        for (var j = 0; j < allRows.length; j++) {
+            allRows[j].classList.remove('theme-th-selected');
+        }     
         hiddenRow.hidden=false;
+        hiddenRow.classList.add('theme-th-selected');
+        Row.classList.add('theme-th-selected');
     }
 }
 </script>

@@ -4,8 +4,6 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
-$showFoot = 1; // change this if you want to hide the footer - 1=show, 0=hide.
-
 $WorB_banner_color = getWorB($current_banner_color);
 $complemenent_banner_color = getComplement($current_banner_color);
 $WorB_complement_banner_color = getWorB($complemenent_banner_color);
@@ -55,22 +53,31 @@ $WorB_complement_banner_color = getWorB($complemenent_banner_color);
     
 </script>
 <?php
-if ($showFoot == 1) {
+if ($current_footer_enable == 1) {
     ?>
     <div class="footer">
         <div class="container">
             <div class="row">
+                
                 <div class="col text-center viewport-large-empty">
-                    <a href="https://git.ajrich.co.uk/web/inventory" class="link" style="font-size:12px" target="_blank">GitLab</a>
-                </div>
+                    <?php
+                    if ($current_footer_left_enable == 1) {
+                        echo('<a href="https://git.ajrich.co.uk/web/inventory" class="link" style="font-size:12px" target="_blank">GitLab</a>');
+                    }
+                    ?>
+                </div>                
                 <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="navPage('about.php')">
                     Copyright &copy; <?php echo date("Y"); ?> StockBase. All rights reserved.
                 </div>
                 <div class="col text-center viewport-small-block" style="font-size:10px;cursor:pointer;" onclick="navPage('about.php')">
                     &copy; <?php echo date("Y"); ?> StockBase
-                </div>
+                </div> 
                 <div class="col text-center viewport-large-empty">
-                    <a href="https://todo.ajrich.co.uk/#/board/16" class="link" style="font-size:12px" target="_blank">Road Map</a>
+                    <?php
+                    if ($current_footer_right_enable == 1) {
+                        echo('<a href="https://todo.ajrich.co.uk/#/board/16" class="link" style="font-size:12px" target="_blank">Road Map</a>');
+                    }
+                    ?>
                 </div>
             </div>
         </div>

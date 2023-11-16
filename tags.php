@@ -139,7 +139,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <td class="text-center align-middle">'.$tag_description.'</td>
                                 <td class="text-center align-middle'.$tag_color.'">'.$tag_count.'</td>
                                 <td class="text-center align-middle"><button class="btn btn-info" name="submit" title="Edit" onclick="toggleEditTag(\''.$tag_id.'\')"><i class="fa fa-pencil"></i></td>
-                                <th class="text-center align-middle'.$toggle_class.'" style="width:50px" id="tag-'.$tag_id.'-toggle" onclick="toggleHiddenTag(\''.$tag_id.'\')">'.$toggle.'</th>
+                                <th class="text-center align-middle'.$toggle_class.'" style="width:50px" id="tag-'.$tag_id.'-toggle"'); if ($toggle == '+') { echo(' onclick="toggleHiddenTag(\''.$tag_id.'\')"'); } echo('>'.$toggle.'</th>
                             </tr>
                             <tr id="tag-'.$tag_id.'-edit" hidden>
                                 <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
@@ -150,7 +150,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <td class="text-center align-middle"><input type="text" class="form-control text-center" style="max-width:100%" name="tag_description" value="'.htmlspecialchars($tag_description, ENT_QUOTES, 'UTF-8').'"></td>
                                     <td class="text-center align-middle'.$tag_color.'">'.$tag_count.'</td>
                                     <td class="text-center align-middle" style=""><span><button class="btn btn-success" title="Save" style="margin-right:10px" name="submit"><i class="fa fa-save"></i></button><button type="button" class="btn btn-warning" name="submit" style="padding:3px 12px 3px 12px" onclick="toggleEditTag(\''.$tag_id.'\')">Cancel</button></span></td>
-                                    <th class="text-center align-middle'.$toggle_class.'" style="width:50px" id="tag-'.$tag_id.'-edit-toggle" onclick="toggleHiddenTag(\''.$tag_id.'\')">'.$toggle.'</th>
+                                    <th class="text-center align-middle'.$toggle_class.'" style="width:50px" id="tag-'.$tag_id.'-edit-toggle"'); if ($toggle == '+') { echo(' onclick="toggleHiddenTag(\''.$tag_id.'\')"'); } echo('>'.$toggle.'</th>
                                 </form>
                             </tr>
                     ');
@@ -226,16 +226,21 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
         }
         function toggleHiddenTag(id) {
+            var Row = document.getElementById('tag-'+id);
             var button = document.getElementById('tag-'+id+'-toggle');
             var buttonEdit = document.getElementById('tag-'+id+'-edit-toggle');
             var hiddenID = 'tag-'+id+'-stock';
             var hiddenRow = document.getElementById(hiddenID);
             if (hiddenRow.hidden == false) {
                 hiddenRow.hidden=true;
+                hiddenRow.classList.remove('theme-th-selected');
+                Row.classList.remove('theme-th-selected');
                 button.innerText='+';
                 buttonEdit.innerText='+';
             } else {
                 hiddenRow.hidden=false;
+                hiddenRow.classList.add('theme-th-selected');
+                Row.classList.add('theme-th-selected');
                 button.innerText='-';
                 buttonEdit.innerText='-';
             }

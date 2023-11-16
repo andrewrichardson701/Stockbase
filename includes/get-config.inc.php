@@ -118,6 +118,10 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
 
         $config_cost_enable_normal  = '';
         $config_cost_enable_cable   = '';
+
+        $config_footer_enable       = '';
+        $config_footer_left_enable  = '';
+        $config_footer_right_enable = '';
         
     } else {
         while ( $config = $result_config->fetch_assoc() ) {
@@ -153,6 +157,10 @@ if (!mysqli_stmt_prepare($stmt_config, $sql_config)) {
 
             $config_cost_enable_normal  = isset($config['cost_enable_normal']) ? $config['cost_enable_normal'] : '';
             $config_cost_enable_cable   = isset($config['cost_enable_cable']) ? $config['cost_enable_cable'] : '';
+
+            $config_footer_enable       = isset($config['footer_enable']) ? $config['footer_enable'] : '';
+            $config_footer_left_enable  = isset($config['footer_left_enable']) ? $config['footer_left_enable'] : '';
+            $config_footer_right_enable = isset($config['footer_right_enable']) ? $config['footer_right_enable'] : '';
         }
     }
 }
@@ -200,6 +208,10 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
 
             $config_d_cost_enable_normal  = $config_d['cost_enable_normal']; 
             $config_d_cost_enable_cable   = $config_d['cost_enable_cable']; 
+
+            $config_d_footer_enable       = $config_d['footer_enable']; 
+            $config_d_footer_left_enable  = $config_d['footer_left_enable']; 
+            $config_d_footer_right_enable = $config_d['footer_right_enable']; 
         }
     }
 }
@@ -282,6 +294,17 @@ $default_cost_enable_cable   = ($config_d_cost_enable_cable   !== '' ? $config_d
 
 $current_cost_enable_normal  = ($config_cost_enable_normal    !== '' ? $config_cost_enable_normal            : $default_cost_enable_normal);
 $current_cost_enable_cable   = ($config_cost_enable_cable     !== '' ? $config_cost_enable_cable             : $default_cost_enable_cable);
+
+# ---
+
+$default_footer_enable        = ($config_d_footer_enable       !== '' ? $config_d_footer_enable               : 1); 
+$default_footer_left_enable   = ($config_d_footer_left_enable  !== '' ? $config_d_footer_left_enable          : 1); 
+$default_footer_right_enable  = ($config_d_footer_right_enable !== '' ? $config_d_footer_right_enable         : 1); 
+
+$current_footer_enable        = ($config_footer_enable         !== '' ? $config_footer_enable                 : $default_footer_enable );
+$current_footer_left_enable   = ($config_footer_left_enable    !== '' ? $config_footer_left_enable            : $default_footer_left_enable);
+$current_footer_right_enable  = ($config_footer_right_enable   !== '' ? $config_footer_right_enable           : $default_footer_right_enable);
+
 
 // get theme info for defaults
 $sql_theme = "SELECT * FROM theme WHERE id=$current_default_theme_id";

@@ -25,7 +25,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['location-delete-submit']) && isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['card-modify']) && !isset($_POST['card-remove']) 
     && !isset($_POST['theme-upload'])
-    && !isset($_GET['mail-notification']) && !isset($_GET['cost-toggle'])
+    && !isset($_GET['mail-notification']) && !isset($_GET['cost-toggle']) && !isset($_GET['footer-toggle'])
     && !isset($_POST['imagemanagement-submit'])
     && !isset($_POST['tag_edit_submit'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
@@ -1818,6 +1818,78 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=missingAttributeType&section=attributemanagement#attributemanagement-settings");
             exit();
         }
+    } elseif (isset($_GET['footer-toggle'])) { // cost toggleing section in admin.php page for stock management. this is ajax'd
+        $results = [];
+
+        function msg($text, $type) {
+            if ($type == 'error') {
+                $class="red";
+            } else {
+                $class="green";
+            }
+            $head = '<or class="'.$class.'">';
+            $foot = '</or>';
+
+            return $head.$text.$foot;
+        }
+
+        if (isset($_GET['type'])) {
+            $type_num = $_GET['type'];
+            if ($type_num == 1) {
+                $type = 'footer_enable';
+            } elseif ($type_num == 2) {
+                $type = 'footer_left_enable';
+            } elseif ($type_num == 3) {
+                $type = 'footer_right_enable';
+            }
+
+            if (isset($_GET['value'])) {
+                $value = $_GET['value'];
+                if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
+                    include 'dbh.inc.php';
+
+                    $sql = "SELECT $type AS enabled FROM config WHERE id=1";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        $results[] = msg('SQL connection issue.', 'error');
+                    } else {
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+                        $rowCount = $result->num_rows;
+                        if ($rowCount == 1) {
+                            $row = $result->fetch_assoc();
+                            $enabled = $row['enabled'];
+
+                            $prev_value = $enabled;
+
+                            $state = $value == 1 ? 'enabled' : 'disabled';
+                            $sql_update = "UPDATE config SET $type=? WHERE id=1";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                $results[] = msg('SQL connection issue.', 'error');
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", '1', $type, $prev_value, $value);
+                                $results[] = msg("Footer $state!", 'success');
+                            }
+                        } else {
+
+                        }
+                    }
+                } else {
+                    $results[] = msg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = msg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = msg('No notification type specified.', 'error');
+        }
+
+        echo(json_encode($results));
     } elseif (isset($_GET['cost-toggle'])) { // cost toggleing section in admin.php page for stock management. this is ajax'd
         $results = [];
 

@@ -154,9 +154,21 @@ esac
             break;;
     0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
-            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default DROP COLUMN cost_enable_normal; ALTER TABLE config_default DROP COLUMN cost_enable_cable; ALTER TABLE config DROP COLUMN cost_enable_normal; ALTER TABLE config DROP COLUMN cost_enable_cable;"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table".
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config_default table"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                              ALTER TABLE config_default DROP COLUMN cost_enable_normal; 
+                                              ALTER TABLE config_default DROP COLUMN cost_enable_cable; 
+                                              ALTER TABLE config DROP COLUMN cost_enable_normal; 
+                                              ALTER TABLE config DROP COLUMN cost_enable_cable;
+                                              ALTER TABLE config_default DROP COLUMN footer_enable; 
+                                              ALTER TABLE config_default DROP COLUMN footer_left_enable;
+                                              ALTER TABLE config_default DROP COLUMN footer_right_enable
+                                              ALTER TABLE config DROP COLUMN footer_enable; 
+                                              ALTER TABLE config DROP COLUMN footer_left_enable;
+                                              ALTER TABLE config DROP COLUMN footer_right_enable;"
             break;;
     esac 
 }
@@ -180,9 +192,21 @@ esac
             break;;
     0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
-            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default DROP COLUMN cost_enable_normal; ALTER TABLE config_default DROP COLUMN cost_enable_cable; ALTER TABLE config DROP COLUMN cost_enable_normal; ALTER TABLE config DROP COLUMN cost_enable_cable;"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config_default table"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          ALTER TABLE config_default DROP COLUMN cost_enable_normal; 
+                                                          ALTER TABLE config_default DROP COLUMN cost_enable_cable; 
+                                                          ALTER TABLE config DROP COLUMN cost_enable_normal; 
+                                                          ALTER TABLE config DROP COLUMN cost_enable_cable;
+                                                          ALTER TABLE config_default DROP COLUMN footer_enable; 
+                                                          ALTER TABLE config_default DROP COLUMN footer_left_enable;
+                                                          ALTER TABLE config_default DROP COLUMN footer_right_enable
+                                                          ALTER TABLE config DROP COLUMN footer_enable; 
+                                                          ALTER TABLE config DROP COLUMN footer_left_enable;
+                                                          ALTER TABLE config DROP COLUMN footer_right_enable;"
             break;;
     esac 
 }
@@ -204,9 +228,21 @@ esac
             
     0.4.0-beta )
             echo "SQL Changes to be made:"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
-            echo " - Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config_default table"
-            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE config_default DROP COLUMN cost_enable_normal; ALTER TABLE config_default DROP COLUMN cost_enable_cable; ALTER TABLE config DROP COLUMN cost_enable_normal; ALTER TABLE config DROP COLUMN cost_enable_cable;"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added from config_default table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added from config table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added from config_default table"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE config_default ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE config ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
             break;;
     0.4.1-beta|0.4.2-beta )
             echo "No SQL changes to be made."

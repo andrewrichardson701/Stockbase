@@ -145,7 +145,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             </button>
                                         </div> 
                                         <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-                                            <button id="transfer-stock" class="btn btn-warning nav-v-b stock-modifyBtn" style="color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))"'.$cable_disable.$delete_disable.'>
+                                            <button id="transfer-stock" class="btn btn-warning nav-v-b stock-modifyBtn" style="color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))"'.$delete_disable.'>
                                                 <i class="fa fa-arrows-h"></i><or class="viewport-large-empty"> Move</or>
                                             </button>
                                         </div>

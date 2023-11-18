@@ -1507,7 +1507,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
             }
         } elseif (isset($_POST['cablestock-move'])) { // Moving cablestock from cablestock.php
             $stock_id = isset($_POST['current_stock']) ? $_POST['current_stock'] : '';
-            $redirect_url = "../cablestock.php?";
+            $redirect_url = isset($_POST['redirect_url']) ? "../".$_POST['redirect_url'] : "../cablestock.php?";
 
             if (isset($_POST['submit'])) {
 
@@ -1537,18 +1537,17 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $move_quantity = $_POST['quantity'];
 
                     // Transaction updates
-                    function updateTransactions($stock_id, $item_id, $type, $quantity, $shelf_id, $serial_number, $reason, $date, $time, $username) {
+                    function updateTransactions($stock_id, $item_id, $type, $quantity, $shelf_id, $reason, $date, $time, $username) {
                         include 'dbh.inc.php';
-                        $cost = 0;
                         $reason = mysqli_real_escape_string($conn, $reason); // escape the special characters
-                        $sql_trans = "INSERT INTO transaction (stock_id, item_id, type, shelf_id, quantity, price, serial_number, reason,  date, time, username) 
-                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $sql_trans = "INSERT INTO cable_transaction (stock_id, item_id, type, shelf_id, quantity, reason, date, time, username) 
+                                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         $stmt_trans = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
                             header("Location: ../".$redirect_url."&error=transactionConnectionSQL");
                             exit();
                         } else {
-                            mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $item_id, $type, $shelf_id, $quantity, $cost, $serial_number, $reason, $date, $time, $username);
+                            mysqli_stmt_bind_param($stmt_trans, "sssssssss", $stock_id, $item_id, $type, $shelf_id, $quantity, $reason, $date, $time, $username);
                             mysqli_stmt_execute($stmt_trans);
                             // echo ("transaction added");
                         }  
@@ -1582,7 +1581,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             if ((int)$move_quantity <= (int)$row_quantity) {
 
                                 $new_quantity = (int)$row_quantity-(int)$move_quantity;
-
+                                $neg_move_quantity = (int)$move_quantity*-1;
                                 // update current row
                                 $sql_update = "UPDATE cable_item SET quantity=$new_quantity
                                                 WHERE id=?";
@@ -1597,7 +1596,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     mysqli_stmt_execute($stmt_update);
 
                                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove quantity", "item", $current_cable_item, "quantity", $row_quantity, $new_quantity);
-                                    updateTransactions($current_stock_id, $current_cable_item, 'move', '-'.$move_quantity, $current_shelf_id, '', 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
+                                    updateTransactions($current_stock_id, $current_cable_item, 'move', $neg_move_quantity, $current_shelf_id, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
 
                                     // look for row in new location
 
@@ -1632,12 +1631,12 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             }
                                         } else {
                                             // UPDATE ROW
-                                            $row_new = $result->fetch_assoc();
+                                            $row_new = $result_new->fetch_assoc();
                                             $new_item_id = $row_new['id'];
                                             $new_item_quantity = $row_new['quantity'];
                                         }
                                         $final_quantity = $new_item_quantity + $move_quantity;
-                                        $sql_update = "UPDATE cable_item SET quantity=$move_quantity
+                                        $sql_update = "UPDATE cable_item SET quantity=$final_quantity
                                                         WHERE id=?";
                                         $stmt_update = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
@@ -1650,7 +1649,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             mysqli_stmt_execute($stmt_update);
 
                                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add quantity", "item", $new_item_id, "quantity", $new_item_quantity, $final_quantity);
-                                            updateTransactions($current_stock_id, $new_item_id, 'move', $move_quantity, $current_shelf_id, '', 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
+                                            updateTransactions($current_stock_id, $new_item_id, 'move', $move_quantity, $current_shelf_id, 'Move Stock', $current_date, $current_time, $_SESSION['username']); 
                                             
                                             $stock_info = getItemStockInfo($current_stock_id);
                                             $current_location = getItemLocation($current_shelf_id);

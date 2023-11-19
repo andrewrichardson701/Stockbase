@@ -432,26 +432,23 @@ while true; do
     else
         # Get the parent directory
         parent_dir="$(dirname "$folder_name")"
-        # Check if the parent directory exists
-        if [ -d "$parent_dir" ]; then
-            read -p "The folder doesn't exist. Do you want to create it? (yes/no): " create_folder
-            if [ "$create_folder" = "yes" ]; then
-                mkdir -p "$folder_name"
-                echo "Folder created."
-                sleep 1
-                echo "Moving files to $folder_name..."
-                #cp "$0" "$folder_name"  # Copy the script itself
-                mv "$root_path"/* "$folder_name"/   # Move all files except the script
-                sleep 1
-                echo "Files moved successfully to $folder_name."
-                break
-            else
-                echo "Folder not created. Exiting."
-                exit 1
-            fi
+    
+        read -p "The folder doesn't exist. Do you want to create it? (yes/no): " create_folder
+        if [ "$create_folder" = "yes" ]; then
+            mkdir -p "$folder_name"
+            echo "Folder created."
+            sleep 1
+            echo "Moving files to $folder_name..."
+            #cp "$0" "$folder_name"  # Copy the script itself
+            mv "$root_path"/* "$folder_name"/   # Move all files except the script
+            sleep 1
+            echo "Files moved successfully to $folder_name."
+            break
         else
-            echo "The path leading up to the folder does not exist."
+            echo "Folder not created. Exiting."
+            exit 1
         fi
+
     fi
 done
 sleep 1

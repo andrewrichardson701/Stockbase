@@ -497,6 +497,7 @@ Clone the repo first, and the follow the below steps.
 - Tags page now has the correct table highlighting on selecting rows.
 - Footer can now be disabled/enabled in the admin page under the Footer section. 
 - DB tables: config and config_default have 3 new columns.
+- Can now Add/Remove/Move cablestock from the stock.php page. This now loads the correct info and fields.
 
 </details>
 <details>

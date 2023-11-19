@@ -257,6 +257,48 @@ function getCurrentURL() {
     $base_url = isset($config_base_url) ? $config_base_url : (isset($config_d_base_url) ? $config_d_base_url : 'error.local');
     return $base_url;
 }
+function updateCableTransactions($stock_id, $item_id, $type, $quantity, $reason, $date, $time, $username, $shelf_id) {
+    global $redirect_url, $queryChar;
+    include 'dbh.inc.php';
+    $cost = 0;
+    $sql_trans = "INSERT INTO cable_transaction (stock_id, item_id, type, quantity, reason, date, time, username, shelf_id) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt_trans = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt_trans, $sql_trans)) {
+        header("Location: ../".$redirect_url.$queryChar."error=cable_transactionConnectionSQL");
+        exit();
+    } else {
+        mysqli_stmt_bind_param($stmt_trans, "sssssssss", $stock_id, $item_id, $type, $quantity, $reason, $date, $time, $username, $shelf_id);
+        mysqli_stmt_execute($stmt_trans);
+        echo ("transaction added");
+    }  
+} 
+function getCableStockInfo($stock_id) {
+    global $redirect_url, $queryChar;
+
+    include 'dbh.inc.php';
+
+    $sql = "SELECT * FROM stock WHERE id=$stock_id";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location: ../".$redirect_url.$queryChar."stockID=$stock_id&error=stockTableSQLConnection");
+        exit();
+    } else {
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            header("Location: ../".$redirect_url.$queryChar."stockID=$stock_id&error=noRowsFound");
+            exit();
+        } elseif ($rowCount > 1) {
+            header("Location: ../".$redirect_url.$queryChar."stockID=$stock_id&error=tooManyRowsFound");
+            exit();
+        } else {
+            $row = $result->fetch_assoc();
+            return $row;
+        }
+    }
+}
 
 // MAIN SCRIPTS
 // print_r($_POST);
@@ -561,7 +603,11 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 $stock_manufacturer       = isset($_POST['manufacturer'])     ? $_POST['manufacturer']     : '' ;
                 $stock_shelf              = isset($_POST['shelf'])            ? $_POST['shelf']            : '' ;
                 $stock_price              = isset($_POST['price'])            ? $_POST['price']            : '' ;
-                $stock_transaction_date   = isset($_POST['transaction_date']) ? $_POST['transaction_date'] : '' ;
+                $stock_transaction_date   = isset($_POST['transaction_date']) ? date('Y-m-d', strtotime($_POST['transaction_date'])) : date('Y-m-d');
+                $stock_transaction_time   = isset($_POST['transaction_date']) ? date('H:i:s', strtotime($_POST['transaction_date'])) : date('H:i:s');
+                if ($stock_transaction_date == date('Y-m-d')) {
+                    $stock_transaction_time = date('H:i:s');
+                }
                 $stock_quantity           = isset($_POST['quantity'])         ? $_POST['quantity']         : 1 ;
                 $stock_serial_number      = isset($_POST['serial-number'])    ? $_POST['serial-number']    : '' ;
                 $stock_transaction_reason = isset($_POST['reason'])           ? $_POST['reason']           : '' ;
@@ -641,8 +687,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
                                                 //ADD TRANSACTION'
                                                 $type = 'remove';
-                                                $date = date('Y-m-d'); // current date in YYY-MM-DD format
-                                                $time = date('H:i:s'); // current time in HH:MM:SS format
+                                                $date = $stock_transaction_date; // current date in YYY-MM-DD format
+                                                $time = $stock_transaction_time; // current time in HH:MM:SS format
                                                 $username = $_SESSION['username'];
                                                 $neg_stock_quantity = -1;
                                                 $stock_transaction_reason = mysqli_real_escape_string($conn, $stock_transaction_reason); // escape the special characters
@@ -1505,6 +1551,253 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                 header("Location: ../".$redirect_url.$query_char."error=noItemID");
                 exit();
             }
+        } elseif (isset($_POST['cablestock-add'])) { // bits for adding cablestock from stock.php modify=add
+            $date = date('Y-m-d'); // current date in YYY-MM-DD format
+            $time = date('H:i:s'); // current time in HH:MM:SS format
+
+            // item
+            $site = $_POST['site']; // site_id
+            $area = $_POST['area']; // site_id
+            $shelf = $_POST['shelf']; // site_id
+            $stock_id = $_POST['id'];
+
+            $redirect_url = isset($_POST['redirect_url']) ? "../".$_POST['redirect_url'] : "../stock.php?stock_id=$stock_id";
+            // transaction
+            $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : ''; 
+            $reason = isset($_POST['reason']) ? $_POST['reason'] : '';
+
+            $username = $_SESSION['username'];
+
+            $redirect_queries = "&site=$site&area=$area&shelf=$shelf&quantity=$quantity";
+            
+            if (!isset($_POST['shelf']) || $_POST['shelf'] == '' || $_POST['shelf'] == 0 || $_POST['shelf'] == '0') {
+                header("Location: ../$redirect_url$redirect_queries&error=shelfRequired");
+                exit();
+            }
+
+            // Check the stock exists
+            include 'dbh.inc.php';
+            $sql = "SELECT *
+                    FROM stock
+                    WHERE stock.id=$stock_id
+                    ORDER BY id";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount < 1) {
+                    header("Location: ../$redirect_url$redirect_queries&error=noRows");
+                    exit();
+                } else {
+                    // GET all matching new
+                    $sql_item = "SELECT cable_item.id AS item_id, cable_item.quantity AS item_quantity, cable_item.cost AS item_cost, cable_item.type_id AS item_type_id, cable_item.shelf_id AS item_shelf_id
+                            FROM cable_item
+                            INNER JOIN stock ON stock.id=cable_item.stock_id
+                            WHERE cable_item.deleted=0 AND cable_item.shelf_id=$shelf AND stock.id=$stock_id";
+                    $stmt_item = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_item, $sql_item)) {
+                        header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_item);
+                        $result_item = mysqli_stmt_get_result($stmt_item);
+                        $rowCount_item = $result_item->num_rows;
+                        if ($rowCount_item < 1) {
+                            // add row based on another
+                            $sql_generic = "SELECT cable_item.id AS item_id, cable_item.quantity AS item_quantity, cable_item.cost AS item_cost, cable_item.type_id AS item_type_id
+                                    FROM cable_item
+                                    INNER JOIN stock ON stock.id=cable_item.stock_id
+                                    WHERE cable_item.deleted=0 WHERE stock.id=$stock_id
+                                    LIMIT 1";
+                            $stmt_generic = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_generic, $sql_generic)) {
+                                header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
+                                exit();
+                            } else {
+                                mysqli_stmt_execute($stmt_generic);
+                                $result_generic = mysqli_stmt_get_result($stmt_generic);
+                                $rowCount_generic = $result_generic->num_rows;
+                                if ($rowCount_generic < 1) {
+                                    header("Location: ../$redirect_url$redirect_queries&error=noRows");
+                                     exit();
+                                } else {
+                                    $row_generic = $result_generic->fetch_assoc();
+                                    $cable_cost = $row_generic['item_cost'];
+                                    $cable_type_id = $row_generic['item_type_id'];
+
+                                    // ADD ROW
+                                    $zero_q = 0;
+                                    $sql_cable_item = "INSERT INTO cable_item (stock_id, quantity, cost, shelf_id, type_id) VALUES (?, ?, ?, ?, ?)";
+                                    $stmt_cable_item = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_cable_item, $sql_cable_item)) {
+                                        header("Location: ../".$redirect_url.$queryChar."sqlerror=cable_itemConnectionInsert");
+                                        exit();
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt_cable_item, "sssss", $stock_id, $zero_q, $cable_cost, $shelf, $cable_type_id);
+                                        mysqli_stmt_execute($stmt_cable_item);
+            
+                                        $cable_current_quantity = 0;
+                                        $cable_item_id= mysqli_insert_id($conn);
+
+                                        $type = "add";
+                                        $reason = "New Stock and Cable Item added";
+                                        $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                        $time = date('H:i:s'); // current time in HH:MM:SS format
+                                        $username = $_SESSION['username'];
+                                        updateCableTransactions($stock_id, $cable_item_id, $type, $zero_q, $reason, $date, $time, $username, $shelf);
+                                        // update changelog
+                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "quantity", null, $zero_q);
+                                    }
+                                }
+                            }
+
+                        } else {
+                            // row exists
+                            $row_item = $result_item->fetch_assoc();
+                            $cable_item_id = $row_item['item_id'];
+                            $cable_current_quantity = $row_item['item_quantity'];
+                        }
+
+                        // update new row
+
+                        $new_quantity = $cable_current_quantity + $quantity;
+
+                        $sql = "UPDATE cable_item SET quantity=?
+                                WHERE id=?";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../".$redirect_url.$queryChar."cableItemID=$cable_item_id&error=cable_itemTableSQLConnection-AddQuantity");
+                            exit();
+                        } else {
+                            mysqli_stmt_bind_param($stmt, "ss", $new_quantity, $cable_item_id);
+                            mysqli_stmt_execute($stmt);
+                            $type = 'add';
+                            updateCableTransactions($stock_id, $cable_item_id, $type, $quantity, $reason, $date, $time, $username, $shelf);
+
+                            $stock_info = getCableStockInfo($stock_id);
+                            $item_location = getItemLocation($shelf);
+                            $base_url = getCurrentURL();
+                        
+                            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Added";
+                            $email_body = "<p>Fixed cable stock added to <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 8);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Quantity", "cable_item", $cable_item_id, "quantity", $cable_current_quantity, $new_quantity);
+                            header("Location: ../".$redirect_url."&cableItemID=$cable_item_id&success=stockAdded");
+                            exit();
+                        }
+                    }
+                }
+            }
+
+
+        } elseif (isset($_POST['cablestock-remove'])) { // bits for adding cablestock from stock.php modify=add
+
+            $stock_transaction_date   = isset($_POST['transaction_date']) ? date('Y-m-d', strtotime($_POST['transaction_date'])) : date('Y-m-d');
+            $stock_transaction_time   = isset($_POST['transaction_date']) ? date('H:i:s', strtotime($_POST['transaction_date'])) : date('H:i:s');
+            if ($stock_transaction_date == date('Y-m-d')) {
+                $stock_transaction_time = date('H:i:s');
+            }
+
+            // item
+            $shelf = $_POST['shelf']; // site_id
+            $stock_id = $_POST['stock_id'];
+
+            $redirect_url = isset($_POST['redirect_url']) ? "../".$_POST['redirect_url'] : "../stock.php?stock_id=$stock_id";
+            // transaction
+            $price = isset($_POST['price']) ? $_POST['price'] : 0;
+            $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : ''; 
+            $reason = isset($_POST['reason']) ? $_POST['reason'] : '';
+
+            $username = $_SESSION['username'];
+
+            $redirect_queries = "&shelf=$shelf&quantity=$quantity";
+            
+            if (!isset($_POST['shelf']) || $_POST['shelf'] == '' || $_POST['shelf'] == 0 || $_POST['shelf'] == '0') {
+                header("Location: ../$redirect_url$redirect_queries&error=shelfRequired");
+                exit();
+            }
+
+            // Check the stock exists
+            include 'dbh.inc.php';
+            $sql = "SELECT *
+                    FROM stock
+                    WHERE stock.id=$stock_id
+                    ORDER BY id";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount < 1) {
+                    header("Location: ../$redirect_url$redirect_queries&error=noRows");
+                    exit();
+                } else {
+                    // GET all matching selected
+                    $sql_item = "SELECT cable_item.id AS item_id, cable_item.quantity AS item_quantity, cable_item.cost AS item_cost, cable_item.type_id AS item_type_id, cable_item.shelf_id AS item_shelf_id
+                            FROM cable_item
+                            INNER JOIN stock ON stock.id=cable_item.stock_id
+                            WHERE cable_item.deleted=0 AND cable_item.shelf_id=$shelf AND stock.id=$stock_id";
+                    $stmt_item = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_item, $sql_item)) {
+                        header("Location: ../$redirect_url$redirect_queries&error=stockTableSQLConnection");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_item);
+                        $result_item = mysqli_stmt_get_result($stmt_item);
+                        $rowCount_item = $result_item->num_rows;
+                        if ($rowCount_item < 1) {
+                            header("Location: ../$redirect_url$redirect_queries&error=noStockExists");
+                            exit();
+                        } else {
+                            // row exists
+                            $row_item = $result_item->fetch_assoc();
+                            $cable_item_id = $row_item['item_id'];
+                            $cable_current_quantity = $row_item['item_quantity'];
+                        }
+
+                        // update new row
+
+                        $new_quantity = $cable_current_quantity - $quantity;
+
+                        $sql = "UPDATE cable_item SET quantity=?
+                                WHERE id=?";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../".$redirect_url.$queryChar."cableItemID=$cable_item_id&error=cable_itemTableSQLConnection-AddQuantity");
+                            exit();
+                        } else {
+                            mysqli_stmt_bind_param($stmt, "ss", $new_quantity, $cable_item_id);
+                            mysqli_stmt_execute($stmt);
+                            $type = 'remove';
+                            $neg_quantity = $quantity*-1;
+                            $date = $stock_transaction_date;
+                            $time = $stock_transaction_time;
+                            updateCableTransactions($stock_id, $cable_item_id, $type, $neg_quantity, $reason, $date, $time, $username, $shelf);
+
+                            $stock_info = getCableStockInfo($stock_id);
+                            $item_location = getItemLocation($shelf);
+                            $base_url = getCurrentURL();
+                        
+                            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                            $email_body = "<p>Fixed cable stock removed from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                            // update changelog
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Remove Quantity", "cable_item", $cable_item_id, "quantity", $cable_current_quantity, $new_quantity);
+                            header("Location: ../".$redirect_url."&cableItemID=$cable_item_id&success=stockRemoved");
+                            exit();
+                        }
+                    }
+                }
+            }
+
         } elseif (isset($_POST['cablestock-move'])) { // Moving cablestock from cablestock.php
             $stock_id = isset($_POST['current_stock']) ? $_POST['current_stock'] : '';
             $redirect_url = isset($_POST['redirect_url']) ? "../".$_POST['redirect_url'] : "../cablestock.php?";

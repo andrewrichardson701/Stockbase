@@ -50,7 +50,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         
         if ($stock_id !== 0 || $stock_id !== '0') {
             include 'includes/dbh.inc.php';
-            $sql = "SELECT id, name, description, sku, min_stock
+            $sql = "SELECT id, name, description, sku, min_stock, is_cable
                     FROM stock
                     WHERE id=? AND deleted=0
                     ORDER BY id";
@@ -72,39 +72,69 @@ if ($stock_id == 0 || $stock_id == '0') {
                         $data_description = $row['description'];
                         $data_sku = $row['sku'];
                         $data_min_stock = $row['min_stock'];
+                        $data_is_cable = $row['is_cable'];
                     }
 
-                    $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
-                                    area.id AS area_id, area.name AS area_name,
-                                    shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                                    (SELECT SUM(quantity) 
-                                        FROM item 
-                                        WHERE item.stock_id = stock.id AND item.shelf_id = shelf.id
-                                    ) AS item_quantity,
-                                    manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
-                                    (SELECT GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') 
-                                        FROM stock_tag 
-                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
-                                        WHERE stock_tag.stock_id = stock.id
-                                    ) AS tag_names,
-                                    (SELECT GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') 
-                                        FROM stock_tag
-                                        WHERE stock_tag.stock_id = stock.id
-                                    ) AS tag_ids
-                                FROM stock
-                                LEFT JOIN item ON stock.id=item.stock_id
-                                LEFT JOIN shelf ON item.shelf_id=shelf.id 
-                                LEFT JOIN area ON shelf.area_id=area.id 
-                                LEFT JOIN site ON area.site_id=site.id
-                                LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                WHERE stock.id=? AND item.deleted=0 ANd stock.deleted=0
-                                GROUP BY 
-                                    stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                                    site_id, site_name, site_description, 
-                                    area_id, area_name, 
-                                    shelf_id, shelf_name,
-                                    manufacturer_id, manufacturer_name
+                    if ($data_is_cable == 0) {
+                        $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                        area.id AS area_id, area.name AS area_name,
+                                        shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                        (SELECT SUM(quantity) 
+                                            FROM item 
+                                            WHERE item.stock_id = stock.id AND item.shelf_id = shelf.id
+                                        ) AS item_quantity,
+                                        manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') 
+                                            FROM stock_tag 
+                                            INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                            WHERE stock_tag.stock_id = stock.id
+                                        ) AS tag_names,
+                                        (SELECT GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') 
+                                            FROM stock_tag
+                                            WHERE stock_tag.stock_id = stock.id
+                                        ) AS tag_ids
+                                    FROM stock
+                                    LEFT JOIN item ON stock.id=item.stock_id
+                                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                                    LEFT JOIN area ON shelf.area_id=area.id 
+                                    LEFT JOIN site ON area.site_id=site.id
+                                    LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
+                                    WHERE stock.id=? AND stock.deleted=0 AND item.deleted=0
+                                    GROUP BY 
+                                        stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                                        site_id, site_name, site_description, 
+                                        area_id, area_name, 
+                                        shelf_id, shelf_name,
+                                        manufacturer_id, manufacturer_name
                                     ORDER BY site.name DESC, area.name ASC, shelf.name ASC;";
+                    } else {
+                        $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                        area.id AS area_id, area.name AS area_name,
+                                        shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                        cable_item.quantity AS item_quantity,
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') 
+                                            FROM stock_tag 
+                                            INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                            WHERE stock_tag.stock_id = stock.id
+                                        ) AS tag_names,
+                                        (SELECT GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') 
+                                            FROM stock_tag
+                                            WHERE stock_tag.stock_id = stock.id
+                                        ) AS tag_ids
+                                    FROM stock
+                                    LEFT JOIN cable_item ON stock.id=cable_item.stock_id
+                                    LEFT JOIN shelf ON cable_item.shelf_id=shelf.id 
+                                    LEFT JOIN area ON shelf.area_id=area.id 
+                                    LEFT JOIN site ON area.site_id=site.id
+                                    WHERE stock.id=? AND stock.deleted=0 AND cable_item.deleted=0
+                                    GROUP BY 
+                                        stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                                        site_id, site_name, site_description, 
+                                        area_id, area_name, 
+                                        shelf_id, shelf_name,
+                                        item_quantity
+                                    ORDER BY site.name DESC, area.name ASC, shelf.name ASC;";
+                    }
                     $stmt_stock = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                         echo("ERROR getting entries");
@@ -120,6 +150,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         }
                         $stock_inv_data = [];
                         $stock_inv_manu = [];
+                        $stock_inv_location = [];
                         while ( $row = $result_stock->fetch_assoc() ) {
                             $stock_id = $row['stock_id'];
                             $stock_name = $row['stock_name'];
@@ -131,8 +162,10 @@ if ($stock_id == 0 || $stock_id == '0') {
                             $stock_area_name = $row['area_name'];
                             $stock_site_id = $row['site_id'];
                             $stock_site_name = $row['site_name'];
-                            $stock_manufacturer_id = $row['manufacturer_id'];
-                            $stock_manufacturer_name = $row['manufacturer_name'];
+                            if ($data_is_cable == 0) {
+                                $stock_manufacturer_id = $row['manufacturer_id'];
+                                $stock_manufacturer_name = $row['manufacturer_name'];
+                            }
                             $stock_tag_ids = $row['tag_ids'];
                             $stock_tag_names = $row['tag_names'];
                             
@@ -147,30 +180,51 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 $stock_tag_data = '';
                             }
                             
+                            if ($data_is_cable == 0) {
+                                $stock_inv_data[] = array('id' => $stock_id,
+                                                        'name' => $stock_name,
+                                                        'sku' => $stock_sku,
+                                                        'quantity' => $stock_quantity_total,
+                                                        'shelf_id' => $stock_shelf_id,
+                                                        'shelf_name' => $stock_shelf_name,
+                                                        'area_id' => $stock_area_id,
+                                                        'area_name' => $stock_area_name,
+                                                        'site_id' => $stock_site_id,
+                                                        'site_name' => $stock_site_name,
+                                                        'manufacturer_id' => $stock_manufacturer_id,
+                                                        'manufacturer_name' => $stock_manufacturer_name,
+                                                        'tag' => $stock_tag_data);
+                        
+                                $stock_inv_manu[$stock_manufacturer_id] = array('id' => $stock_manufacturer_id, 'name' => $stock_manufacturer_name);
+                            } else {
+                                $stock_inv_data[] = array('id' => $stock_id,
+                                                        'name' => $stock_name,
+                                                        'sku' => $stock_sku,
+                                                        'quantity' => $stock_quantity_total,
+                                                        'shelf_id' => $stock_shelf_id,
+                                                        'shelf_name' => $stock_shelf_name,
+                                                        'area_id' => $stock_area_id,
+                                                        'area_name' => $stock_area_name,
+                                                        'site_id' => $stock_site_id,
+                                                        'site_name' => $stock_site_name,
+                                                        'tag' => $stock_tag_data);
 
-                            $stock_inv_data[] = array('id' => $stock_id,
-                                                    'name' => $stock_name,
-                                                    'sku' => $stock_sku,
-                                                    'quantity' => $stock_quantity_total,
-                                                    'shelf_id' => $stock_shelf_id,
-                                                    'shelf_name' => $stock_shelf_name,
-                                                    'area_id' => $stock_area_id,
-                                                    'area_name' => $stock_area_name,
-                                                    'site_id' => $stock_site_id,
-                                                    'site_name' => $stock_site_name,
-                                                    'manufacturer_id' => $stock_manufacturer_id,
-                                                    'manufacturer_name' => $stock_manufacturer_name,
-                                                    'tag' => $stock_tag_data);
-                            
-                            $stock_inv_manu[$stock_manufacturer_id] = array('id' => $stock_manufacturer_id, 'name' => $stock_manufacturer_name);
+                                $stock_inv_location[$stock_shelf_id] = array('shelf_id' => $stock_shelf_id, 'shelf_name' => $stock_shelf_name,
+                                                                                'area_id' => $stock_area_id, 'area_name' => $stock_area_name,
+                                                                                'site_id' => $stock_site_id, 'site_name' => $stock_site_name);
+                            }
                         }
                         
                         $stock_id = $_GET['stock_id'];
                         echo('
-                        
                         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
-                            <!-- this is for the stock-modify.inc.php page -->
-                            <input type="hidden" name="stock-remove" value="1" /> 
+                           ');
+                            if ($data_is_cable == 0) {
+                                echo('<input type="hidden" name="stock-remove" value="1" /> ');
+                            } else {
+                                echo('<input type="hidden" name="cablestock-remove" value="1" />  ');
+                            }
+                            echo('
                             <div class="nav-row" style="margin-bottom:10px">
                                 <div class="nav-row" id="heading-row" style="margin-top:10px">
                                     <div class="stock-inputLabelSize"></div>
@@ -184,7 +238,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             echo('<table><tbody>');
                                             for ($l=0; $l < count($stock_inv_data); $l++) {
                                                 // if ($l == 0 || $l < count($stock_inv_data)-1) { $divider = '<br>'; } else { $divider = ''; }
-                                                echo('<tr><td>'.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn serial-bg btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
+                                                echo('<tr><td>'.$stock_inv_data[$l]['site_name'].', '.$stock_inv_data[$l]['area_name'].', '.$stock_inv_data[$l]['shelf_name'].'</td><td style="padding-left:5px"><a class="btn serial-bg btn-stock cw">Stock: <or class="gold">'.$stock_inv_data[$l]['quantity'].'</or></a></or></td></tr>');
                                             }
                                             echo('</tbody></table>');
                                         }
@@ -202,34 +256,49 @@ if ($stock_id == 0 || $stock_id == '0') {
                                         <div class="nav-row" style="margin-bottom:25px">
                                             <input type="hidden" id="stock-id" value="'.$stock_id.'" name="stock_id" />
                                             <input type="hidden" value="'.$data_sku.'" name="stock_sku" />
-                                            <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
-                                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
-                                                <div>
-                                                    <select name="manufacturer" id="manufacturer" class="form-control stock-inputSize" onchange="populateRemoveShelves(this)" required'.$disabled.'>');
-                                                        echo('<option value="" selected disabled hidden>Select Manufacturer</option>');
-                                                        foreach ( $stock_inv_manu as $manu) {
-                                                            echo('<option value='.$manu['id'].'>'.$manu['name'].'</option>');
-                                                        }
-                                                    echo('
-                                                    </select>
+                                            ');
+                                            if ($data_is_cable == 0) { 
+                                                echo('
+                                                <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
+                                                    <div>
+                                                        <select name="manufacturer" id="manufacturer" class="form-control stock-inputSize" onchange="populateRemoveShelves(this)" required'.$disabled.'>');
+                                                            echo('<option value="" selected disabled hidden>Select Manufacturer</option>');
+                                                            foreach ( $stock_inv_manu as $manu) {
+                                                                echo('<option value='.$manu['id'].'>'.$manu['name'].'</option>');
+                                                            }
+                                                        echo('
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="nav-row" id="shelf-row" style="margin-top:25px">
-                                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
-                                                <div>
-                                                    <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="populateSerials(this)" disabled>
-                                                        <option value="" selected disabled hidden>Select Location</option>');
-                                                        // $temp_site_id = '';
-                                                        // foreach ($stock_inv_data as $temp_data) {
-                                                        //     if ($temp_data['shelf_id'] !== $temp_site_id) {
-                                                        //         echo('<option value='.$temp_data['shelf_id'].'>'.$temp_data['site_name'].' - '.$temp_data['area_name'].' - '.$temp_data['shelf_name'].'</option>');
-                                                        //     }
-                                                        //     $temp_site_id = $temp_data['shelf_id'];
-                                                        // }
-                                                    echo('
-                                                    </select>
+                                                <div class="nav-row" id="shelf-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
+                                                    <div>
+                                                        <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="populateSerials(this)" disabled>
+                                                            <option value="" selected disabled hidden>Select Location</option>');
+
+                                                        echo('
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                ');
+                                            } else {
+                                                echo('
+                                                <div class="nav-row" id="shelf-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
+                                                    <div>
+                                                        <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="getQuantityCable()" required'.$disabled.'>');
+                                                            echo('<option value="" selected disabled hidden>Select Location</option>');
+                                                            foreach ( $stock_inv_location as $location) {
+                                                                echo('<option value='.$location['shelf_id'].'>'.$location['site_name'].', '.$location['area_name'].', '.$location['shelf_name'].'</option>');
+                                                            }
+                                                        echo('
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                ');
+                                            }
+                                            echo('
                                             <div class="nav-row" id="price-row" style="margin-top:25px">
                                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price (£)</label></div>
                                                 <div><input type="number" name="price" placeholder="0" id="price" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required'.$disabled.'></input></div>
@@ -240,15 +309,20 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             <div class="nav-row" id="date-row" style="margin-top:10px">
                                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="transaction_date" id="date-label">Transaction Date</label></div>
                                                 <div><input type="date" value="'.date('Y-m-d').'" name="transaction_date" id="transaction_date" class="form-control" style="width:150px" required'.$disabled.'/></div>
-                                            </div>
-                                            <div class="nav-row" id="serial-number-row" style="margin-top:25px">
-                                                <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Number to be tracked.">Serial Numbers</or></label></div>
-                                                <div>
-                                                    <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="'.$input_serial_number.'" '.$disabled.' onchange="getQuantity()">
-                                                        <option value="" selected disabled hidden>Serial...</option>
-                                                    </select>
+                                            </div>');
+                                            if ($data_is_cable == 0) { 
+                                                echo('
+                                                <div class="nav-row" id="serial-number-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Number to be tracked.">Serial Numbers</or></label></div>
+                                                    <div>
+                                                        <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="'.$input_serial_number.'" '.$disabled.' onchange="getQuantity()">
+                                                            <option value="" selected disabled hidden>Serial...</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                ');
+                                            }
+                                            echo('
                                             <div class="nav-row" id="quantity-row" style="margin-top:25px">
                                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
                                                 <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="'.$input_quantity.'" min="1" required'.$disabled.'></input></div>
@@ -640,6 +714,30 @@ if ($stock_id == 0 || $stock_id == '0') {
         };
         xhr.send();
     }
+    function getQuantityCable() {
+        var stock = document.getElementById('stock-id').value;
+        var shelf = document.getElementById('shelf').value;
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantitycable=1&stock="+stock+"&shelf="+shelf, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var quantityArr = JSON.parse(xhr.responseText);
+                var quantity = document.getElementById('quantity');
+                quantity.value = 1;
+                quantity.max = quantityArr[0]['quantity'];
+                // console.log(quantity.max[0]);
+
+                if (quantity.min === quantity.max) {
+                    quantity.disabled = true;
+                } else {
+                    quantity.disabled = false;
+                }
+            }
+        };
+        xhr.send();
+    }
 </script>
 <script>
     // Script to populare the remove fields from clicking the remove button in the stock table.
@@ -647,10 +745,10 @@ if ($stock_id == 0 || $stock_id == '0') {
     async function populateFields() {
         const queryParams = new URLSearchParams(window.location.search);
         for (const key of queryParams.keys()) {
-            console.log(key);
+            // console.log(key);
         }
         setTimeout(function () {
-            if (queryParams.keys('manufacturer')) {
+            if (queryParams.get('manufacturer')) {
                 // console.log(queryParams.get('manufacturer'));
                 var manufacturerValue = queryParams.get('manufacturer');
                 var manufacturerSelect = document.getElementById('manufacturer');
@@ -665,7 +763,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                 }
                 populateRemoveShelves(manufacturerSelect);
                 setTimeout(function () {
-                    if (queryParams.keys('shelf')) {
+                    if (queryParams.get('shelf') !== null) {
                         // console.log(queryParams.get('shelf'));
                         var shelfValue = queryParams.get('shelf');
                         var shelfSelect = document.getElementById('shelf');
@@ -680,7 +778,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         }
                         populateSerials(shelfSelect);
                         setTimeout(function () {
-                            if (queryParams.keys('serial')) {
+                            if (queryParams.get('serial') !== null) {
                                 // console.log(queryParams.get('serial'));
                                 var serialValue = queryParams.get('serial');
                                 var serialSelect = document.getElementById('serial-number');

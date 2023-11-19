@@ -20,7 +20,6 @@ if ($stock_id == 0 || $stock_id == '0') {
     echo '</noscript>'; 
     exit();
 }
-$currency_symbol = '£';
 
 // include 'head.php';
 ?>
@@ -286,12 +285,12 @@ $currency_symbol = '£';
                                                     <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
                                                     <td id="item-'.$i.'-upc" class="viewport-mid-large">'.$stock_inv_data[$i]['upc'].'</td>
                                                     <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                    <td id="item-'.$i.'-cost"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
+                                                    <td id="item-'.$i.'-cost"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$config_currency.$stock_inv_data[$i]['cost'].'</td>
                                                     <td id="item-'.$i.'-comments" class="viewport-mid-large">'.$stock_inv_data[$i]['comments'].'</td>
                                                     ');
                                                 } else {
                                                     echo('
-                                                    <td id="item-'.$i.'-cost"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
+                                                    <td id="item-'.$i.'-cost"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>'.$config_currency.$stock_inv_data[$i]['cost'].'</td>
                                                     ');
                                                 }
                                                 echo('

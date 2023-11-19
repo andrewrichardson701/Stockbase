@@ -135,12 +135,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             </button>
                                         </div> 
                                         <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                            <button id="add-stock" class="btn btn-success theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$cable_disable.$delete_disable.'>
+                                            <button id="add-stock" class="btn btn-success theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$delete_disable.'>
                                                 <i class="fa fa-plus"></i><or class="viewport-large-empty"> Add</or>
                                             </button>
                                         </div> 
                                         <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                            <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$cable_disable.$delete_disable.'>
+                                            <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$delete_disable.'>
                                                 <i class="fa fa-minus"></i><or class="viewport-large-empty"> Remove</or>
                                             </button>
                                         </div> 

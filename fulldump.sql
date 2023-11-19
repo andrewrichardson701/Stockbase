@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.35, for Linux (x86_64)
 --
--- Host: localhost    Database: inventory_dev
+-- Host: localhost    Database: inventory
 -- ------------------------------------------------------
 -- Server version	8.0.35-0ubuntu0.20.04.1
 

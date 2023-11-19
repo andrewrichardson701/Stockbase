@@ -480,9 +480,9 @@ Clone the repo first, and the follow the below steps.
 
 - Install script now checks which web servers are installed and asks which to use and whether to disable the other if there are multiple.
 - If only one web server is installed, it uses it by default. This will be apache2 if no web server was installed initially, due to PHP installing apache2.
-- Update script updated to accomodate 0.4.0-beta and 0.4.1-beta. 0.4.1-beta and 0.4.2-beta are the same.
+- Update script updated to accommodate 0.4.0-beta and 0.4.1-beta. 0.4.1-beta and 0.4.2-beta are the same.
 - Manufacturer can now be changed on a per item basis under the stock page.
-- Stock row editing save button now udpate to 'update'
+- Stock row editing save button now update to 'update'
 - Remove button added to populate the remove form and the logic to go with this in JS
 - Stock rows are now outlined in dark when selected to make it more obvious
 - Themes updated with the .highlight class
@@ -491,9 +491,9 @@ Clone the repo first, and the follow the below steps.
 - Tags now have an X icon on them when editing stock. This is removed when the tag is removed, along with the clickable class.
 - Tags edit box is now larger and allows wrapping
 - Tags on the index stock table allow wrapping to stop the table exceeding the width limits.
-- Mysql queries now allow for single quotes and double quotes on string entires. This is also formatted correctly on SELECTs.
-- Index page stock name is now an a link instead of onclick to allow middle mouse clicks.
-- Moving cable stock is now possible from the cablestock.php page. This will also be posisble from stock.php soon.
+- MySQL queries now allow for single quotes and double quotes on string entries. This is also formatted correctly on SELECTs.
+- Index page stock name is now a link instead of onclick to allow middle mouse clicks.
+- Moving cable stock is now possible from the cablestock.php page. This will also be possible from stock.php soon.
 - Tags page now has the correct table highlighting on selecting rows.
 - Footer can now be disabled/enabled in the admin page under the Footer section. 
 - DB tables: config and config_default have 3 new columns.
@@ -507,8 +507,8 @@ Clone the repo first, and the follow the below steps.
 - Fixed some page redirects for the edit stock page. Now diverts you to the stock main page if all is successful, else drops you back on the edit page.
 - Cablestock description is now optional. This is not always relevant to the item.
 - Stock.php now has response handling built in. This means that error messages will show correctly.
-- LDAP settings on the admin page now has the correct error checkind and response handling. There are a couple of unique ones left in place.
-- Can now disabld / enable the cost for items. This is not always needed so can be toggled off under stock managemet in admin.php.
+- LDAP settings on the admin page now has the correct error checking and response handling. There are a couple of unique ones left in place.
+- Can now disable / enable the cost for items. This is not always needed so can be toggled off under stock management in admin.php.
 
 </details>
 <details>
@@ -518,9 +518,9 @@ Clone the repo first, and the follow the below steps.
 - Renamed the stock_label and label table to stock_tag and tag. Moving away from the term 'label' as it is not a fit name.
 - renamed the stock_tag table column 'label_id' to 'tag_id' to match the theme.
 - Changed all references of label to tag in the codebase. 
-- Added tags.php page to show all tags and their connections. This is not reachable without url currently.
+- Added tags.php page to show all tags and their connections. This is not reachable without URL currently.
 - Stock Locations in admin page now allows you to see deleted locations and restore them, similar to attributes.
-- Adding properties is now an ajax request (e.g. adding tags, manufacturers, shelves areas and sites in the add new stock section). This means the page doesnt refresh.
+- Adding properties is now an ajax request (e.g. adding tags, manufacturers, shelves areas and sites in the add new stock section). This means the page doesn’t refresh.
 - Added description to the tag table for editing on the tags page.
 - Stock edit script now separately checks for each change.
 - Stock edit script now only removes the tags that are no longer linked.
@@ -533,7 +533,7 @@ Clone the repo first, and the follow the below steps.
 
 - Update script in place. Testing required for full version changing, but this will be more relevant when the database structure changes.
 - Added Stock Management section to admin page. This allows you to recover/restore deleted stock objects instead of creating new ones.
-- Added Atrribute Management section to admin page. This allows you to delete and recover labels and manufacturers. This may extend in the future.
+- Added Attribute Management section to admin page. This allows you to delete and recover labels and manufacturers. This may extend in the future.
 - Changelog event added to stock-new-properties.inc.php. This is for adding labels, manufacturers and locations.
 - Added an impersonation feature for the root user only. This means the root user can become the user they select from the users list.
 - Impersonation can be cancelled by clicking the button on the nav bar.
@@ -557,7 +557,7 @@ Clone the repo first, and the follow the below steps.
 - Fulldump run and saved.
 - Adjustments made to various pages based on installation bash script.
 - Edit images button added back in to the stock edit page.
-- Login page is now working for the card reader, still needs a full test but now doesnt try to login when pressing any button.
+- Login page is now working for the card reader, still needs a full test but now doesn’t try to login when pressing any button.
 - MySQL scripts updated to add the needed info to the DB.
 - Bash script updated with some more prompts and fixed the first prompt with a case instead of else if.
 - Bash script now checks whether the base_url is correct and has some delay added in for the scripts to run.
@@ -565,12 +565,12 @@ Clone the repo first, and the follow the below steps.
 - Transactions now support cable_transaction table.
 - Transaction include page now supports cable_transaction page.
 - Updated cable_transaction table to now include the shelf_id. SQL queries updated.
-- Added error checking from urls to the pages where they are needed and adjusted the error query strings to be more useful.
+- Added error checking from URLs to the pages where they are needed and adjusted the error query strings to be more useful.
 - Admin global settings restore defaults now restores the default theme too.
-- Fixed some of the forms not working due to some mobile css format things. There might be some more to find yet.
+- Fixed some of the forms not working due to some mobile CSS format things. There might be some more to find yet.
 - Corrected the README with correct PHP modules to match the install bash script
 - Fixed the install bash script to install the correct modules based on testing. Now installs correctly.
-- Added the start of an udpate script. This will be perfected in the next minor patch ready for the final release in 0.4.0-beta
+- Added the start of an update script. This will be perfected in the next minor patch ready for the final release in 0.4.0-beta
 
 </details>
 <details>
@@ -579,9 +579,9 @@ Clone the repo first, and the follow the below steps.
 
 - Mobile CSS in progress
 - Some HTML elements are hidden/shown based on width.
-- Admin page is not visible from mobile form factor unless the url is appended.
+- Admin page is not visible from mobile form factor unless the URL is appended.
 - New CSS added for mobile form factor.
-- Nav now loads properl on mobile.
+- Nav now loads properly on mobile.
 - Footer now loads differently on mobile.
 - Index page now works on mobile. Less columns show to reduce clutter
 - Cablestock page now works on mobile.
@@ -601,7 +601,7 @@ Clone the repo first, and the follow the below steps.
 - Swipe card de-assigning is handled in admin.inc.php.
 - Bootstrap 4.5.2 CSS added in assets/css folder for redundancy.
 - Email example added to Email Notification Settings section of admin page via AJAX.
-- Some modification to the smtp.inc.php email template to allow it to be embedded in php page.
+- Some modification to the smtp.inc.php email template to allow it to be embedded in pup page.
 
 </details>
 <details>
@@ -610,7 +610,7 @@ Clone the repo first, and the follow the below steps.
 
 - Added more themes. Theme CSS now has more properties which can be adjusted.
 - Changelog page has been formatted better and now fills the page.
-- Email notifications can now be disabled from the admin page. Each notification type is configurable, excpet them important things, like password resets.
+- Email notifications can now be disabled from the admin page. Each notification type is configurable, except them important things, like password resets.
 - SMTP send_mail function has been updated to check if the notification type is enabled. All send_mail requests have been updated accordingly.
 - Default theme selection now added to Global Settings of admin page
 - Themes are now in their own table in the database and theme selection is now auto generated on pages.
@@ -620,22 +620,22 @@ Clone the repo first, and the follow the below steps.
 - Name and branding changes to StockBase. This might not be the final name.
 - Footer can now be disabled from the $showFoot variable in foot.php - this will likely hidden on final release.
 - Emails now have useful content in them. It used to be just numbers but now it gives relevant info.
-- Mysql dumps updated.
+- MySQL dumps updated.
 
 </details>
 <details>
 <summary><h3>0.2.0-beta</h3></summary>
 <h4>Beta release 0.2.0, based on initial feedback.</h4>
 
-- Corrected the url redirects when a user tries to reach a page without being logged in. Logging in now redirects to the correct page.
+- Corrected the URL redirects when a user tries to reach a page without being logged in. Logging in now redirects to the correct page.
 - Removed the title and welcome message from the index page and cablestock pages.
 - Moved the title into the Nav bar and linked it to the index page.
-- Corrected the issue with the offset being negative when no items are found on the index sql query. Negative numbers now default to 0.
-- Back button removed from the nav. This was creating loops where you couldnt actually go back.
+- Corrected the issue with the offset being negative when no items are found on the index SQL query. Negative numbers now default to 0.
+- Back button removed from the nav. This was creating loops where you couldn’t actually go back.
 - Changed the icon in the clear button to be the fa-ban icon and rotated it 90degrees
 - Changed the serial number so it can now be copied but this may be going later down the line
 - Stock page now allows you to edit individual rows in the item table. This allows the adding of new serial numbers which were missed.
-- Images can be permenantly deleted from the admin page
+- Images can be permanently deleted from the admin page
 - Cable stock now relates to shelves rather than just sites. This is now added correctly too.
 - Stock page now hides irrelevant info for cables.
 - Less important info is now under the "more info" section on the stock page.
@@ -644,7 +644,7 @@ Clone the repo first, and the follow the below steps.
 - Dynamic searching is now in and working. Ajax based searching which updates on input.
 - Can now search with more criteria on the home page.
 - Images are now larger on the home page. This is copied throughout.
-- Cablestock page now allows you to go to the stock properies page by clicking the cable name. This is the same as normal stock items, with less important info removed. 
+- Cablestock page now allows you to go to the stock properties page by clicking the cable name. This is the same as normal stock items, with less important info removed. 
 - Can now change the image for cablestock with the above change.
 - Label and Manufacturer are now select boxes rather than input because this makes more sense.
 - Added deleted field to tables (item, stock, shelf, area etc) so that things can be tracked.
@@ -665,7 +665,7 @@ Clone the repo first, and the follow the below steps.
 - Fully functional SMTP mail sending. All information is saved and pulled from the DB when requested.
 - Fully customisable global settings, including logo, system name and banner colour.
 - Email password resetting now possible and working.
-- Bash install script implemented and fucntional. May need adapting as changes happen to the system.
+- Bash install script implemented and functional. May need adapting as changes happen to the system.
 - Email template created but could probably use some work.
 - Stock editing, adding, removing and moving all functional to limited testing. Further testing needed.
 
@@ -675,8 +675,3 @@ Clone the repo first, and the follow the below steps.
 
 </details>
 </details>
-
-
-
-
-

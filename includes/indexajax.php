@@ -136,12 +136,27 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
     $sql_inv_add = '';
     if ($site !== '0') { $sql_inv_add  .= " AND site.id=$site";} 
     if ($area !== '0') { $sql_inv_add  .= " AND area.id=$area";} 
-    if ($name !== '') { $sql_inv_add  .= " AND stock.name LIKE CONCAT('%', '$name', '%')";}
+    if ($name !== '') { 
+        $name = mysqli_real_escape_string($conn, $name); // escape the special characters; 
+        $sql_inv_add  .= " AND stock.name LIKE CONCAT('%', '$name', '%')";
+    }
     if ($sku !== '') { $sql_inv_add  .= " AND stock.sku LIKE CONCAT('%', '$sku', '%')";}
-    if ($location !== '') { $sql_inv_add  .= " AND area.name LIKE CONCAT('%', '$location', '%')";}
-    if ($shelf !== '') { $sql_inv_add  .= " AND shelf.name LIKE CONCAT('%', '$shelf', '%')";}
-    if ($tag !== '') { $sql_inv_add  .= " AND tag_names LIKE CONCAT('%', '$tag', '%')";}
-    if ($manufacturer !== '') { $sql_inv_add  .= " AND manufacturer.name LIKE CONCAT('%', '$manufacturer', '%')";}
+    if ($location !== '') { 
+        $location = mysqli_real_escape_string($conn, $location); // escape the special characters
+        $sql_inv_add  .= " AND area.name LIKE CONCAT('%', '$location', '%')";
+    }
+    if ($shelf !== '') { 
+        $shelf = mysqli_real_escape_string($conn, $shelf); // escape the special characters
+        $sql_inv_add  .= " AND shelf.name LIKE CONCAT('%', '$shelf', '%')";
+    }
+    if ($tag !== '') { 
+        $tag = mysqli_real_escape_string($conn, $tag); // escape the special characters
+        $sql_inv_add  .= " AND tag_names LIKE CONCAT('%', '$tag', '%')";
+    }
+    if ($manufacturer !== '') { 
+        $manufacturer = mysqli_real_escape_string($conn, $manufacturer); // escape the special characters
+        $sql_inv_add  .= " AND manufacturer.name LIKE CONCAT('%', '$manufacturer', '%')";
+    }
     if ($showOOS == 0) { 
         $sql_inv_add  .= " AND item.deleted=0 AND 
             (SELECT SUM(quantity) 
@@ -264,7 +279,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     // Echo each row (inside of SQL results)
 
                     $result =
-                    '<tr class="vertical-align align-middle"id="'.$stock_id.'">
+                    '<tr class="vertical-align align-middle highlight" id="'.$stock_id.'">
                         <td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>
                         <td class="align-middle" id="'.$stock_id.'-img-td">
                         ';
@@ -272,7 +287,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                         $result .= '<img id="'.$stock_id.'-img" class="inv-img-main thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />';
                     }
                     $result .= '</td>
-                        <td class="align-middle link gold" id="'.$stock_id.'-name" onclick="navPage(\'./stock.php?stock_id='.$stock_id.'\')">'.$stock_name.'</td>
+                        <td class="align-middle gold" id="'.$stock_id.'-name"><a class="link" href="./stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                         <td class="align-middle viewport-large-empty" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
                         <td class="align-middle" id="'.$stock_id.'-quantity">'; 
                     if ($stock_quantity_total == 0) {
@@ -282,7 +297,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                     }
                     $result .= '</td>';
                     if ($site == 0) { $result .= '<td class="align-middle link gold" style="white-space: nowrap !important;"id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
-                    $result .= '<td class="align-middle viewport-large-empty" id="'.$stock_id.'-tag">';
+                    $result .= '<td class="align-middle viewport-large-empty" style="white-space: wrap" id="'.$stock_id.'-tag">';
                     if (is_array($stock_tag_names)) {
                         for ($o=0; $o < count($stock_tag_names); $o++) {
                             $divider = $o < count($stock_tag_names)-1 ? ', ' : '';

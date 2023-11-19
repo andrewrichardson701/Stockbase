@@ -9,7 +9,7 @@
 $servername = 'localhost';
 $dBUsername = 'admin';
 $dBPassword = 'admin';
-$dBName = 'inventory_dev';
+$dBName = 'inventory';
 
 $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
 

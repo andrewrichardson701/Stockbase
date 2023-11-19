@@ -25,7 +25,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['location-submit']) && !isset($_POST['stocklocation-submit']) && !isset($_POST['location-delete-submit']) && isset($_POST['location-delete-submit']) && !isset($_POST['location-edit-submit']) 
     && !isset($_POST['profile-submit']) && !isset($_POST['card-modify']) && !isset($_POST['card-remove']) 
     && !isset($_POST['theme-upload'])
-    && !isset($_GET['mail-notification'])
+    && !isset($_GET['mail-notification']) && !isset($_GET['cost-toggle']) && !isset($_GET['footer-toggle'])
     && !isset($_POST['imagemanagement-submit'])
     && !isset($_POST['tag_edit_submit'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
@@ -973,6 +973,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             include 'dbh.inc.php';
 
             //insert to site
+            $site_name = mysqli_real_escape_string($conn, $site_name); // escape the special characters
+            $site_description = mysqli_real_escape_string($conn, $site_description); // escape the special characters
+
             $sql_site = "INSERT INTO site (name, description) 
                             VALUES (?, ?)";
             $stmt_site = mysqli_stmt_init($conn);
@@ -988,6 +991,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "site", $site_id, "name", null, $site_name);
 
                 //insert to area 
+                $area_name = mysqli_real_escape_string($conn, $area_name); // escape the special characters
+                $area_description = mysqli_real_escape_string($conn, $area_description); // escape the special characters
+
                 $sql_area = "INSERT INTO area (name, description, site_id) 
                             VALUES (?, ?, ?)";
                 $stmt_area = mysqli_stmt_init($conn);
@@ -1004,6 +1010,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     
 
                     //insert to area 
+                    $shelf_name = mysqli_real_escape_string($conn, $shelf_name); // escape the special characters
+            
                     $sql_shelf = "INSERT INTO shelf (name, area_id) 
                                 VALUES (?, ?)";
                     $stmt_shelf = mysqli_stmt_init($conn);
@@ -1028,12 +1036,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             if (isset($_POST['type']) && $_POST['type'] !== '') {
                 $location_type = $_POST['type'];
                 $location_name = $_POST['name'];
+                $location_name = mysqli_real_escape_string($conn, $location_name); // escape the special characters
                 if ($location_type == "site") {
                     $location_description = $_POST['description'];
+                    $location_description = mysqli_real_escape_string($conn, $location_description); // escape the special characters
                     $sql_location = "INSERT INTO $location_type (name, description) VALUES('$location_name', '$location_description')";
                 } elseif ($location_type == "area") {
                     $location_parent = $_POST['parent'];
                     $location_description = $_POST['description'];
+                    $location_description = mysqli_real_escape_string($conn, $location_description); // escape the special characters
                     $sql_location = "INSERT INTO $location_type (name, description, site_id) VALUES('$location_name', '$location_description', $location_parent)";
                 } elseif ($location_type == "shelf") {
                     $location_parent = $_POST['parent'];
@@ -1484,6 +1495,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 } else {
                                     $row = $result->fetch_assoc();
 
+                                    $location_name = mysqli_real_escape_string($conn, $location_name); // escape the special characters
+                                    $location_description = mysqli_real_escape_string($conn, $location_description); // escape the special characters
+
                                     if ($location_type !== "shelf") {
                                         $sql = "UPDATE $location_type 
                                             SET name=?, description=? 
@@ -1804,6 +1818,78 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=missingAttributeType&section=attributemanagement#attributemanagement-settings");
             exit();
         }
+    } elseif (isset($_GET['footer-toggle'])) { // cost toggleing section in admin.php page for stock management. this is ajax'd
+        $results = [];
+
+        function msg($text, $type) {
+            if ($type == 'error') {
+                $class="red";
+            } else {
+                $class="green";
+            }
+            $head = '<or class="'.$class.'">';
+            $foot = '</or>';
+
+            return $head.$text.$foot;
+        }
+
+        if (isset($_GET['type'])) {
+            $type_num = $_GET['type'];
+            if ($type_num == 1) {
+                $type = 'footer_enable';
+            } elseif ($type_num == 2) {
+                $type = 'footer_left_enable';
+            } elseif ($type_num == 3) {
+                $type = 'footer_right_enable';
+            }
+
+            if (isset($_GET['value'])) {
+                $value = $_GET['value'];
+                if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
+                    include 'dbh.inc.php';
+
+                    $sql = "SELECT $type AS enabled FROM config WHERE id=1";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        $results[] = msg('SQL connection issue.', 'error');
+                    } else {
+                        mysqli_stmt_execute($stmt);
+                        $result = mysqli_stmt_get_result($stmt);
+                        $rowCount = $result->num_rows;
+                        if ($rowCount == 1) {
+                            $row = $result->fetch_assoc();
+                            $enabled = $row['enabled'];
+
+                            $prev_value = $enabled;
+
+                            $state = $value == 1 ? 'enabled' : 'disabled';
+                            $sql_update = "UPDATE config SET $type=? WHERE id=1";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                $results[] = msg('SQL connection issue.', 'error');
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", '1', $type, $prev_value, $value);
+                                $results[] = msg("Footer $state!", 'success');
+                            }
+                        } else {
+
+                        }
+                    }
+                } else {
+                    $results[] = msg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = msg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = msg('No notification type specified.', 'error');
+        }
+
+        echo(json_encode($results));
     } elseif (isset($_GET['cost-toggle'])) { // cost toggleing section in admin.php page for stock management. this is ajax'd
         $results = [];
 
@@ -1961,6 +2047,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         $row_check1 = $result_check1->fetch_assoc();
 
                         $current_name = $row_check1['name'];
+                        $name = mysqli_real_escape_string($conn, $name); // escape the special characters
 
                         $sql = "UPDATE $type SET name='$name' WHERE id=$id";
                         $stmt = mysqli_stmt_init($conn);
@@ -2028,6 +2115,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         $result_check1 = mysqli_stmt_get_result($stmt_check1);
                                         $rowCount_check1 = $result_check1->num_rows;
                                         $row_check1 = $result_check1->fetch_assoc();
+
+                                        $first_name = mysqli_real_escape_string($conn, $first_name); // escape the special characters
+                                        $last_name = mysqli_real_escape_string($conn, $last_name); // escape the special characters
 
                                         $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
                                         $stmt = mysqli_stmt_init($conn);
@@ -2312,6 +2402,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     exit();
                                 }
                                 if ($check_name !== $name) {
+                                    $name = mysqli_real_escape_string($conn, $name); // escape the special characters
+
                                     $sql = "UPDATE tag 
                                             SET name=?
                                             WHERE id=?";
@@ -2327,6 +2419,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     } 
                                 }   
                                 if ($check_description !== $description) {
+                                    $description = mysqli_real_escape_string($conn, $description); // escape the special characters
+
                                     $sql = "UPDATE tag 
                                             SET description=?
                                             WHERE id=?";

@@ -268,7 +268,7 @@ if (isset($_GET['stock_id'])) {
                         $sql_tran = "SELECT
                                         t.stock_id AS t_stock_id,
                                         t.type AS t_type,
-                                        SUM(t.quantity) AS t_quantity,
+                                        t.quantity AS t_quantity,
                                         t.reason AS t_reason,
                                         t.date AS t_date,
                                         t.time AS t_time,
@@ -282,6 +282,7 @@ if (isset($_GET['stock_id'])) {
                                     WHERE t.stock_id = ?
                                     GROUP BY
                                         t.stock_id,
+                                        t.quantity,
                                         t.type,
                                         t.reason,
                                         t.date,

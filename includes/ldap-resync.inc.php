@@ -167,7 +167,10 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Re-sync') {
                                     $ldap_info_upn = $ldap_info[0]['userprincipalname'][0];
                                     $ldap_info_firstName = $ldap_info[0]['givenname'][0];
                                     $ldap_info_lastName = $ldap_info[0]['sn'][0];
-                                    
+
+                                    $ldap_info_firstName = mysqli_real_escape_string($conn, $ldap_info_firstName); // escape the special characters
+                                    $ldap_info_lastName = mysqli_real_escape_string($conn, $ldap_info_lastName); // escape the special characters
+
                                     // UPDATE TABLE ROW
                                     $sql_update = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=$user_id";
                                     $stmt_update = mysqli_stmt_init($conn);

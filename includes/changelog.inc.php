@@ -8,6 +8,8 @@ function addChangelog($user_id, $user_username, $action, $table_name, $record_id
     $timestamp = date('Y-m-d H:i:s');
     include 'dbh.inc.php';
 
+    $value_old = mysqli_real_escape_string($conn, $value_old); // escape the special characters
+    $value_new = mysqli_real_escape_string($conn, $value_new); // escape the special characters
     $sql = "INSERT INTO changelog (timestamp, user_id, user_username, action, table_name, record_id, field_name, value_old, value_new) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {

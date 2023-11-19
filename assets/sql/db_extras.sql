@@ -39,12 +39,12 @@ INSERT INTO config_default
 ldap_domain, ldap_host, ldap_port, ldap_basedn, ldap_usergroup, ldap_userfilter, currency, 
 sku_prefix, smtp_host, smtp_port, smtp_encryption, smtp_password, smtp_from_email, 
 smtp_from_name, smtp_to_email, smtp_username, system_name, ldap_host_secondary, base_url, smtp_enabled, default_theme_id,
-cost_enable_normal, cost_enable_cable)
+cost_enable_normal, cost_enable_cable, footer_enable, footer_left_enable, footer_right_enable)
 VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 1, 'ldapauth', 
 'RHJvcHNCdWlsZHNTa2lsbDEyISE=', 'ajrich.co.uk', '10.0.2.2', 389, 'DC=ajrich,DC=co,DC=uk', 
 'cn=Users', '(objectClass=User)', '£', 'ITEM-', 'mail.ajrich.co.uk', 587, 'starttls', 'RGVtb1Bhc3MxIQ==',
 'inventory@ajrich.co.uk', 'StockBase', 'inventory@ajrich.co.uk', 'inventory@ajrich.co.uk', 'StockBase', '10.0.2.2', 
-'inventory.ajrich.co.uk', 0, 1, 1, 1);
+'inventory.ajrich.co.uk', 0, 1, 1, 1, 1, 1, 1);
 
 -- Duplicaye the config_default table to config table
 INSERT INTO config SELECT * FROM config_default;

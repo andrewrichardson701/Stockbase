@@ -135,17 +135,17 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             </button>
                                         </div> 
                                         <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                            <button id="add-stock" class="btn btn-success theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$cable_disable.$delete_disable.'>
+                                            <button id="add-stock" class="btn btn-success theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'add\'))"'.$delete_disable.'>
                                                 <i class="fa fa-plus"></i><or class="viewport-large-empty"> Add</or>
                                             </button>
                                         </div> 
                                         <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                                            <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$cable_disable.$delete_disable.'>
+                                            <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'remove\'))"'.$delete_disable.'>
                                                 <i class="fa fa-minus"></i><or class="viewport-large-empty"> Remove</or>
                                             </button>
                                         </div> 
                                         <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-                                            <button id="transfer-stock" class="btn btn-warning nav-v-b stock-modifyBtn" style="color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))"'.$cable_disable.$delete_disable.'>
+                                            <button id="transfer-stock" class="btn btn-warning nav-v-b stock-modifyBtn" style="color:black" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'move\'))"'.$delete_disable.'>
                                                 <i class="fa fa-arrows-h"></i><or class="viewport-large-empty"> Move</or>
                                             </button>
                                         </div>
@@ -708,7 +708,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             <th class="viewport-small-empty">Manu.</th>
                                                             <th class="viewport-large-empty">UPC</th>
                                                             <th title="Serial Numbers">Serial</th>
-                                                            <th>Tags</th>
+                                                            <th hidden>Tags</th>
                                                             <th class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
                                                             <th class="viewport-large-empty">Comments</th>');
                                                         } else { 
@@ -722,7 +722,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             ');
                                             for ($i=0; $i<count($stock_inv_data); $i++) {
                                                 echo('
-                                                    <tr id="item-'.$i.'" ');if ($stock_is_cable == 0) { echo('class="clickable" onclick="toggleHiddenStock(\''.$i.'\')"'); } echo('>
+                                                    <tr id="item-'.$i.'" ');if ($stock_is_cable == 0) { echo('class="clickable row-show" onclick="toggleHiddenStock(\''.$i.'\')"'); } echo('>
                                                         <td hidden>'.$i.'</td>
                                                         <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                         <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
@@ -733,7 +733,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
                                                         <td id="item-'.$i.'-upc" class="viewport-large-empty">'.$stock_inv_data[$i]['upc'].'</td>
                                                         <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                        <td id="item-'.$i.'-tags">'.$stock_inv_data[$i]['tag_names'].'</td>
+                                                        <td id="item-'.$i.'-tags" hidden>'.$stock_inv_data[$i]['tag_names'].'</td>
                                                         <td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
                                                         <td id="item-'.$i.'-comments" class="viewport-large-empty">'.$stock_inv_data[$i]['comments'].'</td>
                                                         <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
@@ -765,6 +765,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                             <th>Comments</th>
                                                                             <th>Stock</th>
                                                                             <th></th>
+                                                                            <th></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -773,6 +774,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                     $hidden_serial = $stock_inv_data[$i]['serial_number']; 
                                                                     $hidden_cost = $stock_inv_data[$i]['cost'];
                                                                     $hidden_comments = $stock_inv_data[$i]['comments'];
+                                                                    $hidden_comments = mysqli_real_escape_string($conn, $hidden_comments); // escape the special characters
+                            
                                                                     $sql_hidden = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                                                                 area.id AS area_id, area.name AS area_name,
                                                                                 shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
@@ -832,9 +835,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:100px" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
                                                                                         <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
                                                                                         <td class="align-middle"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
-                                                                                        <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_comments'].'" name="comments" /></td>
+                                                                                        <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.htmlspecialchars($row_hidden['item_comments'], ENT_QUOTES, 'UTF-8').'" name="comments" /></td>
                                                                                         <td class="align-middle">'.$row_hidden['item_quantity'].'</td>
-                                                                                        <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Save" /> </td>
+                                                                                        <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Update" /> </td>
+                                                                                        <td><button type="button" class="btn btn-danger" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'&manufacturer='.$stock_inv_data[$i]['manufacturer_id'].'&shelf='.$stock_inv_data[$i]['shelf_id'].'&serial='.$stock_inv_data[$i]['serial_number'].'\', \'modify\', \'remove\'))">Remove</button></td>
                                                                                     </form>
                                                                                 </tr>
                                                                                 ');
@@ -913,16 +917,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     </script>
     <script>
     function toggleHiddenStock(id) {
-        var hiddenID = 'item-'+id+'-hidden';
-        var hiddenRow = document.getElementById(hiddenID);
+        var Row = document.getElementById('item-'+id);
+        var hiddenRow = document.getElementById('item-'+id+'-hidden');
+        var allRows = document.getElementsByClassName('row-show');
         var allHiddenRows = document.getElementsByClassName('row-hide');
         if (hiddenRow.hidden == false) {
             hiddenRow.hidden=true;
+            hiddenRow.classList.remove('theme-th-selected');
+            Row.classList.remove('theme-th-selected');
         } else {
-            for(var i = 0; i < allHiddenRows.length; i++) {
-            allHiddenRows[i].hidden=true;
+            for (var i = 0; i < allHiddenRows.length; i++) {
+                allHiddenRows[i].hidden=true;
+                allHiddenRows[i].classList.remove('theme-th-selected');
+            }   
+            for (var j = 0; j < allRows.length; j++) {
+                allRows[j].classList.remove('theme-th-selected');
             }   
             hiddenRow.hidden=false;
+            hiddenRow.classList.add('theme-th-selected');
+            Row.classList.add('theme-th-selected');
         }
     }
     </script>

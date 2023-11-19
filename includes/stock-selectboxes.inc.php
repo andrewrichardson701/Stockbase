@@ -350,4 +350,47 @@ if (isset($_GET['getquantity'])) {
     }
 }
 
+if (isset($_GET['getquantitycable'])) {
+    if (is_numeric($_GET['getquantitycable'])) {
+        if ($_GET['getquantitycable'] == 1) {
+            if (isset($_GET['shelf']) && isset($_GET['stock'])) {
+                $quantityArr = [];
+                include 'dbh.inc.php';
+
+                $sql = "SELECT * 
+                        FROM cable_item
+                        INNER JOIN shelf ON cable_item.shelf_id=shelf.id
+                        INNER JOIN area ON shelf.area_id=area.id
+                        INNER JOIN site ON area.site_id=site.id
+                        WHERE cable_item.shelf_id=? AND cable_item.deleted=0 AND cable_item.stock_id=?
+                        ORDER BY cable_item.shelf_id";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    // fails to connect
+                } else {
+                    mysqli_stmt_bind_param($stmt, "ss", $_GET['shelf'], $_GET['stock']);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    $row = $result->fetch_assoc();
+                    $quantity = $row['quantity'];
+                    $id = 0;
+                    $quantityArr[$id] = array('id' => $id, 'quantity' => $quantity);
+
+                    echo(json_encode($quantityArr));
+                }
+                
+            } else {
+
+            }
+        } elseif ($_GET['getquantitycable'] == 0) {
+
+        } else {
+
+        }
+    } else {
+        // not numeric
+    }
+}
+
 ?>

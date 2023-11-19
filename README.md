@@ -476,12 +476,28 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.4.2-beta</h3></summary>
-<h4>Beta release 0.4.2, Update script web server checking.</h4>
+<h4>Beta release 0.4.2, Update script web server checking and feedback updates.</h4>
 
 - Install script now checks which web servers are installed and asks which to use and whether to disable the other if there are multiple.
 - If only one web server is installed, it uses it by default. This will be apache2 if no web server was installed initially, due to PHP installing apache2.
 - Update script updated to accomodate 0.4.0-beta and 0.4.1-beta. 0.4.1-beta and 0.4.2-beta are the same.
 - Manufacturer can now be changed on a per item basis under the stock page.
+- Stock row editing save button now udpate to 'update'
+- Remove button added to populate the remove form and the logic to go with this in JS
+- Stock rows are now outlined in dark when selected to make it more obvious
+- Themes updated with the .highlight class
+- Index table and cablestock table now updated with each row having the highlight class
+- Tags are now removed from the stock rows on the stock page. This is related to the stock object, not the items.
+- Tags now have an X icon on them when editing stock. This is removed when the tag is removed, along with the clickable class.
+- Tags edit box is now larger and allows wrapping
+- Tags on the index stock table allow wrapping to stop the table exceeding the width limits.
+- Mysql queries now allow for single quotes and double quotes on string entires. This is also formatted correctly on SELECTs.
+- Index page stock name is now an a link instead of onclick to allow middle mouse clicks.
+- Moving cable stock is now possible from the cablestock.php page. This will also be posisble from stock.php soon.
+- Tags page now has the correct table highlighting on selecting rows.
+- Footer can now be disabled/enabled in the admin page under the Footer section. 
+- DB tables: config and config_default have 3 new columns.
+- Can now Add/Remove/Move cablestock from the stock.php page. This now loads the correct info and fields.
 
 </details>
 <details>

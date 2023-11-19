@@ -20,7 +20,6 @@ if ($stock_id == 0 || $stock_id == '0') {
     echo '</noscript>'; 
     exit();
 }
-$currency_symbol = '£';
 
 // include 'head.php';
 ?>
@@ -50,7 +49,7 @@ $currency_symbol = '£';
         
         if ($stock_id !== 0 || $stock_id !== '0') {
             include 'includes/dbh.inc.php';
-            $sql = "SELECT id, name, description, sku, min_stock
+            $sql = "SELECT id, name, description, sku, min_stock, is_cable
                     FROM stock
                     WHERE id=? AND stock.deleted=0
                     ORDER BY id";
@@ -66,51 +65,84 @@ $currency_symbol = '£';
                     echo('<p class="red">No Stock Info Found...</p>');
                 } else {
                     // rows found
-                    while ($row = $result->fetch_assoc()) {
-                        $data_id = $row['id'];
-                        $data_name = $row['name'];
-                        $data_description = $row['description'];
-                        $data_sku = $row['sku'];
-                        $data_min_stock = $row['min_stock'];
-                    }
+                    $row = $result->fetch_assoc(); 
 
-                    $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
-                                        area.id AS area_id, area.name AS area_name,
-                                        shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                                        item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, 
-                                        (SELECT SUM(quantity) 
-                                            FROM item 
-                                            WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments AND item.deleted=0
-                                        ) AS item_quantity,
-                                        manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
-                                        (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
-                                            FROM stock_tag 
-                                            INNER JOIN tag ON stock_tag.tag_id = tag.id 
-                                            WHERE stock_tag.stock_id = stock.id
-                                            ORDER BY tag.name
-                                        ) AS tag_names,
-                                        (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
-                                            FROM stock_tag
-                                            INNER JOIN tag ON stock_tag.tag_id = tag.id
-                                            WHERE stock_tag.stock_id = stock.id
-                                            ORDER BY tag.name
-                                        ) AS tag_ids
-                                    FROM stock
-                                    LEFT JOIN item ON stock.id=item.stock_id
-                                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
-                                    LEFT JOIN area ON shelf.area_id=area.id 
-                                    LEFT JOIN site ON area.site_id=site.id
-                                    LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                    WHERE stock.id=? AND quantity!=0 AND stock.deleted=0 AND item.deleted=0
-                                    GROUP BY 
-                                        stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                                        site_id, site_name, site_description, 
-                                        area_id, area_name, 
-                                        shelf_id, shelf_name,
-                                        manufacturer_name, manufacturer_id,
-                                        item_serial_number, item_upc, item_comments, item_cost
-                                    ORDER BY site.id, area.name, shelf.name;";
+                    $data_id = $row['id'];
+                    $data_name = $row['name'];
+                    $data_description = $row['description'];
+                    $data_sku = $row['sku'];
+                    $data_min_stock = $row['min_stock'];
+                    $data_is_cable = $row['is_cable'];
+
+                    if ($data_is_cable == 0) {
+                        $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                            area.id AS area_id, area.name AS area_name,
+                                            shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                            item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, 
+                                            (SELECT SUM(quantity) 
+                                                FROM item 
+                                                WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
+                                                    AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments AND item.deleted=0
+                                            ) AS item_quantity,
+                                            manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+                                            (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                                FROM stock_tag 
+                                                INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                                WHERE stock_tag.stock_id = stock.id
+                                                ORDER BY tag.name
+                                            ) AS tag_names,
+                                            (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                                FROM stock_tag
+                                                INNER JOIN tag ON stock_tag.tag_id = tag.id
+                                                WHERE stock_tag.stock_id = stock.id
+                                                ORDER BY tag.name
+                                            ) AS tag_ids
+                                        FROM stock
+                                        LEFT JOIN item ON stock.id=item.stock_id
+                                        LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                                        LEFT JOIN area ON shelf.area_id=area.id 
+                                        LEFT JOIN site ON area.site_id=site.id
+                                        LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
+                                        WHERE stock.id=? AND quantity!=0 AND stock.deleted=0 AND item.deleted=0
+                                        GROUP BY 
+                                            stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                                            site_id, site_name, site_description, 
+                                            area_id, area_name, 
+                                            shelf_id, shelf_name,
+                                            manufacturer_name, manufacturer_id,
+                                            item_serial_number, item_upc, item_comments, item_cost
+                                        ORDER BY site.id, area.name, shelf.name;";
+                    } else {
+                        $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                            area.id AS area_id, area.name AS area_name,
+                                            shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                            cable_item.id AS item_id, cable_item.cost AS item_cost, cable_item.quantity AS item_quantity,
+                                            (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                                FROM stock_tag 
+                                                INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                                WHERE stock_tag.stock_id = stock.id
+                                                ORDER BY tag.name
+                                            ) AS tag_names,
+                                            (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                                FROM stock_tag
+                                                INNER JOIN tag ON stock_tag.tag_id = tag.id
+                                                WHERE stock_tag.stock_id = stock.id
+                                                ORDER BY tag.name
+                                            ) AS tag_ids
+                                        FROM stock
+                                        LEFT JOIN cable_item ON stock.id=cable_item.stock_id
+                                        LEFT JOIN shelf ON cable_item.shelf_id=shelf.id 
+                                        LEFT JOIN area ON shelf.area_id=area.id 
+                                        LEFT JOIN site ON area.site_id=site.id
+                                        WHERE stock.id=? AND quantity!=0 AND stock.deleted=0 AND cable_item.deleted=0
+                                        GROUP BY 
+                                            stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                                            site_id, site_name, site_description, 
+                                            area_id, area_name, 
+                                            shelf_id, shelf_name,
+                                            item_id, item_cost, item_quantity
+                                        ORDER BY site.id, area.name, shelf.name;";
+                    }
                     $stmt_stock = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                         echo("ERROR getting entries");
@@ -135,12 +167,16 @@ $currency_symbol = '£';
                                 $stock_area_name = $row['area_name'];
                                 $stock_site_id = $row['site_id'];
                                 $stock_site_name = $row['site_name'];
-                                $stock_manufacturer_id = $row['manufacturer_id'];
-                                $stock_manufacturer_name = $row['manufacturer_name'];
-                                $item_upc = $row['item_upc'];
+                                if ($data_is_cable == 0) {
+                                    $stock_manufacturer_id = $row['manufacturer_id'];
+                                    $stock_manufacturer_name = $row['manufacturer_name'];
+                                    $item_upc = $row['item_upc'];
+                                    $item_comments = $row['item_comments'];
+                                    $item_serial_number = $row['item_serial_number'];
+                                } else {
+                                    $item_id = $row['item_id'];
+                                }
                                 $item_cost = $row['item_cost'];
-                                $item_comments = $row['item_comments'];
-                                $item_serial_number = $row['item_serial_number'];
                                 $stock_tag_ids = $row['tag_ids'];
                                 $stock_tag_names = $row['tag_names'];
                                 
@@ -155,24 +191,39 @@ $currency_symbol = '£';
                                     $stock_tag_data = '';
                                 }
                                 
-
-                                $stock_inv_data[] = array('id' => $stock_id,
-                                                        'name' => $stock_name,
-                                                        'sku' => $stock_sku,
-                                                        'quantity' => $stock_quantity_total,
-                                                        'shelf_id' => $stock_shelf_id,
-                                                        'shelf_name' => $stock_shelf_name,
-                                                        'area_id' => $stock_area_id,
-                                                        'area_name' => $stock_area_name,
-                                                        'site_id' => $stock_site_id,
-                                                        'site_name' => $stock_site_name,
-                                                        'manufacturer_id' => $stock_manufacturer_id,
-                                                        'manufacturer_name' => $stock_manufacturer_name,
-                                                        'upc' => $item_upc,
-                                                        'cost' => $item_cost,
-                                                        'comments' => $item_comments,
-                                                        'serial_number' => $item_serial_number,
-                                                        'tag' => $stock_tag_data);
+                                if ($data_is_cable == 0) {
+                                    $stock_inv_data[] = array('id' => $stock_id,
+                                                            'name' => $stock_name,
+                                                            'sku' => $stock_sku,
+                                                            'quantity' => $stock_quantity_total,
+                                                            'shelf_id' => $stock_shelf_id,
+                                                            'shelf_name' => $stock_shelf_name,
+                                                            'area_id' => $stock_area_id,
+                                                            'area_name' => $stock_area_name,
+                                                            'site_id' => $stock_site_id,
+                                                            'site_name' => $stock_site_name,
+                                                            'manufacturer_id' => $stock_manufacturer_id,
+                                                            'manufacturer_name' => $stock_manufacturer_name,
+                                                            'upc' => $item_upc,
+                                                            'cost' => $item_cost,
+                                                            'comments' => $item_comments,
+                                                            'serial_number' => $item_serial_number,
+                                                            'tag' => $stock_tag_data);
+                                } else {
+                                    $stock_inv_data[] = array('id' => $stock_id,
+                                                            'name' => $stock_name,
+                                                            'sku' => $stock_sku,
+                                                            'quantity' => $stock_quantity_total,
+                                                            'shelf_id' => $stock_shelf_id,
+                                                            'shelf_name' => $stock_shelf_name,
+                                                            'area_id' => $stock_area_id,
+                                                            'area_name' => $stock_area_name,
+                                                            'site_id' => $stock_site_id,
+                                                            'site_name' => $stock_site_name,
+                                                            'item_id' => $item_id,
+                                                            'cost' => $item_cost,
+                                                            'tag' => $stock_tag_data);
+                                }
                             }
                             
                             $stock_id = $_GET['stock_id'];
@@ -200,12 +251,22 @@ $currency_symbol = '£';
                                                 <th>Site</th>
                                                 <th>Location</th>
                                                 <th>Shelf</th>
-                                                <th class="viewport-mid-large">Manufacturer</th>
-                                                <th class="viewport-small-only-empty">Manu.</th>
-                                                <th class="viewport-mid-large">UPC</th>
-                                                <th title="Serial Numbers">Serial</th>
-                                                <th>Cost</th>
-                                                <th class="viewport-mid-large">Comments</th>
+                                                ');
+                                                if ($data_is_cable == 0) {
+                                                    echo('
+                                                    <th class="viewport-mid-large">Manufacturer</th>
+                                                    <th class="viewport-small-only-empty">Manu.</th>
+                                                    <th class="viewport-mid-large">UPC</th>
+                                                    <th title="Serial Numbers">Serial</th>
+                                                    <th'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
+                                                    <th class="viewport-mid-large">Comments</th>
+                                                    ');
+                                                } else {
+                                                    echo('
+                                                    <th'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>Cost</th>
+                                                    ');
+                                                }
+                                                echo('
                                                 <th>Stock</th>
                                             </tr>
                                         </thead>
@@ -213,34 +274,57 @@ $currency_symbol = '£';
                                     ');
                                     for ($i=0; $i<count($stock_inv_data); $i++) {
                                         echo('
-                                            <tr id="item-'.$i.'" class="clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $i) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$i.'\')">
+                                            <tr id="item-'.$i.'" class="row-show clickable'); if (isset($_GET['edited']) && $_GET['edited'] == $i) { echo(' last-edit'); } echo('" onclick="toggleHidden(\''.$i.'\')">
                                                 <td hidden>'.$i.'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
                                                 <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
-                                                <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
-                                                <td id="item-'.$i.'-upc" class="viewport-mid-large">'.$stock_inv_data[$i]['upc'].'</td>
-                                                <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                <td id="item-'.$i.'-cost">'.$currency_symbol.$stock_inv_data[$i]['cost'].'</td>
-                                                <td id="item-'.$i.'-comments" class="viewport-mid-large">'.$stock_inv_data[$i]['comments'].'</td>
+                                                ');
+                                                if ($data_is_cable == 0) {
+                                                    echo('
+                                                    <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
+                                                    <td id="item-'.$i.'-upc" class="viewport-mid-large">'.$stock_inv_data[$i]['upc'].'</td>
+                                                    <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
+                                                    <td id="item-'.$i.'-cost"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$config_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                    <td id="item-'.$i.'-comments" class="viewport-mid-large">'.$stock_inv_data[$i]['comments'].'</td>
+                                                    ');
+                                                } else {
+                                                    echo('
+                                                    <td id="item-'.$i.'-cost"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>'.$config_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                    ');
+                                                }
+                                                echo('
                                                 <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
                                             </tr>
-                                            <tr class="move-hide" id="item-'.$i.'-edit" hidden>
+                                            <tr class="row-hide" id="item-'.$i.'-edit" hidden>
                                                 <td colspan=100%>
                                                     <div class="container">                                                       
                                                         <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
-                                                            <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
-                                                            <input type="hidden" name="stock-move" value="1" />
+                                                            <!-- below input used for the stock-modify.inc.php page to determine the type of change -->');
+                                                            if ($data_is_cable == 0) {
+                                                                echo('<input type="hidden" name="stock-move" value="1" /> ');
+                                                            } else {
+                                                                echo('<input type="hidden" name="cablestock-move" value="1" /> 
+                                                                    <input type="hidden" name="redirect_url" value="stock.php?stock_id='.$stock_id.'&modify=move" />
+                                                                    <input type="hidden" name="current_cable_item" value="'.$stock_inv_data[$i]['item_id'].'" />');
+                                                            }
+                                                            echo('
                                                             <input type="hidden" id="'.$i.'-c-i" name="current_i" value="'.$i.'" />
                                                             <input type="hidden" id="'.$i.'-c-stock" name="current_stock" value="'.$stock_id.'" />
                                                             <input type="hidden" id="'.$i.'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
                                                             <input type="hidden" id="'.$i.'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
                                                             <input type="hidden" id="'.$i.'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
+                                                            ');
+                                                            if ($data_is_cable == 0) {
+                                                                echo('
+                                                                <input type="hidden" id="'.$i.'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
+                                                                <input type="hidden" id="'.$i.'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
+                                                                <input type="hidden" id="'.$i.'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
+                                                                <input type="hidden" id="'.$i.'-c-comments" name="current_comments" value="'.htmlspecialchars($stock_inv_data[$i]['comments'], ENT_QUOTES, 'UTF-8').'" />
+                                                                ');
+                                                            }
+                                                            echo('
                                                             <input type="hidden" id="'.$i.'-c-cost" name="current_cost" value="'.$stock_inv_data[$i]['cost'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-comments" name="current_comments" value="'.$stock_inv_data[$i]['comments'].'" />
                                                             <input type="hidden" id="'.$i.'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
                                                             <table style="border: 1px solid #454d55;">
                                                                 <tbody>
@@ -295,9 +379,15 @@ $currency_symbol = '£';
                                                                                 <div class="col" style="max-width:max-content !important">
                                                                                     <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
                                                                                 </div>
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-serial" name="serial" style="min-width: 80px; padding: 2 7 2 7; width:max-content; max-width:90px" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled /> 
-                                                                                </div>
+                                                                                ');
+                                                                                if ($data_is_cable == 0) {
+                                                                                    echo('
+                                                                                    <div class="col" style="max-width:max-content !important">
+                                                                                        <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-serial" name="serial" style="min-width: 80px; padding: 2 7 2 7; width:max-content; max-width:90px" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled /> 
+                                                                                    </div>
+                                                                                    ');
+                                                                                }
+                                                                                echo('
                                                                                 <div class="col" style="max-width:max-content !important">
                                                                                     <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$i.'-n-submit" value="Move" style="opacity:80%;" name="submit" required />
                                                                                 </div>
@@ -337,7 +427,7 @@ $currency_symbol = '£';
                         <input type="hidden" name="modify" id="modify" value="move" />
                         <span class="nav-row">
                             <p class="nav-v-c" style="margin-right:20px">Search for item</p>
-                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.$search.'"/>
+                            <input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.htmlspecialchars($search, ENT_QUOTES, 'UTF-8').'"/>
                         </span>
                     </div>
                 </div>
@@ -348,6 +438,8 @@ $currency_symbol = '£';
             <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
                 ');
             include 'includes/dbh.inc.php';
+            $search = mysqli_real_escape_string($conn, $search); // escape special characters
+            
             $sql = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, 
                         (SELECT SUM(quantity) 
                             FROM item 
@@ -651,16 +743,25 @@ function populateShelves(id) {
 </script>
 <script> // toggle hidden row below current
 function toggleHidden(id) {
+    var Row = document.getElementById('item-'+id);
     var hiddenID = 'item-'+id+'-edit';
     var hiddenRow = document.getElementById(hiddenID);
-    var allHiddenRows = document.getElementsByClassName('move-hide');
+    var allRows = document.getElementsByClassName('row-show');
+    var allHiddenRows = document.getElementsByClassName('row-hide');
     if (hiddenRow.hidden == false) {
         hiddenRow.hidden=true;
+        hiddenRow.classList.remove('theme-th-selected');
+        Row.classList.remove('theme-th-selected');
     } else {
         for(var i = 0; i < allHiddenRows.length; i++) {
-        allHiddenRows[i].hidden=true;
-        }   
+            allHiddenRows[i].hidden=true;
+        } 
+        for (var j = 0; j < allRows.length; j++) {
+            allRows[j].classList.remove('theme-th-selected');
+        }     
         hiddenRow.hidden=false;
+        hiddenRow.classList.add('theme-th-selected');
+        Row.classList.add('theme-th-selected');
     }
 }
 </script>

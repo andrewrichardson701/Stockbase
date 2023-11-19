@@ -442,6 +442,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             $stock_id = mysqli_insert_id($conn);
                             // update changelog
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock", $stock_id, "name", null, $stock_name);
+                            // announce new stock added
+                            $stock_info = getCableStockInfo($stock_id);
+                            $item_location = getItemLocation($shelf);
+                            $base_url = getCurrentURL();
+                        
+                            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Created";
+                            $email_body = "<p>Fixed cable stock created:<strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>.</p>";
+                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 8);
 
 
                             if (isset($_FILES['stock-img']) && $_FILES['stock-img']['name'] !== '') {

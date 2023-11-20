@@ -352,6 +352,52 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             </form>
         </div>
 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="footer-settings" onclick="toggleSection(this, 'footer')">Footer <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Footer -->
+        <div style="padding-top: 20px" id="footer" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'footer')) {
+                showResponse();
+            }
+            ?>
+            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                <p id="footer-output" class="last-edit-T" hidden></p>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="normal-footer">
+                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Footer at the bottom of each page.">Enable Footer:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="normal-footer-toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                    <input type="checkbox" name="normal-footer" onchange="toggleFooter(this, 1)" <?php if ($current_footer_enable == 1) { echo("checked");} ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="left-footer">
+                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable GitLab link on the footer.">Enable GitLab Link:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="left-footer-toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                    <input type="checkbox" name="left-footer" onchange="toggleFooter(this, 2)" <?php if ($current_footer_left_enable == 1) { echo("checked");} ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="right-footer">
+                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Road Map link on the footer.">Enable Road Map Link:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="right-footer-toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                    <input type="checkbox" name="right-footer" onchange="toggleFooter(this, 3)" <?php if ($current_footer_right_enable == 1) { echo("checked");} ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" onclick="toggleSection(this, 'users')">Users <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Settings -->
         <div style="padding-top: 20px" id="users" hidden>
@@ -528,50 +574,93 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             </table>
         </div>
 
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="footer-settings" onclick="toggleSection(this, 'footer')">Footer <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
-        <!-- Footer -->
-        <div style="padding-top: 20px" id="footer" hidden>
-            <?php
-            if ((isset($_GET['section']) && $_GET['section'] == 'footer')) {
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sessionmanagement-settings" onclick="toggleSection(this, 'sessionmanagement')">Session Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Session Management -->
+        <div style="padding-top: 20px" id="sessionmanagement" hidden>
+        <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'sessionmanagement')) {
                 showResponse();
             }
             ?>
-            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
-                <p id="footer-output" class="last-edit-T" hidden></p>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="normal-footer">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Footer at the bottom of each page.">Enable Footer:</p>
-                            </td>
-                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="normal-footer-toggle">
-                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                    <input type="checkbox" name="normal-footer" onchange="toggleFooter(this, 1)" <?php if ($current_footer_enable == 1) { echo("checked");} ?>>
-                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                </label>
-                            </td>
-                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="left-footer">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable GitLab link on the footer.">Enable GitLab Link:</p>
-                            </td>
-                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="left-footer-toggle">
-                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                    <input type="checkbox" name="left-footer" onchange="toggleFooter(this, 2)" <?php if ($current_footer_left_enable == 1) { echo("checked");} ?>>
-                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                </label>
-                            </td>
-                            <td class="align-middle" style="margin-left:25px;margin-right:10px" id="right-footer">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Road Map link on the footer.">Enable Road Map Link:</p>
-                            </td>
-                            <td class="align-middle" style="padding-left:5px;padding-right:20px" id="right-footer-toggle">
-                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                    <input type="checkbox" name="right-footer" onchange="toggleFooter(this, 3)" <?php if ($current_footer_right_enable == 1) { echo("checked");} ?>>
-                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                </label>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <table id="sessionsTable" class="table table-dark theme-table" style="max-width:max-content">
+                <thead>
+                    <tr id="sessions_table_info_tr" hidden>
+                        <td colspan=8 id="sessions_table_info_td"></td>
+                    </tr>
+                    <tr class="text-center theme-tableOuter">
+                        <th>ID</th>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>IP</th>
+                        <th>Login Time</th>
+                        <th hidden>Logout Time</th>
+                        <th>Last Activity</th>
+                        <th>Browser</th>
+                        <th>OS</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        // GET users from table
+
+                        $sql_sessions = "SELECT sl.id AS sl_id, sl.user_id AS sl_user_id, 
+                                            FROM_UNIXTIME(sl.login_time) AS sl_login_time, IFNULL(FROM_UNIXTIME(sl.logout_time), NULL) AS sl_logout_time, 
+                                            COALESCE(INET_NTOA(sl.ipv4), INET6_NTOA(sl.ipv6)) AS sl_ip,
+                                            sl.browser AS sl_browser, sl.os AS sl_os, sl.status AS sl_status,
+                                            FROM_UNIXTIME(sl.last_activity) AS sl_last_activity,
+                                            u.username AS u_username
+                                        FROM sessionlog AS sl
+                                        INNER JOIN users AS u ON u.id=sl.user_id";
+                        $stmt_sessions = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_sessions, $sql_sessions)) {
+                            echo('<td colspan=9><or class="red">SQL Issue with `users` table.</or></td>');
+                        } else {
+                            mysqli_stmt_execute($stmt_sessions);
+                            $result_sessions = mysqli_stmt_get_result($stmt_sessions);
+                            $rowCount_sessions = $result_sessions->num_rows;
+                            if ($rowCount_sessions < 1) {
+                                echo ('<td colspan=9><or class="red">No Users in table: `users`.</or></td>');
+                            } else {
+                                while($row_sessions = $result_sessions->fetch_assoc()) {
+
+                                    $sl_id = $row_sessions['sl_id'];
+                                    $sl_user_id = $row_sessions['sl_user_id'];
+                                    $sl_login_time = $row_sessions['sl_login_time'];
+                                    $sl_logout_time = $row_sessions['sl_logout_time'];
+                                    $sl_ip = $row_sessions['sl_ip'];
+                                    $sl_browser = $row_sessions['sl_browser'];
+                                    $sl_os = $row_sessions['sl_os'];
+                                    $sl_status = $row_sessions['sl_status'];
+                                    $sl_last_activity = $row_sessions['sl_last_activity'];
+                                    $u_username = $row_sessions['u_username'];
+
+                                    if ($sl_logout_time == null ) {
+                                        echo('<tr class="text-center" style="vertical-align: middle;">
+                                            <form action="includes/admin.inc.php" method="POST">
+                                                <input type="hidden" name="session_id" value="'.$sl_id.'" />
+                                                <td id="sessions_'.$sl_id.'_id" style="vertical-align: middle;">'.$sl_id.'</td>
+                                                <td id="sessions_'.$sl_id.'_user_id" style="vertical-align: middle;">'.$sl_user_id.'</td>
+                                                <td id="sessions_'.$sl_id.'_username" style="vertical-align: middle;">'.$u_username.'</td>
+                                                <td id="sessions_'.$sl_id.'_ip" style="vertical-align: middle;">'.$sl_ip.'</td>
+                                                <td id="sessions_'.$sl_id.'_login_time" style="vertical-align: middle;">'.$sl_login_time.'</td>
+                                                <td id="sessions_'.$sl_id.'_logout_time" style="vertical-align: middle;" hidden>'.$sl_logout_time.'</td>
+                                                <td id="sessions_'.$sl_id.'_last_activity" style="vertical-align: middle;">'.$sl_last_activity.'</td>
+                                                <td id="sessions_'.$sl_id.'_browser" style="vertical-align: middle;">'.$sl_browser.'</td>
+                                                <td id="sessions_'.$sl_id.'_os" style="vertical-align: middle;">'.$sl_os.'</td>
+                                                <td id="sessions_'.$sl_id.'_status" style="vertical-align: middle;">'.$sl_status.'</td>
+                                                <td id="sessions_'.$sl_id.'_kill" style="vertical-align: middle;"><input type="submit" class="btn btn-danger" name="session-kill-submit" value="Kill"'); if ($_SESSION['session_id'] == $sl_id) { echo (' title="Current Session" disabled'); } echo('></td>
+                                            </form>
+                                        </tr>
+                                        ');
+                                    } 
+                                }
+                            }
+                        }
+                    ?>
+                </tbody>
+            </table>
         </div>
 
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings" onclick="toggleSection(this, 'imagemanagement')">Image Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 

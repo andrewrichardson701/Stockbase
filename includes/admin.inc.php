@@ -26,6 +26,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['profile-submit']) && !isset($_POST['card-modify']) && !isset($_POST['card-remove']) 
     && !isset($_POST['theme-upload'])
     && !isset($_GET['mail-notification']) && !isset($_GET['cost-toggle']) && !isset($_GET['footer-toggle'])
+    && !isset($_POST['session-kill-submit'])
     && !isset($_POST['imagemanagement-submit'])
     && !isset($_POST['tag_edit_submit'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
@@ -1551,6 +1552,24 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../admin.php?error=missingLocationType&section=stocklocations-settings#stocklocations-settings");
             exit();
         }
+    } elseif (isset($_POST['session-kill-submit'])) { // session management from admin.inc.php
+        if (isset($_POST['session_id'])) {
+            $session_response = 'NULL';
+            include 'session.inc.php';
+            sessionKill($_POST['session_id']);
+            if (str_contains($session_response, "Error")) {
+                $return = 'error';
+                $session_response = str_replace("Error: ", "", $session_response);
+            } elseif (str_contains($session_response, "Success")) {
+                $return = 'success';
+                $session_response = str_replace("Success: ", "", $session_response);
+            } else {
+                $return = 'error';
+            }
+            header("Location: ../admin.php?$return=$session_response&section=sessionmanagement#sessionmanagement-settings");
+            exit();
+        }
+        
     } elseif (isset($_POST['imagemanagement-submit'])) { // image management section in the admin.php page
         if (isset($_POST['file-name'])) {
             if (isset($_POST['file-links'])) {

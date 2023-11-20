@@ -291,6 +291,44 @@ function sessionLogout() {
         }
     }
 }
+function sessionKill($session_id) {
+    global $session_response;
+    // used for when someone is timedout of the session
+    $logout_time = time();
+    $status = 'killed';
+
+    include 'dbh.inc.php';
+
+    // check if the session exists 
+    $sql = "SELECT * 
+            FROM sessionlog
+            WHERE id=? AND status='active'";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        $session_response = 'Error: SQL issue.';
+    } else {
+        mysqli_stmt_bind_param($stmt, "s", $session_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            $session_response = 'Error: Session not found.';
+        } else {
+            //session found
+            $sql = "UPDATE sessionlog 
+                    SET logout_time=?, status=?
+                    WHERE id=? AND status='active'";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                $session_response = 'Error: SQL issue.';
+            } else {
+                mysqli_stmt_bind_param($stmt, "sss", $logout_time, $status, $session_id);
+                mysqli_stmt_execute($stmt);
+                $session_response = 'Success: Session Killed.';
+            }
+        }
+    }
+}
 
 // $_SESSION['user_id'] = 1;
 // $_SESSION['session_id'] = 7;

@@ -104,7 +104,7 @@ if (isset($_GET['stock_id'])) {
                                             <th class="viewport-mid-large">Shelf</th>
                                             <th class="viewport-mid-large">Username</th>
                                             <th>Quantity</th>
-                                            <th class="viewport-large-empty">Price</th>
+                                            <th class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Price</th>
                                             <th class="viewport-large-empty">Serial Number</th>
                                             <th hidden>Comments</th>
                                             <th>Reason</th>
@@ -159,7 +159,7 @@ if (isset($_GET['stock_id'])) {
                                             <td id="s_name" class="viewport-mid-large">' . $s_name . '</td>
                                             <td id="t_username" class="viewport-mid-large">' . $t_username . '</td>
                                             <td id="t_quantity">' . $t_quantity . '</td>
-                                            <td class="viewport-large-empty">' . $currency_symbol . $t_price . '</td>
+                                            <td class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>' . $currency_symbol . $t_price . '</td>
                                             <td class="viewport-large-empty">' . $t_serial_number . '</td>
                                             <td hidden>' . $t_comments . '</td>
                                             <td id="t_reason">' . $t_reason . '</td>

@@ -475,6 +475,17 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.5.0-beta</h3></summary>
+<h4>Beta release 0.5.0, Session logging and management for users.</h4>
+
+- Added sessionlog table to database.
+- sessionlog table tracks the login/logout/timeout/expiry of user sessions to manage their login time.
+- New file: includes/session.inc.php added. This manages the sessions with new functions.
+- session.php manages the session.inc.php page on each web page accessed.
+- Update script adjusted to allow the database changes.
+
+</details>
+<details>
 <summary><h3>0.4.2-beta</h3></summary>
 <h4>Beta release 0.4.2, Update script web server checking and feedback updates.</h4>
 

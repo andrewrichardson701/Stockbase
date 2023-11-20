@@ -491,6 +491,7 @@ Clone the repo first, and the follow the below steps.
 - Password reset modal div now works on mobile format.
 
 </details>
+<details>
 <summary><h3>0.3.2-beta</h3></summary>
 <h4>Beta release 0.3.2, Update scripts for version management and some small feature changes.</h4>
 

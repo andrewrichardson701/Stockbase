@@ -9,7 +9,7 @@
 if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start(); 
 }
-print_r ($_SESSION);
+
 // do session mangement stuff
 include 'includes/session.inc.php';
 // check for timeout

@@ -192,8 +192,8 @@ function sessionTimeout() {
 function checkTimeout() {
     global $_SESSION, $session_timeout;
     if (isset($_SESSION['last_activity'])) {
-        echo $last_activity = $_SESSION['last_activity'];
-        echo $activity_check_time = time()-$session_timeout;
+        $last_activity = $_SESSION['last_activity'];
+        $activity_check_time = time()-$session_timeout;
 
         if ($last_activity < $activity_check_time) {
             sessionTimeout();

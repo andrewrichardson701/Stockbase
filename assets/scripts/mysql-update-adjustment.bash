@@ -130,6 +130,9 @@ case "$new_branch" in
     0.4.1-beta|0.4.2-beta )
             0.4.1-beta "$current_branch"
             break;;
+    0.5.0-beta )
+            0.5.0-beta "$current_branch"
+            break;;
 esac
 
 
@@ -169,6 +172,14 @@ esac
                                               ALTER TABLE config DROP COLUMN footer_enable; 
                                               ALTER TABLE config DROP COLUMN footer_left_enable;
                                               ALTER TABLE config DROP COLUMN footer_right_enable;"
+            0.3.X-beta "0.4.0-beta"  
+            break;;
+      0.5.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.5.0-beta) Tables: 'sessionlog' to be remove"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          DROP TABLE `sessionlog`;"
+            0.3.X-beta "0.4.1-beta"                                             
             break;;
     esac 
 }
@@ -208,6 +219,13 @@ esac
                                                           ALTER TABLE config DROP COLUMN footer_left_enable;
                                                           ALTER TABLE config DROP COLUMN footer_right_enable;"
             break;;
+    0.5.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.5.0-beta) Tables: 'sessionlog' to be remove"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          DROP TABLE `sessionlog`;"
+            0.4.0-beta "0.4.1-beta"                                             
+            break;;
     esac 
 }
 
@@ -228,10 +246,10 @@ esac
             
     0.4.0-beta )
             echo "SQL Changes to be made:"
-            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be removed from config table"
-            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added from config_default table"
-            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added from config table"
-            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added from config_default table"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added from config table"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added to config_default table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
                                                           ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
                                                           ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
@@ -245,6 +263,71 @@ esac
                                                           ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
             break;;
     0.4.1-beta|0.4.2-beta )
+            echo "No SQL changes to be made."
+            break;;
+    0.5.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.5.0-beta) Tables: 'sessionlog' to be remove"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          DROP TABLE `sessionlog`;"                                           
+            break;;
+    esac 
+}
+
+0.5.0-beta() {
+    # This is for all 0.3.X-beta branches/versions past 0.3.2-beta
+
+    current_branch=$1
+
+    case "$current_branch" in
+    0.3.2-beta|0.3.3-beta ) 
+            echo "SQL Changes to be made:"
+            echo " - 'tag' table becomes 'label'"
+            echo " - 'stock_tag' table becomes 'stock_label'"
+            echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
+            0.5.0-beta "0.4.0-beta"
+            break;;
+            
+    0.4.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added to config table"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added to config_default table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config_default table"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE config_default ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE config ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
+            0.5.0-beta "0.4.1-beta"
+            break;;
+    0.4.1-beta|0.4.2-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.5.0-beta) Tables: 'sessionlog' to be added"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          CREATE TABLE `sessionlog` (
+                                                            `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                            `user_id` INT NOT NULL,
+                                                            `login_time` INT NOT NULL,
+                                                            `logout_time` INT,
+                                                            `last_activity` INT NOT NULL,
+                                                            `ipv4` INT unsigned,
+                                                            `ipv6` VARBINARY(16),
+                                                            `browser` TEXT NOT NULL,
+                                                            `os` TEXT NOT NULL,
+                                                            `status` text NOT NULL,
+                                                            PRIMARY KEY (`id`)
+                                                          );"
+            break;;
+
+    0.5.0-beta )
             echo "No SQL changes to be made."
             break;;
     esac 

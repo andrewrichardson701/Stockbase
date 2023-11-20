@@ -12,8 +12,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     header("Location: ./");
     exit();
 } else {
-    if (!isset($_SESSION['username']) || !isset($_SESSION['first_name']) || !isset($_SESSION['last_name']) || !isset($_SESSION['email'])) {
-        if (!isset($_SESSION['username']) && !isset($_SESSION['first_name']) && !isset($_SESSION['last_name']) && !isset($_SESSION['email'])) {
+    if (!isset($_SESSION['username']) || !isset($_SESSION['first_name']) || !isset($_SESSION['last_name']) || !isset($_SESSION['email']) || !isset($_SESSION['session_id'])) {
+        if (!isset($_SESSION['username']) && !isset($_SESSION['first_name']) && !isset($_SESSION['last_name']) && !isset($_SESSION['email']) && !isset($_SESSION['session_id'])) {
             
         } else {
             header("Location: ./logout.php");

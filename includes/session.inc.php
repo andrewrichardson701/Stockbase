@@ -127,7 +127,7 @@ function sessionLastActivity() {
             $result = mysqli_stmt_get_result($stmt);
             $rowCount = $result->num_rows;
             if ($rowCount < 1) {
-
+                unset($_SESSION['session_id']);
             } else {
                 //session found
                 $sql = "UPDATE sessionlog 
@@ -170,7 +170,7 @@ function sessionTimeout() {
             $result = mysqli_stmt_get_result($stmt);
             $rowCount = $result->num_rows;
             if ($rowCount < 1) {
-
+                unset($_SESSION['session_id']);
             } else {
                 //session found
                 $sql = "UPDATE sessionlog 
@@ -183,8 +183,7 @@ function sessionTimeout() {
                 } else {
                     mysqli_stmt_bind_param($stmt, "ssss", $logout_time, $status, $session_id, $user_id);
                     mysqli_stmt_execute($stmt);
-                    unset($_SESSION['session_id']);
-                    unset($_SESSION['last_activity']);
+                    unset($_SESSION);
                 }
             }
         }
@@ -192,13 +191,11 @@ function sessionTimeout() {
 }
 function checkTimeout() {
     global $_SESSION, $session_timeout;
-
     if (isset($_SESSION['last_activity'])) {
-        $last_activity = $_SESSION['last_activity'];
-        $activity_check_time = time()-$session_timeout;
+        echo $last_activity = $_SESSION['last_activity'];
+        echo $activity_check_time = time()-$session_timeout;
 
         if ($last_activity < $activity_check_time) {
-
             sessionTimeout();
         }
     }
@@ -288,8 +285,7 @@ function sessionLogout() {
                 } else {
                     mysqli_stmt_bind_param($stmt, "ssss", $logout_time, $status, $session_id, $user_id);
                     mysqli_stmt_execute($stmt);
-                    unset($_SESSION['session_id']);
-                    unset($_SESSION['last_activity']);
+                    unset($_SESSION);
                 }
             }
         }

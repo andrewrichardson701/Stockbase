@@ -4,11 +4,12 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
+
 // SETUP THE SESSION FOR ALL PAGES - THIS WILL CONFIRM IF THERE IS A LOGGED IN USER OR NOT.
 if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start(); 
 }
-
+print_r ($_SESSION);
 // do session mangement stuff
 include 'includes/session.inc.php';
 // check for timeout
@@ -19,6 +20,10 @@ sessionCloseExpired();
 sessionLastActivity();
 
 
+
+
+
+
 // set the redirect_url 
 $redirect_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $queryString = isset($_SERVER['QUERY_STRING']) ? '?'.parse_url($_SERVER['QUERY_STRING'], PHP_URL_PATH) : '';
@@ -27,7 +32,7 @@ $_SESSION['redirect_url'] = str_contains(basename($redirect_path), '.php') ? bas
 
 // if session not set, go to login page
 if (!str_contains($_SERVER['REQUEST_URI'], "changepassword.inc.php")) {
-    if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['username'])) || ($_SESSION['username'] === '')) {
+    if ((session_status() !== PHP_SESSION_ACTIVE) || (!isset($_SESSION['session_id'])) || (!isset($_SESSION['username'])) || ($_SESSION['username'] === '')) {
         // redirect to login page
         if (isset($_SESSION['redirect_url']) && $_SESSION['redirect_url'] !== '') {
             header('Location: ./login.php?url=' . urlencode($_SESSION['redirect_url']));

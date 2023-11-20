@@ -1,5 +1,7 @@
 <?php 
 $session_timeout = (30*60); // mins * seconds
+ini_set('session.gc_maxlifetime', $session_timeout);
+
 function getIPAddress() {  
     global $_SERVER;
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {  

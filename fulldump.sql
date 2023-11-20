@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.35, for Linux (x86_64)
 --
--- Host: localhost    Database: inventory
+-- Host: localhost    Database: inventory_dev
 -- ------------------------------------------------------
 -- Server version	8.0.35-0ubuntu0.20.04.1
 
@@ -384,6 +384,38 @@ INSERT INTO `password_reset` VALUES (26,0,'62507324ad29a0ec','$2y$10$3/x.nmbvH2T
 UNLOCK TABLES;
 
 --
+-- Table structure for table `sessionlog`
+--
+
+DROP TABLE IF EXISTS `sessionlog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sessionlog` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `login_time` int NOT NULL,
+  `logout_time` int DEFAULT NULL,
+  `ipv4` int unsigned DEFAULT NULL,
+  `ipv6` varbinary(16) DEFAULT NULL,
+  `browser` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `os` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `status` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `last_activity` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessionlog`
+--
+
+LOCK TABLES `sessionlog` WRITE;
+/*!40000 ALTER TABLE `sessionlog` DISABLE KEYS */;
+INSERT INTO `sessionlog` VALUES (1,1,1700376682,1700378570,1833627677,NULL,'Google Chrome','Windows','inactive',0),(2,1,1700377135,1700378629,1833627677,NULL,'Google Chrome','Windows','inactive',0),(3,1,1700377391,1700378640,1833627677,NULL,'Google Chrome','Windows','inactive',0),(4,1,1700378543,1700378643,1833627677,NULL,'Google Chrome','Windows','inactive',0),(5,1,1700379711,1700430557,1833627677,NULL,'Google Chrome','Windows','closed',0),(6,6,1700431725,1700439243,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(7,6,1700431725,1700439243,1833627677,NULL,'Google Chrome','Windows','expired',1700434431),(8,1,1700438591,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(9,2,1700438622,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(10,5,1700439365,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(11,6,1700439392,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(12,6,1700439441,1700439446,1833627677,NULL,'Google Chrome','Windows','inactive',1700439441),(13,6,1700439534,1700439555,1833627677,NULL,'Google Chrome','Windows','inactive',1700439534),(14,6,1700439558,NULL,1833627677,NULL,'Google Chrome','Windows','active',1700439572);
+/*!40000 ALTER TABLE `sessionlog` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `shelf`
 --
 
@@ -671,4 +703,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-19  4:18:42
+-- Dump completed on 2023-11-20  0:20:47

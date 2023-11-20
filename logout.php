@@ -5,7 +5,12 @@
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
 // LOGOUT FROM THE USER - UNSET AND DESTROY THE SESSION - NAVIGATE TO LOGIN PAGE
+include 'includes/session.inc.php';
+
 session_start();
+
+sessionLogout(); // session.inc.php
+
 session_unset();
 session_destroy();
 header("Location: ./login.php");

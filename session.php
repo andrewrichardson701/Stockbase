@@ -9,8 +9,17 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start(); 
 }
 
-// set the redirect_url 
+// do session mangement stuff
+include 'includes/session.inc.php';
+// check for timeout
+checktimeout();
+// expire any old sessions
+sessionCloseExpired();
+// set the session last_activity
+sessionLastActivity();
 
+
+// set the redirect_url 
 $redirect_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $queryString = isset($_SERVER['QUERY_STRING']) ? '?'.parse_url($_SERVER['QUERY_STRING'], PHP_URL_PATH) : '';
 

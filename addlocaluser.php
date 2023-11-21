@@ -95,6 +95,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             <div class="form-group">
                                 <input type="submit" name="submit" class="btn btn-primary" value="Add user">
                             </div>
+                            <div class="form-group" style="margin-left:20px">
+                                <input type="button" name="cancel" class="btn btn-warning" value="Cancel" onclick="window.location.href='admin.php#users-settings'">
+                            </div>
                         </div>
                     </form>
                     <?php
@@ -103,7 +106,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             if ($_GET["user"] == "added") {
                                 if (isset($_GET['username'])) {
                                     if (isset($_GET['userId']) && $_GET['userId'] !== '') {
-                                        echo '<p class="green">Local user: <or class="blue">'.$_GET['username'].'</or> (id: <or class="blue">'.$_GET['userId'].'</or> added!</p>';
+                                        echo '<p class="green">Local user: <or class="blue">'.$_GET['username'].'</or> (id: <or class="blue">'.$_GET['userId'].'</or>) added!</p>';
                                     } else {
                                         echo '<p class="green">Local user: <or class="blue">'.$_GET['username'].'</or> added!</p>';
                                     }

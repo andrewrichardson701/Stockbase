@@ -10,7 +10,6 @@ if (isset($_POST['submit'])) {
         exit();
     } else {
         if (isset($_POST['password']) === isset($_POST['password_confirm'])) {
-            include 'get-config.inc.php';
             
             $new_username = $_POST["username"];
             $new_password = $_POST["password"];
@@ -41,15 +40,15 @@ if (isset($_POST['submit'])) {
                     $userFound = 0;
 
                     // ADD user to table
-                    $first_name = mysqli_real_escape_string($conn, $first_name); // escape the special characters
-                    $last_name = mysqli_real_escape_string($conn, $last_name); // escape the special characters
+                    $new_first_name = mysqli_real_escape_string($conn, $new_first_name); // escape the special characters
+                    $new_last_name = mysqli_real_escape_string($conn, $new_last_name); // escape the special characters
                     $sql_upload = "INSERT INTO users (username, first_name, last_name, email, role_id, auth, password, enabled, password_expired, theme_id) VALUES (?,?,?,?,?,?,?,?,?,?)";
                     $stmt_upload = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                         header("Location: ../addlocaluser.php?error=sqlerror&table=users&line=".__LINE__."&file=".__FILE__);
                         exit();
                     } else {
-                        mysqli_stmt_bind_param($stmt_upload, "sssssssss", $new_username, $new_first_name, $new_last_name, $new_email, $new_role_id, $new_auth, $new_password_hash, $new_enabled, $new_expired, $current_default_theme_id);
+                        mysqli_stmt_bind_param($stmt_upload, "ssssssssss", $new_username, $new_first_name, $new_last_name, $new_email, $new_role_id, $new_auth, $new_password_hash, $new_enabled, $new_expired, $current_default_theme_id);
                         mysqli_stmt_execute($stmt_upload);
                         $new_id = mysqli_insert_id($conn);
                         include 'changelog.inc.php';

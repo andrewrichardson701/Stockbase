@@ -476,7 +476,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.5.0-beta</h3></summary>
-<h4>Beta release 0.5.0, Session logging and management for users.</h4>
+<h4>Beta release 0.5.0, Session logging and management for users, changelog improvements and some formatting.</h4>
 
 - Added sessionlog table to database.
 - sessionlog table tracks the login/logout/timeout/expiry of user sessions to manage their login time.
@@ -486,7 +486,7 @@ Clone the repo first, and the follow the below steps.
 - Admin page now has a "Session Management" section to kill any inactive or suspicious sessions.
 - Admin sections moved around to be more logical
 - Changelog page now has onclicks to show a hidden row with the table data for the record_id
-- Some table formatting changes to the move hidden rows. These are now centered.
+- Some table formatting changes to the move hidden rows. These are now centered
 
 </details>
 <details>

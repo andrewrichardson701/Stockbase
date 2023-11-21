@@ -285,15 +285,17 @@ fi
 sleep 2
 echo ""
 # Ask for system name
-read -p "Enter a name custom name for the system (default: StockBase): " system_name
-case "$system_name" in
-    "") 
-        system_name='StockBase'
-        break;;
+while true; do
+    read -p "Enter a name custom name for the system (default: StockBase): " system_name
+    case "$system_name" in
+        "") 
+            system_name='StockBase'
+            break;;
 
-    *)
-        break;;
-esac
+        *)
+            break;;
+    esac
+done
 echo ""
 echo "System Name: $system_name"
 

@@ -4,24 +4,20 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
+// do session mangement stuff
+include 'includes/session.inc.php';
 
 // SETUP THE SESSION FOR ALL PAGES - THIS WILL CONFIRM IF THERE IS A LOGGED IN USER OR NOT.
-if(session_status() !== PHP_SESSION_ACTIVE) {
+if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start(); 
 }
 
-// do session mangement stuff
-include 'includes/session.inc.php';
 // check for timeout
 checktimeout();
 // expire any old sessions
 sessionCloseExpired();
 // set the session last_activity
 sessionLastActivity();
-
-
-
-
 
 
 // set the redirect_url 

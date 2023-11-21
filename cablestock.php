@@ -555,8 +555,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         </tr>
                                         <tr class="vertical-align align-middle'.$last_edited.' move-hide" id="'.$cable_item_id.'-move-hidden" hidden>
                                             <td colspan=100%>
-                                                <div class="container">
-                                                <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                <table class="centertable" style="border: 1px solid #454d55; width:100%"> <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                                     <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                                     <input type="hidden" name="cablestock-move" value="1">
                                                     <input type="hidden" id="'.$stock_id.'-c-stock" name="current_cable_item" value="'.$cable_item_id.'">
@@ -566,47 +565,44 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     <input type="hidden" id="'.$stock_id.'-c-shelf" name="current_shelf" value="'.$stock_shelf_id.'">
                                                     <input type="hidden" id="'.$stock_id.'-c-cost" name="current_cost" value="'.$cable_item_cost.'">
                                                     <input type="hidden" id="'.$stock_id.'-c-quantity" name="current_quantity" value="'.$stock_quantity_total.'">
-                                                        <table style="border: 1px solid #454d55; width:100%">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="container">
-                                                                            <div class="row">
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <label class="nav-v-c">To:</label>
-                                                                                </div>
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2 0 2 0;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
-                                                                                        <option value="" selected="" disabled="" hidden="">Site</option><option value="1">CDC ME14</option><option value="2">CDC DA2</option><option value="4">TestSite</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">
-                                                                                        <option value="" selected="" disabled="" hidden="">Area</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-shelf" name="shelf" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required>
-                                                                                        <option value="" selected="" disabled="" hidden="">Shelf</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <label class="nav-v-c" for="0-n-quantity">Quantity: </label>
-                                                                                </div>
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_quantity_total.'" required>
-                                                                                </div>
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$stock_id.'-n-submit" value="Move" style="opacity:80%;" name="submit" required="">
-                                                                                </div>
-                                                                            </div>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <div class="container">
+                                                                    <div class="row centertable" style="max-width:max-content">
+                                                                        <div class="col" style="max-width:max-content !important">
+                                                                            <label class="nav-v-c">To:</label>
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </form>
-                                                </div>
+                                                                        <div class="col" style="max-width:max-content !important">
+                                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2 0 2 0;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
+                                                                                <option value="" selected="" disabled="" hidden="">Site</option><option value="1">CDC ME14</option><option value="2">CDC DA2</option><option value="4">TestSite</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col" style="max-width:max-content !important">
+                                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">
+                                                                                <option value="" selected="" disabled="" hidden="">Area</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col" style="max-width:max-content !important">
+                                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-shelf" name="shelf" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required>
+                                                                                <option value="" selected="" disabled="" hidden="">Shelf</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col" style="max-width:max-content !important">
+                                                                            <label class="nav-v-c" for="0-n-quantity">Quantity: </label>
+                                                                        </div>
+                                                                        <div class="col" style="max-width:max-content !important">
+                                                                            <input type="number" class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_quantity_total.'" required>
+                                                                        </div>
+                                                                        <div class="col" style="max-width:max-content !important">
+                                                                            <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$stock_id.'-n-submit" value="Move" style="opacity:80%;" name="submit" required="">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </td>
                                         </tr>
                                     ');

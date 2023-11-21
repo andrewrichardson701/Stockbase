@@ -12,6 +12,7 @@ if (!empty($_POST)) {
                 session_start();
             } 
             include 'changelog.inc.php';
+            include 'dbh.inc.php';
             $redirect_url = str_replace('includes/', '', $_SESSION['redirect_url']);
             // print_r($_POST);        
             $name = isset($_POST['property_name']) ? $_POST['property_name'] : header("Location ../$redirect_url&error=nameEmpty"); // all

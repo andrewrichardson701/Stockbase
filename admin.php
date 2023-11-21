@@ -1966,7 +1966,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             <div class="content">
                 <?php 
                 include 'includes/dbh.inc.php';
-                $sql = "SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 10";
+                $sql = "SELECT * FROM changelog ORDER BY id DESC, timestamp DESC LIMIT 10";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                     echo("<p class='red'>Error reaching changelog table</p>");

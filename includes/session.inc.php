@@ -1,6 +1,8 @@
 <?php 
 $session_timeout = (30*60); // mins * seconds
-ini_set('session.gc_maxlifetime', $session_timeout);
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    ini_set('session.gc_maxlifetime', $session_timeout); // can only be set if the session is inactive.
+}
 
 function getIPAddress() {  
     global $_SERVER;

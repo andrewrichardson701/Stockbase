@@ -47,7 +47,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 ?>
                 <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                     <thead>
-                        <tr class="theme-tableOuter">
+                        <tr class="theme-tableOuter align-middle text-center">
                             <th>id</th>
                             <th>timestamp</th>
                             <th>user_id</th>
@@ -64,7 +64,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <?php
                         while ($row = $result->fetch_assoc()) {
                             echo('
-                            <tr>
+                            <tr class="align-middle text-center clickable row-show" id="log-'.$row['id'].'" onclick="toggleHidden(\''.$row['id'].'\')">
                                 <td>'.$row['id'].'</td>
                                 <td>'.$row['timestamp'].'</td>
                                 <td>'.$row['user_id'].'</td>
@@ -76,9 +76,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <td>'.$row['value_old'].'</td>
                                 <td>'.$row['value_new'].'</td>
                             </tr>
-                            <tr class="align-middle text-center">
+
+                            <tr class="align-middle text-center row-hide" id="log-'.$row['id'].'-view" hidden>
                                 <td class="align-middle text-center" colspan=100%>
-                                    <table class="centertable">
+                                    <table class="centertable" style="width:100%">
                                     ');
                                     $table_name = $row['table_name'];
                                     $record_id = $row['record_id'];
@@ -101,7 +102,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                                             $sql_table = "SELECT COLUMN_NAME
                                                             FROM INFORMATION_SCHEMA.COLUMNS
-                                                            WHERE TABLE_SCHEMA = 'inventory' 
+                                                            WHERE TABLE_SCHEMA = '$dBName' 
                                                                 AND TABLE_NAME='$table_name';";
                                             $stmt_table = mysqli_stmt_init($conn);
                                             if (!mysqli_stmt_prepare($stmt_table, $sql_table)) {
@@ -116,6 +117,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     $column_names = [];
                                                     while ($row_table = $result_table->fetch_assoc()) {
                                                         $column_names[] = $row_table['COLUMN_NAME'];
+                                                        
                                                     }
 
                                                     if (!empty($column_names) && count($column_names)>0) {
@@ -146,7 +148,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                 ');
                                                                 echo('
                                                                     <tbody>
-                                                                        <tr>
+                                                                        <tr class="align-middle text-center">
                                                                         ');
                                                                         foreach($column_names as $column2) {
                                                                             echo('<td>'.$row_record[$column2].'</td>');
@@ -178,5 +180,28 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     </div>
 
     <?php include 'foot.php'; ?>
-
+<script>
+    function toggleHidden(id) {
+        var Row = document.getElementById('log-'+id);
+        var hiddenID = 'log-'+id+'-view';
+        var hiddenRow = document.getElementById(hiddenID);
+        var allRows = document.getElementsByClassName('row-show');
+        var allHiddenRows = document.getElementsByClassName('row-hide');
+        if (hiddenRow.hidden == false) {
+            hiddenRow.hidden=true;
+            hiddenRow.classList.remove('theme-th-selected');
+            Row.classList.remove('theme-th-selected');
+        } else {
+            for(var i = 0; i < allHiddenRows.length; i++) {
+                allHiddenRows[i].hidden=true;
+            } 
+            for (var j = 0; j < allRows.length; j++) {
+                allRows[j].classList.remove('theme-th-selected');
+            }     
+            hiddenRow.hidden=false;
+            hiddenRow.classList.add('theme-th-selected');
+            Row.classList.add('theme-th-selected');
+        }
+    }
+</script>
 </body>

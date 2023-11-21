@@ -33,7 +33,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <div class="content">
         <?php 
         include 'includes/dbh.inc.php';
-        $sql = "SELECT * FROM changelog ORDER BY timestamp DESC";
+        $sql = "SELECT * FROM changelog ORDER BY id DESC, timestamp DESC";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             echo("<p class='red'>Error reaching changelog table</p>");

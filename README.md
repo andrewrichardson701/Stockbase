@@ -485,6 +485,8 @@ Clone the repo first, and the follow the below steps.
 - Update script adjusted to allow the database changes.
 - Admin page now has a "Session Management" section to kill any inactive or suspicious sessions.
 - Admin sections moved around to be more logical
+- Changelog page now has onclicks to show a hidden row with the table data for the record_id
+- Some table formatting changes to the move hidden rows. These are now centered.
 
 </details>
 <details>

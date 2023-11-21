@@ -444,7 +444,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock", $stock_id, "name", null, $stock_name);
                             // announce new stock added
                             $stock_info = getCableStockInfo($stock_id);
-                            $item_location = getItemLocation($shelf);
+                            $item_location = getItemLocation($shelf_id);
                             $base_url = getCurrentURL();
                         
                             $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Created";

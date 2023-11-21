@@ -76,6 +76,96 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <td>'.$row['value_old'].'</td>
                                 <td>'.$row['value_new'].'</td>
                             </tr>
+                            <tr class="align-middle text-center">
+                                <td class="align-middle text-center" colspan=100%>
+                                    <table class="centertable">
+                                    ');
+                                    $table_name = $row['table_name'];
+                                    $record_id = $row['record_id'];
+                                    $user_id = $row['user_id'];
+
+                                    $sql_user = "SELECT * FROM users WHERE id=$user_id";
+                                    $stmt_user = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_user, $sql_user)) {
+                                        echo("<p class='red'>Error reaching changelog table</p>");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_user);
+                                        $result_user = mysqli_stmt_get_result($stmt_user);
+                                        $rowCount_user = $result_user->num_rows;
+                                        if ($rowCount_user < 1) {
+                                            echo("<tr><td colspan=100%>User not found</td></tr>");
+                                        } else {
+                                            $row_user = $result_user->fetch_assoc();
+                                            $username = $row_user['username'];
+                                            
+
+                                            $sql_table = "SELECT COLUMN_NAME
+                                                            FROM INFORMATION_SCHEMA.COLUMNS
+                                                            WHERE TABLE_SCHEMA = 'inventory' 
+                                                                AND TABLE_NAME='$table_name';";
+                                            $stmt_table = mysqli_stmt_init($conn);
+                                            if (!mysqli_stmt_prepare($stmt_table, $sql_table)) {
+                                                echo("<p class='red'>Error reaching changelog table</p>");
+                                            } else {
+                                                mysqli_stmt_execute($stmt_table);
+                                                $result_table = mysqli_stmt_get_result($stmt_table);
+                                                $rowCount_table = $result_table->num_rows;
+                                                if ($rowCount_table < 1) {
+                                                    echo("<tr><td colspan=100%>Table: $table_name not found.</td></tr>");
+                                                } else {
+                                                    $column_names = [];
+                                                    while ($row_table = $result_table->fetch_assoc()) {
+                                                        $column_names[] = $row_table['COLUMN_NAME'];
+                                                    }
+
+                                                    if (!empty($column_names) && count($column_names)>0) {
+
+                                                        $sql_record = "SELECT * FROM $table_name WHERE id=$record_id";
+                                                        $stmt_record = mysqli_stmt_init($conn);
+                                                        if (!mysqli_stmt_prepare($stmt_record, $sql_record)) {
+                                                            echo("<p class='red'>Error reaching changelog table</p>");
+                                                        } else {
+                                                            mysqli_stmt_execute($stmt_record);
+                                                            $result_record = mysqli_stmt_get_result($stmt_record);
+                                                            $rowCount_record = $result_record->num_rows;
+                                                            if ($rowCount_record < 1) {
+                                                                echo("<tr><td colspan=100%>Record not found.</td></tr>");
+                                                            } else {
+                                                                $row_record = $result_record->fetch_assoc();
+
+                                                                echo('
+                                                                    <thead>
+                                                                        <tr class="align-middle text-center">
+                                                                        ');
+                                                                        foreach($column_names as $column) {
+                                                                            echo('<th>'.$column.'</th>');
+                                                                        }
+                                                                        echo('
+                                                                        </tr>
+                                                                    </thead>
+                                                                ');
+                                                                echo('
+                                                                    <tbody>
+                                                                        <tr>
+                                                                        ');
+                                                                        foreach($column_names as $column2) {
+                                                                            echo('<td>'.$row_record[$column2].'</td>');
+                                                                        }
+                                                                        echo('
+                                                                        </tr>
+                                                                    </tbody>
+                                                                ');
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }                                          
+                                        }
+                                    }
+                                    echo('  
+                                    </table>
+                                </td>
+                            </tr>
                             ');
                         }
                         ?>

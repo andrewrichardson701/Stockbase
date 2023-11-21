@@ -299,34 +299,34 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             <tr class="row-hide" id="item-'.$i.'-edit" hidden>
                                                 <td colspan=100%>
                                                     <div class="container">                                                       
-                                                        <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
-                                                            <!-- below input used for the stock-modify.inc.php page to determine the type of change -->');
-                                                            if ($data_is_cable == 0) {
-                                                                echo('<input type="hidden" name="stock-move" value="1" /> ');
-                                                            } else {
-                                                                echo('<input type="hidden" name="cablestock-move" value="1" /> 
-                                                                    <input type="hidden" name="redirect_url" value="stock.php?stock_id='.$stock_id.'&modify=move" />
-                                                                    <input type="hidden" name="current_cable_item" value="'.$stock_inv_data[$i]['item_id'].'" />');
-                                                            }
-                                                            echo('
-                                                            <input type="hidden" id="'.$i.'-c-i" name="current_i" value="'.$i.'" />
-                                                            <input type="hidden" id="'.$i.'-c-stock" name="current_stock" value="'.$stock_id.'" />
-                                                            <input type="hidden" id="'.$i.'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
-                                                            ');
-                                                            if ($data_is_cable == 0) {
+                                                        <table class="centertable" style="border: 1px solid #454d55;">
+                                                            <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                                <!-- below input used for the stock-modify.inc.php page to determine the type of change -->');
+                                                                if ($data_is_cable == 0) {
+                                                                    echo('<input type="hidden" name="stock-move" value="1" /> ');
+                                                                } else {
+                                                                    echo('<input type="hidden" name="cablestock-move" value="1" /> 
+                                                                        <input type="hidden" name="redirect_url" value="stock.php?stock_id='.$stock_id.'&modify=move" />
+                                                                        <input type="hidden" name="current_cable_item" value="'.$stock_inv_data[$i]['item_id'].'" />');
+                                                                }
                                                                 echo('
-                                                                <input type="hidden" id="'.$i.'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
-                                                                <input type="hidden" id="'.$i.'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
-                                                                <input type="hidden" id="'.$i.'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
-                                                                <input type="hidden" id="'.$i.'-c-comments" name="current_comments" value="'.htmlspecialchars($stock_inv_data[$i]['comments'], ENT_QUOTES, 'UTF-8').'" />
+                                                                <input type="hidden" id="'.$i.'-c-i" name="current_i" value="'.$i.'" />
+                                                                <input type="hidden" id="'.$i.'-c-stock" name="current_stock" value="'.$stock_id.'" />
+                                                                <input type="hidden" id="'.$i.'-c-site" name="current_site" value="'.$stock_inv_data[$i]['site_id'].'" />
+                                                                <input type="hidden" id="'.$i.'-c-area" name="current_area" value="'.$stock_inv_data[$i]['area_id'].'" />
+                                                                <input type="hidden" id="'.$i.'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
                                                                 ');
-                                                            }
-                                                            echo('
-                                                            <input type="hidden" id="'.$i.'-c-cost" name="current_cost" value="'.$stock_inv_data[$i]['cost'].'" />
-                                                            <input type="hidden" id="'.$i.'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
-                                                            <table style="border: 1px solid #454d55;">
+                                                                if ($data_is_cable == 0) {
+                                                                    echo('
+                                                                    <input type="hidden" id="'.$i.'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
+                                                                    <input type="hidden" id="'.$i.'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
+                                                                    <input type="hidden" id="'.$i.'-c-serial" name="current_serial" value="'.$stock_inv_data[$i]['serial_number'].'" />
+                                                                    <input type="hidden" id="'.$i.'-c-comments" name="current_comments" value="'.htmlspecialchars($stock_inv_data[$i]['comments'], ENT_QUOTES, 'UTF-8').'" />
+                                                                    ');
+                                                                }
+                                                                echo('
+                                                                <input type="hidden" id="'.$i.'-c-cost" name="current_cost" value="'.$stock_inv_data[$i]['cost'].'" />
+                                                                <input type="hidden" id="'.$i.'-c-quantity" name="current_quantity" value="'.$stock_inv_data[$i]['quantity'].'" />
                                                                 <tbody>
                                                                     <tr>
                                                                         <td>
@@ -395,8 +395,8 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                                         </td>
                                                                     </td>
                                                                 </tbody>
-                                                            </table>
-                                                        </form>
+                                                            </form>
+                                                        </table>
                                                     </div>
                                                 </td>
                                             </tr>

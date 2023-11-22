@@ -28,12 +28,137 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
     <div class="container">
         <h2 class="header-small">Changelog</h2>
+    </div> 
+
+    <?php 
+    $changelog_start_date = isset($_GET['start-date']) ? $_GET['start-date'] : date("Y-m-d", strtotime('- 14 days'));
+    $changelog_start_date_time = date('Y-m-d H:i:s', strtotime($changelog_start_date.' 00:00:00'));
+    $changelog_end_date = isset($_GET['end-date']) ? date($_GET['end-date']) : date('Y-m-d');
+    $changelog_end_date_time = date('Y-m-d H:i:s', strtotime($changelog_end_date.' 23:59:59'));
+    $get_table = isset($_GET['table']) ? $_GET['table'] : '';
+    if ($get_table == 0 || $get_table == '0' || $get_table == 'all') {
+        $get_table = '';
+    }
+    $changelog_table = ($get_table !== '') ? " AND table_name='".$get_table."' " : '';
+    $get_userid = isset($_GET['userid']) ? $_GET['userid'] : '';
+    if ($get_userid == 'all') {
+        $get_userid = '';
+    }
+    $changelog_user = $get_userid !== '' ? " AND user_id='".$get_userid."' " : '';
+    ?>
+
+    <div class="content" style="margin-top:10px;margin-bottom:10px;padding-bottom:0px">
+        <form action="" method="GET" class="text-center centertable" style="max-width:max-content">
+            <div class="row" style="max-width:max-content">
+                <div class="col" style="max-width:max-content">
+                    <div class="row align-middle">
+                        <div class="col" style="max-width:max-content;margin-top:3px">
+                            <label class="nav-v-c">Start Date:</label>
+                        </div>
+                        <div class="col" style="max-width:max-content">
+                            <input class="form-control nav-v-c row-dropdown" type="date" name="start-date" value="<?php echo($changelog_start_date); ?>" style="width:max-content"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" style="max-width:max-content">
+                    <div class="row align-middle">
+                        <div class="col" style="max-width:max-content;margin-top:3px">
+                            <label class="nav-v-c">End Date:</label>
+                        </div>
+                        <div class="col" style="max-width:max-content">
+                            <input class="form-control nav-v-c row-dropdown" type="date" name="end-date" value="<?php echo($changelog_end_date); ?>" style="width:max-content"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" style="max-width:max-content">
+                    <div class="row align-middle">
+                        <div class="col" style="max-width:max-content;margin-top:3px">
+                            <label class="nav-v-c">Table:</label>
+                        </div>
+                        <div class="col" style="max-width:max-content">
+                            <select class="form-control nav-v-c row-dropdown" styl="max-width:max-content" name="table">
+                                <option <?php if($get_table !== '' || $get_table == 0 || $get_table == 'all') { echo('selected '); }?> value="all">All</option>
+                                <?php
+                                $sql = "SELECT TABLE_NAME
+                                        FROM information_schema.tables
+                                        WHERE table_schema = '$dBName' AND TABLE_NAME != 'changelog';";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    echo("<option selected disabled>Error reaching users database</option>");
+                                } else {
+                                    mysqli_stmt_execute($stmt);
+                                    $result = mysqli_stmt_get_result($stmt);
+                                    $rowCount = $result->num_rows;
+                                    if ($rowCount < 1) {
+                                        echo("<option selected disabled>No Tables Found...</option>");
+                                    } else {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo('<option'); 
+                                            if ($get_table == $row['TABLE_NAME']) { echo(' selected'); }
+                                            echo(' value="'.$row['TABLE_NAME'].'">'.$row['TABLE_NAME'].'</option>');
+                                        }
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" style="max-width:max-content">
+                    <div class="row align-middle">
+                        <div class="col" style="max-width:max-content;margin-top:3px">
+                            <label class="nav-v-c">User:</label>
+                        </div>
+                        <div class="col" style="max-width:max-content">
+                            <select class="form-control nav-v-c row-dropdown" styl="max-width:max-content" name="userid">
+                                <option <?php if($get_userid !== '' || $get_userid == 'all') { echo('selected '); }?> value="all">All</option>
+                                <?php
+                                $sql = "SELECT id, username
+                                        FROM users;";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    echo("<option selected disabled>Error reaching users table</option>");
+                                } else {
+                                    mysqli_stmt_execute($stmt);
+                                    $result = mysqli_stmt_get_result($stmt);
+                                    $rowCount = $result->num_rows;
+                                    if ($rowCount < 1) {
+                                        echo("<option selected disabled>No Users Found...</option>");
+                                    } else {
+                                        while ($row = $result->fetch_assoc()) {
+                                            $users_id = $row['id'];
+                                            $users_username = $row['username'];
+
+                                            echo('<option'); 
+                                            if ($get_userid == $users_id) { echo(' selected'); }
+                                            echo(' value="'.$users_id.'">'.$users_username.'</option>');
+                                        }
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" style="max-width:max-content">
+                    <div class="col" style="max-width:max-content">
+                        <input class="form-control btn btn-info" type="submit" value="Filter" style="width:max-content"/>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
     <div class="content">
         <?php 
         include 'includes/dbh.inc.php';
-        $sql = "SELECT * FROM changelog ORDER BY id DESC, timestamp DESC";
+        $sql = "SELECT * 
+                FROM changelog 
+                WHERE changelog.timestamp >= '$changelog_start_date_time' 
+                    AND changelog.timestamp <= '$changelog_end_date_time'
+                    $changelog_table
+                    $changelog_user
+                ORDER BY id DESC, timestamp DESC";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             echo("<p class='red'>Error reaching changelog table</p>");
@@ -45,6 +170,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 echo("<p>No entries found.</p>");
             } else {
                 ?>
+                <pre hidden>
+                    <?php echo($sql); ?>
+                </pre>
                 <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                     <thead>
                         <tr class="theme-tableOuter align-middle text-center">

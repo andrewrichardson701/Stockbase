@@ -487,6 +487,8 @@ Clone the repo first, and the follow the below steps.
 - Admin sections moved around to be more logical
 - Changelog page now has onclicks to show a hidden row with the table data for the record_id
 - Some table formatting changes to the move hidden rows. These are now centered
+- Fixed the assign card buttons causing instant errors and not working on profile page
+- Added changelog filters to the changelog page. This allows time frames and table/user filtering.
 
 </details>
 <details>

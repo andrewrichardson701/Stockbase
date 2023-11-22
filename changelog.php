@@ -149,7 +149,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </form>
     </div>
 
-    <div class="content">
+    <div class="content" style="margin-left:20px;margin-right:20px">
         <?php 
         include 'includes/dbh.inc.php';
         $sql = "SELECT * 
@@ -279,7 +279,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                         <tr class="align-middle text-center">
                                                                         ');
                                                                         foreach($column_names as $column2) {
-                                                                            echo('<td>'.$row_record[$column2].'</td>');
+                                                                            if ($column2 == 'stock_id') {
+                                                                                echo('<td><a class="link" href="stock.php?stock_id='.$row_record[$column2].'">'.$row_record[$column2].'</a></td>');
+                                                                            } else {
+                                                                                echo('<td>'.$row_record[$column2].'</td>');
+                                                                            }
                                                                         }
                                                                         echo('
                                                                         </tr>

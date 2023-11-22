@@ -302,14 +302,14 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 // echo('<tr class="nav-row"><th class="text-center" style="width:180px;margin-top:20px">Swipe card 1</th><th class="text-center" style="width:185px;margin-top:20px">Swipe card 2</th></tr>');
                 echo('<tr class="nav-row">');
                 if ($card_primary == '' || $card_primary == null) {
-                    echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
+                    echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
                 } else {
-                    echo('<td style="width:200px"><button class="btn btn-warning" style="width:180px;margin-top:20px" onclick="modalLoadSwipe(\'re-assign\', 1)">Re-assign swipe card 1</button></td>');
+                    echo('<td style="width:200px"><button class="btn btn-warning" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 1)">Re-assign swipe card 1</button></td>');
                 }
                 if ($card_secondary == '' || $card_secondary == null) {
-                    echo('<td><button class="btn btn-success" style="width:185px;margin-top:20px" onclick="modalLoadSwipe(\'assign\', 2)">Assign swipe card 2</button></td>');
+                    echo('<td><button class="btn btn-success" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 2)">Assign swipe card 2</button></td>');
                 } else {
-                    echo('<td><button class="btn btn-warning" style="width:185px;margin-top:20px" onclick="modalLoadSwipe(\'re-assign\', 2)">Re-assign swipe card 2</button></td>');
+                    echo('<td><button class="btn btn-warning" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 2)">Re-assign swipe card 2</button></td>');
                 }
                 echo('</tr>');
                 if ($card_primary !== '' || $card_secondary !== '') {

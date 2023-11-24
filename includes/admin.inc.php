@@ -1891,7 +1891,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 mysqli_stmt_execute($stmt_update);
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", '1', $type, $prev_value, $value);
-                                $results[] = msg("Footer $state!", 'success');
+                                $results[] = msg("Footer $state! Please refresh.", 'success');
                             }
                         } else {
 

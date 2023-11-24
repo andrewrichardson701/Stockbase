@@ -148,27 +148,21 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                     <div class="row">
                         <div class="text-left" id="stock-info-left" style="padding-left:15px">
                             <div class="nav-row" style="margin-bottom:25px">
-                                ');
-                                if ($data_is_cable == 0) {
-                                    echo('
-                                    <div class="nav-row" id="upc-row" style="margin-top:25px">
-                                        <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="upc" id="upc-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Universal Product Code for item">UPC</or></label></div>
-                                        <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c stock-inputSize" value="'.$input_upc.'"></input></div>
+                                <div class="nav-row" id="upc-row" style="margin-top:25px">
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="upc" id="upc-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Universal Product Code for item">UPC</or></label></div>
+                                    <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c stock-inputSize" value="'.$input_upc.'"></input></div>
+                                </div>
+                                <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
+                                    <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
+                                    <div>
+                                        <select name="manufacturer" id="manufacturer-select" class="form-control stock-inputSize" required>
+                                            <option value="" selected disabled hidden>Select Manufacturer</option>
+                                        </select>
                                     </div>
-                                    <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
-                                        <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
-                                        <div>
-                                            <select name="manufacturer" id="manufacturer-select" class="form-control stock-inputSize" required>
-                                                <option value="" selected disabled hidden>Select Manufacturer</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'manufacturer\')">Add New</label>
-                                        </div>
+                                    <div>
+                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'manufacturer\')">Add New</label>
                                     </div>
-                                    ');
-                                }
-                                echo('
+                                </div>
                                 <div class="nav-row" id="site-row" style="margin-top:25px">
                                     <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site</label></div>
                                     <div>
@@ -231,16 +225,10 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'shelf\')">Add New</label>
                                     </div>
                                 </div>
-                                ');
-                                if ($data_is_cable == 0) {
-                                    echo('
-                                    <div class="nav-row" id="cost-row" style="margin-top:25px">
-                                        <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost ('.$config_currency.')</label></div>
-                                        <div><input type="number" name="cost" placeholder="0" id="cost" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required></input></div>
-                                    </div>
-                                    ');
-                                }
-                                echo('
+                                <div class="nav-row" id="cost-row" style="margin-top:25px">
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost ('.$config_currency.')</label></div>
+                                    <div><input type="number" name="cost" placeholder="0" id="cost" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required></input></div>
+                                </div>
                             </div>
                             <hr style="border-color: gray; margin-right:15px">
                             <div class="nav-row" style="margin-bottom:25px">
@@ -248,16 +236,10 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
                                     <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="'.$input_quantity.'" required></input></div>
                                 </div>
-                                ');
-                                if ($data_is_cable == 0) {
-                                    echo('
                                     <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
                                         <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c stock-inputSize" value="'.$input_serial_number.'"></input></div>
                                     </div>
-                                    ');
-                                }
-                                echo('
                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
                                     <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
                                     <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize" value="New Stock" value="'.htmlspecialchars($input_reason, ENT_QUOTES, 'UTF-8').'"></input></div>

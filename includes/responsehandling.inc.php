@@ -259,7 +259,9 @@ if (isset($_GET['success'])) {
         $successPtext = 'Stock removed.';
     } elseif ($_GET['success'] == 'stockAdded') {
         $successPtext = 'Stock added.';
-    } else {
+    } elseif ($_GET['success'] == "fileUploaded") {
+		$successPtext = 'Fiel Uploaded Successfully.';
+	} else {
         $successPtext = $_GET['success'];
     }
 }

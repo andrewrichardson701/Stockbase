@@ -15,6 +15,7 @@ $redirect_url = $_SESSION['redirect_url'];
 $queryChar = strpos($redirect_url, "?") !== false ? '&' : '?';
 
 include 'changelog.inc.php';
+include 'smtp.inc.php';
 
 function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
     $timedate = date("dmyHis");
@@ -246,6 +247,7 @@ function addQuantity($stock_id, $cable_item_id) {
 
     if ($cable_item_id == $item['id']) {
         include 'dbh.inc.php';
+        
 
         $sql = "UPDATE cable_item SET quantity=?
                 WHERE id=?";
@@ -261,7 +263,6 @@ function addQuantity($stock_id, $cable_item_id) {
 
             $stock_info = getCableStockInfo($item['stock_id']);
             $item_location = getItemLocation($item['shelf_id']);
-            $base_url = getCurrentURL();
             
             $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Added";
             $email_body = "<p>Fixed cable stock added, for <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
@@ -295,6 +296,7 @@ function removeQuantity($stock_id, $cable_item_id) {
 
         if ($cable_item_id == $item['id']) { 
             include 'dbh.inc.php';
+            
 
             $sql = "UPDATE cable_item SET quantity=?
                     WHERE id=?";
@@ -310,7 +312,6 @@ function removeQuantity($stock_id, $cable_item_id) {
 
                 $stock_info = getCableStockInfo($item['stock_id']);
                 $item_location = getItemLocation($item['shelf_id']);
-                $base_url = getCurrentURL();
             
                 $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
                 $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
@@ -443,6 +444,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             // update changelog
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "stock", $stock_id, "name", null, $stock_name);
                             // announce new stock added
+                            
                             $stock_info = getCableStockInfo($stock_id);
                             $item_location = getItemLocation($shelf_id);
                             $base_url = getCurrentURL();
@@ -499,7 +501,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($_POST['cable-item-id'] !== '' && $_POST['cable-item-id'] !== 0) {
                 $cable_item_id = $_POST['cable-item-id'];
                 $stock_id = $_POST['stock-id'];
-                include 'smtp.inc.php';
+                
                 if ($action == "add") {
                     addQuantity ($stock_id, $cable_item_id);
                 } elseif ($action == "remove") {

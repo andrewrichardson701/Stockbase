@@ -19,7 +19,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     // $show_inventory = 1; // for nav.php to show the site and area on the banner - no longer used.
     ?>
     <!-- Header and Nav -->
-    <?php include 'nav.php'; ?>
+    <?php 
+        $navHighlight = 'index'; // for colouring the nav bar link
+        include 'nav.php'; 
+    ?>
     <!-- End of Header and Nav -->
 
     <div class="content">
@@ -317,7 +320,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </button>
                         </div>
                         <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
-                            <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
+                            <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
                                 Fixed Cables
                             </button>
                         </div>
@@ -344,7 +347,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </button>
                         </div>
                         <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
-                            <button id="cable-stock" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
+                            <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
                                 Fixed Cables
                             </button>
                         </div>

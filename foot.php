@@ -21,9 +21,9 @@ $WorB_complement_banner_color = getWorB($complemenent_banner_color);
 
 </style>
 <div id="scrollTop" class="hideTranslate">
-<button onclick="topFunction()" class="scrollBtn" id="scrollBtn" title="Go to top.">
-    <i class="fa fa-chevron-up scrollIcon"></i> <span id="scrollText">Scroll to Top</span>
-</button>
+    <button onclick="topFunction()" class="scrollBtn" id="scrollBtn" title="Go to top.">
+        <i class="fa fa-chevron-up scrollIcon"></i> <span id="scrollText">Scroll to Top</span>
+    </button>
 </div>
 <script>
     // SCROLL TO TOP SECTION
@@ -79,7 +79,11 @@ if ($current_footer_enable == 1) {
                     }
                     ?>
                 </div>
+
             </div>
+        </div> 
+        <div class="align-right" style="display: block;position: absolute;bottom: 4px;right: 20px;z-index: 99;font-size: 18px;border: none;outline: none;cursor: pointer;overflow: hidden;" >
+            <a href="./about.php" style="font-size:12px"><?php echo $versionNumber; ?></a>
         </div>
     </div>
     <?php

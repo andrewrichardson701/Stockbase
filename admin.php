@@ -17,20 +17,32 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
     <title><?php echo ucwords($current_system_name);?> - Admin</title>
 </head>
 <body>
-    <?php // dependency PHP    
+    <?php // dependency PHP   
+    
+    // \/ \/ This doesnt work due to headers being sent in head.php \/ \/
+
     // Redirect if the user is not in the admin list in the get-config.inc.php page. - this needs to be after the "include head.php" 
-    if (!in_array($_SESSION['role'], $config_admin_roles_array)) {
-        header("Location: ./login.php");
-        exit();
-    }
+    // if (!in_array($_SESSION['role'], $config_admin_roles_array)) {
+    //     header("Location: ./login.php");
+    //     exit();
+    // }
     ?>
+    <script>
+        // Redirect if the user is not in the admin list in the get-config.inc.php page. - this needs to be after the "include head.php" 
+        if (!<?php echo json_encode(in_array($_SESSION['role'], $config_admin_roles_array)); ?>) {
+            window.location.href = './login.php';
+        }
+    </script>
 
 
     <!-- hidden link, commented out as no purpose currently -->
     <!-- <a href="changelog.php" class="skip-nav-link-inv">changelog</a> -->
 
     <!-- Header and Nav -->
-    <?php include 'nav.php'; ?>
+    <?php 
+        $navHighlight = 'admin'; // for colouring the nav bar link
+        include 'nav.php'; 
+    ?>
     <!-- End of Header and Nav -->
 
     <div class="container">
@@ -541,6 +553,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         <th>ID</th>
                         <th>Name</th>
                         <th>Description</th>
+                        <th class="title" title="Can access the Optics page">Optics</th>
                         <th>Administrator</th>
                         <th>Root</th>
                     </tr>
@@ -563,6 +576,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <td>'.$row_roles['id'].'</td>
                                     <td>'.$row_roles['name'].'</td>
                                     <td>'.$row_roles['description'].'</td>
+                                    <td style="vertical-align: middle;">'); if ($row_roles['is_optic'] == 1) { echo('<i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i>'); } else { echo('<i class="fa-solid fa-xmark" style="color: #ff0000;"></i>'); } echo ('</td>
                                     <td style="vertical-align: middle;">'); if ($row_roles['is_admin'] == 1) { echo('<i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i>'); } else { echo('<i class="fa-solid fa-xmark" style="color: #ff0000;"></i>'); } echo ('</td>
                                     <td style="vertical-align: middle;">'); if ($row_roles['is_root'] == 1) { echo('<i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i>'); } else { echo('<i class="fa-solid fa-xmark" style="color: #ff0000;"></i>'); } echo ('</td>
                                     </tr>');

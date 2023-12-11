@@ -329,7 +329,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                         <td hidden>'.$stock_inv_data[$st]['id'].'</td>
                                                         <td id="site-'.$stock_inv_data[$st]['site_id'].'"><or class="clickable" onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'\'">'.$stock_inv_data[$st]['site_name'].'</or></td>
                                                         <td id="area-'.$stock_inv_data[$st]['area_id'].'" style="padding-left: 10px"><or class="clickable" onclick="window.location.href=\'./?site='.$stock_inv_data[$st]['site_id'].'&area='.$stock_inv_data[$st]['area_id'].'\'">'.$stock_inv_data[$st]['area_name'].'</or>:</td>
-                                                        <td id="shelf-'.$stock_inv_data[$st]['shelf_id'].'" style="padding-left: 5px"><button class="btn theme-btn btn-stock-click gold" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$st]['shelf_name']).'\'">'.$stock_inv_data[$st]['shelf_name'].'</button></td>
+                                                        <td id="shelf-'.$stock_inv_data[$st]['shelf_id'].'" style="padding-left: 5px"><button class="btn theme-btn btn-stock-click gold clickable" onclick="window.location.href=\'./?shelf='.str_replace(' ', '+', $stock_inv_data[$st]['shelf_name']).'\'">'.$stock_inv_data[$st]['shelf_name'].'</button></td>
                                                         <td style="padding-left: 5px" class="text-center theme-textColor">'.$stock_inv_data[$st]['quantity'].'</td>
                                                     </tr>
                                                     ');
@@ -364,7 +364,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <p id="tags">');
                                                 if (is_array($stock_inv_data[0]['tag'])) {
                                                     for ($l=0; $l < count($stock_inv_data[0]['tag']); $l++) {
-                                                        echo('<button class="btn theme-btn btn-stock-click gold" id="tag-'.$stock_inv_data[0]['tag'][$l]['id'].'" onclick="window.location.href=\'./?tag='.$stock_inv_data[0]['tag'][$l]['name'].'\'">'.$stock_inv_data[0]['tag'][$l]['name'].'</button> ');
+                                                        echo('<button class="btn theme-btn btn-stock-click gold clickable" id="tag-'.$stock_inv_data[0]['tag'][$l]['id'].'" onclick="window.location.href=\'./?tag='.$stock_inv_data[0]['tag'][$l]['name'].'\'">'.$stock_inv_data[0]['tag'][$l]['name'].'</button> ');
                                                     }
                                                 } else {
                                                     echo('None');
@@ -374,7 +374,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
                                                 if ( is_array($stock_inv_data[0]['manufacturer'])) {
                                                     for ($m=0; $m < count($stock_inv_data[0]['manufacturer']); $m++) {
-                                                        echo('<button class="btn theme-btn btn-stock-click gold" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
+                                                        echo('<button class="btn theme-btn btn-stock-click gold clickable" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
                                                     }
                                                 } else {
                                                     echo('None');

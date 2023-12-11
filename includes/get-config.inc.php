@@ -75,6 +75,28 @@ if (!mysqli_stmt_prepare($stmt_roles, $sql_roles)) {
     }
 }
 
+// get optics capable user roles
+$config_optics_roles_array = [];
+
+$sql_roles = "SELECT * FROM users_roles ORDER BY id";
+$stmt_roles = mysqli_stmt_init($conn);
+if (!mysqli_stmt_prepare($stmt_roles, $sql_roles)) {
+    echo("ERROR getting entries");
+} else {
+    mysqli_stmt_execute($stmt_roles);
+    $result_roles = mysqli_stmt_get_result($stmt_roles);
+    $rowCount_roles = $result_roles->num_rows;
+    if ($rowCount_roles < 1) {
+        echo ("No User Roles in the users_roles table. Something is wrong here...");
+    } else {
+        while ( $role = $result_roles->fetch_assoc() ) {
+            if ($role['is_optic'] == 1) {
+                $config_optics_roles_array[] = $role['name'];
+            }
+        }
+    }
+}
+
 // get config
 $sql_config = "SELECT * FROM config ORDER BY id LIMIT 1";
 $stmt_config = mysqli_stmt_init($conn);

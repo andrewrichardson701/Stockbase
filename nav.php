@@ -15,6 +15,29 @@
             </a>
         </div>
         <?php 
+        // check if plink highlighting has been set in the parent php file
+        if (isset($navHighlight)) {
+            switch($navHighlight) {
+                case 'index':
+                    $highlight = 1;
+                    break;
+                case 'optics':
+                    $highlight = 2;
+                    break;
+                case 'profile':
+                    $highlight = 4;
+                    break;
+                case 'admin':
+                    $highlight = 3  ;
+                    break;
+                default:
+                    $highlight = 0;
+                    break;
+            }
+        } else {
+            $highlight = 0;
+        }
+
         if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
             echo('
             <div id="add-div" class="nav-div" style="margin-right:5px">
@@ -49,26 +72,49 @@
                     ');
                 }
             }
-            if (isset($profile_name)) {
-                echo('
-                <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                    <button id="profile" class="nav-v-c nav-trans" style="height:100%;color:'.$current_banner_text_color.'" onclick="window.location=\'./profile.php\';">'.$profile_name.'</button>
-                </div> 
-                ');
+            $n = 0;
+            if (isset($loggedin_role)) {
+                if (in_array($loggedin_role, $config_optics_roles_array)) {
+                    $n++;
+                    echo('
+                    <div id="stock-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                        <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./">Stock</a>
+                    </div> 
+                    ');
+                }
+            }
+            if (isset($loggedin_role)) {
+                if (in_array($loggedin_role, $config_optics_roles_array)) {
+                    $n++;
+                    echo('
+                    <div id="optics-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                        <a id="optics" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./optics.php">Optics</a>
+                    </div> 
+                    ');
+                }
             }
             if (isset($loggedin_role)) {
                 if (in_array($loggedin_role, $config_admin_roles_array)) {
+                    $n++;
                     echo('
                     <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <button id="admin" class="nav-v-c nav-trans" style="height:100%;color:'.$current_banner_text_color.'" onclick="window.location=\'./admin.php\';">Admin</button>
+                        <a id="admin" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./admin.php">Admin</a>
                     </div> 
                     ');
                 }
             }
             if (isset($profile_name)) {
+                $n++;
+                echo('
+                <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                    <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./profile.php">'.$profile_name.'</a>
+                </div> 
+                ');
+            }
+            if (isset($profile_name)) {
                 echo ('
                     <div id="logout-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <button id="logout" class="nav-v-c nav-trans" style="height:100%;color:'.$current_banner_text_color.'" onclick="window.location=\'./logout.php\';">Logout</button>
+                        <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important" href="./logout.php">Logout</a>
                     </div> 
                 ');
             }
@@ -101,7 +147,9 @@
             if (isset($profile_name)) { 
                 echo('
                     <ul class="nav-links">
-                        <li><a href="./profile.php">'.$profile_name.'</a></li>');
+                        <li><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>
+                        <li><a href="./optics.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>
+                        <li><a href="./profile.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
                         // if (isset($loggedin_role)) {
                         //     if (in_array($loggedin_role, $config_admin_roles_array)) {
                         //         echo('<li><a href="./admin.php">Admin</a></li>');

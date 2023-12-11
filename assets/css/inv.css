@@ -452,6 +452,14 @@ body {
     background-color: #3e3e3e !important;
 }
 
+.btn-clickable { /* clickable items */
+    cursor: pointer !important;
+}
+.btn-clickable:hover { /* clickable items colours */
+    background-color: #3e3e3e !important;
+    color: white;
+}
+
 
 
 .footer, .show{

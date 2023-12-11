@@ -19,61 +19,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
     <div class="content">
-        <?php
-        // functions
-        function containsColorName($inputString) {
-            // List of color names (you can add more colors as needed)
-            $colorNames = array(
-                'red', 'green', 'blue', 'yellow', 'orange', 'purple', 'pink',
-                'brown', 'white', 'black', 'gray', 'cyan', 'magenta', 'gold', 'aqua'
-            );
-        
-            // Convert the input string to lowercase
-            $lowercaseInput = strtolower($inputString);
-        
-            // Loop through the color names and check if any of them are present in the input string
-            foreach ($colorNames as $color) {
-                if (strpos($lowercaseInput, $color) !== false) {
-                    return $color; // Found a color name in the input string
-                }
-            }
-        
-            return false; // No color name found in the input string
-        }
-
-        function getColorHexFromName($colorName) {
-            // Convert the color name to lowercase for case-insensitive matching
-            $colorNameLower = strtolower($colorName);
-        
-            // Associative array with HTML color names and their corresponding HEX values
-            $htmlColors = array(
-                'aqua' => '#00ffff',
-                'black' => '#000000',
-                'blue' => '#0000ff',
-                'fuchsia' => '#ff00ff',
-                'gray' => '#808080',
-                'green' => '#008000',
-                'lime' => '#00ff00',
-                'maroon' => '#800000',
-                'navy' => '#000080',
-                'olive' => '#808000',
-                'purple' => '#800080',
-                'red' => '#ff0000',
-                'silver' => '#c0c0c0',
-                'teal' => '#008080',
-                'white' => '#ffffff',
-                'yellow' => '#ffff00'
-                // Add more color mappings as needed
-            );
-        
-            // Check if the color name exists in the color map
-            if (isset($htmlColors[$colorNameLower])) {
-                return $htmlColors[$colorNameLower];
-            } else {
-                return false; // Color name not found in the color map
-            }
-        }
-        ?>
         
         <!-- Get Inventory -->
         <?php

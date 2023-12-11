@@ -54,13 +54,14 @@ VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 1,
 INSERT INTO config SELECT * FROM config_default;
 
 -- Add user roles to the user roles table
-INSERT INTO users_roles (id, name, description, is_admin, is_root) 
+INSERT INTO users_roles (id, name, description, is_optic, is_admin, is_root) 
 VALUES  
-    (1, 'User', 'Default group for normal Users.', 0, 0),    
-    (2, 'Admin', 'Administrator role for any Administrator users.', 1, 0),
-    (3, 'Root', 'Root role for the default Root user ONLY.', 1, 1);
-UPDATE users_roles SET id=0 where id=3;
-ALTER TABLE users_roles AUTO_INCREMENT = 3;
+    (1, 'User', 'Default group for normal Users.', 0, 0, 0),    
+    (2, 'Admin', 'Administrator role for any Administrator users.', 1, 1, 0),
+    (3, 'Optics User', 'Users with access to Optics stock.', 1, 0, 0),
+    (4, 'Root', 'Root role for the default Root user ONLY.', 1, 1, 1);
+UPDATE users_roles SET id=0 where id=4;
+ALTER TABLE users_roles AUTO_INCREMENT = 4;
 
 INSERT INTO cable_types (id, name, description, parent)
 VALUES

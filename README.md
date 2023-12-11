@@ -475,6 +475,24 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.6.0-beta</h3></summary>
+<h4>Beta release 0.6.0, Session logging and management for users, changelog improvements and some formatting.</h4>
+
+- Optic modules now stocked under optics.php
+- optics.php shows the list of optics in store for each site similar to how the index page shows the main stock.
+- Comments can be added to the optics
+- Searching for optics searches through all fields rather than just model.
+- New tables added: optic_item, optic_connector, optic_type, optic_speed, optic_vendor, optic_comment, optic_transaction
+- Due to new tables being added, there will need to be some SQL adjustments on updates/downgrades to this version
+- users_roles table has a new field: is_optic
+- Stock option added to the nav bar.
+- Nav bar now highlights based on the page you are on.
+- Nav bar links (right) are now a elements instead of button, so that middle click works.
+- Version number is now pinned to the bottom right of the nav bar. This currently cannot be hidden. This will be removed come version 1.0.0
+- All logic added for the optics page. Can now add/remove optics and comments, and add vendors and types.
+
+</details>
+<details>
 <summary><h3>0.5.0-beta</h3></summary>
 <h4>Beta release 0.5.0, Session logging and management for users, changelog improvements and some formatting.</h4>
 

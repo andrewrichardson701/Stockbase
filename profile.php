@@ -23,7 +23,10 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         ?>
 
         <!-- Header and Nav -->
-        <?php include 'nav.php'; ?>
+        <?php 
+            $navHighlight = 'profile'; // for colouring the nav bar link
+            include 'nav.php'; 
+        ?>
         <!-- End of Header and Nav -->
 
         <div class="container">

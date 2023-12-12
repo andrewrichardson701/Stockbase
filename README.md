@@ -471,7 +471,159 @@ Clone the repo first, and the follow the below steps.
     Head to the 'Admin' page from the navigation bar and configure your setup.
 
 </details>
-
+<details>
+<summary><h2>File Breakdown</h2></summary>
+<details>
+<summary><h3>login.php</h3></summary>
+	login to user account
+	reset password if local user
+	select local/ldap user if enabled
+</details>
+<details>
+<summary><h3>logout.php</h3></summary>
+	kills sessions
+	logs user out
+	redirects to login page
+</details>
+<details>
+<summary><h3>index.php</h3></summary>
+	show all stock
+	filter stock by search, tag, manufacturer
+	show or hide out of stock
+	navigate to a stock item
+	clicking images makes them larger
+	clicking the name of a stock row navigates to the stock page
+	clicking the site sets the site filter
+	clicking the tag sets the tag filter
+	clicking the yellow clear icon clears the filters
+	clicking Fixed Cables takes you to the cablestock
+</details>
+<details>
+<summary><h3>cablestock.php</h3></summary>
+	shows all cablestock categoorised by type (copper/fibre/power/other)
+	add/remove/moved cable stock
+	clicking the name takes you to the stock page for the item
+	clicking the site link sets the site filter
+	search by name
+	filter by site
+	show/hide out of stock items
+	navigate back to stock page with the Item Stock button
+</details>
+<details>
+<summary><h3>stock.php</h3></summary>
+	shows stock info for the item
+	shows the items linked to the stock
+	shows transaction for the stock
+	view full transaction log using show all link
+	allows editing the info and images
+	allows adding more
+	allows deleting stock
+	allows moving stock
+	allows adding new stock objects
+</details>
+<details>
+<summary><h3>optics.php</h3></summary>
+	shows all fibre optic modules
+	can filter and search 
+	allows adding new optics
+	allows adding new vendors/connectors/types
+	allows adding comments
+	allows removing comments
+	allows removing optics
+</details>
+<details>
+<summary><h3>profile.php</h3></summary>
+	allows editign profile info for local users
+	shows all profile info
+	allows the assigning, reassigning and deassigning of swipe cards
+	allows password resets for local users
+	change theme
+	test theme via them test link
+	resync ldap info if logged in via ldap
+</details>
+<details>
+<summary><h3>admin.php</h3></summary>
+	global settings
+		change system name
+		change banner colour
+		change banner logo
+		change favicon images
+		change currency
+		change SKU Prefix
+		change Base URL
+		change Default Theme
+		Restore default for all above
+	Footer
+		Enable/Disable Footer
+		Enable/Disable Gitlab link
+		Enable/Disable road map link
+	Users
+		manage all users
+		change user roles
+		enable/disabled users
+		reset user passwords
+		impersonate users (if root user)
+		Add new local users
+	User Roles
+		View user role permissions
+	Session Management
+		Kill any active sessions to the site
+		View active sessions
+	Image management
+		Delete unsued images
+	Attribute Management
+		Delete/restore unused tags
+		Delete/restore unused manufacturers
+		show all links for tags
+		show all links for manufacturers
+		view all tags and their associations via tags.php
+	Optic Attribute Management
+		Delete/restore unused vendors
+		Delete/restore unused types
+		Delete/restore unused connectors
+		show all links for vendors
+		show all links for types
+		show all links for connectors
+	Stock Management
+		Enable/Disabled Costs for normal and cablestock
+		Restore Deleted stock
+	Stock Location Settings
+		View/Add/Edit/Restore/Delete Locations
+	LDAP Settings
+		View and edit LDAP settings
+		Test LDAP settings
+	SMTP Settings
+		View and edit SMTP Settings
+		Test SMTP settings
+	Email Notification Settings
+		Configure notifications for emails
+	Changelog
+		View changelog
+		link to full changelog
+</details>
+<details>
+<summary><h3>changelog.php</h3></summary>
+	view all logs 
+	filter logs based on date/table/user
+</details>
+<details>
+<summary><h3>tags.php</h3></summary>
+	view all tags and their associations
+	edit tag info
+</details>
+<details>
+<summary><h3>theme-test.php</h3></summary>
+	shows snippets of all theme based css
+	test differetnt themes to see what they look like
+	create new themes live
+	download theme
+	upload theme
+</details>
+<details>
+<summary><h3>transactions.php</h3></summary>
+	shows full list of transactions for the item selected
+</details>
+</details>
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
@@ -490,6 +642,9 @@ Clone the repo first, and the follow the below steps.
 - Nav bar links (right) are now a elements instead of button, so that middle click works.
 - Version number is now pinned to the bottom right of the nav bar. This currently cannot be hidden. This will be removed come version 1.0.0
 - All logic added for the optics page. Can now add/remove optics and comments, and add vendors and types.
+- Profile link is now named 'Profile' in the navigation. Now that there are more links, this is clear.
+- Optic Attribute Management is now included on admin page to manage vendors, types and connectors.
+- Changelog now works with optic tables
 
 </details>
 <details>

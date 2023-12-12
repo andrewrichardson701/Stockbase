@@ -45,100 +45,145 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             // get types from table to create buttons
 
             $optic_type = isset($_GET['type']) ? $_GET['type'] : 0;
+            $optic_speed = isset($_GET['speed']) ? $_GET['speed'] : 0;
+            $optic_mode = isset($_GET['mode']) ? $_GET['mode'] : 0;
+            $optic_connector = isset($_GET['connector']) ? $_GET['connector'] : 0;
             $site = isset($_GET['site']) ? $_GET['site'] : 0;
 
-            $sql_type = "SELECT id, name FROM optic_type WHERE deleted=0";
-            $stmt_type = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($stmt_type, $sql_type)) {
-                echo("ERROR no optic types found");
-            } else {
-                mysqli_stmt_execute($stmt_type);
-                $result_type = mysqli_stmt_get_result($stmt_type);
-                $rowCount_type = $result_type->num_rows;
-
-                echo('<div class="row centertable" style="max-width:max-content">');
-                    echo('<div class="col align-middle" style="max-width:max-content">
-                            <label class="align-middle" style="padding-right:15px;padding-top:7px">Site:</label>
-                            <select name="site" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'site\', this.value))">');
-                            $sql_site = "SELECT id, name
-                                        FROM site
-                                        WHERE site.deleted != 1";
-                            $stmt_site = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
-                                echo('<option value="0" selected>ERROR</option>');
+            echo('<div class="row centertable" style="max-width:max-content">
+                    <div class="col align-middle" style="max-width:max-content">
+                        <label class="align-middle" style="padding-right:15px;padding-top:7px">Site:</label>
+                        <select name="site" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'site\', this.value))">');
+                        $sql_site = "SELECT id, name
+                                    FROM site
+                                    WHERE site.deleted != 1";
+                        $stmt_site = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                            echo('<option value="0" selected>ERROR</option>');
+                        } else {
+                            mysqli_stmt_execute($stmt_site);
+                            $result_site = mysqli_stmt_get_result($stmt_site);
+                            $rowCount_site = $result_site->num_rows;
+                            if ($rowCount_site < 1) {
+                                // error
+                                echo('<option value="0" selected>No Sites Found...</option>');
                             } else {
-                                mysqli_stmt_execute($stmt_site);
-                                $result_site = mysqli_stmt_get_result($stmt_site);
-                                $rowCount_site = $result_site->num_rows;
-                                if ($rowCount_site < 1) {
-                                    // error
-                                    echo('<option value="0" selected>No Sites Found...</option>');
-                                } else {
-                                    echo('<option value="0" '); if ($site == '' || $site == 0) { echo('selected'); } echo('>All</option>');
-                                    while ($row_site = $result_site->fetch_assoc()) {
-                                        $id = $row_site['id'];
-                                        $name = $row_site['name'];
+                                echo('<option value="0" '); if ($site == '' || $site == 0) { echo('selected'); } echo('>All</option>');
+                                while ($row_site = $result_site->fetch_assoc()) {
+                                    $id = $row_site['id'];
+                                    $name = $row_site['name'];
 
-                                        echo('<option value="'.$id.'"'); if ($site == $id) { echo('selected'); } echo('>'.$name.'</option>');
-                                    }
+                                    echo('<option value="'.$id.'"'); if ($site == $id) { echo('selected'); } echo('>'.$name.'</option>');
                                 }
                             }
-                        echo('</select>
-                        </div>');
-                    echo('<div class="col align-middle" style="max-width:max-content">
+                        }
+                    echo('</select>
+                    </div>');
+                echo('<div class="col align-middle" style="max-width:max-content">
+                        <form action="" method="GET" style="display:inline">
                             <label class="align-middle" style="padding-top:7px;padding-right:15px;">Search:</label>
-                            <form action="" method="GET" style="display:inline">
-                                <input type="text" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:200px"'); if (isset($_GET['search'])) { echo('value="'.$_GET['search'].'"');} echo('>
-                            </form>
-                        </div>');
-                    echo('<div class="col align-middle" style="max-width:max-content">
-                            <label class="align-middle" style="padding-right:15px;padding-top:7px">Sort:</label>
-                            <select name="sort" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'sort\', this.value))">
-                                <option value="type"'); if ($sort == "type" || $sort == '') { echo(' selected'); } echo('>Type</option>
-                                <option value="connector"'); if ($sort == "connector") { echo(' selected'); } echo('>Connector</option>
-                                <option value="model"'); if ($sort == "model") { echo(' selected'); } echo('>Model</option>
-                                <option value="speed"'); if ($sort == "speed") { echo(' selected'); } echo('>Speed</option>
-                                <option value="mode"'); if ($sort == "mode") { echo(' selected'); } echo('>Mode</option>
-                                <option value="serial"'); if ($sort == "serial") { echo(' selected'); } echo('>Serial</option>
-                                <option value="vendor"'); if ($sort == "vendor") { echo(' selected'); } echo('>Vendor</option>
-                            </select>
-                        </div>');
-                    echo('<div class="col align-middle" style="max-width:max-content">
-                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'optics.php\')">
-                                <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
+                            <input type="text" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:200px;padding-right:0px"'); if (isset($_GET['search'])) { echo('value="'.$_GET['search'].'"');} echo('>
+                            <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 8 6 8 6;opacity:80%;color:black" type="submit">
+                                <i class="fa fa-search" style="padding-top:4px"></i>
                             </button>
-                        </div>');
-                    echo('<div class="col align-middle" style="max-width:max-content">
-                            <button id="add-optic" class="btn btn-success nav-v-b" style="opacity:80%;color:white" onclick="toggleAddDiv()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { echo ('hidden'); } else { } echo('>
-                                <i class="fa fa-plus" style="padding-top:4px"></i> Add Optic
-                            </button>
-                            <button id="add-optic-hide" class="btn btn-danger nav-v-b" style="opacity:80%;color:black" onclick="toggleAddDiv()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { } else { echo ('hidden'); } echo('>
-                                Hide Add Optic
-                            </button>
-                        </div>');
-                echo('</div>');
-                echo('<div class="row centertable" style="max-width:max-content;margin-top:20px">');
-                //echo('<div class="col" style="max-width:max-content"><table><tbody><tr class="align-middle"><td class="align-middle" style="padding-right:15px">Site:</td><td><select name="site" class="form-control" style="max-width:max-content"><option value="0" selected>WIP</option></select></td></tr></tbody></table></div>');
-                
-                if ($rowCount_site > 0) {
-                    $i = 0;
-                    echo ('
-                        <div class="col align-middle" style="max-width:max-content">
-                            <label class="algin-middle" style="padding-right:15px">Type:</label>
-                            <button type="button" onclick="navPage(updateQueryParameter(\'\', \'type\', \'0\'))" class="btn-clickable btn'); if ($optic_type == 0 || $optic_type == '') { echo(' btn-info'); } else { echo(' theme-btn ');} echo('">All</button>
-                        </div>
-                    ');
-                    while ($row_type = $result_type->fetch_assoc()) {
-                        $type_id = $row_type['id'];
-                        $type_name = $row_type['name'];
-                        echo ('<div class="col align-middle" style="max-width:max-content">
-                            <button type="button" onclick="navPage(updateQueryParameter(\'\', \'type\', \''.$type_id.'\'))" class="btn-clickable btn'); if ($type_id == $optic_type) { echo(' btn-info'); } else { echo(' theme-btn ');} echo('">'.$type_name.'</button>
-                            </div>');
-                        $i++;
+                        </form>
+                    </div>');
+                echo('<div class="col align-middle" style="max-width:max-content">
+                        <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'optics.php\')">
+                            <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
+                        </button>
+                    </div>');
+                echo('<div class="col align-middle" style="max-width:max-content">
+                        <button id="add-optic" class="btn btn-success nav-v-b" style="opacity:80%;color:white" onclick="toggleAddDiv()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { echo ('hidden'); } else { } echo('>
+                            <i class="fa fa-plus" style="padding-top:4px"></i> Add Optic
+                        </button>
+                        <button id="add-optic-hide" class="btn btn-danger nav-v-b" style="opacity:80%;color:black" onclick="toggleAddDiv()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { } else { echo ('hidden'); } echo('>
+                            Hide Add Optic
+                        </button>
+                    </div>');
+                echo('</div>
+                    <div class="row centertable" style="max-width:max-content; margin-top:10px">');
+                    $sql_type = "SELECT id, name FROM optic_type WHERE deleted=0";
+                    $stmt_type = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_type, $sql_type)) {
+                        echo("ERROR no optic types found");
+                    } else {
+                        mysqli_stmt_execute($stmt_type);
+                        $result_type = mysqli_stmt_get_result($stmt_type);
+                        $rowCount_type = $result_type->num_rows;
+                        echo ('<div class="col align-middle" style="max-width:max-content">');
+                            echo('<label class="align-middle" style="padding-right:15px;padding-top:7px">Type:</label>');
+                            echo ('<select name="type" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'type\', this.value))">');
+                                echo ('<option value="0"'); if ($optic_type == 0 || $optic_type == '') { echo(' selected'); } echo('>All</option>');
+                        if ($rowCount_site > 0) {
+                            while ($row_type = $result_type->fetch_assoc()) {
+                                $type_id = $row_type['id'];
+                                $type_name = $row_type['name'];
+                                echo ('<option value="'.$type_id.'"'); if ($type_id == $optic_type) { echo(' selected'); } echo('>'.$type_name.'</option>');
+                            }
+                        }
+                            echo('</select>');
+                        echo('</div>');
                     }
-                }
-                echo('</div>');
-            }
+            
+                    $sql_speed = "SELECT id, name FROM optic_speed";
+                    $stmt_speed = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_speed, $sql_speed)) {
+                        echo("ERROR no optic speeds found");
+                    } else {
+                        mysqli_stmt_execute($stmt_speed);
+                        $result_speed = mysqli_stmt_get_result($stmt_speed);
+                        $rowCount_speed = $result_speed->num_rows;
+                        echo ('<div class="col align-middle" style="max-width:max-content">');
+                            echo('<label class="align-middle" style="padding-right:15px;padding-top:7px">Speed:</label>');
+                            echo ('<select name="speed" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'speed\', this.value))">');
+                                echo ('<option value="0"'); if ($optic_speed == 0 || $optic_speed == '') { echo(' selected'); } echo('>All</option>');
+                        if ($rowCount_site > 0) {
+                            while ($row_speed = $result_speed->fetch_assoc()) {
+                                $speed_id = $row_speed['id'];
+                                $speed_name = $row_speed['name'];
+                                echo ('<option value="'.$speed_id.'"'); if ($speed_id == $optic_speed) { echo(' selected'); } echo('>'.$speed_name.'</option>');
+                            }
+                        }
+                            echo('</select>');
+                        echo('</div>');
+                    }
+
+                        echo ('<div class="col align-middle" style="max-width:max-content">');
+                            echo('<label class="align-middle" style="padding-right:15px;padding-top:7px">Mode:</label>');
+                            echo ('<select name="mode" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'mode\', this.value))">');
+                                echo ('<option value="0"'); if ($optic_mode == 0 || $optic_mode == '') { echo(' selected'); } echo('>All</option>');
+                                echo ('<option value="SM"'); if ($optic_mode == 'SM') { echo(' selected'); } echo('>SM</option>');
+                                echo ('<option value="MM"'); if ($optic_mode == 'MM') { echo(' selected'); } echo('>MM</option>');
+                                echo ('<option value="Copper"'); if ($optic_mode == 'Copper') { echo(' selected'); } echo('>Copper</option>');
+                            echo('</select>');
+                        echo('</div>');
+
+                    $sql_connector = "SELECT id, name FROM optic_connector WHERE deleted=0";
+                    $stmt_connector = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_connector, $sql_connector)) {
+                        echo("ERROR no optic connectors found");
+                    } else {
+                        mysqli_stmt_execute($stmt_connector);
+                        $result_connector = mysqli_stmt_get_result($stmt_connector);
+                        $rowCount_connector = $result_connector->num_rows;
+                        echo ('<div class="col align-middle" style="max-width:max-content">');
+                            echo('<label class="align-middle" style="padding-right:15px;padding-top:7px">Connector:</label>');
+                            echo ('<select name="connector" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'connector\', this.value))">');
+                                echo ('<option value="0"'); if ($optic_connector == 0 || $optic_connector == '') { echo(' selected'); } echo('>All</option>');
+                        if ($rowCount_site > 0) {
+                            while ($row_connector = $result_connector->fetch_assoc()) {
+                                $connector_id = $row_connector['id'];
+                                $connector_name = $row_connector['name'];
+                                echo ('<option value="'.$connector_id.'"'); if ($connector_id == $optic_connector) { echo(' selected'); } echo('>'.$connector_name.'</option>');
+                            }
+                        }
+                            echo('</select>');
+                        echo('</div>');
+                    }
+                
+            echo('</div>');
+            
             ?>
         </div>
 
@@ -241,7 +286,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <div>
                                 <select id="connector" name="connector" class="form-control text-center" style="border-color:black;"  required>');
                                 
-                                $sql_connector = "SELECT * FROM optic_connector";
+                                $sql_connector = "SELECT * FROM optic_connector WHERE deleted=0";
                                 $stmt_connector = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_connector, $sql_connector)) {
                                     echo("ERROR getting entries");
@@ -262,6 +307,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             echo(' 
                                 </select>
                             </div>
+                            <div class="text-center">
+                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewConnector()">Add New</a>
+                            </div>
                         </div>
                         <div class="col">
                             <div>Mode</div>
@@ -270,6 +318,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <option value="" selected disabled hidden>Select Mode</option>
                                     <option value="SM"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'SM') { echo ('selected'); } echo ('>Single-Mode (SM)</option>
                                     <option value="MM"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'MM') { echo ('selected'); } echo ('>Multi-Mode (MM)</option>
+                                    <option value="Copper"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'Copper') { echo ('selected'); } echo ('>Copper</option>
                                 </select>
                             </div>
                         </div>
@@ -281,7 +330,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <div>
                                 <select id="vendor" name="vendor" class="form-control text-center" style="border-color:black;" required>');
 
-                                    $sql_vendor = "SELECT * FROM optic_vendor";
+                                    $sql_vendor = "SELECT * FROM optic_vendor ORDER BY name";
                                     $stmt_vendor = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_vendor, $sql_vendor)) {
                                         echo("ERROR getting entries");
@@ -331,8 +380,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </div>
                         </div>
                         <div class="col">
-                            <div>Serial</div>
-                            <div><input class="form-control text-center" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial"/></div>
+                            <div>Serial Number</div>
+                            <div><input class="form-control text-center" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" required/></div>
                         </div>
                         <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:10px" value="1">Add</button></div></div>
                         <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:10px" value="2">Add Multiple</button></div></div>
@@ -347,32 +396,32 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
             <!-- Get Inventory -->
             <?php
-            $order = " ORDER BY T.id, V.id, C.id, I.model, I.serial_number";
+            $order = " ORDER BY T.id, V.name, C.id, I.model, I.serial_number";
             switch ($sort) {
                 case 'type':
-                    $order = " ORDER BY T.name, V.id, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY T.name, V.name, C.id, I.model, I.serial_number";
                     break;
                 case 'connector':
-                    $order = " ORDER BY C.name, T.name, V.id, I.model, I.serial_number";
+                    $order = " ORDER BY C.name, T.name, V.name, I.model, I.serial_number";
                     break;
                 case 'model':
-                    $order = " ORDER BY I.model, T.name, V.id, C.id, I.serial_number";
+                    $order = " ORDER BY I.model, T.name, V.name, C.id, I.serial_number";
                     break;
                 case 'speed':
-                    $order = " ORDER BY S.id, T.name, V.id, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY S.id, T.name, V.name, C.id, I.model, I.serial_number";
                     break;
                 case 'mode':
-                    $order = " ORDER BY I.mode, T.name, V.id, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY I.mode, T.name, V.name, C.id, I.model, I.serial_number";
                     break;
                 case 'serial':
-                    $order = " ORDER BY I.serial_number, T.name, V.id, C.id, I.model";
+                    $order = " ORDER BY I.serial_number, T.name, V.name, C.id, I.model";
                     break;
                 case 'vendor':
                     $order = " ORDER BY V.name, T.name, C.id, I.model, I.serial_number";
                     break;
                 default:
-                    $order = " ORDER BY T.id, V.id, C.id, I.model, I.serial_number";
-                    
+                    $order = " ORDER BY T.id, V.name, C.id, I.model, I.serial_number";
+                    break;
             }
 
             include 'includes/dbh.inc.php';
@@ -400,6 +449,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             if ((int)$optic_type !== 0 ) { 
                 if (is_numeric($optic_type)) {
                     $sql_inv_add  .= " AND T.id=$optic_type";
+                }
+            } 
+            if ((int)$optic_speed !== 0 ) { 
+                if (is_numeric($optic_speed)) {
+                    $sql_inv_add  .= " AND S.id=$optic_speed";
+                }
+            } 
+            if ($optic_mode !== 0 && $optic_mode !== '0') { 
+                $sql_inv_add  .= " AND I.mode='$optic_mode'";
+            } 
+            if ((int)$optic_connector !== 0 ) { 
+                if (is_numeric($optic_connector)) {
+                    $sql_inv_add  .= " AND C.id=$optic_connector";
                 }
             } 
             if ($search !== '') { 
@@ -430,7 +492,32 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                 echo('
                     <div class="container">
-                        Count: <or class="green">'.$rowCount_inv.'</or>
+                    <hr style="border-color:#9f9d9d; margin-left:10px">
+                        <div class="row centertable">
+                            <div class="col float-left">
+                                Count: <or class="green">'.$rowCount_inv.'</or>
+                            </div>
+                            <div class="col align-middle" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
+                                <table>
+                                    <tr class="align-middle">
+                                        <td class="align-middle" style="padding-right:10px">
+                                            Sort By:
+                                        </td>
+                                        <td class="align-middle">
+                                            <select name="sort" class="form-control row-dropdown" style="width:max-content;height:25px; padding:0px" onchange="navPage(updateQueryParameter(\'\', \'sort\', this.value))">
+                                                <option value="type"'); if ($sort == "type" || $sort == '') { echo(' selected'); } echo('>Type</option>
+                                                <option value="connector"'); if ($sort == "connector") { echo(' selected'); } echo('>Connector</option>
+                                                <option value="model"'); if ($sort == "model") { echo(' selected'); } echo('>Model</option>
+                                                <option value="speed"'); if ($sort == "speed") { echo(' selected'); } echo('>Speed</option>
+                                                <option value="mode"'); if ($sort == "mode") { echo(' selected'); } echo('>Mode</option>
+                                                <option value="serial"'); if ($sort == "serial") { echo(' selected'); } echo('>Serial</option>
+                                                <option value="vendor"'); if ($sort == "vendor") { echo(' selected'); } echo('>Vendor</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <table class="table table-dark theme-table centertable">
                         <thead>
@@ -660,6 +747,38 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </div> 
     </div>
     <!-- End of Modal NewVendor Div -->
+    <!-- Modal NewConnector Div -->
+    <div id="modalDivNewConnector" class="modal">
+    <!-- <div id="modalDivNewConnector" style="display: block;"> -->
+        <span class="close" onclick="modalCloseNewConnector()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                    <?php 
+                    if (is_array($_GET) && count($_GET) > 1) {
+                        foreach (array_keys($_GET) AS $key) {
+                            echo('<input type="hidden" name="QUERY['.$key.']" value="'.$_GET[$key].'"/>');
+                        }
+                    }
+                    ?>
+                    <table class="centertable">
+                        <tbody>
+                            <tr class="nav-row">
+                                <td style="width: 150px"><label for="connector_name" class="nav-v-c align-middle">Connector Name:</label></td>
+                                <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="connector_name" name="connector_name" /></td>
+                                <td></td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width:150px"></td>
+                                <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-connector-add" value="Add Connector" class="btn btn-success">Add Connector</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div> 
+    </div>
+    <!-- End of Modal NewConnector Div -->
 
     <?php include 'foot.php'; ?>
 
@@ -751,5 +870,16 @@ function toggleAddComment(id, com) {
         modal.style.display = "none";
     }
 
+    function modalLoadNewConnector(property) {
+        //get the modal div with the property
+        var modal = document.getElementById("modalDivNewConnector");
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    modalCloseNewConnector = function() { 
+        var modal = document.getElementById("modalDivNewConnector");
+        modal.style.display = "none";
+    }
 
 </script>

@@ -74,18 +74,17 @@
             }
             $n = 0;
             if (isset($loggedin_role)) {
-                if (in_array($loggedin_role, $config_optics_roles_array)) {
-                    $n++;
-                    echo('
-                    <div id="stock-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./">Stock</a>
-                    </div> 
-                    ');
-                }
+                $n = 1;
+                echo('
+                <div id="stock-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                    <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./">Stock</a>
+                </div> 
+                ');
+                
             }
             if (isset($loggedin_role)) {
                 if (in_array($loggedin_role, $config_optics_roles_array)) {
-                    $n++;
+                    $n = 2;
                     echo('
                     <div id="optics-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
                         <a id="optics" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./optics.php">Optics</a>
@@ -95,7 +94,7 @@
             }
             if (isset($loggedin_role)) {
                 if (in_array($loggedin_role, $config_admin_roles_array)) {
-                    $n++;
+                    $n = 3;
                     echo('
                     <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
                         <a id="admin" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./admin.php">Admin</a>
@@ -104,10 +103,10 @@
                 }
             }
             if (isset($profile_name)) {
-                $n++;
+                $n = 4;
                 echo('
                 <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                    <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./profile.php">'.$profile_name.'</a>
+                    <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./profile.php">Profile</a>
                 </div> 
                 ');
             }
@@ -147,8 +146,13 @@
             if (isset($profile_name)) { 
                 echo('
                     <ul class="nav-links">
-                        <li><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>
-                        <li><a href="./optics.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>
+                        <li><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>');
+                        if (isset($loggedin_role)) {
+                            if (in_array($loggedin_role, $config_optics_roles_array)) {
+                                echo('<li><a href="./optics.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>');
+                            }
+                        }
+                        echo('
                         <li><a href="./profile.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
                         // if (isset($loggedin_role)) {
                         //     if (in_array($loggedin_role, $config_admin_roles_array)) {

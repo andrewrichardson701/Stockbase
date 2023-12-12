@@ -249,46 +249,47 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     }
 
                                                     if (!empty($column_names) && count($column_names)>0) {
-
-                                                        $sql_record = "SELECT * FROM $table_name WHERE id=$record_id";
-                                                        $stmt_record = mysqli_stmt_init($conn);
-                                                        if (!mysqli_stmt_prepare($stmt_record, $sql_record)) {
-                                                            echo("<p class='red'>Error reaching changelog table</p>");
-                                                        } else {
-                                                            mysqli_stmt_execute($stmt_record);
-                                                            $result_record = mysqli_stmt_get_result($stmt_record);
-                                                            $rowCount_record = $result_record->num_rows;
-                                                            if ($rowCount_record < 1) {
-                                                                echo("<tr><td colspan=100%>Record not found.</td></tr>");
+                                                        if (($record_id !=='' && (int)$record_id !== 0) || $table_name == "users") {
+                                                            $sql_record = "SELECT * FROM $table_name WHERE id=$record_id";
+                                                            $stmt_record = mysqli_stmt_init($conn);
+                                                            if (!mysqli_stmt_prepare($stmt_record, $sql_record)) {
+                                                                echo("<p class='red'>Error reaching changelog table</p>");
                                                             } else {
-                                                                $row_record = $result_record->fetch_assoc();
+                                                                mysqli_stmt_execute($stmt_record);
+                                                                $result_record = mysqli_stmt_get_result($stmt_record);
+                                                                $rowCount_record = $result_record->num_rows;
+                                                                if ($rowCount_record < 1) {
+                                                                    echo("<tr><td colspan=100%>Record not found.</td></tr>");
+                                                                } else {
+                                                                    $row_record = $result_record->fetch_assoc();
 
-                                                                echo('
-                                                                    <thead>
-                                                                        <tr class="align-middle text-center">
-                                                                        ');
-                                                                        foreach($column_names as $column) {
-                                                                            echo('<th>'.$column.'</th>');
-                                                                        }
-                                                                        echo('
-                                                                        </tr>
-                                                                    </thead>
-                                                                ');
-                                                                echo('
-                                                                    <tbody>
-                                                                        <tr class="align-middle text-center">
-                                                                        ');
-                                                                        foreach($column_names as $column2) {
-                                                                            if ($column2 == 'stock_id') {
-                                                                                echo('<td><a class="link" href="stock.php?stock_id='.$row_record[$column2].'">'.$row_record[$column2].'</a></td>');
-                                                                            } else {
-                                                                                echo('<td>'.$row_record[$column2].'</td>');
+                                                                    echo('
+                                                                        <thead>
+                                                                            <tr class="align-middle text-center">
+                                                                            ');
+                                                                            foreach($column_names as $column) {
+                                                                                echo('<th>'.$column.'</th>');
                                                                             }
-                                                                        }
-                                                                        echo('
-                                                                        </tr>
-                                                                    </tbody>
-                                                                ');
+                                                                            echo('
+                                                                            </tr>
+                                                                        </thead>
+                                                                    ');
+                                                                    echo('
+                                                                        <tbody>
+                                                                            <tr class="align-middle text-center">
+                                                                            ');
+                                                                            foreach($column_names as $column2) {
+                                                                                if ($column2 == 'stock_id') {
+                                                                                    echo('<td><a class="link" href="stock.php?stock_id='.$row_record[$column2].'">'.$row_record[$column2].'</a></td>');
+                                                                                } else {
+                                                                                    echo('<td>'.$row_record[$column2].'</td>');
+                                                                                }
+                                                                            }
+                                                                            echo('
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    ');
+                                                                }
                                                             }
                                                         }
                                                     }

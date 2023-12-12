@@ -330,6 +330,80 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../".$redirect_url.$queryChar.$queryString."error=missingType_name");
             exit();
         }
+    } elseif (isset($_POST['optic-connector-add'])) {
+        $queryString = '';
+        if (isset($_POST['QUERY'])){
+            $QUERY = $_POST['QUERY'];
+            if (is_array($QUERY) && count($QUERY) > 0) {
+                $i = 0;
+                foreach (array_keys($QUERY) as $key) {
+                    if ($key !== 'success' && $key !== 'error') {
+                        if ($i == 0) {
+                            $queryString .= $key.'='.$QUERY[$key];
+                        } else {
+                            $queryString .= '&'.$key.'='.$QUERY[$key];
+                        }
+                        $i++;
+                    }
+                }
+            }
+        }
+        if ($queryString !== '') {
+            $queryString .= '&';
+        }
+        if (isset($_POST['connector_name'])) {
+            $connector_name = mysqli_real_escape_string($conn, $_POST['connector_name']);
+            $sql = "SELECT name
+                    FROM optic_connector
+                    WHERE name='$connector_name'";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ../".$redirect_url.$queryChar."error=optic_connectorTableSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount > 0) {
+                    header("Location: ../".$redirect_url.$queryChar.$queryString."error=connectorExists");
+                    exit();
+                } else {
+                    // correct amount found, continue.
+                    $sql = "INSERT INTO optic_connector (name) VALUES (?)";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_commentConnectionInsert");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt, "s", $connector_name);
+                        mysqli_stmt_execute($stmt);
+                        $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+
+                        $site_id = 0;
+                        $table_name = 'optic_connector';
+                        $type = "add";
+                        $reason = "Connector Added";
+                        $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                        $time = date('H:i:s'); // current time in HH:MM:SS format
+                        $username = $_SESSION['username'];
+
+                        updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
+                    
+                        // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                        // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                        // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                        // // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Connector", $table_name, $insert_id, "name", null, $connector_name);
+
+                        header("Location: ../".$redirect_url.$queryChar.$queryString."success=ConnectorAdded");
+                        exit();
+                    }
+                }
+            }
+        } else {
+            header("Location: ../".$redirect_url.$queryChar.$queryString."error=missingConnector_name");
+            exit();
+        }
     } elseif (isset($_POST['optic-vendor-add'])) {
         $queryString = '';
         if (isset($_POST['QUERY'])){
@@ -382,7 +456,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $site_id = 0;
                         $table_name = 'optic_vendor';
                         $type = "add";
-                        $reason = "Type Added";
+                        $reason = "Vendor Added";
                         $date = date('Y-m-d'); // current date in YYY-MM-DD format
                         $time = date('H:i:s'); // current time in HH:MM:SS format
                         $username = $_SESSION['username'];
@@ -393,9 +467,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                         // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                         // // update changelog
-                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Type", $table_name, $insert_id, "name", null, $vendor_name);
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Vendor", $table_name, $insert_id, "name", null, $vendor_name);
 
-                        header("Location: ../".$redirect_url.$queryChar.$queryString."success=TypeAdded");
+                        header("Location: ../".$redirect_url.$queryChar.$queryString."success=VendorAdded");
                         exit();
                     }
                 }

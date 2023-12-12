@@ -1103,6 +1103,466 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         ?>                         
         </div>
 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="opticattributemanagement-settings" onclick="toggleSection(this, 'opticattributemanagement')">Optic Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <!-- Optic Attribute Management Settings -->
+        <div style="padding-top: 20px" id="opticattributemanagement" hidden>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement')) {
+                showResponse();
+            }
+            ?>
+
+            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Vendors</h4>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_vendors')) {
+                echo('<div style="margin-right: 10px; margin-left: 10px">');
+                showResponse();
+                echo('</div>');
+            }
+
+            $vendors = [];
+            $vendors_links = [];
+
+            $v_d = 0;
+
+            $sql_vendors = "SELECT 
+                                V.id AS vendor_id, 
+                                V.name AS vendor_name, 
+                                V.deleted AS vendor_deleted,
+                                I.id AS item_id, I.vendor_id AS item_vendor_id, I.serial_number AS item_serial_number, I.model AS item_model
+                            FROM 
+                                optic_vendor AS V
+                            LEFT JOIN
+                                optic_item AS I ON V.id=I.vendor_id AND I.deleted=0";                
+            $stmt_vendors = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_vendors, $sql_vendors)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_vendors);
+                $result_vendors = mysqli_stmt_get_result($stmt_vendors);
+                $rowCount_vendors = $result_vendors->num_rows;
+                while ($row_vendors = $result_vendors->fetch_assoc()) {
+                    if ($row_vendors['vendor_deleted'] == 1) {
+                        $v_d++;
+                    }
+                    if (!array_key_exists($row_vendors['vendor_id'], $vendors)) {
+                        $vendors[$row_vendors['vendor_id']] = array('id' =>  $row_vendors['vendor_id'], 'name' => $row_vendors['vendor_name'], 'deleted' => $row_vendors['vendor_deleted']);
+                    }
+                    if (isset($row_vendors['item_vendor_id']) && $row_vendors['item_vendor_id'] !== NULL && $row_vendors['item_vendor_id'] !== '') {
+                        $vendors_links[$row_vendors['vendor_id']][] = array('id' => $row_vendors['item_vendor_id'], 'item_id' => $row_vendors['item_id'],
+                                                                                'item_serial' => $row_vendors['item_serial_number'], 'item_model' => $row_vendors['item_model']);
+                    }
+                }
+                ?>
+                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                    <table class="table table-dark theme-table" style="max-width:max-content">
+                        <thead>
+                            <tr class="theme-tableOuter">
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Item ID</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
+                                    <button id="show-deleted-optic_vendors" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_vendors', 1)" <?php if($v_d == 0) { echo "hidden"; } ?> >
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            
+                                        </span>
+                                    </button>
+                                    <button id="hide-deleted-optic_vendors" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_vendors', 0)" hidden>
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                        </span>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    <?php
+                        foreach ($vendors as $vendor) {
+                            $m = $vendor['id'];
+                            $vendor_deleted = $vendor['deleted'];
+                            $vendor_deleted_class = '';
+                            if ($vendor_deleted == 1) {
+                                $vendor_deleted_class = 'red theme-divBg optic_vendors-deleted';
+                            }
+                            if (array_key_exists($m, $vendors_links)) {
+                                $vendor_link_count = count($vendors_links[$m]);
+                            } else {
+                                $vendor_link_count = 0;
+                            }
+                            
+                            echo('
+                                <tr id="vendor-row-'.$m.'" class="align-middle '.$vendor_deleted_class.'"'); if ($vendor_deleted == 1) { echo(' hidden'); } echo('>
+                                    <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="attribute-type" value="optic_vendors"/>
+                                        <input type="hidden" name="id" value="'.$m.'">
+                                        <td id="vendor-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
+                                        <td id="vendor-'.$m.'-name" class="text-center align-middle">'.$vendor['name'].'</td>
+                                        <td class="text-center align-middle">'.$vendor_link_count.'</td>
+                                        <td class="text-center align-middle">');
+                                        if ($vendor_deleted !== 1) {
+                                            echo('<button class="btn btn-danger" type="submit" name="opticattributemanagement-submit" '); 
+                                                if ($vendor_link_count !== 0) { echo('disabled title="vendor still linked to stock. Remove these links before deleting."'); } 
+                                                echo('><i class="fa fa-trash"></i></button></td>');
+                                        } else {
+                                            echo('<button class="btn btn-success" type="submit" name="opticattributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
+                                        }
+                                        echo('<td class="text-center align-middle">'); 
+                                            if ($vendor_deleted !== 1) {
+                                                if ($vendor_link_count !== 0) { echo('<button class="btn btn-warning" id="vendor-'.$m.'-links" type="button" onclick="showLinks(\'vendor\', \''.$m.'\')">Show Links</button>'); }
+                                            } else {
+                                                echo('<or class="green">Restore?</or>');
+                                            }
+                                        echo('</td>');
+                                echo('</form>
+                                </tr>
+                            ');
+                            if ($vendor_link_count !== 0) { 
+                                echo('
+                                    <tr id="vendor-row-'.$m.'-links" class="align-middle" hidden>
+                                        <td colspan=100%>
+                                            <div>
+                                                <table class="table table-dark theme-table">
+                                                    <thead>
+                                                        <tr class="theme-tableOuter">
+                                                            <th>Optic ID</th>
+                                                            <th>Optic Model</th>
+                                                            <th>Optic Serial</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>');
+                                                    $links = $vendors_links[$m];
+                                                    foreach ($links as $mm) {
+                                                        echo('
+                                                            <tr class="">
+                                                                <td class="text-center">'.$mm['item_id'].'</td>
+                                                                <td class="text-center">'.$mm['item_model'].'</td>
+                                                                <td class="text-center">'.$mm['item_serial'].'</td>
+                                                            </tr>
+                                                        ');
+                                                    }                                                    
+                                                    echo('
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ');
+                            }
+                        }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+                }  
+            ?>  
+
+            <hr style="border-color:white; margin-left:10px"> 
+
+            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Types</h4>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_types')) {
+                echo('<div style="margin-right: 10px; margin-left: 10px">');
+                showResponse();
+                echo('</div>');
+            }
+
+            $types = [];
+            $types_links = [];
+
+            $t_d = 0;
+
+            $sql_types = "SELECT 
+                                T.id AS type_id, 
+                                T.name AS type_name, 
+                                T.deleted AS type_deleted,
+                                I.id AS item_id, I.type_id AS item_type_id, I.serial_number AS item_serial_number, I.model AS item_model
+                            FROM 
+                                optic_type AS T
+                            LEFT JOIN
+                                optic_item AS I ON T.id=I.type_id AND I.deleted=0";                
+            $stmt_types = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_types);
+                $result_types = mysqli_stmt_get_result($stmt_types);
+                $rowCount_types = $result_types->num_rows;
+                while ($row_types = $result_types->fetch_assoc()) {
+                    if ($row_types['type_deleted'] == 1) {
+                        $t_d++;
+                    }
+                    if (!array_key_exists($row_types['type_id'], $types)) {
+                        $types[$row_types['type_id']] = array('id' =>  $row_types['type_id'], 'name' => $row_types['type_name'], 'deleted' => $row_types['type_deleted']);
+                    }
+                    if (isset($row_types['item_type_id']) && $row_types['item_type_id'] !== NULL && $row_types['item_type_id'] !== '') {
+                        $types_links[$row_types['type_id']][] = array('id' => $row_types['item_type_id'], 'item_id' => $row_types['item_id'],
+                                                                                'item_serial' => $row_types['item_serial_number'], 'item_model' => $row_types['item_model']);
+                    }
+                }
+                ?>
+                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                    <table class="table table-dark theme-table" style="max-width:max-content">
+                        <thead>
+                            <tr class="theme-tableOuter">
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Item ID</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
+                                    <button id="show-deleted-optic_types" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_types', 1)" <?php if($t_d == 0) { echo "hidden"; } ?> >
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            
+                                        </span>
+                                    </button>
+                                    <button id="hide-deleted-optic_types" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_types', 0)" hidden>
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                        </span>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    <?php
+                        foreach ($types as $type) {
+                            $m = $type['id'];
+                            $type_deleted = $type['deleted'];
+                            $type_deleted_class = '';
+                            if ($type_deleted == 1) {
+                                $type_deleted_class = 'red theme-divBg optic_types-deleted';
+                            }
+                            if (array_key_exists($m, $types_links)) {
+                                $type_link_count = count($types_links[$m]);
+                            } else {
+                                $type_link_count = 0;
+                            }
+                            
+                            echo('
+                                <tr id="type-row-'.$m.'" class="align-middle '.$type_deleted_class.'"'); if ($type_deleted == 1) { echo(' hidden'); } echo('>
+                                    <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="attribute-type" value="optic_types"/>
+                                        <input type="hidden" name="id" value="'.$m.'">
+                                        <td id="type-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
+                                        <td id="type-'.$m.'-name" class="text-center align-middle">'.$type['name'].'</td>
+                                        <td class="text-center align-middle">'.$type_link_count.'</td>
+                                        <td class="text-center align-middle">');
+                                        if ($type_deleted !== 1) {
+                                            echo('<button class="btn btn-danger" type="submit" name="opticattributemanagement-submit" '); 
+                                                if ($type_link_count !== 0) { echo('disabled title="type still linked to stock. Remove these links before deleting."'); } 
+                                                echo('><i class="fa fa-trash"></i></button></td>');
+                                        } else {
+                                            echo('<button class="btn btn-success" type="submit" name="opticattributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
+                                        }
+                                        echo('<td class="text-center align-middle">'); 
+                                            if ($type_deleted !== 1) {
+                                                if ($type_link_count !== 0) { echo('<button class="btn btn-warning" id="type-'.$m.'-links" type="button" onclick="showLinks(\'type\', \''.$m.'\')">Show Links</button>'); }
+                                            } else {
+                                                echo('<or class="green">Restore?</or>');
+                                            }
+                                        echo('</td>');
+                                echo('</form>
+                                </tr>
+                            ');
+                            if ($type_link_count !== 0) { 
+                                echo('
+                                    <tr id="type-row-'.$m.'-links" class="align-middle" hidden>
+                                        <td colspan=100%>
+                                            <div>
+                                                <table class="table table-dark theme-table">
+                                                    <thead>
+                                                        <tr class="theme-tableOuter">
+                                                            <th>Optic ID</th>
+                                                            <th>Optic Model</th>
+                                                            <th>Optic Serial</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>');
+                                                    $links = $types_links[$m];
+                                                    foreach ($links as $mm) {
+                                                        echo('
+                                                            <tr class="">
+                                                                <td class="text-center">'.$mm['item_id'].'</td>
+                                                                <td class="text-center">'.$mm['item_model'].'</td>
+                                                                <td class="text-center">'.$mm['item_serial'].'</td>
+                                                            </tr>
+                                                        ');
+                                                    }                                                    
+                                                    echo('
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ');
+                            }
+                        }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+                }  
+            ?>  
+
+            <hr style="border-color:white; margin-left:10px"> 
+
+            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Connectors</h4>
+            <?php
+            if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_connectors')) {
+                echo('<div style="margin-right: 10px; margin-left: 10px">');
+                showResponse();
+                echo('</div>');
+            }
+
+            $connectors = [];
+            $connectors_links = [];
+
+            $t_d = 0;
+
+            $sql_connectors = "SELECT 
+                                C.id AS connector_id, 
+                                C.name AS connector_name, 
+                                C.deleted AS connector_deleted,
+                                I.id AS item_id, I.connector_id AS item_connector_id, I.serial_number AS item_serial_number, I.model AS item_model
+                            FROM 
+                                optic_connector AS C
+                            LEFT JOIN
+                                optic_item AS I ON C.id=I.connector_id AND I.deleted=0";                
+            $stmt_connectors = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_connectors, $sql_connectors)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_connectors);
+                $result_connectors = mysqli_stmt_get_result($stmt_connectors);
+                $rowCount_connectors = $result_connectors->num_rows;
+                while ($row_connectors = $result_connectors->fetch_assoc()) {
+                    if ($row_connectors['connector_deleted'] == 1) {
+                        $t_d++;
+                    }
+                    if (!array_key_exists($row_connectors['connector_id'], $connectors)) {
+                        $connectors[$row_connectors['connector_id']] = array('id' =>  $row_connectors['connector_id'], 'name' => $row_connectors['connector_name'], 'deleted' => $row_connectors['connector_deleted']);
+                    }
+                    if (isset($row_connectors['item_connector_id']) && $row_connectors['item_connector_id'] !== NULL && $row_connectors['item_connector_id'] !== '') {
+                        $connectors_links[$row_connectors['connector_id']][] = array('id' => $row_connectors['item_connector_id'], 'item_id' => $row_connectors['item_id'],
+                                                                                'item_serial' => $row_connectors['item_serial_number'], 'item_model' => $row_connectors['item_model']);
+                    }
+                }
+                ?>
+                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                    <table class="table table-dark theme-table" style="max-width:max-content">
+                        <thead>
+                            <tr class="theme-tableOuter">
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Item ID</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
+                                <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
+                                    <button id="show-deleted-optic_connectors" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_connectors', 1)" <?php if($t_d == 0) { echo "hidden"; } ?> >
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            
+                                        </span>
+                                    </button>
+                                    <button id="hide-deleted-optic_connectors" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_connectors', 0)" hidden>
+                                        <span class="zeroStockFont">
+                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                        </span>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                    <?php
+                        foreach ($connectors as $connector) {
+                            $m = $connector['id'];
+                            $connector_deleted = $connector['deleted'];
+                            $connector_deleted_class = '';
+                            if ($connector_deleted == 1) {
+                                $connector_deleted_class = 'red theme-divBg optic_connectors-deleted';
+                            }
+                            if (array_key_exists($m, $connectors_links)) {
+                                $connector_link_count = count($connectors_links[$m]);
+                            } else {
+                                $connector_link_count = 0;
+                            }
+                            
+                            echo('
+                                <tr id="connector-row-'.$m.'" class="align-middle '.$connector_deleted_class.'"'); if ($connector_deleted == 1) { echo(' hidden'); } echo('>
+                                    <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="attribute-type" value="optic_connectors"/>
+                                        <input type="hidden" name="id" value="'.$m.'">
+                                        <td id="connector-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
+                                        <td id="connector-'.$m.'-name" class="text-center align-middle">'.$connector['name'].'</td>
+                                        <td class="text-center align-middle">'.$connector_link_count.'</td>
+                                        <td class="text-center align-middle">');
+                                        if ($connector_deleted !== 1) {
+                                            echo('<button class="btn btn-danger" type="submit" name="opticattributemanagement-submit" '); 
+                                                if ($connector_link_count !== 0) { echo('disabled title="connector still linked to stock. Remove these links before deleting."'); } 
+                                                echo('><i class="fa fa-trash"></i></button></td>');
+                                        } else {
+                                            echo('<button class="btn btn-success" type="submit" name="opticattributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
+                                        }
+                                        echo('<td class="text-center align-middle">'); 
+                                            if ($connector_deleted !== 1) {
+                                                if ($connector_link_count !== 0) { echo('<button class="btn btn-warning" id="connector-'.$m.'-links" type="button" onclick="showLinks(\'connector\', \''.$m.'\')">Show Links</button>'); }
+                                            } else {
+                                                echo('<or class="green">Restore?</or>');
+                                            }
+                                        echo('</td>');
+                                echo('</form>
+                                </tr>
+                            ');
+                            if ($connector_link_count !== 0) { 
+                                echo('
+                                    <tr id="connector-row-'.$m.'-links" class="align-middle" hidden>
+                                        <td colspan=100%>
+                                            <div>
+                                                <table class="table table-dark theme-table">
+                                                    <thead>
+                                                        <tr class="theme-tableOuter">
+                                                            <th>Optic ID</th>
+                                                            <th>Optic Model</th>
+                                                            <th>Optic Serial</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>');
+                                                    $links = $connectors_links[$m];
+                                                    foreach ($links as $mm) {
+                                                        echo('
+                                                            <tr class="">
+                                                                <td class="text-center">'.$mm['item_id'].'</td>
+                                                                <td class="text-center">'.$mm['item_model'].'</td>
+                                                                <td class="text-center">'.$mm['item_serial'].'</td>
+                                                            </tr>
+                                                        ');
+                                                    }                                                    
+                                                    echo('
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ');
+                            }
+                        }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+                }  
+            ?>                 
+        </div>
+
+        
+            
+            
+           
+
         <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stockmanagement-settings" onclick="toggleSection(this, 'stockmanagement')">Stock Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Stock Management Settings -->
         <div style="padding-top: 20px" id="stockmanagement" hidden>

@@ -1,6 +1,6 @@
-# Inventory
+# StockBase
 
-This project contains the code for the Inventory web package, including the setup scripts and basic database configuration.
+This project contains the code for the StockBase web package, including the setup scripts and basic database configuration.
 
 The purpose of this project is for stock tracking and locating.
 
@@ -889,4 +889,17 @@ Clone the repo first, and the follow the below steps.
 - Some page redirects are not redirecting correctly and will be addressed when found.
 
 </details>
+</details>
+
+<details>
+<summary><h2>About</h2></summary>
+
+StockBase, a inventory and stock system, with less of the bloat.
+
+StockBase is an open source, minimalist stock management system.
+
+StockBase is licenced under the GNU GPL licence.
+
+StockBase Copyright © 2023 Andrew Richardson. All rights reserved.
+
 </details>

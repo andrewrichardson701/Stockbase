@@ -558,63 +558,63 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h3>admin.php</h3></summary>
 
-- global settings
-- 	Change system name
-- 	Change banner colour
-- 	Change banner logo
-- 	Change favicon images
-- 	Change currency
-- 	Change SKU Prefix
-- 	Change Base URL
-- 	Change Default Theme
-- 	Restore default for all above
+- Global settings
+  - 	Change system name
+  - 	Change banner colour
+  - 	Change banner logo
+  - 	Change favicon images
+  - 	Change currency
+  - 	Change SKU Prefix
+  - 	Change Base URL
+  - 	Change Default Theme
+  - 	Restore default for all above
 - Footer
-- 	Enable/Disable Footer
-- 	Enable/Disable Gitlab link
-- 	Enable/Disable road map link
+  - 	Enable/Disable Footer
+  - 	Enable/Disable Gitlab link
+  - 	Enable/Disable road map link
 - Users
-- 	Manage all users
-- 	Change user roles
-- 	Enable/disabled users
-- 	Reset user passwords
-- 	Impersonate users (if root user)
-- 	Add new local users
+  - 	Manage all users
+  - 	Change user roles
+  - 	Enable/disabled users
+  - 	Reset user passwords
+  - 	Impersonate users (if root user)
+  - 	Add new local users
 - User Roles
-- 	View user role permissions
+  - 	View user role permissions
 - Session Management
-- 	Kill any active sessions to the site
-- 	View active sessions
+  - 	Kill any active sessions to the site
+  - 	View active sessions
 - Image management
-- 	Delete unsued images
+  - 	Delete unsued images
 - Attribute Management
-- 	Delete/restore unused tags
-- 	Delete/restore unused manufacturers
-- 	Show all links for tags
-- 	Show all links for manufacturers
-- 	View all tags and their associations via tags.php
+  - 	Delete/restore unused tags
+  - 	Delete/restore unused manufacturers
+  - 	Show all links for tags
+  - 	Show all links for manufacturers
+  - 	View all tags and their associations via tags.php
 - Optic Attribute Management
-- 	Delete/restore unused vendors
-- 	Delete/restore unused types
-- 	Delete/restore unused connectors
-- 	Show all links for vendors
-- 	Show all links for types
-- 	Show all links for connectors
+  - 	Delete/restore unused vendors
+  - 	Delete/restore unused types
+  - 	Delete/restore unused connectors
+  - 	Show all links for vendors
+  - 	Show all links for types
+  - 	Show all links for connectors
 - Stock Management
-- 	Enable/Disabled Costs for normal and cablestock
-- 	Restore Deleted stock
+  - 	Enable/Disabled Costs for normal and cablestock
+  - 	Restore Deleted stock
 - Stock Location Settings
-- 	View/Add/Edit/Restore/Delete Locations
+  - 	View/Add/Edit/Restore/Delete Locations
 - LDAP Settings
-- 	View and edit LDAP settings
-- 	Test LDAP settings
+  - 	View and edit LDAP settings
+  - 	Test LDAP settings
 - SMTP Settings
-- 	View and edit SMTP Settings
-- 	Test SMTP settings
+  - 	View and edit SMTP Settings
+  - 	Test SMTP settings
 - Email Notification Settings
-- 	Configure notifications for emails
+  - 	Configure notifications for emails
 - Changelog
-- 	View changelog
-- 	Link to full changelog
+  - 	View changelog
+  - 	Link to full changelog
 
 </details>
 <details>

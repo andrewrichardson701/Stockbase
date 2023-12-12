@@ -475,153 +475,177 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>File Breakdown</h2></summary>
 <details>
 <summary><h3>login.php</h3></summary>
-	login to user account
-	reset password if local user
-	select local/ldap user if enabled
+
+- Login to user account
+- Reset password if local user
+- Select local/ldap user if enabled
+
 </details>
 <details>
 <summary><h3>logout.php</h3></summary>
-	kills sessions
-	logs user out
-	redirects to login page
+
+- Kills sessions
+- Logs user out
+- Redirects to login page
+
 </details>
 <details>
 <summary><h3>index.php</h3></summary>
-	show all stock
-	filter stock by search, tag, manufacturer
-	show or hide out of stock
-	navigate to a stock item
-	clicking images makes them larger
-	clicking the name of a stock row navigates to the stock page
-	clicking the site sets the site filter
-	clicking the tag sets the tag filter
-	clicking the yellow clear icon clears the filters
-	clicking Fixed Cables takes you to the cablestock
+
+- Show all stock
+- Filter stock by search, tag, manufacturer
+- Show or hide out of stock
+- Navigate to a stock item
+- Clicking images makes them larger
+- Clicking the name of a stock row navigates to the stock page
+- Clicking the site sets the site filter
+- Clicking the tag sets the tag filter
+- Clicking the yellow clear icon clears the filters
+- Clicking Fixed Cables takes you to the cablestock
+
 </details>
 <details>
 <summary><h3>cablestock.php</h3></summary>
-	shows all cablestock categoorised by type (copper/fibre/power/other)
-	add/remove/moved cable stock
-	clicking the name takes you to the stock page for the item
-	clicking the site link sets the site filter
-	search by name
-	filter by site
-	show/hide out of stock items
-	navigate back to stock page with the Item Stock button
+
+- Shows all cablestock categoorised by type (copper/fibre/power/other)
+- Add/remove/moved cable stock
+- Clicking the name takes you to the stock page for the item
+- Clicking the site link sets the site filter
+- Search by name
+- Filter by site
+- Show/hide out of stock items
+- Navigate back to stock page with the Item Stock button
+
 </details>
 <details>
 <summary><h3>stock.php</h3></summary>
-	shows stock info for the item
-	shows the items linked to the stock
-	shows transaction for the stock
-	view full transaction log using show all link
-	allows editing the info and images
-	allows adding more
-	allows deleting stock
-	allows moving stock
-	allows adding new stock objects
+
+- Shows stock info for the item
+- Shows the items linked to the stock
+- Shows transaction for the stock
+- View full transaction log using show all link
+- Allows editing the info and images
+- Allows adding more
+- Allows deleting stock
+- Allows moving stock
+- Allows adding new stock objects
+
 </details>
 <details>
 <summary><h3>optics.php</h3></summary>
-	shows all fibre optic modules
-	can filter and search 
-	allows adding new optics
-	allows adding new vendors/connectors/types
-	allows adding comments
-	allows removing comments
-	allows removing optics
+
+- Shows all fibre optic modules
+- Can filter and search 
+- Allows adding new optics
+- Allows adding new vendors/connectors/types
+- Allows adding comments
+- Allows removing comments
+- Allows removing optics
+
 </details>
 <details>
 <summary><h3>profile.php</h3></summary>
-	allows editign profile info for local users
-	shows all profile info
-	allows the assigning, reassigning and deassigning of swipe cards
-	allows password resets for local users
-	change theme
-	test theme via them test link
-	resync ldap info if logged in via ldap
+
+- Allows editign profile info for local users
+- Shows all profile info
+- Allows the assigning, reassigning and deassigning of swipe cards
+- Allows password resets for local users
+- Change theme
+- Test theme via them test link
+- Resync ldap info if logged in via ldap
+
 </details>
 <details>
 <summary><h3>admin.php</h3></summary>
-	global settings
-		change system name
-		change banner colour
-		change banner logo
-		change favicon images
-		change currency
-		change SKU Prefix
-		change Base URL
-		change Default Theme
-		Restore default for all above
-	Footer
-		Enable/Disable Footer
-		Enable/Disable Gitlab link
-		Enable/Disable road map link
-	Users
-		manage all users
-		change user roles
-		enable/disabled users
-		reset user passwords
-		impersonate users (if root user)
-		Add new local users
-	User Roles
-		View user role permissions
-	Session Management
-		Kill any active sessions to the site
-		View active sessions
-	Image management
-		Delete unsued images
-	Attribute Management
-		Delete/restore unused tags
-		Delete/restore unused manufacturers
-		show all links for tags
-		show all links for manufacturers
-		view all tags and their associations via tags.php
-	Optic Attribute Management
-		Delete/restore unused vendors
-		Delete/restore unused types
-		Delete/restore unused connectors
-		show all links for vendors
-		show all links for types
-		show all links for connectors
-	Stock Management
-		Enable/Disabled Costs for normal and cablestock
-		Restore Deleted stock
-	Stock Location Settings
-		View/Add/Edit/Restore/Delete Locations
-	LDAP Settings
-		View and edit LDAP settings
-		Test LDAP settings
-	SMTP Settings
-		View and edit SMTP Settings
-		Test SMTP settings
-	Email Notification Settings
-		Configure notifications for emails
-	Changelog
-		View changelog
-		link to full changelog
+
+- global settings
+- 	Change system name
+- 	Change banner colour
+- 	Change banner logo
+- 	Change favicon images
+- 	Change currency
+- 	Change SKU Prefix
+- 	Change Base URL
+- 	Change Default Theme
+- 	Restore default for all above
+- Footer
+- 	Enable/Disable Footer
+- 	Enable/Disable Gitlab link
+- 	Enable/Disable road map link
+- Users
+- 	Manage all users
+- 	Change user roles
+- 	Enable/disabled users
+- 	Reset user passwords
+- 	Impersonate users (if root user)
+- 	Add new local users
+- User Roles
+- 	View user role permissions
+- Session Management
+- 	Kill any active sessions to the site
+- 	View active sessions
+- Image management
+- 	Delete unsued images
+- Attribute Management
+- 	Delete/restore unused tags
+- 	Delete/restore unused manufacturers
+- 	Show all links for tags
+- 	Show all links for manufacturers
+- 	View all tags and their associations via tags.php
+- Optic Attribute Management
+- 	Delete/restore unused vendors
+- 	Delete/restore unused types
+- 	Delete/restore unused connectors
+- 	Show all links for vendors
+- 	Show all links for types
+- 	Show all links for connectors
+- Stock Management
+- 	Enable/Disabled Costs for normal and cablestock
+- 	Restore Deleted stock
+- Stock Location Settings
+- 	View/Add/Edit/Restore/Delete Locations
+- LDAP Settings
+- 	View and edit LDAP settings
+- 	Test LDAP settings
+- SMTP Settings
+- 	View and edit SMTP Settings
+- 	Test SMTP settings
+- Email Notification Settings
+- 	Configure notifications for emails
+- Changelog
+- 	View changelog
+- 	Link to full changelog
+
 </details>
 <details>
 <summary><h3>changelog.php</h3></summary>
-	view all logs 
-	filter logs based on date/table/user
+
+- View all logs 
+- Filter logs based on date/table/user
+
 </details>
 <details>
 <summary><h3>tags.php</h3></summary>
-	view all tags and their associations
-	edit tag info
+
+- View all tags and their associations
+- Edit tag info
+
 </details>
 <details>
 <summary><h3>theme-test.php</h3></summary>
-	shows snippets of all theme based css
-	test differetnt themes to see what they look like
-	create new themes live
-	download theme
-	upload theme
+
+- Shows snippets of all theme based css
+- Test differetnt themes to see what they look like
+- Create new themes live
+- Download theme
+- Upload theme
+
 </details>
 <details>
 <summary><h3>transactions.php</h3></summary>
-	shows full list of transactions for the item selected
+
+- Shows full list of transactions for the item selected
+
 </details>
 </details>
 <details>

@@ -421,7 +421,7 @@ echo ""
 # Ask for folder input and check if it exists
 while true; do
     # Ask for folder input and allow creating the folder if needed
-    read -p "Enter the folder name to install to (e.g. /var/www/html/inventory): " folder_name
+    read -p "Enter the folder name to install to (e.g. /var/www/html/stockbase): " folder_name
 
     # Check if the folder exists
     if [ -d "$folder_name" ]; then
@@ -609,24 +609,24 @@ while true; do
     fi
 done
 
-echo "Checking for 'inventory' database..."
+echo "Checking for 'stockbase' database..."
 echo ""
-# Check if "inventory" database exists
-if mysql -u root -e "USE inventory;" 2>/dev/null; then
-    read -p "The 'inventory' database already exists. Do you want to remove it and install the new one? (yes/no): " remove_database
+# Check if "stockbase" database exists
+if mysql -u root -e "USE stockbase;" 2>/dev/null; then
+    read -p "The 'stockbase' database already exists. Do you want to remove it and install the new one? (yes/no): " remove_database
     if [ "$remove_database" = "yes" ]; then
-        echo "Removing existing 'inventory' database..."
-        mysql -u root -e "DROP DATABASE inventory;"
+        echo "Removing existing 'stockbase' database..."
+        mysql -u root -e "DROP DATABASE stockbase;"
         sleep 1
         echo "Database removed."
     else
         echo "Database needs to be created to continue."
-        echo "Please remove the database named 'inventory' to continue..."
+        echo "Please remove the database named 'stockbase' to continue..."
         read -n 1 -s -r -p "Press any key to exit..."
         exit 1
     fi
 else
-    echo "The 'inventory' database does not exist."
+    echo "The 'stockbase' database does not exist."
     echo "Database will be created."
 fi
 
@@ -651,7 +651,7 @@ if [ -f "$sql_setup_script" ]; then
 
     echo ""
     echo "Updating system_name with the selected system name..."
-    mysql -u root -e "UPDATE inventory.config SET system_name='$system_name' WHERE id=1;";
+    mysql -u root -e "UPDATE stockbase.config SET system_name='$system_name' WHERE id=1;";
     sleep 1
     echo "Done!"
     echo ""
@@ -659,7 +659,7 @@ if [ -f "$sql_setup_script" ]; then
     while true; do    
         echo "Checking system_name is set..."
         # Query to get the base_url value from the config table
-        config_system_name=$(mysql -u root --skip-column-names -e "SELECT system_name FROM inventory.config WHERE id=1;")
+        config_system_name=$(mysql -u root --skip-column-names -e "SELECT system_name FROM stockbase.config WHERE id=1;")
         sleep 1
 
         # Check if base_url is equal to the desired web_domain
@@ -669,7 +669,7 @@ if [ -f "$sql_setup_script" ]; then
         else
             echo "system_name is not set correctly: $config_system_name."
             echo "Retrying..."
-            mysql -u root -p -e "UPDATE inventory.config SET system_name='$system_name' WHERE id=1;"
+            mysql -u root -p -e "UPDATE stockbase.config SET system_name='$system_name' WHERE id=1;"
             echo "Done!"
         fi
 
@@ -679,7 +679,7 @@ if [ -f "$sql_setup_script" ]; then
 
     echo ""
     echo "Updating base_url with the selected web url..."
-    mysql -u root -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;";
+    mysql -u root -e "UPDATE stockbase.config SET base_url='$web_domain' WHERE id=1;";
     sleep 1
     echo "Done!"
     echo ""
@@ -687,7 +687,7 @@ if [ -f "$sql_setup_script" ]; then
     while true; do    
         echo "Checking base_url is set..."
         # Query to get the base_url value from the config table
-        config_base_url=$(mysql -u root --skip-column-names -e "SELECT base_url FROM inventory.config WHERE id=1;")
+        config_base_url=$(mysql -u root --skip-column-names -e "SELECT base_url FROM stockbase.config WHERE id=1;")
         sleep 1
 
         # Check if base_url is equal to the desired web_domain
@@ -697,7 +697,7 @@ if [ -f "$sql_setup_script" ]; then
         else
             echo "base_url is not set correctly: $config_base_url."
             echo "Retrying..."
-            mysql -u root -p -e "UPDATE inventory.config SET base_url='$web_domain' WHERE id=1;"
+            mysql -u root -p -e "UPDATE stockbase.config SET base_url='$web_domain' WHERE id=1;"
             echo "Done!"
         fi
 
@@ -710,37 +710,37 @@ fi
 sleep 1
 echo ""
 
-# Create "inventory" user and set password
+# Create "stockbaseuser" user and set password
 echo "User needed to access the database."
 
-# Check if 'inventory' user exists
-echo "Checking if inventory database user exists..."
+# Check if 'stockbaseuser' user exists
+echo "Checking if 'stockbaseuser' database user exists..."
 echo ""
-user_exists=$(mysql -u root -e "SELECT User FROM mysql.user WHERE User='inventory' AND Host='localhost';" --skip-column-names)
+user_exists=$(mysql -u root -e "SELECT User FROM mysql.user WHERE User='stockbaseuser' AND Host='localhost';" --skip-column-names)
 sleep 1
 if [ -n "$user_exists" ]; then
-    # The 'inventory' user exists, prompt the user for action
-    echo "Inventory database user already exists. Do you want to drop the user and re-create it?"
+    # The 'stockbaseuser' user exists, prompt the user for action
+    echo "Stockbaseuser database user already exists. Do you want to drop the user and re-create it?"
     echo "Selecting 'N' will prompt for the password."
     while true; do
         read -p "Do you want to drop the user? (Y/N): " drop_user
         case "$drop_user" in
             [Yy]* ) 
-                    mysql -u root -e "DROP USER 'inventory'@'localhost';"
+                    mysql -u root -e "DROP USER 'stockbaseuser'@'localhost';"
                     mysql -u root -e "flush privileges;"
-                    echo "User 'inventory' dropped."
+                    echo "User 'stockbaseuser' dropped."
                     echo ""
                     while true; do
-                        read -s -p "Enter a password for the 'inventory' database user: " inventory_user_password
+                        read -s -p "Enter a password for the 'stockbaseuser' database user: " stockbaseuser_user_password
                         echo
-                        read -s -p "Confirm the password for the 'inventory' database user: " inventory_user_password_confirm
+                        read -s -p "Confirm the password for the 'stockbaseuser' database user: " stockbaseuser_user_password_confirm
                         echo
-                        if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
-                                echo "Creating 'inventory' database user..."
-                                mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
-                                mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
+                        if [ "$stockbaseuser_user_password" = "$stockbaseuser_user_password_confirm" ]; then
+                                echo "Creating 'stockbaseuser' database user..."
+                                mysql -u root -e "CREATE USER 'stockbaseuser'@'localhost' IDENTIFIED BY '$stockbaseuser_user_password';"
+                                mysql -u root -e "GRANT ALL PRIVILEGES ON stockbase.* TO 'stockbaseuser'@'localhost';"
                                 mysql -u root -e "FLUSH PRIVILEGES;"
-                                echo "User 'inventory' created."
+                                echo "User 'stockbaseuser' created."
                                 correct_password="Y"
                             break
                         else
@@ -751,8 +751,8 @@ if [ -n "$user_exists" ]; then
             [Nn]* ) 
                     echo ""
                     while true; do
-                        read -s -p "Enter the password for 'inventory' user: " inventory_user_password;
-                        if mysql -u inventory -p"$inventory_user_password" -e ";" 2>/dev/null; then
+                        read -s -p "Enter the password for 'stockbaseuser': " stockbaseuser_user_password;
+                        if mysql -u stockbaseuser -p"$stockbaseuser_user_password" -e ";" 2>/dev/null; then
                             echo "Password matches."
                             correct_password="Y"
                             break
@@ -767,16 +767,16 @@ if [ -n "$user_exists" ]; then
 else 
     echo ""
     while true; do
-        read -s -p "Enter a password for the 'inventory' database user: " inventory_user_password
+        read -s -p "Enter a password for the 'stockbaseuser' database user: " stockbaseuser_user_password
         echo
-        read -s -p "Confirm the password for the 'inventory' database user: " inventory_user_password_confirm
+        read -s -p "Confirm the password for the 'stockbaseuser' database user: " stockbaseuser_user_password_confirm
         echo
-        if [ "$inventory_user_password" = "$inventory_user_password_confirm" ]; then
-                echo "Creating 'inventory' database user..."
-                mysql -u root -e "CREATE USER 'inventory'@'localhost' IDENTIFIED BY '$inventory_user_password';"
-                mysql -u root -e "GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';"
+        if [ "$stockbaseuser_user_password" = "$stockbaseuser_user_password_confirm" ]; then
+                echo "Creating 'stockbaseuser' database user..."
+                mysql -u root -e "CREATE USER 'stockbaseuser'@'localhost' IDENTIFIED BY '$stockbaseuser_user_password';"
+                mysql -u root -e "GRANT ALL PRIVILEGES ON stockbase.* TO 'stockbaseuser'@'localhost';"
                 mysql -u root -e "FLUSH PRIVILEGES;"
-                echo "User 'inventory' created."
+                echo "User 'stockbaseuser' created."
                 correct_password="Y"
             break
         else
@@ -790,11 +790,11 @@ if [ "$correct_password" = "Y" ]; then
     echo "Updating $dbh with new password..."
 
     # Search and replace the string in the file
-    sed -i "s/\$dBUsername = 'admin';/\$dBUsername = 'inventory';/" "$dbh"
-    sed -i "s/\$dBPassword = 'admin';/\$dBPassword = '$inventory_user_password';/" "$dbh"
+    sed -i "s/\$dBUsername = 'admin';/\$dBUsername = 'stockbaseuser';/" "$dbh"
+    sed -i "s/\$dBPassword = 'admin';/\$dBPassword = '$stockbaseuser_user_password';/" "$dbh"
     echo "done!"
 else
-    echo "Password issue for inventory user..."
+    echo "Password issue for stockbaseuser user..."
 fi
 sleep 1
 echo ""
@@ -812,9 +812,9 @@ hostname=$(hostname --fqdn)
 
 echo "Creating root user for site login..."
 # Insert new user to table
-mysql -u root -e "INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname.local', 'local', 0, 1, 1, '$hashed_password');"
-mysql -u root -e "UPDATE inventory.users SET id=0 where id=1;"
-mysql -u root -e "ALTER TABLE inventory.users AUTO_INCREMENT = 1;"   
+mysql -u root -e "INSERT INTO stockbase.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) VALUES (1, 'root', 'root', 'root', 'root@$hostname.local', 'local', 0, 1, 1, '$hashed_password');"
+mysql -u root -e "UPDATE stockbase.users SET id=0 where id=1;"
+mysql -u root -e "ALTER TABLE stockbase.users AUTO_INCREMENT = 1;"   
 sleep 1
 echo "Done!"
 echo ""
@@ -849,7 +849,7 @@ while true; do
                 echo    
                     ldap_password_hash=$(echo -n "$ldap_password" | base64)
                     echo "Pushing settings to config..."
-                    mysql -u root -e "UPDATE inventory.config SET ldap_enabled=$ldap_enabled, ldap_username='$ldap_username', ldap_password='$ldap_password_hash', ldap_domain='$ldap_domain', ldap_host='$ldap_host', ldap_host_secondary='$ldap_host_secondary', ldap_port=$ldap_port, ldap_basedn='$ldap_basedn', ldap_usergroup='$ldap_usergroup', ldap_userfilter='$ldap_userfilter' WHERE id=1;"
+                    mysql -u root -e "UPDATE stockbase.config SET ldap_enabled=$ldap_enabled, ldap_username='$ldap_username', ldap_password='$ldap_password_hash', ldap_domain='$ldap_domain', ldap_host='$ldap_host', ldap_host_secondary='$ldap_host_secondary', ldap_port=$ldap_port, ldap_basedn='$ldap_basedn', ldap_usergroup='$ldap_usergroup', ldap_userfilter='$ldap_userfilter' WHERE id=1;"
                     echo "Config Saved."
                     correct_password="Y"
                 break
@@ -857,7 +857,7 @@ while true; do
             break;;
         [Nn]* ) 
             ldap_enabled=0
-            mysql -u root -e "UPDATE inventory.config SET ldap_enabled=$ldap_enabled WHERE id=1;"
+            mysql -u root -e "UPDATE stockbase.config SET ldap_enabled=$ldap_enabled WHERE id=1;"
             echo "LDAP disabled."
             break;;
         * ) echo "Please answer Y or N.";;
@@ -911,7 +911,7 @@ while true; do
                 echo
                     smtp_password_hash=$(echo -n "$smtp_password" | base64)
                     echo "Pushing settings to config..."
-                    mysql -u root -e "UPDATE inventory.config SET smtp_enabled=1, smtp_host='$smtp_host', smtp_port=$smtp_port, smtp_encryption='$smtp_encryption', smtp_username='$smtp_username', smtp_password='$smtp_password_hash', smtp_from_email='$smtp_from_email', smtp_from_name='$smtp_from_name', smtp_to_email='$smtp_to_email' WHERE id=1;"
+                    mysql -u root -e "UPDATE stockbase.config SET smtp_enabled=1, smtp_host='$smtp_host', smtp_port=$smtp_port, smtp_encryption='$smtp_encryption', smtp_username='$smtp_username', smtp_password='$smtp_password_hash', smtp_from_email='$smtp_from_email', smtp_from_name='$smtp_from_name', smtp_to_email='$smtp_to_email' WHERE id=1;"
                     echo "Config Saved."
                 break
             done

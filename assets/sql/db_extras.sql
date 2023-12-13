@@ -1,14 +1,14 @@
 -- MySQL Extras
 --
--- Host: localhost    Database: inventory
+-- Host: localhost    Database: stockbase
 -- ------------------------------------------------------
 -- Server version	8.0.33-0ubuntu0.20.04.2
 
 
 --
--- Current Database: `inventory`
+-- Current Database: `stockbase`
 --
-USE inventory;
+USE stockbase;
 
 -- Set Auto_increment for all tables
 -- Set all tables to be increment 1
@@ -100,3 +100,31 @@ VALUES
     (2, 'Light', 'theme-light.css'),
     (3, 'Light Blue', 'theme-light-blue.css'),
     (4, 'Dark Red', 'theme-dark-red.css');
+
+INSERT INTO optic_type (name)
+VALUES
+    ('SFP'),
+    ('SFP+');
+    
+INSERT INTO optic_connector (name)
+VALUES 
+    ('LC'),
+    ('SC'),
+    ('FC'),
+    ('ST'),
+    ('RJ45');
+
+INSERT INTO optic_speed (name)
+VALUES 
+    ('100M'),
+    ('1G'),
+    ('4G'),
+    ('8G'),
+    ('10G'),
+    ('25G'),
+    ('40G'),
+    ('50G'),
+    ('100G'),
+    ('200G'),
+    ('400G'),
+    ('800G');

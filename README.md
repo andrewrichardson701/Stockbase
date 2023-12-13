@@ -652,7 +652,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.6.0-beta</h3></summary>
-<h4>Beta release 0.6.0, Optics stocking.</h4>
+<h4>Beta release 0.6.0, Optics stocking and database renamed to stockbase.</h4>
 
 - Optic modules now stocked under optics.php
 - optics.php shows the list of optics in store for each site similar to how the index page shows the main stock.
@@ -669,6 +669,8 @@ Clone the repo first, and the follow the below steps.
 - Profile link is now named 'Profile' in the navigation. Now that there are more links, this is clear.
 - Optic Attribute Management is now included on admin page to manage vendors, types and connectors.
 - Changelog now works with optic tables
+- Database now named stockbase
+- Update script adjusted for all the changes.
 
 </details>
 <details>

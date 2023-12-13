@@ -669,7 +669,8 @@ Clone the repo first, and the follow the below steps.
 - Profile link is now named 'Profile' in the navigation. Now that there are more links, this is clear.
 - Optic Attribute Management is now included on admin page to manage vendors, types and connectors.
 - Changelog now works with optic tables
-- Database now names stockbase
+- Database now named stockbase
+- Update script adjusted for all the changes.
 
 </details>
 <details>

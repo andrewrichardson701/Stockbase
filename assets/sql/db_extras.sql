@@ -1,14 +1,14 @@
 -- MySQL Extras
 --
--- Host: localhost    Database: inventory
+-- Host: localhost    Database: stockbase
 -- ------------------------------------------------------
 -- Server version	8.0.33-0ubuntu0.20.04.2
 
 
 --
--- Current Database: `inventory`
+-- Current Database: `stockbase`
 --
-USE inventory;
+USE stockbase;
 
 -- Set Auto_increment for all tables
 -- Set all tables to be increment 1

@@ -129,8 +129,8 @@ dbUsername=$(grep -oP "\$dBUsername = '\K[^']+" $install_dir/includes/dbh.inc.ph
 dbPassword=$(grep -oP "\$dBPassword = '\K[^']+" $install_dir/includes/dbh.inc.php)
 
 
-# Download new branch to /tmp/inventory
-download_dir="/tmp/inventory-$selected_branch"
+# Download new branch to /tmp/stockbase
+download_dir="/tmp/stockbase-$selected_branch"
 echo ""
 echo "Downloading branch: $selected_branch to $tmp_dir ..."
 sleep 1
@@ -140,7 +140,7 @@ sleep 1
 
 # Create backup folder, and make a backup in it.
 current_date_time=$(date +"%Y-%m-%d-%H-%M-%S")
-backup_folder="inventory_backup-$CURRENT_BRANCH-$current_date_time"
+backup_folder="stockbase_backup-$CURRENT_BRANCH-$current_date_time"
 backup_dir="/tmp/$back_folder"
 mkdir $backup_dir
 

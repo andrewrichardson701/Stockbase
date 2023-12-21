@@ -275,6 +275,7 @@ CREATE TABLE `optic_comment` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `item_id` bigint NOT NULL,
   `comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `user_id` int NOT NULL,
   `timestamp` datetime NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)

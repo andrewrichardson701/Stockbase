@@ -21,14 +21,17 @@
                 case 'index':
                     $highlight = 1;
                     break;
-                case 'optics':
+                case 'cables':
                     $highlight = 2;
                     break;
-                case 'profile':
-                    $highlight = 4;
+                case 'optics':
+                    $highlight = 3;
                     break;
                 case 'admin':
-                    $highlight = 3  ;
+                    $highlight = 4;
+                    break;
+                case 'profile':
+                    $highlight = 5;
                     break;
                 default:
                     $highlight = 0;
@@ -83,8 +86,17 @@
                 
             }
             if (isset($loggedin_role)) {
+                $n = 2;
+                echo('
+                <div id="stock-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                    <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./cablestock.php">Cables</a>
+                </div> 
+                ');
+                
+            }
+            if (isset($loggedin_role)) {
                 if (in_array($loggedin_role, $config_optics_roles_array)) {
-                    $n = 2;
+                    $n = 3;
                     echo('
                     <div id="optics-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
                         <a id="optics" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./optics.php">Optics</a>
@@ -92,36 +104,59 @@
                     ');
                 }
             }
-            if (isset($loggedin_role)) {
-                if (in_array($loggedin_role, $config_admin_roles_array)) {
-                    $n = 3;
-                    echo('
-                    <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <a id="admin" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./admin.php">Admin</a>
-                    </div> 
-                    ');
-                }
-            }
-            if (isset($profile_name)) {
-                $n = 4;
-                echo('
-                <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                    <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./profile.php">Profile</a>
-                </div> 
-                ');
-            }
+            // if (isset($loggedin_role)) {
+            //     if (in_array($loggedin_role, $config_admin_roles_array)) {
+            //         $n = 4;
+            //         echo('
+            //         <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+            //             <a id="admin" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./admin.php">Admin</a>
+            //         </div> 
+            //         ');
+            //     }
+            // }
+            // if (isset($profile_name)) {
+            //     $n = 5;
+            //     echo('
+            //     <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+            //         <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./profile.php">Profile</a>
+            //     </div> 
+            //     ');
+            // }
+            // if (isset($profile_name)) {
+            //     echo ('
+            //         <div id="logout-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+            //             <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important" href="./logout.php">Logout</a>
+            //         </div> 
+            //     ');
+            // }
             if (isset($profile_name)) {
                 echo ('
-                    <div id="logout-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important" href="./logout.php">Logout</a>
-                    </div> 
+                    <div id="menu-div" class="nav-menu theme-burger '); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div" style="cursor:pointer; color:'.$current_banner_text_color.' !important" '); if (!isset($profile_name)) { echo ('hidden'); } echo('>
+                        <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important">'.$profile_name.'<i class="fa fa-chevron-down" style="margin-left:5px; font-size:12"></i></a>
+                    </div>
                 ');
+                
             }
+            
         }
         
         ?>
     </div>
-
+    <?php 
+    if (isset($profile_name)) {
+        echo('
+        <div style="width:100%">
+            <div class="nav-div float-right" style="min-width:120px;">
+                <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">
+                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>
+                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./profile.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>
+                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./logout.php">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        ');
+    }
+    ?>
     <div id="nav-row" class="nav-row viewport-small">
         <div class="logo-div">
             <a href="./">
@@ -145,15 +180,16 @@
             echo('<div class="nav-div '); if($nav_right == 0) { echo('nav-right'); $nav_right = 1; } echo('">');
             if (isset($profile_name)) { 
                 echo('
-                    <ul class="nav-links">
-                        <li><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>');
+                    <ul class="burger-links">
+                        <li><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>
+                        <li><a href="./cablestock.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Cables</a></li>');
                         if (isset($loggedin_role)) {
                             if (in_array($loggedin_role, $config_optics_roles_array)) {
-                                echo('<li><a href="./optics.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>');
+                                echo('<li><a href="./optics.php"'); if ($highlight == 3) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>');
                             }
                         }
                         echo('
-                        <li><a href="./profile.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
+                        <li><a href="./profile.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
                         // if (isset($loggedin_role)) {
                         //     if (in_array($loggedin_role, $config_admin_roles_array)) {
                         //         echo('<li><a href="./admin.php">Admin</a></li>');
@@ -207,11 +243,19 @@ if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
 ?>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const burgerMenu = document.querySelector('.burger-menu');
+    const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelector('.nav-links');
 
-    burgerMenu.addEventListener('click', function () {
+    navMenu.addEventListener('click', function () {
         navLinks.classList.toggle('show');
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const burgerMenu = document.querySelector('.burger-menu');
+    const burgerLinks = document.querySelector('.burger-links');
+
+    burgerMenu.addEventListener('click', function () {
+        burgerLinks.classList.toggle('show');
         if (burgerMenu.innerHTML == '<i class="fa-solid fa-bars"></i>') {
             burgerMenu.innerHTML = '<i class="fa-solid fa-bars fa-rotate-90"></i>';
         } else {

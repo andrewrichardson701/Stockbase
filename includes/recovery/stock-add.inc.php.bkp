@@ -16,11 +16,6 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
 <div class="container well-nopad theme-divBg">
     
     <?php
-    $page = isset($_GET['page']) ? $_GET['page'] : 1;
-    echo('
-        <input id="hidden-page-number" type="hidden" value="'.$page.'" />
-        <pre id="hidden-sql" hidden></pre>
-    ');
     if (is_numeric($stock_id)) {
         $input_name          = isset($_GET['name'])          ? $_GET['name'] : '';
         $input_sku           = isset($_GET['sku'])           ? $_GET['sku'] : '';
@@ -39,6 +34,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         $input_serial_number = isset($_GET['serial_number']) ? $_GET['serial_number'] : '';
         $input_reason        = isset($_GET['reason'])        ? $_GET['reason'] : '';
 
+        echo('');
         if ($stock_id == 0 || $stock_id == '0') {
             //<input type="text" name="tags" placeholder="Labels - allow multiple" id="tags" class="form-control nav-v-c" style="width:300px" value="'.$input_tags.'"></input>
             echo('
@@ -312,7 +308,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     LEFT JOIN area ON shelf.area_id=area.id 
                                     LEFT JOIN site ON area.site_id=site.id
                                     LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                    WHERE stock.id=? AND stock.deleted=0
+                                    WHERE stock.id=? AND stock.deleted=0 AND item.deleted=0
                                     GROUP BY 
                                         stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                                         site_id, site_name, site_description, 
@@ -339,7 +335,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     LEFT JOIN shelf ON cable_item.shelf_id=shelf.id 
                                     LEFT JOIN area ON shelf.area_id=area.id 
                                     LEFT JOIN site ON area.site_id=site.id
-                                    WHERE stock.id=? AND stock.deleted=0
+                                    WHERE stock.id=? AND stock.deleted=0 AND cable_item.deleted=0
                                     GROUP BY 
                                         stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                                         site_id, site_name, site_description, 
@@ -599,7 +595,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             <tbody>
                                 <tr>
                                     <td style="padding-right:20px">Search for item</td>
-                                    <td><input class="form-control stock-inputSize" type="text" id="search" name="search" oninput="getInventory(1)" placeholder="Search for item" value="'.htmlspecialchars($search, ENT_QUOTES, 'UTF-8').'"/></td>
+                                    <td><input class="form-control stock-inputSize" type="text" id="search" name="search" placeholder="Search for item" value="'.htmlspecialchars($search, ENT_QUOTES, 'UTF-8').'"/></td>
                                     <td class="text-right viewport-mid-large" style="padding-left:20px;padding-right:20px">or</td>
                                     <td class="viewport-mid-large"><a class="link btn btn-success cw" onclick="navPage(updateQueryParameter(updateQueryParameter(\'\', \'stock_id\', 0), \'name\', document.getElementById(\'search\').value))">Add New Stock</a></td>
                                 </tr>
@@ -615,40 +611,187 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             </form>
         ');
         
-        // Put the table in place
-        echo('
-        <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
-            <input type="hidden" id="inv-action-type" name="inv-action-type" value="add" />
-            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0;margin-bottom:0">
-                <thead style="text-align: center; white-space: nowrap;">
-                    <tr class="theme-tableOuter">
-                        <th class="viewport-mid-large">ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th hidden>Descritpion</th>
-                        <th>SKU</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody id="inv-body" class="align-middle" style="text-align: center; white-space: nowrap;">                       
-                </tbody>
-            </table>
-            <table class="table table-dark theme-table centertable">
-                <tbody>
-                    <tr class="theme-tableOuter">
-                        <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
-                        <div class="row">
-                            <div class="col text-center"></div>
-                            <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">
-                            </div>
-                            <div class="col text-center">
-                            </div>
-                        </div>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        ');
+        // Get total row count
+        $sql_total = "WITH QuantityCTE AS (
+                        SELECT
+                            item.stock_id,
+                            SUM(quantity) AS item_quantity
+                        FROM
+                            item
+                            INNER JOIN shelf ON item.shelf_id = shelf.id
+                            INNER JOIN area ON shelf.area_id = area.id
+                        WHERE
+                            item.deleted = 0
+                        GROUP BY
+                            item.stock_id
+                    )
+                    
+                    SELECT
+                        stock.id AS stock_id,
+                        stock.name AS stock_name,
+                        stock.description AS stock_description,
+                        stock.sku AS stock_sku,
+                        COALESCE(cte.item_quantity, 0) AS item_quantity,
+                        stock_img_image.stock_img_image
+                    FROM
+                        stock
+                        LEFT JOIN item ON stock.id = item.stock_id
+                        LEFT JOIN shelf ON item.shelf_id = shelf.id
+                        LEFT JOIN area ON shelf.area_id = area.id
+                        LEFT JOIN site ON area.site_id = site.id
+                        LEFT JOIN (
+                            SELECT
+                                stock_img.stock_id,
+                                MIN(stock_img.image) AS stock_img_image
+                            FROM
+                                stock_img
+                            GROUP BY
+                                stock_img.stock_id
+                        ) AS stock_img_image ON stock_img_image.stock_id = stock.id
+                        LEFT JOIN QuantityCTE cte ON stock.id = cte.stock_id
+                    WHERE
+                        stock.is_cable = 0
+                        AND stock.deleted = 0
+                        AND item.deleted = 0 ";
+        if (isset($_GET['search']) && $_GET['search'] !== '') {
+            $search = mysqli_real_escape_string($conn, $search); // escape special characters
+            $sql_total .= "AND (MATCH(stock.name) AGAINST ('$search' IN NATURAL LANGUAGE MODE) 
+                                    OR MATCH(stock.description) AGAINST ('$search' IN NATURAL LANGUAGE MODE) 
+                                    OR stock.name LIKE CONCAT('%', '$search', '%')
+                                )";
+        }
+        $sql_total .= "GROUP BY
+                        stock.id, stock_name, stock_description, stock_sku, stock_img_image.stock_img_image
+                    ORDER BY
+                        stock.name";
+        $stmt_total = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt_total, $sql_total)) {
+            echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+        } else {
+            mysqli_stmt_execute($stmt_total);
+            $result_total = mysqli_stmt_get_result($stmt_total);
+            $totalRowCount = $result_total->num_rows;
+        }
+        
+        if ($totalRowCount > 0) {
+            // Pagination settings
+            $results_per_page = 10; // row count to show
+            $total_pages = ceil($totalRowCount / $results_per_page);
+
+            $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+            if ($current_page < 1) {
+                $current_page = 1;
+            } elseif ($current_page > $total_pages) {
+                $current_page = $total_pages;
+            } 
+            
+            // Calculate the offset for the query
+            $offset = ($current_page - 1) * $results_per_page;
+
+            echo('
+            <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">');
+            include 'includes/dbh.inc.php';
+
+            $sql = $sql_total . " LIMIT $results_per_page OFFSET $offset";
+            $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                echo('SQL Failure at '.__LINE__.' in includes/stock-'.$_GET['modify'].'.php');
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+
+                if ($rowCount < 1) {
+                    echo('<p>No Stock Found</p>');
+                } else {
+                    // rows found
+                    echo('
+                    <table class="table table-dark theme-table" id="inventoryTable">
+                        <thead style="text-align: center; white-space: nowrap;">
+                            <tr class="theme-tableOuter">
+                                <th class="viewport-mid-large">ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th hidden>Descritpion</th>
+                                <th>SKU</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody class="align-middle" style="text-align: center; white-space: nowrap;">');
+                        while($row = $result->fetch_assoc()){
+                            if ($row['item_quantity'] == null || $row['item_quantity'] == 0 || $row['item_quantity'] == '') {
+                                $quantity = '<or class="red">0</or>';
+                            } else {
+                                $quantity =  $row['item_quantity'];
+                            }
+                            echo('
+                            <tr class="clickable vertical-align align-middle" id="'.$row['stock_id'].'" onclick="window.location.href=\'stock.php?modify='.$_GET['modify'].'&stock_id='.$row['stock_id'].'\'">
+                                <td class="align-middle viewport-mid-large" id="'.$row['stock_id'].'-id">'.$row['stock_id'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-img-cell">');
+                                if ($row['stock_img_image'] !== null && $row['stock_img_image'] !== '') {
+                                    echo ('<img id="'.$row['stock_id'].'-img" class="inv-img-main thumb" src="assets/img/stock/'.$row['stock_img_image'].'" alt="'.$row['stock_name'].'" title="'.$row['stock_name'].'" onclick="modalLoad(this)">');
+                                } 
+                            echo('
+                                </td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-name" style="white-space:wrap">'.$row['stock_name'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-description" hidden>'.$row['stock_description'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-sku">'.$row['stock_sku'].'</td>
+                                <td class="align-middle" id="'.$row['stock_id'].'-quantity">'.$quantity.'</td>
+                            </tr>
+                            ');
+                        }
+                        if ($total_pages > 1) {
+                            echo('
+                            <tr class="theme-tableOuter">
+                                <td colspan="100%">');
+    
+                                if ($current_page > 1) {
+                                    echo '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
+                                }
+                                if ($total_pages > 5) {
+                                    for ($i = 1; $i <= $total_pages; $i++) {
+                                        if ($i == $current_page) {
+                                            echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                            // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                        } elseif ($i == 1 && $current_page > 5) {
+                                            echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or><or style="padding-left:5px;padding-right:5px">...</or>';  
+                                        } elseif ($i < $current_page && $i >= $current_page-2) {
+                                            echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                        } elseif ($i > $current_page && $i <= $current_page+2) {
+                                            echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                        } elseif ($i == $total_pages) {
+                                            echo '<or style="padding-left:5px;padding-right:5px">...</or><or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';  
+                                        }
+                                    }
+                                } else {
+                                    for ($i = 1; $i <= $total_pages; $i++) {
+                                        if ($i == $current_page) {
+                                            echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                            // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                        } else {
+                                            echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                        }
+                                    }
+                                }
+                            
+                                if ($current_page < $total_pages) {
+                                    echo '<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>';
+                                } 
+                        }                              
+                    echo('
+                                </td>
+                            </td>
+                        </tr>');
+                    echo('    
+                        </tbody>
+                    </table>
+                    ');
+                }
+            }
+            echo('
+            </div>
+            ');
+        }
     }
     
     ?>
@@ -743,51 +886,6 @@ if (document.getElementById("site")) {
 if (document.getElementById("area")) {
     document.getElementById("area").addEventListener("change", populateShelves);
 }
-</script>
-
-<script>
-    function getInventory(search) {
-        // Make an AJAX request to retrieve the corresponding sites
-        var invBody = document.getElementById('inv-body');
-        var pageNumberArea = document.getElementById('inv-page-numbers');
-        var sql = document.getElementById('hidden-sql');
-        // console.log(invBody);
-        var name = document.getElementById('search').value;
-        var page = document.getElementById('hidden-page-number').value;
-        var type = document.getElementById('inv-action-type').value;
-
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stockajax.php?request-inventory-stock=1&name="+name+"&rows=10&page="+page+"&type="+type, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                // Parse the response and populate the shelf select box
-                var inventory = JSON.parse(xhr.responseText);
-                // console.log(inventory);
-                var bodyExtras = '';
-                var count = inventory[-1]['rows']-1;
-
-                for (let i=0; i<count; i++) {
-                    if (inventory[i]) {
-                        var extras = bodyExtras+inventory[i];
-                        bodyExtras = extras;
-                    }
-                }
-                invBody.innerHTML = bodyExtras;
-                pageNumberArea.innerHTML = inventory[-1]['page-number-area'];
-                sql.innerText = inventory[-1]['sql'];
-
-                if (search == 1) {
-                    var newURL = inventory[-1]['url'];
-                    window.history.pushState({ path: newURL }, '', newURL);
-                }
-            }
-        };
-        xhr.send();
-    }
-
-    if (document.getElementById('inventoryTable')) {
-        document.onload=getInventory(0);
-    }
 </script>
 
 

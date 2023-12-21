@@ -29,18 +29,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     ?>
     <!-- End of Header and Nav -->
     <div class="container">
-        <h2 class="header-small">Optics</h2>
+        <!-- <h2 class="header-small" style="padding-bottom:0px">Optics</h2> -->
         <?php 
         if (isset($_GET['error'])) { echo('<p class="red">Error: '.$_GET['error'].'</p>'); } 
         if (isset($_GET['success'])) { echo('<p class="green">Success: '.$_GET['success'].'</p>'); } 
         ?>
     </div>
-    <div class="content">
+    <div class="content" style="padding-top:20px">
         <div class="container" id="selection" style="margin-bottom:15px">
             <?php
             $site = isset($_GET['site']) ? $_GET['site'] : "0";
             $search = isset($_GET['search']) ? $_GET['search'] : "";
             $sort = isset($_GET['sort']) ? $_GET['sort'] : "";
+            $deleted = isset($_GET['deleted']) ? $_GET['deleted'] : "";
 
             // get types from table to create buttons
 
@@ -99,6 +100,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </button>
                         <button id="add-optic-hide" class="btn btn-danger nav-v-b" style="opacity:80%;color:black" onclick="toggleAddDiv()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { } else { echo ('hidden'); } echo('>
                             Hide Add Optic
+                        </button>
+                    </div>');
+                echo('<div class="col align-middle" style="max-width:max-content">
+                        <button id="show-deleted-optics" class="btn btn-success nav-v-b" style="opacity:80%;color:white" onclick="navPage(updateQueryParameter(\'\', \'deleted\', 1))" '); if((isset($deleted) && $deleted == 1)) { echo('hidden'); } echo('>
+                            View Deleted
+                        </button>
+                        <button id="hide-deleted-optics" class="btn btn-danger nav-v-b" style="opacity:80%;color:black" onclick="navPage(updateQueryParameter(\'\', \'deleted\', 0))" '); if(isset($deleted) && ($deleted == 0 || $deleted == '')) { echo('hidden'); } echo('>
+                            Hide Deleted
                         </button>
                     </div>');
                 echo('</div>
@@ -195,33 +204,65 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             <div class="well-nopad theme-divBg text-center">
                 <h3 style="font-size:22px">Add new optic</h3>
                 <hr style="border-color:#9f9d9d; margin-left:10px">
+                <p id="optic-add-response" hidden></p>
                 <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
-                    <div class="row" style="margin-right:25px">
+                    <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
-                            <div>Site</div>
+                            <div>Serial Number</div>
+                            <div><input class="form-control text-center" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" oninput="searchSerial(this.value)"required/></div>
+                        </div>
+                        <div class="col">
+                            <div>Model</div>
                             <div>
-                                <select id="site" name="site" class="form-control text-center" style="border-color:black;" required>');
-
-                                    $sql_site_cable = "SELECT * FROM site";
-                                    $stmt_site_cable = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_site_cable, $sql_site_cable)) {
+                                <input class="form-control text-center" id="model" type="text" list="names" name="model" placeholder="Model" style="min-width:120px" '); if (isset($_GET['form-model'])) { echo ('value="'.$_GET['form-model'].'"'); } echo (' required/>
+                                <datalist id="names">');
+                                    $sql_model = "SELECT DISTINCT model from optic_item WHERE deleted=0 AND quantity=1 ORDER BY model";
+                                    $stmt_model = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_model, $sql_model)) {
                                         echo("ERROR getting entries");
                                     } else {
-                                        mysqli_stmt_execute($stmt_site_cable);
-                                        $result_site_cable = mysqli_stmt_get_result($stmt_site_cable);
-                                        $rowCount_site_cable = $result_site_cable->num_rows;
-                                        if ($rowCount_site_cable < 1) {
+                                        mysqli_stmt_execute($stmt_model);
+                                        $result_model = mysqli_stmt_get_result($stmt_model);
+                                        $rowCount_model = $result_model->num_rows;
+                                        if ($rowCount_model < 1) {
+                                        } else {
+                                            while( $row_model = $result_model->fetch_assoc() ) {
+                                                echo("<option>".$row_model['model']."</option>");
+                                            }
+                                        }
+                                    }
+                                echo('
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>Vendor</div>
+                            <div>
+                                <select id="vendor" name="vendor" class="form-control text-center" style="border-color:black;" required>');
+
+                                    $sql_vendor = "SELECT * FROM optic_vendor ORDER BY name";
+                                    $stmt_vendor = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_vendor, $sql_vendor)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_vendor);
+                                        $result_vendor = mysqli_stmt_get_result($stmt_vendor);
+                                        $rowCount_vendor = $result_vendor->num_rows;
+                                        if ($rowCount_vendor < 1) {
                                             echo ("<option selected disabled>No Sites Found</option> ");
                                         } else {
-                                            echo ("<option selected disabled>Select Site</option>");
-                                            while( $row_site_cable = $result_site_cable->fetch_assoc() ) {
-                                                echo("<option value='".$row_site_cable['id']."'"); if (isset($_GET['form-site']) && $_GET['form-site'] == $row_site_cable['id']) { echo ('selected'); } echo (">".$row_site_cable['name']."</option>");
+                                            echo ("<option selected disabled>Select Vendor</option>");
+                                            while( $row_vendor = $result_vendor->fetch_assoc() ) {
+                                                echo("<option value='".$row_vendor['id']."'"); if (isset($_GET['form-vendor']) && $_GET['form-vendor'] == $row_vendor['id']) { echo ('selected'); } echo (">".$row_vendor['name']."</option>");
                                             }
                                         }
                                     }   
 
                                 echo('      
                                 </select>
+                            </div>
+                            <div class="text-center">
+                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewVendor()">Add New</a>
                             </div>
                         </div>
                         <div class="col">
@@ -254,6 +295,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a>
                             </div>
                         </div>
+                    </div> 
+                
+                    <div class="row" style="margin-right:25px">
                         <div class="col">
                             <div>Speed</div>
                             <div>
@@ -322,28 +366,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
-                            <div>Vendor</div>
+                            <div>Site</div>
                             <div>
-                                <select id="vendor" name="vendor" class="form-control text-center" style="border-color:black;" required>');
+                                <select id="site" name="site" class="form-control text-center" style="border-color:black;" required>');
 
-                                    $sql_vendor = "SELECT * FROM optic_vendor ORDER BY name";
-                                    $stmt_vendor = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_vendor, $sql_vendor)) {
+                                    $sql_site_cable = "SELECT * FROM site";
+                                    $stmt_site_cable = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_site_cable, $sql_site_cable)) {
                                         echo("ERROR getting entries");
                                     } else {
-                                        mysqli_stmt_execute($stmt_vendor);
-                                        $result_vendor = mysqli_stmt_get_result($stmt_vendor);
-                                        $rowCount_vendor = $result_vendor->num_rows;
-                                        if ($rowCount_vendor < 1) {
+                                        mysqli_stmt_execute($stmt_site_cable);
+                                        $result_site_cable = mysqli_stmt_get_result($stmt_site_cable);
+                                        $rowCount_site_cable = $result_site_cable->num_rows;
+                                        if ($rowCount_site_cable < 1) {
                                             echo ("<option selected disabled>No Sites Found</option> ");
                                         } else {
-                                            echo ("<option selected disabled>Select Vendor</option>");
-                                            while( $row_vendor = $result_vendor->fetch_assoc() ) {
-                                                echo("<option value='".$row_vendor['id']."'"); if (isset($_GET['form-vendor']) && $_GET['form-vendor'] == $row_vendor['id']) { echo ('selected'); } echo (">".$row_vendor['name']."</option>");
+                                            echo ("<option selected disabled>Select Site</option>");
+                                            while( $row_site_cable = $result_site_cable->fetch_assoc() ) {
+                                                echo("<option value='".$row_site_cable['id']."'"); if (isset($_GET['form-site']) && $_GET['form-site'] == $row_site_cable['id']) { echo ('selected'); } echo (">".$row_site_cable['name']."</option>");
                                             }
                                         }
                                     }   
@@ -351,41 +392,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('      
                                 </select>
                             </div>
-                            <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewVendor()">Add New</a>
-                            </div>
+                        </div> 
+                    </div> 
+                    <div class="row align-middle" style="margin-right:25px">
+                        <div class="col" style="margin-top:10px">
+                            <button id="optic-add-single" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="" value="1">Add</button>
+                            <button id="optic-add-multiple" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:20px" value="2">Add Multiple</button>
                         </div>
-                        <div class="col">
-                            <div>Model</div>
-                            <div>
-                                <input class="form-control text-center" type="text" list="names" name="model" placeholder="Model" style="min-width:120px" '); if (isset($_GET['form-model'])) { echo ('value="'.$_GET['form-model'].'"'); } echo (' required/>
-                                <datalist id="names">');
-                                    $sql_model = "SELECT DISTINCT model from optic_item WHERE deleted=0 AND quantity=1 ORDER BY model";
-                                    $stmt_model = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_model, $sql_model)) {
-                                        echo("ERROR getting entries");
-                                    } else {
-                                        mysqli_stmt_execute($stmt_model);
-                                        $result_model = mysqli_stmt_get_result($stmt_model);
-                                        $rowCount_model = $result_model->num_rows;
-                                        if ($rowCount_model < 1) {
-                                        } else {
-                                            while( $row_model = $result_model->fetch_assoc() ) {
-                                                echo("<option>".$row_model['model']."</option>");
-                                            }
-                                        }
-                                    }
-                                echo('
-                                </datalist>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div>Serial Number</div>
-                            <div><input class="form-control text-center" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" required/></div>
-                        </div>
-                        <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:10px" value="1">Add</button></div></div>
-                        <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:10px" value="2">Add Multiple</button></div></div>
-                    </div>                
+                    </div>        
                 </form>
             </div>
         </div>
@@ -424,6 +438,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     break;
             }
 
+            if (isset($deleted)) { 
+                if ($deleted == 0 || $deleted == '') {
+                    $sql_where = "WHERE I.deleted=0";
+                } else {
+                    $sql_where = "WHERE I.deleted=1";
+                }
+            }
+
             include 'includes/dbh.inc.php';
             $s = 0;
             $sql_inv = "SELECT I.id AS i_id, I.model AS i_model, I.serial_number AS i_serial_number, I.mode AS i_mode, I.quantity AS i_quantity,
@@ -440,8 +462,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         INNER JOIN optic_type AS T ON I.type_id=T.id 
                         INNER JOIN optic_connector AS C ON I.connector_id=C.id 
                         INNER JOIN optic_speed AS S ON I.speed_id=S.id 
-                        INNER JOIN site ON I.site_id=site.id 
-                        WHERE I.deleted=0";
+                        INNER JOIN site ON I.site_id=site.id ";
+            $sql_inv .= $sql_where;
             $sql_inv_add = '';
             if ((int)$site !== 0) { 
                 $sql_inv_add  .= " AND site.id=$site"; 
@@ -531,7 +553,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <th>Serial Number</th>
                                 <th>Vendor</th>
                                 <th'); if ((int)$site !== 0) { echo(' hidden'); } echo('>Site</th>
-                                <th colspan=2>Comments</th>
+                                <th>Comments</th>
                                 <th hidden>Quantity</th>
                                 <th></th>
                             <tr>
@@ -565,7 +587,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         $site_name = $row_inv['site_name'];
 
                         echo('
-                            <tr id="item-'.$i_id.'" class="row-show align-middle text-center">
+                            <tr id="item-'.$i_id.'" class="row-show align-middle text-center'); if ($deleted == 1) { echo(' red'); } echo('">
                                 <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
                                     <input type="hidden" value="'.$i_id.'" name="id"/>
                                     <td class="align-middle" hidden>'.$i_id.'</td>
@@ -577,10 +599,28 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <td class="align-middle">'.$i_serial_number.'</td>
                                     <td class="align-middle">'.$v_name.'</td>
                                     <td class="align-middle link gold" style="white-space: nowrap !important;" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$site_id.'\'))"'); if ((int)$site !== 0) { echo(' hidden'); } echo('>'.$site_name.'</td>
-                                    <td class="align-middle text-right'); if ((int)$i_comments > 0) { echo(' clickable gold link" onclick="toggleAddComment(\''.$i_id.'\', 1)"'); } else { echo('" style="color:#8f8f8f"'); } echo('>'.$i_comments.'</or></td>
-                                    <td class="align-middle text-left"><button class="btn btn-success" type="button" style="padding: 2px 4px 2px 4px" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"><i class="fa fa-plus"></i></button></td>
+                                    <td hidden class="align-middle text-right'); if ((int)$i_comments > 0) { echo(' clickable gold link" onclick="toggleAddComment(\''.$i_id.'\', 1)"'); } else { echo('" style="color:#8f8f8f"'); } echo('>'.$i_comments.'</or></td>
+                                    <td hidden class="align-middle text-left"><button class="btn btn-success" type="button" style="padding: 2px 4px 2px 4px" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"><i class="fa fa-plus"></i></button></td>
+                                    <td class="align-middle">
+                                        <div style="position: relative; display: inline-block;">
+                                        <i class="'); if ((int)$i_comments > 0) { echo('fa-solid fa-message clickable gold" style="font-size:20; padding:5px"'); } else { echo('fa-regular fa-message clickable gold" style="font-size:18; padding:5px"'); } echo(' onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"></i>');
+                                            if ((int)$i_comments > 0) { 
+                                                echo('<span class="uni theme-inv-textColor" style="pointer-events: none; font-size:10; position: absolute; top: 4px; right: 7px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">'.$i_comments.'</span>');
+                                            } else {
+                                                echo('<span class="uni gold" style="pointer-events: none; font-size:12; position: absolute; top: 3px; right: 6px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">+</span>');
+                                            }
+                                    echo('
+                                        </div>
+                                    </td>
                                     <td class="align-middle" hidden>'.$i_quantity.'</td>
-                                    <td class="align-middle"><button class="btn btn-danger" type="submit" name="optic-delete-submit" value="1"><i class="fa fa-trash"></i></button></td>
+                                    <td class="align-middle">');
+                                    if ($deleted == 1) { 
+                                        echo('<button class="btn btn-success" type="submit" name="optic-restore-submit" value="1" title="Restore?"><i class="fa fa-trash-restore"></i></button>');
+                                    } else {
+                                        echo('<button class="btn btn-danger" type="submit" name="optic-delete-submit" value="1" title="Delete?"><i class="fa fa-trash"></i></button>');
+                                    }
+                                echo('
+                                    </td>
                                 </form>
                             </tr>
                             <tr id="item-'.$i_id.'-add-comments" class="row-add-hide align-middle text-center" hidden>
@@ -613,15 +653,17 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <thead>
                                                 <tr class="row-show align-middle text-center">
                                                     <th hidden>ID</th>
+                                                    <th>Username</th>
                                                     <th>Comment</th>
                                                     <th>Timestamp</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>');
-                                            $sql_comment = "SELECT id, item_id, comment, timestamp
-                                                        FROM optic_comment
-                                                        WHERE deleted != 1 AND item_id = '$i_id'
+                                            $sql_comment = "SELECT oc.id AS id, oc.item_id AS item_id, oc.comment AS comment, oc.user_id AS user_id, oc.timestamp AS timestamp, u.username AS username
+                                                        FROM optic_comment AS oc
+                                                        INNER JOIN users AS u ON u.id=oc.user_id
+                                                        WHERE oc.deleted != 1 AND oc.item_id = '$i_id'
                                                         ORDER BY timestamp";
                                             $stmt_comment = mysqli_stmt_init($conn);
                                             if (!mysqli_stmt_prepare($stmt_comment, $sql_comment)) {
@@ -637,6 +679,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 } else {
                                                     while ($row_comment = $result_comment->fetch_assoc()) {
                                                         $com_id = $row_comment['id'];
+                                                        $com_user_id = $row_comment['user_id'];
+                                                        $com_username = $row_comment['username'];
                                                         $com_comment = $row_comment['comment'];
                                                         $com_timestamp = $row_comment['timestamp'];
 
@@ -645,6 +689,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                 <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
                                                                     <input type="hidden" value="'.$com_id.'" name="id"/>
                                                                     <td class="align-middle" hidden>'.$com_id.'</td>
+                                                                    <td class="align-middle">'.$com_username.'</td>
                                                                     <td class="align-middle">'.$com_comment.'</td>
                                                                     <td class="align-middle">'.$com_timestamp.'</td>
                                                                     <td class="align-middle"><button class="btn btn-danger" type="submit" name="optic-comment-delete" value="1"><i class="fa fa-trash"></i></button></td>
@@ -883,3 +928,80 @@ function toggleAddComment(id, com) {
     }
 
 </script>
+<script>
+        function searchSerial(search) {
+            // Make an AJAX request to retrieve the corresponding sites
+            var serialBox = document.getElementById('serial');
+            var modelBox = document.getElementById('model');
+            var vendorBox = document.getElementById('vendor');
+            var typeBox = document.getElementById('type');
+            var speedBox = document.getElementById('speed');
+            var connectorBox = document.getElementById('connector');
+            var modeBox = document.getElementById('mode');
+            var siteBox = document.getElementById('site');
+            var responseBox = document.getElementById('optic-add-response');
+            var btnAddSingle = document.getElementById('optic-add-single');
+            var btnAddMultiple = document.getElementById('optic-add-multiple');
+            
+            responseBox.hidden = true;
+            btnAddSingle.disabled = false;
+            btnAddMultiple.disabled = false;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/optics.inc.php?request-optic=1&serial="+search, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var data = JSON.parse(xhr.responseText);
+                    console.log(data);
+                    if (data["skip"] === undefined) {
+                        // console.log('noskip');
+                        if (data["error"] === undefined) {
+                            // console.log('noerror');
+                            if (data["success"] !== undefined) {
+                                // console.log('success');
+                                serialBox.value = data['serial_number'];
+                                modelBox.value = data['model'];
+                                vendorBox.value = data['vendor_id'];
+                                typeBox.value = data['type_id'];
+                                speedBox.value = data['speed_id'];
+                                connectorBox.value = data['connector_id'];
+                                modeBox.value = data['mode'];
+                                siteBox.value = data['site_id'];
+                                responseBox.hidden = false;
+                                responseBox.innerHTML = "<or class='green'>"+data['success']+"</or>";
+                                btnAddSingle.disabled = false;
+                                btnAddMultiple.disabled = false;
+                            }
+                        } else {
+                            // console.log("error");
+                            responseBox.hidden = false;
+                            responseBox.innerHTML = "<or class='red'>"+data['error']+"</or>";
+                            serialBox.value = data['serial_number'];
+                            modelBox.value = data['model'];
+                            vendorBox.value = data['vendor_id'];
+                            typeBox.value = data['type_id'];
+                            speedBox.value = data['speed_id'];
+                            connectorBox.value = data['connector_id'];
+                            modeBox.value = data['mode'];
+                            siteBox.value = data['site_id'];
+                            btnAddSingle.disabled = true;
+                            btnAddMultiple.disabled = true;
+                            
+                        }
+                        // modelBox.value = '';
+                        // vendorBox.value = '';
+                        // typeBox.value = '';
+                        // speedBox.value = '';
+                        // connectorBox.value = '';
+                        // modeBox.value = '';
+                        // siteBox.value = '';
+                        // responseBox.hidden = true;
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+
+    </script>

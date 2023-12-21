@@ -16,7 +16,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 </head>
 <body>
     <!-- Header and Nav -->
-    <?php include 'nav.php'; ?>
+    <?php 
+        $navHighlight = 'cables'; // for colouring the nav bar link
+        include 'nav.php'; 
+    ?>
     <!-- End of Header and Nav -->
     <div class="content">
         
@@ -203,11 +206,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 Hide Add Cables
                             </button>
                         </div>
-                        <div id="stockBtn-div" class="nav-div viewport-large-block" style="margin-bottom:10px;margin-left:15px;margin-right:0">
+                        <!-- <div id="stockBtn-div" class="nav-div viewport-large-block" style="margin-bottom:10px;margin-left:15px;margin-right:0">
                             <button id="stockBtn" class="btn btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'./\')" type="button">
                                 Item Stock
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!-- mobile layout section -->
@@ -246,9 +249,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     </div>
                 </div>
 
-                <div class="container text-center"> 
-                    <p>Stock for any fixed cables (cables that always need to be in stock).</p>
-                </div>
+
 
             <!-- Add Cables form section -->
             <div class="container" id="add-cables-section" style="margin-bottom:10px" hidden>
@@ -467,87 +468,91 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                                     echo('
                                         <tr class="vertical-align align-middle'.$last_edited.' row-show highlight" id="'.$cable_item_id.'">
-                                            <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
-                                                <input type="hidden" name="stock-id" value="'.$stock_id.'" />
-                                                <input type="hidden" name="cable-item-id" value="'.$cable_item_id.'" />
-                                                <td class="align-middle" id="'.$cable_item_id.'-stock-id" hidden>'.$stock_id.'</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-item-id" hidden>'.$cable_item_id.'</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-img-td">
-                                                ');
-                                                if (!is_null($stock_img_file_name)) {
-                                                    echo('<img id="'.$cable_item_id.'-img" class="inv-img-50h thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
-                                                }
-                                                echo('</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-name"><a class="link" href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
-                                                <td class="align-middle viewport-large-empty" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
-                                                <td class="align-middle link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-quantity">'); 
-                                                if ($stock_quantity_total == 0) {
-                                                    echo("<or class='red' title='Out of Stock'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Out of stock. Order more if necessary.'>0 <i class='fa fa-warning' /></u></or>");
-                                                } elseif ($stock_quantity_total < $stock_min_stock) {
-                                                    echo("<or class='red'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Below minimum stock count. Order more!'>$stock_quantity_total</u></or>");
-                                                } else {
-                                                    echo($stock_quantity_total);
-                                                }
-                                                echo('</td>');
-                                            echo('
-                                                <td class="align-middle" id="'.$cable_item_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" class="btn btn-success cw nav-v-b btn-cableStock" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" class="btn btn-danger cw nav-v-b btn-cableStock" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
-                                                <td class="align-middle" id="'.$cable_item_id.'-move"><button id="'.$stock_id.'-remove-btn" class="btn btn-warning cw nav-v-b btn-cableStock" type="button" value="move" onclick="toggleHidden(\''.$cable_item_id.'\')" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-arrows-h" style="color:black"></i></button></td>
-                                            </form>
+                                            <td hidden>
+                                                <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                                                    <input type="hidden" name="stock-id" value="'.$stock_id.'" />
+                                                    <input type="hidden" name="cable-item-id" value="'.$cable_item_id.'" />
+                                                </form>
+                                            </td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-stock-id" hidden>'.$stock_id.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-item-id" hidden>'.$cable_item_id.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-img-td">
+                                            ');
+                                            if (!is_null($stock_img_file_name)) {
+                                                echo('<img id="'.$cable_item_id.'-img" class="inv-img-50h thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />');
+                                            }
+                                            echo('</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-name"><a class="link" href="stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-type-id" hidden>'.$cable_types_id.'</td>
+                                            <td class="align-middle viewport-large-empty" id="'.$cable_item_id.'-type"><or title="'.$cable_types_description.'">'.$cable_types_name.'</or></td> 
+                                            <td class="align-middle link gold" id="'.$cable_item_id.'-site-name" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-quantity">'); 
+                                            if ($stock_quantity_total == 0) {
+                                                echo("<or class='red' title='Out of Stock'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Out of stock. Order more if necessary.'>0 <i class='fa fa-warning' /></u></or>");
+                                            } elseif ($stock_quantity_total < $stock_min_stock) {
+                                                echo("<or class='red'><u style='border-bottom: 1px dashed #999; text-decoration: none' title='Below minimum stock count. Order more!'>$stock_quantity_total</u></or>");
+                                            } else {
+                                                echo($stock_quantity_total);
+                                            }
+                                            echo('</td>');
+                                        echo('
+                                            <td class="align-middle" id="'.$cable_item_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" form="modify-cable-item-'.$cable_item_id.'" class="btn btn-success cw nav-v-b btn-cableStock" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" form="modify-cable-item-'.$cable_item_id.'" class="btn btn-danger cw nav-v-b btn-cableStock" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-move"><button id="'.$stock_id.'-remove-btn" form="modify-cable-item-'.$cable_item_id.'" class="btn btn-warning cw nav-v-b btn-cableStock" type="button" value="move" onclick="toggleHidden(\''.$cable_item_id.'\')" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-arrows-h" style="color:black"></i></button></td>
                                         </tr>
                                         <tr class="vertical-align align-middle'.$last_edited.' move-hide" id="'.$cable_item_id.'-move-hidden" hidden>
                                             <td colspan=100%>
-                                                <table class="centertable" style="border: 1px solid #454d55; width:100%"> <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
-                                                    <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
-                                                    <input type="hidden" name="cablestock-move" value="1">
-                                                    <input type="hidden" id="'.$stock_id.'-c-stock" name="current_cable_item" value="'.$cable_item_id.'">
-                                                    <input type="hidden" id="'.$stock_id.'-c-stock" name="current_stock" value="'.$stock_id.'">
-                                                    <input type="hidden" id="'.$stock_id.'-c-site" name="current_site" value="'.$stock_site_id.'">
-                                                    <input type="hidden" id="'.$stock_id.'-c-area" name="current_area" value="'.$stock_area_id.'">
-                                                    <input type="hidden" id="'.$stock_id.'-c-shelf" name="current_shelf" value="'.$stock_shelf_id.'">
-                                                    <input type="hidden" id="'.$stock_id.'-c-cost" name="current_cost" value="'.$cable_item_cost.'">
-                                                    <input type="hidden" id="'.$stock_id.'-c-quantity" name="current_quantity" value="'.$stock_quantity_total.'">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                <div class="container">
-                                                                    <div class="row centertable" style="max-width:max-content">
-                                                                        <div class="col" style="max-width:max-content !important">
-                                                                            <label class="nav-v-c">To:</label>
-                                                                        </div>
-                                                                        <div class="col" style="max-width:max-content !important">
-                                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2 0 2 0;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
-                                                                                <option value="" selected="" disabled="" hidden="">Site</option><option value="1">CDC ME14</option><option value="2">CDC DA2</option><option value="4">TestSite</option>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="col" style="max-width:max-content !important">
-                                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">
-                                                                                <option value="" selected="" disabled="" hidden="">Area</option>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="col" style="max-width:max-content !important">
-                                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-shelf" name="shelf" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required>
-                                                                                <option value="" selected="" disabled="" hidden="">Shelf</option>
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="col" style="max-width:max-content !important">
-                                                                            <label class="nav-v-c" for="0-n-quantity">Quantity: </label>
-                                                                        </div>
-                                                                        <div class="col" style="max-width:max-content !important">
-                                                                            <input type="number" class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_quantity_total.'" required>
-                                                                        </div>
-                                                                        <div class="col" style="max-width:max-content !important">
-                                                                            <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$stock_id.'-n-submit" value="Move" style="opacity:80%;" name="submit" required="">
+                                                <form class="centertable" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                    <table class="centertable" style="border: 1px solid #454d55; width:100%"> 
+                                                        <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
+                                                        <input type="hidden" name="cablestock-move" value="1">
+                                                        <input type="hidden" id="'.$stock_id.'-c-stock" name="current_cable_item" value="'.$cable_item_id.'">
+                                                        <input type="hidden" id="'.$stock_id.'-c-stock" name="current_stock" value="'.$stock_id.'">
+                                                        <input type="hidden" id="'.$stock_id.'-c-site" name="current_site" value="'.$stock_site_id.'">
+                                                        <input type="hidden" id="'.$stock_id.'-c-area" name="current_area" value="'.$stock_area_id.'">
+                                                        <input type="hidden" id="'.$stock_id.'-c-shelf" name="current_shelf" value="'.$stock_shelf_id.'">
+                                                        <input type="hidden" id="'.$stock_id.'-c-cost" name="current_cost" value="'.$cable_item_cost.'">
+                                                        <input type="hidden" id="'.$stock_id.'-c-quantity" name="current_quantity" value="'.$stock_quantity_total.'">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <div class="container">
+                                                                        <div class="row centertable" style="max-width:max-content">
+                                                                            <div class="col" style="max-width:max-content !important">
+                                                                                <label class="nav-v-c">To:</label>
+                                                                            </div>
+                                                                            <div class="col" style="max-width:max-content !important">
+                                                                                <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2 0 2 0;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
+                                                                                    <option value="" selected="" disabled="" hidden="">Site</option><option value="1">CDC ME14</option><option value="2">CDC DA2</option><option value="4">TestSite</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col" style="max-width:max-content !important">
+                                                                                <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">
+                                                                                    <option value="" selected="" disabled="" hidden="">Area</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col" style="max-width:max-content !important">
+                                                                                <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-shelf" name="shelf" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled="" required>
+                                                                                    <option value="" selected="" disabled="" hidden="">Shelf</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <div class="col" style="max-width:max-content !important">
+                                                                                <label class="nav-v-c" for="0-n-quantity">Quantity: </label>
+                                                                            </div>
+                                                                            <div class="col" style="max-width:max-content !important">
+                                                                                <input type="number" class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_quantity_total.'" required>
+                                                                            </div>
+                                                                            <div class="col" style="max-width:max-content !important">
+                                                                                <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$stock_id.'-n-submit" value="Move" style="opacity:80%;" name="submit" required="">
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </form>
                                             </td>
                                         </tr>
                                     ');

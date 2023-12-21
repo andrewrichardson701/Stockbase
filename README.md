@@ -671,6 +671,19 @@ Clone the repo first, and the follow the below steps.
 - Changelog now works with optic tables
 - Database now named stockbase
 - Update script adjusted for all the changes.
+- IndexAjax is now using a CTE table to make things faster on large datasets.
+- Stock Add/Remove/Move pages updated with new CTE table to speed things up.
+- Add New Stock button on the Stock Add page now fills in the name with whatever was in the search box.
+- Pagination has been adjusted on all pages for allowing over 5 pages.
+- Cablestock now listed in the nav bar as "cables".
+- Item stock button removed from cablestock.
+- Fixed Cables button removed from index.
+- Comments button on optics is now the message icon with a number for the count inside.
+- Show/Hide deleted optics now possible. Can also restore them.
+- Added Dark Black theme.
+- Admin, Profile and Logout buttons moved from nav to "username" dropdown in top right corner.
+- Renamed indexajax.php to stockajax.php
+- Add/Remove/Move stock pages now load the content using js and ajax - the same as the index page.
 
 </details>
 <details>

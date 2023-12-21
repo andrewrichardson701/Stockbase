@@ -222,13 +222,29 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                 if ($current_page > 1) {
                     $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
                 }
-
-                for ($i = 1; $i <= $total_pages; $i++) {
-                    if ($i == $current_page) {
-                        $pageNumberArea .= '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
-                        // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
-                    } else {
-                        $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                if ($total_pages > 5) {
+                    for ($i = 1; $i <= $total_pages; $i++) {
+                        if ($i == $current_page) {
+                            $pageNumberArea .= '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                            // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                        } elseif ($i == 1 && $current_page > 5) {
+                            $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or><or style="padding-left:5px;padding-right:5px">...</or>';  
+                        } elseif ($i < $current_page && $i >= $current_page-2) {
+                            $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                        } elseif ($i > $current_page && $i <= $current_page+2) {
+                            $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                        } elseif ($i == $total_pages) {
+                            $pageNumberArea .= '<or style="padding-left:5px;padding-right:5px">...</or><or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';  
+                        }
+                    }
+                } else {
+                    for ($i = 1; $i <= $total_pages; $i++) {
+                        if ($i == $current_page) {
+                            $pageNumberArea .= '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                            // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                        } else {
+                            $pageNumberArea .= '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                        }
                     }
                 }
 
@@ -287,7 +303,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
                         $result .= '<img id="'.$stock_id.'-img" class="inv-img-main thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />';
                     }
                     $result .= '</td>
-                        <td class="align-middle gold" id="'.$stock_id.'-name"><a class="link" href="./stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
+                        <td class="align-middle gold" id="'.$stock_id.'-name" style="white-space:wrap"><a class="link" href="./stock.php?stock_id='.$stock_id.'">'.$stock_name.'</a></td>
                         <td class="align-middle viewport-large-empty" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
                         <td class="align-middle" id="'.$stock_id.'-quantity">'; 
                     if ($stock_quantity_total == 0) {

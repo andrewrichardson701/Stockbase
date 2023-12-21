@@ -322,7 +322,9 @@ esac
                                                                 DROP TABLE optic_item;
                                                                 DROP TABLE optic_connector;
                                                                 DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;"
+                                                                DROP TABLE optic_speed;
+                                                                ALTER TABLE stock DROP INDEX name;
+                                                                ALTER TABLE stock DROP INDEX description;"
             0.4.1-beta "0.5.0-beta"                                             
             break;;
     esac 
@@ -398,7 +400,9 @@ esac
                                                                 DROP TABLE optic_item;
                                                                 DROP TABLE optic_connector;
                                                                 DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;"                                          
+                                                                DROP TABLE optic_speed;
+                                                                ALTER TABLE stock DROP INDEX name;
+                                                                ALTER TABLE stock DROP INDEX description;"                                          
             break;;
     esac 
 }
@@ -470,6 +474,7 @@ esac
                                                                         `id` bigint NOT NULL AUTO_INCREMENT,
                                                                         `item_id` bigint NOT NULL,
                                                                         `comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `user_id` int NOT NULL,
                                                                         `timestamp` datetime NOT NULL,
                                                                         `deleted` tinyint(1) NOT NULL DEFAULT '0',
                                                                         PRIMARY KEY (`id`)
@@ -547,7 +552,9 @@ esac
                                                                         ('100G'),
                                                                         ('200G'),
                                                                         ('400G'),
-                                                                        ('800G');"
+                                                                        ('800G');
+                                                                ALTER TABLE stock ADD FULLTEXT(name);
+                                                                ALTER TABLE stock ADD FULLTEXT(description);"
             break;;
     0.6.0-beta )
             echo "No SQL changes to be made."                                        

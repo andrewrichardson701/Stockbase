@@ -319,11 +319,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <p style="margin:0;padding:0">0 Stock</p>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
+                        <!-- <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
                             <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
                                 Fixed Cables
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!-- mobile layout section -->
@@ -458,7 +458,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
 
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/indexajax.php?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
+            xhr.open("GET", "includes/stockajax.php?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     // Parse the response and populate the shelf select box

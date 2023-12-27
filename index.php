@@ -97,7 +97,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 }          
             }
         }
-
         $sql_areaCheck = "SELECT DISTINCT area.id, area.name, area.description
                     FROM area 
                     ORDER BY area.id";
@@ -109,7 +108,20 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             $result_areaCheck = mysqli_stmt_get_result($stmt_areaCheck);
             $rowCount_areaCheck = $result_areaCheck->num_rows;
             $areaCount = $rowCount_areaCheck;
+            if ($rowCount_areaCheck < 1) {
+                // echo ("No areas found");
+                // exit();
+            } else {
+                while( $row = $result_areaCheck->fetch_assoc() ) {
+                    $area_id = $row['id'];
+                    $area_name = $row['name'];
+                    $area_description = $row['description'];
+                    $area_names_array[$area_id] = $area_name;
+                    // echo('<option style="color:black" value="'.$area_id.'"'); if ($area == $area_id) { echo('selected'); } echo('>'.$area_name.'</option>');
+                }          
+            }
         }
+        
 
         $sql_shelfCheck = "SELECT DISTINCT shelf.id, shelf.name    
                     FROM shelf 
@@ -364,7 +376,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             </div>
             <!-- End of Modal Image Div -->
 
-            <!-- Table -->
+            <!-- Table -->');
+            
+            echo('
             <div class="container">
                 <table class="table table-dark theme-table centertable" id="inventoryTable" style="margin-bottom:0px;">
                     <thead style="text-align: center; white-space: nowrap;">
@@ -465,7 +479,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     var inventory = JSON.parse(xhr.responseText);
                     // console.log(inventory);
                     var bodyExtras = '';
-                    var count = inventory[-1]['rows']-1;
+                    var count = inventory[-1]['rows'];
                     var siteNeeded = inventory[-1]['siteNeeded'];
                     var siteHeading = document.getElementById('site');
                     // console.log(siteNeeded);

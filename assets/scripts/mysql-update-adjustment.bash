@@ -198,7 +198,10 @@ esac
                                                                 DROP TABLE optic_item;
                                                                 DROP TABLE optic_connector;
                                                                 DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;"
+                                                                DROP TABLE optic_speed;
+                                                                DROP TABLE stock_audit;
+                                                                ALTER TABLE stock DROP INDEX name;
+                                                                ALTER TABLE stock DROP INDEX description;"
             0.3.X-beta "0.5.0-beta"                                             
             break;;
     esac 
@@ -260,7 +263,10 @@ esac
                                                                 DROP TABLE optic_item;
                                                                 DROP TABLE optic_connector;
                                                                 DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;"
+                                                                DROP TABLE optic_speed;
+                                                                DROP TABLE stock_audit;
+                                                                ALTER TABLE stock DROP INDEX name;
+                                                                ALTER TABLE stock DROP INDEX description;"
             0.4.0-beta "0.5.0-beta"                                             
             break;;
     esac 
@@ -323,6 +329,7 @@ esac
                                                                 DROP TABLE optic_connector;
                                                                 DROP TABLE optic_comment
                                                                 DROP TABLE optic_speed;
+                                                                DROP TABLE stock_audit;
                                                                 ALTER TABLE stock DROP INDEX name;
                                                                 ALTER TABLE stock DROP INDEX description;"
             0.4.1-beta "0.5.0-beta"                                             
@@ -401,6 +408,7 @@ esac
                                                                 DROP TABLE optic_connector;
                                                                 DROP TABLE optic_comment
                                                                 DROP TABLE optic_speed;
+                                                                DROP TABLE stock_audit;
                                                                 ALTER TABLE stock DROP INDEX name;
                                                                 ALTER TABLE stock DROP INDEX description;"                                          
             break;;
@@ -526,6 +534,14 @@ esac
                                                                         `id` bigint NOT NULL AUTO_INCREMENT,
                                                                         `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
                                                                         `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `stock_audit` (
+                                                                        `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                                        `stock_id` BIGINT NOT NULL,
+                                                                        `user_id` BIGINT NOT NULL,
+                                                                        `date` DATE NOT NULL,
+                                                                        `comment` TEXT,
                                                                         PRIMARY KEY (`id`)
                                                                 );
                                                                 INSERT INTO optic_type (name)

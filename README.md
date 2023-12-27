@@ -658,7 +658,7 @@ Clone the repo first, and the follow the below steps.
 - optics.php shows the list of optics in store for each site similar to how the index page shows the main stock.
 - Comments can be added to the optics
 - Searching for optics searches through all fields rather than just model.
-- New tables added: optic_item, optic_connector, optic_type, optic_speed, optic_vendor, optic_comment, optic_transaction
+- New tables added: optic_item, optic_connector, optic_type, optic_speed, optic_vendor, optic_comment, optic_transaction, stock_audit
 - Due to new tables being added, there will need to be some SQL adjustments on updates/downgrades to this version
 - users_roles table has a new field: is_optic
 - Stock option added to the nav bar.
@@ -684,6 +684,7 @@ Clone the repo first, and the follow the below steps.
 - Admin, Profile and Logout buttons moved from nav to "username" dropdown in top right corner.
 - Renamed indexajax.php to stockajax.php
 - Add/Remove/Move stock pages now load the content using js and ajax - the same as the index page.
+- Audit page added, which has a 6 month date retention on it, meaning if the last date was 6 months ago, it will show on the audit page.
 
 </details>
 <details>

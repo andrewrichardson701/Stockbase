@@ -25,16 +25,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <!-- Header and Nav -->
     <?php 
         $navHighlight = 'optics'; // for colouring the nav bar link
+        $navBtnDim = 1;
         include 'nav.php'; 
     ?>
     <!-- End of Header and Nav -->
-    <div class="container">
-        <!-- <h2 class="header-small" style="padding-bottom:0px">Optics</h2> -->
-        <?php 
-        if (isset($_GET['error'])) { echo('<p class="red">Error: '.$_GET['error'].'</p>'); } 
-        if (isset($_GET['success'])) { echo('<p class="green">Success: '.$_GET['success'].'</p>'); } 
-        ?>
-    </div>
+    
     <div class="content" style="padding-top:20px">
         <div class="container" id="selection" style="margin-bottom:15px">
             <?php
@@ -514,11 +509,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                 echo('
                     <div class="container">
-                    <hr style="border-color:#9f9d9d; margin-left:10px">
+                        <hr style="border-color:#9f9d9d; margin-left:10px">
                         <div class="row centertable">
                             <div class="col float-left">
                                 Count: <or class="green">'.$rowCount_inv.'</or>
                             </div>
+                            <div class="col">');
+                            if (isset($_GET['error'])) { echo('<p class="red">Error: '.$_GET['error'].'</p>'); } 
+                            if (isset($_GET['success'])) { echo('<p class="green">Success: '.$_GET['success'].'</p>'); } 
+                            echo('</div>
                             <div class="col align-middle" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
                                 <table>
                                     <tr class="align-middle">
@@ -555,7 +554,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <th'); if ((int)$site !== 0) { echo(' hidden'); } echo('>Site</th>
                                 <th>Comments</th>
                                 <th hidden>Quantity</th>
-                                <th></th>
+                                <th colspan=2></th>
                             <tr>
                         </thead>
                         <tbody>
@@ -588,40 +587,49 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                         echo('
                             <tr id="item-'.$i_id.'" class="row-show align-middle text-center'); if ($deleted == 1) { echo(' red'); } echo('">
-                                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
-                                    <input type="hidden" value="'.$i_id.'" name="id"/>
-                                    <td class="align-middle" hidden>'.$i_id.'</td>
-                                    <td class="align-middle">'.$t_name.'</td>
-                                    <td class="align-middle">'.$c_name.'</td>
-                                    <td class="align-middle">'.$i_model.'</td>
-                                    <td class="align-middle">'.$s_name.'</td>
-                                    <td class="align-middle">'.$i_mode.'</td>
-                                    <td class="align-middle">'.$i_serial_number.'</td>
-                                    <td class="align-middle">'.$v_name.'</td>
-                                    <td class="align-middle link gold" style="white-space: nowrap !important;" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$site_id.'\'))"'); if ((int)$site !== 0) { echo(' hidden'); } echo('>'.$site_name.'</td>
-                                    <td hidden class="align-middle text-right'); if ((int)$i_comments > 0) { echo(' clickable gold link" onclick="toggleAddComment(\''.$i_id.'\', 1)"'); } else { echo('" style="color:#8f8f8f"'); } echo('>'.$i_comments.'</or></td>
-                                    <td hidden class="align-middle text-left"><button class="btn btn-success" type="button" style="padding: 2px 4px 2px 4px" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"><i class="fa fa-plus"></i></button></td>
-                                    <td class="align-middle">
-                                        <div style="position: relative; display: inline-block;">
-                                        <i class="'); if ((int)$i_comments > 0) { echo('fa-solid fa-message clickable gold" style="font-size:20; padding:5px"'); } else { echo('fa-regular fa-message clickable gold" style="font-size:18; padding:5px"'); } echo(' onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"></i>');
-                                            if ((int)$i_comments > 0) { 
-                                                echo('<span class="uni theme-inv-textColor" style="pointer-events: none; font-size:10; position: absolute; top: 4px; right: 7px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">'.$i_comments.'</span>');
-                                            } else {
-                                                echo('<span class="uni gold" style="pointer-events: none; font-size:12; position: absolute; top: 3px; right: 6px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">+</span>');
-                                            }
-                                    echo('
-                                        </div>
-                                    </td>
-                                    <td class="align-middle" hidden>'.$i_quantity.'</td>
-                                    <td class="align-middle">');
-                                    if ($deleted == 1) { 
-                                        echo('<button class="btn btn-success" type="submit" name="optic-restore-submit" value="1" title="Restore?"><i class="fa fa-trash-restore"></i></button>');
-                                    } else {
-                                        echo('<button class="btn btn-danger" type="submit" name="optic-delete-submit" value="1" title="Delete?"><i class="fa fa-trash"></i></button>');
-                                    }
-                                echo('
-                                    </td>
+                                <form id="opticForm-'.$i_id.'"action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                                    <input type="hidden" form="opticForm-'.$i_id.'" value="'.$i_id.'" name="id"/>
                                 </form>
+                                <td class="align-middle" hidden>'.$i_id.'</td>
+                                <td class="align-middle">'.$t_name.'</td>
+                                <td class="align-middle">'.$c_name.'</td>
+                                <td class="align-middle">'.$i_model.'</td>
+                                <td class="align-middle">'.$s_name.'</td>
+                                <td class="align-middle">'.$i_mode.'</td>
+                                <td class="align-middle" id="optic-serial-'.$i_id.'">'.$i_serial_number.'</td>
+                                <td class="align-middle">'.$v_name.'</td>
+                                <td class="align-middle link gold" style="white-space: nowrap !important;" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$site_id.'\'))"'); if ((int)$site !== 0) { echo(' hidden'); } echo('>'.$site_name.'</td>
+                                <td hidden class="align-middle text-right'); if ((int)$i_comments > 0) { echo(' clickable gold link" onclick="toggleAddComment(\''.$i_id.'\', 1)"'); } else { echo('" style="color:#8f8f8f"'); } echo('>'.$i_comments.'</or></td>
+                                <td hidden class="align-middle text-left"><button class="btn btn-success" type="button" style="padding: 2px 4px 2px 4px" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"><i class="fa fa-plus"></i></button></td>
+                                <td class="align-middle">
+                                    <div style="position: relative; display: inline-block;">
+                                    <i class="'); if ((int)$i_comments > 0) { echo('fa-solid fa-message clickable gold" style="font-size:20; padding:5px"'); } else { echo('fa-regular fa-message clickable gold" style="font-size:18; padding:5px"'); } echo(' onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"></i>');
+                                        if ((int)$i_comments > 0) { 
+                                            echo('<span class="uni theme-inv-textColor" style="pointer-events: none; font-size:10; position: absolute; top: 4px; right: 7px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">'.$i_comments.'</span>');
+                                        } else {
+                                            echo('<span class="uni gold" style="pointer-events: none; font-size:12; position: absolute; top: 3px; right: 6px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">+</span>');
+                                        }
+                                echo('
+                                    </div>
+                                </td>
+                                <td class="align-middle" hidden>'.$i_quantity.'</td>
+                                <td class="align-middle" style="padding-right:5px">
+                                    <button id="move-btn-'.$i_id.'" class="btn btn-warning" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadMoveOptic(\''.$i_id.'\')">
+                                        <i class="fa fa-arrows-h" style="color:black"></i>
+                                    </button>
+                                </td>
+                                <td class="align-middle" style="padding-left:5px">');
+                                if ($deleted == 1) { 
+                                    echo('<button class="btn btn-success" type="submit" form="opticForm-'.$i_id.'" name="optic-restore-submit" value="1" title="Restore?">
+                                            <i class="fa fa-trash-restore"></i>
+                                        </button>');
+                                } else {
+                                    echo('<button class="btn btn-danger" type="button" value="1" title="Delete?" onclick="modalLoadDeleteOptic(\''.$i_id.'\')">
+                                            <i class="fa fa-trash"></i>
+                                        </button>');
+                                }
+                            echo('
+                                </td>
                             </tr>
                             <tr id="item-'.$i_id.'-add-comments" class="row-add-hide align-middle text-center" hidden>
                                 <td colspan="100%">
@@ -824,6 +832,102 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </div> 
     </div>
     <!-- End of Modal NewConnector Div -->
+    <!-- Modal DeleteOptic Div -->
+    <div id="modalDivDeleteOptic" class="modal">
+        <span class="close" onclick="modalCloseDeleteOptic()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+                    <table class="centertable" style="border:none">
+                        <tbody style="border:none">
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="delete-optic-serial" style="margin-bottom:20px"></h3></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none">
+                                <p style="margin-bottom:5px">Reason for Deletion:</p></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" style="border:none; padding-right:0;">
+                                    <input id="delete-reason" type="text" class="form-control" placeholder="Reason..." name="reason" required/>
+                                    <input type="hidden" id="delete-id" name="id" />
+                                </td>
+                                <td class="align-middle text-center" style="border:none"><input type="submit" value="Delete" class="btn btn-danger" name="optic-delete-submit" /></td>
+                                <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseDeleteOptic()">Cancel</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <h3 id="delete-optic-serial" style="margin-bottom:20px"></h3>
+                    <p style="margin-bottom:5px">Reason for Deletion:</p>
+                    <input id="delete-reason" type="text" class="form-control" placeholder="Reason..." name="reason" style="margin-bottom:10px" required/>
+                    <input type="hidden" id="delete-id" name="id" />
+                    <input type="submit" value="Delete" class="btn btn-danger" name="optic-delete-submit" /> -->
+                </form>
+            </div>  
+        </div>
+    </div>
+    <!-- End of DeleteOptic Div -->
+    <!-- Modal MoveOptic Div -->
+    <div id="modalDivMoveOptic" class="modal">
+        <span class="close" onclick="modalCloseMoveOptic()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+                    <table class="centertable" style="border:none">
+                        <tbody style="border:none">
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="move-optic-serial" style="margin-bottom:20px"></h3></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none">
+                                <p style="margin-bottom:5px">Move location:</p></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" style="border:none; padding-right:0;">
+                                    <select name="move-site" class="form-control" style="display:inline !important; max-width:max-content">');
+                                    <?php
+                                        $sql_site = "SELECT id, name
+                                                    FROM site
+                                                    WHERE site.deleted != 1";
+                                        $stmt_site = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                                            echo('<option value="0" selected>ERROR</option>');
+                                        } else {
+                                            mysqli_stmt_execute($stmt_site);
+                                            $result_site = mysqli_stmt_get_result($stmt_site);
+                                            $rowCount_site = $result_site->num_rows;
+                                            if ($rowCount_site < 1) {
+                                                // error
+                                                echo('<option value="0" selected>No Sites Found...</option>');
+                                            } else {
+                                                echo('<option disabled selected>Select</option>');
+                                                while ($row_site = $result_site->fetch_assoc()) {
+                                                    $id = $row_site['id'];
+                                                    $name = $row_site['name'];
+
+                                                    echo('<option value="'.$id.'">'.$name.'</option>');
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <input type="hidden" id="move-id" name="id" />
+                                </td>
+                                <td class="align-middle text-center" style="border:none"><input type="submit" value="Move" class="btn btn-success" name="optic-move-submit" /></td>
+                                <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseMoveOptic()">Cancel</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <h3 id="move-optic-serial" style="margin-bottom:20px"></h3>
+                    <p style="margin-bottom:5px">Reason for Deletion:</p>
+                    <input id="move-reason" type="text" class="form-control" placeholder="Reason..." name="reason" style="margin-bottom:10px" required/>
+                    <input type="hidden" id="move-id" name="id" />
+                    <input type="submit" value="Move" class="btn btn-danger" name="optic-move-submit" /> -->
+                </form>
+            </div>  
+        </div>
+    </div>
+    <!-- End of MoveOptic Div -->
 
     <?php include 'foot.php'; ?>
 
@@ -887,6 +991,51 @@ function toggleAddComment(id, com) {
             addButtonHide.hidden = true;
         }
 
+    }
+</script>
+<script>
+    function modalLoadDeleteOptic(id) {
+        console.log(id);
+        var modal = document.getElementById("modalDivDeleteOptic");
+        var serial = document.getElementById('optic-serial-'+id).innerHTML;
+
+        var deleteInputID = document.getElementById('delete-id');
+        var deleteHeadingSerial = document.getElementById('delete-optic-serial');
+
+
+        deleteHeadingSerial.innerText = serial+" (ID: "+id+")";
+        deleteInputID.value = id;
+        modal.style.display = "block";
+
+
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    modalCloseDeleteOptic = function() { 
+        var modal = document.getElementById("modalDivDeleteOptic");
+        modal.style.display = "none";
+    }
+
+    function modalLoadMoveOptic(id) {
+        console.log(id);
+        var modal = document.getElementById("modalDivMoveOptic");
+        var serial = document.getElementById('optic-serial-'+id).innerHTML;
+
+        var moveInputID = document.getElementById('move-id');
+        var moveHeadingSerial = document.getElementById('move-optic-serial');
+
+
+        moveHeadingSerial.innerText = serial+" (ID: "+id+")";
+        moveInputID.value = id;
+        modal.style.display = "block";
+
+
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    modalCloseMoveOptic = function() { 
+        var modal = document.getElementById("modalDivMoveOptic");
+        modal.style.display = "none";
     }
 </script>
 <script> // MODAL SCRIPT

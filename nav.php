@@ -44,17 +44,17 @@
         if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
             echo('
             <div id="add-div" class="nav-div" style="margin-right:5px">
-                <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" style="opacity:90%" onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'add\'))">
+                <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" style="'); if (isset($navBtnDim) && $navBtnDim == 1) { echo('opacity:60%'); } else { echo('opacity:90%'); } echo('" onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'add\'))">
                     <i class="fa fa-plus"></i> Add 
                 </button>
             </div> 
             <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'remove\'))">
+                <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" '); if (isset($navBtnDim) && $navBtnDim == 1) { echo('style="opacity:60%" '); } echo('onclick="navPage(updateQueryParameter(\'stock.php\', \'modify\', \'remove\'))">
                     <i class="fa fa-minus"></i> Remove 
                 </button>
             </div>
             <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-                <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav" style="color:black" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'move\'))">
+                <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav" style="color:black;'); if (isset($navBtnDim) && $navBtnDim == 1) { echo('opacity:60%'); } echo('" onclick="navPage(updateQueryParameter(\'./stock.php\', \'modify\', \'move\'))">
                     <i class="fa fa-arrows-h"></i> Move 
                 </button>
             </div>
@@ -245,10 +245,11 @@ if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
 document.addEventListener('DOMContentLoaded', function () {
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelector('.nav-links');
-
-    navMenu.addEventListener('click', function () {
-        navLinks.classList.toggle('show');
-    });
+    if (navMenu !== null) {
+        navMenu.addEventListener('click', function () {
+            navLinks.classList.toggle('show');
+        });
+    }
 });
 document.addEventListener('DOMContentLoaded', function () {
     const burgerMenu = document.querySelector('.burger-menu');

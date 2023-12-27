@@ -585,7 +585,7 @@ function serialInputCheck(id) {
                 var inventory = JSON.parse(xhr.responseText);
                 // console.log(inventory);
                 var bodyExtras = '';
-                var count = inventory[-1]['rows']-1;
+                var count = inventory[-1]['rows'];
 
                 for (let i=0; i<count; i++) {
                     if (inventory[i]) {

@@ -18,6 +18,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <!-- Header and Nav -->
     <?php 
         $navHighlight = 'cables'; // for colouring the nav bar link
+        $navBtnDim = 1;
         include 'nav.php'; 
     ?>
     <!-- End of Header and Nav -->
@@ -499,7 +500,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <td class="align-middle" id="'.$cable_item_id.'-min-stock"  style="color:#8f8f8f">'.$stock_min_stock.'</td>
                                             <td class="align-middle" id="'.$cable_item_id.'-add"><button id="'.$stock_id.'-add-btn" form="modify-cable-item-'.$cable_item_id.'" class="btn btn-success cw nav-v-b btn-cableStock" type="submit" name="action" value="add"><i class="fa fa-plus"></i></button></td>
                                             <td class="align-middle" id="'.$cable_item_id.'-remove"><button id="'.$stock_id.'-remove-btn" form="modify-cable-item-'.$cable_item_id.'" class="btn btn-danger cw nav-v-b btn-cableStock" type="submit" name="action" value="remove" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-minus"></i></button></td>
-                                            <td class="align-middle" id="'.$cable_item_id.'-move"><button id="'.$stock_id.'-remove-btn" form="modify-cable-item-'.$cable_item_id.'" class="btn btn-warning cw nav-v-b btn-cableStock" type="button" value="move" onclick="toggleHidden(\''.$cable_item_id.'\')" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-arrows-h" style="color:black"></i></button></td>
+                                            <td class="align-middle" id="'.$cable_item_id.'-move"><button id="'.$stock_id.'-move-btn" form="modify-cable-item-'.$cable_item_id.'" class="btn btn-warning cw nav-v-b btn-cableStock" type="button" value="move" onclick="toggleHidden(\''.$cable_item_id.'\')" '); if ($stock_quantity_total == 0) { echo "disabled"; } echo('><i class="fa fa-arrows-h" style="color:black"></i></button></td>
                                         </tr>
                                         <tr class="vertical-align align-middle'.$last_edited.' move-hide" id="'.$cable_item_id.'-move-hidden" hidden>
                                             <td colspan=100%>

@@ -307,57 +307,195 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $id = $_POST['id'];
             if (is_numeric($id)) {
                 if ($id > 0) {
-                    $sql = "SELECT I.id AS i_id, I.site_id AS i_site_id
-                            FROM optic_item AS I
-                            WHERE I.deleted=0 AND I.id='$id'";
-                    $stmt = mysqli_stmt_init($conn);
-                    if (!mysqli_stmt_prepare($stmt, $sql)) {
-                        header("Location: ../".$redirect_url.$queryChar."error=optic_itemTableSQLConnection");
-                        exit();
-                    } else {
-                        mysqli_stmt_execute($stmt);
-                        $result = mysqli_stmt_get_result($stmt);
-                        $rowCount = $result->num_rows;
-                        if ($rowCount < 1) {
-                            header("Location: ../".$redirect_url.$queryChar."error=noRowsFound");
-                            exit();
-                        } elseif ($rowCount > 1) {
-                            header("Location: ../".$redirect_url.$queryChar."error=tooManyRowsFound");
+                    if (isset($_POST['reason']) && $_POST['reason'] !== '') {
+                        $delete_reason = 'DELETED: '.$_POST['reason'];
+
+                        $sql = "SELECT I.id AS i_id, I.site_id AS i_site_id
+                                FROM optic_item AS I
+                                WHERE I.deleted=0 AND I.id='$id'";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../".$redirect_url.$queryChar."error=optic_itemTableSQLConnection");
                             exit();
                         } else {
-                            // correct amount found, continue.
-                            $row = $result->fetch_assoc();
-                            $site_id = $row['i_site_id'];
-
-                            $sql = "UPDATE optic_item SET deleted=1
-                                    WHERE id=?";
-                            $stmt = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                header("Location: ../".$redirect_url.$queryChar."optic_item_id=$id&error=optic_itemTableSQLConnection-DeleteItem");
+                            mysqli_stmt_execute($stmt);
+                            $result = mysqli_stmt_get_result($stmt);
+                            $rowCount = $result->num_rows;
+                            if ($rowCount < 1) {
+                                header("Location: ../".$redirect_url.$queryChar."error=noRowsFound");
+                                exit();
+                            } elseif ($rowCount > 1) {
+                                header("Location: ../".$redirect_url.$queryChar."error=tooManyRowsFound");
                                 exit();
                             } else {
-                                mysqli_stmt_bind_param($stmt, "s", $id);
-                                mysqli_stmt_execute($stmt);
+                                // correct amount found, continue.
+                                $row = $result->fetch_assoc();
+                                $site_id = $row['i_site_id'];
 
-                                $table_name = 'optic_item';
-                                $type = "delete";
-                                $reason = "Item Deleted";
-                                $date = date('Y-m-d'); // current date in YYY-MM-DD format
-                                $time = date('H:i:s'); // current time in HH:MM:SS format
-                                $username = $_SESSION['username'];
+                                $comment = $delete_reason; 
+                                $datetime = time();
 
-                                updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
-                            
-                                // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
-                                // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                // // update changelog
-                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete Item", $table_name, $id, "deleted", 0, 1);
+                                $sql = "SELECT I.site_id AS i_site_id
+                                        FROM optic_item AS I
+                                        WHERE I.deleted=0 AND I.id=$id";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    header("Location: ../".$redirect_url.$queryChar."error=optic_commentTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_execute($stmt);
+                                    $result = mysqli_stmt_get_result($stmt);
+                                    $rowCount = $result->num_rows;
+                                    if ($rowCount < 1) {
+                                        header("Location: ../".$redirect_url.$queryChar."error=noRowsFound");
+                                        exit();
+                                    } elseif ($rowCount > 1) {
+                                        header("Location: ../".$redirect_url.$queryChar."error=tooManyRowsFound");
+                                        exit();
+                                    } else {
+                                        // correct amount found, continue.
+                                        $row = $result->fetch_assoc();
+                                        $site_id = $row['i_site_id'];
 
-                                header("Location: ../".$redirect_url.$queryChar."success=deleted");
-                                exit();
+                                        $sql = "INSERT INTO optic_comment (item_id, user_id, comment, timestamp) VALUES (?, ?, ?, FROM_UNIXTIME($datetime))";
+                                        $stmt = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                            header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_commentConnectionInsert");
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt, "sss", $id, $_SESSION['user_id'], $comment);
+                                            mysqli_stmt_execute($stmt);
+                                            $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+
+                                            $table_name = 'optic_comment';
+                                            $type = "add";
+                                            $reason = "Comment Added";
+                                            $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                            $time = date('H:i:s'); // current time in HH:MM:SS format
+                                            $username = $_SESSION['username'];
+
+                                            updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
+                                        
+                                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                            // // update changelog
+                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Comment", $table_name, $insert_id, "comment", null, $comment);
+                                        }
+                                    }
+                                }
+
+                                $sql = "UPDATE optic_item SET deleted=1
+                                        WHERE id=?";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    header("Location: ../".$redirect_url.$queryChar."optic_item_id=$id&error=optic_itemTableSQLConnection-DeleteItem");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt, "s", $id);
+                                    mysqli_stmt_execute($stmt);
+
+                                    $table_name = 'optic_item';
+                                    $type = "delete";
+                                    $reason = "Item Deleted";
+                                    $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                    $time = date('H:i:s'); // current time in HH:MM:SS format
+                                    $username = $_SESSION['username'];
+
+                                    updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
+                                
+                                    // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                    // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                                    // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                    // // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete Item", $table_name, $id, "deleted", 0, 1);
+
+                                    header("Location: ../".$redirect_url.$queryChar."success=deleted");
+                                    exit();
+                                }
                             }
                         }
+                    } else {
+                        header("Location: ../".$redirect_url.$queryChar."error=invalidReason");
+                        exit();
+                    }
+                } else {
+                    header("Location: ../".$redirect_url.$queryChar."error=invalidId");
+                    exit();
+                }
+            } else {
+                header("Location: ../".$redirect_url.$queryChar."error=nonNumericId");
+                exit();
+            }
+        }
+    } elseif (isset($_POST['optic-move-submit'])) { 
+        if (isset($_POST['id'])) {
+            $id = $_POST['id'];
+            if (is_numeric($id)) {
+                if ($id > 0) {
+                    if (isset($_POST['move-site']) && $_POST['move-site'] !== '' && is_numeric($_POST['move-site'])) {
+                        $move_site = $_POST['move-site'];
+
+                        $sql = "SELECT I.id AS i_id, I.site_id AS i_site_id
+                                FROM optic_item AS I
+                                WHERE I.deleted=0 AND I.id='$id'";
+                        $stmt = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            header("Location: ../".$redirect_url.$queryChar."error=optic_itemTableSQLConnection");
+                            exit();
+                        } else {
+                            mysqli_stmt_execute($stmt);
+                            $result = mysqli_stmt_get_result($stmt);
+                            $rowCount = $result->num_rows;
+                            if ($rowCount < 1) {
+                                header("Location: ../".$redirect_url.$queryChar."error=noRowsFound");
+                                exit();
+                            } elseif ($rowCount > 1) {
+                                header("Location: ../".$redirect_url.$queryChar."error=tooManyRowsFound");
+                                exit();
+                            } else {
+                                // correct amount found, continue.
+                                $row = $result->fetch_assoc();
+                                $site_id = $row['i_site_id'];
+                                if ($site_id == $move_site) {
+                                    header("Location: ../".$redirect_url.$queryChar."error=siteUnchanged");
+                                    exit(); 
+                                }
+
+                                $sql = "UPDATE optic_item 
+                                        SET site_id='$move_site'
+                                        WHERE id=?";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    header("Location: ../".$redirect_url.$queryChar."optic_item_id=$id&error=optic_itemTableSQLConnection-DeleteItem");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt, "s", $id);
+                                    mysqli_stmt_execute($stmt);
+
+                                    $table_name = 'optic_item';
+                                    $type = "move";
+                                    $reason = "Item Moved";
+                                    $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                    $time = date('H:i:s'); // current time in HH:MM:SS format
+                                    $username = $_SESSION['username'];
+
+                                    updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
+                                
+                                    // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                    // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                                    // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                    // // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete Item", $table_name, $id, "site_id", $site_id, $move_site);
+
+                                    header("Location: ../".$redirect_url.$queryChar."success=moved");
+                                    exit();
+                                }
+                            }
+                        }
+                    } else {
+                        header("Location: ../".$redirect_url.$queryChar."error=noSite");
+                        exit();
                     }
                 } else {
                     header("Location: ../".$redirect_url.$queryChar."error=invalidId");
@@ -684,14 +822,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         // correct amount found, continue.
                         $row = $result->fetch_assoc();
                         $site_id = $row['i_site_id'];
-                        $sql = "INSERT INTO optic_comment (item_id, comment, timestamp) VALUES (?, ?, FROM_UNIXTIME($datetime))";
+                        $sql = "INSERT INTO optic_comment (item_id, comment, user_id, timestamp) VALUES (?, ?, FROM_UNIXTIME($datetime))";
                         $stmt = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt, $sql)) {
                             header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_commentConnectionInsert");
                             exit();
                         } else {
-                            mysqli_stmt_bind_param($stmt, "ss", $id, $comment);
+                            mysqli_stmt_bind_param($stmt, "ss", $id, $comment, $_SESSION['user_id']);
                             mysqli_stmt_execute($stmt);
+                            $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
 
                             $table_name = 'optic_comment';
                             $type = "add";
@@ -706,7 +845,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                             // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                             // // update changelog
-                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Comment", $table_name, $id, "comment", null, $comment);
+                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Comment", $table_name, $insert_id, "comment", null, $comment);
 
                             header("Location: ../".$redirect_url.$queryChar."success=commentAdded");
                             exit();

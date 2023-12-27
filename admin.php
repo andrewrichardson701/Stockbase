@@ -523,7 +523,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             echo('
                                             <td style="vertical-align: middle;">   
                                                 <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0;margin:0">
-                                                    <button type="submit" class="btn btn-info" id="user_'.$user_id.'_impersonate" title="Impersonate"><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
+                                                    <button type="submit" class="btn btn-info" id="user_'.$user_id.'_impersonate" title="Impersonate" '); if ($user_id == $_SESSION['user_id']) { echo('disabled'); } echo('><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
                                                     <input type="hidden" name="user-impersonate" value="impersonate"/>
                                                     <input type="hidden" name="role" value="Root" />
                                                     <input type="hidden" name="user-id" value="'.$user_id.'" />

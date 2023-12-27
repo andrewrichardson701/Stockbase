@@ -105,6 +105,21 @@ function downloadCSV($data, $filename) {
         </form>
     </div>
 </body>
+<script>
+function toggleSection(element, section) {
+    var div = document.getElementById(section);
+    var icon = element.children[0];
+    if (div.hidden == false) {
+        div.hidden=true;
+        icon.classList.remove("fa-chevron-up");
+        icon.classList.add("fa-chevron-down");
+    } else {
+        div.hidden=false;
+        icon.classList.remove("fa-chevron-down");
+        icon.classList.add("fa-chevron-up");
+    }
+}
+</script>
 
 
 <?php
@@ -235,10 +250,11 @@ if (isset($csvData)){
                     $skip = true;
                     break;  // No need to continue checking
                 } else {
+                    $skip = false;
                     $multiple_field_count = true;
                 }
                 
-            }
+            } 
         }
         if ($skip == false) {
             $action_lines[] = $row;
@@ -291,19 +307,24 @@ if (isset($csvData)){
     print_r($fileList);
     print_r('</pre><br><br>');
     if (isset($manualreview_lines) && count($manualreview_lines) > 0 ) {
-        echo('<h3>Manual Review</h3><a class="btn btn-info" style="color:black !important" href="manualreviewlines.csv" download="manualreview.csv">Download CSV</a><br>');
+        echo('
+        <h3 class="clickable" onclick="toggleSection(this, \'manual\')">Manual Review<i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3>
+        <a class="btn btn-info" style="color:black !important" href="manualreviewlines.csv" download="manualreview.csv">Download CSV</a>
+        <br>
+        <div class="" id="manual" hidden>');
         print_r('<pre>');
         print_r($manualreview_lines);
-        print_r('</pre><br>');
+        print_r('</pre><br></div>');
     }
     
 
     
     
-    echo('<h3>Actioned</h3>');
+    echo('<h3 class="clickable" onclick="toggleSection(this, \'actioned\')">Actioned<i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3>
+    <div class="" id="actioned" hidden>');
     print_r('<pre>');
     print_r($action_lines);
-    print_r('</pre><br>');
+    print_r('</pre></div>');
 
     print_r('<pre hidden>');
     print_r($csvData);
@@ -315,28 +336,30 @@ if (isset($csvData)){
         //     print_r('<br>');
         // }
         foreach ($action_lines as $line) {
-            $item = mysqli_real_escape_string($conn, $line['Item']);
-            $sku = mysqli_real_escape_string($conn, $line['SKU']);
-            $area = mysqli_real_escape_string($conn, $line['Area']);
-            $manufacturer = mysqli_real_escape_string($conn, $line['Manufacturer']);
-            $DA2_MMRA = mysqli_real_escape_string($conn, $line['MMRA Store']);
-            $DA2_NOC = mysqli_real_escape_string($conn, $line['DA2 NOC Shelves']);
-            $DF3_STORE = mysqli_real_escape_string($conn, $line['DF3 Store']);
-            $ENERGY_CENTRE = mysqli_real_escape_string($conn, $line['Energy Centre Store']);
-            $FIBRE_STORE = mysqli_real_escape_string($conn, $line['Fibre Store']);
-            $JC_OFFICE = mysqli_real_escape_string($conn, $line["JCs Office"]);
-            $STORE_50 = mysqli_real_escape_string($conn, $line['Store 50']);
-            $ALL_COUNT = mysqli_real_escape_string($conn, $line['All Locations']);
-            $AVERAGE_COST = mysqli_real_escape_string($conn, $line['Average Cost']);
-            $TOTAL_VALUE = mysqli_real_escape_string($conn, $line['Total Value']);
+            $item = $line['Item'];
+            $sku = $line['SKU'];
+            $area = $line['Area'];
+            $manufacturer = $line['Manufacturer'];
+            $DA2_MMRA = $line['MMRA Store'];
+            $DA2_NOC = $line['DA2 NOC Shelves'];
+            $DF3_STORE = $line['DF3 Store'];
+            $ENERGY_CENTRE = $line['Energy Centre Store'];
+            $FIBRE_STORE = $line['Fibre Store'];
+            $JC_OFFICE = $line["JCs Office"];
+            $STORE_50 = $line['Store 50'];
+            $ALL_COUNT = $line['All Locations'];
+            $AVERAGE_COST = $line['Average Cost'];
+            $TOTAL_VALUE = $line['Total Value'];
             $area_fields = ['MMRA Store', 'DA2 NOC Shelves', 'DF3 Store', 'Energy Centre Store', 'Fibre Store', "JCs Office", 'Store 50'];
+            if ($manufacturer == '' || !preg_match('/^[a-zA-Z0-9]+$/', $manufacturer)) { $manufacturer = "N/A"; }
 
             // check if the stock name exists already
-            $sql_stock = "SELECT id, name, deleted FROM stock WHERE name='$item' LIMIT 1";
+            $sql_stock = "SELECT id, name, deleted FROM stock WHERE name=? LIMIT 1";
             $stmt_stock = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_stock, $sql_stock)) {
                 echo('ERROR AT LINE: '.__LINE__.'<br>');
             } else {
+                mysqli_stmt_bind_param($stmt_stock, "s", $item);
                 mysqli_stmt_execute($stmt_stock);
                 $result_stock = mysqli_stmt_get_result($stmt_stock);
                 $rowCount_stock = $result_stock->num_rows;
@@ -364,11 +387,12 @@ if (isset($csvData)){
 
                     // check if deleted, if deleted, undeleted.
                     if ($row_stock['deleted'] == 1) {
-                        $sql_stock_update = "UPDATE stock SET deleted=0 WHERE id=$stock_id;";
+                        $sql_stock_update = "UPDATE stock SET deleted=0 WHERE id=?;";
                         $stmt_stock_update = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_stock_update, $sql_stock_update)) {
                             echo ('ISSUE AT LINE: '.__LINE__.'<br>');
                         } else {
+                            mysqli_stmt_bind_param($stmt_stock_update, "s", $stock_id);
                             mysqli_stmt_execute($stmt_stock_update);
                             // update changelog
                             //addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "deleted", 0, 1);
@@ -380,11 +404,12 @@ if (isset($csvData)){
             //if manufacturer is blank, ignore it
             if (isset($manufacturer) && $manufacturer !== '') {
                 // check if the manufacturer name exists already
-                $sql_manufacturer = "SELECT id, name, deleted FROM manufacturer WHERE name='$manufacturer' LIMIT 1";
+                $sql_manufacturer = "SELECT id, name, deleted FROM manufacturer WHERE name=? LIMIT 1";
                 $stmt_manufacturer = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
                     echo('ERROR AT LINE: '.__LINE__.'<br>');
                 } else {
+                    mysqli_stmt_bind_param($stmt_manufacturer, "s", $manufacturer);
                     mysqli_stmt_execute($stmt_manufacturer);
                     $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
                     $rowCount_manufacturer = $result_manufacturer->num_rows;
@@ -410,11 +435,12 @@ if (isset($csvData)){
 
                         // check if deleted, if deleted, undeleted.
                         if ($row_manufacturer['deleted'] == 1) {
-                            $sql_manufacturer_update = "UPDATE manufacturer SET deleted=0 WHERE id=$manufacturer_id;";
+                            $sql_manufacturer_update = "UPDATE manufacturer SET deleted=0 WHERE id=?;";
                             $stmt_manufacturer_update = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_manufacturer_update, $sql_manufacturer_update)) {
                                 echo ('ISSUE AT LINE: '.__LINE__.'<br>');
                             } else {
+                                mysqli_stmt_bind_param($stmt_manufacturer_update, "s", $manufacturer_id);
                                 mysqli_stmt_execute($stmt_manufacturer_update);
                                 // update changelog
                                 //addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "deleted", 0, 1);
@@ -436,11 +462,12 @@ if (isset($csvData)){
 
             if ($db_area) {
                 // check if the area exists in the db
-                $sql_area = "SELECT id, name FROM area WHERE name='$db_area' LIMIT 1";
+                $sql_area = "SELECT id, name FROM area WHERE name=? LIMIT 1";
                 $stmt_area = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_area, $sql_area)) {
                     echo('ERROR AT LINE: '.__LINE__.'<br>');
                 } else {
+                    mysqli_stmt_bind_param($stmt_area, "s", $db_area);
                     mysqli_stmt_execute($stmt_area);
                     $result_area = mysqli_stmt_get_result($stmt_area);
                     $rowCount_area = $result_area->num_rows;
@@ -453,11 +480,12 @@ if (isset($csvData)){
                         $area_id = $row_area['id'];
 
                         // check if the shelf exists in the db
-                        $sql_shelf = "SELECT id, name, deleted FROM shelf WHERE name='$area' AND area_id='$area_id' LIMIT 1";
+                        $sql_shelf = "SELECT id, name, deleted FROM shelf WHERE name=? AND area_id=? LIMIT 1";
                         $stmt_shelf = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_shelf, $sql_shelf)) {
                             echo('ERROR AT LINE: '.__LINE__.'<br>');
                         } else {
+                            mysqli_stmt_bind_param($stmt_shelf, "ss", $area, $area_id);
                             mysqli_stmt_execute($stmt_shelf);
                             $result_shelf = mysqli_stmt_get_result($stmt_shelf);
                             $rowCount_shelf = $result_shelf->num_rows;
@@ -485,11 +513,12 @@ if (isset($csvData)){
 
                                 // check if deleted, if deleted, undeleted.
                                 if ($row_shelf['deleted'] == 1) {
-                                    $sql_shelf_update = "UPDATE shelf SET deleted=0 WHERE id=$shelf_id;";
+                                    $sql_shelf_update = "UPDATE shelf SET deleted=0 WHERE id=?;";
                                     $stmt_shelf_update = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_shelf_update, $sql_shelf_update)) {
                                         echo ('ISSUE AT LINE: '.__LINE__.'<br>');
                                     } else {
+                                        mysqli_stmt_bind_param($stmt_shelf_update, "s", $shelf_id);
                                         mysqli_stmt_execute($stmt_shelf_update);
                                         // update changelog
                                         //addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete record", "site", $site_id, "deleted", 0, 1);
@@ -556,7 +585,7 @@ if (isset($csvData)){
                                             $timedate = date("YmdHis");
                                             $new_image_name = "stock-$stock_id-img-$timedate.".$matchingFile['ext'];
 
-                                            //exec("cp images/$current_image_file ../assets/img/stock/$new_image_name");
+                                            // exec("cp images/$current_image_file ../assets/img/stock/$new_image_name");
                                             exec("cp images/$current_image_file images/stock/$new_image_name");
 
                                             $sql_img_insert = "INSERT INTO stock_img (stock_id, image) 
@@ -598,6 +627,7 @@ if (isset($csvData)){
             } else {
                 $item_ids_string = '';
             }
+            if (!isset($img_id)) { $img_id = "N/A"; }
             echo("<ul>");
             echo('<li>Stock ID: '.$stock_id.'</li>');
             echo('<li>Manufacturer ID: '.$manufacturer_id.'</li>');

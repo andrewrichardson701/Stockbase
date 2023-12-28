@@ -188,6 +188,7 @@ esac
             echo "SQL Changes to be made:"
             echo " - (0.6.0-beta) Database to be renamed from stockbase to inventory"
             echo " - (0.6.0-beta) Tables: optic_speed, optic_transaction, optic_vendor, optic_item, optic_type, optic_comment, optic_connector to be removed"
+            echo " - (0.6.0-beta) Table Adjustments: password_reset COLLATE changed from utf8mb4_0900_ai_ci to utf8mb4_unicode_520_ci"
             mysql -u "$db_username" -p "$db_password" -e "CREATE DATABASE inventory;"
             mysqldump -u "$db_username" -p "$db_password" stockbase | mysql inventory
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
@@ -201,7 +202,8 @@ esac
                                                                 DROP TABLE optic_speed;
                                                                 DROP TABLE stock_audit;
                                                                 ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;"
+                                                                ALTER TABLE stock DROP INDEX description;
+                                                                ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.3.X-beta "0.5.0-beta"                                             
             break;;
     esac 
@@ -253,6 +255,7 @@ esac
             echo "SQL Changes to be made:"
             echo " - (0.6.0-beta) Database to be renamed from stockbase to inventory"
             echo " - (0.6.0-beta) Tables: optic_speed, optic_transaction, optic_vendor, optic_item, optic_type, optic_comment, optic_connector to be removed"
+            echo " - (0.6.0-beta) Table Adjustments: password_reset COLLATE changed from utf8mb4_0900_ai_ci to utf8mb4_unicode_520_ci"
             mysql -u "$db_username" -p "$db_password" -e "CREATE DATABASE inventory;"
             mysqldump -u "$db_username" -p "$db_password" stockbase | mysql inventory
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
@@ -266,7 +269,8 @@ esac
                                                                 DROP TABLE optic_speed;
                                                                 DROP TABLE stock_audit;
                                                                 ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;"
+                                                                ALTER TABLE stock DROP INDEX description;
+                                                                ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.4.0-beta "0.5.0-beta"                                             
             break;;
     esac 
@@ -318,6 +322,7 @@ esac
             echo "SQL Changes to be made:"
             echo " - (0.6.0-beta) Database to be renamed from stockbase to inventory"
             echo " - (0.6.0-beta) Tables: optic_speed, optic_transaction, optic_vendor, optic_item, optic_type, optic_comment, optic_connector to be removed"
+            echo " - (0.6.0-beta) Table Adjustments: password_reset COLLATE changed from utf8mb4_0900_ai_ci to utf8mb4_unicode_520_ci"
             mysql -u "$db_username" -p "$db_password" -e "CREATE DATABASE inventory;"
             mysqldump -u "$db_username" -p "$db_password" stockbase | mysql inventory
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
@@ -331,7 +336,8 @@ esac
                                                                 DROP TABLE optic_speed;
                                                                 DROP TABLE stock_audit;
                                                                 ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;"
+                                                                ALTER TABLE stock DROP INDEX description;
+                                                                ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.4.1-beta "0.5.0-beta"                                             
             break;;
     esac 
@@ -397,6 +403,7 @@ esac
             echo "SQL Changes to be made:"
             echo " - (0.6.0-beta) Database to be renamed from stockbase to inventory"
             echo " - (0.6.0-beta) Tables: optic_speed, optic_transaction, optic_vendor, optic_item, optic_type, optic_comment, optic_connector to be removed"
+            echo " - (0.6.0-beta) Table Adjustments: password_reset COLLATE changed from utf8mb4_0900_ai_ci to utf8mb4_unicode_520_ci"
             mysql -u "$db_username" -p "$db_password" -e "CREATE DATABASE inventory;"
             mysqldump -u "$db_username" -p "$db_password" stockbase | mysql inventory
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
@@ -410,7 +417,8 @@ esac
                                                                 DROP TABLE optic_speed;
                                                                 DROP TABLE stock_audit;
                                                                 ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;"                                          
+                                                                ALTER TABLE stock DROP INDEX description;
+                                                                ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"                                         
             break;;
     esac 
 }
@@ -473,6 +481,7 @@ esac
             echo " - (0.6.0-beta) Database to be renamed from inventory to stockbase"
             echo " - (0.6.0-beta) Tables: optic_speed, optic_transaction, optic_vendor, optic_item, optic_type, optic_comment, optic_connector to be added"
             echo " - (0.6.0-beta) Default data to be added to optic_speed, optic_connector, optic_type."
+            echo " - (0.6.0-beta) Table Adjustments: password_reset COLLATE changed from utf8mb4_0900_ai_ci to utf8mb4_unicode_520_ci"
             mysql -u "$db_username" -p "$db_password" -e "CREATE DATABASE stockbase;"
             mysqldump -u "$db_username" -p "$db_password" inventory | mysql stockbase
             mysqldump -u "$db_username" -p "$db_password" inventory > /tmp/inventory-backup.sql
@@ -570,7 +579,8 @@ esac
                                                                         ('400G'),
                                                                         ('800G');
                                                                 ALTER TABLE stock ADD FULLTEXT(name);
-                                                                ALTER TABLE stock ADD FULLTEXT(description);"
+                                                                ALTER TABLE stock ADD FULLTEXT(description);
+                                                                ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
             break;;
     0.6.0-beta )
             echo "No SQL changes to be made."                                        

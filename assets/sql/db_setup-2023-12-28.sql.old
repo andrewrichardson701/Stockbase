@@ -395,11 +395,11 @@ DROP TABLE IF EXISTS `password_reset`;
 CREATE TABLE `password_reset` (
   `id` int NOT NULL AUTO_INCREMENT,
   `reset_user_id` int NOT NULL,
-  `reset_selector` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `reset_token` longtext COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `reset_expires` text COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `reset_selector` text NOT NULL,
+  `reset_token` longtext NOT NULL,
+  `reset_expires` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -632,4 +632,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-28 16:22:01
+-- Dump completed on 2023-12-28 13:30:13

@@ -92,7 +92,7 @@ if ($_SESSION['auth'] == "ldap") {
                             <tr class="nav-row">
                                 <td style="width:200px">
                                     <!-- Custodian Colour: #72BE2A -->
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">New Password:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">New Password:</p>
                                 </td>
                                 <td>
                                     <input class="form-control" id="password" type="password" name="password" />
@@ -101,7 +101,7 @@ if ($_SESSION['auth'] == "ldap") {
                             <tr class="nav-row" style="margin-top:20px">
                                 <td style="width:200px">
                                     <!-- Custodian Colour: #72BE2A -->
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Confirm Password:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Confirm Password:</p>
                                 </td>
                                 <td>
                                     <input class="form-control" id="confirm-password" type="password" name="confirm-password" />

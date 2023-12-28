@@ -67,7 +67,7 @@
                 if ($impersonate == 1) {
                     echo('
                     <div id="impersonate-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <form enctype="multipart/form-data" class="nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0;padding:0">
+                        <form enctype="multipart/form-data" class="nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0px;padding:0px">
                             <input type="hidden" name="user-stop-impersonate" value="1"/>
                             <button type="submit" id="impersonate" style="border-radius: 8px;padding-left:10px;padding-right:10px;margin-top:2.5%;height:80%;color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important;margin-bottom:10%">Stop Impersonating</button>
                         </form>
@@ -132,7 +132,7 @@
             if (isset($profile_name)) {
                 echo ('
                     <div id="menu-div" class="nav-menu theme-burger '); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div" style="cursor:pointer; color:'.$current_banner_text_color.' !important" '); if (!isset($profile_name)) { echo ('hidden'); } echo('>
-                        <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important">'.$profile_name.'<i class="fa fa-chevron-down" style="margin-left:5px; font-size:12"></i></a>
+                        <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important">'.$profile_name.'<i class="fa fa-chevron-down" style="margin-left:5px; font-size:12px"></i></a>
                     </div>
                 ');
                 
@@ -147,8 +147,9 @@
         echo('
         <div style="width:100%">
             <div class="nav-div float-right" style="min-width:120px;">
-                <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">
-                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>
+                <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">');
+                    if (in_array($loggedin_role, $config_admin_roles_array)) { echo('<li>&#8226; <a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>'); }
+                echo('
                     <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./profile.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>
                     <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./logout.php">Logout</a></li>
                 </ul>
@@ -169,8 +170,8 @@
             if (isset($_SESSION['impersonate'])) {
                 $impersonate = $_SESSION['impersonate'];
                 if ($impersonate == 1) {
-                    echo('<div id="impersonate-div" class="'); if($nav_right == 0) { echo('nav-right'); $nav_right = 1; } echo(' nav-div" style="margin-right:0">
-                            <form enctype="multipart/form-data" class="nav-v-c nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0;padding:0">
+                    echo('<div id="impersonate-div" class="'); if($nav_right == 0) { echo('nav-right'); $nav_right = 1; } echo(' nav-div" style="margin-right:0px">
+                            <form enctype="multipart/form-data" class="nav-v-c nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0px;padding:0px">
                                 <input type="hidden" name="user-stop-impersonate" value="1"/>
                                 <button type="submit" style="border-radius: 8px; height:90%;color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important; >Stop <i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
                             </form>

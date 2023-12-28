@@ -487,12 +487,12 @@ input:checked + .sliderGreen:before {
 .loader .loaderBar { 
   position:absolute;
   border-radius:10px;
-  top:0;
+  top:0px;
   right:100%;
-  bottom:0;
-  left:0;
+  bottom:0px;
+  left:0px;
   background:#fff; 
-  width:0;
+  width:0px;
   animation:borealisBar 1.5s linear infinite;
 }
 
@@ -585,7 +585,7 @@ input:checked + .sliderGreen:before {
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 5px 0;
+  padding: 5px 0px;
   position: absolute;
   z-index: 1;
   bottom: 125%;

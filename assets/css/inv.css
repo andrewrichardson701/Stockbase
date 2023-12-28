@@ -105,12 +105,12 @@
 
 .inv-nav {
     background-color: #72BE2A;
-    z-index:0;
+    z-index:0px;
     height:60px;
 }
 .inv-nav-secondary {
     background-color: #72BE2A;
-    z-index:0;
+    z-index:0px;
     height:60px;
 }
 
@@ -153,8 +153,8 @@
 
 .nav-row {
     width: 100%;
-    padding:0;
-    margin:0;
+    padding:0px;
+    margin:0px;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
@@ -246,7 +246,7 @@
     width: 105px;
     display: block;
     position: relative;
-    margin:0;
+    margin:0px;
 }
 .input-color {
     font-family: 'JetBrains Mono', monospace !important;
@@ -314,7 +314,7 @@ select[disabled] {
     max-width: 700px;
     text-align: center;
     color: #ccc;
-    padding: 10px 0;
+    padding: 10px 0px;
     height: 150px;
 }
 /* Add Animation */
@@ -371,7 +371,7 @@ select[disabled] {
     vertical-align: middle !important;
 }
 .stockTD-input {
-    padding: 0 6px 0 6px !important;
+    padding: 0px 6px 0px 6px !important;
     height: 25px;
 }
 
@@ -380,7 +380,7 @@ select[disabled] {
     color: white;
     font-size: 14px;
 
-    position: absolute;
+    position: fixed;
     bottom: 0; /* Stick the footer to the bottom of the viewport */
     width: 100%;
     padding: 5px;
@@ -406,7 +406,7 @@ body {
 .theme-dropdown { /* themed dropdown select boxes */
 	background-color:#484848 !important;
 	border-color:black !important;
-	margin:0;
+	margin:0px;
 	padding-left:0 !important;
 	color: white !important;
 }
@@ -466,7 +466,7 @@ body {
     background-color: #343a40;
     color: white;
     font-size: 14px;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     padding: 5px;
@@ -619,7 +619,7 @@ body {
 }
 
 #clear-filters {
-    padding: 6 6 6 6;
+    padding:6px 6px 6px 6px;
 }
 
 #clear-filters i {
@@ -640,7 +640,7 @@ th.btn-cableStock {
 }
 
 button.btn-cableStock {
-    padding: 6 12 6 12 !important;
+    padding: 6px 12px 6px 12px !important;
 }
 
 div.stock-imageMainSolo {
@@ -830,7 +830,7 @@ table {
         font-size: 10px !important;
     }
     #clear-filters {
-        padding: 3 5 4 3
+        padding: 3px 5px 4px 3px
     }
     #clear-filters i {
         height:20px;
@@ -843,7 +843,7 @@ table {
         width:max-content;
     }
     button.btn-cableStock {
-        padding: 5 10 5 10 !important;
+        padding: 5px 10px 5px 10px !important;
     }
     .profile-table-row {
         margin-top:5px;
@@ -852,7 +852,7 @@ table {
         margin-top:10px;
     }
     .invTablePagination {
-        padding:0 !important;
+        padding:0px !important;
     }
 
 
@@ -900,7 +900,7 @@ table {
         font-size: 10px !important;
     }
     #stock-info-table th, #stock-info-table td {
-        padding:1 7 0 0 !important;
+        padding:1px 7px 0px 0px !important;
     }
     #stock-info-right {
         margin-left:0px !important;
@@ -937,7 +937,7 @@ table {
         min-width: 70px;
     }
     .btn-move {
-        padding: 2 5 2 5;
+        padding: 2px 5px 2px 5px;
     }
 
 }
@@ -951,7 +951,7 @@ table {
         width:19px;
         height:19px;
         font-size:9px;
-        padding: 0 0 0 2;
+        padding: 0px 0px 0px 2px;
     }
     .scrollIcon {
         padding: 5px 0px 5px 0px;
@@ -1044,14 +1044,14 @@ table {
         padding:5px !important;
     }
     #stock-info-table th, #stock-info-table td {
-        padding:1 7 0 0 !important;
+        padding:1px 7px 0px 0px !important;
     }
 
     table span, #inv-page-numbers, label, select, option, input, textarea, .btn, p {
         font-size: 10px !important;
     }
     #clear-filters {
-        padding: 3 5 4 3
+        padding: 3px 5px 4px 3px
     }
     #clear-filters i {
         height:20px;
@@ -1064,7 +1064,7 @@ table {
         width:max-content;
     }
     button.btn-cableStock {
-        padding: 5 10 5 10 !important;
+        padding: 5px 10px 5px 10px !important;
     }
     .profile-table-row {
         margin-top:5px;
@@ -1073,7 +1073,7 @@ table {
         margin-top:10px;
     }
     .invTablePagination {
-        padding:0 !important;
+        padding:0px !important;
     }
 
 
@@ -1121,7 +1121,7 @@ table {
         font-size: 10px !important;
     }
     #stock-info-table th, #stock-info-table td {
-        padding:1 7 0 0 !important;
+        padding:1px 7px 0px 0px !important;
     }
     #stock-info-right {
         margin-left:0px !important;

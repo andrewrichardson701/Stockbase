@@ -16,6 +16,7 @@ if ($_SESSION['auth'] == "ldap") {
 }
 ?> 
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>

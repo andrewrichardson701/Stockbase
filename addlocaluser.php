@@ -12,6 +12,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>

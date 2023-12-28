@@ -303,14 +303,14 @@ Clone the repo first, and the follow the below steps.
         index index.php index.html;
 
         location / {
-            try_files $uri $uri/ /index.php?$query_string;
+            try_files \$uri \$uri/ /index.php?\$query_string;
         }
 
         location ~ \.php$ {
             include fastcgi_params;
             fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
             fastcgi_index index.php;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;
         }
     }
     EOL
@@ -408,17 +408,17 @@ Clone the repo first, and the follow the below steps.
         index index.php index.html;
 
         location / {
-            try_files $uri $uri/ /index.php?$query_string;
+            try_files \$uri \$uri/ /index.php?\$query_string;
         }
 
         location ~ \.php$ {
             include fastcgi_params;
             fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
             fastcgi_index index.php;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;
         }
 
-        return 301 https://$web_domain$request_uri;
+        return 301 https://$web_domain\$request_uri;
     }
 
     server {
@@ -431,15 +431,28 @@ Clone the repo first, and the follow the below steps.
         ssl_certificate $ssl_certificate;
         ssl_certificate_key $ssl_key;
 
+         add_header X-Frame-Options "SAMEORIGIN";
+        add_header X-Content-Type-Options "nosniff";
+
+        charset utf-8;
+
         location / {
-            try_files $uri $uri/ /index.php?$query_string;
+            try_files \$uri \$uri/ /index.php?\$query_string;
         }
 
+         location = /favicon.ico { access_log off; log_not_found off; }
+        location = /robots.txt  { access_log off; log_not_found off; }
+
+        error_page 404 /index.php;
+
         location ~ \.php$ {
-            include fastcgi_params;
             fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
-            fastcgi_index index.php;
-            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
+            include fastcgi_params;
+            fastcgi_read_timeout 300s;
+            proxy_read_timeout 600s;
+            fastcgi_buffers 16 16k;
+            fastcgi_buffer_size 32k;
         }
     }
     EOL

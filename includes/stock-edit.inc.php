@@ -144,14 +144,14 @@ if (isset($_GET['stock_id'])) {
                                             </select>
                                             </div>
                                             <div class="viewport-large">
-                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'tag\')">Add New</label>
+                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'tag\')">Add New</label>
                                             </div>
                                         </div>
                                         <div class="nav-row viewport-small" id="tags-row-add">
                                             <div class="stock-inputLabelSize" style="max-width:200px">
                                             </div>
                                             <div style="width:max-content">
-                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'tag\')">Add New</label>
+                                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'tag\')">Add New</label>
                                             </div>
                                         </div>');
                                     }
@@ -397,7 +397,7 @@ if (isset($_GET['stock_id'])) {
                                                     
                                                     </div>
                                                 </td>
-                                                <td class="theme-divBg-m uni" style="font-size:14">assets/img/stock/'.$stock_img_data[$i]['image'].'</td>
+                                                <td class="theme-divBg-m uni" style="font-size:14px">assets/img/stock/'.$stock_img_data[$i]['image'].'</td>
                                                 <td class="theme-divBg-m" style="padding-left:10px;padding-right:10px">
                                                     <button id="edit-images" class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px">
                                                         <i class="fa fa-trash"></i>

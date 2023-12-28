@@ -42,7 +42,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         if ($stock_id == 0 || $stock_id == '0') {
             //<input type="text" name="tags" placeholder="Labels - allow multiple" id="tags" class="form-control nav-v-c" style="width:300px" value="'.$input_tags.'"></input>
             echo('
-            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
                 <!-- this is for the stock-modify.inc.php page -->
                 <input type="hidden" name="stock-add" value="1" /> 
                 <div class="container well-nopad theme-divBg" style="margin-bottom:5px">
@@ -142,7 +142,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 </script>
                             </div>
                             <div>
-                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'tag\')">Add New</label>
+                                <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'tag\')">Add New</label>
                             </div>
                         </div>
                     </div>
@@ -164,7 +164,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'manufacturer\')">Add New</label>
+                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'manufacturer\')">Add New</label>
                                     </div>
                                 </div>
                                 <div class="nav-row" id="site-row" style="margin-top:25px">
@@ -200,7 +200,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     </div>');
                                     if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
                                         echo('<div>
-                                            <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
+                                            <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
                                         </div>');
                                     }
                                 echo('
@@ -214,7 +214,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     </div>');
                                     if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
                                         echo('<div>
-                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
+                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
                                     </div>');
                                     }
                                 echo('</div>
@@ -226,7 +226,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'shelf\')">Add New</label>
+                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'shelf\')">Add New</label>
                                     </div>
                                 </div>
                                 <div class="nav-row" id="cost-row" style="margin-top:25px">
@@ -420,7 +420,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             }
                             
                             $stock_id = $_GET['stock_id'];
-                            echo('<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">');
+                            echo('<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">');
                                 if ($data_is_cable == 0) {
                                     echo('<input type="hidden" name="stock-add" value="1" />  ');
                                 } else {
@@ -436,7 +436,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                             <p id="sku"><strong>SKU:</strong> <or class="blue">'.$stock_inv_data[0]['sku'].'</or></p>');
 
                                             echo('
-                                            <p id="locations" style="margin-bottom:0"><strong>Locations:</strong><br>');
+                                            <p id="locations" style="margin-bottom:0px"><strong>Locations:</strong><br>');
                                                 if (!$stock_inv_data[0]['shelf_id']) {
                                                     echo("No locations linked.");
                                                 } else {
@@ -471,7 +471,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                             </select>
                                                         </div>
                                                         <div>
-                                                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'manufacturer\')">Add New</label>
+                                                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'manufacturer\')">Add New</label>
                                                         </div>
                                                     </div>
                                                     ');
@@ -510,7 +510,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                     </div>');
                                                     if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
                                                         echo('<div>
-                                                            <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
+                                                            <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
                                                         </div>');
                                                     }
                                                 echo('
@@ -524,7 +524,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                     </div>');
                                                     if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
                                                         echo('<div>
-                                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
+                                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
                                                     </div>');
                                                     }
                                                 echo('</div>
@@ -536,7 +536,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14" onclick="modalLoadProperties(\'shelf\')">Add New</label>
+                                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'shelf\')">Add New</label>
                                                     </div>
                                                 </div>
                                                 ');
@@ -590,7 +590,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         $search = isset($_GET['search']) ? $_GET['search'] : '';
 
         echo('
-            <form action="?modify=add" method="GET" style="margin-bottom:0">
+            <form action="?modify=add" method="GET" style="margin-bottom:0px">
                 <div class="container" id="stock-info-left">
                     <div class="nav-row" id="search-stock-row">
                         <input type="hidden" name="modify" id="modify" value="add" />
@@ -619,7 +619,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
         echo('
         <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
             <input type="hidden" id="inv-action-type" name="inv-action-type" value="add" />
-            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0;margin-bottom:0">
+            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0px;margin-bottom:0px">
                 <thead style="text-align: center; white-space: nowrap;">
                     <tr class="theme-tableOuter">
                         <th class="viewport-mid-large">ID</th>
@@ -636,7 +636,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             <table class="table table-dark theme-table centertable">
                 <tbody>
                     <tr class="theme-tableOuter">
-                        <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
+                        <td colspan="100%" style="margin:0px;padding:0px" class="invTablePagination">
                         <div class="row">
                             <div class="col text-center"></div>
                             <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">

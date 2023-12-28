@@ -90,7 +90,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <form action="" method="GET" style="display:inline">
                             <label class="align-middle" style="padding-top:7px;padding-right:15px;">Search:</label>
                             <input type="text" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:200px;padding-right:0px"'); if (isset($_GET['search'])) { echo('value="'.$_GET['search'].'"');} echo('>
-                            <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 8 6 8 6;opacity:80%;color:black" type="submit">
+                            <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 8px 6px 8px 6px;opacity:80%;color:black" type="submit">
                                 <i class="fa fa-search" style="padding-top:4px"></i>
                             </button>
                         </form>
@@ -211,7 +211,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <h3 style="font-size:22px">Add new optic</h3>
                 <hr style="border-color:#9f9d9d; margin-left:10px">
                 <p id="optic-add-response" hidden></p>
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                     <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
                             <div>Serial Number</div>
@@ -268,7 +268,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewVendor()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewVendor()">Add New</a>
                             </div>
                         </div>
                         <div class="col">
@@ -298,7 +298,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewType()">Add New</a>
                             </div>
                         </div>
                     </div> 
@@ -358,7 +358,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewConnector()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewConnector()">Add New</a>
                             </div>
                         </div>
                         <div class="col">
@@ -581,7 +581,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-dark theme-table centertable" style="padding-bottom:0;margin-bottom:0;">
+                        <table class="table table-dark theme-table centertable" style="padding-bottom:0px;margin-bottom:0px;">
                             <thead>
                                 <tr class="align-middle text-center theme-tableOuter">
                                     <th hidden>ID</th>
@@ -628,7 +628,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                             echo('
                                 <tr id="item-'.$i_id.'" class="row-show align-middle text-center'); if ($deleted == 1) { echo(' red'); } echo('">
-                                    <form id="opticForm-'.$i_id.'"action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                                    <form id="opticForm-'.$i_id.'"action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                                         <input type="hidden" form="opticForm-'.$i_id.'" value="'.$i_id.'" name="id"/>
                                     </form>
                                     <td class="align-middle" hidden>'.$i_id.'</td>
@@ -644,11 +644,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <td hidden class="align-middle text-left"><button class="btn btn-success" type="button" style="padding: 2px 4px 2px 4px" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"><i class="fa fa-plus"></i></button></td>
                                     <td class="align-middle">
                                         <div style="position: relative; display: inline-block;">
-                                        <i class="'); if ((int)$i_comments > 0) { echo('fa-solid fa-message clickable gold" style="font-size:20; padding:5px"'); } else { echo('fa-regular fa-message clickable gold" style="font-size:18; padding:5px"'); } echo(' onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"></i>');
+                                        <i class="'); if ((int)$i_comments > 0) { echo('fa-solid fa-message clickable gold" style="font-size:20; padding:5px"'); } else { echo('fa-regular fa-message clickable gold" style="font-size:18px; padding:5px"'); } echo(' onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"></i>');
                                             if ((int)$i_comments > 0) { 
-                                                echo('<span class="uni theme-inv-textColor" style="pointer-events: none; font-size:10; position: absolute; top: 4px; right: 7px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">'.$i_comments.'</span>');
+                                                echo('<span class="uni theme-inv-textColor" style="pointer-events: none; font-size:10px; position: absolute; top: 3px; right: 5px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">'.$i_comments.'</span>');
                                             } else {
-                                                echo('<span class="uni gold" style="pointer-events: none; font-size:12; position: absolute; top: 3px; right: 6px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">+</span>');
+                                                echo('<span class="uni gold" style="pointer-events: none; font-size:12px; position: absolute; top: 1px; right: 6px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">+</span>');
                                             }
                                     echo('
                                         </div>
@@ -675,14 +675,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <tr id="item-'.$i_id.'-add-comments" class="row-add-hide align-middle text-center" hidden>
                                     <td colspan="100%">
                                         <div class="container">
-                                            <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                                            <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                                                 <div class="row centertable" style="max-width:max-content">
                                                     <div class="col" style="max-width:max-content">
                                                         <label class="nav-v-c">Comment:</label>
                                                     </div>
                                                     <div class="col" style="max-width:max-content">
                                                         <input type="hidden" name="id" value="'.$i_id.'" />
-                                                        <input name="comment" class="form-control row-dropdown" type="text" style="padding: 2 7 2 7; width:250px" placeholder="Comment..."/>
+                                                        <input name="comment" class="form-control row-dropdown" type="text" style="padding: 2px 7px 2px 7px; width:250px" placeholder="Comment..."/>
                                                     </div>
                                                     <div class="col" style="max-width:max-content">
                                                         <button class="btn btn-success align-bottom" type="submit" name="optic-comment-add" style="margin-left:10px" value="1">Add</button>
@@ -735,7 +735,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                                                             echo ('
                                                                 <tr id="comment-'.$com_id.'" class="row-show align-middle text-center">
-                                                                    <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                                                                    <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                                                                         <input type="hidden" value="'.$com_id.'" name="id"/>
                                                                         <td class="align-middle" hidden>'.$com_id.'</td>
                                                                         <td class="align-middle">'.$com_username.'</td>
@@ -768,7 +768,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <table class="table table-dark theme-table centertable">
                             <tbody>
                                 <tr class="theme-tableOuter">
-                                    <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
+                                    <td colspan="100%" style="margin:0px;padding:0px" class="invTablePagination">
                                     <div class="row">
                                         <div class="col text-center"></div>
                                         <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">
@@ -850,7 +850,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <span class="close" onclick="modalCloseNewType()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                     <?php 
                     if (is_array($_GET) && count($_GET) > 1) {
                         foreach (array_keys($_GET) AS $key) {
@@ -882,7 +882,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <span class="close" onclick="modalCloseNewVendor()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                     <?php 
                     if (is_array($_GET) && count($_GET) > 1) {
                         foreach (array_keys($_GET) AS $key) {
@@ -914,7 +914,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <span class="close" onclick="modalCloseNewConnector()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                     <?php 
                     if (is_array($_GET) && count($_GET) > 1) {
                         foreach (array_keys($_GET) AS $key) {
@@ -956,7 +956,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <p style="margin-bottom:5px">Reason for Deletion:</p></td>
                             </tr>
                             <tr>
-                                <td class="align-middle text-center" style="border:none; padding-right:0;">
+                                <td class="align-middle text-center" style="border:none; padding-right:0px;">
                                     <input id="delete-reason" type="text" class="form-control" placeholder="Reason..." name="reason" required/>
                                     <input type="hidden" id="delete-id" name="id" />
                                 </td>
@@ -991,7 +991,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <p style="margin-bottom:5px">Move location:</p></td>
                             </tr>
                             <tr>
-                                <td class="align-middle text-center" style="border:none; padding-right:0;">
+                                <td class="align-middle text-center" style="border:none; padding-right:0px;">
                                     <select name="move-site" class="form-control" style="display:inline !important; max-width:max-content">');
                                     <?php
                                         $sql_site = "SELECT id, name

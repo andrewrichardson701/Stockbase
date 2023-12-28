@@ -134,14 +134,14 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <th style="padding-right:15px">Type:</th>
                                         <td>
                                             <input id="location-type-input" type="hidden" name="location-type" value="" />
-                                            <label style="margin-bottom:0" id="location-type-text"></label>
+                                            <label style="margin-bottom:0px" id="location-type-text"></label>
                                         </td>
                                     </tr>
                                     <tr class="align-middle">
                                         <th style="padding-top:15px; padding-right:10px; padding-bottom:10px ">ID:</th>
                                         <td>
                                             <input id="location-id-input" type="hidden" name="location-id" value="" />
-                                            <label style="margin-bottom:0" id="location-id-text"></label>
+                                            <label style="margin-bottom:0px" id="location-id-text"></label>
                                         </td>
                                     </tr>
                                     <tr id="location-parent-site-tr" class="align-middle">
@@ -199,7 +199,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="">
                             <td id="system_name-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="system_name">System Name:</p>
+                                <p style="min-height:max-content;margin:0px" class=" align-middle" for="system_name">System Name:</p>
                             </td>
                             <td id="system_name-set" style="width:250px;padding-bottom:20px">
                                 <input class="form-control " type="text" style="width: 150px" id="system_name" name="system_name">
@@ -214,7 +214,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         <tr class="" id="banner-color" style="margin-top:20px">
                             <td id="banner-color-label" style="width:250px;margin-left:25px;padding-bottom:20px">
                                 <!-- Custodian Colour: #72BE2A -->
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="banner_color">Banner Colour:</p>
+                                <p style="min-height:max-content;margin:0px" class=" align-middle" for="banner_color">Banner Colour:</p>
                             </td>
                             <td id="banner-color-picker" style="width:250px;padding-bottom:20px">
                                 <label class="tag-color">
@@ -230,7 +230,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="" style="margin-top:20px" id="banner-logo">
                             <td id="banner-logo-label" style="width:250px;margin-left:25px;padding-bottom:20px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="logo_image">Banner Logo:</p>
+                                <p style="min-height:max-content;margin:0px" class=" align-middle" for="logo_image">Banner Logo:</p>
                             </td>
                             <td id="banner-logo-file">
                                 <input class="" type="file" style="width: 250px;padding-bottom:20px" id="logo_image" name="logo_image">
@@ -244,7 +244,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="" style="margin-top:20px" id="favicon-image">
                             <td id="favicon-image-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="favicon_image">Favicon Image:</p>
+                                <p style="min-height:max-content;margin:0px" class=" align-middle" for="favicon_image">Favicon Image:</p>
                             </td>
                             <td id="favicon-image-file" style="padding-bottom:20px">
                                 <input class="" type="file" style="width: 250px" id="favicon_image" name="favicon_image">
@@ -258,7 +258,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="" style="margin-top:20px">
                             <td id="currency-selector-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="currency_selection">Currency:</p>
+                                <p style="min-height:max-content;margin:0px" class=" align-middle" for="currency_selection">Currency:</p>
                             </td>
                             <td id="currency-selector" style="width:250px;padding-bottom:20px">
                                 <select id="currency_selection" name="currency_selection" placeholder="£" class="form-control" style="width:150px">
@@ -282,7 +282,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="" style="margin-top:20px">
                             <td id="sku-prefix-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="sku_prefix"><or class="title" title="Prefix for SKU element on stock. e.g. ITEM-00001 or SKU-00001">SKU Prefix:</or></p>
+                                <p style="min-height:max-content;margin:0px" class=" align-middle" for="sku_prefix"><or class="title" title="Prefix for SKU element on stock. e.g. ITEM-00001 or SKU-00001">SKU Prefix:</or></p>
                             </td>
                             <td id="sku-prefix-set" style="width:250px;padding-bottom:20px">
                                 <input class="form-control " type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
@@ -297,7 +297,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                         <tr class="" style="margin-top:20px">
                             <td id="base-url-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class="align-middle" for="base_url"><or class="title" title="This only changes the URL for any links or emails, not the web connection url. This needs to be changed in the web config file.">Base URL:</or></p>
+                                <p style="min-height:max-content;margin:0px" class="align-middle" for="base_url"><or class="title" title="This only changes the URL for any links or emails, not the web connection url. This needs to be changed in the web config file.">Base URL:</or></p>
                             </td>
                             <td id="base-url-set" style="width:250px;padding-bottom:20px">
                                 <input class="form-control " type="text" style="width: 150px" id="base_url" name="base_url">
@@ -312,7 +312,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                         <tr class="" style="margin-top:20px">
                             <td id="default-theme-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                <p style="min-height:max-content;margin:0" class=" align-middle" for="default_theme">Default Theme:</p>
+                                <p style="min-height:max-content;margin:0px" class=" align-middle" for="default_theme">Default Theme:</p>
                             </td>
                             <td id="default-theme-set" style="width:250px;padding-bottom:20px">
                                 <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control" style="width:150px">
@@ -379,7 +379,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <tbody>
                         <tr>
                             <td class="align-middle" style="margin-left:25px;margin-right:10px" id="normal-footer">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Footer at the bottom of each page.">Enable Footer:</p>
+                                <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enable Footer at the bottom of each page.">Enable Footer:</p>
                             </td>
                             <td class="align-middle" style="padding-left:5px;padding-right:20px" id="normal-footer-toggle">
                                 <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
@@ -388,7 +388,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 </label>
                             </td>
                             <td class="align-middle" style="margin-left:25px;margin-right:10px" id="left-footer">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable GitLab link on the footer.">Enable GitLab Link:</p>
+                                <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enable GitLab link on the footer.">Enable GitLab Link:</p>
                             </td>
                             <td class="align-middle" style="padding-left:5px;padding-right:20px" id="left-footer-toggle">
                                 <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
@@ -397,7 +397,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 </label>
                             </td>
                             <td class="align-middle" style="margin-left:25px;margin-right:10px" id="right-footer">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Road Map link on the footer.">Enable Road Map Link:</p>
+                                <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enable Road Map link on the footer.">Enable Road Map Link:</p>
                             </td>
                             <td class="align-middle" style="padding-left:5px;padding-right:20px" id="right-footer-toggle">
                                 <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
@@ -523,7 +523,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         if ($_SESSION['role'] == 'Root') {
                                             echo('
                                             <td style="vertical-align: middle;">   
-                                                <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0;margin:0">
+                                                <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0px;margin:0px">
                                                     <button type="submit" class="btn btn-info" id="user_'.$user_id.'_impersonate" title="Impersonate" '); if ($user_id == $_SESSION['user_id']) { echo('disabled'); } echo('><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
                                                     <input type="hidden" name="user-impersonate" value="impersonate"/>
                                                     <input type="hidden" name="role" value="Root" />
@@ -787,7 +787,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             }
             ?>
 
-            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags<a class="align-middle link" style="margin-left:30px;font-size:12" href="tags.php">View all</a></h4>
+            <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags<a class="align-middle link" style="margin-left:30px;font-size:12px" href="tags.php">View all</a></h4>
             <?php
             if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement-tag')) {
                 echo('<div style="margin-right: 10px; margin-left: 10px">');
@@ -847,13 +847,13 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
                                                 <button id="show-deleted-tag" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('tag', 1)" <?php if ($l_d == 0) { echo "hidden"; } ?> >
                                                     <span class="zeroStockFont">
-                                                        <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                                        <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
                                                         
                                                     </span>
                                                 </button>
                                                 <button id="hide-deleted-tag" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('tag', 0)" hidden>
                                                     <span class="zeroStockFont">
-                                                        <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                                        <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
                                                     </span>
                                                 
                                                 </button>
@@ -1005,13 +1005,13 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
                                     <button id="show-deleted-manufacturer" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('manufacturer', 1)" <?php if($m_d == 0) { echo "hidden"; } ?> >
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
                                             
                                         </span>
                                     </button>
                                     <button id="hide-deleted-manufacturer" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('manufacturer', 0)" hidden>
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
                                         </span>
                                     </button>
                                 </th>
@@ -1166,13 +1166,13 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
                                     <button id="show-deleted-optic_vendors" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_vendors', 1)" <?php if($v_d == 0) { echo "hidden"; } ?> >
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
                                             
                                         </span>
                                     </button>
                                     <button id="hide-deleted-optic_vendors" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_vendors', 0)" hidden>
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
                                         </span>
                                     </button>
                                 </th>
@@ -1315,13 +1315,13 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
                                     <button id="show-deleted-optic_types" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_types', 1)" <?php if($t_d == 0) { echo "hidden"; } ?> >
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
                                             
                                         </span>
                                     </button>
                                     <button id="hide-deleted-optic_types" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_types', 0)" hidden>
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
                                         </span>
                                     </button>
                                 </th>
@@ -1464,13 +1464,13 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
                                     <button id="show-deleted-optic_connectors" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_connectors', 1)" <?php if($t_d == 0) { echo "hidden"; } ?> >
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
                                             
                                         </span>
                                     </button>
                                     <button id="hide-deleted-optic_connectors" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_connectors', 0)" hidden>
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
                                         </span>
                                     </button>
                                 </th>
@@ -1574,7 +1574,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <tbody>
                         <tr>
                             <td class="align-middle" style="margin-left:25px;margin-right:10px" id="normal-cost">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Cost/Pricing for normal stock items.">Normal Stock Cost:</p>
+                                <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enable Cost/Pricing for normal stock items.">Normal Stock Cost:</p>
                             </td>
                             <td class="align-middle" style="padding-left:5px;padding-right:20px" id="normal-cost-toggle">
                                 <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
@@ -1583,7 +1583,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 </label>
                             </td>
                             <td class="align-middle" style="margin-left:25px;margin-right:10px" id="cable-cost">
-                                <p style="min-height:max-content;margin:0" class="align-middle title" title="Enable Cost/Pricing for cable stock items.">Cable Stock Cost:</p>
+                                <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enable Cost/Pricing for cable stock items.">Cable Stock Cost:</p>
                             </td>
                             <td class="align-middle" style="padding-left:5px;padding-right:20px" id="cable-cost-toggle">
                                 <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
@@ -1755,12 +1755,12 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <th style="border-left:2px solid #95999c" colspan=3>
                                         <button id="show-deleted-location" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes(\'location\', 1) '); if ($locations_deleted_count == 0) { echo('hidden'); } echo('">
                                         <span class="zeroStockFont">
-                                            <p style="margin:0;padding:0"><i class="fa fa-plus"></i> Show Deleted</p>
+                                            <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
                                         </span>
                                         </button>
                                         <button id="hide-deleted-location" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes(\'location\', 0)" hidden>
                                             <span class="zeroStockFont">
-                                                <p style="margin:0;padding:0"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                                <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
                                             </span>
                                         </button>
                                     </th>
@@ -2032,7 +2032,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <tbody>
                         <tr class="nav-row" id="ldap-headings" style="margin-bottom:10px">
                             <td style="width:150px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-username">Enable LDAP</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-username">Enable LDAP</p>
                                 </td>
                             <td class="align-middle">
                                 <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
@@ -2056,29 +2056,29 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="nav-row" id="ldap-auth-username">
                             <td id="ldap-auth-username-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-username">Authentication Username:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-username">Authentication Username:</p>
                             </td>
                             <td id="ldap-auth-username-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-username" name="auth-username" value="<?php echo(isset($_GET['auth-username']) ? $_GET['auth-username'] : $current_ldap_username); ?>" required>
                             </td>
                             <td id="ldap-auth-username-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-username-default"><?php echo($default_ldap_username); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-username-default"><?php echo($default_ldap_username); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-password">
                             <td id="ldap-auth-password-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-password">Authentication Password:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-password">Authentication Password:</p>
                             </td>
                             <td id="ldap-auth-password-input">
                                 <input class="form-control nav-v-c" type="password" style="width: 250px" id="auth-password" name="auth-password" value="password" required>
                             </td>
                             <td id="ldap-auth-password-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-password-default" <?php echo(($config_d_ldap_password !== '') ? 'type="password"' : ''); ?>><?php echo($default_ldap_password); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-password-default" <?php echo(($config_d_ldap_password !== '') ? 'type="password"' : ''); ?>><?php echo($default_ldap_password); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-password-confirm">
                             <td id="ldap-auth-password-confirm-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-password-confirm">Confirm Password:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-password-confirm">Confirm Password:</p>
                             </td>
                             <td id="ldap-auth-passowrd-confirm-input">
                                 <input class="form-control nav-v-c" type="password" style="width: 250px" id="auth-password-confirm" name="auth-password-confirm" value="password" required>
@@ -2088,79 +2088,79 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-domain">
                             <td id="ldap-auth-domain-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-domain">Domain:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-domain">Domain:</p>
                             </td>
                             <td id="ldap-auth-domain-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-domain" name="auth-domain" value="<?php echo(isset($_GET['auth-domain']) ? $_GET['auth-domain'] : $current_ldap_domain); ?>" required>
                             </td>
                             <td id="ldap-auth-domain-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-domain-default"><?php echo($default_ldap_domain); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-domain-default"><?php echo($default_ldap_domain); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-host">
                             <td id="ldap-auth-host-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-host">Host:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-host">Host:</p>
                             </td>
                             <td id="ldap-auth-host-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-host" name="auth-host" value="<?php echo(isset($_GET['auth-host']) ? $_GET['auth-host'] : $current_ldap_host); ?>" required>
                             </td>
                             <td id="ldap-auth-host-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-host-default"><?php echo($default_ldap_host); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-host-default"><?php echo($default_ldap_host); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-host">
                             <td id="ldap-auth-host-secondary-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-host-secondary">Secondary Host:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-host-secondary">Secondary Host:</p>
                             </td>
                             <td id="ldap-auth-host-secondary-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-host-secondary" name="auth-host-secondary" value="<?php echo(isset($_GET['auth-host-secondary']) ? $_GET['auth-host-secondary'] : $current_ldap_host_secondary); ?>">
                             </td>
                             <td id="ldap-auth-host-secondary-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-host-secondary-default"><?php echo($default_ldap_host_secondary); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-host-secondary-default"><?php echo($default_ldap_host_secondary); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-port">
                             <td id="ldap-auth-port-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-port">Port:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-port">Port:</p>
                             </td>
                             <td id="ldap-auth-port-input">
                                 <input class="form-control nav-v-c" type="number" style="width: 250px" id="auth-port" name="auth-port" value="<?php echo(isset($_GET['auth-port']) ? $_GET['auth-port'] : $current_ldap_port); ?>" required>
                             </td>
                             <td id="ldap-auth-port-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-port-default"><?php echo($default_ldap_port); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-port-default"><?php echo($default_ldap_port); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-basedn">
                             <td id="ldap-auth-basedn-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-basedn">Base DN:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-basedn">Base DN:</p>
                             </td>
                             <td id="ldap-auth-basedn-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-basedn" name="auth-basedn" value="<?php echo(isset($_GET['auth-basedn']) ? $_GET['auth-basedn'] : $current_ldap_basedn); ?>">
                             </td>
                             <td id="ldap-auth-basedn-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-basedn-default"><?php echo($default_ldap_basedn); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-basedn-default"><?php echo($default_ldap_basedn); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-usergroup">
                             <td id="ldap-auth-usergroup-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-usergroup">User Group:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-usergroup">User Group:</p>
                             </td>
                             <td id="ldap-auth-usergroup-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-usergroup" name="auth-usergroup" value="<?php echo(isset($_GET['auth-usergroup']) ? $_GET['auth-usergroup'] : $current_ldap_usergroup); ?>">
                             </td>
                             <td id="ldap-auth-usergroup-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-usergroup-default"><?php echo($default_ldap_usergroup); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-usergroup-default"><?php echo($default_ldap_usergroup); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px" id="ldap-auth-userfilter">
                             <td id="ldap-auth-userfilter-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-userfilter">User Filter:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-userfilter">User Filter:</p>
                             </td>
                             <td id="ldap-auth-userfilter-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-userfilter" name="auth-userfilter" value="<?php echo(isset($_GET['auth-userfilter']) ? $_GET['auth-userfilter'] : $current_ldap_userfilter); ?>">
                             </td>
                             <td id="ldap-auth-userfilter-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="auth-userfilter-default"><?php echo($default_ldap_userfilter); ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-userfilter-default"><?php echo($default_ldap_userfilter); ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px">
@@ -2193,7 +2193,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <tbody>
                         <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">
                             <td style="width:150px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="auth-username">Enable SMTP</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-username">Enable SMTP</p>
                                 </td>
                             <td class="align-middle">
                                 <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
@@ -2216,29 +2216,29 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="nav-row" id="smtp-host-row">
                             <td id="smtp-host-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-host">SMTP Host:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-host">SMTP Host:</p>
                             </td>
                             <td id="smtp-host-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-host" name="smtp-host" value="<?php echo $current_smtp_host; ?>" required>
                             </td>
                             <td id="smtp-host-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-host-default"><?php echo $default_smtp_host; ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-host-default"><?php echo $default_smtp_host; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-port-row" style="margin-top:20px">
                             <td id="smtp-port-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-port">SMTP Port:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-port">SMTP Port:</p>
                             </td>
                             <td id="smtp-port-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-port" name="smtp-port" value="<?php echo $current_smtp_port; ?>" required>
                             </td>
                             <td id="smtp-port-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-port-default"><?php echo $default_smtp_port; ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-port-default"><?php echo $default_smtp_port; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-encryption-row" style="margin-top:20px">
                             <td id="smtp-encryption-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-encryption">SMTP Encryption:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-encryption">SMTP Encryption:</p>
                             </td>
                             <td id="smtp-encryption-input">
                                 <select id="smtp-encryption" name="smtp-encryption" style="width:250px" class="form-control nav-v-c" required>
@@ -2249,7 +2249,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 </select>
                             </td>
                             <td id="smtp-encryption-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-encryption-default">
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-encryption-default">
                                     <?php 
                                         switch ($default_smtp_encryption) {
                                             case 'none':
@@ -2275,57 +2275,57 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         </tr>
                         <tr class="nav-row" id="smtp-username-row" style="margin-top:20px">
                             <td id="smtp-username-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-username">SMTP Username:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-username">SMTP Username:</p>
                             </td>
                             <td id="smtp-username-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-username" name="smtp-username" value="<?php echo $current_smtp_username; ?>" required>
                             </td>
                             <td id="smtp-username-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-username-default"><?php echo $default_smtp_username; ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-username-default"><?php echo $default_smtp_username; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-password-row" style="margin-top:20px">
                             <td id="smtp-password-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-password">SMTP Password:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-password">SMTP Password:</p>
                             </td>
                             <td id="smtp-password-input">
                                 <input class="form-control nav-v-c" type="password" style="width: 250px" id="smtp-password" name="smtp-password" value="password" required>
                             </td>
                             <td id="smtp-password-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-password-default"><or class="green"><?php echo $default_smtp_password; ?></or></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-password-default"><or class="green"><?php echo $default_smtp_password; ?></or></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-from-email-row" style="margin-top:20px">
                             <td id="smtp-from-email-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-from-email">SMTP From Email:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-from-email">SMTP From Email:</p>
                             </td>
                             <td id="smtp-from-email-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-from-email" name="smtp-from-email" value="<?php echo $current_smtp_from_email; ?>" required>
                             </td>
                             <td id="smtp-from-email-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-from-email-default"><?php echo $default_smtp_from_email; ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-from-email-default"><?php echo $default_smtp_from_email; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-from-name-row" style="margin-top:20px">
                             <td id="smtp-from-name-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-from-name">SMTP From Name:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-from-name">SMTP From Name:</p>
                             </td>
                             <td id="smtp-from-name-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-from-name" name="smtp-from-name" value="<?php echo $current_smtp_from_name; ?>" required>
                             </td>
                             <td id="smtp-from-name-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-from-name-default"><?php echo $default_smtp_from_name; ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-from-name-default"><?php echo $default_smtp_from_name; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" id="smtp-backup-to-row" style="margin-top:20px">
                             <td id="smtp-backup-to-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="smtp-backup-to">SMTP To Email (Backup):</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-backup-to">SMTP To Email (Backup):</p>
                             </td>
                             <td id="smtp-backup-to-input">
                                 <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-backup-to" name="smtp-backup-to" value="<?php echo $current_smtp_to_email; ?>" required>
                             </td>
                             <td id="smtp-backup-to-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" id="smtp-backup-to-default"><?php echo $default_smtp_to_email; ?></p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-backup-to-default"><?php echo $default_smtp_to_email; ?></p>
                             </td>
                         </tr>
                         <tr class="nav-row" style="margin-top:20px">
@@ -2390,7 +2390,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                             echo('
                                 <td class="align-middle" style="margin-left:25px;margin-right:10px" id="notif-'.$notif_id.'">
-                                    <p style="min-height:max-content;margin:0" class="align-middle title" title="'.$notif_description.'">'.$notif_title.':</p>
+                                    <p style="min-height:max-content;margin:0px" class="align-middle title" title="'.$notif_description.'">'.$notif_title.':</p>
                                 </td>
                                 <td class="align-middle" style="padding-left:5px;padding-right:20px" id="notif-'.$notif_id.'-toggle">
                                     <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >

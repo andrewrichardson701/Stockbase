@@ -178,7 +178,7 @@ $email_template_end = '
             <p style="color:black !important">Regards,<br><strong>'.$current_smtp_from_name.'</strong></p>
         </div>
         <div style="padding-top:10px; padding-bottom:20px;text-align: center;">
-            <p style="font-size:14; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/stockbase" style="color:'.$comp_url_color.' !important">StockBase</a>. All rights reserved.</p>
+            <p style="font-size:14px; color: '.$comp_banner_color.'">Copyright &copy; '.date("Y").' <a href="https://git.ajrich.co.uk/web/stockbase" style="color:'.$comp_url_color.' !important">StockBase</a>. All rights reserved.</p>
         </div>
     </div>';
 

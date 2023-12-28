@@ -118,7 +118,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <tr>
                             </tbody>
                         </table>
-                        <textarea id="css-editor" class="uni theme-divBg theme-textColor" style="height:2000px;width:500px;font-size:14" spellcheck="false"></textarea><br>
+                        <textarea id="css-editor" class="uni theme-divBg theme-textColor" style="height:2000px;width:500px;font-size:14px" spellcheck="false"></textarea><br>
                         <button id="apply-button" class="btn btn-warning" style="margin-top:20px">Apply CSS</button>
                         <hr style="border-color:white">
                         <h5 style="margin-bottom:15px">Download theme</h5>
@@ -231,33 +231,33 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     </select>
                                 </span>
                                 <input type="submit" value="submit" hidden="">
-                                <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0">
+                                <div id="clear-div" class="nav-div" style="margin-left:5px;margin-right:0px">
                                     <button id="clear-filters" class="btn btn-warning nav-v-b"
-                                        style="opacity:80%;color:black;padding:6 6 6 6">
+                                        style="opacity:80%;color:black;padding:6px 6px 6px 6px">
                                         <i class="fa fa-ban fa-rotate-90" style="height:24px;padding-top:4px"></i>
                                     </button>
                                 </div>
-                                <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                                <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0px">
                                     <button id="zerostock" class="btn btn-success nav-v-b"
-                                        style="opacity:90%;color:black;padding:0 2 0 2">
+                                        style="opacity:90%;color:black;padding:0px 2px 0px 2px">
                                         <span>
-                                            <p style="margin:0;padding:0;font-size:12"><i class="fa fa-plus"></i> Show</p>
-                                            <p style="margin:0;padding:0;font-size:12">0 Stock</p>
+                                            <p style="margin:0px;padding:0px;font-size:12px"><i class="fa fa-plus"></i> Show</p>
+                                            <p style="margin:0px;padding:0px;font-size:12px">0 Stock</p>
                                         </span>
                                     </button>
                                 </div>
-                                <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                                <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0px">
                                     <button id="zerostock" class="btn btn-danger nav-v-b"
-                                        style="opacity:80%;color:black;padding:0 2 0 2">
+                                        style="opacity:80%;color:black;padding:0px 2px 0px 2px">
                                         <span>
-                                            <p style="margin:0;padding:0;font-size:12"><i class="fa fa-minus"></i> Hide</p>
-                                            <p style="margin:0;padding:0;font-size:12">0 Stock</p>
+                                            <p style="margin:0px;padding:0px;font-size:12px"><i class="fa fa-minus"></i> Hide</p>
+                                            <p style="margin:0px;padding:0px;font-size:12px">0 Stock</p>
                                         </span>
                                     </button>
                                 </div>
-                                <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0">
+                                <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0px">
                                     <button id="cable-stock" class="btn btn-dark nav-v-b"
-                                        style="opacity:90%;color:white;padding:6 6 6 6">
+                                        style="opacity:90%;color:white;padding:6px 6px 6px 6px">
                                         Fixed Cables
                                     </button>
                                 </div>
@@ -312,7 +312,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                                 <tbody>
                                     <tr class="theme-tableOuter">
-                                        <td colspan="100%" style="padding:0;margin:0">
+                                        <td colspan="100%" style="margin:0px;padding:0px">
                                             <div class="row">
                                                 <div class="col text-center"></div>
                                                 <div id="inv-page-numbers" class="col-6 text-center align-middle"
@@ -660,7 +660,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <div id="heading-heading">
                                             <a><h2>Cisco C3650X</h2></a>
                                             <p id="sku"><strong>SKU:</strong> <or class="blue">STOCK-00001</or></p>
-                                            <p id="locations" style="margin-bottom:0"><strong>Locations:</strong><br>
+                                            <p id="locations" style="margin-bottom:0px"><strong>Locations:</strong><br>
                                                 <table>
                                                     <tbody>
                                                         <tr>
@@ -693,7 +693,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14">Add New</label>
+                                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px">Add New</label>
                                                     </div>
                                                 </div>
                                     
@@ -728,7 +728,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             <h4 style="margin-bottom:0px"><u>Stock</u></h4><hr style="border-color:white;margin-top:5px">
                             <div class="container text-left" style="padding-bottom:25px">
                                 <div class="nav-row" style="margin-top:10px">
-                                    <h3 style="font-size:22px;margin-top:20px;margin-bottom:0;width:max-content" id="stock-name">Cisco C3650X (STOCK-00001)</h3>
+                                    <h3 style="font-size:22px;margin-top:20px;margin-bottom:0px;width:max-content" id="stock-name">Cisco C3650X (STOCK-00001)</h3>
                                     <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">
                                         <button id="edit-stock" class="btn btn-info theme-textColor nav-v-b" style="width:110px">
                                             <i class="fa fa-pencil"></i> Edit 
@@ -834,20 +834,20 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <tr class="nav-row" id="username">
                                         <td id="username_header" style="width:200px">
                                             <!-- Custodian Colour: #72BE2A -->
-                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Username:</p>
+                                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
                                         </td>
                                         <td id="username_info">
-                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">username</p>
+                                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">username</p>
                                         </td>
                                         <td>
                                         </td>
                                     </tr>
                                     <tr class="nav-row" style="margin-top:20px" id="firstname">
                                         <td id="firstname_header" style="width:200px">
-                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
+                                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">First Name:</p>
                                         </td>
                                         <td id="firstname_info">
-                                            <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Name</p>
+                                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Name</p>
                                         </td>
                                     </tr>
                                 </tbody>

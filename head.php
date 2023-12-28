@@ -45,11 +45,11 @@ if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
 <style>
 .inv-nav {
     background-color: <?php echo($current_banner_color);?> ;
-    z-index:0;
+    z-index:0px;
 }
 .inv-nav-secondary {
     background-color: <?php echo(adjustBrightness($current_banner_color, -0.2));?> ;
-    z-index:0;
+    z-index:0px;
 }
 
 </style>

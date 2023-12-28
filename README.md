@@ -22,7 +22,7 @@ The purpose of this project is for stock tracking and locating.
 ### Automated Deployment
 For automated deployment, run the below command to clone the repository and run the install script:
 
-`git clone http://git.ajrich.co.uk/web/inventory.git && /bin/bash inventory/assets/scripts/install.bash`
+`git clone http://git.ajrich.co.uk/web/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
 
 This will run the setup for the system and provide a username and password to login with.
 
@@ -33,7 +33,7 @@ Login to your site to continue with any further setup
 For manual deployment, it requires all packages to be installed manually and the database to be configured and setup correctly.
 
 Clone the repo first, and the follow the below steps.
-`git clone http://git.ajrich.co.uk/web/inventory.git`
+`git clone http://git.ajrich.co.uk/web/stockbase.git`
 
 1. Update your packages and install them if you are confident they are okay to be updated
 
@@ -79,12 +79,12 @@ Clone the repo first, and the follow the below steps.
 
 5. Setup Database
 
-    - Confirm there is no database named 'inventory'
+    - Confirm there is no database named 'stockbase'
 
         ```
         mysql -u root -p
 
-        USE inventory;
+        USE stockbase;
         quit;
         ```
 
@@ -96,7 +96,7 @@ Clone the repo first, and the follow the below steps.
         *we will navigate to the downloaded git repo*
 
         ```
-        cd inventory
+        cd stockbase
 
         mysql -u root < assets/sql/db_setup.sql
         ```
@@ -111,12 +111,12 @@ Clone the repo first, and the follow the below steps.
     
     - Create a user for the database to verify against
 
-        We will first check if a user exists under the name 'inventory'.
+        We will first check if a user exists under the name 'stocbaseuser'.
 
         ```
         mysql -u root -p
         
-        SELECT User, Host FROM mysql.user WHERE User='inventory' AND Host='localhost';
+        SELECT User, Host FROM mysql.user WHERE User='stockbaseuser' AND Host='localhost';
         ```
 
         If no rows are returned, we will add a new user. 
@@ -130,8 +130,8 @@ Clone the repo first, and the follow the below steps.
         - Create the new user, replacing `[SECRET PASSWORD]` with your password
 
         ```
-        CREATE USER 'inventory'@'localhost' IDENTIFIED BY '[SECRET PASSWORD]';
-        GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';
+        CREATE USER 'stockbaseuser'@'localhost' IDENTIFIED BY '[SECRET PASSWORD]';
+        GRANT ALL PRIVILEGES ON stockbase.* TO 'stockbaseuser'@'localhost';
         FLUSH PRIVILEGES;
         quit;
         ```
@@ -144,7 +144,7 @@ Clone the repo first, and the follow the below steps.
         - Grant the user permissions.
 
         ```
-        GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';
+        GRANT ALL PRIVILEGES ON stockbase.* TO 'stockbaseuser'@'localhost';
         FLUSH PRIVILEGES;
         quit;
         ```
@@ -157,7 +157,7 @@ Clone the repo first, and the follow the below steps.
         - Drop the user
 
         ```
-        DROP USER 'inventory'@'localhost';
+        DROP USER 'stockbaseuser'@'localhost';
         FLUSH PRIVILEGES;
         quit;
         ```
@@ -165,8 +165,8 @@ Clone the repo first, and the follow the below steps.
         - Create the new user, replacing `[SECRET PASSWORD]` with your password
 
         ```
-        CREATE USER 'inventory'@'localhost' IDENTIFIED BY '[SECRET PASSWORD]';
-        GRANT ALL PRIVILEGES ON inventory.* TO 'inventory'@'localhost';
+        CREATE USER 'stockbaseuser'@'localhost' IDENTIFIED BY '[SECRET PASSWORD]';
+        GRANT ALL PRIVILEGES ON stockbase.* TO 'stockbaseuser'@'localhost';
         FLUSH PRIVILEGES;
         quit;
         ```
@@ -176,9 +176,9 @@ Clone the repo first, and the follow the below steps.
     - Confirm you can login and access the database
 
         ```
-        mysql -u inventory -p
+        mysql -u stockbaseuser -p
         
-        USE inventory;
+        USE stockbase;
         SELECT * FROM config_default;
         ```
 
@@ -196,7 +196,7 @@ Clone the repo first, and the follow the below steps.
         e.g.
 
         ```
-        $dBUsername = 'inventory';
+        $dBUsername = 'stockbaseuser';
         $dBPassword = 'SecretSpecialPassword';
         ```
 
@@ -213,22 +213,22 @@ Clone the repo first, and the follow the below steps.
         Run the below to add your first user, replacing `[PASSWORD HASH]` with your hashed password from above:
 
         ```
-        mysql -u inventory -p
+        mysql -u stockbaseuser -p
 
-        INSERT INTO inventory.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) 
+        INSERT INTO stockbase.users (id, username, first_name, last_name, email, auth, role_id, enabled, password_expired, password) 
             VALUES (1, 'root', 'root', 'root', 'root@$hostname', 'local', 0, 1, 1, '[PASSWORD HASH]]');
-        UPDATE inventory.users SET id=0 where id=1;
-        ALTER TABLE inventory.users AUTO_INCREMENT = 1;
+        UPDATE stockbase.users SET id=0 where id=1;
+        ALTER TABLE stockbase.users AUTO_INCREMENT = 1;
         ```
 
 6. Decide on your web URL
 
-    We need a base URL for the site to be located at (e.g. inventory.domain.com)
+    We need a base URL for the site to be located at (e.g. stockbase.domain.com)
 
     Update the config with this url, replacing `[WEB DOMAIN]` with your domain name/url:
 
     ```
-    mysql -u inventory -p
+    mysql -u stockbaseuser -p
 
     UPDATE config SET base_url='[WEB DOMAIN]' WHERE id=1;
     quit;
@@ -238,7 +238,7 @@ Clone the repo first, and the follow the below steps.
 
     *Make sure you are already in the downloaded repo folder*
 
-    Replace `new/folder/location/` to the folder you want your server hosted from (e.g. /var/www/html/inventory/) including the trailing /
+    Replace `new/folder/location/` to the folder you want your server hosted from (e.g. /var/www/html/stockbase/) including the trailing /
 
     ```
     sudo cp -a . /new/folder/location/
@@ -459,7 +459,7 @@ Clone the repo first, and the follow the below steps.
 9. Login to your site to continue with any further setup
     Login to your newly setup site by connecting to the domain name in your browser
 
-    e.g. https://inventory.domain.local/
+    e.g. https://stockbase.domain.local/
 
     You will need to select "local" as your login type if the local toggle is shown on the login page
     LDAP will be enabled by default with a config in place, which will not work on your system.
@@ -685,6 +685,7 @@ Clone the repo first, and the follow the below steps.
 - Renamed indexajax.php to stockajax.php
 - Add/Remove/Move stock pages now load the content using js and ajax - the same as the index page.
 - Audit page added, which has a 6 month date retention on it, meaning if the last date was 6 months ago, it will show on the audit page.
+- Pagination added to optics and cablestock pages to match the other stock pages.
 
 </details>
 <details>
@@ -910,7 +911,7 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>About</h2></summary>
 
-StockBase, a inventory and stock system, with less of the bloat.
+StockBase, an inventory and stock system, with less of the bloat.
 
 StockBase is an open source, minimalist stock management system.
 

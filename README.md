@@ -98,7 +98,7 @@ Clone the repo first, and the follow the below steps.
         ```
         cd stockbase
 
-        mysql -u root < assets/sql/db_setup.sql
+        mysql -u root -p < assets/sql/db_setup.sql
         ```
 
     - Run the extras script to fill in the required tables with the information they need.
@@ -106,7 +106,7 @@ Clone the repo first, and the follow the below steps.
         *This script creates the required fields for the config and config_default tables, also setting the auto-increment values*
 
         ```
-        mysql -u root < assets/sql/db_extras.sql
+        mysql -u root -p < assets/sql/db_extras.sql
         ```
     
     - Create a user for the database to verify against

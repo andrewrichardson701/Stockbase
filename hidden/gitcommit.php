@@ -73,7 +73,7 @@ $commitMessages = array_reverse($commitMessages);
         <ul>
             <?php foreach ($commitMessages as $commit): ?>
                 <li class="uni">
-                    <strong><?= $commit['date'] ?></strong>: <?= $commit['message'] ?>
+                    <strong><?= $commit['date'] ?></strong>: <?php echo htmlspecialchars($commit['message']) ?>
                 </li>
             <?php endforeach; ?>
         </ul>

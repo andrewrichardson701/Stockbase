@@ -17,6 +17,22 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 <body onload="getInventory(0)">
     <?php // dependency PHP
     // $show_inventory = 1; // for nav.php to show the site and area on the banner - no longer used.
+    if (isset($_GET['date'])) {
+        $dateString = $_GET['date'];
+        $format = "Y-m-d";
+
+        // Create a DateTime object from the string using the specified format
+        $dateObj = DateTime::createFromFormat($format, $dateString);
+
+        // Check if $dateObj is a valid DateTime object and matches the original string
+        if ($dateObj !== false && $dateObj->format($format) === $dateString) {
+            $date = date_format($dateObj, "Y-m-d");
+        } else {
+            $date = date('Y-m-d');
+        }
+    } else {
+        $date = date('Y-m-d');
+    }
     ?>
     <!-- Header and Nav -->
     <?php 
@@ -58,10 +74,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
                 $rowSelectValue = $_GET['rows'];
             } else {
-                $rowSelectValue = 10;
+                $rowSelectValue = 20;
             }
         } else {
-            $rowSelectValue = 10;
+            $rowSelectValue = 20;
         }
         echo('<input id="hidden-row-count" type="hidden" value="'.$rowSelectValue.'" />
         <input id="hidden-page-number" type="hidden" value="'.$page.'" />
@@ -154,7 +170,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="site-name">Site Name:</p>
                                     </td>
                                     <td id="site-name-input">
-                                        <input class="form-control nav-v-c" type="text" style="width: 250px" id="site-name" name="site-name"required>
+                                        <input class="form-control nav-v-c" type="text" style="width: 250px" id="site-name" name="site-name" required>
                                     </td>
                                 </tr>
                                 <tr class="nav-row" id="site-description-row">
@@ -221,6 +237,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <input id="query-site" type="hidden" name="site" value="'.$site.'" /> 
                             <input id="query-area" type="hidden" name="area" value="'.$area.'" />
                             <input id="query-oos" type="hidden" name="oos" value="'.$showOOS.'" /> 
+                            <input id="hidden-date" type="hidden" name="date" value="'.$date.'" />
 
                             <span id="search-input-site-span" style="margin-bottom:10px;" class="index-dropdown">
                                 <label for="search-input-site">Site</label><br>
@@ -257,19 +274,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </span>
                             ');
                             echo('
-                            <span id="search-input-name-span" style="margin-right:0.5em;margin-bottom:10px;">
+                            <span id="search-input-name-span" style="margin-right:0.5em;margin-bottom:10px;" hidden>
                                 <label for="search-input-name">Name</label><br>
                                 <input id="search-input-name" type="text" name="name" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Name" oninput="getInventory(1)" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
                             </span>
-                            <span class="viewport-large-block" id="search-input-sku-span" style="margin-right:0.5em;margin-bottom:10px;">
+                            <span class="viewport-large-block" id="search-input-sku-span" style="margin-right:0.5em;margin-bottom:10px;" hidden>
                                 <label for="search-input-sku">SKU</label><br>
                                 <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:160px;display:inline-block" placeholder="Search by SKU" oninput="getInventory(1)" value="'); echo(isset($_GET['sku']) ? $_GET['sku'] : ''); echo('" />
                             </span>
-                            <span class="viewport-large-block" id="search-input-shelf-span" style="margin-right:0.5em;margin-bottom:10px;">
+                            <span class="viewport-large-block" id="search-input-shelf-span" style="margin-right:0.5em;margin-bottom:10px;" hidden>
                                 <label for="search-input-shelf">Shelf</label><br>
                                 <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Shelf" oninput="getInventory(1)" value="'); echo(isset($_GET['shelf']) ? $_GET['shelf'] : ''); echo('" />
                             </span>
-                            <span class="viewport-large-block" id="search-input-manufacturer-span" style="margin-right:0.5em;margin-bottom:10px;">
+                            <span class="viewport-large-block" id="search-input-manufacturer-span" style="margin-right:0.5em;margin-bottom:10px;" hidden>
                                 <label for="search-input-manufacturer">Manufacturer</label><br>
                                 
                                 <select id="search-input-manufacturer" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Manufacturer" onchange="getInventory(1)">
@@ -289,7 +306,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('
                                 </select>
                             </span>
-                            <span class="viewport-large-block" id="search-input-label-span" style="margin-right:1em;margin-bottom:10px;">
+                            <span class="viewport-large-block" id="search-input-label-span" style="margin-right:1em;margin-bottom:10px;" hidden>
                                 <label for="search-input-label">Tag</label><br>
                                 
                                 <select id="search-input-tag" name="tag" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Tag" onchange="getInventory(1)">
@@ -319,7 +336,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">');
+                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;" hidden>');
                         if ($showOOS == 0) {
                             echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
                         } else {
@@ -379,7 +396,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             <!-- Table -->');
             
             echo('
-            <div class="container">
+            <div style="margin-left:5%;margin-right:5%;max-width:90%">
+                <div class="container text-center">
+                <p class="" style="padding-left:20px;padding-bottom:10px; margin:0">Date: <or class="green">'.$date.'</or></p>
+                </div>
+                <input type="hidden" id="user_id" value="'.$_SESSION['user_id'].'" />
                 <table class="table table-dark theme-table centertable" id="inventoryTable" style="margin-bottom:0px;">
                     <thead style="text-align: center; white-space: nowrap;">
                         <tr class="theme-tableOuter">
@@ -390,7 +411,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>
                             <th class="clickable sorting" id="site" onclick="sortTable(5, this)" '); if ($site == 0) { echo('hidden'); } echo('>Site</th>
                             <th id="tags" class="viewport-large-empty">Tags</th>
-                        <th id="location">Location(s)</th>
+                            <th id="location">Location(s)</th>
+                            <th id="audit" style="border-left: 1px solid #454d55;">Audited?</th>
+                            <th id="audit-last">Audit Last</th>
+                            <th id="audit-comment">Audit Comment</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="inv-body" class="align-middle" style="text-align: center; white-space: nowrap;">
@@ -419,7 +444,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 </td>
                                                 <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
                                                     <select id="tableRowCount" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter(\'\', \'rows\', this.value))">
-                                                        <option id="rows-10"  value="10"');  if($rowSelectValue == 10)  { echo('selected'); } echo('>10</option>
+                                                        <option id="rows-20"  value="20"');  if($rowSelectValue == 20)  { echo('selected'); } echo('>20</option>
                                                         <option id="rows-50"  value="50"');  if($rowSelectValue == 50)  { echo('selected'); } echo('>50</option>
                                                         <option id="rows-100" value="100"'); if($rowSelectValue == 100) { echo('selected'); } echo('>100</option>
                                                     </select>
@@ -443,6 +468,28 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
 
     <script>
+        function auditUpdate(stockID) {
+            // var submitButton = document.getElementById('audit-submit-'+stockID);
+            var comment = document.getElementById('audit-comment-'+stockID).value;
+            var checkbox = document.getElementById('audit-checkbox-'+stockID).checked;
+            var user_id = document.getElementById('user_id').value;
+
+            $.ajax({
+                type: "POST",
+                url: "./includes/audit.inc.php",
+                data: {
+                    comment: comment, 
+                    checked: checkbox, 
+                    user_id: user_id,
+                    stock_id: stockID
+                },
+                dataType: "json",
+                success: function(response){
+                    console.log(response);
+                },
+                async: false // <- this turns it into synchronous
+            });
+        }
         function getInventory(search) {
             // Make an AJAX request to retrieve the corresponding sites
             var invBody = document.getElementById('inv-body');
@@ -461,6 +508,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             var page = document.getElementById('hidden-page-number').value;
             var rows = document.getElementById('hidden-row-count').value;
 
+            var date = document.getElementById('hidden-date').value;
+
             var areaSelect = document.getElementById('area-dropdown');
 
             if (tag == "tags") {
@@ -472,7 +521,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
 
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/stockajax.php?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
+            xhr.open("GET", "includes/stockajax.php?request-inventory-audit=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page+"&date="+date+"&audit=1", true);
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     // Parse the response and populate the shelf select box

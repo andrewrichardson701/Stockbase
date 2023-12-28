@@ -24,6 +24,11 @@ body {
 	color: white !important;
 }
 
+/* inverse textColor */
+.theme-inv-textColor { 
+	color: black !important;
+}
+
 /* Profile page text colour */
 .theme-profileTextColor { 
 	color: #bbbbbb !important;

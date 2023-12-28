@@ -65,8 +65,7 @@ function sessionCloseExpired() {
     global $_SESSION, $session_timeout;
 
     if (isset($_SESSION['user_id'])) {
-        
-        $user_id = $_SESSION['user_id'];
+    
         $logout_time = time();
         $expire_time = time()-$session_timeout;
 
@@ -111,7 +110,7 @@ function sessionLastActivity() {
     global $_SESSION;
 
     if (isset($_SESSION['user_id']) && isset($_SESSION['session_id'])) {
-        $user_id = $_SESSION['user_id'];
+        $user_id = isset($_SESSION['real-user_id']) ? $_SESSION['real-user_id'] : $_SESSION['user_id'];
         $session_id = $_SESSION['session_id'];
         $last_activity = time();
 
@@ -154,7 +153,7 @@ function sessionTimeout() {
     // used for when someone is timedout of the session
     if (isset($_SESSION['session_id']) && isset($_SESSION['user_id'])) {
         $session_id = $_SESSION['session_id'];
-        $user_id = $_SESSION['user_id'];
+        $user_id = isset($_SESSION['real-user_id']) ? $_SESSION['real-user_id'] : $_SESSION['user_id'];
         $logout_time = time();
         $status = 'timeout';
 
@@ -211,7 +210,7 @@ function sessionLogin() {
     global $_SESSION;
 
     if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
+        $user_id = isset($_SESSION['real-user_id']) ? $_SESSION['real-user_id'] : $_SESSION['user_id'];
         $login_time = time();
         $ip = getIPAddress();
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
@@ -256,7 +255,7 @@ function sessionLogout() {
 
     if (isset($_SESSION['session_id']) && isset($_SESSION['user_id'])) {
         $session_id = $_SESSION['session_id'];
-        $user_id = $_SESSION['user_id'];
+        $user_id = isset($_SESSION['real-user_id']) ? $_SESSION['real-user_id'] : $_SESSION['user_id'];
         $logout_time = time();
         $status = 'inactive';
 

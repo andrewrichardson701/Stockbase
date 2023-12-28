@@ -25,22 +25,18 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <!-- Header and Nav -->
     <?php 
         $navHighlight = 'optics'; // for colouring the nav bar link
+        $navBtnDim = 1;
         include 'nav.php'; 
     ?>
     <!-- End of Header and Nav -->
-    <div class="container">
-        <h2 class="header-small">Optics</h2>
-        <?php 
-        if (isset($_GET['error'])) { echo('<p class="red">Error: '.$_GET['error'].'</p>'); } 
-        if (isset($_GET['success'])) { echo('<p class="green">Success: '.$_GET['success'].'</p>'); } 
-        ?>
-    </div>
-    <div class="content">
+    
+    <div class="content" style="padding-top:20px">
         <div class="container" id="selection" style="margin-bottom:15px">
             <?php
             $site = isset($_GET['site']) ? $_GET['site'] : "0";
             $search = isset($_GET['search']) ? $_GET['search'] : "";
             $sort = isset($_GET['sort']) ? $_GET['sort'] : "";
+            $deleted = isset($_GET['deleted']) ? $_GET['deleted'] : "";
 
             // get types from table to create buttons
 
@@ -49,6 +45,16 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             $optic_mode = isset($_GET['mode']) ? $_GET['mode'] : 0;
             $optic_connector = isset($_GET['connector']) ? $_GET['connector'] : 0;
             $site = isset($_GET['site']) ? $_GET['site'] : 0;
+
+            if (isset($_GET['rows'])) {
+                if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
+                    $rowSelectValue = $_GET['rows'];
+                } else {
+                    $rowSelectValue = 20;
+                }
+            } else {
+                $rowSelectValue = 20;
+            }
 
             echo('<div class="row centertable" style="max-width:max-content">
                     <div class="col align-middle" style="max-width:max-content">
@@ -99,6 +105,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </button>
                         <button id="add-optic-hide" class="btn btn-danger nav-v-b" style="opacity:80%;color:black" onclick="toggleAddDiv()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { } else { echo ('hidden'); } echo('>
                             Hide Add Optic
+                        </button>
+                    </div>');
+                echo('<div class="col align-middle" style="max-width:max-content">
+                        <button id="show-deleted-optics" class="btn btn-success nav-v-b" style="opacity:80%;color:white" onclick="navPage(updateQueryParameter(\'\', \'deleted\', 1))" '); if((isset($deleted) && $deleted == 1)) { echo('hidden'); } echo('>
+                            View Deleted
+                        </button>
+                        <button id="hide-deleted-optics" class="btn btn-danger nav-v-b" style="opacity:80%;color:black" onclick="navPage(updateQueryParameter(\'\', \'deleted\', 0))" '); if(isset($deleted) && ($deleted == 0 || $deleted == '')) { echo('hidden'); } echo('>
+                            Hide Deleted
                         </button>
                     </div>');
                 echo('</div>
@@ -195,33 +209,65 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             <div class="well-nopad theme-divBg text-center">
                 <h3 style="font-size:22px">Add new optic</h3>
                 <hr style="border-color:#9f9d9d; margin-left:10px">
+                <p id="optic-add-response" hidden></p>
                 <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
-                    <div class="row" style="margin-right:25px">
+                    <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
-                            <div>Site</div>
+                            <div>Serial Number</div>
+                            <div><input class="form-control text-center" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" oninput="searchSerial(this.value)"required/></div>
+                        </div>
+                        <div class="col">
+                            <div>Model</div>
                             <div>
-                                <select id="site" name="site" class="form-control text-center" style="border-color:black;" required>');
-
-                                    $sql_site_cable = "SELECT * FROM site";
-                                    $stmt_site_cable = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_site_cable, $sql_site_cable)) {
+                                <input class="form-control text-center" id="model" type="text" list="names" name="model" placeholder="Model" style="min-width:120px" '); if (isset($_GET['form-model'])) { echo ('value="'.$_GET['form-model'].'"'); } echo (' required/>
+                                <datalist id="names">');
+                                    $sql_model = "SELECT DISTINCT model from optic_item WHERE deleted=0 AND quantity=1 ORDER BY model";
+                                    $stmt_model = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_model, $sql_model)) {
                                         echo("ERROR getting entries");
                                     } else {
-                                        mysqli_stmt_execute($stmt_site_cable);
-                                        $result_site_cable = mysqli_stmt_get_result($stmt_site_cable);
-                                        $rowCount_site_cable = $result_site_cable->num_rows;
-                                        if ($rowCount_site_cable < 1) {
+                                        mysqli_stmt_execute($stmt_model);
+                                        $result_model = mysqli_stmt_get_result($stmt_model);
+                                        $rowCount_model = $result_model->num_rows;
+                                        if ($rowCount_model < 1) {
+                                        } else {
+                                            while( $row_model = $result_model->fetch_assoc() ) {
+                                                echo("<option>".$row_model['model']."</option>");
+                                            }
+                                        }
+                                    }
+                                echo('
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>Vendor</div>
+                            <div>
+                                <select id="vendor" name="vendor" class="form-control text-center" style="border-color:black;" required>');
+
+                                    $sql_vendor = "SELECT * FROM optic_vendor ORDER BY name";
+                                    $stmt_vendor = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_vendor, $sql_vendor)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_vendor);
+                                        $result_vendor = mysqli_stmt_get_result($stmt_vendor);
+                                        $rowCount_vendor = $result_vendor->num_rows;
+                                        if ($rowCount_vendor < 1) {
                                             echo ("<option selected disabled>No Sites Found</option> ");
                                         } else {
-                                            echo ("<option selected disabled>Select Site</option>");
-                                            while( $row_site_cable = $result_site_cable->fetch_assoc() ) {
-                                                echo("<option value='".$row_site_cable['id']."'"); if (isset($_GET['form-site']) && $_GET['form-site'] == $row_site_cable['id']) { echo ('selected'); } echo (">".$row_site_cable['name']."</option>");
+                                            echo ("<option selected disabled>Select Vendor</option>");
+                                            while( $row_vendor = $result_vendor->fetch_assoc() ) {
+                                                echo("<option value='".$row_vendor['id']."'"); if (isset($_GET['form-vendor']) && $_GET['form-vendor'] == $row_vendor['id']) { echo ('selected'); } echo (">".$row_vendor['name']."</option>");
                                             }
                                         }
                                     }   
 
                                 echo('      
                                 </select>
+                            </div>
+                            <div class="text-center">
+                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewVendor()">Add New</a>
                             </div>
                         </div>
                         <div class="col">
@@ -254,6 +300,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewType()">Add New</a>
                             </div>
                         </div>
+                    </div> 
+                
+                    <div class="row" style="margin-right:25px">
                         <div class="col">
                             <div>Speed</div>
                             <div>
@@ -322,28 +371,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
-                            <div>Vendor</div>
+                            <div>Site</div>
                             <div>
-                                <select id="vendor" name="vendor" class="form-control text-center" style="border-color:black;" required>');
+                                <select id="site" name="site" class="form-control text-center" style="border-color:black;" required>');
 
-                                    $sql_vendor = "SELECT * FROM optic_vendor ORDER BY name";
-                                    $stmt_vendor = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_vendor, $sql_vendor)) {
+                                    $sql_site_cable = "SELECT * FROM site";
+                                    $stmt_site_cable = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_site_cable, $sql_site_cable)) {
                                         echo("ERROR getting entries");
                                     } else {
-                                        mysqli_stmt_execute($stmt_vendor);
-                                        $result_vendor = mysqli_stmt_get_result($stmt_vendor);
-                                        $rowCount_vendor = $result_vendor->num_rows;
-                                        if ($rowCount_vendor < 1) {
+                                        mysqli_stmt_execute($stmt_site_cable);
+                                        $result_site_cable = mysqli_stmt_get_result($stmt_site_cable);
+                                        $rowCount_site_cable = $result_site_cable->num_rows;
+                                        if ($rowCount_site_cable < 1) {
                                             echo ("<option selected disabled>No Sites Found</option> ");
                                         } else {
-                                            echo ("<option selected disabled>Select Vendor</option>");
-                                            while( $row_vendor = $result_vendor->fetch_assoc() ) {
-                                                echo("<option value='".$row_vendor['id']."'"); if (isset($_GET['form-vendor']) && $_GET['form-vendor'] == $row_vendor['id']) { echo ('selected'); } echo (">".$row_vendor['name']."</option>");
+                                            echo ("<option selected disabled>Select Site</option>");
+                                            while( $row_site_cable = $result_site_cable->fetch_assoc() ) {
+                                                echo("<option value='".$row_site_cable['id']."'"); if (isset($_GET['form-site']) && $_GET['form-site'] == $row_site_cable['id']) { echo ('selected'); } echo (">".$row_site_cable['name']."</option>");
                                             }
                                         }
                                     }   
@@ -351,41 +397,14 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('      
                                 </select>
                             </div>
-                            <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14" onclick="modalLoadNewVendor()">Add New</a>
-                            </div>
+                        </div> 
+                    </div> 
+                    <div class="row align-middle" style="margin-right:25px">
+                        <div class="col" style="margin-top:10px">
+                            <button id="optic-add-single" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="" value="1">Add</button>
+                            <button id="optic-add-multiple" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:20px" value="2">Add Multiple</button>
                         </div>
-                        <div class="col">
-                            <div>Model</div>
-                            <div>
-                                <input class="form-control text-center" type="text" list="names" name="model" placeholder="Model" style="min-width:120px" '); if (isset($_GET['form-model'])) { echo ('value="'.$_GET['form-model'].'"'); } echo (' required/>
-                                <datalist id="names">');
-                                    $sql_model = "SELECT DISTINCT model from optic_item WHERE deleted=0 AND quantity=1 ORDER BY model";
-                                    $stmt_model = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_model, $sql_model)) {
-                                        echo("ERROR getting entries");
-                                    } else {
-                                        mysqli_stmt_execute($stmt_model);
-                                        $result_model = mysqli_stmt_get_result($stmt_model);
-                                        $rowCount_model = $result_model->num_rows;
-                                        if ($rowCount_model < 1) {
-                                        } else {
-                                            while( $row_model = $result_model->fetch_assoc() ) {
-                                                echo("<option>".$row_model['model']."</option>");
-                                            }
-                                        }
-                                    }
-                                echo('
-                                </datalist>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div>Serial Number</div>
-                            <div><input class="form-control text-center" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" required/></div>
-                        </div>
-                        <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:10px" value="1">Add</button></div></div>
-                        <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:10px" value="2">Add Multiple</button></div></div>
-                    </div>                
+                    </div>        
                 </form>
             </div>
         </div>
@@ -424,9 +443,17 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     break;
             }
 
+            if (isset($deleted)) { 
+                if ($deleted == 0 || $deleted == '') {
+                    $sql_where = "WHERE I.deleted=0";
+                } else {
+                    $sql_where = "WHERE I.deleted=1";
+                }
+            }
+
             include 'includes/dbh.inc.php';
             $s = 0;
-            $sql_inv = "SELECT I.id AS i_id, I.model AS i_model, I.serial_number AS i_serial_number, I.mode AS i_mode, I.quantity AS i_quantity,
+            $sql_inv_count = "SELECT I.id AS i_id, I.model AS i_model, I.serial_number AS i_serial_number, I.mode AS i_mode, I.quantity AS i_quantity,
                             V.id AS v_id, V.name AS v_name, 
                             T.id AS t_id, T.name AS t_name, 
                             C.id AS c_id, C.name AS c_name,
@@ -440,8 +467,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         INNER JOIN optic_type AS T ON I.type_id=T.id 
                         INNER JOIN optic_connector AS C ON I.connector_id=C.id 
                         INNER JOIN optic_speed AS S ON I.speed_id=S.id 
-                        INNER JOIN site ON I.site_id=site.id 
-                        WHERE I.deleted=0";
+                        INNER JOIN site ON I.site_id=site.id ";
+            $sql_inv_count .= $sql_where;
             $sql_inv_add = '';
             if ((int)$site !== 0) { 
                 $sql_inv_add  .= " AND site.id=$site"; 
@@ -477,207 +504,340 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 )
                         ";
             }
-            $sql_inv .= $sql_inv_add;
-            $sql_inv .= $order;
-            echo '<pre hidden>'.$sql_inv.'</pre>';
-            $stmt_inv = mysqli_stmt_init($conn);
-            if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {
+            $sql_inv_count .= $sql_inv_add;
+            $sql_inv_count .= $order;
+
+            $stmt_inv_count = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_inv_count, $sql_inv_count)) {
                 echo("ERROR getting entries");
             } else {
-                mysqli_stmt_execute($stmt_inv);
-                $result_inv = mysqli_stmt_get_result($stmt_inv);
-                $rowCount_inv = $result_inv->num_rows;
+                mysqli_stmt_execute($stmt_inv_count);
+                $result_inv_count = mysqli_stmt_get_result($stmt_inv_count);
+                $totalRowCount = $result_inv_count->num_rows;
+                
+                // Pagination settings
+                $results_per_page = $rowSelectValue; // Number of rows per page - based no the querystring (or 10 by default)
+                $total_pages = ceil($totalRowCount / $results_per_page);
 
-                $rowdump = []; // testing
+                $current_page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+                if ($current_page < 1) {
+                    $current_page = 1;
+                } elseif ($current_page > $total_pages) {
+                    $current_page = $total_pages;
+                } 
 
-                echo('
-                    <div class="container">
-                    <hr style="border-color:#9f9d9d; margin-left:10px">
-                        <div class="row centertable">
-                            <div class="col float-left">
-                                Count: <or class="green">'.$rowCount_inv.'</or>
-                            </div>
-                            <div class="col align-middle" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
-                                <table>
-                                    <tr class="align-middle">
-                                        <td class="align-middle" style="padding-right:10px">
-                                            Sort By:
-                                        </td>
-                                        <td class="align-middle">
-                                            <select name="sort" class="form-control row-dropdown" style="width:max-content;height:25px; padding:0px" onchange="navPage(updateQueryParameter(\'\', \'sort\', this.value))">
-                                                <option value="type"'); if ($sort == "type" || $sort == '') { echo(' selected'); } echo('>Type</option>
-                                                <option value="connector"'); if ($sort == "connector") { echo(' selected'); } echo('>Connector</option>
-                                                <option value="model"'); if ($sort == "model") { echo(' selected'); } echo('>Model</option>
-                                                <option value="speed"'); if ($sort == "speed") { echo(' selected'); } echo('>Speed</option>
-                                                <option value="mode"'); if ($sort == "mode") { echo(' selected'); } echo('>Mode</option>
-                                                <option value="serial"'); if ($sort == "serial") { echo(' selected'); } echo('>Serial</option>
-                                                <option value="vendor"'); if ($sort == "vendor") { echo(' selected'); } echo('>Vendor</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </table>
+                // Calculate the offset for the query
+                $offset = ($current_page - 1) * $results_per_page;
+                if ($offset < 0) {
+                    $offset = $results_per_page;
+                }
+
+                $sql_inv_pagination = " LIMIT $results_per_page OFFSET $offset;";
+
+                $sql_inv = $sql_inv_count .= $sql_inv_pagination;
+
+                echo '<pre hidden>'.$sql_inv.'</pre>';
+                $stmt_inv = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_inv, $sql_inv)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_execute($stmt_inv);
+                    $result_inv = mysqli_stmt_get_result($stmt_inv);
+                    $rowCount_inv = $result_inv->num_rows;
+
+                    $rowdump = []; // testing
+
+                    echo('
+                        <div class="container">
+                            <hr style="border-color:#9f9d9d; margin-left:10px">
+                            <div class="row centertable">
+                                <div class="col float-left">
+                                    Count: <or class="green">'.$rowCount_inv.'</or>
+                                </div>
+                                <div class="col">');
+                                if (isset($_GET['error'])) { echo('<p class="red">Error: '.$_GET['error'].'</p>'); } 
+                                if (isset($_GET['success'])) { echo('<p class="green">Success: '.$_GET['success'].'</p>'); } 
+                                echo('</div>
+                                <div class="col align-middle" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
+                                    <table>
+                                        <tr class="align-middle">
+                                            <td class="align-middle" style="padding-right:10px">
+                                                Sort By:
+                                            </td>
+                                            <td class="align-middle">
+                                                <select name="sort" class="form-control row-dropdown" style="width:max-content;height:25px; padding:0px" onchange="navPage(updateQueryParameter(\'\', \'sort\', this.value))">
+                                                    <option value="type"'); if ($sort == "type" || $sort == '') { echo(' selected'); } echo('>Type</option>
+                                                    <option value="connector"'); if ($sort == "connector") { echo(' selected'); } echo('>Connector</option>
+                                                    <option value="model"'); if ($sort == "model") { echo(' selected'); } echo('>Model</option>
+                                                    <option value="speed"'); if ($sort == "speed") { echo(' selected'); } echo('>Speed</option>
+                                                    <option value="mode"'); if ($sort == "mode") { echo(' selected'); } echo('>Mode</option>
+                                                    <option value="serial"'); if ($sort == "serial") { echo(' selected'); } echo('>Serial</option>
+                                                    <option value="vendor"'); if ($sort == "vendor") { echo(' selected'); } echo('>Vendor</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <table class="table table-dark theme-table centertable">
-                        <thead>
-                            <tr class="align-middle text-center theme-tableOuter">
-                                <th hidden>ID</th>
-                                <th>Type</th>
-                                <th>Connector</th>
-                                <th>Model</th>
-                                <th>Speed</th>
-                                <th>Mode</th>
-                                <th>Serial Number</th>
-                                <th>Vendor</th>
-                                <th'); if ((int)$site !== 0) { echo(' hidden'); } echo('>Site</th>
-                                <th colspan=2>Comments</th>
-                                <th hidden>Quantity</th>
-                                <th></th>
-                            <tr>
-                        </thead>
-                        <tbody>
-                ');
-                if ($rowCount_inv == 0) {
-                    echo('<tr><td colspan=100% class="text-center align-middle">No Optics Found.</td></td>');
-                } else {
+                        <table class="table table-dark theme-table centertable" style="padding-bottom:0;margin-bottom:0;">
+                            <thead>
+                                <tr class="align-middle text-center theme-tableOuter">
+                                    <th hidden>ID</th>
+                                    <th>Type</th>
+                                    <th>Connector</th>
+                                    <th>Model</th>
+                                    <th>Speed</th>
+                                    <th>Mode</th>
+                                    <th>Serial Number</th>
+                                    <th>Vendor</th>
+                                    <th'); if ((int)$site !== 0) { echo(' hidden'); } echo('>Site</th>
+                                    <th>Comments</th>
+                                    <th hidden>Quantity</th>
+                                    <th colspan=2></th>
+                                <tr>
+                            </thead>
+                            <tbody>
+                    ');
+                    if ($rowCount_inv == 0) {
+                        echo('<tr><td colspan=100% class="text-center align-middle">No Optics Found.</td></td>');
+                    } else {
 
-                    while ($row_inv = $result_inv->fetch_assoc()) {
+                        while ($row_inv = $result_inv->fetch_assoc()) {
 
-                        $rowdump[] = $row_inv; // testing
+                            $rowdump[] = $row_inv; // testing
 
-                        $i_id = $row_inv['i_id'];
-                        $i_model = $row_inv['i_model'];
-                        $i_serial_number = $row_inv['i_serial_number'];
-                        $i_model = $row_inv['i_model'];
-                        $i_mode = $row_inv['i_mode'];
-                        $i_quantity = $row_inv['i_quantity'];
-                        $v_id = $row_inv['v_id'];
-                        $v_name = $row_inv['v_name'];
-                        $t_id = $row_inv['t_id'];
-                        $t_name = $row_inv['t_name'];
-                        $c_id = $row_inv['c_id'];
-                        $c_name = $row_inv['c_name'];
-                        $s_id = $row_inv['s_id'];
-                        $s_name = $row_inv['s_name'];
-                        $i_comments = mysqli_real_escape_string($conn, $row_inv['comments']);
-                        $site_id = $row_inv['site_id'];
-                        $site_name = $row_inv['site_name'];
+                            $i_id = $row_inv['i_id'];
+                            $i_model = $row_inv['i_model'];
+                            $i_serial_number = $row_inv['i_serial_number'];
+                            $i_model = $row_inv['i_model'];
+                            $i_mode = $row_inv['i_mode'];
+                            $i_quantity = $row_inv['i_quantity'];
+                            $v_id = $row_inv['v_id'];
+                            $v_name = $row_inv['v_name'];
+                            $t_id = $row_inv['t_id'];
+                            $t_name = $row_inv['t_name'];
+                            $c_id = $row_inv['c_id'];
+                            $c_name = $row_inv['c_name'];
+                            $s_id = $row_inv['s_id'];
+                            $s_name = $row_inv['s_name'];
+                            $i_comments = mysqli_real_escape_string($conn, $row_inv['comments']);
+                            $site_id = $row_inv['site_id'];
+                            $site_name = $row_inv['site_name'];
 
-                        echo('
-                            <tr id="item-'.$i_id.'" class="row-show align-middle text-center">
-                                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
-                                    <input type="hidden" value="'.$i_id.'" name="id"/>
+                            echo('
+                                <tr id="item-'.$i_id.'" class="row-show align-middle text-center'); if ($deleted == 1) { echo(' red'); } echo('">
+                                    <form id="opticForm-'.$i_id.'"action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                                        <input type="hidden" form="opticForm-'.$i_id.'" value="'.$i_id.'" name="id"/>
+                                    </form>
                                     <td class="align-middle" hidden>'.$i_id.'</td>
                                     <td class="align-middle">'.$t_name.'</td>
                                     <td class="align-middle">'.$c_name.'</td>
                                     <td class="align-middle">'.$i_model.'</td>
                                     <td class="align-middle">'.$s_name.'</td>
                                     <td class="align-middle">'.$i_mode.'</td>
-                                    <td class="align-middle">'.$i_serial_number.'</td>
+                                    <td class="align-middle" id="optic-serial-'.$i_id.'">'.$i_serial_number.'</td>
                                     <td class="align-middle">'.$v_name.'</td>
                                     <td class="align-middle link gold" style="white-space: nowrap !important;" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$site_id.'\'))"'); if ((int)$site !== 0) { echo(' hidden'); } echo('>'.$site_name.'</td>
-                                    <td class="align-middle text-right'); if ((int)$i_comments > 0) { echo(' clickable gold link" onclick="toggleAddComment(\''.$i_id.'\', 1)"'); } else { echo('" style="color:#8f8f8f"'); } echo('>'.$i_comments.'</or></td>
-                                    <td class="align-middle text-left"><button class="btn btn-success" type="button" style="padding: 2px 4px 2px 4px" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"><i class="fa fa-plus"></i></button></td>
-                                    <td class="align-middle" hidden>'.$i_quantity.'</td>
-                                    <td class="align-middle"><button class="btn btn-danger" type="submit" name="optic-delete-submit" value="1"><i class="fa fa-trash"></i></button></td>
-                                </form>
-                            </tr>
-                            <tr id="item-'.$i_id.'-add-comments" class="row-add-hide align-middle text-center" hidden>
-                                <td colspan="100%">
-                                    <div class="container">
-                                        <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
-                                            <div class="row centertable" style="max-width:max-content">
-                                                <div class="col" style="max-width:max-content">
-                                                    <label class="nav-v-c">Comment:</label>
-                                                </div>
-                                                <div class="col" style="max-width:max-content">
-                                                    <input type="hidden" name="id" value="'.$i_id.'" />
-                                                    <input name="comment" class="form-control row-dropdown" type="text" style="padding: 2 7 2 7; width:250px" placeholder="Comment..."/>
-                                                </div>
-                                                <div class="col" style="max-width:max-content">
-                                                    <button class="btn btn-success align-bottom" type="submit" name="optic-comment-add" style="margin-left:10px" value="1">Add</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        ');
-                        if ((int)$i_comments > 0) {
-                            echo('
-                            <tr id="item-'.$i_id.'-comments" class="row-hide align-middle text-center" hidden>
-                                <td colspan="100%">
-                                    <div class="container">
-                                        <table class="centertable" style="border: 1px solid #454d55;">
-                                            <thead>
-                                                <tr class="row-show align-middle text-center">
-                                                    <th hidden>ID</th>
-                                                    <th>Comment</th>
-                                                    <th>Timestamp</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>');
-                                            $sql_comment = "SELECT id, item_id, comment, timestamp
-                                                        FROM optic_comment
-                                                        WHERE deleted != 1 AND item_id = '$i_id'
-                                                        ORDER BY timestamp";
-                                            $stmt_comment = mysqli_stmt_init($conn);
-                                            if (!mysqli_stmt_prepare($stmt_comment, $sql_comment)) {
-                                                //error
-                                                echo('<tr><td colspan=100%>Error getting comments...</td></tr>');
+                                    <td hidden class="align-middle text-right'); if ((int)$i_comments > 0) { echo(' clickable gold link" onclick="toggleAddComment(\''.$i_id.'\', 1)"'); } else { echo('" style="color:#8f8f8f"'); } echo('>'.$i_comments.'</or></td>
+                                    <td hidden class="align-middle text-left"><button class="btn btn-success" type="button" style="padding: 2px 4px 2px 4px" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"><i class="fa fa-plus"></i></button></td>
+                                    <td class="align-middle">
+                                        <div style="position: relative; display: inline-block;">
+                                        <i class="'); if ((int)$i_comments > 0) { echo('fa-solid fa-message clickable gold" style="font-size:20; padding:5px"'); } else { echo('fa-regular fa-message clickable gold" style="font-size:18; padding:5px"'); } echo(' onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')"></i>');
+                                            if ((int)$i_comments > 0) { 
+                                                echo('<span class="uni theme-inv-textColor" style="pointer-events: none; font-size:10; position: absolute; top: 4px; right: 7px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">'.$i_comments.'</span>');
                                             } else {
-                                                mysqli_stmt_execute($stmt_comment);
-                                                $result_comment = mysqli_stmt_get_result($stmt_comment);
-                                                $rowCount_comment = $result_comment->num_rows;
-                                                if ($rowCount_comment < 1) {
-                                                    // somehow no entries found
-                                                    echo('<tr><td colspan=100%>No Entries Found...</td></tr>');
+                                                echo('<span class="uni gold" style="pointer-events: none; font-size:12; position: absolute; top: 3px; right: 6px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment(\''.$i_id.'\', '); if ((int)$i_comments > 0) { echo('1'); } else { echo('0'); } echo(')">+</span>');
+                                            }
+                                    echo('
+                                        </div>
+                                    </td>
+                                    <td class="align-middle" hidden>'.$i_quantity.'</td>
+                                    <td class="align-middle" style="padding-right:5px">
+                                        <button id="move-btn-'.$i_id.'" class="btn btn-warning" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadMoveOptic(\''.$i_id.'\')">
+                                            <i class="fa fa-arrows-h" style="color:black"></i>
+                                        </button>
+                                    </td>
+                                    <td class="align-middle" style="padding-left:5px">');
+                                    if ($deleted == 1) { 
+                                        echo('<button class="btn btn-success" type="submit" form="opticForm-'.$i_id.'" name="optic-restore-submit" value="1" title="Restore?">
+                                                <i class="fa fa-trash-restore"></i>
+                                            </button>');
+                                    } else {
+                                        echo('<button class="btn btn-danger" type="button" value="1" title="Delete?" onclick="modalLoadDeleteOptic(\''.$i_id.'\')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>');
+                                    }
+                                echo('
+                                    </td>
+                                </tr>
+                                <tr id="item-'.$i_id.'-add-comments" class="row-add-hide align-middle text-center" hidden>
+                                    <td colspan="100%">
+                                        <div class="container">
+                                            <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                                                <div class="row centertable" style="max-width:max-content">
+                                                    <div class="col" style="max-width:max-content">
+                                                        <label class="nav-v-c">Comment:</label>
+                                                    </div>
+                                                    <div class="col" style="max-width:max-content">
+                                                        <input type="hidden" name="id" value="'.$i_id.'" />
+                                                        <input name="comment" class="form-control row-dropdown" type="text" style="padding: 2 7 2 7; width:250px" placeholder="Comment..."/>
+                                                    </div>
+                                                    <div class="col" style="max-width:max-content">
+                                                        <button class="btn btn-success align-bottom" type="submit" name="optic-comment-add" style="margin-left:10px" value="1">Add</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ');
+                            if ((int)$i_comments > 0) {
+                                echo('
+                                <tr id="item-'.$i_id.'-comments" class="row-hide align-middle text-center" hidden>
+                                    <td colspan="100%">
+                                        <div class="container">
+                                            <table class="centertable" style="border: 1px solid #454d55;">
+                                                <thead>
+                                                    <tr class="row-show align-middle text-center">
+                                                        <th hidden>ID</th>
+                                                        <th>Username</th>
+                                                        <th>Comment</th>
+                                                        <th>Timestamp</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>');
+                                                $sql_comment = "SELECT oc.id AS id, oc.item_id AS item_id, oc.comment AS comment, oc.user_id AS user_id, oc.timestamp AS timestamp, u.username AS username
+                                                            FROM optic_comment AS oc
+                                                            INNER JOIN users AS u ON u.id=oc.user_id
+                                                            WHERE oc.deleted != 1 AND oc.item_id = '$i_id'
+                                                            ORDER BY timestamp";
+                                                $stmt_comment = mysqli_stmt_init($conn);
+                                                if (!mysqli_stmt_prepare($stmt_comment, $sql_comment)) {
+                                                    //error
+                                                    echo('<tr><td colspan=100%>Error getting comments...</td></tr>');
                                                 } else {
-                                                    while ($row_comment = $result_comment->fetch_assoc()) {
-                                                        $com_id = $row_comment['id'];
-                                                        $com_comment = $row_comment['comment'];
-                                                        $com_timestamp = $row_comment['timestamp'];
+                                                    mysqli_stmt_execute($stmt_comment);
+                                                    $result_comment = mysqli_stmt_get_result($stmt_comment);
+                                                    $rowCount_comment = $result_comment->num_rows;
+                                                    if ($rowCount_comment < 1) {
+                                                        // somehow no entries found
+                                                        echo('<tr><td colspan=100%>No Entries Found...</td></tr>');
+                                                    } else {
+                                                        while ($row_comment = $result_comment->fetch_assoc()) {
+                                                            $com_id = $row_comment['id'];
+                                                            $com_user_id = $row_comment['user_id'];
+                                                            $com_username = $row_comment['username'];
+                                                            $com_comment = $row_comment['comment'];
+                                                            $com_timestamp = $row_comment['timestamp'];
 
-                                                        echo ('
-                                                            <tr id="comment-'.$com_id.'" class="row-show align-middle text-center">
-                                                                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
-                                                                    <input type="hidden" value="'.$com_id.'" name="id"/>
-                                                                    <td class="align-middle" hidden>'.$com_id.'</td>
-                                                                    <td class="align-middle">'.$com_comment.'</td>
-                                                                    <td class="align-middle">'.$com_timestamp.'</td>
-                                                                    <td class="align-middle"><button class="btn btn-danger" type="submit" name="optic-comment-delete" value="1"><i class="fa fa-trash"></i></button></td>
-                                                                </form>
-                                                            </tr>
-                                                        ');
+                                                            echo ('
+                                                                <tr id="comment-'.$com_id.'" class="row-show align-middle text-center">
+                                                                    <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                                                                        <input type="hidden" value="'.$com_id.'" name="id"/>
+                                                                        <td class="align-middle" hidden>'.$com_id.'</td>
+                                                                        <td class="align-middle">'.$com_username.'</td>
+                                                                        <td class="align-middle">'.$com_comment.'</td>
+                                                                        <td class="align-middle">'.$com_timestamp.'</td>
+                                                                        <td class="align-middle"><button class="btn btn-danger" type="submit" name="optic-comment-delete" value="1"><i class="fa fa-trash"></i></button></td>
+                                                                    </form>
+                                                                </tr>
+                                                            ');
+                                                        }
+                                                    }
+                                                }
+                                            echo('</tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                ');
+                            }
+
+                            // print_r('<div hidden>');
+                            // print_r($row_inv);
+                            // print_r('</div>');
+                        }
+                    
+                    } 
+                    echo('
+                            </tbody>
+                        </table>
+                        <table class="table table-dark theme-table centertable">
+                            <tbody>
+                                <tr class="theme-tableOuter">
+                                    <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
+                                    <div class="row">
+                                        <div class="col text-center"></div>
+                                        <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">
+                                        ');
+                                        if ($total_pages > 1) {
+                                            if ($current_page > 1) {
+                                                echo '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
+                                            }
+                                            if ($total_pages > 5) {
+                                                for ($i = 1; $i <= $total_pages; $i++) {
+                                                    if ($i == $current_page) {
+                                                        echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                                        // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                                    } elseif ($i == 1 && $current_page > 5) {
+                                                        echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or><or style="padding-left:5px;padding-right:5px">...</or>';  
+                                                    } elseif ($i < $current_page && $i >= $current_page-2) {
+                                                        echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                    } elseif ($i > $current_page && $i <= $current_page+2) {
+                                                        echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                    } elseif ($i == $total_pages) {
+                                                        echo '<or style="padding-left:5px;padding-right:5px">...</or><or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';  
+                                                    }
+                                                }
+                                            } else {
+                                                for ($i = 1; $i <= $total_pages; $i++) {
+                                                    if ($i == $current_page) {
+                                                        echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                                        // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                                    } else {
+                                                        echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
                                                     }
                                                 }
                                             }
-                                        echo('</tbody>
-                                        </table>
+                        
+                                            if ($current_page < $total_pages) {
+                                                echo '<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>';
+                                            }  
+                                        }
+                                        echo('
+                                        </div>
+                                        <div class="col text-center">
+                                            <table style="margin-left:auto; margin-right:20px">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="theme-textColor align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
+                                                            Rows: 
+                                                        </td>
+                                                        <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
+                                                            <select id="tableRowCount" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter(\'\', \'rows\', this.value))">
+                                                                <option id="rows-20"  value="20"');  if($rowSelectValue == 20)  { echo('selected'); } echo('>20</option>
+                                                                <option id="rows-50"  value="50"');  if($rowSelectValue == 50)  { echo('selected'); } echo('>50</option>
+                                                                <option id="rows-100" value="100"'); if($rowSelectValue == 100) { echo('selected'); } echo('>100</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </td>
-                            </tr>
-                            ');
-                        }
-
-                        print_r('<div hidden>');
-                        print_r($row_inv);
-                        print_r('</div>');
-                    }
-                   
-                } 
-                echo('
-                        </tbody>
-                    </table>
-                ');
-                // testing
-                // print_r('<pre style="margin-top:100px">');// testing
-                // print_r($sql_inv);// testing
-                // print_r('<br><br>');// testing
-                // print_r($rowdump);// testing
-                // print_r('</pre>');// testing
+                                </tr>
+                            </tbody>
+                        </table>
+                    ');
+                    // testing
+                    // print_r('<pre style="margin-top:100px">');// testing
+                    // print_r($sql_inv);// testing
+                    // print_r('<br><br>');// testing
+                    // print_r($rowdump);// testing
+                    // print_r('</pre>');// testing
+                }
             }
 
             ?>
@@ -779,6 +939,102 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </div> 
     </div>
     <!-- End of Modal NewConnector Div -->
+    <!-- Modal DeleteOptic Div -->
+    <div id="modalDivDeleteOptic" class="modal">
+        <span class="close" onclick="modalCloseDeleteOptic()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+                    <table class="centertable" style="border:none">
+                        <tbody style="border:none">
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="delete-optic-serial" style="margin-bottom:20px"></h3></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none">
+                                <p style="margin-bottom:5px">Reason for Deletion:</p></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" style="border:none; padding-right:0;">
+                                    <input id="delete-reason" type="text" class="form-control" placeholder="Reason..." name="reason" required/>
+                                    <input type="hidden" id="delete-id" name="id" />
+                                </td>
+                                <td class="align-middle text-center" style="border:none"><input type="submit" value="Delete" class="btn btn-danger" name="optic-delete-submit" /></td>
+                                <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseDeleteOptic()">Cancel</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <h3 id="delete-optic-serial" style="margin-bottom:20px"></h3>
+                    <p style="margin-bottom:5px">Reason for Deletion:</p>
+                    <input id="delete-reason" type="text" class="form-control" placeholder="Reason..." name="reason" style="margin-bottom:10px" required/>
+                    <input type="hidden" id="delete-id" name="id" />
+                    <input type="submit" value="Delete" class="btn btn-danger" name="optic-delete-submit" /> -->
+                </form>
+            </div>  
+        </div>
+    </div>
+    <!-- End of DeleteOptic Div -->
+    <!-- Modal MoveOptic Div -->
+    <div id="modalDivMoveOptic" class="modal">
+        <span class="close" onclick="modalCloseMoveOptic()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+                    <table class="centertable" style="border:none">
+                        <tbody style="border:none">
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="move-optic-serial" style="margin-bottom:20px"></h3></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" colspan=100% style="border:none">
+                                <p style="margin-bottom:5px">Move location:</p></td>
+                            </tr>
+                            <tr>
+                                <td class="align-middle text-center" style="border:none; padding-right:0;">
+                                    <select name="move-site" class="form-control" style="display:inline !important; max-width:max-content">');
+                                    <?php
+                                        $sql_site = "SELECT id, name
+                                                    FROM site
+                                                    WHERE site.deleted != 1";
+                                        $stmt_site = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                                            echo('<option value="0" selected>ERROR</option>');
+                                        } else {
+                                            mysqli_stmt_execute($stmt_site);
+                                            $result_site = mysqli_stmt_get_result($stmt_site);
+                                            $rowCount_site = $result_site->num_rows;
+                                            if ($rowCount_site < 1) {
+                                                // error
+                                                echo('<option value="0" selected>No Sites Found...</option>');
+                                            } else {
+                                                echo('<option disabled selected>Select</option>');
+                                                while ($row_site = $result_site->fetch_assoc()) {
+                                                    $id = $row_site['id'];
+                                                    $name = $row_site['name'];
+
+                                                    echo('<option value="'.$id.'">'.$name.'</option>');
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <input type="hidden" id="move-id" name="id" />
+                                </td>
+                                <td class="align-middle text-center" style="border:none"><input type="submit" value="Move" class="btn btn-success" name="optic-move-submit" /></td>
+                                <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseMoveOptic()">Cancel</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <h3 id="move-optic-serial" style="margin-bottom:20px"></h3>
+                    <p style="margin-bottom:5px">Reason for Deletion:</p>
+                    <input id="move-reason" type="text" class="form-control" placeholder="Reason..." name="reason" style="margin-bottom:10px" required/>
+                    <input type="hidden" id="move-id" name="id" />
+                    <input type="submit" value="Move" class="btn btn-danger" name="optic-move-submit" /> -->
+                </form>
+            </div>  
+        </div>
+    </div>
+    <!-- End of MoveOptic Div -->
 
     <?php include 'foot.php'; ?>
 
@@ -844,6 +1100,51 @@ function toggleAddComment(id, com) {
 
     }
 </script>
+<script>
+    function modalLoadDeleteOptic(id) {
+        console.log(id);
+        var modal = document.getElementById("modalDivDeleteOptic");
+        var serial = document.getElementById('optic-serial-'+id).innerHTML;
+
+        var deleteInputID = document.getElementById('delete-id');
+        var deleteHeadingSerial = document.getElementById('delete-optic-serial');
+
+
+        deleteHeadingSerial.innerText = serial+" (ID: "+id+")";
+        deleteInputID.value = id;
+        modal.style.display = "block";
+
+
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    modalCloseDeleteOptic = function() { 
+        var modal = document.getElementById("modalDivDeleteOptic");
+        modal.style.display = "none";
+    }
+
+    function modalLoadMoveOptic(id) {
+        console.log(id);
+        var modal = document.getElementById("modalDivMoveOptic");
+        var serial = document.getElementById('optic-serial-'+id).innerHTML;
+
+        var moveInputID = document.getElementById('move-id');
+        var moveHeadingSerial = document.getElementById('move-optic-serial');
+
+
+        moveHeadingSerial.innerText = serial+" (ID: "+id+")";
+        moveInputID.value = id;
+        modal.style.display = "block";
+
+
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    modalCloseMoveOptic = function() { 
+        var modal = document.getElementById("modalDivMoveOptic");
+        modal.style.display = "none";
+    }
+</script>
 <script> // MODAL SCRIPT
     // Get the modal
     function modalLoadNewType(property) {
@@ -883,3 +1184,80 @@ function toggleAddComment(id, com) {
     }
 
 </script>
+<script>
+        function searchSerial(search) {
+            // Make an AJAX request to retrieve the corresponding sites
+            var serialBox = document.getElementById('serial');
+            var modelBox = document.getElementById('model');
+            var vendorBox = document.getElementById('vendor');
+            var typeBox = document.getElementById('type');
+            var speedBox = document.getElementById('speed');
+            var connectorBox = document.getElementById('connector');
+            var modeBox = document.getElementById('mode');
+            var siteBox = document.getElementById('site');
+            var responseBox = document.getElementById('optic-add-response');
+            var btnAddSingle = document.getElementById('optic-add-single');
+            var btnAddMultiple = document.getElementById('optic-add-multiple');
+            
+            responseBox.hidden = true;
+            btnAddSingle.disabled = false;
+            btnAddMultiple.disabled = false;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/optics.inc.php?request-optic=1&serial="+search, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var data = JSON.parse(xhr.responseText);
+                    console.log(data);
+                    if (data["skip"] === undefined) {
+                        // console.log('noskip');
+                        if (data["error"] === undefined) {
+                            // console.log('noerror');
+                            if (data["success"] !== undefined) {
+                                // console.log('success');
+                                serialBox.value = data['serial_number'];
+                                modelBox.value = data['model'];
+                                vendorBox.value = data['vendor_id'];
+                                typeBox.value = data['type_id'];
+                                speedBox.value = data['speed_id'];
+                                connectorBox.value = data['connector_id'];
+                                modeBox.value = data['mode'];
+                                siteBox.value = data['site_id'];
+                                responseBox.hidden = false;
+                                responseBox.innerHTML = "<or class='green'>"+data['success']+"</or>";
+                                btnAddSingle.disabled = false;
+                                btnAddMultiple.disabled = false;
+                            }
+                        } else {
+                            // console.log("error");
+                            responseBox.hidden = false;
+                            responseBox.innerHTML = "<or class='red'>"+data['error']+"</or>";
+                            serialBox.value = data['serial_number'];
+                            modelBox.value = data['model'];
+                            vendorBox.value = data['vendor_id'];
+                            typeBox.value = data['type_id'];
+                            speedBox.value = data['speed_id'];
+                            connectorBox.value = data['connector_id'];
+                            modeBox.value = data['mode'];
+                            siteBox.value = data['site_id'];
+                            btnAddSingle.disabled = true;
+                            btnAddMultiple.disabled = true;
+                            
+                        }
+                        // modelBox.value = '';
+                        // vendorBox.value = '';
+                        // typeBox.value = '';
+                        // speedBox.value = '';
+                        // connectorBox.value = '';
+                        // modeBox.value = '';
+                        // siteBox.value = '';
+                        // responseBox.hidden = true;
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+
+    </script>

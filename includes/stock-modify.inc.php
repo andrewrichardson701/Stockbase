@@ -44,7 +44,7 @@ if (str_contains($_SESSION['redirect_url'], basename(__FILE__))) {
 
 // image upload from the stock-add-new.inc.php - the image_upload script from stock-edit.inc.php page is not needed.
 function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
-    $timedate = date("dmyHis");
+    $timedate = date("YmdHis");
 
     $uploadDirectory = "../assets/img/stock/";
     $errors = [];                                                   // Store errors here

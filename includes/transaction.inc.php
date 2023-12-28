@@ -214,20 +214,36 @@ if (isset($_GET['stock_id'])) {
                                     
                                     if ( $total_pages > 1 && $total_pages <= 15){
                                         if ($current_page > 1) {
-                                            echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                                            echo '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
                                         }
-
-                                        for ($i = 1; $i <= $total_pages; $i++) {
-                                            if ($i == $current_page) {
-                                                echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
-                                                // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
-                                            } else {
-                                                echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                        if ($total_pages > 5) {
+                                            for ($i = 1; $i <= $total_pages; $i++) {
+                                                if ($i == $current_page) {
+                                                    echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                                } elseif ($i == 1 && $current_page > 5) {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or><or style="padding-left:5px;padding-right:5px">...</or>';  
+                                                } elseif ($i < $current_page && $i >= $current_page-2) {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                } elseif ($i > $current_page && $i <= $current_page+2) {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                } elseif ($i == $total_pages) {
+                                                    echo '<or style="padding-left:5px;padding-right:5px">...</or><or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';  
+                                                }
+                                            }
+                                        } else {
+                                            for ($i = 1; $i <= $total_pages; $i++) {
+                                                if ($i == $current_page) {
+                                                    echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                                } else {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                }
                                             }
                                         }
-
+                                    
                                         if ($current_page < $total_pages) {
-                                            echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                                            echo '<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>';
                                         }  
                                         echo('&nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>');
                                     } else {
@@ -416,20 +432,36 @@ if (isset($_GET['stock_id'])) {
                                     
                                     if ( $total_pages > 1 && $total_pages <= 15){
                                         if ($current_page > 1) {
-                                            echo('<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'#transactions\')"><</or>');
+                                            echo '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
                                         }
-
-                                        for ($i = 1; $i <= $total_pages; $i++) {
-                                            if ($i == $current_page) {
-                                                echo('<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>');
-                                                // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
-                                            } else {
-                                                echo('<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'#transactions\')">'.$i.'</or>');
+                                        if ($total_pages > 5) {
+                                            for ($i = 1; $i <= $total_pages; $i++) {
+                                                if ($i == $current_page) {
+                                                    echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                                } elseif ($i == 1 && $current_page > 5) {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or><or style="padding-left:5px;padding-right:5px">...</or>';  
+                                                } elseif ($i < $current_page && $i >= $current_page-2) {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                } elseif ($i > $current_page && $i <= $current_page+2) {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                } elseif ($i == $total_pages) {
+                                                    echo '<or style="padding-left:5px;padding-right:5px">...</or><or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';  
+                                                }
+                                            }
+                                        } else {
+                                            for ($i = 1; $i <= $total_pages; $i++) {
+                                                if ($i == $current_page) {
+                                                    echo '<span class="current-page pageSelected" style="padding-right:2px;padding-left:2px">' . $i . '</span>';
+                                                    // onclick="navPage(updateQueryParameter(\'\', \'page\', \'$i\'))"
+                                                } else {
+                                                    echo '<or class="gold clickable" style="padding-right:2px;padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.$i.'\') + \'\')">'.$i.'</or>';
+                                                }
                                             }
                                         }
-
+                                    
                                         if ($current_page < $total_pages) {
-                                            echo('<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'#transactions\')">></or>');
+                                            echo '<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>';
                                         }  
                                         echo('&nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage(\'transactions.php?stock_id='.$stock_id.'\ \')">view all</or>');
                                     } else {

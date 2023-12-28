@@ -527,13 +527,6 @@ body {
 
 
 
-
-
-
-
-
-/* Mobile format stuff */
-
 .nav-links {
     list-style: none;
     display: flex;
@@ -544,10 +537,61 @@ body {
     color: white;
 }
 
+.nav-menu {
+    cursor: pointer;
+    display: block;
+}
+
+.nav-menu {
+    cursor: pointer;
+}
+
+.nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    background-color: #333;
+    padding: 15px;
+    right: -25px;
+    min-width: max-content;
+}
+
+.nav-links.show {
+    display: flex;
+    z-index: 1000;
+    min-width:max-content;
+    min-height:max-content;
+}
+
+.nav-menu {
+    display: block;
+}
+
+
+
+
+/* Mobile format stuff */
+
+.burger-links {
+    list-style: none;
+    display: flex;
+}
+
+.burger-links a {
+    text-decoration: none;
+    color: white;
+}
+
 .burger-menu {
     font-size: 1.5em;
     cursor: pointer;
     display: none;
+}
+
+.burger-menu {
+    cursor: pointer;
 }
 
 .viewport-large {
@@ -709,6 +753,26 @@ table {
 /* Media query for mobile devices */
 @media only screen and (max-width: 1200px) {
     .nav-links {
+        list-style: none;
+        display: none;
+    }
+    
+    .nav-links a {
+        text-decoration: none;
+        color: white;
+    }
+    
+    .nav-menu {
+        font-size: 1.5em;
+        cursor: pointer;
+        display: none;
+    }
+    
+    .nav-menu {
+        cursor: pointer;
+    }
+
+    .burger-links {
         display: none;
         flex-direction: column;
         position: absolute;
@@ -721,7 +785,7 @@ table {
         min-width: max-content;
     }
 
-    .nav-links.show {
+    .burger-links.show {
         display: flex;
         z-index: 1000;
         min-width:max-content;
@@ -898,8 +962,27 @@ table {
     .scrollBtn span {
         height:12px
     }  */
-
     .nav-links {
+        list-style: none;
+        display: none;
+    }
+    
+    .nav-links a {
+        text-decoration: none;
+        color: white;
+    }
+    
+    .nav-menu {
+        font-size: 1.5em;
+        cursor: pointer;
+        display: none;
+    }
+    
+    .nav-menu {
+        cursor: pointer;
+    }
+
+    .burger-links {
         display: none;
         flex-direction: column;
         position: absolute;
@@ -912,7 +995,7 @@ table {
         min-width: max-content;
     }
 
-    .nav-links.show {
+    .burger-links.show {
         display: flex;
         z-index: 1000;
         min-width:max-content;

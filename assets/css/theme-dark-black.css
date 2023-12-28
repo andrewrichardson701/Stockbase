@@ -1,64 +1,64 @@
 body {
     /* base background colour */
-	background-color: #FFFDFA !important; 
-    /* base text colour */
-	color: #000000 !important; 
+    background-color: black !important;
+    /* base text colour */ 
+    color: #bbbbbb !important; 
 }
 
 /* themed dropdown select boxes */
 .theme-dropdown { 
-	background-color:#aaa9a9 !important;
-	border-color:#505050 !important;
+	background-color:#484848 !important;
+	border-color:#091d23 !important;
 	margin:0;
-	padding-left:0 !important;
-	color: black !important;
+	padding-left:0;
+	color: white !important;
 }
 
 /* themed dropdown select box options */
 .theme-dropdown option { 
-	color: black !important;
+	color: white !important;
 }
 
 /* specified text colour (used to be .cw) */
 .theme-textColor { 
-	color: black !important;
+	color: white !important;
 }
 
 /* inverse textColor */
 .theme-inv-textColor { 
-	color: white !important;
+	color: #091d23 !important;
 }
 
 /* Profile page text colour */
 .theme-profileTextColor { 
-	color: black !important;
+	color: #bbbbbb !important;
 }
 
 /* Table colouring */
 .theme-table { 
-	background-color: #F9F9F9;
-	color: black;
+	color: #fff;
+    background-color: #343a40;
 }
 
 /* Table header and footer colours */
 .theme-tableOuter { 
-	background-color:#e1e1e1;
+	background-color:#21272b
 }
 
 /* Table blank cell for the stock locations */
 .theme-table-blank { 
-    background-color:#bcbcbc;
+    background-color:#21272b;
 }
 
 /* Table selected th cells */
 .theme-th-selected { 
-    background-color: #999999;
+    background-color: #1b1e22;
     border: 0px !important;
 }
 
-/* was gold, now changes based on theme - same as url links */
+/* Was gold, now changes based on theme - same as url links */
 .gold, a { 
-	color: blue !important;
+	color: #e1b12c !important; 
 }
 
 /* clickable items */
@@ -67,48 +67,48 @@ body {
 }
 /* clickable items colours */
 .clickable:hover { 
-    background-color: #858484 !important;
+    background-color: #3e3e3e !important;
 }
 
 /* highlight items */
 .highlight:hover { 
-    background-color: #858484 !important;
+    background-color: #3e3e3e !important;
 }
 
 .footer, .show {
-    background-color: #d1cfcf;
-    color: black;
+    background-color: #343a40;
+    color: white;
 }
 
-/* selected page for paginatation */
+/* selected page colour for paginatation */
 .pageSelected { 
-    color: black !important;
+    color: #007FFF !important;
 }
 
 /* div background colours */
 .theme-divBg { 
-    background-color: #d3d3d3 !important;
+    background-color: #303335 !important;
 }
 
 /* div background colours (darker) */
 .theme-divBg-m { 
-    background-color: #acacac !important;
+    background-color: #434749 !important;
 }
 
 /* special button look */
 .theme-btn { 
-    background-color: #a6a3a3 !important;
+    background-color: #696969 !important;
 }
 
 /* special serial button background look */
 .serial-bg { 
-    background-color: #a6a3a3 !important;
-    color: #1f1f1f !important;
+    background-color: #696969 !important;
+    color: #cfcfcf !important;
 }
 
-/*special colour - currently used for the view all in transactions and the min stock count */ 
+/*special colour - currently used for the view all in transactions and the min stock count */
 .specialColor { 
-    color: #a87e0b !important; 
+    color: #007FFF !important;
 }
 
 /* transaction table text colours */
@@ -116,10 +116,10 @@ body {
     color: limegreen;
 }
 .transactionMove {
-    color: #ed9a00;
+    color: orange;
 }
 .transactionRemove {
-    color: #e11010;     
+    color: red;
 }
 .transactionDelete {
     color: brown;

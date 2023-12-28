@@ -652,7 +652,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.6.0-beta</h3></summary>
-<h4>Beta release 0.6.0, Optics stocking and database renamed to stockbase.</h4>
+<h4>Beta release 0.6.0, Optics stocking, Auditing and database renamed to stockbase.</h4>
 
 - Optic modules now stocked under optics.php
 - optics.php shows the list of optics in store for each site similar to how the index page shows the main stock.

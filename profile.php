@@ -92,57 +92,57 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <tr class="nav-row" id="username">
                                     <td id="username_header" style="width:200px">
                                         <!-- Custodian Colour: #72BE2A -->
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Username:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
                                     </td>
                                     <td id="username_info">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_username.'</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_username.'</p>
                                     </td>
                                     <td>
                                     </td>
                                 </tr>
                                 <tr class="nav-row profile-table-row" id="firstname">
                                     <td id="firstname_header" style="width:200px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">First Name:</p>
                                     </td>
                                     <td id="firstname_info">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_first_name.'</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_first_name.'</p>
                                     </td>
                                 </tr>
                                 <tr class="nav-row profile-table-row" id="lastname">
                                     <td id="lastname_header" style="width:200px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Last Name:</p>
                                     </td>
                                     <td id="lastname_info">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_last_name.'</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_last_name.'</p>
                                     </td>
                                 </tr>
                                 <tr class="nav-row profile-table-row" id="email">
                                     <td id="email_header" style="width:200px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Email:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle"" for="admin-banner-color"">Email:</p>
                                     </td>
                                     <td id="email_info">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_email.'</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_email.'</p>
                                     </td>
                                 </tr>
                                 <tr class="nav-row profile-table-row" id="role">
                                     <td id="role_header" style="width:200px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle"" for="admin-banner-color"">Role:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle"" for="admin-banner-color"">Role:</p>
                                     </td>
                                     <td id="role_info">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_role.'</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_role.'</p>
                                     </td>
                                 </tr>
                                 <tr class="nav-row profile-table-row" id="role">
                                     <td id="auth_header" style="width:200px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Auth:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Auth:</p>
                                     </td>
                                     <td id="auth_info">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_auth.'</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                     </td>
                                 </tr>
                                 <tr class="nav-row profile-table-row2">
                                     <td id="theme_header" style="width:200px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Theme:</p>
                                     </td>
                                     <td id="theme_info">
                                         <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">');
@@ -170,7 +170,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         </select>
                                     </td>
                                     <td id="theme_header" style="width:200px;padding-left:20px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle viewport-large-block">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle viewport-large-block">
                                             <a class="link align-middle" href="theme-test.php">Theme testing</a>
                                         </p>
                                     </td>
@@ -193,17 +193,17 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             <tr class="nav-row" id="username">
                                 <td id="username_header" style="width:200px">
                                     <!-- Custodian Colour: #72BE2A -->
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Username:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
                                 </td>
                                 <td id="username_info">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_username.'</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_username.'</p>
                                 </td>
                                 <td>
                                 </td>
                             </tr>
                             <tr class="nav-row profile-table-row" id="firstname">
                                 <td id="firstname_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">First Name:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">First Name:</p>
                                 </td>
                                 <td id="firstname_info">
                                 <input type="text" class="nav-v-c align-middle form-control" name="first-name" value="'.htmlspecialchars($profile_first_name, ENT_QUOTES, 'UTF-8').'" placeholder="First Name" required />
@@ -211,7 +211,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             </tr>
                             <tr class="nav-row profile-table-row" id="lastname">
                                 <td id="lastname_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Last Name:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Last Name:</p>
                                 </td>
                                 <td id="lastname_info">
                                     <input type="text" class="nav-v-c align-middle form-control" name="last-name" value="'.htmlspecialchars($profile_last_name, ENT_QUOTES, 'UTF-8').'" placeholder="Last Name" required />
@@ -219,7 +219,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             </tr>
                             <tr class="nav-row profile-table-row" id="email">
                                 <td id="email_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Email:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Email:</p>
                                 </td>
                                 <td id="email_info">
                                 <input type="text" class="nav-v-c align-middle form-control" name="email" value="'.$profile_email.'" placeholder="email@domain.com" required />
@@ -227,23 +227,23 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             </tr>
                             <tr class="nav-row profile-table-row" id="role">
                                 <td id="role_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Role:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Role:</p>
                                 </td>
                                 <td id="role_info">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_role.'</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_role.'</p>
                                 </td>
                             </tr>
                             <tr class="nav-row profile-table-row" id="auth">
                                 <td id="auth_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Auth:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Auth:</p>
                                 </td>
                                 <td id="auth_info">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">'.$profile_auth.'</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                 </td>
                             </tr>
                             <tr class="nav-row profile-table-row2">
                                 <td id="theme_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle">Theme:</p>
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Theme:</p>
                                 </td>
                                 <td id="theme_info">
                                 <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">');
@@ -271,7 +271,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     </select>
                                 </td>
                                 <td id="theme_header" style="width:200px;padding-left:20px">
-                                    <p style="min-height:max-content;margin:0" class="nav-v-c align-middle viewport-large-block">
+                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle viewport-large-block">
                                         <a class="link align-middle" href="theme-test.php">Theme testing</a>
                                     </p>
                                 </td>
@@ -321,7 +321,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <td style="width:200px">');
                     if ($card_primary !== '') {
                         echo('
-                        <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                        <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                             <input type="hidden" name="card-remove" value="1" />
                             <input type="hidden" id="removeCard" name="card" value="1" />
                             <button class="btn btn-danger" style="width:180px;margin-top:20px" type="submit">De-assign swipe card 1</button>
@@ -331,7 +331,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <td>');
                     if ($card_secondary !== '') {
                         echo('
-                        <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0">
+                        <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                             <input type="hidden" name="card-remove" value="1" />
                             <input type="hidden" id="removeCard" name="card" value="2" />
                             <button class="btn btn-danger" style="width:185px;margin-top:20px" type="submit">De-assign swipe card 2</button>

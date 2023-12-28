@@ -70,7 +70,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                                             <span class="sliderBlue round" id="local-span" style="transform: scale(0.6, 0.6)"></span>
                                         </label>
                                     </div>
-                                    <label class="nav-div" style="margin-left:0">Local Login<p></p></label>
+                                    <label class="nav-div" style="margin-left:0px">Local Login<p></p></label>
                                 ');
                             } else {
                                 echo('<input type="hidden" name="local" value="on" />');

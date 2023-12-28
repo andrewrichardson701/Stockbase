@@ -239,7 +239,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             <p id="sku" style="margin-bottom:0px;padding-bottom:0px"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
                                             <p class="green"');
                                                 if (isset($_GET['success']) && $_GET['success'] == 'stockMoved') {
-                                                    echo (' style="margin-bottom:0">Stock Moved!');
+                                                    echo (' style="margin-bottom:0px">Stock Moved!');
                                                 } else{
                                                     echo(' style="margin-bottom:24px">');
                                                 }
@@ -305,7 +305,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 <td colspan=100%>
                                                     <div class="container">                                                       
                                                         <table class="centertable" style="border: 1px solid #454d55;">
-                                                            <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                            <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
                                                                 <!-- below input used for the stock-modify.inc.php page to determine the type of change -->');
                                                                 if ($data_is_cable == 0) {
                                                                     echo('<input type="hidden" name="stock-move" value="1" /> ');
@@ -340,7 +340,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                                                     <label class="nav-v-c">To:</label>
                                                                                 </div>
                                                                                 <div class="col" style="max-width:max-content !important">
-                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-site" name="site" style="min-width:50px; padding:2 0 2 0;  width:max-content !important" required onchange="populateAreas(\''.$i.'\')">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-site" name="site" style="min-width:50px; padding:2px 0px 2px 0px;  width:max-content !important" required onchange="populateAreas(\''.$i.'\')">
                                                                                         <option value="" selected disabled hidden>Site</option>');
                                                                                             include 'includes/dbh.inc.php';
                                                                                             $sql = "SELECT id, name
@@ -369,12 +369,12 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                                                     </select>
                                                                                 </div>
                                                                                 <div class="col" style="max-width:max-content !important">
-                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-area" name="area" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled required onchange="populateShelves(\''.$i.'\')">
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-area" name="area" style="min-width:50px; padding:2px 0px 2px 0px; max-width:max-content !important" disabled required onchange="populateShelves(\''.$i.'\')">
                                                                                         <option value="" selected disabled hidden>Area</option>
                                                                                     </select>
                                                                                 </div>
                                                                                 <div class="col" style="max-width:max-content !important">
-                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-shelf" name="shelf" style="min-width:50px; padding: 2 0 2 0; max-width:max-content !important" disabled required>
+                                                                                    <select class="form-control nav-v-c row-dropdown" id="'.$i.'-n-shelf" name="shelf" style="min-width:50px; padding:2px 0px 2px 0px; max-width:max-content !important" disabled required>
                                                                                         <option value="" selected disabled hidden>Shelf</option>
                                                                                     </select>
                                                                                 </div>
@@ -382,13 +382,13 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                                                     <label class="nav-v-c" for="'.$i.'-n-quantity">Quantity: </label>
                                                                                 </div>
                                                                                 <div class="col" style="max-width:max-content !important">
-                                                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2 7 2 7; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
+                                                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2px 7px 2px 7px; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_inv_data[$i]['quantity'].'" required />
                                                                                 </div>
                                                                                 ');
                                                                                 if ($data_is_cable == 0) {
                                                                                     echo('
                                                                                     <div class="col" style="max-width:max-content !important">
-                                                                                        <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-serial" name="serial" style="min-width: 80px; padding: 2 7 2 7; width:max-content; max-width:90px" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled /> 
+                                                                                        <input type="number" class="form-control nav-v-c row-dropdown" id="'.$i.'-n-serial" name="serial" style="min-width: 80px; padding: 2px 7px 2px 7px; width:max-content; max-width:90px" placeholder="'); if (isset($stock_inv_data[$i]['serial_number']) && $stock_inv_data[$i]['serial_number'] !== '') { echo $stock_inv_data[$i]['serial_number']; } else { echo "No Serial Number"; } echo('" value="'.$stock_inv_data[$i]['serial_number'].'" disabled /> 
                                                                                     </div>
                                                                                     ');
                                                                                 }
@@ -426,7 +426,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         $search = isset($_GET['search']) ? $_GET['search'] : '';
 
         echo('
-            <form action="?modify=move" method="GET" style="margin-bottom:0">
+            <form action="?modify=move" method="GET" style="margin-bottom:0px">
                 <div class="container" id="stock-info-left">
                     <div class="nav-row" id="search-stock-row">
                         <input type="hidden" name="modify" id="modify" value="move" />
@@ -443,7 +443,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         echo('
         <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
             <input type="hidden" id="inv-action-type" name="inv-action-type" value="move" />
-            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0;margin-bottom:0">
+            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0px;margin-bottom:0px">
                 <thead style="text-align: center; white-space: nowrap;">
                     <tr class="theme-tableOuter">
                         <th class="viewport-mid-large">ID</th>
@@ -460,7 +460,7 @@ if ($stock_id == 0 || $stock_id == '0') {
             <table class="table table-dark theme-table centertable">
                 <tbody>
                     <tr class="theme-tableOuter">
-                        <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
+                        <td colspan="100%" style="margin:0px;padding:0px" class="invTablePagination">
                         <div class="row">
                             <div class="col text-center"></div>
                             <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">

@@ -127,7 +127,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             showResponse(); 
                             echo('
                             <div class="nav-row " style="margin-top:5px;">
-                                <h3 style="font-size:22px;margin-top:20px;margin-bottom:0;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
+                                <h3 style="font-size:22px;margin-top:20px;margin-bottom:0px;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
                                 <div class="nav-div nav-right" style="padding-top:5px;margin-right:0px !important">
                                     <div class="nav-row">
                                         <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">

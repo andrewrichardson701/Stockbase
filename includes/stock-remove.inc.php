@@ -222,7 +222,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                         
                         $stock_id = $_GET['stock_id'];
                         echo('
-                        <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                        <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
                            ');
                             if ($data_is_cable == 0) {
                                 echo('<input type="hidden" name="stock-remove" value="1" /> ');
@@ -236,7 +236,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                     <div id="heading-heading">
                                         <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
                                         <p id="sku"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
-                                        <p id="locations" style="margin-bottom:0"><strong>Locations:</strong><br>');
+                                        <p id="locations" style="margin-bottom:0px"><strong>Locations:</strong><br>');
                                         if (empty($stock_inv_data)) {
                                             echo("No locations linked.");
                                         } else {
@@ -310,7 +310,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             </div>
                                         </div>
                                         <hr style="border-color: gray; margin-right:15px">
-                                        <div class="nav-row" style="margin-bottom:0">
+                                        <div class="nav-row" style="margin-bottom:0px">
                                             <div class="nav-row" id="date-row" style="margin-top:10px">
                                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="transaction_date" id="date-label">Transaction Date</label></div>
                                                 <div><input type="date" value="'.date('Y-m-d').'" name="transaction_date" id="transaction_date" class="form-control" style="width:150px" required'.$disabled.'/></div>
@@ -367,7 +367,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         $search = isset($_GET['search']) ? $_GET['search'] : '';
 
         echo('
-            <form action="?modify=remove" method="GET" style="margin-bottom:0">
+            <form action="?modify=remove" method="GET" style="margin-bottom:0px">
                 <div class="container" id="stock-info-left">
                     <div class="nav-row" id="search-stock-row">
                         <input type="hidden" name="modify" id="modify" value="remove" />
@@ -384,7 +384,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         echo('
         <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
             <input type="hidden" id="inv-action-type" name="inv-action-type" value="remove" />
-            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0;margin-bottom:0">
+            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0px;margin-bottom:0px">
                 <thead style="text-align: center; white-space: nowrap;">
                     <tr class="theme-tableOuter">
                         <th class="viewport-mid-large">ID</th>
@@ -401,7 +401,7 @@ if ($stock_id == 0 || $stock_id == '0') {
             <table class="table table-dark theme-table centertable">
                 <tbody>
                     <tr class="theme-tableOuter">
-                        <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
+                        <td colspan="100%" style="margin:0px;padding:0px" class="invTablePagination">
                         <div class="row">
                             <div class="col text-center"></div>
                             <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">

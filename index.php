@@ -152,7 +152,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                                 <tr class="nav-row" id="site-name-row">
                                     <td id="site-name-label" style="width:250px;margin-left:25px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="site-name">Site Name:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="site-name">Site Name:</p>
                                     </td>
                                     <td id="site-name-input">
                                         <input class="form-control nav-v-c" type="text" style="width: 250px" id="site-name" name="site-name"required>
@@ -160,7 +160,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                                 <tr class="nav-row" id="site-description-row">
                                     <td id="site-description-label" style="width:250px;margin-left:25px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="site-description">Site Description:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="site-description">Site Description:</p>
                                     </td>
                                     <td id="site-description-input">
                                         <input class="form-control nav-v-c" type="text" style="width: 250px" id="site-description" name="site-description"required>
@@ -173,7 +173,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                                 <tr class="nav-row" id="area-name-row">
                                     <td id="area-name-label" style="width:250px;margin-left:25px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="area-name">Area Name:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="area-name">Area Name:</p>
                                     </td>
                                     <td id="area-name-input">
                                         <input class="form-control nav-v-c" type="text" style="width: 250px" id="area-name" name="area-name"required>
@@ -181,7 +181,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                                 <tr class="nav-row" id="area-description-row">
                                     <td id="area-description-label" style="width:250px;margin-left:25px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="area-description">Area Description:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="area-description">Area Description:</p>
                                     </td>
                                     <td id="area-description-input">
                                         <input class="form-control nav-v-c" type="text" style="width: 250px" id="area-description" name="area-description"required>
@@ -194,7 +194,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                                 <tr class="nav-row" id="shelf-name-row">
                                     <td id="shelf-name-label" style="width:250px;margin-left:25px">
-                                        <p style="min-height:max-content;margin:0" class="nav-v-c align-middle" for="shelf-name">Shelf Name:</p>
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="shelf-name">Shelf Name:</p>
                                     </td>
                                     <td id="shelf-name-input">
                                         <input class="form-control nav-v-c" type="text" style="width: 250px" id="shelf-name" name="shelf-name"required>
@@ -315,25 +315,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </form>');
 
                         echo('
-                        <div id="clear-div" class="nav-div viewport-large-block" style="margin-left:0;margin-right:0;margin-bottom:10px;">
+                        <div id="clear-div" class="nav-div viewport-large-block" style="margin-left:0px;margin-right:0px;margin-bottom:10px;">
                             <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'/\')">
                                 <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">');
+                        <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0px;margin-bottom:10px;">');
                         if ($showOOS == 0) {
-                            echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
+                            echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0px 2px 0px 2px" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
                         } else {
-                            echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 0 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
+                            echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0px 2px 0px 2px" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
                         }
                                 echo('
                                 <span class="zeroStockFont">
-                                    <p style="margin:0;padding:0">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
-                                    <p style="margin:0;padding:0">0 Stock</p>
+                                    <p style="margin:0px;padding:0px">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
+                                    <p style="margin:0px;padding:0px">0 Stock</p>
                             </button>
                         </div>
-                        <!-- <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
-                            <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
+                        <!-- <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0px;margin-bottom:10px;">
+                            <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6px 6px 6px 6px" onclick="navPage(\'cablestock.php\')">
                                 Fixed Cables
                             </button>
                         </div> -->
@@ -342,25 +342,25 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <!-- mobile layout section -->
                 <div class="container viewport-small" style="margin-top:-10px;max-width:max-content;">
                     <div class="nav-row">
-                        <div id="clear-div" class="nav-div" style="margin-left:0;margin-right:0;margin-bottom:10px;">
+                        <div id="clear-div" class="nav-div" style="margin-left:0px;margin-right:0px;margin-bottom:10px;">
                             <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'/\')">
                                 <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">');
+                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0px;margin-bottom:10px;">');
                         if ($showOOS == 0) {
-                            echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0 2 1 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
+                            echo('<button id="zerostock" class="btn btn-success nav-v-b" style="opacity:90%;color:black;padding:0px 2px 1px 2px" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'1\'))">');
                         } else {
-                            echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0 2 1 2" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
+                            echo('<button id="zerostock" class="btn btn-danger nav-v-b" style="opacity:80%;color:black;padding:0px 2px 1px 2px" onclick="navPage(updateQueryParameter(\'\', \'oos\', \'0\'))">');
                         }
                                 echo('
                                 <span class="zeroStockFont">
-                                    <p style="margin:0;padding:0">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
-                                    <p style="margin:0;padding:0">0 Stock</p>
+                                    <p style="margin:0px;padding:0px">'); if ($showOOS == 0) { echo('<i class="fa fa-plus"></i> Show'); } else { echo('<i class="fa fa-minus"></i> Hide'); } echo('</p>
+                                    <p style="margin:0px;padding:0px">0 Stock</p>
                             </button>
                         </div>
-                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0;margin-bottom:10px;">
-                            <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6 6 6 6" onclick="navPage(\'cablestock.php\')">
+                        <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0px;margin-bottom:10px;">
+                            <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6px 6px 6px 6px" onclick="navPage(\'cablestock.php\')">
                                 Fixed Cables
                             </button>
                         </div>
@@ -406,7 +406,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <table class="table table-dark theme-table centertable">
                     <tbody>
                         <tr class="theme-tableOuter">
-                            <td colspan="100%" style="padding:0;margin:0" class="invTablePagination">
+                            <td colspan="100%" style="margin:0px;padding:0px" class="invTablePagination">
                             <div class="row">
                                 <div class="col text-center"></div>
                                 <div id="inv-page-numbers" class="col-6 text-center align-middle" style="overflow-y:auto; display:flex;justify-content:center;align-items:center;">

@@ -4,11 +4,13 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
-// INVENTORY VIEW PAGE. SHOWS ALL INVENTORY ONCE LOGGED IN AND SHOWS FILTERS IN THE NAV
+// INVENTORY AUDIT VIEW PAGE. SHOWS ALL INVENTORY ONCE LOGGED IN AND ALLOWS FOR AUDITING IF IN DATE RANGE
+
 include 'session.php'; // Session setup and redirect if the session is not active 
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>

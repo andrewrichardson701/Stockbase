@@ -686,6 +686,7 @@ Clone the repo first, and the follow the below steps.
 - Add/Remove/Move stock pages now load the content using js and ajax - the same as the index page.
 - Audit page added, which has a 6 month date retention on it, meaning if the last date was 6 months ago, it will show on the audit page.
 - Pagination added to optics and cablestock pages to match the other stock pages.
+- Added DOCTYPE to all pages that need it to remove Quirks Mode issues.
 
 </details>
 <details>

@@ -9,7 +9,7 @@
 $servername = 'localhost';
 $dBUsername = 'admin';
 $dBPassword = 'admin';
-$dBName = 'stockbase_copy';
+$dBName = 'stockbase';
 
 $conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
 

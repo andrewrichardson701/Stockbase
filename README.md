@@ -664,7 +664,7 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
-<summary><h3>0.6.0-beta</h3></summary>
+<summary><h3>0.7.0-beta</h3></summary>
 <h4>Beta release 0.7.0, Login tracking and blocking.</h4>
 
 - Added login_log table to track login attempts.

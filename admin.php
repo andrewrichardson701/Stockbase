@@ -626,7 +626,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             sl.browser AS sl_browser, sl.os AS sl_os, sl.status AS sl_status,
                                             FROM_UNIXTIME(sl.last_activity) AS sl_last_activity,
                                             u.username AS u_username
-                                        FROM sessionlog AS sl
+                                        FROM session_log AS sl
                                         INNER JOIN users AS u ON u.id=sl.user_id";
                         $stmt_sessions = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_sessions, $sql_sessions)) {

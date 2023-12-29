@@ -305,6 +305,63 @@ INSERT INTO `item` VALUES (1,1,'',0,60,'','',1,1,1),(3,3,'',1,70,'','Staff Rack'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `login_failure`
+--
+
+DROP TABLE IF EXISTS `login_failure`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `login_failure` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `username` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `auth` text COLLATE utf8mb3_unicode_ci,
+  `ipv4` int DEFAULT NULL,
+  `ipv6` varbinary(16) DEFAULT NULL,
+  `last_timestamp` timestamp NOT NULL COMMENT 'Last failed attempet',
+  `count` int NOT NULL COMMENT 'Count of failures',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `login_failure`
+--
+
+LOCK TABLES `login_failure` WRITE;
+/*!40000 ALTER TABLE `login_failure` DISABLE KEYS */;
+/*!40000 ALTER TABLE `login_failure` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `login_log`
+--
+
+DROP TABLE IF EXISTS `login_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `login_log` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `type` text COLLATE utf8mb3_unicode_ci NOT NULL COMMENT 'login / logout / fail',
+  `username` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `user_id` int DEFAULT NULL COMMENT 'Can be blank if the user doesnt match anything',
+  `ipv4` int DEFAULT NULL,
+  `ipv6` varbinary(16) DEFAULT NULL,
+  `timestamp` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `auth` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `login_log`
+--
+
+LOCK TABLES `login_log` WRITE;
+/*!40000 ALTER TABLE `login_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `login_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `manufacturer`
 --
 
@@ -575,13 +632,13 @@ INSERT INTO `password_reset` VALUES (26,0,'62507324ad29a0ec','$2y$10$3/x.nmbvH2T
 UNLOCK TABLES;
 
 --
--- Table structure for table `sessionlog`
+-- Table structure for table `session_log`
 --
 
-DROP TABLE IF EXISTS `sessionlog`;
+DROP TABLE IF EXISTS `session_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessionlog` (
+CREATE TABLE `session_log` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `login_time` int NOT NULL,
@@ -592,18 +649,19 @@ CREATE TABLE `sessionlog` (
   `os` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `status` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `last_activity` int NOT NULL,
+  `login_log_id` bigint NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sessionlog`
+-- Dumping data for table `session_log`
 --
 
-LOCK TABLES `sessionlog` WRITE;
-/*!40000 ALTER TABLE `sessionlog` DISABLE KEYS */;
-INSERT INTO `sessionlog` VALUES (1,1,1700376682,1700378570,1833627677,NULL,'Google Chrome','Windows','inactive',0),(2,1,1700377135,1700378629,1833627677,NULL,'Google Chrome','Windows','inactive',0),(3,1,1700377391,1700378640,1833627677,NULL,'Google Chrome','Windows','inactive',0),(4,1,1700378543,1700378643,1833627677,NULL,'Google Chrome','Windows','inactive',0),(5,1,1700379711,1700430557,1833627677,NULL,'Google Chrome','Windows','closed',0),(6,6,1700431725,1700439243,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(7,6,1700431725,1700439243,1833627677,NULL,'Google Chrome','Windows','expired',1700434431),(8,1,1700438591,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(9,2,1700438622,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(10,5,1700439365,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(11,6,1700439392,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725),(12,6,1700439441,1700439446,1833627677,NULL,'Google Chrome','Windows','inactive',1700439441),(13,6,1700439534,1700439555,1833627677,NULL,'Google Chrome','Windows','inactive',1700439534),(14,6,1700439558,1700440260,1833627677,NULL,'Google Chrome','Windows','inactive',1700439572),(15,6,1700440271,1700440828,1833627677,NULL,'Google Chrome','Windows','inactive',1700000000),(16,6,1700440830,1700440881,1833627677,NULL,'Google Chrome','Windows','inactive',1700440830),(17,6,1700440884,1700440962,1833627677,NULL,'Google Chrome','Windows','expired',1700440884),(18,6,1700440895,1700440962,1833627677,NULL,'Google Chrome','Windows','expired',1700440895),(19,6,1700440905,1700440962,1833627677,NULL,'Google Chrome','Windows','expired',1700440905),(20,6,1700440917,1700440962,1833627677,NULL,'Google Chrome','Windows','timeout',1700440917),(21,6,1700441021,1700441024,1833627677,NULL,'Google Chrome','Windows','timeout',1700441021),(22,6,1700441431,1700441433,1833627677,NULL,'Google Chrome','Windows','timeout',1700441431),(23,6,1700441586,1700444717,1833627677,NULL,'Google Chrome','Windows','expired',1700442862),(24,6,1700443522,1700444779,1833627677,NULL,'Google Chrome','Windows','inactive',1700444778),(25,6,1700444781,1700446551,1833627677,NULL,'Google Chrome','Windows','killed',1700446529),(26,6,1700446554,1700446713,1833627677,NULL,'Google Chrome','Windows','killed',1700446645),(27,6,1700446685,1700447262,1833627677,NULL,'Google Chrome','Windows','killed',1700446717),(28,6,1700446720,1700447172,1833627677,NULL,'Google Chrome','Windows','inactive',1700447169),(29,6,1700447200,1700557260,1833627677,NULL,'Google Chrome','Windows','expired',1700447607),(30,6,1700447214,1700447591,1833627677,NULL,'Google Chrome','Windows','inactive',1700447590),(31,2,1700557260,1700557826,167772161,NULL,'Google Chrome','Windows','inactive',1700557260),(32,2,1700558234,1700561577,167772161,NULL,'Google Chrome','Windows','expired',1700558325),(33,2,1700561577,1700671797,167772161,NULL,'Google Chrome','Windows','expired',1700566056),(34,2,1700671797,1700671809,1454737178,NULL,'Google Chrome','Windows','inactive',1700671808),(35,6,1700671817,1700675044,1454737178,NULL,'Google Chrome','Windows','expired',1700671871),(36,2,1700672006,1700675044,167772161,NULL,'Google Chrome','Windows','expired',1700672471),(37,6,1700675044,1700675168,167772161,NULL,'Google Chrome','Windows','inactive',1700675044),(38,0,1700675198,1700677234,167772161,NULL,'Google Chrome','Windows','expired',1700675319),(39,2,1700675466,1700850247,167772161,NULL,'Google Chrome','Windows','expired',1700681966),(40,6,1700681235,1700850247,1454737178,NULL,'Google Chrome','Windows','expired',1700681543),(41,2,1700850247,1701108138,167772161,NULL,'Google Chrome','Windows','expired',1700852164),(42,6,1701108138,1701296509,1833627677,NULL,'Google Chrome','Windows','expired',1701108138),(43,2,1701296509,1701308908,167772161,NULL,'Google Chrome','Windows','expired',1701296509),(44,2,1701308908,1701310720,167772161,NULL,'Google Chrome','Windows','timeout',1701308908),(45,2,1701310721,1701352240,167772161,NULL,'Google Chrome','Windows','expired',1701314705),(46,2,1701352240,1701395435,167772161,NULL,'Google Chrome','Windows','expired',1701354657),(47,6,1701353152,1701395435,3106972702,NULL,'Mozilla Firefox','Windows','expired',1701353195),(48,2,1701395435,1701651958,167772161,NULL,'Google Chrome','Windows','expired',1701395438),(49,2,1701651958,1701721783,167772161,NULL,'Google Chrome','Windows','expired',1701651977),(50,6,1701721783,1701722569,1454737178,NULL,'Google Chrome','Windows','inactive',1701722568),(51,6,1701722571,1701729807,1454737178,NULL,'Google Chrome','Windows','inactive',1701729805),(52,3,1701729824,1701730029,1454737178,NULL,'Google Chrome','Windows','inactive',1701730027),(53,6,1701730030,1702155953,1454737178,NULL,'Google Chrome','Windows','expired',1701730031),(54,2,1702155953,1702164228,167772161,NULL,'Google Chrome','Windows','expired',1702156328),(55,2,1702164228,1702165605,167772161,NULL,'Google Chrome','Windows','inactive',1702165604),(56,2,1702165606,1702169911,167772161,NULL,'Google Chrome','Windows','expired',1702166016),(57,2,1702169911,1702244372,167772161,NULL,'Google Chrome','Windows','expired',1702171560),(58,6,1702172803,1702244372,1454737178,NULL,'Google Chrome','Windows','expired',1702172807),(59,6,1702244372,1702262625,1833627677,NULL,'Google Chrome','Windows','expired',1702259614),(60,6,1702262625,1702279069,1833627677,NULL,'Google Chrome','Windows','expired',1702271687),(61,2,1702279069,1702279070,167772161,NULL,'Google Chrome','Windows','inactive',1702279069),(62,3,1702279077,1702279204,167772161,NULL,'Google Chrome','Windows','inactive',1702279200),(63,2,1702279211,1702279224,167772161,NULL,'Google Chrome','Windows','inactive',1702279223),(64,2,1702279226,1702286857,167772161,NULL,'Google Chrome','Windows','expired',1702281070),(65,6,1702281189,1702286857,1833627677,NULL,'Google Chrome','Windows','expired',1702281341),(66,6,1702281390,1702286857,1833627677,NULL,'Google Chrome','Windows','expired',1702281390),(67,6,1702286857,1702318360,1833627678,NULL,'Mozilla Firefox','Windows','expired',1702287175),(68,6,1702318360,1702346949,1833627677,NULL,'Google Chrome','Windows','expired',1702326848),(69,2,1702346949,1702348829,167772161,NULL,'Google Chrome','Windows','expired',1702346950),(70,6,1702347039,1702353423,1833627677,NULL,'Google Chrome','Windows','inactive',1702353332),(71,6,1702353471,1702366482,1833627677,NULL,'Google Chrome','Windows','expired',1702354635),(72,6,1702366482,1702407299,1833627677,NULL,'Google Chrome','Windows','expired',1702367053),(73,6,1702407299,1702444256,1833627678,NULL,'Google Chrome','Windows','expired',1702407551),(74,2,1702444256,1702444268,167772161,NULL,'Google Chrome','Windows','inactive',1702444265),(75,2,1702450141,1702516719,167772161,NULL,'Google Chrome','Windows','expired',1702450145),(76,6,1702451604,1702516719,1833627677,NULL,'Google Chrome','Windows','expired',1702451604),(77,2,1702516719,1702520369,167772161,NULL,'Google Chrome','Windows','expired',1702517114),(78,6,1702520369,1702522237,1833627677,NULL,'Google Chrome','Windows','timeout',1702520369),(79,6,1702522239,1702655668,1833627677,NULL,'Google Chrome','Windows','expired',1702522242),(80,2,1702655668,1702949386,NULL,_binary '*\0#\î!X À\Ò2\ÆUÝ€','Google Chrome','Linux','expired',1702655689),(81,6,1702949387,1702953055,1833627677,NULL,'Google Chrome','Windows','expired',1702949668),(82,6,1702949725,1702953055,1833627677,NULL,'Google Chrome','Windows','expired',1702950379),(83,6,1702953057,1702963544,1833627677,NULL,'Google Chrome','Windows','expired',1702953737),(84,6,1702963544,1703586047,1833627677,NULL,'Google Chrome','Windows','expired',1702963544),(85,6,1703586047,1703590818,1833627677,NULL,'Google Chrome','Windows','expired',1703586686),(86,6,1703590820,NULL,1833627677,NULL,'Google Chrome','Windows','active',1703591428);
-/*!40000 ALTER TABLE `sessionlog` ENABLE KEYS */;
+LOCK TABLES `session_log` WRITE;
+/*!40000 ALTER TABLE `session_log` DISABLE KEYS */;
+INSERT INTO `session_log` VALUES (1,1,1700376682,1700378570,1833627677,NULL,'Google Chrome','Windows','inactive',0,0),(2,1,1700377135,1700378629,1833627677,NULL,'Google Chrome','Windows','inactive',0,0),(3,1,1700377391,1700378640,1833627677,NULL,'Google Chrome','Windows','inactive',0,0),(4,1,1700378543,1700378643,1833627677,NULL,'Google Chrome','Windows','inactive',0,0),(5,1,1700379711,1700430557,1833627677,NULL,'Google Chrome','Windows','closed',0,0),(6,6,1700431725,1700439243,1833627677,NULL,'Google Chrome','Windows','expired',1700431725,0),(7,6,1700431725,1700439243,1833627677,NULL,'Google Chrome','Windows','expired',1700434431,0),(8,1,1700438591,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725,0),(9,2,1700438622,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725,0),(10,5,1700439365,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725,0),(11,6,1700439392,1700439558,1833627677,NULL,'Google Chrome','Windows','expired',1700431725,0),(12,6,1700439441,1700439446,1833627677,NULL,'Google Chrome','Windows','inactive',1700439441,0),(13,6,1700439534,1700439555,1833627677,NULL,'Google Chrome','Windows','inactive',1700439534,0),(14,6,1700439558,1700440260,1833627677,NULL,'Google Chrome','Windows','inactive',1700439572,0),(15,6,1700440271,1700440828,1833627677,NULL,'Google Chrome','Windows','inactive',1700000000,0),(16,6,1700440830,1700440881,1833627677,NULL,'Google Chrome','Windows','inactive',1700440830,0),(17,6,1700440884,1700440962,1833627677,NULL,'Google Chrome','Windows','expired',1700440884,0),(18,6,1700440895,1700440962,1833627677,NULL,'Google Chrome','Windows','expired',1700440895,0),(19,6,1700440905,1700440962,1833627677,NULL,'Google Chrome','Windows','expired',1700440905,0),(20,6,1700440917,1700440962,1833627677,NULL,'Google Chrome','Windows','timeout',1700440917,0),(21,6,1700441021,1700441024,1833627677,NULL,'Google Chrome','Windows','timeout',1700441021,0),(22,6,1700441431,1700441433,1833627677,NULL,'Google Chrome','Windows','timeout',1700441431,0),(23,6,1700441586,1700444717,1833627677,NULL,'Google Chrome','Windows','expired',1700442862,0),(24,6,1700443522,1700444779,1833627677,NULL,'Google Chrome','Windows','inactive',1700444778,0),(25,6,1700444781,1700446551,1833627677,NULL,'Google Chrome','Windows','killed',1700446529,0),(26,6,1700446554,1700446713,1833627677,NULL,'Google Chrome','Windows','killed',1700446645,0),(27,6,1700446685,1700447262,1833627677,NULL,'Google Chrome','Windows','killed',1700446717,0),(28,6,1700446720,1700447172,1833627677,NULL,'Google Chrome','Windows','inactive',1700447169,0),(29,6,1700447200,1700557260,1833627677,NULL,'Google Chrome','Windows','expired',1700447607,0),(30,6,1700447214,1700447591,1833627677,NULL,'Google Chrome','Windows','inactive',1700447590,0),(31,2,1700557260,1700557826,167772161,NULL,'Google Chrome','Windows','inactive',1700557260,0),(32,2,1700558234,1700561577,167772161,NULL,'Google Chrome','Windows','expired',1700558325,0),(33,2,1700561577,1700671797,167772161,NULL,'Google Chrome','Windows','expired',1700566056,0),(34,2,1700671797,1700671809,1454737178,NULL,'Google Chrome','Windows','inactive',1700671808,0),(35,6,1700671817,1700675044,1454737178,NULL,'Google Chrome','Windows','expired',1700671871,0),(36,2,1700672006,1700675044,167772161,NULL,'Google Chrome','Windows','expired',1700672471,0),(37,6,1700675044,1700675168,167772161,NULL,'Google Chrome','Windows','inactive',1700675044,0),(38,0,1700675198,1700677234,167772161,NULL,'Google Chrome','Windows','expired',1700675319,0),(39,2,1700675466,1700850247,167772161,NULL,'Google Chrome','Windows','expired',1700681966,0),(40,6,1700681235,1700850247,1454737178,NULL,'Google Chrome','Windows','expired',1700681543,0),(41,2,1700850247,1701108138,167772161,NULL,'Google Chrome','Windows','expired',1700852164,0),(42,6,1701108138,1701296509,1833627677,NULL,'Google Chrome','Windows','expired',1701108138,0),(43,2,1701296509,1701308908,167772161,NULL,'Google Chrome','Windows','expired',1701296509,0),(44,2,1701308908,1701310720,167772161,NULL,'Google Chrome','Windows','timeout',1701308908,0),(45,2,1701310721,1701352240,167772161,NULL,'Google Chrome','Windows','expired',1701314705,0),(46,2,1701352240,1701395435,167772161,NULL,'Google Chrome','Windows','expired',1701354657,0),(47,6,1701353152,1701395435,3106972702,NULL,'Mozilla Firefox','Windows','expired',1701353195,0),(48,2,1701395435,1701651958,167772161,NULL,'Google Chrome','Windows','expired',1701395438,0),(49,2,1701651958,1701721783,167772161,NULL,'Google Chrome','Windows','expired',1701651977,0),(50,6,1701721783,1701722569,1454737178,NULL,'Google Chrome','Windows','inactive',1701722568,0),(51,6,1701722571,1701729807,1454737178,NULL,'Google Chrome','Windows','inactive',1701729805,0),(52,3,1701729824,1701730029,1454737178,NULL,'Google Chrome','Windows','inactive',1701730027,0),(53,6,1701730030,1702155953,1454737178,NULL,'Google Chrome','Windows','expired',1701730031,0),(54,2,1702155953,1702164228,167772161,NULL,'Google Chrome','Windows','expired',1702156328,0),(55,2,1702164228,1702165605,167772161,NULL,'Google Chrome','Windows','inactive',1702165604,0),(56,2,1702165606,1702169911,167772161,NULL,'Google Chrome','Windows','expired',1702166016,0),(57,2,1702169911,1702244372,167772161,NULL,'Google Chrome','Windows','expired',1702171560,0),(58,6,1702172803,1702244372,1454737178,NULL,'Google Chrome','Windows','expired',1702172807,0),(59,6,1702244372,1702262625,1833627677,NULL,'Google Chrome','Windows','expired',1702259614,0),(60,6,1702262625,1702279069,1833627677,NULL,'Google Chrome','Windows','expired',1702271687,0),(61,2,1702279069,1702279070,167772161,NULL,'Google Chrome','Windows','inactive',1702279069,0),(62,3,1702279077,1702279204,167772161,NULL,'Google Chrome','Windows','inactive',1702279200,0),(63,2,1702279211,1702279224,167772161,NULL,'Google Chrome','Windows','inactive',1702279223,0),(64,2,1702279226,1702286857,167772161,NULL,'Google Chrome','Windows','expired',1702281070,0),(65,6,1702281189,1702286857,1833627677,NULL,'Google Chrome','Windows','expired',1702281341,0),(66,6,1702281390,1702286857,1833627677,NULL,'Google Chrome','Windows','expired',1702281390,0),(67,6,1702286857,1702318360,1833627678,NULL,'Mozilla Firefox','Windows','expired',1702287175,0),(68,6,1702318360,1702346949,1833627677,NULL,'Google Chrome','Windows','expired',1702326848,0),(69,2,1702346949,1702348829,167772161,NULL,'Google Chrome','Windows','expired',1702346950,0),(70,6,1702347039,1702353423,1833627677,NULL,'Google Chrome','Windows','inactive',1702353332,0),(71,6,1702353471,1702366482,1833627677,NULL,'Google Chrome','Windows','expired',1702354635,0),(72,6,1702366482,1702407299,1833627677,NULL,'Google Chrome','Windows','expired',1702367053,0),(73,6,1702407299,1702444256,1833627678,NULL,'Google Chrome','Windows','expired',1702407551,0),(74,2,1702444256,1702444268,167772161,NULL,'Google Chrome','Windows','inactive',1702444265,0),(75,2,1702450141,1702516719,167772161,NULL,'Google Chrome','Windows','expired',1702450145,0),(76,6,1702451604,1702516719,1833627677,NULL,'Google Chrome','Windows','expired',1702451604,0),(77,2,1702516719,1702520369,167772161,NULL,'Google Chrome','Windows','expired',1702517114,0),(78,6,1702520369,1702522237,1833627677,NULL,'Google Chrome','Windows','timeout',1702520369,0),(79,6,1702522239,1702655668,1833627677,NULL,'Google Chrome','Windows','expired',1702522242,0),(80,2,1702655668,1702949386,NULL,_binary '*\0#\î!X À\Ò2\ÆUÝ€','Google Chrome','Linux','expired',1702655689,0),(81,6,1702949387,1702953055,1833627677,NULL,'Google Chrome','Windows','expired',1702949668,0),(82,6,1702949725,1702953055,1833627677,NULL,'Google Chrome','Windows','expired',1702950379,0),(83,6,1702953057,1702963544,1833627677,NULL,'Google Chrome','Windows','expired',1702953737,0),(84,6,1702963544,1703586047,1833627677,NULL,'Google Chrome','Windows','expired',1702963544,0),(85,6,1703586047,1703590818,1833627677,NULL,'Google Chrome','Windows','expired',1703586686,0),(86,6,1703590820,NULL,1833627677,NULL,'Google Chrome','Windows','active',1703591428,0);
+/*!40000 ALTER TABLE `session_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -923,4 +981,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-28 16:22:11
+-- Dump completed on 2023-12-29 17:31:24

@@ -72,7 +72,7 @@ function sessionCloseExpired() {
         include 'dbh.inc.php';
 
         $sql = "SELECT * 
-                FROM sessionlog
+                FROM session_log
                 WHERE last_activity<? AND status='active'";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -90,7 +90,7 @@ function sessionCloseExpired() {
                     $session_id = $row['id'];
                     $status = 'expired';
 
-                    $sql_update = "UPDATE sessionlog 
+                    $sql_update = "UPDATE session_log 
                             SET logout_time=?, status=?
                             WHERE id=? AND status='active'";
                     $stmt_update = mysqli_stmt_init($conn);
@@ -118,7 +118,7 @@ function sessionLastActivity() {
 
         // check if the session exists 
         $sql = "SELECT * 
-                FROM sessionlog
+                FROM session_log
                 WHERE id=? AND user_id=? AND status='active'";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -133,7 +133,7 @@ function sessionLastActivity() {
                 unset($_SESSION['session_id']);
             } else {
                 //session found
-                $sql = "UPDATE sessionlog 
+                $sql = "UPDATE session_log 
                         SET last_activity=?
                         WHERE id=? AND user_id=? AND status='active'";
                 $stmt = mysqli_stmt_init($conn);
@@ -161,7 +161,7 @@ function sessionTimeout() {
 
         // check if the session exists 
         $sql = "SELECT * 
-                FROM sessionlog
+                FROM session_log
                 WHERE id=? AND user_id=? AND status='active'";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -176,7 +176,7 @@ function sessionTimeout() {
                 unset($_SESSION['session_id']);
             } else {
                 //session found
-                $sql = "UPDATE sessionlog 
+                $sql = "UPDATE session_log 
                         SET logout_time=?, status=?
                         WHERE id=? AND user_id=? AND status='active'";
                 $stmt = mysqli_stmt_init($conn);
@@ -210,6 +210,7 @@ function sessionLogin() {
     global $_SESSION;
 
     if (isset($_SESSION['user_id'])) {
+        $login_log_id = $_SESSION['login_log_id'];
         $user_id = isset($_SESSION['real-user_id']) ? $_SESSION['real-user_id'] : $_SESSION['user_id'];
         $login_time = time();
         $ip = getIPAddress();
@@ -229,14 +230,14 @@ function sessionLogin() {
         $status = 'active';
 
         include 'dbh.inc.php';
-        $sql = "INSERT INTO sessionlog (user_id, login_time, last_activity, $ip_field, browser, os, status) 
-                                    VALUES (?, ?, ?, $ip_insert, ?, ?, ?)";
+        $sql = "INSERT INTO session_log (user_id, login_time, last_activity, $ip_field, browser, os, status, login_log_id) 
+                                    VALUES (?, ?, ?, $ip_insert, ?, ?, ?, ?)";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             echo('mysql issue');
             exit();
         } else {
-            mysqli_stmt_bind_param($stmt, "sssssss", $user_id, $login_time, $login_time, $ip, $browser, $os, $status);
+            mysqli_stmt_bind_param($stmt, "ssssssss", $user_id, $login_time, $login_time, $ip, $browser, $os, $status, $login_log_id);
             mysqli_stmt_execute($stmt);
             $session_id = mysqli_insert_id($conn);
             $_SESSION['session_id'] = $session_id;
@@ -263,7 +264,7 @@ function sessionLogout() {
 
         // check if the session exists 
         $sql = "SELECT * 
-                FROM sessionlog
+                FROM session_log
                 WHERE id=? AND user_id=? AND status='active'";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -278,7 +279,7 @@ function sessionLogout() {
                 echo('session not found');
             } else {
                 //session found
-                $sql = "UPDATE sessionlog 
+                $sql = "UPDATE session_log 
                         SET logout_time=?, status=?
                         WHERE id=? AND user_id=? AND status='active'";
                 $stmt = mysqli_stmt_init($conn);
@@ -304,7 +305,7 @@ function sessionKill($session_id) {
 
     // check if the session exists 
     $sql = "SELECT * 
-            FROM sessionlog
+            FROM session_log
             WHERE id=? AND status='active'";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -318,7 +319,7 @@ function sessionKill($session_id) {
             $session_response = 'Error: Session not found.';
         } else {
             //session found
-            $sql = "UPDATE sessionlog 
+            $sql = "UPDATE session_log 
                     SET logout_time=?, status=?
                     WHERE id=? AND status='active'";
             $stmt = mysqli_stmt_init($conn);

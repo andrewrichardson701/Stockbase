@@ -40,7 +40,9 @@ if (isset($_GET['error'])) {
     } elseif ($_GET['error'] == 'passwordMatchesCurrent') {
         $errorPtext = 'New password matches current.';
     } elseif ($_GET["error"] == "invalidCredentials" || str_contains($_GET['error'], "invalidCredentials")) {
-		$errorPtext = '<p class="red">Invalid Username / Password...</p>';
+		$errorPtext = 'Invalid Username / Password...';
+	} elseif ($_GET["error"] == "loginBlocked") {
+		$errorPtext = 'Login Blocked. Please try again later...';
 	} elseif ($_GET['error'] == 'invalidPermissions') {
         $errorPtext = 'Invalid permissions to complete.';
     } elseif ($_GET['error'] == 'roleMissing') {

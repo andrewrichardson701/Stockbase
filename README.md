@@ -671,6 +671,9 @@ Clone the repo first, and the follow the below steps.
 - Added login_failure table to track failed login count.
 - Renamed sessionlog table to session_log.
 - Added login_log_id to session_log table.
+- New include file added for login tracking and blocking, as includes/login-functions.inc.php
+- Adjusted the login.in, session.inc and logout php pages to accomodate the new login blocking and tracking.
+- Fixed some LDAP testing bugs.
 
 </details>
 <details>

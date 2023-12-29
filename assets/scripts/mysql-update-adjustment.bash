@@ -136,6 +136,9 @@ case "$new_branch" in
     0.6.0-beta )
             0.6.0-beta "$current_branch"
             break;;
+    0.7.0-beta )
+            0.7.0-beta "$current_branch"
+            break;;
 esac
 
 
@@ -206,6 +209,16 @@ esac
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.3.X-beta "0.5.0-beta"                                             
             break;;
+    0.7.0-beta )
+	    echo "SQL Changes to be made:"
+            echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
+            echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
+            echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
+                                                        DROP TABLE `login_failure`;
+                                                        ALTER TABLE `session_log` RENAME sesisonlog;
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
+	    break;;
     esac 
 }
 
@@ -273,11 +286,21 @@ esac
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.4.0-beta "0.5.0-beta"                                             
             break;;
+    0.7.0-beta )
+	    echo "SQL Changes to be made:"
+            echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
+            echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
+            echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
+                                                        DROP TABLE `login_failure`;
+                                                        ALTER TABLE `session_log` RENAME sesisonlog;
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
+	    break;;
     esac 
 }
 
 0.4.1-beta() {
-    # This is for all 0.3.X-beta branches/versions past 0.3.2-beta
+    
 
     current_branch=$1
 
@@ -420,6 +443,16 @@ esac
                                                                 ALTER TABLE stock DROP INDEX description;
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"                                         
             break;;
+    0.7.0-beta )
+	    echo "SQL Changes to be made:"
+            echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
+            echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
+            echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
+                                                        DROP TABLE `login_failure`;
+                                                        ALTER TABLE `session_log` RENAME sesisonlog;
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
+	    break;;
     esac 
 }
 
@@ -583,6 +616,209 @@ esac
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
             break;;
     0.6.0-beta )
+            echo "No SQL changes to be made."                                        
+            break;;
+    0.7.0-beta )
+	    echo "SQL Changes to be made:"
+            echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
+            echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
+            echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
+                                                        DROP TABLE `login_failure`;
+                                                        ALTER TABLE `session_log` RENAME sesisonlog;
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
+	    break;;
+    esac 
+}
+
+0.7.0-beta() {
+
+    current_branch=$1
+
+    case "$current_branch" in
+    0.3.2-beta|0.3.3-beta ) 
+            echo "SQL Changes to be made:"
+            echo " - 'tag' table becomes 'label'"
+            echo " - 'stock_tag' table becomes 'stock_label'"
+            echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
+            0.5.0-beta "0.4.0-beta"
+            break;;
+            
+    0.4.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added to config table"
+            echo " - (0.4.1-beta) Columns: 'cost_enable_normal' and 'cost_enable_cable' to be added to config_default table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config table"
+            echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config_default table"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE config_default ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config_default ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE config ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
+            0.5.0-beta "0.4.1-beta"
+            break;;
+    0.4.1-beta|0.4.2-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.5.0-beta) Tables: 'sessionlog' to be added"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
+                                                          CREATE TABLE `sessionlog` (
+                                                            `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                            `user_id` INT NOT NULL,
+                                                            `login_time` INT NOT NULL,
+                                                            `logout_time` INT,
+                                                            `last_activity` INT NOT NULL,
+                                                            `ipv4` INT unsigned,
+                                                            `ipv6` VARBINARY(16),
+                                                            `browser` TEXT NOT NULL,
+                                                            `os` TEXT NOT NULL,
+                                                            `status` text NOT NULL,
+                                                            PRIMARY KEY (`id`)
+                                                          );"
+            break;;
+
+    0.5.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.6.0-beta) Database to be renamed from inventory to stockbase"
+            echo " - (0.6.0-beta) Tables: optic_speed, optic_transaction, optic_vendor, optic_item, optic_type, optic_comment, optic_connector to be added"
+            echo " - (0.6.0-beta) Default data to be added to optic_speed, optic_connector, optic_type."
+            echo " - (0.6.0-beta) Table Adjustments: password_reset COLLATE changed from utf8mb4_0900_ai_ci to utf8mb4_unicode_520_ci"
+            mysql -u "$db_username" -p "$db_password" -e "CREATE DATABASE stockbase;"
+            mysqldump -u "$db_username" -p "$db_password" inventory | mysql stockbase
+            mysqldump -u "$db_username" -p "$db_password" inventory > /tmp/inventory-backup.sql
+            mysql -u "$db_username" -p "$db_password" -e "DROP DATABASE inventory;"
+            mysql -u "$db_username" -p "$db_password" -e "USE stockbase; 
+                                                                CREATE TABLE `optic_comment` (
+                                                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                        `item_id` bigint NOT NULL,
+                                                                        `comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `user_id` int NOT NULL,
+                                                                        `timestamp` datetime NOT NULL,
+                                                                        `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `optic_connector` (
+                                                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                        `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `optic_item` (
+                                                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                        `model` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `vendor_id` int NOT NULL,
+                                                                        `serial_number` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `type_id` int NOT NULL,
+                                                                        `connector_id` int NOT NULL,
+                                                                        `mode` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `speed_id` int NOT NULL,
+                                                                        `site_id` int NOT NULL,
+                                                                        `quantity` int NOT NULL DEFAULT '1',
+                                                                        `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `optic_speed` (
+                                                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                        `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `optic_transaction` (
+                                                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                        `table_name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `item_id` bigint NOT NULL,
+                                                                        `type` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `reason` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `date` date NOT NULL,
+                                                                        `time` time NOT NULL,
+                                                                        `username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `site_id` bigint NOT NULL,
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `optic_type` (
+                                                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                        `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `optic_vendor` (
+                                                                        `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                        `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                        `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                CREATE TABLE `stock_audit` (
+                                                                        `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                                        `stock_id` BIGINT NOT NULL,
+                                                                        `user_id` BIGINT NOT NULL,
+                                                                        `date` DATE NOT NULL,
+                                                                        `comment` TEXT,
+                                                                        PRIMARY KEY (`id`)
+                                                                );
+                                                                INSERT INTO optic_type (name)
+                                                                VALUES
+                                                                        ('SFP'),
+                                                                        ('SFP+');
+                                                                INSERT INTO optic_connector (name)
+                                                                VALUES 
+                                                                        ('LC'),
+                                                                        ('SC'),
+                                                                        ('FC'),
+                                                                        ('ST'),
+                                                                        ('RJ45');
+                                                                INSERT INTO optic_speed (name)
+                                                                VALUES 
+                                                                        ('100M'),
+                                                                        ('1G'),
+                                                                        ('4G'),
+                                                                        ('8G'),
+                                                                        ('10G'),
+                                                                        ('25G'),
+                                                                        ('40G'),
+                                                                        ('50G'),
+                                                                        ('100G'),
+                                                                        ('200G'),
+                                                                        ('400G'),
+                                                                        ('800G');
+                                                                ALTER TABLE stock ADD FULLTEXT(name);
+                                                                ALTER TABLE stock ADD FULLTEXT(description);
+                                                                ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
+            break;;
+    0.6.0-beta )
+            echo "SQL Changes to be made:"
+            echo " - (0.7.0-beta) Tables: login_failure, login_log to be added"
+            echo " - (0.7.0-beta) Table sessionlog renamed to session_log"
+            echo " - (0.7.0-beta) Column 'login_log_in' added to session_log"
+            mysql -u "$db_username" -p "$db_password" -e "CREATE TABLE `login_log` (
+                                                                `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                                `type` TEXT NOT NULL COMMENT 'login / logout / fail',
+                                                                `username` TEXT NOT NULL,
+                                                                `user_id` INT COMMENT 'Can be blank if the user doesnt match anything',
+                                                                `ipv4` INT,
+                                                                `ipv6` VARBINARY(16),
+                                                                `auth` TEXT NOT NULL,
+                                                                `timestamp` TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+                                                                PRIMARY KEY (`id`)
+                                                        );
+                                                        CREATE TABLE `login_failure` (
+                                                                `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                                `username` TEXT NOT NULL,
+                                                                `auth` TEXT,
+                                                                `ipv4` INT,
+                                                                `ipv6` VARBINARY(16),
+                                                                `last_timestamp` TIMESTAMP NOT NULL COMMENT 'Last failed attempet',
+                                                                `count` INT NOT NULL COMMENT 'Count of failures',
+                                                                PRIMARY KEY (`id`)
+                                                        );
+                                                        ALTER TABLE sessionlog RENAME session_log;
+                                                        ALTER TABLE session_log ADD COLUMN login_log_id BIGINT NOT NULL;"                                     
+            break;;
+    0.7.0-beta )
             echo "No SQL changes to be made."                                        
             break;;
     esac 

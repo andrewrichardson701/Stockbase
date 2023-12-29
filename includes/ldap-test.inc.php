@@ -44,6 +44,7 @@ $ldap_userlist = [];
 
 function ldapTest($check, $ldap_username, $ldap_password, $ldap_password_confirm, $ldap_domain, $ldap_host, $ldap_port, $ldap_basedn, $ldap_usergroup, $ldap_userfilter) {
     global $ldap_userlist;
+    $type_filter = array("ou", "sn", "givenname", "mail");
     $errors=[]; 
 
     array_push($ldap_userlist, $check);
@@ -58,13 +59,13 @@ function ldapTest($check, $ldap_username, $ldap_password, $ldap_password_confirm
             ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0);
 
-            $ldap_dn = $ldap_basedn;
+            $ldap_dn = $ldap_usergroup.",".$ldap_basedn;
             $ldap_bind = ldap_bind($ldap_conn, $ldap_username, $ldap_password);
             if (!$ldap_bind) {
                 $error = "Error: Could not bind to LDAP server: $ldap_host.";
                 array_push($errors, $error);
             } else {
-                $ldap_search = ldap_search($ldap_conn, $ldap_dn, $ldap_userfilter, ['member']);
+                $ldap_search = ldap_search($ldap_conn, $ldap_dn, $ldap_userfilter, $type_filter);
                 if (!$ldap_search) {
                     $error = "Error: Could not search LDAP server: $ldap_host.";
                     array_push($errors, $error);
@@ -78,6 +79,7 @@ function ldapTest($check, $ldap_username, $ldap_password, $ldap_password_confirm
                             array_push($ldap_userlist, $ldap_info[$i]['dn']);
                         }
                         array_push($ldap_userlist, "");
+                        array_push($ldap_userlist, "Count: ".$ldap_info['count']);
                         array_push($ldap_userlist, "======================================================");
                         array_push($ldap_userlist, "");
                         

@@ -223,7 +223,14 @@ if (isset($_POST['submit'])) {
                     } else {
                         $ldap_filter = '(&'.$ldap_userfilter.'(sAMAccountName=' . $login_username. '))';
                     }
+                    
                     $ldap_search = ldap_search($ldap_conn, $ldap_dn, $ldap_filter);
+                    if (!$ldap_search) {
+                        error_log("LDAP search failed");
+                        header("Location: ../login.php?error=ldapSearchFailed");
+                        exit();
+                    }
+
                     $ldap_info = ldap_get_entries($ldap_conn, $ldap_search);
 
                     if ($ldap_info['count'] == 1) {
@@ -273,7 +280,7 @@ if (isset($_POST['submit'])) {
                                         $insert_id = mysqli_insert_id($conn);
                                         include 'changelog.inc.php';
                                         // update changelog
-                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
+                                        addChangelog($insert_id, $ldap_info_samAccountName, "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }
                                     session_start();
                                     $_SESSION['user_id'] = $insert_id;

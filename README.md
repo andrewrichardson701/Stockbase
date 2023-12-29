@@ -665,6 +665,16 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.6.0-beta</h3></summary>
+<h4>Beta release 0.7.0, Login tracking and blocking.</h4>
+
+- Added login_log table to track login attempts.
+- Added login_failure table to track failed login count.
+- Renamed sessionlog table to session_log.
+- Added login_log_id to session_log table.
+
+</details>
+<details>
+<summary><h3>0.6.0-beta</h3></summary>
 <h4>Beta release 0.6.0, Optics stocking, Auditing and database renamed to stockbase.</h4>
 
 - Optic modules now stocked under optics.php

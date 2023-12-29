@@ -169,17 +169,17 @@ server {
     index index.php index.html;
 
     location / {
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files \$uri \$uri/ /index.php?\$query_string;
     }
 
     location ~ \.php$ {
         include fastcgi_params;
         fastcgi_pass unix:/var/run/php/$phpversion-fpm.sock;
         fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
     }
 
-    return 301 https://$web_domain$request_uri;
+    return 301 https://$web_domain\$request_uri;
 }
 
 server {
@@ -193,14 +193,14 @@ server {
     ssl_certificate_key $ssl_key;
 
     location / {
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files \$uri \$uri/ /index.php?\$query_string;
     }
 
     location ~ \.php$ {
         include fastcgi_params;
         fastcgi_pass unix:/var/run/php/php$phpversion-fpm.sock;
         fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
     }
 }
 EOL
@@ -496,14 +496,14 @@ server {
     index index.php index.html;
 
     location / {
-        try_files $uri $uri/ /index.php?$query_string;
+        try_files \$uri \$uri/ /index.php?\$query_string;
     }
 
     location ~ \.php$ {
         include fastcgi_params;
         fastcgi_pass unix:/var/run/php/php$phpversion-fpm.sock;
         fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
     }
 }
 EOL

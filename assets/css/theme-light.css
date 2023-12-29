@@ -77,6 +77,7 @@ body {
 
 .footer, .show {
     background-color: #d1cfcf;
+    border-top: 1px solid #FFFDFA;
     color: black;
 }
 

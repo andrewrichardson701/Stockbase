@@ -700,6 +700,9 @@ Clone the repo first, and the follow the below steps.
 - Audit page added, which has a 6 month date retention on it, meaning if the last date was 6 months ago, it will show on the audit page.
 - Pagination added to optics and cablestock pages to match the other stock pages.
 - Added DOCTYPE to all pages that need it to remove Quirks Mode issues.
+- Corrected the ldap-test script to actually filter based on input.
+- Added a border to the footer using the background colour to all css files.
+- Added LDAP injection prevention on the login page.
 
 </details>
 <details>

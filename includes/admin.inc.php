@@ -679,7 +679,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             } else {
                 $outcome = 'disabled';
             }
-            header("Location: ../admin.php?success=$outcome&section=ldap-settings#ldap-settings");
+            header("Location: ../admin.php?success=$outcome&section=smtp-settings#smtp-settings");
             exit();
         }
     } elseif (isset($_POST['smtp-submit'])) { // save smtp info in smtp section of admin page

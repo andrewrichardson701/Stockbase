@@ -225,7 +225,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
 
                             $reset_user_id = $row['reset_user_id'];
 
-                            $sql = "SELECT * FROM users WHERE id=?;";
+                            $sql = "SELECT first_name, last_name, email, username FROM users WHERE id=?;";
                             $stmt = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt, $sql)) {
                                 header("location: $url&sqlerror=usersSelect&error=resubmit"); 
@@ -241,6 +241,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                     $user_firstname = $row['first_name'];
                                     $user_lastname = $row['last_name'];
                                     $user_email = $row['email'];
+                                    $username = $row['username'];
                                     $user_fullname = ucwords($user_firstname).' '.ucwords($user_lastname);
 
                                     $sql = "UPDATE users SET password=? WHERE id=? AND auth='local'";
@@ -268,7 +269,13 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                             $email_body = '<p>Your password has been reset.</p>
                                                             <p>Click <a href="' . $baseUrl . '">here</a> to login.</p>';
                                             send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
+
+
+                                            include 'login-functions.inc.php';
+                                            $data = array('id'=>$reset_user_id, 'username'=>$username);
+                                            deleteLoginFail($data, 'local');
                                             header("Location: ../login.php?newpwd=passwordupdated");
+                                            exit();
                                         }
                                     }
                                 }

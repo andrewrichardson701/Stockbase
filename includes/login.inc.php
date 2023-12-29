@@ -21,7 +21,7 @@ if (isset($_POST['submit'])) {
         exit();
     } else {
 
-        $login_username = trim($_POST["username"]); // remove white space before or after the username
+        $login_username = addslashes(trim($_POST["username"])); // remove white space before or after the username + add slashes to any special characters
         $login_password = $_POST["password"];
 
         if (isset($_POST['local'])) {
@@ -112,6 +112,9 @@ if (isset($_POST['submit'])) {
         } else { // LDAP login 
 
             include 'dbh.inc.php';
+            $login_username = ldap_escape($login_username, '', LDAP_ESCAPE_FILTER);
+            $login_password = ldap_escape($login_password, '', LDAP_ESCAPE_FILTER);
+            
             $sql_ldap_d = "SELECT * FROM config_default WHERE id=1";
             $stmt_ldap_d = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt_ldap_d, $sql_ldap_d)) {
@@ -223,7 +226,14 @@ if (isset($_POST['submit'])) {
                     } else {
                         $ldap_filter = '(&'.$ldap_userfilter.'(sAMAccountName=' . $login_username. '))';
                     }
+
                     $ldap_search = ldap_search($ldap_conn, $ldap_dn, $ldap_filter);
+                    if (!$ldap_search) {
+                        error_log("LDAP search failed");
+                        header("Location: ../login.php?error=ldapSearchFailed");
+                        exit();
+                    }
+
                     $ldap_info = ldap_get_entries($ldap_conn, $ldap_search);
 
                     if ($ldap_info['count'] == 1) {
@@ -273,7 +283,7 @@ if (isset($_POST['submit'])) {
                                         $insert_id = mysqli_insert_id($conn);
                                         include 'changelog.inc.php';
                                         // update changelog
-                                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
+                                        addChangelog($insert_id, $ldap_info_samAccountName, "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }
                                     session_start();
                                     $_SESSION['user_id'] = $insert_id;

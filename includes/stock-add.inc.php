@@ -198,7 +198,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         echo('
                                         </select>
                                     </div>');
-                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'Admin') {
                                         echo('<div>
                                             <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
                                         </div>');
@@ -211,13 +211,11 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         <select class="form-control stock-inputSize" id="area" name="area" disabled required>
                                             <option value="" selected disabled hidden>Select Area</option>
                                         </select>
-                                    </div>');
-                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
-                                        echo('<div>
-                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
-                                    </div>');
-                                    }
-                                echo('</div>
+                                    </div>
+                                    <div>
+                                    <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New</label>
+                                    </div>
+                                </div>
                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
                                     <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
                                     <div>
@@ -508,7 +506,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                         echo('
                                                         </select>
                                                     </div>');
-                                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'Admin') {
                                                         echo('<div>
                                                             <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
                                                         </div>');
@@ -521,13 +519,11 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                         <select class="form-control stock-inputSize" id="area" name="area" disabled required>
                                                             <option value="" selected disabled hidden>Select Area</option>
                                                         </select>
-                                                    </div>');
-                                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
-                                                        echo('<div>
-                                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
-                                                    </div>');
-                                                    }
-                                                echo('</div>
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New</label>
+                                                    </div>
+                                                </div>
                                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
                                                     <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
                                                     <div>
@@ -707,6 +703,8 @@ function populateAreas() {
       var select = document.getElementById("area");
       select.options.length = 0;
       select.options[0] = new Option("Select Area", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
       for (var i = 0; i < areas.length; i++) {
         select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
       }
@@ -729,6 +727,8 @@ function populateShelves() {
       var select = document.getElementById("shelf");
       select.options.length = 0;
       select.options[0] = new Option("Select Shelf", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
       for (var i = 0; i < shelves.length; i++) {
         select.options[select.options.length] = new Option(shelves[i].name, shelves[i].id);
       }

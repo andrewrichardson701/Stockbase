@@ -168,16 +168,16 @@ esac
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config table"
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
-                                              ALTER TABLE config_default DROP COLUMN cost_enable_normal; 
-                                              ALTER TABLE config_default DROP COLUMN cost_enable_cable; 
-                                              ALTER TABLE config DROP COLUMN cost_enable_normal; 
-                                              ALTER TABLE config DROP COLUMN cost_enable_cable;
-                                              ALTER TABLE config_default DROP COLUMN footer_enable; 
-                                              ALTER TABLE config_default DROP COLUMN footer_left_enable;
-                                              ALTER TABLE config_default DROP COLUMN footer_right_enable
-                                              ALTER TABLE config DROP COLUMN footer_enable; 
-                                              ALTER TABLE config DROP COLUMN footer_left_enable;
-                                              ALTER TABLE config DROP COLUMN footer_right_enable;"
+                                              ALTER TABLE `config_default` DROP COLUMN cost_enable_normal; 
+                                              ALTER TABLE `config_default` DROP COLUMN cost_enable_cable; 
+                                              ALTER TABLE `config` DROP COLUMN cost_enable_normal; 
+                                              ALTER TABLE `config` DROP COLUMN cost_enable_cable;
+                                              ALTER TABLE `config_default` DROP COLUMN footer_enable; 
+                                              ALTER TABLE `config_default` DROP COLUMN footer_left_enable;
+                                              ALTER TABLE `config_default` DROP COLUMN footer_right_enable;
+                                              ALTER TABLE `config` DROP COLUMN footer_enable; 
+                                              ALTER TABLE `config` DROP COLUMN footer_left_enable;
+                                              ALTER TABLE `config` DROP COLUMN footer_right_enable;"
             0.3.X-beta "0.4.0-beta"  
             break;;
     0.5.0-beta )
@@ -196,16 +196,16 @@ esac
             mysqldump -u "$db_username" -p "$db_password" stockbase | mysql inventory
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
             mysql -u "$db_username" -p "$db_password" -e "DROP DATABASE stockbase;"
-            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE optic_type;
-                                                                DROP TABLE optic_transaction;
-                                                                DROP TABLE optic_vendor;
-                                                                DROP TABLE optic_item;
-                                                                DROP TABLE optic_connector;
-                                                                DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;
-                                                                DROP TABLE stock_audit;
-                                                                ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `optic_type`;
+                                                                DROP TABLE `optic_transaction`;
+                                                                DROP TABLE `optic_vendor`;
+                                                                DROP TABLE `optic_item`;
+                                                                DROP TABLE `optic_connector`;
+                                                                DROP TABLE `optic_comment;`
+                                                                DROP TABLE `optic_speed`;
+                                                                DROP TABLE `stock_audit`;
+                                                                ALTER TABLE `stock` DROP INDEX name;
+                                                                ALTER TABLE `stock` DROP INDEX description;
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.3.X-beta "0.5.0-beta"                                             
             break;;
@@ -214,11 +214,15 @@ esac
             echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
             echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
             echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            echo " - (0.7.0-beta) Column 'parent_id' added to area"
+            echo " - (0.7.0-beta) Column 'is_container' removed from item"
             mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
                                                         DROP TABLE `login_failure`;
                                                         ALTER TABLE `session_log` RENAME sesisonlog;
-                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
-	    break;;
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;
+                                                        ALTER TABLE `area` ADD COLUMN parent_id INT;
+                                                        ALTER TABLE `item` DROP COLUMN is_container;"
+             break;;
     esac 
 }
 
@@ -246,16 +250,16 @@ esac
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config table"
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be removed from config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
-                                                          ALTER TABLE config_default DROP COLUMN cost_enable_normal; 
-                                                          ALTER TABLE config_default DROP COLUMN cost_enable_cable; 
-                                                          ALTER TABLE config DROP COLUMN cost_enable_normal; 
-                                                          ALTER TABLE config DROP COLUMN cost_enable_cable;
-                                                          ALTER TABLE config_default DROP COLUMN footer_enable; 
-                                                          ALTER TABLE config_default DROP COLUMN footer_left_enable;
-                                                          ALTER TABLE config_default DROP COLUMN footer_right_enable
-                                                          ALTER TABLE config DROP COLUMN footer_enable; 
-                                                          ALTER TABLE config DROP COLUMN footer_left_enable;
-                                                          ALTER TABLE config DROP COLUMN footer_right_enable;"
+                                                          ALTER TABLE `config_default` DROP COLUMN cost_enable_normal; 
+                                                          ALTER TABLE `config_default` DROP COLUMN cost_enable_cable; 
+                                                          ALTER TABLE `config` DROP COLUMN cost_enable_normal; 
+                                                          ALTER TABLE `config` DROP COLUMN cost_enable_cable;
+                                                          ALTER TABLE `config_default` DROP COLUMN footer_enable; 
+                                                          ALTER TABLE `config_default` DROP COLUMN footer_left_enable;
+                                                          ALTER TABLE `config_default` DROP COLUMN footer_right_enable;
+                                                          ALTER TABLE `config` DROP COLUMN footer_enable; 
+                                                          ALTER TABLE `config` DROP COLUMN footer_left_enable;
+                                                          ALTER TABLE `config` DROP COLUMN footer_right_enable;"
             break;;
     0.5.0-beta )
             echo "SQL Changes to be made:"
@@ -273,16 +277,16 @@ esac
             mysqldump -u "$db_username" -p "$db_password" stockbase | mysql inventory
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
             mysql -u "$db_username" -p "$db_password" -e "DROP DATABASE stockbase;"
-            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE optic_type;
-                                                                DROP TABLE optic_transaction;
-                                                                DROP TABLE optic_vendor;
-                                                                DROP TABLE optic_item;
-                                                                DROP TABLE optic_connector;
-                                                                DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;
-                                                                DROP TABLE stock_audit;
-                                                                ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `optic_type`;
+                                                                DROP TABLE `optic_transaction`;
+                                                                DROP TABLE `optic_vendor`;
+                                                                DROP TABLE `optic_item`;
+                                                                DROP TABLE `optic_connector`;
+                                                                DROP TABLE `optic_comment`;
+                                                                DROP TABLE `optic_speed`;
+                                                                DROP TABLE `stock_audit`;
+                                                                ALTER TABLE `stock` DROP INDEX name;
+                                                                ALTER TABLE `stock` DROP INDEX description;
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.4.0-beta "0.5.0-beta"                                             
             break;;
@@ -291,11 +295,15 @@ esac
             echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
             echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
             echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            echo " - (0.7.0-beta) Column 'parent_id' added to area"
+            echo " - (0.7.0-beta) Column 'is_container' removed from item"
             mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
                                                         DROP TABLE `login_failure`;
                                                         ALTER TABLE `session_log` RENAME sesisonlog;
-                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
-	    break;;
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;
+                                                        ALTER TABLE `area` ADD COLUMN parent_id INT;
+                                                        ALTER TABLE `item` DROP COLUMN is_container;"
+             break;;
     esac 
 }
 
@@ -310,7 +318,7 @@ esac
             echo " - 'tag' table becomes 'label'"
             echo " - 'stock_tag' table becomes 'stock_label'"
             echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
-            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE `tag` RENAME label; ALTER TABLE `stock_tag` RENAME stock_label; ALTER TABLE `stock_label` RENAME COLUMN tag_id TO label_id;"
             0.4.1-beta "0.4.0-beta"
             break;;
             
@@ -321,16 +329,16 @@ esac
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config table"
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config_default ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
             break;;
     0.4.1-beta|0.4.2-beta )
             echo "No SQL changes to be made."
@@ -350,19 +358,33 @@ esac
             mysqldump -u "$db_username" -p "$db_password" stockbase | mysql inventory
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
             mysql -u "$db_username" -p "$db_password" -e "DROP DATABASE stockbase;"
-            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE optic_type;
-                                                                DROP TABLE optic_transaction;
-                                                                DROP TABLE optic_vendor;
-                                                                DROP TABLE optic_item;
-                                                                DROP TABLE optic_connector;
-                                                                DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;
-                                                                DROP TABLE stock_audit;
-                                                                ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `optic_type`;
+                                                                DROP TABLE `optic_transaction`;
+                                                                DROP TABLE `optic_vendor`;
+                                                                DROP TABLE `optic_item`;
+                                                                DROP TABLE `optic_connector`;
+                                                                DROP TABLE `optic_comment`;
+                                                                DROP TABLE `optic_speed`;
+                                                                DROP TABLE `stock_audit`;
+                                                                ALTER TABLE `stock` DROP INDEX name;
+                                                                ALTER TABLE `stock` DROP INDEX description;
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"
             0.4.1-beta "0.5.0-beta"                                             
             break;;
+     0.7.0-beta )
+	    echo "SQL Changes to be made:"
+            echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
+            echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
+            echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            echo " - (0.7.0-beta) Column 'parent_id' added to area"
+            echo " - (0.7.0-beta) Column 'is_container' removed from item"
+            mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
+                                                        DROP TABLE `login_failure`;
+                                                        ALTER TABLE `session_log` RENAME sesisonlog;
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;
+                                                        ALTER TABLE `area` ADD COLUMN parent_id INT;
+                                                        ALTER TABLE `item` DROP COLUMN is_container;"
+             break;;
     esac 
 }
 
@@ -377,7 +399,7 @@ esac
             echo " - 'tag' table becomes 'label'"
             echo " - 'stock_tag' table becomes 'stock_label'"
             echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
-            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
+            mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE `tag` RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
             0.5.0-beta "0.4.0-beta"
             break;;
             
@@ -388,16 +410,16 @@ esac
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config table"
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config_default ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
             0.5.0-beta "0.4.1-beta"
             break;;
     0.4.1-beta|0.4.2-beta )
@@ -432,15 +454,15 @@ esac
             mysqldump -u "$db_username" -p "$db_password" stockbase > /tmp/stockbase-backup.sql
             mysql -u "$db_username" -p "$db_password" -e "DROP DATABASE stockbase;"
             mysql -u "$db_username" -p "$db_password" -e "DROP TABLE optic_type;
-                                                                DROP TABLE optic_transaction;
-                                                                DROP TABLE optic_vendor;
-                                                                DROP TABLE optic_item;
-                                                                DROP TABLE optic_connector;
-                                                                DROP TABLE optic_comment
-                                                                DROP TABLE optic_speed;
-                                                                DROP TABLE stock_audit;
-                                                                ALTER TABLE stock DROP INDEX name;
-                                                                ALTER TABLE stock DROP INDEX description;
+                                                                DROP TABLE `optic_transaction`;
+                                                                DROP TABLE `optic_vendor`;
+                                                                DROP TABLE `optic_item`;
+                                                                DROP TABLE `optic_connector`;
+                                                                DROP TABLE `optic_comment`
+                                                                DROP TABLE `optic_speed`;
+                                                                DROP TABLE `stock_audit`;
+                                                                ALTER TABLE `stock` DROP INDEX name;
+                                                                ALTER TABLE `stock` DROP INDEX description;
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;"                                         
             break;;
     0.7.0-beta )
@@ -448,10 +470,14 @@ esac
             echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
             echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
             echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            echo " - (0.7.0-beta) Column 'parent_id' added to area"
+            echo " - (0.7.0-beta) Column 'is_container' removed from item"
             mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
                                                         DROP TABLE `login_failure`;
                                                         ALTER TABLE `session_log` RENAME sesisonlog;
-                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;
+                                                        ALTER TABLE `area` ADD COLUMN parent_id INT;
+                                                        ALTER TABLE `item` DROP COLUMN is_container;"
 	    break;;
     esac 
 }
@@ -478,16 +504,16 @@ esac
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config table"
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config_default ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
             0.5.0-beta "0.4.1-beta"
             break;;
     0.4.1-beta|0.4.2-beta )
@@ -611,8 +637,8 @@ esac
                                                                         ('200G'),
                                                                         ('400G'),
                                                                         ('800G');
-                                                                ALTER TABLE stock ADD FULLTEXT(name);
-                                                                ALTER TABLE stock ADD FULLTEXT(description);
+                                                                ALTER TABLE `stock` ADD FULLTEXT(name);
+                                                                ALTER TABLE `stock` ADD FULLTEXT(description);
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
             break;;
     0.6.0-beta )
@@ -623,10 +649,14 @@ esac
             echo " - (0.7.0-beta) Tables: login_failure, login_log to be dropped"
             echo " - (0.7.0-beta) Table session_log renamed to sessionlog"
             echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
+            echo " - (0.7.0-beta) Column 'parent_id' added to area"
+            echo " - (0.7.0-beta) Column 'is_container' removed from item"
             mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
                                                         DROP TABLE `login_failure`;
                                                         ALTER TABLE `session_log` RENAME sesisonlog;
-                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;"
+                                                        ALTER TABLE `session_log` DROP COLUMN login_log_id;
+                                                        ALTER TABLE `area` ADD COLUMN parent_id INT;
+                                                        ALTER TABLE `item` DROP COLUMN is_container;"
 	    break;;
     esac 
 }
@@ -652,16 +682,16 @@ esac
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config table"
             echo " - (0.4.2-beta) Columns: 'footer_enable', 'footer_left_enable' and 'footer_right_enable' to be added to config_default table"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config_default ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config_default ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
-                                                          ALTER TABLE config ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
-                                                          ALTER TABLE config ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_normal BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN cost_enable_cable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config_default` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;
+                                                          ALTER TABLE `config` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
+                                                          ALTER TABLE `config` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
             0.5.0-beta "0.4.1-beta"
             break;;
     0.4.1-beta|0.4.2-beta )
@@ -785,8 +815,8 @@ esac
                                                                         ('200G'),
                                                                         ('400G'),
                                                                         ('800G');
-                                                                ALTER TABLE stock ADD FULLTEXT(name);
-                                                                ALTER TABLE stock ADD FULLTEXT(description);
+                                                                ALTER TABLE `stock` ADD FULLTEXT(name);
+                                                                ALTER TABLE `stock` ADD FULLTEXT(description);
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
             break;;
     0.6.0-beta )
@@ -794,6 +824,8 @@ esac
             echo " - (0.7.0-beta) Tables: login_failure, login_log to be added"
             echo " - (0.7.0-beta) Table sessionlog renamed to session_log"
             echo " - (0.7.0-beta) Column 'login_log_in' added to session_log"
+            echo " - (0.7.0-beta) Column 'parent_id' dropped from area"
+            echo " - (0.7.0-beta) Column 'is_container' added to item"
             mysql -u "$db_username" -p "$db_password" -e "CREATE TABLE `login_log` (
                                                                 `id` BIGINT NOT NULL AUTO_INCREMENT,
                                                                 `type` TEXT NOT NULL COMMENT 'login / logout / fail',
@@ -815,8 +847,10 @@ esac
                                                                 `count` INT NOT NULL COMMENT 'Count of failures',
                                                                 PRIMARY KEY (`id`)
                                                         );
-                                                        ALTER TABLE sessionlog RENAME session_log;
-                                                        ALTER TABLE session_log ADD COLUMN login_log_id BIGINT NOT NULL;"                                     
+                                                        ALTER TABLE `sessionlog` RENAME session_log;
+                                                        ALTER TABLE `session_log` ADD COLUMN login_log_id BIGINT NOT NULL;
+                                                        ALTER TABLE `area` DROP COLUMN parent_id;
+                                                        ALTER TABLE `item` ADD COLUMN is_container BOOLEAN NOT NULL DEFAULT 0;"                                     
             break;;
     0.7.0-beta )
             echo "No SQL changes to be made."                                        

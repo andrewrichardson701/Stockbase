@@ -128,12 +128,22 @@ if (isset($_GET['error'])) {
 		$errorPtext = 'Error occured: validator missing.';
 	} elseif ($_GET["error"] == "missingID") {
 		$errorPtext = 'Error: Missing ID';
+	} elseif ($_GET["error"] == "missingItem") {
+		$errorPtext = 'Error: Missing Item';
 	} elseif ($_GET["error"] == "missingName") {
 		$errorPtext = 'Error: Missing Name';
 	} elseif ($_GET["error"] == "missingDescription") {
 		$errorPtext = 'Error: Missing Description';
 	} elseif ($_GET["error"] == "noChangeNeeded") {
 		$errorPtext = 'No Changes Needed.';
+	} elseif ($_GET["error"] == "nameMatchesExisting") {
+		$errorPtext = 'Entry matching this name already exists.';
+	} elseif ($_GET["error"] == "shelfIssue") {
+		$errorPtext = 'Issue with shelf ID.';
+	} elseif ($_GET["error"] == "noLinksFound") {
+		$errorPtext = 'No links found for this item.';
+	} elseif ($_GET["error"] == "NaN") {
+		$errorPtext = 'Value is Not a Number.';
 	} else {
         $errorPtext = $_GET['error'];
     }
@@ -262,7 +272,9 @@ if (isset($_GET['success'])) {
     } elseif ($_GET['success'] == 'stockAdded') {
         $successPtext = 'Stock added.';
     } elseif ($_GET['success'] == "fileUploaded") {
-		$successPtext = 'Fiel Uploaded Successfully.';
+		$successPtext = 'File Uploaded Successfully.';
+	} elseif ($_GET['success'] == "unlinked") {
+		$successPtext = 'Unlinked Successfully.';
 	} else {
         $successPtext = $_GET['success'];
     }

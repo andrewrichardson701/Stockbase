@@ -51,7 +51,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                         <div class="col-sm text-left" id="stock-info-left">
                             <div class="nav-row">
                                 <div class="nav-row" id="name-row" style="margin-top:25px">
-                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name</label></div>
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="name" id="name-label">Name <or class="red">*</or></label></div>
                                     <div><input type="text" name="name" placeholder="Name" id="name" class="form-control nav-v-c stock-inputSize" value="'.htmlspecialchars($input_name, ENT_QUOTES, 'UTF-8').'" required></input></div>
                                 </div>
                                 <div class="nav-row" id="sku-row" style="margin-top:25px">
@@ -157,7 +157,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c stock-inputSize" value="'.$input_upc.'"></input></div>
                                 </div>
                                 <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
-                                    <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
+                                    <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer <or class="red">*</or></label></div>
                                     <div>
                                         <select name="manufacturer" id="manufacturer-select" class="form-control stock-inputSize" required>
                                             <option value="" selected disabled hidden>Select Manufacturer</option>
@@ -168,7 +168,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     </div>
                                 </div>
                                 <div class="nav-row" id="site-row" style="margin-top:25px">
-                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site</label></div>
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site <or class="red">*</or></label></div>
                                     <div>
                                         <select class="form-control stock-inputSize" id="site" name="site" required>
                                             <option value="" selected disabled hidden>Select Site</option>');
@@ -198,7 +198,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         echo('
                                         </select>
                                     </div>');
-                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'Admin') {
                                         echo('<div>
                                             <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
                                         </div>');
@@ -206,20 +206,18 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 echo('
                                 </div>
                                 <div class="nav-row" id="area-row" style="margin-top:25px">
-                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area</label></div>
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area <or class="red">*</or></label></div>
                                     <div>
                                         <select class="form-control stock-inputSize" id="area" name="area" disabled required>
                                             <option value="" selected disabled hidden>Select Area</option>
                                         </select>
-                                    </div>');
-                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
-                                        echo('<div>
-                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
-                                    </div>');
-                                    }
-                                echo('</div>
+                                    </div>
+                                    <div>
+                                    <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New</label>
+                                    </div>
+                                </div>
                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
-                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf <or class="red">*</or></label></div>
                                     <div>
                                         <select class="form-control stock-inputSize" id="shelf" name="shelf" disabled required>
                                             <option value="" selected disabled hidden>Select Shelf</option>
@@ -227,6 +225,14 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     </div>
                                     <div>
                                         <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'shelf\')">Add New</label>
+                                    </div>
+                                </div>
+                                <div class="nav-row" id="container-row" style="margin-top:25px">
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="container" id="container-label">Container</div>
+                                    <div>
+                                        <select class="form-control stock-inputSize" id="container" name="container" disabled>
+                                            <option value="" selected disabled hidden>Select Container</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="nav-row" id="cost-row" style="margin-top:25px">
@@ -237,7 +243,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                             <hr style="border-color: gray; margin-right:15px">
                             <div class="nav-row" style="margin-bottom:25px">
                                 <div class="nav-row" id="quantity-row" style="margin-top:10px">
-                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity <or class="red">*</or></label></div>
                                     <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="'.$input_quantity.'" required></input></div>
                                 </div>
                                     <div class="nav-row" id="serial-number-row" style="margin-top:25px">
@@ -245,12 +251,16 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                         <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c stock-inputSize" value="'.$input_serial_number.'"></input></div>
                                     </div>
                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
-                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
+                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason <or class="red">*</or></label></div>
                                     <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize" value="New Stock" value="'.htmlspecialchars($input_reason, ENT_QUOTES, 'UTF-8').'"></input></div>
                                 </div>
                                 <div class="nav-row" id="submit-row" style="margin-top:25px">
                                     <div class="stock-inputLabelSize"></div>
                                     <div><input type="submit" value="Add Stock" name="submit" class="nav-v-c btn btn-success" /></div>
+                                </div>
+                                <div class="nav-row" id="submit-row" style="margin-top:25px">
+                                    <div class="stock-inputLabelSize"></div>
+                                    <div><p class="red" style="font-size:12px;margin-bottom:0px">* Required field.</p></div>
                                 </div>
                             </div>
                         </div>
@@ -464,7 +474,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                         <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c stock-inputSize" value="'.$input_upc.'"></input></div>
                                                     </div>
                                                     <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
-                                                        <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
+                                                        <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer <or class="red">*</or></label></div>
                                                         <div>
                                                             <select name="manufacturer" id="manufacturer-select" class="form-control stock-inputSize" required>
                                                                 <option value="" selected disabled hidden>Select Manufacturer</option>
@@ -478,7 +488,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                 }
                                                 echo('
                                                 <div class="nav-row" id="site-row" style="margin-top:25px">
-                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site <or class="red">*</or></label></div>
                                                     <div>
                                                         <select class="form-control stock-inputSize" id="site" name="site" required>
                                                             <option value="" selected disabled hidden>Select Site</option>');
@@ -508,7 +518,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                         echo('
                                                         </select>
                                                     </div>');
-                                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'Admin') {
                                                         echo('<div>
                                                             <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'site\')">Add New (admin only)</label>
                                                         </div>');
@@ -516,20 +526,18 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                 echo('
                                                 </div>
                                                 <div class="nav-row" id="area-row" style="margin-top:25px">
-                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area <or class="red">*</or></label></div>
                                                     <div>
                                                         <select class="form-control stock-inputSize" id="area" name="area" disabled required>
                                                             <option value="" selected disabled hidden>Select Area</option>
                                                         </select>
-                                                    </div>');
-                                                    if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
-                                                        echo('<div>
-                                                        <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New (admin only)</label>
-                                                    </div>');
-                                                    }
-                                                echo('</div>
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'area\')">Add New</label>
+                                                    </div>
+                                                </div>
                                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
-                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf <or class="red">*</or></label></div>
                                                     <div>
                                                         <select class="form-control stock-inputSize" id="shelf" name="shelf" disabled required>
                                                             <option value="" selected disabled hidden>Select Shelf</option>
@@ -537,6 +545,14 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                     </div>
                                                     <div>
                                                         <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'shelf\')">Add New</label>
+                                                    </div>
+                                                </div>
+                                                <div class="nav-row" id="container-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="container" id="container-label">Container</div>
+                                                    <div>
+                                                        <select class="form-control stock-inputSize" id="container" name="container" disabled>
+                                                            <option value="" selected disabled hidden>Select Container</option>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 ');
@@ -553,7 +569,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                             <hr style="border-color: gray; margin-right:15px">
                                             <div class="nav-row" style="margin-bottom:25px">
                                                 <div class="nav-row" id="quantity-row" style="margin-top:10px">
-                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity <or class="red">*</or></label></div>
                                                     <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="'.$input_quantity.'" required></input></div>
                                                 </div>
                                                 ');
@@ -567,12 +583,16 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                                 }
                                                 echo('
                                                 <div class="nav-row" id="reason-row" style="margin-top:25px">
-                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason <or class="red">*</or></label></div>
                                                     <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize" value="New Stock" value="'.htmlspecialchars($input_reason, ENT_QUOTES, 'UTF-8').'"></input></div>
                                                 </div>
                                                 <div class="nav-row" id="submit-row" style="margin-top:25px">
                                                     <div class="stock-inputLabelSize"></div>
                                                     <div><input type="submit" value="Add Stock" name="submit" class="nav-v-c btn btn-success" /></div>
+                                                </div>
+                                                <div class="nav-row" id="submit-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"></div>
+                                                    <div><p class="red" style="font-size:12px;margin-bottom:0px">* Required field.</p></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -707,6 +727,8 @@ function populateAreas() {
       var select = document.getElementById("area");
       select.options.length = 0;
       select.options[0] = new Option("Select Area", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
       for (var i = 0; i < areas.length; i++) {
         select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
       }
@@ -729,8 +751,42 @@ function populateShelves() {
       var select = document.getElementById("shelf");
       select.options.length = 0;
       select.options[0] = new Option("Select Shelf", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
       for (var i = 0; i < shelves.length; i++) {
         select.options[select.options.length] = new Option(shelves[i].name, shelves[i].id);
+      }
+      select.disabled = (select.options.length === 1);
+    }
+  };
+  xhr.send();
+}
+function populateContainers() {
+  // Get the selected area
+  var shelf = document.getElementById("shelf").value;
+  
+  // Make an AJAX request to retrieve the corresponding constiners
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "includes/stock-selectboxes.inc.php?container-shelf=" + shelf, true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // Parse the response and populate the container select box
+      var containers = JSON.parse(xhr.responseText);
+      console.log(containers);
+      console.log(containers['container']);
+      var select = document.getElementById("container");
+      select.options.length = 0;
+      select.options[0] = new Option("Select Container", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
+      containersOnly = containers['container'];
+      itemContainers = containers['item_container'];
+      for (var i = 0; i < containersOnly.length; i++) {
+        select.options[select.options.length] = new Option(containersOnly[i].name, containersOnly[i].id);
+      }
+      for (var i = 0; i < itemContainers.length; i++) {
+        contID = itemContainers[i].id * -1;
+        select.options[select.options.length] = new Option(itemContainers[i].name, contID);
       }
       select.disabled = (select.options.length === 1);
     }
@@ -742,6 +798,9 @@ if (document.getElementById("site")) {
 }
 if (document.getElementById("area")) {
     document.getElementById("area").addEventListener("change", populateShelves);
+}
+if (document.getElementById("shelf")) {
+    document.getElementById("shelf").addEventListener("change", populateContainers);
 }
 </script>
 

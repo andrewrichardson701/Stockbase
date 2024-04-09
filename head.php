@@ -5,7 +5,7 @@
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
 // PAGE HEADER SETUP - SETS UP CSS, BOOTSTRAP AND OTHER STYLES AND SCRIPTS
-$versionNumber = 'v0.6.0-beta';
+$versionNumber = 'v0.7.0-beta';
 
 include './includes/get-config.inc.php'; // get config options
 

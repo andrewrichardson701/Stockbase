@@ -233,6 +233,45 @@ CREATE TABLE `item` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `login_failure`
+--
+
+DROP TABLE IF EXISTS `login_failure`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `login_failure` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `username` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `auth` text COLLATE utf8mb3_unicode_ci,
+  `ipv4` int DEFAULT NULL,
+  `ipv6` varbinary(16) DEFAULT NULL,
+  `last_timestamp` timestamp NOT NULL COMMENT 'Last failed attempet',
+  `count` int NOT NULL COMMENT 'Count of failures',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `login_log`
+--
+
+DROP TABLE IF EXISTS `login_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `login_log` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `type` text COLLATE utf8mb3_unicode_ci NOT NULL COMMENT 'login / logout / fail',
+  `username` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `user_id` int DEFAULT NULL COMMENT 'Can be blank if the user doesnt match anything',
+  `ipv4` int DEFAULT NULL,
+  `ipv6` varbinary(16) DEFAULT NULL,
+  `timestamp` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `auth` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `manufacturer`
 --
 
@@ -403,13 +442,13 @@ CREATE TABLE `password_reset` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `sessionlog`
+-- Table structure for table `session_log`
 --
 
-DROP TABLE IF EXISTS `sessionlog`;
+DROP TABLE IF EXISTS `session_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `sessionlog` (
+CREATE TABLE `session_log` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `login_time` int NOT NULL,
@@ -420,6 +459,7 @@ CREATE TABLE `sessionlog` (
   `os` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `status` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `last_activity` int NOT NULL,
+  `login_log_id` bigint NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -632,4 +672,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-29 13:48:17
+-- Dump completed on 2023-12-29 17:31:20

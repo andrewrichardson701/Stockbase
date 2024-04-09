@@ -27,11 +27,14 @@
                 case 'optics':
                     $highlight = 3;
                     break;
-                case 'admin':
+                case 'containers':
                     $highlight = 4;
                     break;
-                case 'profile':
+                case 'admin':
                     $highlight = 5;
+                    break;
+                case 'profile':
+                    $highlight = 6;
                     break;
                 default:
                     $highlight = 0;
@@ -104,6 +107,15 @@
                     ');
                 }
             }
+            if (isset($loggedin_role)) {
+                $n = 4;
+                echo('
+                <div id="stock-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                    <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./containers.php">Containers</a>
+                </div> 
+                ');
+                
+            }
             // if (isset($loggedin_role)) {
             //     if (in_array($loggedin_role, $config_admin_roles_array)) {
             //         $n = 4;
@@ -148,9 +160,9 @@
         <div style="width:100%">
             <div class="nav-div float-right" style="min-width:120px;">
                 <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">');
-                    if (in_array($loggedin_role, $config_admin_roles_array)) { echo('<li>&#8226; <a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>'); }
+                    if (in_array($loggedin_role, $config_admin_roles_array)) { echo('<li>&#8226; <a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>'); }
                 echo('
-                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./profile.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>
+                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./profile.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>
                     <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./logout.php">Logout</a></li>
                 </ul>
             </div>
@@ -190,7 +202,7 @@
                             }
                         }
                         echo('
-                        <li><a href="./profile.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
+                        <li><a href="./profile.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
                         // if (isset($loggedin_role)) {
                         //     if (in_array($loggedin_role, $config_admin_roles_array)) {
                         //         echo('<li><a href="./admin.php">Admin</a></li>');

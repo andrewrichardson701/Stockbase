@@ -1047,6 +1047,276 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
             }
         }
     }
+} elseif (isset($_GET['request-nearby-containers']) && $_GET['request-nearby-containers'] == 1) {
+    $results = [];
+    $r = 0;
+    $rc = 0;
+    $ric = 0;
+    
+    if(is_numeric($_GET['item_id'])) {
+        
+        $item_id = $_GET['item_id'];
+
+        include 'dbh.inc.php';
+
+        $sql_item = "SELECT * FROM item WHERE item.id = $item_id AND deleted=0";
+        $stmt_item = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt_item, $sql_item)) {
+            // error
+        } else {
+            mysqli_stmt_execute($stmt_item);
+            $result_item = mysqli_stmt_get_result($stmt_item);
+            $rowCount_item = $result_item->num_rows;
+            $siteCount = $rowCount_item;
+            if ($rowCount_item == 1) {
+                $row_item = $result_item->fetch_assoc();
+                $shelf_id = $row_item['shelf_id'];
+                
+                $sql_near = "SELECT c.id AS c_id, c.name AS c_name, c.description AS c_description
+                                FROM container AS c
+                                WHERE c.shelf_id = $shelf_id AND c.deleted=0";
+                $stmt_near = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_near, $sql_near)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_execute($stmt_near);
+                    $result_near = mysqli_stmt_get_result($stmt_near);
+                    $rowCount_near = $result_near->num_rows;
+                    $siteCount = $rowCount_near;
+                    if ($rowCount_near > 0) {
+                        while ($row_near = $result_near->fetch_assoc()) {
+                            $r++;
+                            $rc++;
+                            $c_id = $row_near['c_id'];
+                            $c_name = $row_near['c_name'];
+                            $c_description = $row_near['c_description'];
+
+                            $c_info = array('id' => $c_id, 'name' => $c_name, 'description' => $c_description);
+                            $results['container'][] = $c_info;
+                        }
+                    }
+                }
+                
+                $sql_near = "SELECT i.id AS i_id, s.id AS s_id, s.name AS s_name, s.description AS s_description
+                                FROM item AS i
+                                INNER JOIN shelf AS sh ON sh.id = i.shelf_id
+                                INNER JOIN stock AS s ON s.id = i.stock_id
+                                WHERE i.deleted=0 AND sh.id=$shelf_id AND i.id!=$item_id AND i.is_container=1";
+                $stmt_near = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_near, $sql_near)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_execute($stmt_near);
+                    $result_near = mysqli_stmt_get_result($stmt_near);
+                    $rowCount_near = $result_near->num_rows;
+                    $siteCount = $rowCount_near;
+                    if ($rowCount_near > 0) {
+                        while ($row_near = $result_near->fetch_assoc()) {
+                            $r++;
+                            $ric++;
+                            $c_id = $row_near['i_id'];
+                            $c_name = $row_near['s_name'];
+                            $c_description = $row_near['s_description'];
+
+                            $c_info = array('id' => $c_id, 'name' => $c_name, 'description' => $c_description);
+                            $results['item_container'][] = $c_info;
+                        }
+                    }
+                }
+            }
+        }
+        $results['container']['count'] = $rc;
+        $results['item_container']['count'] = $ric;
+        $results['count'] = $r;
+        echo(json_encode($results));
+        
+    }
+
+} elseif (isset($_GET['request-nearby-stock']) && $_GET['request-nearby-stock'] == 1) { // incomplete
+    $results = [];
+    // add a query string to decide if id is item or container and search for each
+    if(isset($_GET['item_id']) && is_numeric($_GET['item_id'])) {
+        $item_id = $_GET['item_id'];
+        include 'dbh.inc.php';
+
+        if (isset($_GET['name']) && $_GET['name'] !== '' ) {
+            $name = $_GET['name'];
+            $name_sql = " AND st.name LIKE '%$name%' ";
+        } else {
+            $name = '';
+            $name_sql = '';
+        }
+        
+        if (isset($_GET['is_item']) && $_GET['is_item'] == 1) {
+            // gets all items on the same shelf, that can be added. including serial numbers and item ids for those which need it.
+            $sql_near = "SELECT st.id AS st_id, 
+                                st.name AS st_name, 
+                                st.sku AS st_sku, 
+                                i.serial_number AS i_serial_number,
+                                COUNT(quantity) AS quantity,
+                                MAX(CASE 
+                                        WHEN i.serial_number != '' 
+                                        THEN i.id 
+                                        ELSE NULL 
+                                    END) AS item_id
+                        FROM item AS i
+                        INNER JOIN stock AS st ON i.stock_id=st.id
+                        INNER JOIN shelf AS sh ON i.shelf_id=sh.id
+                        LEFT JOIN item_container AS ic ON i.id=ic.item_id
+                        LEFT JOIN item_container AS ic2 ON i.id=ic2.container_id AND ic2.container_is_item = 1
+                        WHERE i.shelf_id = (SELECT shelf_id 
+                                            FROM item 
+                                            WHERE item.id = ?) 
+                            AND i.is_container=0
+                            AND i.deleted=0
+                            AND i.id != ?
+                            AND ic.item_id IS NULL
+                            AND ic2.container_id IS NULL
+                            $name_sql
+                        GROUP BY st.id, st.name, st.sku, i.serial_number
+                        ORDER BY st_name, i_serial_number;";
+        } else {
+            $sql_near = "SELECT st.id AS st_id, 
+                                st.name AS st_name, 
+                                st.sku AS st_sku, 
+                                i.serial_number AS i_serial_number,
+                                COUNT(quantity) AS quantity,
+                                MAX(CASE 
+                                        WHEN i.serial_number != '' 
+                                        THEN i.id 
+                                        ELSE NULL 
+                                    END) AS item_id
+                        FROM item AS i
+                        INNER JOIN stock AS st ON i.stock_id=st.id
+                        INNER JOIN shelf AS sh ON i.shelf_id=sh.id
+                        LEFT JOIN item_container AS ic ON i.id=ic.item_id
+                        LEFT JOIN item_container AS ic2 ON i.id=ic2.container_id AND ic2.container_is_item = 0
+                        WHERE i.shelf_id = (SELECT shelf_id 
+                                            FROM container 
+                                            WHERE container.id = ?) 
+                            AND i.is_container=0
+                            AND i.deleted=0
+                            AND i.id != ?
+                            AND ic.item_id IS NULL
+                            AND ic2.container_id IS NULL
+                            $name_sql
+                        GROUP BY st.id, st.name, st.sku, i.serial_number
+                        ORDER BY st_name, i_serial_number;";
+        }
+        $stmt_near = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt_near, $sql_near)) {
+            echo("ERROR getting entries");
+        } else {
+            mysqli_stmt_bind_param($stmt_near, "ss", $item_id, $item_id);
+            mysqli_stmt_execute($stmt_near);
+            $result_near = mysqli_stmt_get_result($stmt_near);
+            $rowCount_near = $result_near->num_rows;
+            if ($rowCount_near > 0) {
+                $results['count'] = $rowCount_near;
+                while ($row = $result_near->fetch_assoc()) {
+                    $results['data'][] = array('stock_id' => $row['st_id'], 'stock_name' => $row['st_name'], 'stock_sku' => $row['st_sku'], 
+                                            'item_serial_number' => $row['i_serial_number'], 
+                                            'quantity' => $row['quantity'], 
+                                            'item_id' => $row['item_id']);
+                }
+            } else {
+                // no entries found
+                $results['count'] = 0;
+            }
+        }
+        echo (json_encode($results));
+    }
+
+} elseif (isset($_GET['request-container-children']) && $_GET['request-container-children'] == 1) {
+    if (isset($_GET['container_id'])) {
+        if (isset($_GET['container_is_item'])) {
+            $container_id = $_GET['container_id'];
+            $container_is_item = $_GET['container_is_item'];
+
+            if (is_numeric($container_id) && is_numeric($container_is_item)) {
+
+                $return = array();
+
+                include 'dbh.inc.php';
+
+                $sql = "SELECT c.id AS c_id, c.name AS c_name, c.description AS c_description,
+                                ic.id AS ic_id, ic.item_id AS ic_item_id, ic.container_id AS ic_container_id, ic.container_is_item AS ic_container_is_item,
+                                icontainer.id AS icontainer_id,
+                                scontainer.id AS scontainer_id, scontainer.name AS scontainer_name, scontainer.description as scontainer_description,
+                                i.id AS i_id,
+                                s.id AS s_id, s.name AS s_name, s.description AS s_description,
+                                (SELECT COUNT(item_id) 
+                                    FROM item_container 
+                                    WHERE item_container.container_id=ic_container_id 
+                                        AND item_container.container_is_item=ic_container_is_item
+                                ) AS object_count,
+                                (SELECT id
+                                    FROM stock_img
+                                    WHERE stock_id=scontainer_id
+                                    LIMIT 1
+                                ) AS simgcontainer_id,
+                                (SELECT image
+                                    FROM stock_img
+                                    WHERE stock_id=scontainer_id
+                                    LIMIT 1
+                                ) AS simgcontainer_image,
+                                (SELECT id
+                                    FROM stock_img
+                                    WHERE stock_id=s_id
+                                    LIMIT 1
+                                ) AS simg_id,
+                                (SELECT image
+                                    FROM stock_img
+                                    WHERE stock_id=s_id
+                                    LIMIT 1
+                                ) AS simg_image
+                        FROM item_container AS ic
+                        LEFT JOIN container AS c ON ic.container_id=c.id AND ic.container_is_item=0 AND c.deleted=0
+                        LEFT JOIN item AS icontainer ON icontainer.id=ic.container_id AND ic.container_is_item=1 AND icontainer.deleted=0
+                        LEFT JOIN stock AS scontainer ON scontainer.id=icontainer.stock_id
+                        LEFT JOIN stock_img AS simgcontainer ON simgcontainer.stock_id=scontainer.id
+                        LEFT JOIN item AS i ON i.id=ic.item_id
+                        LEFT JOIN stock AS s ON s.id=i.stock_id 
+                        LEFT JOIN stock_img AS simg ON simg.stock_id=s.id
+                        WHERE ic.container_id=? AND ic.container_is_item=?
+                        GROUP BY c_id, c_name, c_description, 
+                                ic_id, ic_item_id, ic_container_id, ic_container_is_item, 
+                                icontainer_id, 
+                                scontainer_id, scontainer_name, 
+                                i_id, 
+                                s_id,
+                                simgcontainer_id, simgcontainer_image, 
+                                simg_id, simg_image
+                        ORDER BY c_name, scontainer_name";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    // nothing due to AJAX
+                } else {
+                    mysqli_stmt_bind_param($stmt, "ss", $container_id, $container_is_item);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
+                    $rowCount = $result->num_rows;
+                    if ($rowCount > 0) {
+                        $return['count'] = $rowCount;
+                        while ($row = $result->fetch_assoc()) {
+                            if ($container_is_item == 1) {
+                                $res = array('item_container_id' => $row['ic_id'], 'container_id' => $row['icontainer_id'], 'container_name' => $row['scontainer_name'], 'child_item_id' => $row['i_id'], 'child_stock_id' => $row['s_id'], 'child_stock_name' => $row['s_name'], 
+                                                                                'child_stock_description' => $row['s_description'], 'child_img_id' => $row['simg_id'], 'child_img_image' => $row['simg_image']);
+                            } else {
+                                $res = array('item_container_id' => $row['ic_id'], 'container_id' => $row['ic_id'], 'container_name' => $row['c_name'], 'child_item_id' => $row['i_id'], 'child_stock_id' => $row['s_id'], 'child_stock_name' => $row['s_name'], 
+                                                                            'child_stock_description' => $row['s_description'], 'child_img_id' => $row['simg_id'], 'child_img_image' => $row['simg_image']);
+                                
+                            }
+                            $return[] = $res;
+                        }
+                    } else {
+                        $return['info'] = "No children found.";
+                    }
+                }
+                echo(json_encode($return));
+            }
+        } 
+    } 
 }
 
 

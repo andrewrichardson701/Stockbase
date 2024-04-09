@@ -81,37 +81,42 @@ if ($stock_id == 0 || $stock_id == '0') {
                     }
 
                     if ($data_is_cable == 0) {
-                        $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
-                                        area.id AS area_id, area.name AS area_name,
-                                        shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                                        (SELECT SUM(quantity) 
-                                            FROM item 
-                                            WHERE item.stock_id = stock.id AND item.shelf_id = shelf.id
-                                        ) AS item_quantity,
-                                        manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
-                                        (SELECT GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') 
-                                            FROM stock_tag 
-                                            INNER JOIN tag ON stock_tag.tag_id = tag.id 
-                                            WHERE stock_tag.stock_id = stock.id
-                                        ) AS tag_names,
-                                        (SELECT GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') 
-                                            FROM stock_tag
-                                            WHERE stock_tag.stock_id = stock.id
-                                        ) AS tag_ids
-                                    FROM stock
-                                    LEFT JOIN item ON stock.id=item.stock_id
-                                    LEFT JOIN shelf ON item.shelf_id=shelf.id 
-                                    LEFT JOIN area ON shelf.area_id=area.id 
-                                    LEFT JOIN site ON area.site_id=site.id
-                                    LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                    WHERE stock.id=? AND stock.deleted=0 AND item.deleted=0
-                                    GROUP BY 
-                                        stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
-                                        site_id, site_name, site_description, 
-                                        area_id, area_name, 
-                                        shelf_id, shelf_name,
-                                        manufacturer_id, manufacturer_name
-                                    ORDER BY site.name DESC, area.name ASC, shelf.name ASC;";
+                        $sql_stock = "SELECT i.id AS i_id, stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
+                                            area.id AS area_id, area.name AS area_name,
+                                            shelf.id AS shelf_id, shelf.name AS shelf_name,site.id AS site_id, site.name AS site_name, site.description AS site_description,
+                                            item.is_container AS item_is_container,
+                                            (SELECT SUM(quantity) 
+                                                FROM item 
+                                                WHERE item.stock_id = stock.id AND item.shelf_id = shelf.id AND item.is_container=item_is_container AND (CASE WHEN item.is_container = 1 THEN item.id = i.id ELSE 1 END)
+                                            ) AS item_quantity,
+                                            manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
+                                            (SELECT GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') 
+                                                FROM stock_tag 
+                                                INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                                WHERE stock_tag.stock_id = stock.id
+                                            ) AS tag_names,
+                                            (SELECT GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') 
+                                                FROM stock_tag
+                                                WHERE stock_tag.stock_id = stock.id
+                                            ) AS tag_ids
+                                        FROM stock
+                                        LEFT JOIN item ON stock.id=item.stock_id
+                                        LEFT JOIN shelf ON item.shelf_id=shelf.id 
+                                        LEFT JOIN area ON shelf.area_id=area.id 
+                                        LEFT JOIN site ON area.site_id=site.id
+                                        LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
+                                        LEFT JOIN item_container AS ic ON item.id=ic.container_id AND ic.container_is_item=1
+                                        LEFT JOIN item AS i ON item.id=i.id AND item.is_container=1
+                                        WHERE stock.id=? AND stock.deleted=0 AND item.deleted=0
+                                        GROUP BY 
+                                            stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
+                                            site_id, site_name, site_description, 
+                                            area_id, area_name, 
+                                            shelf_id, shelf_name,
+                                            manufacturer_id, manufacturer_name,
+                                            item_is_container,
+                                            i.id
+                                        ORDER BY site.name DESC, area.name ASC, shelf.name ASC;";
                     } else {
                         $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                         area.id AS area_id, area.name AS area_name,
@@ -160,16 +165,19 @@ if ($stock_id == 0 || $stock_id == '0') {
                             $stock_id = $row['stock_id'];
                             $stock_name = $row['stock_name'];
                             $stock_sku = $row['stock_sku'];
+                            $stock_item_id = isset($row['i_id']) ? $row['i_id'] : '';
                             $stock_quantity_total = $row['item_quantity'];
-                            $stock_shelf_id = $row['shelf_id'];
-                            $stock_shelf_name = $row['shelf_name'];
+                            $stock_shelf_id = (isset($row['item_is_container']) && $row['item_is_container'] == 1) ? $row['shelf_id']*-1 : $row['shelf_id'];
+                            $stock_shelf_name = (isset($row['item_is_container']) && $row['item_is_container'] == 1) ? $row['shelf_name'].' (container, ID: '.$stock_item_id.')' : $row['shelf_name'];
                             $stock_area_id = $row['area_id'];
                             $stock_area_name = $row['area_name'];
                             $stock_site_id = $row['site_id'];
                             $stock_site_name = $row['site_name'];
                             if ($data_is_cable == 0) {
+                                
                                 $stock_manufacturer_id = $row['manufacturer_id'];
                                 $stock_manufacturer_name = $row['manufacturer_name'];
+                                $stock_is_container = $row['item_is_container'];
                             }
                             $stock_tag_ids = $row['tag_ids'];
                             $stock_tag_names = $row['tag_names'];
@@ -198,6 +206,8 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                         'site_name' => $stock_site_name,
                                                         'manufacturer_id' => $stock_manufacturer_id,
                                                         'manufacturer_name' => $stock_manufacturer_name,
+                                                        'is_container' => $stock_is_container,
+                                                        'item_id' => $stock_item_id,
                                                         'tag' => $stock_tag_data);
                         
                                 $stock_inv_manu[$stock_manufacturer_id] = array('id' => $stock_manufacturer_id, 'name' => $stock_manufacturer_name);
@@ -234,7 +244,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 <div class="nav-row" id="heading-row" style="margin-top:10px">
                                     <div class="stock-inputLabelSize"></div>
                                     <div id="heading-heading">
-                                        <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
+                                        <a href="../stock.php?stock_id='.$stock_id.'"><h2 id="stock_name">'.$data_name.'</h2></a>
                                         <p id="sku"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
                                         <p id="locations" style="margin-bottom:0px"><strong>Locations:</strong><br>');
                                         if (empty($stock_inv_data)) {
@@ -279,7 +289,17 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 <div class="nav-row" id="shelf-row" style="margin-top:25px">
                                                     <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
                                                     <div>
-                                                        <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="populateSerials(this)" disabled>
+                                                        <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="populateContainers(this)" disabled>
+                                                            <option value="" selected disabled hidden>Select Location</option>');
+
+                                                        echo('
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="nav-row" id="container-row" style="margin-top:25px">
+                                                    <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="container" id="container-label">Container</label></div>
+                                                    <div>
+                                                        <select class="form-control stock-inputSize" id="container" name="container" required onchange="populateSerials(this)" disabled>
                                                             <option value="" selected disabled hidden>Select Location</option>');
 
                                                         echo('
@@ -345,7 +365,8 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                         $stock_quantity_total += $d['quantity'];
                                                     }
                                                     if ($stock_quantity_total !== 0){
-                                                        echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" />');
+                                                        echo('<input type="submit" id="removeButton" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" />');
+                                                        echo('<button type="button" id="removeContButton" name="submit" value="Remove Stock" class="nav-v-c btn btn-danger"onclick="modalLoadContainerRemoveConfirmation()"  hidden disabled>Remove Stock</button>');
                                                     } else {
                                                         echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />');
                                                         echo('<a href="#" onclick="confirmAction(\''.$data_name.'\', \''.$data_sku.'\', \'includes/stock-modify.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
@@ -419,6 +440,137 @@ if ($stock_id == 0 || $stock_id == '0') {
     ?>
     
 </div>
+
+<!-- Container Remove item Modal -->
+<div id="modalDivContainerRemoveConfirmation" class="modal">
+    <span class="close" onclick="modalCloseContainerRemoveConfirmation()">&times;</span>
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <form class="padding:0px;margin:0px" id="containerRemoveForm" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="submit" value="1" />
+            <input type="hidden" name="container-remove" value="1" />
+            <input type="hidden" id="containerRemoveItemID" name="item_id" />
+            <input type="hidden" id="containerRemoveShelf" name="shelf_id" />
+            <input type="hidden" id="containerRemoveQuantity" name="quantity" />
+        </form>
+        <div class="well-nopad theme-divBg" style="overflow-y:auto; overflow-x: auto; height:600px; " id="property-container" >
+            <h4 class="text-center align-middle" style="width:100%;margin-top:10px">Remove Container Stock</h4>
+            <table class="centertable"><tbody><tr><th style="padding-right:5px">Item ID:</th><td style="padding-right:20px" id="removeContainerItemID"></td><th style="padding-right:5px">Name:</th><td id="removeContainerStockName"></td></tr></tbody></table>
+            <table class="centertable" style="margin-top:10px">
+                <tbody style="border: none">
+                    <tr class="text-center align-middle" style="border: none">
+                        <td class="text-center align-middle" style="padding-right:5px;border: none"><or class="title" title="This will KEEP all child objects attached and remove them with the current item. All child objects will be removed to the new location.">Remove container and contents</or></td>
+                        <td style="border: none"><input type="submit" form="containerRemoveForm" class="btn btn-danger" name="container-remove-all" value="Remove All" /></td>
+                    </tr>
+                    <tr class="text-center align-middle" style="border: none">
+                        <td class="text-center align-middle" style="padding-right:5px;border: none"><or class="title" title="This will UNLINK all child objects and ONLY remove the selected item. All child objects will remain in the same location.">Remove container only</or></td>
+                        <td style="border: none"><input type="submit" form="containerRemoveForm" class="btn btn-warning" name="container-remove-single" value="Remove Single Item" style="margin-top:5px;margin-bottom:5px"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="well-nopad theme-divBg" style="margin: 20px 10px 20px 10px; padding:20px">
+                <p><strong>Contents</strong> - Items: <strong id="removeContainerChildCount" class="green"></strong></p>
+                <table id="containerRemoveContentsTable" class="table table-dark theme-table centertable" style="margin-bottom:0px; white-space:nowrap;">
+                    <thead>
+                        <tr>
+                            <th><!-- Image --></th>
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">Name</th>
+                            <th class="text-center align-middle">Description</th>
+                            <th><!-- Unlink --></th>
+                        </tr>
+                    </thead>
+                    <tbody id="containerRemoveContentsTableBody">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
+            <button class="btn btn-warning" type="button" style="margin:10px 10px 0px 10px" onclick="modalCloseContainerRemoveConfirmation()">Cancel</button>
+        </span>
+    </div>
+</div>
+<!-- End of Remove Container Modal-->
+
+<script>
+    async function modalLoadContainerRemoveConfirmation() {
+        var shelfSelect = document.getElementById('shelf');
+        var shelfSelectedNum = shelfSelect.options.selectedIndex;
+        var itemID = shelfSelect.options[shelfSelectedNum].title;
+        console.log(itemID);
+    
+        var modal = document.getElementById("modalDivContainerRemoveConfirmation");
+        modal.style.display = "block";
+        // Do some AJAX here to get the contents of the container and add it to the table
+        // containerRemoveContentsTableBody
+
+        var countText = document.getElementById('removeContainerChildCount');
+        var tableBody = document.getElementById('containerRemoveContentsTableBody');
+        var containerRemoveItemID = document.getElementById('containerRemoveItemID');
+        var containerRemoveShelf = document.getElementById('containerRemoveShelf');
+        var containerRemoveQuantity = document.getElementById('containerRemoveQuantity');
+
+        var shelfSelect = document.getElementById('shelf');
+        var quantityInput = document.getElementById('quantity');
+
+        var removeContainerStockName = document.getElementById('removeContainerStockName');
+        var removeContainerItemID = document.getElementById('removeContainerItemID');
+
+        containerRemoveItemID.value=itemID;
+        containerRemoveShelf.value=shelfSelect.value;
+        containerRemoveQuantity.value=quantityInput.value;
+
+        removeContainerItemID.innerHTML = itemID;
+        removeContainerStockName.innerHTML = document.getElementById('stock_name').innerHTML;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stockajax.php?request-container-children=1&container_id="+itemID+"&container_is_item=1", true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var data = JSON.parse(xhr.responseText);
+                var info = data['info'];
+                // console.log(data);
+                var bodyExtras = '';
+                var count = data['count'];
+                if (info == "No children found.") {
+                    count = 0;
+                }
+                countText.innerHTML = count;
+                var trs = '';
+                var tr = '';
+
+                if (count > 0) {
+                    for (let i=0; i<count; i++) {
+                        if (data[i]) {
+                            tr =`<tr class='linkTableRow'> 
+                                    <td><img class='inv-img-main' src='assets/img/stock/`+data[i]['child_img_image']+`' alt='`+data[i]['child_stock_name']+`'></td> 
+                                    <td class='text-center align-middle'>`+data[i]['child_item_id']+`</td> 
+                                    <td class='text-center align-middle'>`+data[i]['child_stock_name']+`</td> 
+                                    <td class='text-center align-middle'><or class='title' title='`+data[i]['child_stock_description']+`'>`+data[i]['child_stock_description'].substring(0,30)+`</or></td> 
+                                    <td class='text-center align-middle'><button class='btn btn-danger' style="color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px"><i class="fa fa-unlink" ></i></button></td> 
+                                </tr>`;
+                            trs = trs+tr;
+                        }
+                    }
+                } else {
+                    trs = "<tr><td colspan=100%>No chilren found.</td></tr>";
+                }
+                // console.log(trs);
+                tableBody.innerHTML=trs;
+                // console.log(trs);
+            }
+        };
+        xhr.send();
+    }
+
+    function modalCloseContainerRemoveConfirmation() { 
+        var modal = document.getElementById("modalDivContainerRemoveConfirmation");
+        modal.style.display = "none";
+        // Empty the table here too.
+        // containerRemoveContentsTableBody
+    }
+</script>
 <script>
     function confirmAction(stock_name, stock_sku, url) {
         var confirmed = confirm('Are you sure you want to proceed? \nThis will remove ALL entries for '+stock_name+' ('+stock_sku+').');
@@ -428,8 +580,11 @@ if ($stock_id == 0 || $stock_id == '0') {
     }
 
     // populate shelves from manuyfacturer
-    function populateRemoveShelves(elem) {
+    async function populateRemoveShelves(elem) {
         var stock = document.getElementById('stock-id').value;
+        var contButton = document.getElementById('removeContButton');
+        var normalButton = document.getElementById('removeButton');
+
         manufacturer_id = elem.value;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "includes/stock-selectboxes.inc.php?getremoveshelves=1&stock="+stock+"&manufacturer="+manufacturer_id, true);
@@ -444,26 +599,100 @@ if ($stock_id == 0 || $stock_id == '0') {
                 }
                 for (var i = 0; i < shelves.length; i++) {
                     if (i == 0) {
-                        select.options[select.options.length] = new Option(shelves[i].location, shelves[i].id, true, true);
+                        var option = new Option(shelves[i].location, shelves[i].id, true, true);
+                        if (shelves[i].item_id !== '') {
+                            option.setAttribute('title', shelves[i].item_id);
+                        }
+                        select.options[select.options.length] = option;
                     } else {
-                        select.options[select.options.length] = new Option(shelves[i].location, shelves[i].id);
+                        var option = new Option(shelves[i].location, shelves[i].id);
+                        if (shelves[i].item_id !== '') {
+                            option.setAttribute('title', shelves[i].item_id);
+                        }
+                        select.options[select.options.length] = option;
                     }
                     // select.options[select.options.length] = new Option(shelves[i].location, shelves[i].id);
                 }
                 select.disabled = (select.options.length === 0);
+                var shelf = document.getElementById('shelf');
                 // select.disabled = (select.options.length === 1);
-                populateSerials(document.getElementById('shelf'));
+                if (select.value < 0) {
+                    contButton.disabled=false;
+                    contButton.hidden=false;
+                    normalButton.hidden=true;
+                    normalButton.disabled=true;
+                } else {
+                    contButton.disabled=true;
+                    contButton.hidden=true;
+                    normalButton.hidden=false;
+                    normalButton.disabled=false;
+                }
+                populateContainers(shelf);
             }
         };
         xhr.send();
     }
 
-    // populate serials
-    function populateSerials(elem) {
+    // populate containers
+    async function populateContainers(elem) {
+        var contButton = document.getElementById('removeContButton');
+        var normalButton = document.getElementById('removeButton');
+        var select = document.getElementById('shelf');
+        if (select.value < 0) {
+            contButton.disabled=false;
+            contButton.hidden=false;
+            normalButton.hidden=true;
+            normalButton.disabled=true;
+        } else {
+            contButton.disabled=true;
+            contButton.hidden=true;
+            normalButton.hidden=false;
+            normalButton.disabled=false;
+        }
         var stock = document.getElementById('stock-id').value;
-        shelf_id = elem.value;
+        var shelf_id = elem.value;
+        var manu_id = document.getElementById('manufacturer').value;
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?getserials=1&stock="+stock+"&shelf="+shelf_id, true);
+        // console.log("includes/stock-selectboxes.inc.php?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id);
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id, true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var containers = JSON.parse(xhr.responseText);
+                var select = document.getElementById('container');
+                select.options.length = 0;
+                if (containers.length === 0) {
+                    select.options[0] = new Option("", "0");
+                }
+                for (var i = 0; i < containers.length; i++) {
+                    if (i == 0) {
+                        select.options[select.options.length] = new Option(containers[i].container_name, containers[i].container_id, true, true);
+                    } else {
+                        select.options[select.options.length] = new Option(containers[i].container_name, containers[i].container_id);
+                    }
+                }
+                select.disabled = (select.options.length === 0);
+                // select.disabled = (select.options.length === 1);
+                var container = document.getElementById('container');
+                populateSerials(container);
+            }
+        };
+        xhr.send();
+       
+    }
+
+    // populate serials
+    async function populateSerials(elem) {
+        // console.log(elem);
+        if (elem.value == null || elem.value == '' || elem.value == undefined) {
+            elem.value = 0;
+        }        
+        var stock = document.getElementById('stock-id').value;
+        var container = elem.value;
+        var shelf_id = document.getElementById('shelf').value;
+        var manu_id = document.getElementById('manufacturer').value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getserials=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id+"&container="+container, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 // Parse the response and populate the shelf select box
@@ -493,9 +722,14 @@ if ($stock_id == 0 || $stock_id == '0') {
         var manufacturer = document.getElementById('manufacturer').value;
         var shelf = document.getElementById('shelf').value;
         var serial = document.getElementById('serial-number').value;
+        var container = document.getElementById('container').value;
+        if (container == '') {
+            container = 0;
+            
+        }
         
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantity=1&stock="+stock+"&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial, true);
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantity=1&stock="+stock+"&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial+"&container="+container, true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 // Parse the response and populate the shelf select box

@@ -691,6 +691,10 @@ Clone the repo first, and the follow the below steps.
 - Containers page now shows the location of the container. The SQL query for this is rather large though, so might need to be changed at a later date.
 - Stock page buttons are now inline with the Stock heading
 - Removed all references to "cotnainer"...
+- Can now remove children from containers on the containers page
+- Can now link and unlink children from the stock page
+- Can now add children on the containers page.
+- Can now see cotnainers which have no children on the containers page.
 
 </details>
 <details>

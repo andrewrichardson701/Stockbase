@@ -84,11 +84,12 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             area.id AS area_id, area.name AS area_name,
                                             shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
                                             item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, 
-                                            (SELECT SUM(quantity) 
-                                                FROM item 
-                                                WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                    AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments AND item.deleted=0
-                                            ) AS item_quantity,
+                                            ic.id AS ic_id, ic.container_id AS ic_container_id, ic.container_is_item AS ic_container_is_item,
+                                            cs.name AS cs_name,
+                                            c.name AS c_name,
+                                            item.is_container AS item_is_container,
+                                            ic2.container_id AS ic2_container_id,
+                                            sum(item.quantity) as item_quantity,
                                             manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                                             (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
                                                 FROM stock_tag 
@@ -108,14 +109,24 @@ if ($stock_id == 0 || $stock_id == '0') {
                                         LEFT JOIN area ON shelf.area_id=area.id 
                                         LEFT JOIN site ON area.site_id=site.id
                                         LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                        WHERE stock.id=? AND quantity!=0 AND stock.deleted=0
+                                        LEFT JOIN item_container AS ic ON item.id=ic.item_id
+                                        LEFT JOIN item AS ci ON ci.id=ic.container_id AND ic.container_is_item = 1 /* used to check if the item is in a container */
+                                        LEFT JOIN stock AS cs ON cs.id=ci.stock_id
+                                        LEFT JOIN container AS c ON c.id = ic.container_id AND ic.container_is_item = 0
+                                        LEFT JOIN item_container AS ic2 ON ic2.container_id=item.id AND ic2.container_is_item = 1 /* check if the item itself is a container */
+                                        WHERE stock.id=? AND item.quantity!=0 AND stock.deleted=0
                                         GROUP BY 
                                             stock.id, stock_name, stock_description, stock_sku, stock_min_stock, 
                                             site_id, site_name, site_description, 
                                             area_id, area_name, 
                                             shelf_id, shelf_name,
                                             manufacturer_name, manufacturer_id,
-                                            item_serial_number, item_upc, item_comments, item_cost
+                                            item_serial_number, item_upc, item_comments, item_cost,
+                                            ic_id, ic_container_id, ic_container_is_item,
+                                            cs_name,
+                                            c_name,
+                                            ic2_container_id,
+                                            item_is_container
                                         ORDER BY site.id, area.name, shelf.name;";
                     } else {
                         $sql_stock = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
@@ -184,7 +195,13 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 $item_cost = $row['item_cost'];
                                 $stock_tag_ids = $row['tag_ids'];
                                 $stock_tag_names = $row['tag_names'];
-                                
+
+                                $stock_ic_id = isset($row['ic_id']) ? isset($row['ic_id']) : '';
+                                $stock_container_id = $stock_ic_container_id = isset($row['ic_container_id']) ? $row['ic_container_id'] : '';
+                                $stock_item_is_container = isset($row['item_is_container']) ? $row['item_is_container'] : '';
+                                $stock_container_name = isset($row['cs_name']) ? $row['cs_name'] : (isset($row['c_name']) ? $row['c_name'] : '');
+                                $stock_item_container_id = isset($row['ic2_container_id']) ? $row['ic2_container_id'] : '';
+
                                 $stock_tag_data = [];
 
                                 if ($stock_tag_ids !== null) {
@@ -201,6 +218,11 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                             'name' => $stock_name,
                                                             'sku' => $stock_sku,
                                                             'quantity' => $stock_quantity_total,
+                                                            'in_container' => $stock_ic_id,
+                                                            'item_container_id' => $stock_item_container_id,
+                                                            'container_is_item' => $stock_item_is_container,
+                                                            'container_id' => $stock_container_id,
+                                                            'container_name' => $stock_container_name,
                                                             'shelf_id' => $stock_shelf_id,
                                                             'shelf_name' => $stock_shelf_name,
                                                             'area_id' => $stock_area_id,
@@ -235,11 +257,11 @@ if ($stock_id == 0 || $stock_id == '0') {
                             echo('<div class="nav-row" style="margin-top: 2px; margin-bottom:5px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
                                         <div id="heading-heading" style="margin-left:10vw;">
-                                            <a href="../stock.php?stock_id='.$stock_id.'"><h2>'.$data_name.'</h2></a>
+                                            <a href="../stock.php?stock_id='.$stock_id.'"><h2 id="stock_name">'.$data_name.'</h2></a>
                                             <p id="sku" style="margin-bottom:0px;padding-bottom:0px"><strong>SKU:</strong> <or class="blue">'.$data_sku.'</or></p>
                                             <p class="green"');
                                                 if (isset($_GET['success']) && $_GET['success'] == 'stockMoved') {
-                                                    echo (' style="margin-bottom:0px">Stock Moved!');
+                                                    echo (' style="margin-bottom:0">Stock Moved!');
                                                 } else{
                                                     echo(' style="margin-bottom:24px">');
                                                 }
@@ -259,6 +281,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 ');
                                                 if ($data_is_cable == 0) {
                                                     echo('
+                                                    <th>Container</th>
                                                     <th class="viewport-mid-large">Manufacturer</th>
                                                     <th class="viewport-small-only-empty">Manu.</th>
                                                     <th class="viewport-mid-large">UPC</th>
@@ -287,6 +310,10 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 ');
                                                 if ($data_is_cable == 0) {
                                                     echo('
+                                                    <td class="text-center" id="item-'.$i.'-container-'.$stock_inv_data[$i]['container_id'].'">');
+                                                        if ($stock_inv_data[$i]['in_container'] != '')  echo('<a href="containers.php?container_id=3295&con_is_item='.$stock_inv_data[$i]['container_is_item'].'">'.$stock_inv_data[$i]['container_name'].'</a>'); 
+                                                        if ($stock_inv_data[$i]['container_is_item'] !== 0) { echo('<i class="fa-solid fa-check" style="color:lime;padding-left:5px"></i>'); } 
+                                                echo('</td>
                                                     <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
                                                     <td id="item-'.$i.'-upc" class="viewport-mid-large">'.$stock_inv_data[$i]['upc'].'</td>
                                                     <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
@@ -305,7 +332,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                 <td colspan=100%>
                                                     <div class="container">                                                       
                                                         <table class="centertable" style="border: 1px solid #454d55;">
-                                                            <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+                                                            <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                                                 <!-- below input used for the stock-modify.inc.php page to determine the type of change -->');
                                                                 if ($data_is_cable == 0) {
                                                                     echo('<input type="hidden" name="stock-move" value="1" /> ');
@@ -322,6 +349,9 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                                 <input type="hidden" id="'.$i.'-c-shelf" name="current_shelf" value="'.$stock_inv_data[$i]['shelf_id'].'" />
                                                                 ');
                                                                 if ($data_is_cable == 0) {
+                                                                    if (isset($stock_inv_data[$i]['container_id']) && $stock_inv_data[$i]['container_id'] != '') {
+                                                                        echo('<input type="hidden" name="in_container" value="1" />');
+                                                                    }
                                                                     echo('
                                                                     <input type="hidden" id="'.$i.'-c-manufacturer" name="current_manufacturer" value="'.$stock_inv_data[$i]['manufacturer_id'].'" />
                                                                     <input type="hidden" id="'.$i.'-c-upc" name="current_upc" value="'.$stock_inv_data[$i]['upc'].'" />
@@ -393,10 +423,33 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                                                     ');
                                                                                 }
                                                                                 echo('
-                                                                                <div class="col" style="max-width:max-content !important">
-                                                                                    <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$i.'-n-submit" value="Move" style="opacity:80%;" name="submit" required />
-                                                                                </div>
-                                                                            </div>
+                                                                                <div class="col" style="max-width:max-content !important">');
+                                                                                if (isset($stock_inv_data[$i]['item_container_id']) && $stock_inv_data[$i]['item_container_id'] != '') {
+                                                                                    echo('<input type="button" class="btn btn-warning nav-v-c btn-move" id="'.$i.'-n-submit" value="Move" style="opacity:80%;" name="submit" required onclick="modalLoadContainerMoveConfirmation('.$i.', '.$stock_inv_data[$i]['item_container_id'].')" />');
+                                                                                } else {
+                                                                                    echo('<input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$i.'-n-submit" value="Move" style="opacity:80%;" name="submit" required />');
+                                                                                }
+                                                                                echo('</div>
+                                                                            </div>');
+                                                                            if (isset($stock_inv_data[$i]['container_id']) && $stock_inv_data[$i]['container_id'] != '') {
+                                                                                echo ('
+                                                                                    <div class="row">
+                                                                                        <div class="col text-center" style="width:100%">
+                                                                                            <p class="red" style="margin:15px 0px 0px 0px">* Moving stock from within a container will remove the container link. *</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ');
+                                                                            }
+                                                                            if (isset($stock_inv_data[$i]['container_is_item']) && $stock_inv_data[$i]['container_is_item'] == 1) {
+                                                                                echo ('
+                                                                                    <div class="row">
+                                                                                        <div class="col text-center" style="width:100%">
+                                                                                            <p style="margin:15px 0px 0px 0px"><or class="red">* This item is a container. Please consider its contents before moving. *</or><br>Check container: <a href="containers.php?container_id='.$stock_inv_data[$i]['item_container_id'].'&con_is_item=1">'.$stock_name.'</a></p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ');
+                                                                            }
+                                                                        echo('
                                                                         </td>
                                                                     </td>
                                                                 </tbody>
@@ -426,7 +479,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         $search = isset($_GET['search']) ? $_GET['search'] : '';
 
         echo('
-            <form action="?modify=move" method="GET" style="margin-bottom:0px">
+            <form action="?modify=move" method="GET" style="margin-bottom:0">
                 <div class="container" id="stock-info-left">
                     <div class="nav-row" id="search-stock-row">
                         <input type="hidden" name="modify" id="modify" value="move" />
@@ -443,7 +496,7 @@ if ($stock_id == 0 || $stock_id == '0') {
         echo('
         <div class="container well-nopad theme-divBg" style="margin-top:20px;padding-left:20px">
             <input type="hidden" id="inv-action-type" name="inv-action-type" value="move" />
-            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0px;margin-bottom:0px">
+            <table class="table table-dark theme-table" id="inventoryTable" style="padding-bottom:0;margin-bottom:0">
                 <thead style="text-align: center; white-space: nowrap;">
                     <tr class="theme-tableOuter">
                         <th class="viewport-mid-large">ID</th>
@@ -477,6 +530,127 @@ if ($stock_id == 0 || $stock_id == '0') {
     
     ?>
 </div>
+
+<!-- Container Move item Modal -->
+<div id="modalDivContainerMoveConfirmation" class="modal">
+    <span class="close" onclick="modalCloseContainerMoveConfirmation()">&times;</span>
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <form class="padding:0px;margin:0px" id="containerMoveForm" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="submit" value="1" />
+            <input type="hidden" name="container-move" value="1" />
+            <input type="hidden" id="containerMoveItemID" name="item_id" />
+            <input type="hidden" id="containerMoveShelf" name="shelf_id" />
+            <input type="hidden" id="containerMoveQuantity" name="quantity" />
+        </form>
+        <div class="well-nopad theme-divBg" style="overflow-y:auto; overflow-x: auto; height:600px; " id="property-container" >
+            <h4 class="text-center align-middle" style="width:100%;margin-top:10px">Move Container Item</h4>
+            <table class="centertable"><tbody><tr><th style="padding-right:5px">Item ID:</th><td style="padding-right:20px" id="moveContainerItemID"></td><th style="padding-right:5px">Name:</th><td id="moveContainerItemName"></td></tr></tbody></table>
+            <table class="centertable" style="margin-top:10px">
+                <tbody style="border: none">
+                    <tr class="text-center align-middle" style="border: none">
+                        <td class="text-center align-middle" style="padding-right:5px;border: none"><or class="title" title="This will KEEP all child objects attached and move them with the current item. All child objects will be moved to the new location.">Move container and contents</or></td>
+                        <td style="border: none"><input type="submit" form="containerMoveForm" class="btn btn-danger" name="container-move-all" value="Move All" /></td>
+                    </tr>
+                    <tr class="text-center align-middle" style="border: none">
+                        <td class="text-center align-middle" style="padding-right:5px;border: none"><or class="title" title="This will UNLINK all child objects and ONLY move the selected item. All child objects will remain in the same location.">Move container only</or></td>
+                        <td style="border: none"><input type="submit" form="containerMoveForm" class="btn btn-warning" name="container-move-single" value="Move Single Item" style="margin-top:5px;margin-bottom:5px"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="well-nopad theme-divBg" style="margin: 20px 10px 20px 10px; padding:20px">
+                <p><strong>Contents</strong> - Items: <strong id="moveContainerChildCount" class="green"></strong></p>
+                <table id="containerMoveContentsTable" class="table table-dark theme-table centertable" style="margin-bottom:0px; white-space:nowrap;">
+                    <thead>
+                        <tr>
+                            <th><!-- Image --></th>
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">Name</th>
+                            <th class="text-center align-middle">Description</th>
+                            <th><!-- Unlink --></th>
+                        </tr>
+                    </thead>
+                    <tbody id="containerMoveContentsTableBody">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
+            <button class="btn btn-warning" type="button" style="margin:10px 10px 0px 10px" onclick="modalCloseContainerMoveConfirmation()">Cancel</button>
+        </span>
+    </div>
+</div>
+<!-- End of Move Container Modal-->
+
+<script>
+    function modalLoadContainerMoveConfirmation(i, itemID) {
+        var modal = document.getElementById("modalDivContainerMoveConfirmation");
+        modal.style.display = "block";
+        // Do some AJAX here to get the contents of the container and add it to the table
+        // containerMoveContentsTableBody
+
+        var countText = document.getElementById('moveContainerChildCount');
+        var tableBody = document.getElementById('containerMoveContentsTableBody');
+        var containerMoveItemID = document.getElementById('containerMoveItemID');
+        var containerMoveShelf = document.getElementById('containerMoveShelf');
+        var containerMoveQuantity = document.getElementById('containerMoveQuantity');
+
+        var shelfSelect = document.getElementById(i+'-n-shelf');
+        var quantityInput = document.getElementById(i+'-n-quantity');
+
+        var moveContainerItemName = document.getElementById('moveContainerItemName');
+        var moveContainerItemID = document.getElementById('moveContainerItemID');
+
+        containerMoveItemID.value=itemID;
+        containerMoveShelf.value=shelfSelect.value;
+        containerMoveQuantity.value=quantityInput.value;
+
+        moveContainerItemID.innerHTML = itemID;
+        moveContainerItemName.innerHTML = document.getElementById('stock_name').innerHTML;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "includes/stockajax.php?request-container-children=1&container_id="+itemID+"&container_is_item=1", true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the shelf select box
+                var data = JSON.parse(xhr.responseText);
+                // console.log(data);
+                var bodyExtras = '';
+                var count = data['count'];
+                countText.innerHTML = count;
+                var trs = '';
+                var tr = '';
+                
+                if (count > 0) {
+                    for (let i=0; i<count; i++) {
+                        if (data[i]) {
+                            tr =`<tr class='linkTableRow'> 
+                                    <td><img class='inv-img-main' src='assets/img/stock/`+data[i]['child_img_image']+`' alt='`+data[i]['child_stock_name']+`'></td> 
+                                    <td class='text-center align-middle'>`+data[i]['child_item_id']+`</td> 
+                                    <td class='text-center align-middle'>`+data[i]['child_stock_name']+`</td> 
+                                    <td class='text-center align-middle'><or class='title' title='`+data[i]['child_stock_description']+`'>`+data[i]['child_stock_description'].substring(0,30)+`</or></td> 
+                                    <td class='text-center align-middle'><button class='btn btn-danger' style="color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px"><i class="fa fa-unlink" ></i></button></td> 
+                                </tr>`;
+                            trs = trs+tr;
+                        }
+                    }
+                }
+                // console.log(trs);
+                tableBody.innerHTML=trs;
+                // console.log(trs);
+            }
+        };
+        xhr.send();
+    }
+
+    function modalCloseContainerMoveConfirmation() { 
+        var modal = document.getElementById("modalDivContainerMoveConfirmation");
+        modal.style.display = "none";
+        // Empty the table here too.
+        // containerMoveContentsTableBody
+    }
+</script>
+                                                                                    
 
 <script> // for the select boxes
 function populateAreas(id) {

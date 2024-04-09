@@ -123,12 +123,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     }
                     echo('
                         <div class="container stock-heading">
-                            <h2 class="header-small" style="padding-bottom:5px">Stock</h2>');                            
-                            showResponse(); 
-                            echo('
-                            <div class="nav-row " style="margin-top:5px;">
-                                <h3 style="font-size:22px;margin-top:20px;margin-bottom:0px;width:max-content" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
-                                <div class="nav-div nav-right" style="padding-top:5px;margin-right:0px !important">
+                            <div class="row">
+                                <div class="col">
+                                    <h2 class="header-small" style="padding-bottom:0px">Stock</h2>
+                                </div>
+                                <div class="col nav-div nav-right" style="margin-bottom: 5px;max-width:max-content; width:max-content;margin-right:0px !important">
                                     <div class="nav-row">
                                         <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">
                                             <button id="edit-stock" class="btn btn-info theme-textColor nav-v-b stock-modifyBtn" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'\', \'modify\', \'edit\'))">
@@ -152,8 +151,17 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         </div>
                                     </div>
                                 </div>
+                            </div>');                            
+                            showResponse(); 
+                            echo('
+                            <div class="row " style="margin-top:5px;margin-top:10px;">
+                                <div class="col" style="margin-top:auto;margin-bottom:auto;">
+                                    <h3 style="font-size:22px;margin-bottom:0px;" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
+                                    <input type="hidden" id="hiddenStockName" value="'.$stock_name.'">
+                                </div>
+                                
                             </div>
-                            <p id=stock-description style="margin-bottom:0px">'.$stock_description.'</p>
+                            <p id=stock-description style="color:#898989;margin-bottom:0px;margin-top:10px">'.$stock_description.'</p>
                             '); 
                             if ($stock_stock_deleted == 1) { echo('<p class="red" style="margin-top:20px;font-size:20">Stock Deleted. <a class="link" style="font-size:20" href="admin.php#stockmanagement-settings">Restore?</a></p>');} 
                             echo('
@@ -363,9 +371,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <div id="extra-info" hidden>
                                                 <p id="tags-head"><strong>Tags</strong></p>
                                                 <p id="tags">');
-                                                if (is_array($stock_inv_data[0]['tag'])) {
-                                                    for ($l=0; $l < count($stock_inv_data[0]['tag']); $l++) {
-                                                        echo('<button class="btn theme-btn btn-stock-click gold clickable" id="tag-'.$stock_inv_data[0]['tag'][$l]['id'].'" onclick="window.location.href=\'./?tag='.$stock_inv_data[0]['tag'][$l]['name'].'\'">'.$stock_inv_data[0]['tag'][$l]['name'].'</button> ');
+                                                $stock_tags = $stock_inv_data[0]['tag'];
+                                                if (is_array($stock_tags)) {
+                                                    for ($l=0; $l < count($stock_tags); $l++) {
+                                                        echo('<button class="btn theme-btn btn-stock-click gold clickable" id="tag-'.$stock_tags[$l]['id'].'" onclick="window.location.href=\'./?tag='.$stock_tags[$l]['name'].'\'">'.$stock_tags[$l]['name'].'</button> ');
                                                     }
                                                 } else {
                                                     echo('None');
@@ -373,9 +382,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 
                                                 echo('
                                                 <p id="manufacturer-head"><strong>Manufacturers</strong></p><p id="manufacturers">');
-                                                if ( is_array($stock_inv_data[0]['manufacturer'])) {
-                                                    for ($m=0; $m < count($stock_inv_data[0]['manufacturer']); $m++) {
-                                                        echo('<button class="btn theme-btn btn-stock-click gold clickable" id="manufacturer-'.$stock_inv_data[0]['manufacturer'][$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_inv_data[0]['manufacturer'][$m]['name'].'\'">'.$stock_inv_data[0]['manufacturer'][$m]['name'].'</button> ');
+                                                $stock_manufacturers = $stock_inv_data[0]['manufacturer'];
+                                                if ( is_array($stock_manufacturers)) {
+                                                    for ($m=0; $m < count($stock_manufacturers); $m++) {
+                                                        echo('<button class="btn theme-btn btn-stock-click gold clickable" id="manufacturer-'.$stock_manufacturers[$m]['id'].'" onclick="window.location.href=\'./?manufacturer='.$stock_manufacturers[$m]['name'].'\'">'.$stock_manufacturers[$m]['name'].'</button> ');
                                                     }
                                                 } else {
                                                     echo('None');
@@ -549,7 +559,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     (SELECT SUM(quantity) 
                                                         FROM item 
                                                         WHERE item.stock_id = stock.id AND item.shelf_id=shelf.id AND item.manufacturer_id=manufacturer.id 
-                                                            AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments
+                                                            AND item.serial_number=item_serial_number AND item.upc=item_upc AND item.comments=item_comments AND item.cost=item_cost
                                                     ) AS item_quantity,
                                                     manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name,
                                                     (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
@@ -699,24 +709,24 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <table class="table table-dark theme-table centertable">
                                                 <thead>
                                                     <tr class="theme-tableOuter">
-                                                        <th hidden>ID</th>
-                                                        <th>Site</th>
-                                                        <th>Location</th>
-                                                        <th>Shelf</th>');
+                                                        <th class="align-middle text-center" hidden>ID</th>
+                                                        <th class="align-middle text-center">Site</th>
+                                                        <th class="align-middle text-center">Location</th>
+                                                        <th class="align-middle text-center">Shelf</th>');
                                                         if ($stock_is_cable == 0) { 
                                                             echo('
-                                                            <th class="viewport-large-empty">Manufacturer</th>
-                                                            <th class="viewport-small-empty">Manu.</th>
-                                                            <th class="viewport-large-empty">UPC</th>
-                                                            <th title="Serial Numbers">Serial</th>
-                                                            <th hidden>Tags</th>
-                                                            <th class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
-                                                            <th class="viewport-large-empty">Comments</th>');
+                                                            <th class="align-middle text-center viewport-large-empty">Manufacturer</th>
+                                                            <th class="align-middle text-center viewport-small-empty">Manu.</th>
+                                                            <th class="align-middle text-center viewport-large-empty">UPC</th>
+                                                            <th title="Serial Numbers" class="align-middle text-center">Serial</th>
+                                                            <th class="align-middle text-center" hidden>Tags</th>
+                                                            <th class="viewport-large-empty align-middle text-center"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost</th>
+                                                            <th class="viewport-large-empty align-middle text-center">Comments</th>');
                                                         } else { 
-                                                            echo('<th class="viewport-large-empty"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>Cost</th>');
+                                                            echo('<th class="viewport-large-empty align-middle text-center"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>Cost</th>');
                                                         }
                                                         echo('
-                                                        <th>Stock</th>
+                                                        <th class="align-middle text-center">Stock</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>                           
@@ -725,23 +735,23 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 echo('
                                                     <tr id="item-'.$i.'" ');if ($stock_is_cable == 0) { echo('class="clickable row-show" onclick="toggleHiddenStock(\''.$i.'\')"'); } echo('>
                                                         <td hidden>'.$i.'</td>
-                                                        <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'">'.$stock_inv_data[$i]['site_name'].'</td>
-                                                        <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'">'.$stock_inv_data[$i]['area_name'].'</td>
-                                                        <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'">'.$stock_inv_data[$i]['shelf_name'].'</td>
+                                                        <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'" class="align-middle text-center">'.$stock_inv_data[$i]['site_name'].'</td>
+                                                        <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'" class="align-middle text-center">'.$stock_inv_data[$i]['area_name'].'</td>
+                                                        <td id="item-'.$i.'-'.$stock_inv_data[$i]['site_id'].'-'.$stock_inv_data[$i]['area_id'].'-'.$stock_inv_data[$i]['shelf_id'].'" class="align-middle text-center">'.$stock_inv_data[$i]['shelf_name'].'</td>
                                                 ');   
                                                 if ($stock_is_cable == 0) {
                                                     echo('   
-                                                        <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
-                                                        <td id="item-'.$i.'-upc" class="viewport-large-empty">'.$stock_inv_data[$i]['upc'].'</td>
-                                                        <td id="item-'.$i.'-sn">'.$stock_inv_data[$i]['serial_number'].'</td>
-                                                        <td id="item-'.$i.'-tags" hidden>'.$stock_inv_data[$i]['tag_names'].'</td>
-                                                        <td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
-                                                        <td id="item-'.$i.'-comments" class="viewport-large-empty">'.$stock_inv_data[$i]['comments'].'</td>
-                                                        <td id="item-'.$i.'-stock">'.$stock_inv_data[$i]['quantity'].'</td>
+                                                        <td id="item-'.$i.'-manu-'.$stock_inv_data[$i]['manufacturer_id'].'" class="align-middle text-center">'.$stock_inv_data[$i]['manufacturer_name'].'</td>
+                                                        <td id="item-'.$i.'-upc" class="viewport-large-empty align-middle text-center">'.$stock_inv_data[$i]['upc'].'</td>
+                                                        <td id="item-'.$i.'-sn" class="align-middle text-center">'.$stock_inv_data[$i]['serial_number'].'</td>
+                                                        <td id="item-'.$i.'-tags" class="align-middle text-center" hidden>'.$stock_inv_data[$i]['tag_names'].'</td>
+                                                        <td id="item-'.$i.'-cost" class="viewport-large-empty align-middle text-center"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                        <td id="item-'.$i.'-comments" class="viewport-large-empty align-middle text-center">'.$stock_inv_data[$i]['comments'].'</td>
+                                                        <td id="item-'.$i.'-stock" class="align-middle text-center">'.$stock_inv_data[$i]['quantity'].'</td>
                                                         ');
                                                 } else {
-                                                    echo('<td id="item-'.$i.'-cost" class="viewport-large-empty"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
-                                                    <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] < $stock_min_stock) { echo (' class="red" title="Below minimum stock count. Please re-order."'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
+                                                    echo('<td id="item-'.$i.'-cost" class="viewport-large-empty align-middle text-center"'); if($current_cost_enable_cable == 0) {echo(' hidden');} echo('>'.$current_currency.$stock_inv_data[$i]['cost'].'</td>
+                                                    <td id="item-'.$i.'-stock"'); if ($stock_inv_data[$i]['quantity'] < $stock_min_stock) { echo (' class="red align-middle text-center" title="Below minimum stock count. Please re-order."'); } else { echo(' class="align-middle text-center"'); } echo('>'.$stock_inv_data[$i]['quantity'].'</td>');
                                                 }
                                                 echo('
                                                         
@@ -751,22 +761,23 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                     echo ('
                                                     <tr id="item-'.$i.'-hidden" class="row-hide" hidden>
                                                         <td colspan=100%>
-                                                            <div style="max-height:50vh;overflow-x: hidden;overflow-y: auto;">
+                                                            <div style="max-height:75vh;overflow-x: hidden;overflow-y: auto;">
                                                                 <table class="table table-dark theme-table centertable" style="border-left: 1px solid #454d55;border-right: 1px solid #454d55;border-bottom: 1px solid #454d55">
                                                                     <thead>
                                                                         <tr class="theme-tableOuter">
-                                                                            <th>ID</th>
-                                                                            <th hidden>Site</th>
-                                                                            <th hidden>Location</th>
-                                                                            <th hidden>Shelf</th>
-                                                                            <th>Manufacturer</th>
-                                                                            <th>UPC</th>
-                                                                            <th>Serial</th>
-                                                                            <th'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost ('.$current_currency.')</th>
-                                                                            <th>Comments</th>
-                                                                            <th>Stock</th>
-                                                                            <th></th>
-                                                                            <th></th>
+                                                                            <th class="align-middle text-center">ID</th>
+                                                                            <th class="align-middle text-center" hidden>Site</th>
+                                                                            <th class="align-middle text-center" hidden>Location</th>
+                                                                            <th class="align-middle text-center" hidden>Shelf</th>
+                                                                            <th class="align-middle text-center">Manufacturer</th>
+                                                                            <th class="align-middle text-center">UPC</th>
+                                                                            <th class="align-middle text-center">Serial</th>
+                                                                            <th class="align-middle text-center"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('>Cost ('.$current_currency.')</th>
+                                                                            <th class="align-middle text-center">Comments</th>
+                                                                            <th class="align-middle text-center" colspan=2>Container</th>
+                                                                            <th class="align-middle text-center">Stock</th>
+                                                                            <th class="align-middle text-center"></th>
+                                                                            <th class="align-middle text-center"></th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -780,7 +791,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                     $sql_hidden = "SELECT stock.id AS stock_id, stock.name AS stock_name, stock.description AS stock_description, stock.sku AS stock_sku, stock.min_stock AS stock_min_stock, 
                                                                                 area.id AS area_id, area.name AS area_name,
                                                                                 shelf.id AS shelf_id, shelf.name AS shelf_name, site.id AS site_id, site.name AS site_name, site.description AS site_description,
-                                                                                item.id AS item_id, item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, item.quantity AS item_quantity,
+                                                                                item.id AS item_id, item.serial_number AS item_serial_number, item.upc AS item_upc, item.cost AS item_cost, item.comments AS item_comments, item.quantity AS item_quantity, item.is_container AS item_is_container,
                                                                                 manufacturer.id AS manufacturer_id, manufacturer.name AS manufacturer_name
                                                                             FROM stock
                                                                             LEFT JOIN item ON stock.id=item.stock_id
@@ -788,7 +799,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                             LEFT JOIN area ON shelf.area_id=area.id 
                                                                             LEFT JOIN site ON area.site_id=site.id
                                                                             LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
-                                                                            WHERE stock.id=? AND shelf_id=$hidden_shelf_id AND quantity!=0 AND item.deleted=0 AND item.serial_number='$hidden_serial' AND item.cost='$hidden_cost' AND item.comments='$hidden_comments'
+                                                                            LEFT JOIN item_container AS ic ON item.id=ic.item_id OR item.id=ic.container_id
+                                                                            LEFT JOIN container AS c ON ic.container_id=c.id
+                                                                            WHERE stock.id=? AND shelf.id=$hidden_shelf_id AND quantity!=0 AND item.deleted=0 AND item.serial_number='$hidden_serial' AND item.cost='$hidden_cost' AND item.comments='$hidden_comments'
+                                                                            GROUP BY stock_id, stock_name, stock_description, stock_sku, stock_min_stock, area_id, area_name, shelf_id, shelf_name, site_id, site_name, site_description, item.id, item_serial_number, item_upc, item_cost, item_comments, item_quantity, manufacturer_id, manufacturer_name 
                                                                             ORDER BY item.serial_number, item.upc, item.comments DESC";
                                                                     $stmt_hidden = mysqli_stmt_init($conn);
                                                                     if (!mysqli_stmt_prepare($stmt_hidden, $sql_hidden)) {
@@ -804,45 +818,188 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                         } else {
                                                                             $stock_img_data = [];
                                                                             while ( $row_hidden = $result_hidden->fetch_assoc() ) {
+                                                                                $is_container = 0;
+                                                                                if (isset($rowCount_container)) { unset($rowCount_container); }
+                                                                                if ((int)$row_hidden['item_is_container'] == 1) {
+                                                                                    $is_container = 1;
+                                                                                    $container_item_id = $row_hidden['item_id'];
+                                                                                    $sql_container = "SELECT s.name AS s_name, s.id AS s_id, 
+                                                                                                        i.id AS i_id, i.upc AS i_upc, i.serial_number AS i_serial_number, i.comments AS i_comments,
+                                                                                                        ic.id AS ic_id
+                                                                                                        FROM item_container AS ic
+                                                                                                        INNER JOIN item AS i ON i.id=ic.item_id AND ic.container_is_item=1
+                                                                                                        INNER JOIN stock AS s ON s.id=i.stock_id
+                                                                                                        WHERE ic.container_id='$container_item_id' AND ic.container_is_item=1";
+                                                                                    $stmt_container = mysqli_stmt_init($conn);
+                                                                                    if (!mysqli_stmt_prepare($stmt_container, $sql_container)) {
+                                                                                        echo("ERROR getting entries");
+                                                                                    } else {
+                                                                                        mysqli_stmt_execute($stmt_container);
+                                                                                        $result_container = mysqli_stmt_get_result($stmt_container);
+                                                                                        $rowCount_container = $result_container->num_rows;
+                                                                                    }
+                                                                                }
                                                                                 echo('
                                                                                 <tr class="align-middle">
-                                                                                    <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
-                                                                                        <input type="hidden" name="submit" value="row"/>
-                                                                                        <td class="align-middle"><input type="hidden" name="item-id" value="'.$row_hidden['item_id'].'" />'.$row_hidden['item_id'].'</td>
-                                                                                        <td hidden>'.$row_hidden['site_name'].'</td>
-                                                                                        <td hidden>'.$row_hidden['area_name'].'</td>
-                                                                                        <td hidden>'.$row_hidden['shelf_name'].'</td>
-                                                                                        <td class="align-middle">
-                                                                                            <select class="form-control" name="manufacturer_id" style="max-width:max-content">');
-                                                                                            $sql_manufacturer = "SELECT * FROM manufacturer;";
-                                                                                            $stmt_manufacturer = mysqli_stmt_init($conn);
-                                                                                            if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
-                                                                                                echo("ERROR getting entries");
+                                                                                    <form action="includes/stock-modify.inc.php" method="POST" id="form-item-'.$row_hidden['item_id'].'" enctype="multipart/form-data"></form>
+                                                                                    <input type="hidden" form="form-item-'.$row_hidden['item_id'].'" name="submit" value="row"/>
+                                                                                    <td class="align-middle text-center"><input type="hidden" form="form-item-'.$row_hidden['item_id'].'" name="item-id" value="'.$row_hidden['item_id'].'" />'.$row_hidden['item_id'].'</td>
+                                                                                    <td hidden>'.$row_hidden['site_name'].'</td>
+                                                                                    <td hidden>'.$row_hidden['area_name'].'</td>
+                                                                                    <td hidden>'.$row_hidden['shelf_name'].'</td>
+                                                                                    <td class="align-middle text-center">
+                                                                                        <select class="form-control" form="form-item-'.$row_hidden['item_id'].'" name="manufacturer_id" style="max-width:max-content">');
+                                                                                        $sql_manufacturer = "SELECT * FROM manufacturer;";
+                                                                                        $stmt_manufacturer = mysqli_stmt_init($conn);
+                                                                                        if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
+                                                                                            echo("ERROR getting entries");
+                                                                                        } else {
+                                                                                            mysqli_stmt_execute($stmt_manufacturer);
+                                                                                            $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
+                                                                                            $rowCount_manufacturer = $result_manufacturer->num_rows;
+                                                                                            if ($rowCount_manufacturer == 0){
+                                                                                                echo('<option value="" selected disabled>No Manufacturers Found...</option>');
                                                                                             } else {
-                                                                                                mysqli_stmt_execute($stmt_manufacturer);
-                                                                                                $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
-                                                                                                $rowCount_manufacturer = $result_manufacturer->num_rows;
-                                                                                                if ($rowCount_manufacturer == 0){
-                                                                                                    echo('<option value="" selected disabled>No Manufacturers Found...</option>');
-                                                                                                } else {
-                                                                                                    while ($row_manufacturer = $result_manufacturer->fetch_assoc()) {
-                                                                                                        echo('<option value="'.$row_manufacturer['id'].'"'); if ($row_hidden['manufacturer_id'] == $row_manufacturer['id']) { echo(' selected'); } echo('>'.$row_manufacturer['name'].'</option>');
-                                                                                                    }
+                                                                                                while ($row_manufacturer = $result_manufacturer->fetch_assoc()) {
+                                                                                                    echo('<option value="'.$row_manufacturer['id'].'"'); if ($row_hidden['manufacturer_id'] == $row_manufacturer['id']) { echo(' selected'); } echo('>'.$row_manufacturer['name'].'</option>');
                                                                                                 }
                                                                                             }
-                                                                                        echo('
-                                                                                            </select>
-                                                                                        </td>
-                                                                                        <td class="align-middle"><input type="text" class="form-control" style="width:100px" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
-                                                                                        <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
-                                                                                        <td class="align-middle"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
-                                                                                        <td class="align-middle"><input type="text" class="form-control" style="width:150px" value="'.htmlspecialchars($row_hidden['item_comments'], ENT_QUOTES, 'UTF-8').'" name="comments" /></td>
-                                                                                        <td class="align-middle">'.$row_hidden['item_quantity'].'</td>
-                                                                                        <td><input type="submit" class="btn btn-success" name="stock-row-submit" value="Update" /> </td>
-                                                                                        <td><button type="button" class="btn btn-danger" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'&manufacturer='.$stock_inv_data[$i]['manufacturer_id'].'&shelf='.$stock_inv_data[$i]['shelf_id'].'&serial='.$stock_inv_data[$i]['serial_number'].'\', \'modify\', \'remove\'))">Remove</button></td>
-                                                                                    </form>
+                                                                                        }
+                                                                                    echo('
+                                                                                        </select>
+                                                                                    </td>
+                                                                                    <td class="align-middle text-center"><input type="text" form="form-item-'.$row_hidden['item_id'].'" class="form-control" style="" value="'.$row_hidden['item_upc'].'" name="upc" /></td>
+                                                                                    <td class="align-middle text-center"><input type="text" form="form-item-'.$row_hidden['item_id'].'" class="form-control" style="" value="'.$row_hidden['item_serial_number'].'" name="serial_number" /></td>
+                                                                                    <td class="align-middle text-center"'); if($current_cost_enable_normal == 0) {echo(' hidden');} echo('><input type="number" form="form-item-'.$row_hidden['item_id'].'" class="form-control" style="width:75px" value="'.$row_hidden['item_cost'].'" name="cost" min=0 /></td>
+                                                                                    <td class="align-middle text-center"><input type="text" form="form-item-'.$row_hidden['item_id'].'" class="form-control" style="" value="'.htmlspecialchars($row_hidden['item_comments'], ENT_QUOTES, 'UTF-8').'" name="comments" /></td>
+                                                                                    ');
+                                                                                        $p_item_id = $row_hidden['item_id'];
+                                                                                        $sql_parent = "SELECT ic.item_id AS ic_item_id, ic.container_id AS ic_container_id, ic.container_is_item AS ic_container_is_item,
+                                                                                                                c.id AS c_id, c.name AS c_name,
+                                                                                                                i.id AS i_id, 
+                                                                                                                s.id AS s_id, s.name AS s_name
+                                                                                                        FROM item_container AS ic
+                                                                                                        LEFT JOIN container AS c ON ic.container_id=c.id AND ic.container_is_item=0
+                                                                                                        LEFT JOIN item AS i ON ic.container_id=i.id AND ic.container_is_item=1
+                                                                                                        LEFT JOIN stock AS s ON i.stock_id=s.id
+                                                                                                        WHERE item_id=$p_item_id LIMIT 1;";
+                                                                                        $stmt_parent = mysqli_stmt_init($conn);
+                                                                                        if (!mysqli_stmt_prepare($stmt_parent, $sql_parent)) {
+                                                                                            echo("ERROR getting entries");
+                                                                                        } else {
+                                                                                            mysqli_stmt_execute($stmt_parent);
+                                                                                            $result_parent = mysqli_stmt_get_result($stmt_parent);
+                                                                                            $rowCount_parent = $result_parent->num_rows;
+                                                                                            if ($rowCount_parent == 0){
+                                                                                                echo('<td class="align-middle text-center" style="padding-right:2px"'); if ($is_container == 1) { echo('colspan=2'); } echo('>');
+                                                                                                if ($is_container == 1 && isset($rowCount_container) && $rowCount_container > 0) {
+                                                                                                    echo('<input type="checkbox" form="form-item-'.$row_hidden['item_id'].'" name="container-toggle" checked hidden>');
+                                                                                                } 
+                                                                                                echo('
+                                                                                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:0px" >
+                                                                                                        <input type="checkbox" form="form-item-'.$row_hidden['item_id'].'" '); if ($is_container == 1) {echo 'checked name="container-toggle'; if (isset($rowCount_container) && $rowCount_container > 0) { echo'-disabled" disabled'; } } else { echo 'name="container-toggle';} echo('">
+                                                                                                        <span class="slider round align-middle" style="transform: scale(0.8, 0.8)'); if ($is_container == 1 && isset($rowCount_container) && $rowCount_container > 0) { echo'; opacity: 0.5; cursor: no-drop;" title="Please un-assign the children first'; } echo('"></span>
+                                                                                                    </label>');
+                                                                                                echo('
+                                                                                                </td>');
+                                                                                                if ($is_container == 0) {
+                                                                                                    echo('<td class="align-middle text-center" style="padding-left:2px">
+                                                                                                            <button class="btn btn-warning" type="button" style="opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px" title="Link to container" onclick="modalLoadLinkToContainer(\''.$row_hidden['item_id'].'\')">
+                                                                                                                <i class="fa fa-link"></i>
+                                                                                                            </button>
+                                                                                                    </td>');
+                                                                                                }
+                                                                                                
+                                                                                            } else {
+                                                                                                $row_parent = $result_parent->fetch_assoc();
+                                                                                                $parent_c_is_item = $row_parent['ic_container_is_item'];
+                                                                                                $parent_c_id = $row_parent['c_id'];
+                                                                                                $parent_c_name = $row_parent['c_name'];
+                                                                                                $parent_i_id = $row_parent['i_id'];
+                                                                                                $parent_s_id = $row_parent['s_id'];
+                                                                                                $parent_s_name = $row_parent['s_name'];
+                                                                                                if ((int)$parent_c_is_item == 1) {
+                                                                                                    $col_id = $parent_i_id;
+                                                                                                    $col_name = $parent_s_name;
+                                                                                                    $col_item = 1;
+                                                                                                } else {
+                                                                                                    $col_id = $parent_c_id;
+                                                                                                    $col_name = $parent_c_name;
+                                                                                                    $col_item = 0;
+                                                                                                }
+
+                                                                                                echo("<td class='align-middle text-center' style='padding-right:2px'>
+                                                                                                    <a class='link' id='modalUnlinkContainerItemName-".$row_hidden['item_id']."' href='containers.php?container_id=$col_id&con_is_item=$col_item'>$col_name</a>
+                                                                                                </td>
+                                                                                                <td class='align-middle text-center' style='padding-left:2px'>
+                                                                                                    <form action='includes/stock-modify.inc.php' method='POST' id='form-item-".$row_hidden['item_id']."-container-unlink' enctype='multipart/form-data'>
+                                                                                                        <input type='hidden' name='item_id' value='".$row_hidden['item_id']."' form='form-item-".$row_hidden['item_id']."-container-unlink' />
+                                                                                                        <input type='hidden' name='container-unlink' value='1' form='form-item-".$row_hidden['item_id']."-container-unlink' />
+                                                                                                        <button class='btn btn-danger' type='button' name='submit' onclick=\"modalLoadUnlinkContainer('".$row_hidden['item_id']."', '$col_id', 1)\" form='form-item-".$row_hidden['item_id']."-container-unlink' style='color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px' title='Unlink from container'>
+                                                                                                            <i class='fa fa-unlink'></i>
+                                                                                                        </button>
+                                                                                                    </form>
+                                                                                                </td>");
+                                                                                            }
+                                                                                        }
+                                                                                        
+                                                                                    echo('
+                                                                                    <td class="align-middle text-center">'.$row_hidden['item_quantity'].'</td>
+                                                                                    <td style="padding-right:3px"><input type="submit" form="form-item-'.$row_hidden['item_id'].'" class="btn btn-success" name="stock-row-submit" value="Update" /></td>
+                                                                                    <td style="padding-left:3px"><button type="button" class="btn btn-danger" onclick="navPage(updateQueryParameter(\'./stock.php?stock_id='.$stock_id.'&manufacturer='.$stock_inv_data[$i]['manufacturer_id'].'&shelf='.$stock_inv_data[$i]['shelf_id'].'&serial='.$stock_inv_data[$i]['serial_number'].'\', \'modify\', \'remove\'))" '); if ($is_container == 1 && isset($rowCount_container) && $rowCount_container > 0) { echo' disabled'; } echo('><i class="fa fa-trash"></i></button></td>
                                                                                 </tr>
                                                                                 ');
+                                                                                if ($is_container == 1 && isset($rowCount_container)) {
+                                                                                    echo('
+                                                                                        <tr class="theme-th-selected">
+                                                                                            <td colspan=100%>
+                                                                                                <div style="max-height:50vh;overflow-x: hidden;overflow-y: auto;">
+                                                                                                    <p class="centertable" style="width:85%; margin-bottom:5px">Contents</p>
+                                                                                                    <table class="table table-dark theme-table centertable" style="border-left: 1px solid #454d55;border-right: 1px solid #454d55;border-bottom: 1px solid #454d55; width:85%">
+                                                                                                        <thead>
+                                                                                                            <th class="align-middle text-center">Item ID</th>
+                                                                                                            <th class="align-middle text-center">Name</th>
+                                                                                                            <th class="align-middle text-center">UPC</th>
+                                                                                                            <th class="align-middle text-center">Serial</th>
+                                                                                                            <th class="align-middle text-center">Comments</th>
+                                                                                                            <th class="align-middle text-center">
+                                                                                                                <button class="btn btn-success" type="submit" name="button" onclick="modalLoadAddChildren('.$row_hidden['item_id'].')" style="color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px" title="Add more children">
+                                                                                                                    + <i class="fa fa-link"></i>
+                                                                                                                </button>
+                                                                                                            </th>
+                                                                                                        </thead>
+                                                                                                        <tbody>
+                                                                                                        ');
+                                                                                    if ($rowCount_container == 0){
+                                                                                        echo('
+                                                                                                            <tr><td class="align-middle text-center" colspan=100%>No contents found.</td><tr>');
+                                                                                    } else {
+                                                                                        while ($row_container = $result_container->fetch_assoc()) {
+                                                                                            echo('
+                                                                                                            <tr class="align-middle">
+
+                                                                                                                <td class="align-middle text-center">'.$row_container['i_id'].'</td>
+                                                                                                                <td class="align-middle text-center" style="white-space:wrap;"><a class="link" href="stock.php?stock_id='.$row_container['s_id'].'" id="modalUnlinkContainerItemName-'.$row_container['i_id'].'">'.$row_container['s_name'].'</a></td>
+                                                                                                                <td class="align-middle text-center">'.$row_container['i_upc'].'</td>
+                                                                                                                <td class="align-middle text-center">'.$row_container['i_serial_number'].'</td>
+                                                                                                                <td class="align-middle text-center">'.$row_container['i_comments'].'</td>
+                                                                                                                <td class="align-middle text-center">
+                                                                                                                    <input type="hidden" id="modalUnlinkContainerName" value="'.$row_hidden['stock_name'].'" />
+                                                                                                                    <button class="btn btn-danger" type="submit" name="button" onclick="modalLoadUnlinkContainer(\''.$row_hidden['item_id'].'\', \''.$row_container['i_id'].'\', 0)" style="color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px" title="Unlink from container">
+                                                                                                                        <i class="fa fa-unlink"></i>
+                                                                                                                    </button>
+                                                                                                                </td>
+                                                                                                            </tr>');
+                                                                                        }
+                                                                                    }
+                                                                                    echo('
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                        ');
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -885,8 +1042,136 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         
     ?>
     </div>
+    <!-- Start Modal for uninking from container -->
+    <div id="modalDivUnlinkContainer" class="modal">
+        <span class="close" onclick="modalCloseUnlinkContainer()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-container">
+                <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="form-unlink-container-item-id" name="item_id" value=""  />
+                    <input type="hidden" name="container-unlink" value="1"/>
+                    <table class="centertable">
+                        <tbody>
+                            <tr class="nav-row">
+                                <th colspan=100%>Container:</th>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width: 200px"><label class="nav-v-c align-middle">Container ID:</label></td>
+                                <td style="margin-left:10px"><label id="unlink-container-id" class="nav-v-c align-middle">PLACEHOLDER ID</label></td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width: 200px"><label class="nav-v-c align-middle">Container Name:</label></td>
+                                <td style="margin-left:10px"><label id="unlink-container-name" class="nav-v-c align-middle">PLACEHOLDER NAME</label></td>
+                            </tr>
+                            <tr class="nav-row" style="padding-top:20px">
+                                <th colspan=100%>Item to unlink:</th>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width: 200px"><label class="nav-v-c align-middle">Item ID:</label></td>
+                                <td style="margin-left:10px"><label id="unlink-container-item-id" class="nav-v-c align-middle">PLACEHOLDER ID</label></td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width: 200px"><label class="nav-v-c align-middle">Item Name:</label></td>
+                                <td style="margin-left:10px"><label id="unlink-container-item-name" class="nav-v-c align-middle">PLACEHOLDER NAME</label></td>
+                            </tr>
+                            <tr class="nav-row text-center align-middle" style="padding-top:10px">
+                                <td class="text-center align-middle" colspan=100% style="width:100%">
+                                    <span style="white-space:nowrap; width:100%">
+                                        <button class="btn btn-danger" type="submit" name="submit" style="color:black !important; margin-right:10px">Unlink <i style="margin-left:5px" class="fa fa-unlink"></i></button>
+                                        <button class="btn btn-warning" type="button" onclick="modalCloseUnlinkContainer()" style="margin-left:10px">Cancel</button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal for uninking from container -->
+
+    <!-- Link to Container Modal -->
+    <div id="modalDivAddChildren" class="modal">
+        <span class="close" onclick="modalCloseAddChildren()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; overflow-x: auto; height:600px; " id="property-container" >
+                <h4 class="text-center align-middle" style="width:100%;margin-top:10px">Add item to selected container</h4>
+                <table class="centertable"><tbody><tr><th style="padding-right:5px">Container ID:</th><td style="padding-right:20px" id="contID"></td><th style="padding-right:5px">Container Name:</th><td id="contName"></td></tr></tbody></table>
+                <div class="row" id="TheRow" style="min-width: 100%; max-width:1920px; flex-wrap:nowrap !important; padding-left:10px;padding-right:10px; max-width:max-content">
+                    <div class="col well-nopad theme-divBg" style="margin: 20px 10px 20px 10px; padding:20px;">
+                        <p><strong>Stock</strong></p>
+                        <input type="text" name="search" class="form-control" style="width:300px; margin-bottom:5px" placeholder="Search" oninput="addChildrenSearch(document.getElementById('contID').innerHTML, this.value)"/>
+                        <div style=" overflow-y:auto; overflow-x: hidden; height:300px; ">
+                            <table id="containerSelectTable" class="table table-dark theme-table centertable" style="margin-bottom:0px; white-space:nowrap;">
+                                <thead>
+                                    <tr>
+                                        <th class='text-center align-middle'>Stock ID</th>
+                                        <th class='text-center align-middle'>Name</th>
+                                        <th class='text-center align-middle'>Serial Number</th>
+                                        <th class='text-center align-middle'>Quantity</th>
+                                        <th class='text-center align-middle'>Item ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="addChildrenTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form enctype="multipart/form-data" action="./includes/stock-modify.inc.php" method="POST" style="padding: 0px; margin:0px">
+                <input type="hidden" name="container-link-fromstock" value="1" />
+                <input type="hidden" id="addChildrenContID" name="container_id" value="" />
+                <input type="hidden" id="addChildrenStockID" name="stock_id" value="" />
+                <input type="hidden" id="addChildrenItemID" name="item_id" value="" />
+                <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
+                    <input id="submit-button-addChildren" type="submit" name="submit" value="Link" class="btn btn-success" style="margin:10px 10px 0px 10px" disabled></input>
+                    <button class="btn btn-warning" type="button" style="margin:10px 10px 0px 10px" onclick="modalCloseAddChildren()">Cancel</button>
+                </span>
+            </form>
+        </div>
+    </div>
+    <!-- End of Container Add item Modal -->
+
+    <!-- Container Add item Modal -->
+    <div id="modalDivLinkToContainer" class="modal">
+        <span class="close" onclick="modalCloseLinkToContainer()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; overflow-x: auto; height:600px; " id="property-container" >
+                <h4 class="text-center align-middle" style="width:100%;margin-top:10px">Add to container</h4>
+                <table class="centertable"><tbody><tr><th style="padding-right:5px">Item ID:</th><td style="padding-right:20px" id="linkToContainerItemID"></td><th style="padding-right:5px">Item Name:</th><td id="linkToContainerItemName"></td></tr></tbody></table>
+                <div class="well-nopad theme-divBg" style="margin: 20px 10px 20px 10px; padding:20px">
+                    <p><strong>Containers</strong></p>
+                    <table id="containerSelectTable" class="table table-dark theme-table centertable" style="margin-bottom:0px; white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle">ID</th>
+                                <th class="text-center align-middle">Name</th>
+                                <th class="text-center align-middle">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="containerSelectTableBody">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <form class="padding:0px;margin:0px" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
+                    <input type="hidden" name="container-link" value="1" />
+                    <input type="hidden" id="linkToContainerTableItemID" name="item_id" />
+                    <input type="hidden" id="linkToContainerTableID" name="container_id" />
+                    <input type="hidden" id="linkToContainerTableItem" name="item" />
+                    <input type="submit" id="containerLink-submit-button" name="submit" class="btn btn-success" style="margin:10px 10px 0px 10px" value="Link" disabled>
+                    <button class="btn btn-warning" type="button" style="margin:10px 10px 0px 10px" onclick="modalCloseLinkToContainer()">Cancel</button>
+                </span>
+            </form>
+        </div>
+    </div>
+    <!-- End of Link to Container-->
     
     <?php include 'foot.php'; ?>
+
     <script> // Toggle hide/show section
         function toggleSection(element, section) {
             var div = document.getElementById(section);
@@ -902,7 +1187,50 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
         }
     </script>
+    <script>
+        // for the modal unlinking contanier div
+        function modalLoadUnlinkContainer(containerID, itemID, inverse) {
+            var modal = document.getElementById("modalDivUnlinkContainer");
 
+            
+            
+
+            var text_containerID = document.getElementById("unlink-container-id");
+            var text_containerName = document.getElementById("unlink-container-name");
+            var text_itemID = document.getElementById("unlink-container-item-id");
+            var text_itemName = document.getElementById("unlink-container-item-name");
+
+            var form_itemID = document.getElementById("form-unlink-container-item-id");
+
+            modal.style.display = "block";
+
+            if (inverse == 1) {
+                var itemName = document.getElementById("hiddenStockName").value;
+                var containerName = document.getElementById("modalUnlinkContainerItemName-"+containerID).innerHTML;
+                
+                form_itemID.value = containerID;
+                text_containerID.innerText = itemID;
+                text_containerName.innerText = containerName;
+                text_itemID.innerText = containerID;
+                text_itemName.innerHTML = itemName;
+            } else {
+                var containerName = document.getElementById("modalUnlinkContainerName").value;
+                var itemName = document.getElementById("modalUnlinkContainerItemName-"+itemID).innerHTML;
+
+                form_itemID.value = itemID;
+                text_containerID.innerText = containerID;
+                text_containerName.innerText = containerName;
+                text_itemID.innerText = itemID;
+                text_itemName.innerHTML = itemName;
+            }
+                
+        }
+
+        function modalCloseUnlinkContainer() { 
+            var modal = document.getElementById("modalDivUnlinkContainer");
+            modal.style.display = "none";
+        }
+    </script>
     <script>
         function modalLoadCarousel() {
             var modal = document.getElementById("modalDivCarousel");
@@ -911,8 +1239,224 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
 
         // When the user clicks on <span> (x), close the modal or if they click the image.
-        modalCloseCarousel = function() { 
+        function modalCloseCarousel() { 
             var modal = document.getElementById("modalDivCarousel");
+            modal.style.display = "none";
+        }
+
+
+        // Container Link
+        function modalLoadContainerLink(itemID) {
+            var modal = document.getElementById("modalDivContainerLink");
+            modal.style.display = "block";
+        }
+
+        function modalCloseContainerLink(itemID) { 
+            var modal = document.getElementById("modalDivContainerLink");
+            modal.style.display = "none";
+        }
+
+        // Add children to container
+        function modalLoadAddChildren(itemID) {
+            var modal = document.getElementById("modalDivAddChildren");
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+            var contID = document.getElementById('contID');
+            var contName = document.getElementById('contName');
+            var formContId = document.getElementById('addChildrenContID');
+            formContId.value = itemID;
+            contID.innerHTML = itemID;
+            contName.innerHTML = document.getElementById('stock-name').innerHTML;
+            var tableBody = document.getElementById('addChildrenTableBody');
+            // do the ajax to fill the table
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stockajax.php?request-nearby-stock=1&item_id="+itemID+"&is_item=1", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var data = JSON.parse(xhr.responseText);
+                    // console.log(inventory);
+                    var bodyExtras = '';
+                    var totalCount = data['count'];
+                    var trs = '';
+                    var tr = '';
+                    if (totalCount > 0) {
+                        for (let i=0; i<totalCount; i++) {
+                            if (data['data'][i]) {
+                                if (data['data'][i]['item_id'] == null) {
+                                    var id = '--';
+                                } else {
+                                    var id = data['data'][i]['item_id'];
+                                }
+                                tr = "<tr class='clickable' onclick=\"addChildrenClicked(this, '"+data['data'][i]['stock_id']+"', '"+id+"')\"> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['stock_id']+"</td> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['stock_name']+"</td> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['item_serial_number']+"</td> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['quantity']+"</td> \
+                                        <td class='text-center align-middle'>"+id+"</td> \
+                                    </tr>";
+                                trs = trs+tr;
+                            }
+                        }
+                    }
+                    tableBody.innerHTML=trs;
+                    // console.log(trs);
+                }
+            };
+            xhr.send();
+        }
+
+        function addChildrenSearch(itemID, search) {
+            var tableBody = document.getElementById('addChildrenTableBody');
+            // do the ajax to fill the table
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stockajax.php?request-nearby-stock=1&item_id="+itemID+"&is_item=1&name="+search, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var data = JSON.parse(xhr.responseText);
+                    // console.log(inventory);
+                    var bodyExtras = '';
+                    var totalCount = data['count'];
+                    var trs = '';
+                    var tr = '';
+                    if (totalCount > 0) {
+                        for (let i=0; i<totalCount; i++) {
+                            if (data['data'][i]) {
+                                if (data['data'][i]['item_id'] == null) {
+                                    var id = '--';
+                                } else {
+                                    var id = data['data'][i]['item_id'];
+                                }
+                                tr = "<tr class='clickable'> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['stock_id']+"</td> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['stock_name']+"</td> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['item_serial_number']+"</td> \
+                                        <td class='text-center align-middle'>"+data['data'][i]['quantity']+"</td> \
+                                        <td class='text-center align-middle'>"+id+"</td> \
+                                    </tr>";
+                                trs = trs+tr;
+                            }
+                        }
+                    }
+                    tableBody.innerHTML=trs;
+                    // console.log(trs);
+                }
+            };
+            xhr.send();
+        }
+
+        function addChildrenClicked(row, stockID, itemID) {
+            var linkButton = document.getElementById('submit-button-addChildren');
+            var formStockID = document.getElementById('addChildrenStockID');
+            var formItemID = document.getElementById('addChildrenItemID');
+            var tableBody = document.getElementById('addChildrenTableBody');
+            if (tableBody) {
+                var tableRows = tableBody.querySelectorAll('tr');
+                // Iterate over each <tr> element and remove the class 'theme-th-selected'
+                tableRows.forEach(row => {
+                    row.classList.remove('theme-th-selected');
+                });
+            }
+            row.classList.add("theme-th-selected");
+            linkButton.disabled = false;
+            formStockID.value = stockID;
+            if (itemID !== '--') {
+                formItemID.value = itemID;
+            } else {
+                formItemID.value = '';
+            }
+        }
+
+        function modalCloseAddChildren(itemID) { 
+            var modal = document.getElementById("modalDivAddChildren");
+            modal.style.display = "none";
+        }
+
+        // Container Link
+        function modalLoadLinkToContainer(itemID) {
+            var modal = document.getElementById("modalDivLinkToContainer");
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+
+            var table = document.getElementById('containerSelectTable');
+            var tableBody = document.getElementById('containerSelectTableBody');
+            var IDbox = document.getElementById('linkToContainerItemID');
+            var NAMEbox = document.getElementById('linkToContainerItemName');
+            var formItemID = document.getElementById('linkToContainerTableItemID')
+            var stockName = document.getElementById('stock-name').innerHTML;
+            NAMEbox.innerHTML = stockName;
+            IDbox.innerHTML = itemID;
+            formItemID.value = itemID;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "includes/stockajax.php?request-nearby-containers=1&item_id="+itemID, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Parse the response and populate the shelf select box
+                    var data = JSON.parse(xhr.responseText);
+                    // console.log(inventory);
+                    var bodyExtras = '';
+                    var totalCount = data['count'];
+                    var containerCount = data['container']['count'];
+                    var item_containerCount = data['item_container']['count'];
+                    var trs = '';
+                    var tr = '';
+                    if (containerCount > 0) {
+                        for (let i=0; i<containerCount; i++) {
+                            if (data['container'][i]) {
+                                tr = "<tr class='clickable linkTableRow' onclick='linkToContainerTableClick(this, "+data['container'][i]['id']+", 0)'><td class='text-center align-middle'>"+data['container'][i]['id']+"</td><td class='text-center align-middle'>"+data['container'][i]['name']+"</td><td class='text-center align-middle'>"+data['container'][i]['description']+"</td></tr>";
+                                trs = trs+tr;
+                            }
+                        }
+                    }
+                    if (item_containerCount > 0) { 
+                        for (let i=0; i<item_containerCount; i++) {
+                            if (data['item_container'][i]) {
+                                tr = "<tr class='clickable linkTableRow' onclick='linkToContainerTableClick(this, "+data['item_container'][i]['id']+", 1)'><td class='text-center align-middle'>"+data['item_container'][i]['id']+"</td><td class='text-center align-middle'>"+data['item_container'][i]['name']+"</td><td class='text-center align-middle'>"+data['item_container'][i]['description']+"</td></tr>";
+                                trs = trs+tr;
+                            }
+                        }
+                    }
+                    tableBody.innerHTML=trs;
+                    // console.log(trs);
+                }
+            };
+            xhr.send();
+        }
+        // Container Link Table function
+        function linkToContainerTableClick(clicked, id, item) {
+            var idInput = document.getElementById('linkToContainerTableID');
+            var itemInput = document.getElementById('linkToContainerTableItem');
+            var allRows = document.getElementsByClassName('linkTableRow');
+            var button = document.getElementById('containerLink-submit-button');
+            // check if id is number
+            if (isNaN(id) == false && isNaN(item) == false) {
+                idInput.value = id;
+                itemInput.value = item;
+            } else {
+                // item is not a number
+                console.log('linkToContainerTableClick Item or ID checker NaN');
+            }
+            for (var j = 0; j < allRows.length; j++) {
+                allRows[j].classList.remove('theme-th-selected');
+            }   
+            clicked.classList.add('theme-th-selected');
+            button.disabled=false;
+        }
+
+        function modalCloseLinkToContainer() { 
+            var modal = document.getElementById("modalDivLinkToContainer");
+            modal.style.display = "none";
+        }
+        // Container Link
+        function modalLoadContainerLink(itemID) {
+            var modal = document.getElementById("modalDivContainerLink");
+            // Get the image and insert it inside the modal - use its "alt" text as a caption
+            modal.style.display = "block";
+        }
+
+        function modalCloseContainerLink(itemID) { 
+            var modal = document.getElementById("modalDivContainerLink");
             modal.style.display = "none";
         }
     </script>

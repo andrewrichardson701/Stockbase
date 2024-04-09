@@ -665,7 +665,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.7.0-beta</h3></summary>
-<h4>Beta release 0.7.0, Login tracking and blocking.</h4>
+<h4>Beta release 0.7.0, Login tracking and blocking, containers and container logic.</h4>
 
 - Added login_log table to track login attempts.
 - Added login_failure table to track failed login count.
@@ -674,6 +674,23 @@ Clone the repo first, and the follow the below steps.
 - New include file added for login tracking and blocking, as includes/login-functions.inc.php
 - Adjusted the login.in, session.inc and logout php pages to accomodate the new login blocking and tracking.
 - Fixed some LDAP testing bugs.
+- "parent_id" field dropped from area table. This was unused.
+- "is_container" field added to item table. This marks the item as a container.
+- Containers link added to nav bar.
+- containers.inc.php page added for the container logic.
+- Containers can be added from the containers page.
+- Stock add page now has asterisks marking required fields.
+- Items can now be linked to and unlinked from containers
+- Stock move page now shows the container the item is in. 
+- Stock move page now warns you when moving stock that is within a container.
+- Moving stock no longer deleted the previous one and adds a new copy. No idea why i did this...
+- Removing stock page now only shows the serials of the selected manufacturer. This was missed before and it showed all for the shelf regardless of manufacturer.
+- Container field added to the remove stokc page and checks for the container the item is in for removal.
+- Removing a container now prompts to remove/move the contents
+- The remove page now shows what is and is not in a container.
+- Containers page now shows the location of the container. The SQL query for this is rather large though, so might need to be changed at a later date.
+- Stock page buttons are now inline with the Stock heading
+- Removed all references to "cotnainer"...
 
 </details>
 <details>

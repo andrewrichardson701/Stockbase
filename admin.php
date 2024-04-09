@@ -1694,7 +1694,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
            
             $locations = [];
             $sql_locations = "SELECT site.id AS site_id, site.name AS site_name, site.description AS site_description, site.deleted AS site_deleted,
-                                    area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.parent_id AS area_parent_id, area.deleted AS area_deleted,
+                                    area.id AS area_id, area.name AS area_name, area.description AS area_description, area.site_id AS area_site_id, area.deleted AS area_deleted,
                                     shelf.id AS shelf_id, shelf.name AS shelf_name, shelf.area_id AS shelf_area_id, shelf.deleted AS shelf_deleted
                                 FROM site
                                 LEFT JOIN area ON site.id = area.site_id
@@ -1729,7 +1729,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_name'] = $row_locations['area_name'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_description'] = $row_locations['area_description'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_site_id'] = $row_locations['area_site_id'];
-                        $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_parent_id'] = $row_locations['area_parent_id'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['area_deleted'] = $row_locations['area_deleted'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_id'] = $row_locations['shelf_id'];
                         $locations[$row_locations['site_id']]['areas'][$row_locations['area_id']]['shelves'][$row_locations['shelf_id']]['shelf_name'] = $row_locations['shelf_name'];
@@ -1882,7 +1881,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                     <td class="stockTD" style=""><input id="area-'.$area['area_id'].'-name" class="form-control stockTD-input" type="text" name="name" value="'.htmlspecialchars($area['area_name'], ENT_QUOTES, 'UTF-8').'" style="width:150px"/></td>
                                                     <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-description" class="form-control stockTD-input" type="text" name="description" value="'.htmlspecialchars($area['area_description'], ENT_QUOTES, 'UTF-8').'" /></td>
                                                     <td class="stockTD" hidden><input id="area-'.$area['area_id'].'-parent" type="hidden" name="area-site-id" value="'.$area['area_site_id'].'" /></td>
-                                                    <td class="stockTD" hidden>'.$area['area_parent_id'].'</td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                                     <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">

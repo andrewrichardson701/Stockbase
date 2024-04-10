@@ -651,12 +651,16 @@ esac
             echo " - (0.7.0-beta) Column 'login_log_in' removed from session_log"
             echo " - (0.7.0-beta) Column 'parent_id' added to area"
             echo " - (0.7.0-beta) Column 'is_container' removed from item"
+            echo " - (0.7.0-beta) Drop item_container Table"
+            echo " - (0.7.0-beta) Drop container Table"
             mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `login_log`;
                                                         DROP TABLE `login_failure`;
                                                         ALTER TABLE `session_log` RENAME sesisonlog;
                                                         ALTER TABLE `session_log` DROP COLUMN login_log_id;
                                                         ALTER TABLE `area` ADD COLUMN parent_id INT;
-                                                        ALTER TABLE `item` DROP COLUMN is_container;"
+                                                        ALTER TABLE `item` DROP COLUMN is_container;
+                                                        DROP TABLE `item_container`;
+                                                        DROP TABLE `container`;"
 	    break;;
     esac 
 }
@@ -826,6 +830,8 @@ esac
             echo " - (0.7.0-beta) Column 'login_log_in' added to session_log"
             echo " - (0.7.0-beta) Column 'parent_id' dropped from area"
             echo " - (0.7.0-beta) Column 'is_container' added to item"
+            echo " - (0.7.0-beta) Add 'item_container' Table"
+            echo " - (0.7.0-beta) Add 'container' Table"
             mysql -u "$db_username" -p "$db_password" -e "CREATE TABLE `login_log` (
                                                                 `id` BIGINT NOT NULL AUTO_INCREMENT,
                                                                 `type` TEXT NOT NULL COMMENT 'login / logout / fail',
@@ -850,7 +856,22 @@ esac
                                                         ALTER TABLE `sessionlog` RENAME session_log;
                                                         ALTER TABLE `session_log` ADD COLUMN login_log_id BIGINT NOT NULL;
                                                         ALTER TABLE `area` DROP COLUMN parent_id;
-                                                        ALTER TABLE `item` ADD COLUMN is_container BOOLEAN NOT NULL DEFAULT 0;"                                     
+                                                        ALTER TABLE `item` ADD COLUMN is_container BOOLEAN NOT NULL DEFAULT 0;
+                                                        CREATE TABLE `item_container` (
+                                                                `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                `item_id` bigint NOT NULL,
+                                                                `container_id` int NOT NULL,
+                                                                `container_is_item` tinyint(1) NOT NULL DEFAULT '0',
+                                                                PRIMARY KEY (`id`)
+                                                        );
+                                                        CREATE TABLE `container` (
+                                                                `id` bigint NOT NULL AUTO_INCREMENT,
+                                                                `name` tinytext COLLATE utf8mb3_unicode_ci NOT NULL,
+                                                                `description` text COLLATE utf8mb3_unicode_ci,
+                                                                `shelf_id` int NOT NULL,
+                                                                `deleted` tinyint(1) NOT NULL DEFAULT '0',
+                                                                PRIMARY KEY (`id`)
+                                                        );"                                     
             break;;
     0.7.0-beta )
             echo "No SQL changes to be made."                                        

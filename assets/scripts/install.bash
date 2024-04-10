@@ -275,10 +275,11 @@ echo "Done!"
 echo ""
 sleep 1
 
-# Check if MySQL is installed
-if ! dpkg -l | grep -q "mysql-server"; then
-    echo "MySQL is not installed. Installing now..."
+# Check if MySQL type service is installed
+if ! dpkg -l | grep -q -E "mysql-server|mariadb-server|mongodb|percona-server|percona-xtradb-cluster|amazon-aurora|google-cloud-sql|azure-mysql"; then
+    echo "MySQL, MariaDB, MongoDB, Percona Server, Percona XtraDB Cluster, Amazon Aurora, Google Cloud SQL, or Microsoft Azure Database for MySQL is not installed. Installing MySQL now..."
     sudo apt-get update
+    # Install MySQL only if none of the common alternatives are installed
     sudo apt-get install -y mysql-server
     echo "MySQL installed!"
 fi

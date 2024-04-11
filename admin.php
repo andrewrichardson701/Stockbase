@@ -373,7 +373,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 showResponse();
             }
             ?>
-            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+            <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                 <p id="footer-output" class="last-edit-T" hidden></p>
                 <table>
                     <tbody>
@@ -686,7 +686,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 showResponse();
             }
             ?>
-            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+            <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                 <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
                         <tr class="theme-tableOuter">
@@ -836,7 +836,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 }
                             }
                             ?>
-                            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                            <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                                 <table class="table table-dark theme-table" style="max-width:max-content">
                                     <thead>
                                         <tr class="theme-tableOuter">
@@ -994,7 +994,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     }
                 }
                 ?>
-                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                     <table class="table table-dark theme-table" style="max-width:max-content">
                         <thead>
                             <tr class="theme-tableOuter">
@@ -1155,7 +1155,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     }
                 }
                 ?>
-                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                     <table class="table table-dark theme-table" style="max-width:max-content">
                         <thead>
                             <tr class="theme-tableOuter">
@@ -1304,7 +1304,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     }
                 }
                 ?>
-                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                     <table class="table table-dark theme-table" style="max-width:max-content">
                         <thead>
                             <tr class="theme-tableOuter">
@@ -1453,7 +1453,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     }
                 }
                 ?>
-                <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                     <table class="table table-dark theme-table" style="max-width:max-content">
                         <thead>
                             <tr class="theme-tableOuter">
@@ -1568,7 +1568,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         <!-- Stock Management Settings -->
         <div style="padding-top: 20px" id="stockmanagement" hidden>
             <h4 style="margin-left:10px; margin-right:10px; margin-top:5px; font-size:20px; margin-bottom:10px">Cost Enablement</h4>
-            <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+            <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                 <p id="cost-output" class="last-edit-T" hidden></p>
                 <table>
                     <tbody>
@@ -1625,7 +1625,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 $rowCount_stock = $result_stock->num_rows;
                 if ($rowCount_stock !== 0) {
                     ?>
-                    <div style="max-height:60%;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                    <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
                         <table class="table table-dark theme-table" style="max-width:max-content">
                             <thead>
                                 <tr class="theme-tableOuter">

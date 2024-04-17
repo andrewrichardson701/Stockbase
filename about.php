@@ -28,7 +28,7 @@
         <div class="container" style="margin-top:25px">
             <h3 style="font-size:22px">StockBase (<?php echo $versionNumber ; ?>)</h3>
             <div style="padding-top: 20px;margin-left:25px">
-                <p>StockBase, a inventory and stock system, with less of the <i>bloat</i>. </p>
+                <p>StockBase, an inventory and stock system, with less of the <i>bloat</i>. </p>
                 <p style="margin-top:30px"><?php echo ucwords($current_system_name);?> is powered by StockBase, an open source, minimalist stock management system.<br>
                 Learn more at the <a href="https://git.ajrich.co.uk/web/stockbase">GitLab page</a>.</p>
                 <p>StockBase is licenced under the <a href="https://www.gnu.org/licenses/gpl-3.0.txt">GNU GPL licence</a>.</p>

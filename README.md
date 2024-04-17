@@ -665,10 +665,13 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.7.1-beta</h3></summary>
-<h4>Beta release 0.7.1, Some script fixes.</h4>
+<h4>Beta release 0.7.1, Some script fixes and visual changes.</h4>
 
 - Added a checker for any MySQL servers on the system before installing mysql. Uses the existing one if exists.
-- adding stock properties now correctly adds shelves.
+- Adding stock properties now correctly adds shelves.
+- Fixed the stock image editing to make the images fit in the table better with a max height added
+- Fixed the admin page user table to look nicer and less squashed. 
+- Changed the padding on the buttons in the user table to look nicer
 
 </details>
 <details>

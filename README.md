@@ -664,6 +664,14 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.7.1-beta</h3></summary>
+<h4>Beta release 0.7.1, Some script fixes.</h4>
+
+- Added a checker for any MySQL servers on the system before installing mysql. Uses the existing one if exists.
+- adding stock properties now correctly adds shelves.
+
+</details>
+<details>
 <summary><h3>0.7.0-beta</h3></summary>
 <h4>Beta release 0.7.0, Login tracking and blocking, containers and container logic.</h4>
 

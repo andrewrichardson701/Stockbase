@@ -42,8 +42,8 @@ if (!empty($_POST)) {
                     $sql = "INSERT INTO area (name, description, site_id) VALUES ('$name', '$description', '$site_id')";
                     break;
                 case 'shelf':
-                    $sqlCheck = "SELECT * FROM site WHERE name='$name'";
-                    $sql = "INSERT INTO site (name, area_id) VALUES ('$name', '$area_id')";
+                    $sqlCheck = "SELECT * FROM shelf WHERE name='$name'";
+                    $sql = "INSERT INTO shelf (name, area_id) VALUES ('$name', '$area_id')";
                     break;
                 default:
                     return 'invalidProperty';

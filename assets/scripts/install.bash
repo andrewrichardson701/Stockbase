@@ -536,7 +536,7 @@ if mysql -u root -e ";" 2>/dev/null; then
                         echo
                         if [ "$mysql_install_root_password" = "$mysql_install_root_password_confirm" ]; then
                                 # Make sure that NOBODY can access the server without a password
-                                mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';"
+                                mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$mysql_install_root_password';"
                             break
                         else
                             echo "Passwords do not match. Please try again."

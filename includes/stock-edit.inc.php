@@ -392,8 +392,8 @@ if (isset($_GET['stock_id'])) {
                                                     <input type="hidden" name="stock_id" value="'.$stock_img_data[$i]['stock_id'].'" />
                                                     <input type="hidden" name="img_id" value="'.$stock_img_data[$i]['id'].'" />
                                                     <input type="hidden" name="submit" value="image-delete" />
-                                                    <div class="thumb theme-divBg-m" style="width:75px;height:75px;margin:5px" onclick="modalLoad(this.children[0])">
-                                                        <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="width:75px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
+                                                    <div class="thumb theme-divBg-m text-center" style="width:75px;height:75px;margin:5px" onclick="modalLoad(this.children[0])">
+                                                        <img class="nav-v-c" id="stock-'.$stock_img_data[$i]['stock_id'].'-img-'.$stock_img_data[$i]['id'].'" style="max-height:80px; max-width:75px" alt="'.$stock['name'].' - image '.$ii.'" src="assets/img/stock/'.$stock_img_data[$i]['image'].'"/>
                                                     
                                                     </div>
                                                 </td>

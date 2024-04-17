@@ -433,7 +433,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         <th>Role</th>
                         <th>Auth</th>
                         <th>Enabled</th>
-                        <th></th>
+                        <th>Password</th>
                         <?php if ($_SESSION['role'] == "Root") { echo ("<th></th>"); }?>
                     </tr>
                 </thead>
@@ -493,7 +493,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <td id="user_'.$user_id.'_last_name" style="vertical-align: middle;">'.$user_last_name.'</td>
                                         <td id="user_'.$user_id.'_email" style="vertical-align: middle;">'.$user_email.'</td>
                                         <td id="user_'.$user_id.'_role" style="vertical-align: middle;">
-                                            <select class="form-control" id="user_'.$user_id.'_role_select" style="padding-top:0px; padding-bottom:0px" onchange="userRoleChange(\''.$user_id.'\') "'); if ($user_id == 0 || $user_id == '0') { echo("disabled"); } echo('>');
+                                            <select class="form-control" id="user_'.$user_id.'_role_select" style="min-width:max-content; padding-top:0px; padding-bottom:0px" onchange="userRoleChange(\''.$user_id.'\') "'); if ($user_id == 0 || $user_id == '0') { echo("disabled"); } echo('>');
                                             foreach ($user_roles as $role) {
                                                 echo('<option value="'.$role['id'].'"');
                                                 // check if the user role matches or not, and mark it as selected
@@ -517,14 +517,14 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         echo(' onchange="usersEnabledChange(\''.$user_id.'\')"/>
                                         </td>
                                         <td style="vertical-align: middle;">
-                                            <button class="btn btn-warning" id="user_'.$user_id.'_pwreset" onclick="resetPassword(\''.$user_id.'\')"'); if ($user_auth == "ldap" || $user_role == "Admin" || $user_role == "Root") { echo("disabled"); } echo('>Reset Password</button>
+                                            <button class="btn btn-warning" style="padding: 2px 6px 2px 6px" id="user_'.$user_id.'_pwreset" onclick="resetPassword(\''.$user_id.'\')"'); if ($user_auth == "ldap" || $user_role == "Admin" || $user_role == "Root") { echo("disabled"); } echo('>Reset</button>
                                         </td>
                                         ');
                                         if ($_SESSION['role'] == 'Root') {
                                             echo('
                                             <td style="vertical-align: middle;">   
                                                 <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0px;margin:0px">
-                                                    <button type="submit" class="btn btn-info" id="user_'.$user_id.'_impersonate" title="Impersonate" '); if ($user_id == $_SESSION['user_id']) { echo('disabled'); } echo('><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
+                                                    <button type="submit" style="padding:2px 8px 2px 8px" class="btn btn-info" id="user_'.$user_id.'_impersonate" title="Impersonate" '); if ($user_id == $_SESSION['user_id']) { echo('disabled'); } echo('><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
                                                     <input type="hidden" name="user-impersonate" value="impersonate"/>
                                                     <input type="hidden" name="role" value="Root" />
                                                     <input type="hidden" name="user-id" value="'.$user_id.'" />

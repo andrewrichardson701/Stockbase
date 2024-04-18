@@ -74,6 +74,11 @@ if (isset($_POST['submit'])) {
                                 }
                                 session_start();
                                 $userFound = 1; // not needed, but useful for debugging
+
+                                $_POST['user_id'] = $row['users_id'];
+                                $log_id = updateLoginLog($_POST, 'login', 'local'); // add an entry to the login_log
+                                deleteLoginFail($_POST, 'ldap');
+
                                 $_SESSION['login_log_id'] = $log_id;
                                 $_SESSION['user_id'] = $row['users_id'];
                                 $_SESSION['username'] = $row['username'];
@@ -87,9 +92,6 @@ if (isset($_POST['submit'])) {
                                 $_SESSION['theme_file_name'] = $row['theme_file_name'];
                                 $_SESSION['password_expired'] = $row['password_expired'];
                                 $_SESSION['impersonate'] = 0;
-                                $_POST['user_id'] = $row['users_id'];
-                                $log_id = updateLoginLog($_POST, 'login', 'local'); // add an entry to the login_log
-                                deleteLoginFail($_POST, 'ldap');
                                 sessionLogin();
                                 if (isset($_SESSION['redirect_url'])) {
                                     if (str_contains($_SESSION['redirect_url'], "?")) {
@@ -304,6 +306,9 @@ if (isset($_POST['submit'])) {
                                         addChangelog($insert_id, $ldap_info_samAccountName, "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }
                                     session_start();
+                                    $_POST['user_id'] = $insert_id;
+                                    $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
+                                    deleteLoginFail($_POST, 'ldap');
                                     $_SESSION['login_log_id'] = $log_id;
                                     $_SESSION['user_id'] = $insert_id;
                                     $_SESSION['username'] = $ldap_info_samAccountName;
@@ -317,9 +322,6 @@ if (isset($_POST['submit'])) {
                                     $_SESSION['theme_file_name'] = $current_default_theme_file_name;
                                     $_SESSION['password_expired'] = 0;
                                     $_SESSION['impersonate'] = 0;
-                                    $_POST['user_id'] = $insert_id;
-                                    $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
-                                    deleteLoginFail($_POST, 'ldap');
                                     sessionLogin();
                                     if (isset($_SESSION['redirect_url'])) {
                                         if (str_contains($_SESSION['redirect_url'], "?")) {
@@ -341,6 +343,9 @@ if (isset($_POST['submit'])) {
                                             header("Location: ../login.php?error=userDisabled");
                                             exit();
                                         }
+                                        $_POST['user_id'] = $row['users_id'];
+                                        $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
+                                        deleteLoginFail($_POST, 'ldap');
                                         $_SESSION['login_log_id'] = $log_id;
                                         $_SESSION['user_id'] = $row['users_id'];
                                         $_SESSION['username'] = $row['username'];
@@ -354,9 +359,6 @@ if (isset($_POST['submit'])) {
                                         $_SESSION['theme_file_name'] = $row['theme_file_name'];
                                         $_SESSION['password_expired'] = 0;
                                         $_SESSION['impersonate'] = 0;
-                                        $_POST['user_id'] = $row['users_id'];
-                                        $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
-                                        deleteLoginFail($_POST, 'ldap');
                                         sessionLogin();
                                         if (isset($_SESSION['redirect_url'])) {
                                             if (str_contains($_SESSION['redirect_url'], "?")) {

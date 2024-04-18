@@ -672,6 +672,12 @@ Clone the repo first, and the follow the below steps.
 - Fixed the stock image editing to make the images fit in the table better with a max height added
 - Fixed the admin page user table to look nicer and less squashed. 
 - Changed the padding on the buttons in the user table to look nicer
+- Index page now only loads the non-deleted manufacturer/tags and in alphabetical order.
+- Added a row count to the deleted stock under stock management in admin.php
+- Ajax selectboxes now order by name rather than id
+- Removed the form elements from the new-properties page to stop it redirecting needlessly and breaking.
+- Added some special character captures for the confirmAction on the stock removal page when deleting a stock object.
+- Index manufacturer drop down now shows exact manufacturer matches instead of partial matches.
 
 </details>
 <details>

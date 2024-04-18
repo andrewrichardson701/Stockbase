@@ -57,7 +57,7 @@ if (isset($_GET['site'])) {
             $sql = "SELECT id, name
                     FROM area
                     WHERE site_id=? AND deleted=0
-                    ORDER BY id";
+                    ORDER BY name";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 // fails to connect
@@ -101,7 +101,7 @@ if (isset($_GET['area'])) {
             $sql = "SELECT id, name
                     FROM shelf
                     WHERE area_id=? AND deleted=0
-                    ORDER BY id";
+                    ORDER BY name";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 // fails to connect
@@ -456,7 +456,7 @@ if (isset($_GET['getremoveshelves'])) {
                         INNER JOIN site ON area.site_id=site.id
                         LEFT JOIN item AS i ON item.id=i.id AND item.is_container = 1
                         WHERE item.manufacturer_id=? AND item.deleted=0 AND item.stock_id=?
-                        ORDER BY item.shelf_id";
+                        ORDER BY shelf.name";
                 $stmt = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                     // fails to connect

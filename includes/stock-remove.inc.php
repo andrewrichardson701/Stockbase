@@ -369,7 +369,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                         echo('<button type="button" id="removeContButton" name="submit" value="Remove Stock" class="nav-v-c btn btn-danger"onclick="modalLoadContainerRemoveConfirmation()"  hidden disabled>Remove Stock</button>');
                                                     } else {
                                                         echo('<input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />');
-                                                        echo('<a href="#" onclick="confirmAction(\''.$data_name.'\', \''.$data_sku.'\', \'includes/stock-modify.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
+                                                        echo('<a href="#" onclick="confirmAction(\''.addslashes(htmlspecialchars($data_name)).'\', \''.$data_sku.'\', \'includes/stock-modify.inc.php?stock_id='.$stock_id.'&type=delete\')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>');
                                                     }
                                                 echo('
                                                 </div>

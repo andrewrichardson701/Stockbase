@@ -678,6 +678,7 @@ Clone the repo first, and the follow the below steps.
 - Removed the form elements from the new-properties page to stop it redirecting needlessly and breaking.
 - Added some special character captures for the confirmAction on the stock removal page when deleting a stock object.
 - Index manufacturer drop down now shows exact manufacturer matches instead of partial matches.
+- Login log should now get the user id on login.
 
 </details>
 <details>

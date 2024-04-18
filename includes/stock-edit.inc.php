@@ -49,7 +49,8 @@ if (isset($_GET['stock_id'])) {
                                     tag.id AS tag_id, tag.name AS tag_name
                                 FROM stock_tag 
                                 INNER JOIN tag ON stock_tag.tag_id=tag.id
-                                WHERE stock_id=?";
+                                WHERE stock_id=?
+                                ORDER BY tag.name";
                 $stmt_tag = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_tag, $sql_tag)) {
                     echo("ERROR getting entries");
@@ -121,7 +122,7 @@ if (isset($_GET['stock_id'])) {
                                                 $sql = "SELECT id, name
                                                         FROM tag
                                                         WHERE tag.id NOT IN (SELECT tag_id FROM stock_tag WHERE stock_id = '$stock_id')
-                                                        ORDER BY id";
+                                                        ORDER BY name";
                                                 $stmt = mysqli_stmt_init($conn);
                                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                                                     // fails to connect

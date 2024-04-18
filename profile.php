@@ -359,7 +359,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 <input type="hidden" name="cardData" id="cardData" value=""/>
                 <h3 class="text-center" id="cardHead"></h3>
                 <p class="text-center" style="margin-top:50px">Scan swipe card...</p>
-                <button class="btn btn-danger" onclick="document.getElementById('cardData').value='17322435'">Temp</button>
+                <!-- <button class="btn btn-danger" onclick="document.getElementById('cardData').value='17322435'">Temp</button> -->
             </form>
         </div>
         <script>

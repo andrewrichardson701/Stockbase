@@ -35,7 +35,12 @@ function updateLoginLog($data, $type, $auth) {
     
     include 'dbh.inc.php';
 
-    $sql_insert = "INSERT INTO login_log (type, username, auth, timestamp, $ipfield) VALUES (?,?,?,CURRENT_TIMESTAMP,$ipconvert)";
+    if (isset($data['user_id']) && is_numeric($data['user_id'])) {
+        $user_id = $data['user_id'];
+        $sql_insert = "INSERT INTO login_log (type, username, user_id, auth, timestamp, $ipfield) VALUES (?,?,$user_id,?,CURRENT_TIMESTAMP,$ipconvert)";
+    } else {
+        $sql_insert = "INSERT INTO login_log (type, username, auth, timestamp, $ipfield) VALUES (?,?,?,CURRENT_TIMESTAMP,$ipconvert)";
+    }
     $stmt_insert = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_insert, $sql_insert)) {
         echo("Error getting users");

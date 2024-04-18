@@ -241,7 +241,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             ');  
                             echo ('
                             <span id="search-input-area-span" style="margin-bottom:10px;" class="index-dropdown">
-                                <label for="search-input-manufacturer">Area</label><br>
+                                <label for="area-dropdown">Area</label><br>
                                     <select id="area-dropdown" name="area" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
                                     <option style="color:white" value="0"'); if ($area == 0) { echo('selected'); } echo('>All</option>
                                 ');
@@ -275,7 +275,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 
                                 <select id="search-input-manufacturer" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Manufacturer" onchange="getInventory(1)">
                                 <option value="" '); if (!isset($_GET['manufacturer']) || $_GET['manufacturer'] == '') { echo('selected'); } echo('>All</option>');
-                                $sql_manufacturer = "SELECT * FROM manufacturer";
+                                $sql_manufacturer = "SELECT * FROM manufacturer WHERE deleted=0 ORDER BY name";
                                 $stmt_manufacturer = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
                                     echo("ERROR getting entries");
@@ -295,7 +295,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 
                                 <select id="search-input-tag" name="tag" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Tag" onchange="getInventory(1)">
                                 <option value="" '); if (!isset($_GET['tag']) || $_GET['tag'] == '') { echo('selected'); } echo('>All</option>');
-                                $sql_tags = "SELECT * FROM tag";
+                                $sql_tags = "SELECT * FROM tag WHERE deleted=0 ORDER BY name";
                                 $stmt_tags = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_tags, $sql_tags)) {
                                     echo("ERROR getting entries");

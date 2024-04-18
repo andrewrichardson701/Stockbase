@@ -4,7 +4,6 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
-
 if (!empty($_POST)) {
     if (isset($_POST['submit'])) {
         if (isset($_POST['property_name'])) {
@@ -42,7 +41,7 @@ if (!empty($_POST)) {
                     $sql = "INSERT INTO area (name, description, site_id) VALUES ('$name', '$description', '$site_id')";
                     break;
                 case 'shelf':
-                    $sqlCheck = "SELECT * FROM shelf WHERE name='$name'";
+                    $sqlCheck = "SELECT * FROM shelf WHERE name='$name' AND area_id=$area_id";
                     $sql = "INSERT INTO shelf (name, area_id) VALUES ('$name', '$area_id')";
                     break;
                 default:
@@ -79,7 +78,7 @@ if (!empty($_POST)) {
             $sql = "SELECT id, name
                     FROM $type
                     WHERE $type.deleted=0
-                    ORDER BY id";
+                    ORDER BY name";
             $stmt = mysqli_stmt_init($conn);
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 // fails to connect
@@ -186,7 +185,7 @@ if (!empty($_POST)) {
         </div>
         <!-- Site -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-site" hidden>
-            <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
+            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
                 <table class="centertable" style="border-collapse: collapse;table-layout:fixed;">
                     <tbody>
                         <tr class="nav-row">
@@ -202,11 +201,11 @@ if (!empty($_POST)) {
                         </tr>
                     </tbody>
                 </table>
-            </form>
+            <!-- </form> -->
         </div>
         <!-- Area -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-area" hidden>
-            <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
+            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row">
@@ -250,11 +249,11 @@ if (!empty($_POST)) {
                         </tr>
                     </tbody>
                 </table>
-            </form>
+            <!-- </form> -->
         </div>
         <!-- Shelf -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-shelf" hidden>
-            <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data">
+            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row" >
@@ -306,7 +305,7 @@ if (!empty($_POST)) {
                         </tr>
                     </tbody>
                 </table>
-            </form>
+            <!-- </form> -->
         </div>
     </div> 
 </div>

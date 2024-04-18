@@ -215,7 +215,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
 
     if ($manufacturer !== '') {
         $manufacturer = mysqli_real_escape_string($conn, $manufacturer);
-        $sql_inv_count .= " AND manufacturer.name LIKE CONCAT('%', '$manufacturer', '%')";
+        $sql_inv_count .= " AND manufacturer.name ='$manufacturer'";
     }
 
     if ($showOOS == 0) {

@@ -11,6 +11,13 @@ include './includes/get-config.inc.php'; // get config options
 
 ?>
 
+<meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+    style-src 'self' https://stackpath.bootstrapcdn.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://adobe-fonts.github.io https://use.fontawesome.com 'unsafe-inline';
+    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://adobe-fonts.github.io https://use.fontawesome.com;
+    img-src 'self' data:;
+">
 <meta charset="utf-8">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" href="./assets/img/config/<?php echo($current_favicon_image); ?>">

@@ -26,7 +26,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 // create csrf token to be used in form submission
 if (!isset($_SESSION['csrf_token'])) {
-    echo $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a random token
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a random token
 }
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>

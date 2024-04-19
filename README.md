@@ -668,7 +668,9 @@ Clone the repo first, and the follow the below steps.
 <h4>Beta release 0.7.2, CSRF Token added.</h4>
 
 - Added CSRF tokens and some slight changes to some files to make it work better.
-- Added CSP policy meta header to head.php
+- Added CSP policy meta header to head.php.
+- Removed old AJAX/jquery references in head.php.
+- Added an Anti-clickjacking header in head.php (in php).
 
 </details>
 <details>

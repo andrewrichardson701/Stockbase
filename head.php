@@ -8,7 +8,7 @@
 $versionNumber = 'v0.7.2-beta';
 
 include './includes/get-config.inc.php'; // get config options
-
+header("X-Frame-Options: DENY");
 ?>
 
 <meta http-equiv="Content-Security-Policy" content="
@@ -40,14 +40,13 @@ if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
     echo('<link id="theme-css" rel="stylesheet" href="./assets/css/'.$current_default_theme_file_name.'">');
 }
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="https://adobe-fonts.github.io/source-code-pro/source-code-pro.css">
 <!-- below for colour picker -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet" />
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.4.0/css/all.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <style>
 .inv-nav {

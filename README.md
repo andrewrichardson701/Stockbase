@@ -664,6 +664,13 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.7.2-beta</h3></summary>
+<h4>Beta release 0.7.2, CSRF Token added.</h4>
+
+- Added CSRF tokens and some slight changes to some files to make it work better.
+
+</details>
+<details>
 <summary><h3>0.7.1-beta</h3></summary>
 <h4>Beta release 0.7.1, Some script fixes and visual changes.</h4>
 

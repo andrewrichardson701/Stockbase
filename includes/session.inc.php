@@ -334,17 +334,4 @@ function sessionKill($session_id) {
     }
 }
 
-// $_SESSION['user_id'] = 1;
-// $_SESSION['session_id'] = 7;
-
-// print_r($_SESSION);
-// print_r($_POST);
-
-// // check for timeout
-// checktimeout();
-// // expire any old sessions
-// sessionCloseExpired();
-// // set the session last_activity
-// sessionLastActivity();
-
 ?>

@@ -679,6 +679,9 @@ Clone the repo first, and the follow the below steps.
 - Added some special character captures for the confirmAction on the stock removal page when deleting a stock object.
 - Index manufacturer drop down now shows exact manufacturer matches instead of partial matches.
 - Login log should now get the user id on login.
+- Login page now encrypts the data sent on login form
+- Login inc page no longer LDAP escapes the password. This was causign issues and was not necessary.
+- Added csrf tokens based on an OWASP vulnerabilitiy. This is done in session.php.
 
 </details>
 <details>

@@ -140,6 +140,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         <hr style="border-color:white">
                         <h5 style="margin-bottom:15px">Upload new theme</h5>
                         <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                            <!-- Include CSRF token in the form -->
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <input type="hidden" name="theme-upload" value="1"/>
                             <table class="centertable">
                                 <tbody>

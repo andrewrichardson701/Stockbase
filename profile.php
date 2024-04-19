@@ -177,6 +177,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 </tr>
                                 <tr class="nav-row  profile-table-row2" id="resync">
                                     <form enctype="multipart/form-data" action="includes/ldap-resync.inc.php" method="post">
+                                        <!-- Include CSRF token in the form -->
+                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                         <td id="resync_button_td" style="width:200px">
                                             <input type="password" style="width:180px" class="form-control" name="password" id="ldap_password" placeholder="Password" />
                                         </td>
@@ -187,101 +189,103 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 } else {
                     echo('
                     <form id="profileForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                    <input id="profile-id" type="hidden" value="'.$profile_id.'" name="id"/>
-                    <table>
-                        <tbody>
-                            <tr class="nav-row" id="username">
-                                <td id="username_header" style="width:200px">
-                                    <!-- Custodian Colour: #72BE2A -->
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
-                                </td>
-                                <td id="username_info">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_username.'</p>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                            <tr class="nav-row profile-table-row" id="firstname">
-                                <td id="firstname_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">First Name:</p>
-                                </td>
-                                <td id="firstname_info">
-                                <input type="text" class="nav-v-c align-middle form-control" name="first-name" value="'.htmlspecialchars($profile_first_name, ENT_QUOTES, 'UTF-8').'" placeholder="First Name" required />
-                                </td>
-                            </tr>
-                            <tr class="nav-row profile-table-row" id="lastname">
-                                <td id="lastname_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Last Name:</p>
-                                </td>
-                                <td id="lastname_info">
-                                    <input type="text" class="nav-v-c align-middle form-control" name="last-name" value="'.htmlspecialchars($profile_last_name, ENT_QUOTES, 'UTF-8').'" placeholder="Last Name" required />
-                                </td>
-                            </tr>
-                            <tr class="nav-row profile-table-row" id="email">
-                                <td id="email_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Email:</p>
-                                </td>
-                                <td id="email_info">
-                                <input type="text" class="nav-v-c align-middle form-control" name="email" value="'.$profile_email.'" placeholder="email@domain.com" required />
-                                </td>
-                            </tr>
-                            <tr class="nav-row profile-table-row" id="role">
-                                <td id="role_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Role:</p>
-                                </td>
-                                <td id="role_info">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_role.'</p>
-                                </td>
-                            </tr>
-                            <tr class="nav-row profile-table-row" id="auth">
-                                <td id="auth_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Auth:</p>
-                                </td>
-                                <td id="auth_info">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
-                                </td>
-                            </tr>
-                            <tr class="nav-row profile-table-row2">
-                                <td id="theme_header" style="width:200px">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Theme:</p>
-                                </td>
-                                <td id="theme_info">
-                                <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">');
-                                    $sql_theme = "SELECT * FROM theme";
-                                    $stmt_theme = mysqli_stmt_init($conn);
-                                    if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
-                                        echo("ERROR getting entries");
-                                    } else {
-                                        mysqli_stmt_execute($stmt_theme);
-                                        $result_theme = mysqli_stmt_get_result($stmt_theme);
-                                        $rowCount_theme = $result_theme->num_rows;
-                                        if ($rowCount_theme < 1) {
-                                            echo ("No themes found.");
+                        <!-- Include CSRF token in the form -->
+                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                        <input id="profile-id" type="hidden" value="'.$profile_id.'" name="id"/>
+                        <table>
+                            <tbody>
+                                <tr class="nav-row" id="username">
+                                    <td id="username_header" style="width:200px">
+                                        <!-- Custodian Colour: #72BE2A -->
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
+                                    </td>
+                                    <td id="username_info">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_username.'</p>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row profile-table-row" id="firstname">
+                                    <td id="firstname_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">First Name:</p>
+                                    </td>
+                                    <td id="firstname_info">
+                                    <input type="text" class="nav-v-c align-middle form-control" name="first-name" value="'.htmlspecialchars($profile_first_name, ENT_QUOTES, 'UTF-8').'" placeholder="First Name" required />
+                                    </td>
+                                </tr>
+                                <tr class="nav-row profile-table-row" id="lastname">
+                                    <td id="lastname_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Last Name:</p>
+                                    </td>
+                                    <td id="lastname_info">
+                                        <input type="text" class="nav-v-c align-middle form-control" name="last-name" value="'.htmlspecialchars($profile_last_name, ENT_QUOTES, 'UTF-8').'" placeholder="Last Name" required />
+                                    </td>
+                                </tr>
+                                <tr class="nav-row profile-table-row" id="email">
+                                    <td id="email_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Email:</p>
+                                    </td>
+                                    <td id="email_info">
+                                    <input type="text" class="nav-v-c align-middle form-control" name="email" value="'.$profile_email.'" placeholder="email@domain.com" required />
+                                    </td>
+                                </tr>
+                                <tr class="nav-row profile-table-row" id="role">
+                                    <td id="role_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Role:</p>
+                                    </td>
+                                    <td id="role_info">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_role.'</p>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row profile-table-row" id="auth">
+                                    <td id="auth_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Auth:</p>
+                                    </td>
+                                    <td id="auth_info">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row profile-table-row2">
+                                    <td id="theme_header" style="width:200px">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Theme:</p>
+                                    </td>
+                                    <td id="theme_info">
+                                    <select class="form-control" name="theme" id="theme-select" onchange="changeTheme()">');
+                                        $sql_theme = "SELECT * FROM theme";
+                                        $stmt_theme = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
+                                            echo("ERROR getting entries");
                                         } else {
-                                            while ( $row_theme = $result_theme->fetch_assoc() ) {
-                                                $theme_id = $row_theme['id'];
-                                                $theme_name = $row_theme['name'];
-                                                $theme_file_name = $row_theme['file_name'];
-                                                echo ('<option id="theme-select-option-'.$theme_id.'" title="'.$theme_file_name.'" alt="'.$theme_name.'" value="'.$theme_id.'" '); if ($profile_theme_id == $theme_id) { echo('selected'); } echo('>'.$theme_name); if ($current_default_theme_id == $theme_id) { echo(' (default)'); } echo('</option>');
+                                            mysqli_stmt_execute($stmt_theme);
+                                            $result_theme = mysqli_stmt_get_result($stmt_theme);
+                                            $rowCount_theme = $result_theme->num_rows;
+                                            if ($rowCount_theme < 1) {
+                                                echo ("No themes found.");
+                                            } else {
+                                                while ( $row_theme = $result_theme->fetch_assoc() ) {
+                                                    $theme_id = $row_theme['id'];
+                                                    $theme_name = $row_theme['name'];
+                                                    $theme_file_name = $row_theme['file_name'];
+                                                    echo ('<option id="theme-select-option-'.$theme_id.'" title="'.$theme_file_name.'" alt="'.$theme_name.'" value="'.$theme_id.'" '); if ($profile_theme_id == $theme_id) { echo('selected'); } echo('>'.$theme_name); if ($current_default_theme_id == $theme_id) { echo(' (default)'); } echo('</option>');
+                                                }
                                             }
                                         }
-                                    }
 
-                                    echo('
-                                    </select>
-                                </td>
-                                <td id="theme_header" style="width:200px;padding-left:20px">
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle viewport-large-block">
-                                        <a class="link align-middle" href="theme-test.php">Theme testing</a>
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr class="nav-row profile-table-row2">
-                                <td id="profile-submit" style="width:200px">
-                                    <button class="btn btn-success align-bottom" type="submit" name="profile-submit" style="margin-left:0px" value="1">Save</button>
-                                </td>
-                                <td class="align-middle"><a href="changepassword.php">Change password</a></td>
-                            </tr>  
+                                        echo('
+                                        </select>
+                                    </td>
+                                    <td id="theme_header" style="width:200px;padding-left:20px">
+                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle viewport-large-block">
+                                            <a class="link align-middle" href="theme-test.php">Theme testing</a>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr class="nav-row profile-table-row2">
+                                    <td id="profile-submit" style="width:200px">
+                                        <button class="btn btn-success align-bottom" type="submit" name="profile-submit" style="margin-left:0px" value="1">Save</button>
+                                    </td>
+                                    <td class="align-middle"><a href="changepassword.php">Change password</a></td>
+                                </tr>  
                     ');
                 }
                 $errorPprefix = '<tr class="nav-row" style="margin-top:30px"><td><p class="red">Error: ';
@@ -322,6 +326,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     if ($card_primary !== '') {
                         echo('
                         <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                            <!-- Include CSRF token in the form -->
+                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                             <input type="hidden" name="card-remove" value="1" />
                             <input type="hidden" id="removeCard" name="card" value="1" />
                             <button class="btn btn-danger" style="width:180px;margin-top:20px" type="submit">De-assign swipe card 1</button>
@@ -332,6 +338,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     if ($card_secondary !== '') {
                         echo('
                         <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                            <!-- Include CSRF token in the form -->
+                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                             <input type="hidden" name="card-remove" value="1" />
                             <input type="hidden" id="removeCard" name="card" value="2" />
                             <button class="btn btn-danger" style="width:185px;margin-top:20px" type="submit">De-assign swipe card 2</button>
@@ -353,6 +361,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         <span class="close" onclick="modalCloseSwipe()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <form id='cardModifyForm' action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="card-modify" value="1" />
                 <input type="hidden" id="cardType" name="type" value="" />
                 <input type="hidden" id="cardCard" name="card" value="" />

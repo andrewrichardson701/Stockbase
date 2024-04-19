@@ -19,6 +19,10 @@ sessionCloseExpired();
 // set the session last_activity
 sessionLastActivity();
 
+// create csrf token to be used in form submission
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a random token
+}
 
 // set the redirect_url 
 $redirect_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -62,5 +66,7 @@ $loggedin_password_expired = isset($_SESSION['password_expired']) ? $_SESSION['p
 
 $loggedin_fullname = ucwords($loggedin_firstname).' '.ucwords($loggedin_lastname);
 $profile_name = ucwords($loggedin_firstname);
+
+// print_r($_SESSION);
 
 ?>

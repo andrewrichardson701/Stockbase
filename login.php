@@ -24,6 +24,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         exit();
     }
 }
+// create csrf token to be used in form submission
+if (!isset($_SESSION['csrf_token'])) {
+    echo $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a random token
+}
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
@@ -46,8 +50,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
             <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
                 <p style="margin-top:2vh;margin-bottom:3vh">Please input your credentials to login.</p>
-                <p class="red">Demo LDAP username: <or class="blue">demo</or> password: <or class="blue">InventoryPass1!</or></p>
-                <form enctype="multipart/form-data" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
+                <!-- <p class="red">Demo LDAP username: <or class="blue">demo</or> password: <or class="blue">InventoryPass1!</or></p> -->
+                <form enctype="application/x-www-form-urlencoded" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <div class="form-group">
                         <label>Username / Email Address</label>
                         <input type="username" name="username" class="form-control" placeholder="username@domain.com" required>
@@ -104,7 +110,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <div id="modalDiv" class="modal" style="display:block;padding:auto;background-color: rgba(0,0,0,0.7);">
         <span class="close" onclick="modalClose()">×</span>
             <div class="well-nopad theme-divBg" style="position:relative; margin:auto; min-width:200px;max-width:500px; height:300px; overflow-y:auto;display:flex;justify-content:center;align-items:center;">
-            <form id="locationForm" enctype="multipart/form-data" action="./includes/changepassword.inc.php" method="POST">
+            <form id="locationForm" enctype="application/x-www-form-urlencoded" action="./includes/changepassword.inc.php" method="POST">
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <table>
                     <tbody>
                         <tr>
@@ -141,7 +149,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     <!-- <div id="modalDivSwipe" class="modal" style="display: block !important;">  -->
         <span class="close" onclick="modalCloseSwipe()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
-            <form id='cardLoginForm' action="includes/login-card.inc.php" method="POST" enctype="multipart/form-data">
+            <form id='cardLoginForm' action="includes/login-card.inc.php" method="POST" enctype="application/x-www-form-urlencoded">
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="submitHidden" value="1" />
                 <input type="hidden" name="cardData" id="cardData" />
                 <h3 class="text-center">Present swipe card to login</h3>

@@ -17,6 +17,29 @@ if (isset($_POST['submit'])) {
     include 'get-config.inc.php'; // global config stuff
     include 'session.inc.php'; // session management stuff
 
+    // csrf_token management
+    if (isset($_POST['csrf_token'])) {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+            if (session_status() == PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
+            header("Location: ../login.php?error=csrfMissmatch");
+            exit();
+        }
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+    } else {
+        if (session_status() == PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
+        header("Location: ../login.php?error=csrfMissmatch");
+        exit();
+    }
+
     if (!isset($_POST['username']) || !isset($_POST['password'])) {
         header("Location: ../login.php?error=emptyFields");
         exit();
@@ -133,7 +156,8 @@ if (isset($_POST['submit'])) {
             }
             include 'dbh.inc.php';
             $login_username = ldap_escape($login_username, '', LDAP_ESCAPE_FILTER);
-            $login_password = ldap_escape($login_password, '', LDAP_ESCAPE_FILTER);
+            // commented out because this was changing brackets into other characters. this is not needed because thre LDAP is a prepared statement.
+            // $login_password = ldap_escape($login_password, '', LDAP_ESCAPE_FILTER); 
 
             $sql_ldap_d = "SELECT * FROM config_default WHERE id=1";
             $stmt_ldap_d = mysqli_stmt_init($conn);

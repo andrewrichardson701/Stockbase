@@ -13,6 +13,8 @@ if (isset($_GET['error'])) {
     // admin.inc.php
     if ($_GET['error'] == 'submitIssue') {
         $errorPtext = 'Submission issue. Check your form for any submit values required.';
+    } elseif ($_GET['error'] == 'csrfMissmatch') {
+        $errorPtext = 'CSRF Token Missmatch';
     } elseif ($_GET['error'] == 'emptyFields') {
         $errorPtext = 'Empty fields present in the form.';
     } elseif ($_GET['error'] == 'noStockSelected') { // index

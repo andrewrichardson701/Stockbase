@@ -44,6 +44,8 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
             echo('
             <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
                 <!-- this is for the stock-modify.inc.php page -->
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                 <input type="hidden" name="stock-add" value="1" /> 
                 <div class="container well-nopad theme-divBg" style="margin-bottom:5px">
                     <h3 style="font-size:22px; margin-left:25px">Add New Stock</h3>
@@ -437,6 +439,8 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                     echo('<input type="hidden" name="cablestock-add" value="1" />  ');
                                 }
                                 echo('
+                                <!-- Include CSRF token in the form -->
+                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                 <input type="hidden" name="id" value="'.$_GET['stock_id'].'" />
                                 <div class="nav-row" style="margin-bottom:10px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">

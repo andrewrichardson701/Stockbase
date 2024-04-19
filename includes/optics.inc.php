@@ -87,6 +87,20 @@ function getCurrentURL() {
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     include 'dbh.inc.php';
 
+    if(session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    } 
+    
+    if (isset($_POST['csrf_token'])) {
+        if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+            header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+            exit();
+        }
+    } else {
+        header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+        exit();
+    }
+
     if (isset($_POST['add-optic-submit'])) {
         print_r($_POST);
         $site = isset($_POST['site']) ? $_POST['site'] : '';

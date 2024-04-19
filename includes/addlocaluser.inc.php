@@ -4,7 +4,21 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
+if(session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+} 
+
 if (isset($_POST['submit'])) {
+    // csrf_token management
+    if (isset($_POST['csrf_token'])) {
+        if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+            header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+            exit();
+        }
+    } else {
+        header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+        exit();
+    }
     if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['password_confirm']) || !isset($_POST['first_name']) || !isset($_POST['last_name']) || !isset($_POST['email']) || !isset($_POST['role'])) {
         header("Location: ../addlocaluser.php?error=emptyFields");
         exit();

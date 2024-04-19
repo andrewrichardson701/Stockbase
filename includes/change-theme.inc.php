@@ -8,7 +8,7 @@ if (isset($_GET['change']) && isset($_GET['theme_file_name']) && isset($_GET['va
 
     session_start();
     $_SESSION['theme_id'] = $_GET['value'];
-    $_SESISON['theme_name'] = $_GET['theme_name'];
+    $_SESSION['theme_name'] = $_GET['theme_name'];
     $_SESSION['theme_file_name'] = $_GET['theme_file_name'];
 
     $theme = $_GET['value'];

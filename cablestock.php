@@ -300,6 +300,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <h3 style="font-size:22px">Add new cables</h3>
                         <hr style="border-color:#9f9d9d; margin-left:10px">
                         <form id="add-cables-form" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                            <!-- Include CSRF token in the form -->
+                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                             <table class="centertable">
                                 <thead>
                                     <th style="padding-left:5px">Site</th>
@@ -513,6 +515,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <tr class="vertical-align align-middle'.$last_edited.' row-show highlight" id="'.$cable_item_id.'">
                                                 <td hidden>
                                                     <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                                                        <!-- Include CSRF token in the form -->
+                                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                         <input type="hidden" name="stock-id" value="'.$stock_id.'" />
                                                         <input type="hidden" name="cable-item-id" value="'.$cable_item_id.'" />
                                                     </form>
@@ -547,6 +551,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             <tr class="vertical-align align-middle'.$last_edited.' move-hide" id="'.$cable_item_id.'-move-hidden" hidden>
                                                 <td colspan=100%>
                                                     <form class="centertable" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+                                                        <!-- Include CSRF token in the form -->
+                                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                         <table class="centertable" style="border: 1px solid #454d55; width:100%"> 
                                                             <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                                             <input type="hidden" name="cablestock-move" value="1">
@@ -691,6 +697,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                 <form action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <table class="centertable">
                         <tbody>
                         <tr class="align-middle">

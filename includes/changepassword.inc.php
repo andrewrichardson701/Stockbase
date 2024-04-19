@@ -17,6 +17,16 @@ if (strpos($redirect_url, "?")) {
     $queryChar = "?";
 }
 
+if (isset($_POST['csrf_token'])) {
+    if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+        header("Location: ../login.php?error=csrfMissmatch");
+        exit();
+    }
+} else {
+    header("Location: ../login.php?error=csrfMissmatch");
+    exit();
+}
+
 if (isset($_POST['password-submit'])) { // normal change password requests
     if (isset($_POST['user-id'])) {
         $user_id = $_POST['user-id'];

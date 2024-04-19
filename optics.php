@@ -212,6 +212,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <hr style="border-color:#9f9d9d; margin-left:10px">
                 <p id="optic-add-response" hidden></p>
                 <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                     <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
                             <div>Serial Number</div>
@@ -629,6 +631,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             echo('
                                 <tr id="item-'.$i_id.'" class="row-show align-middle text-center'); if ($deleted == 1) { echo(' red'); } echo('">
                                     <form id="opticForm-'.$i_id.'"action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                                        <!-- Include CSRF token in the form -->
+                                        <input type="hidden" form="opticForm-'.$i_id.'" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                         <input type="hidden" form="opticForm-'.$i_id.'" value="'.$i_id.'" name="id"/>
                                     </form>
                                     <td class="align-middle" hidden>'.$i_id.'</td>
@@ -676,6 +680,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <td colspan="100%">
                                         <div class="container">
                                             <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                                                <!-- Include CSRF token in the form -->
+                                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                 <div class="row centertable" style="max-width:max-content">
                                                     <div class="col" style="max-width:max-content">
                                                         <label class="nav-v-c">Comment:</label>
@@ -736,6 +742,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                             echo ('
                                                                 <tr id="comment-'.$com_id.'" class="row-show align-middle text-center">
                                                                     <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                                                                        <!-- Include CSRF token in the form -->
+                                                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                                         <input type="hidden" value="'.$com_id.'" name="id"/>
                                                                         <td class="align-middle" hidden>'.$com_id.'</td>
                                                                         <td class="align-middle">'.$com_username.'</td>
@@ -850,7 +858,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <span class="close" onclick="modalCloseNewType()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                <form id="add-optic-type-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <?php 
                     if (is_array($_GET) && count($_GET) > 1) {
                         foreach (array_keys($_GET) AS $key) {
@@ -882,7 +892,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <span class="close" onclick="modalCloseNewVendor()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                <form id="add-optic-vendor-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <?php 
                     if (is_array($_GET) && count($_GET) > 1) {
                         foreach (array_keys($_GET) AS $key) {
@@ -914,7 +926,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <span class="close" onclick="modalCloseNewConnector()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                <form id="add-optic-connector-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <?php 
                     if (is_array($_GET) && count($_GET) > 1) {
                         foreach (array_keys($_GET) AS $key) {
@@ -946,6 +960,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                 <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <table class="centertable" style="border:none">
                         <tbody style="border:none">
                             <tr>
@@ -981,6 +997,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                 <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <table class="centertable" style="border:none">
                         <tbody style="border:none">
                             <tr>

@@ -71,6 +71,8 @@
                     echo('
                     <div id="impersonate-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
                         <form enctype="multipart/form-data" class="nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0px;padding:0px">
+                            <!-- Include CSRF token in the form -->
+                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                             <input type="hidden" name="user-stop-impersonate" value="1"/>
                             <button type="submit" id="impersonate" style="border-radius: 8px;padding-left:10px;padding-right:10px;margin-top:2.5%;height:80%;color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important;margin-bottom:10%">Stop Impersonating</button>
                         </form>
@@ -184,6 +186,8 @@
                 if ($impersonate == 1) {
                     echo('<div id="impersonate-div" class="'); if($nav_right == 0) { echo('nav-right'); $nav_right = 1; } echo(' nav-div" style="margin-right:0px">
                             <form enctype="multipart/form-data" class="nav-v-c nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0px;padding:0px">
+                                <!-- Include CSRF token in the form -->
+                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                 <input type="hidden" name="user-stop-impersonate" value="1"/>
                                 <button type="submit" style="border-radius: 8px; height:90%;color:'.getWorB(getComplement($current_banner_color)).';background-color:'.getComplement($current_banner_color).' !important; >Stop <i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
                             </form>

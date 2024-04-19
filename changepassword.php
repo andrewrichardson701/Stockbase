@@ -85,6 +85,8 @@ if ($_SESSION['auth'] == "ldap") {
             
             <div style="padding-top: 20px;margin-left:25px">
                 <form action="includes/changepassword.inc.php" method="POST" enctype="multipart/form-data">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" name="user-id" value="<?php echo($profile_id); ?>">
                     <input type="hidden" name="user-role" value="<?php echo($profile_role); ?>">
                     <table>

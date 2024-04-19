@@ -276,6 +276,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 if ($container_count == 0) {
                                                     echo('
                                                         <form action="includes/containers.inc.php" method="POST" id="form-container-'.$container_id.'-delete" enctype="multipart/form-data" hidden>
+                                                            <!-- Include CSRF token in the form -->
+                                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                             <input type="hidden" name="container_delete_submit" form="form-container-'.$container_id.'-delete" value="1" />
                                                             <input type="hidden" name="container_id" form="form-container-'.$container_id.'-delete" value="'.$container_id.'" />
                                                         </form>
@@ -288,6 +290,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                             </tr>
                                             <tr id="container-'.$container_id.'-edit" hidden>
                                                 <form action="includes/containers.inc.php" method="POST" id="form-container-'.$container_id.'-edit" enctype="multipart/form-data">
+                                                    <!-- Include CSRF token in the form -->
+                                                    <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                     <input type="hidden" name="container_edit_submit" form="form-container-'.$container_id.'-edit" value="1" />
                                                     <input type="hidden" name="container_id" form="form-container-'.$container_id.'-edit" value="'.$container_id.'" />
                                                     <td></td>
@@ -463,6 +467,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-container">
                 <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" id="form-unlink-container-item-id" name="item_id" value=""  />
                     <input type="hidden" name="container-unlink" value="1"/>
                     <table class="centertable">
@@ -510,6 +516,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-container">
                 <form action="includes/containers.inc.php" method="POST" enctype="multipart/form-data">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <table class="centertable">
                         <tbody>
                             <tr class="nav-row">
@@ -616,6 +624,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 </div>
             </div>
             <form enctype="multipart/form-data" action="./includes/stock-modify.inc.php" method="POST" style="padding: 0px; margin:0px">
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">                               
                 <input type="hidden" name="container-link-fromcontainers" value="1" />
                 <input type="hidden" id="addChildrenIsItem" name="is_item" value="" />
                 <input type="hidden" id="addChildrenContID" name="container_id" value="" />

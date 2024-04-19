@@ -80,6 +80,8 @@ if (isset($_GET['stock_id'])) {
                         <div class="col-sm-7 text-left" id="stock-info-left">
                             <form id="edit-form" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
                                 <!-- below input is used for the stock-modify.inc.php page -->
+                                <!-- Include CSRF token in the form -->
+                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                 <input type="hidden" name="stock-edit" value="1" />
                                 <div class="nav-row" style="margin-bottom:25px">
                                     <div class="nav-row" id="id-row" style="margin-top:25px">
@@ -388,6 +390,8 @@ if (isset($_GET['stock_id'])) {
                                         echo('
                                         <tr>
                                             <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" onsubmit="return confirm(\'Are you sure you want to unlink this image?\nThe file will remain on the system.\');">
+                                                <!-- Include CSRF token in the form -->
+                                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                 <input type="hidden" name="stock-edit" value="1" />
                                                 <td class="theme-divBg-m" style="padding-right:5px">
                                                     <input type="hidden" name="stock_id" value="'.$stock_img_data[$i]['stock_id'].'" />
@@ -463,6 +467,8 @@ if (isset($_GET['stock_id'])) {
             ?>
         </div>
         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <!-- Include CSRF token in the form -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <input type="hidden" name="stock-edit" value="1" />
             <div class="nav-row well-nopad theme-divBg">
                 <div class="nav-row" style="padding:25px 50px 25px 50px;width:750px">
@@ -496,6 +502,8 @@ if (isset($_GET['stock_id'])) {
         </div>
         <div style="margin:auto;text-align:center;margin-top:10px">
             <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="stock-edit" value="1" />
                 <input type="file" accept="image/*" style="margin:auto;text-align:center" id="image" name="image" onchange="loadImage(event)"><br><br>
                 <input type="hidden" id="upload_stock_id" name="stock_id" value="<?php echo(isset($_GET['stock_id'])?$_GET['stock_id']:''); ?>" />

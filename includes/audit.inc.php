@@ -8,6 +8,17 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 } 
 
+// csrf_token management
+if (isset($_POST['csrf_token'])) {
+    if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+        header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+        exit();
+    }
+} else {
+    header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+    exit();
+}
+
 $comment = $_POST['comment'];
 $user_id = $_POST['user_id'];
 $checked = $_POST['checked'];

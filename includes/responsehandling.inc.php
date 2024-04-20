@@ -147,7 +147,7 @@ if (isset($_GET['error'])) {
 	} elseif ($_GET["error"] == "NaN") {
 		$errorPtext = 'Value is Not a Number.';
 	} else {
-        $errorPtext = $_GET['error'];
+        $errorPtext = htmlspecialchars($_GET['error']);
     }
     
 }
@@ -189,7 +189,7 @@ if (isset($_GET['sqlerror'])) {
 			$sqlerrorPtext .= ' Email: '.$_GET['email'];
 		}
 	} else {
-        $sqlerrorPtext = $_GET['sqlerror'];
+        $sqlerrorPtext = htmlspecialchars($_GET['sqlerror']);
     }
     if (isset($_GET['table'])) {
         $sqlerrorPtext .= ' Table = '.$_GET['table'];
@@ -278,7 +278,7 @@ if (isset($_GET['success'])) {
 	} elseif ($_GET['success'] == "unlinked") {
 		$successPtext = 'Unlinked Successfully.';
 	} else {
-        $successPtext = $_GET['success'];
+        $successPtext = htmlspecialchars($_GET['success']);
     }
 }
 

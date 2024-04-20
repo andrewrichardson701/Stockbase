@@ -2779,7 +2779,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     if (is_numeric($_GET['stock_id'])) {
                         // echo('Type='.$_GET['type'].'<br>ID='.$_GET['stock_id'].'<br>');
 
-                        $stock_id = $_GET['stock_id'];
+                        $stock_id = htmlspecialchars($_GET['stock_id']);
 
                         include 'dbh.inc.php';
                         $sql_checkID = "SELECT * FROM stock

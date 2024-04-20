@@ -2542,7 +2542,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         if (isset($_GET['type'])) {
-            $type_num = $_GET['type'];
+            $type_num = htmlspecialchars($_GET['type']);
             if ($type_num == 1) {
                 $type = 'footer_enable';
             } elseif ($type_num == 2) {
@@ -2552,7 +2552,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
 
             if (isset($_GET['value'])) {
-                $value = $_GET['value'];
+                $value = htmlspecialchars($_GET['value']);
                 if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
                     include 'dbh.inc.php';
 
@@ -2614,7 +2614,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         if (isset($_GET['type'])) {
-            $type_num = $_GET['type'];
+            $type_num = htmlspecialchars($_GET['type']);
             if ($type_num == 1) {
                 $type = 'normal';
             } elseif ($type_num == 2) {
@@ -2622,7 +2622,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
 
             if (isset($_GET['value'])) {
-                $value = $_GET['value'];
+                $value = htmlspecialchars($_GET['value']);
                 if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
                     include 'dbh.inc.php';
 
@@ -2684,9 +2684,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         if (isset($_GET['notification'])) {
-            $notification = $_GET['notification'];
+            $notification = htmlspecialchars($_GET['notification']);
             if (isset($_GET['value'])) {
-                $value = $_GET['value'];
+                $value = htmlspecialchars($_GET['value']);
                 if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
                     include 'dbh.inc.php';
 

@@ -7,7 +7,7 @@
 
 if (isset($_GET['stock_id'])) {
     if (is_numeric($_GET['stock_id'])) {
-        $stock_id = $_GET['stock_id'];
+        $stock_id = htmlspecialchars($_GET['stock_id']);
 
         include 'dbh.inc.php';
 

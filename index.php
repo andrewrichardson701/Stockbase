@@ -57,7 +57,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         if (isset($_GET['rows'])) {
             if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
-                $rowSelectValue = $_GET['rows'];
+                $rowSelectValue = htmlspecialchars($_GET['rows']);
             } else {
                 $rowSelectValue = 10;
             }

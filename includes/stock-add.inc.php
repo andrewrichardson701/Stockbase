@@ -431,7 +431,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 }
                             }
                             
-                            $stock_id = $_GET['stock_id'];
+                            $stock_id = htmlspecialchars($_GET['stock_id']);
                             echo('<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">');
                                 if ($data_is_cable == 0) {
                                     echo('<input type="hidden" name="stock-add" value="1" />  ');

@@ -8,9 +8,13 @@
 $versionNumber = 'v0.7.2-beta';
 
 include './includes/get-config.inc.php'; // get config options
-header("X-Frame-Options: DENY");
-?>
 
+// anti clickjacking defense
+header("X-Frame-Options: DENY");
+// Set a cookie with the Secure flag for defense against cookie attacks
+setcookie("stockbase_cookie", bin2hex(random_bytes(32)), [ 'expires' => time() + 3600, 'path' => "/", 'domain' => $current_base_url, 'secure' => true, 'httponly' => true, 'samesite' => 'Strict' ]);
+?>
+<!-- CSP headers -->
 <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';

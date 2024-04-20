@@ -230,7 +230,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                             }
                         }
                         
-                        $stock_id = $_GET['stock_id'];
+                        $stock_id = htmlspecialchars($_GET['stock_id']);
                         echo('
                         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
                             <!-- Include CSRF token in the form -->

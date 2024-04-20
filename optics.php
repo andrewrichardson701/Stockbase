@@ -49,7 +49,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
             if (isset($_GET['rows'])) {
                 if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
-                    $rowSelectValue = $_GET['rows'];
+                    $rowSelectValue = htmlspecialchars($_GET['rows']);
                 } else {
                     $rowSelectValue = 20;
                 }
@@ -558,8 +558,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     Count: <or class="green">'.$rowCount_inv.'</or>
                                 </div>
                                 <div class="col">');
-                                if (isset($_GET['error'])) { echo('<p class="red">Error: '.$_GET['error'].'</p>'); } 
-                                if (isset($_GET['success'])) { echo('<p class="green">Success: '.$_GET['success'].'</p>'); } 
+                                if (isset($_GET['error'])) { echo('<p class="red">Error: '.htmlspecialchars($_GET['error']).'</p>'); } 
+                                if (isset($_GET['success'])) { echo('<p class="green">Success: '.htmlspecialchars($_GET['success']).'</p>'); } 
                                 echo('</div>
                                 <div class="col align-middle" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
                                     <table>

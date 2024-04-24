@@ -111,8 +111,8 @@ if (isset($_POST['submit'])) {
                                 $loginlog_id = updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
                                 addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
                                 $faillog = insertLoginFail($_POST, 'local');
-                                if ($faillog_id['count'] == 1) {
-                                    addChangelog(0, 'Root', "New record", "login_failure", $failog['id'], "tcount", NULL, $faillog['count']);
+                                if ($faillog['count'] == 1) {
+                                    addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "tcount", NULL, $faillog['count']);
                                 } else {
                                     addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
                                 }
@@ -124,8 +124,8 @@ if (isset($_POST['submit'])) {
                             $loginlog_id = updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
                             addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
                             $faillog = insertLoginFail($_POST, 'local');
-                            if ($faillog_id['count'] == 1) {
-                                addChangelog(0, 'Root', "New record", "login_failure", $failog['id'], "tcount", NULL, $faillog['count']);
+                            if ($faillog['count'] == 1) {
+                                addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "tcount", NULL, $faillog['count']);
                             } else {
                                 addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
                             }
@@ -434,5 +434,3 @@ if (isset($_POST['submit'])) {
     header("Location: ../login.php?error=submitNotSet");
     exit();
 }
-
-?>

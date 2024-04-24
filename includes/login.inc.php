@@ -80,7 +80,7 @@ if (isset($_POST['submit'])) {
                                 $log_id = updateLoginLog($_POST, 'login', 'local'); // add an entry to the login_log
                                 addChangelog($row['users_id'], $row['username'], "Login success", "login_log", $log_id, "type", NULL, 'login');
                                 $faildelete_id = deleteLoginFail($_POST, 'ldap');
-                                addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL);
+                                if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
 
                                 $_SESSION['login_log_id'] = $log_id;
                                 $_SESSION['user_id'] = $row['users_id'];
@@ -327,7 +327,7 @@ if (isset($_POST['submit'])) {
                                     $_POST['user_id'] = $insert_id;
                                     $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
                                     $faildelete_id = deleteLoginFail($_POST, 'ldap');
-                                    addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL);
+                                    if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
                                     $_SESSION['login_log_id'] = $log_id;
                                     $_SESSION['user_id'] = $insert_id;
                                     $_SESSION['username'] = $ldap_info_samAccountName;
@@ -365,7 +365,7 @@ if (isset($_POST['submit'])) {
                                         $_POST['user_id'] = $row['users_id'];
                                         $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
                                         $faildelete_id = deleteLoginFail($_POST, 'ldap');
-                                        addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL);
+                                        if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
                                         $_SESSION['login_log_id'] = $log_id;
                                         $_SESSION['user_id'] = $row['users_id'];
                                         $_SESSION['username'] = $row['username'];
@@ -434,3 +434,5 @@ if (isset($_POST['submit'])) {
     header("Location: ../login.php?error=submitNotSet");
     exit();
 }
+
+?>

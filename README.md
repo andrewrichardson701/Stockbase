@@ -671,6 +671,9 @@ Clone the repo first, and the follow the below steps.
 - Added CSP policy meta header to head.php.
 - Removed old AJAX/jquery references in head.php.
 - Added an Anti-clickjacking header in head.php (in php).
+- Used htmlspecialchars() on $_GET requests that print to the page to stop injection.
+- Fixed the get-config php page to make the theme defaults strings not an array.
+- Fixed the changelog not showing login failures/attempts.
 
 </details>
 <details>

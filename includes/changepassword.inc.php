@@ -17,15 +17,7 @@ if (strpos($redirect_url, "?")) {
     $queryChar = "?";
 }
 
-if (isset($_POST['csrf_token'])) {
-    if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
-        header("Location: ../login.php?error=csrfMissmatch");
-        exit();
-    }
-} else {
-    header("Location: ../login.php?error=csrfMissmatch");
-    exit();
-}
+include 'login-functions.inc.php';
 
 if (isset($_POST['password-submit'])) { // normal change password requests
     if (isset($_POST['user-id'])) {
@@ -41,7 +33,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
 
             $sql_users = "SELECT users.id as users_id, users.username as username, users.first_name as first_name, 
                                 users.last_name as last_name, users.email as email, users.auth as auth, users_roles.name as role, 
-                                users.enabled as enabled, users.password AS users_password
+                                users.enabled as enabled, users.password AS users_password, users.password_expired as expired
                             FROM users 
                             INNER JOIN users_roles ON users.role_id = users_roles.id
                             WHERE users.id=?";
@@ -64,21 +56,25 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                     // 1 user found - continue
 
                     $row = $result->fetch_assoc();
+                    $username = $row['username'];
+                    $password_expired = $row['expired'];
                     $current_password_hash = $row['users_password'];
 
                     if ($current_password_hash === $new_password_hash) {
                         header("Location: ../".$redirect_url.$queryChar."error=passwordMatchesCurrent");
                         exit();
                     } else {
-                        $sql_upload = "UPDATE users SET password='$new_password_hash', password_expired=0 WHERE id=?";
+                        $sql_upload = "UPDATE users SET password=?, password_expired=0 WHERE id=?";
                         $stmt_upload = mysqli_stmt_init($conn);
                         if (!mysqli_stmt_prepare($stmt_upload, $sql_upload)) {
                             header("Location: ../".$redirect_url.$queryChar."error=passwordResetSQLError");
                             exit();
                         } else {
-                            mysqli_stmt_bind_param($stmt_upload, "s", $user_id);
+                            mysqli_stmt_bind_param($stmt_upload, "ss", $new_password_hash, $user_id);
                             mysqli_stmt_execute($stmt_upload);
                             $_SESSION['password_expired'] = 0;
+                            if ($password_expired == 1) { addChangelog($user_id, $username, "Password Changed", "users", $user_id, "password", 1, 0); }
+                            addChangelog($user_id, $username, "Password Changed", "users", $user_id, "password", '********', '********');
                             header("Location: ../profile.php?success=PasswordChanged");
                             exit();
                         }
@@ -114,12 +110,13 @@ if (isset($_POST['password-submit'])) { // normal change password requests
 
         $sql_users = "SELECT id, email, username, first_name, last_name, enabled, auth
                         FROM users 
-                        WHERE $uidType='$uid' AND auth='local'";
+                        WHERE $uidType=? AND auth='local'";
         $stmt_users = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
             header("Location: ../login.php?reset=true&sqlerror=unableToGetUsers&uid=$uid");
             exit();
         } else {
+            mysqli_stmt_bind_param($stmt_users, "s", $uid);
             mysqli_stmt_execute($stmt_users);
             $result_users = mysqli_stmt_get_result($stmt_users);
             $rowCount_users = $result_users->num_rows;
@@ -135,11 +132,25 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                 $row_users = $result_users->fetch_assoc();
                 
                 $user_id = $row_users['id'];
+                $user_username = $row_users['username'];
                 $user_email = $row_users['email'];
                 $user_firstname = $row_users['first_name'];
                 $user_lastname = $row_users['last_name'];
                 $user_fullname = ucwords($user_firstname).' '.ucwords($user_lastname);
 
+                $sql = "SELECT id FROM password_reset WHERE reset_user_id=?;";
+                $stmt = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    header("Location: ../login.php?reset=true&sqlerror=password_reset".__LINE__."&uid=$uid");
+                    exit();
+                } else {
+                    mysqli_stmt_bind_param($stmt, "s", $uid);
+                    mysqli_stmt_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt_users);
+                    $rowCount = $result->num_rows;
+                    $row = $result->fetch_assoc();
+                    $deleteid = $row['id'];
+                }
                 
                 $sql = "DELETE FROM password_reset WHERE reset_user_id=?;";
                 $stmt = mysqli_stmt_init($conn);
@@ -147,8 +158,9 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                     header("Location: ../login.php?reset=true&sqlerror=password_reset".__LINE__."&uid=$uid");
                     exit();
                 } else {
-                    mysqli_stmt_bind_param($stmt, "s", $user_id);
+                    mysqli_stmt_bind_param($stmt, "s", $uid);
                     mysqli_stmt_execute($stmt);
+                    addChangelog($user_id, $user_username, "Delete record", "password_reset", $deleteid, "id", $deleteid, NULL);
                 }
 
                 $sql = "INSERT INTO password_reset (reset_user_id, reset_selector, reset_token, reset_expires) VALUES (?, ?, ?, ?);";
@@ -160,6 +172,8 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                     $hashed_token = password_hash($token, PASSWORD_DEFAULT);
                     mysqli_stmt_bind_param($stmt, "ssss", $user_id, $selector, $hashed_token, $expires);
                     mysqli_stmt_execute($stmt);
+                    $insertid = mysqli_insert_id($conn); // ID of the new row in the table.
+                    addChangelog($user_id, $user_username, "New record", "password_reset", $insertid, "id", NULL, $insertid);
                 }
 
                 mysqli_stmt_close($stmt);
@@ -263,6 +277,20 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                         $new_password_hash = password_hash($password, PASSWORD_DEFAULT);
                                         mysqli_stmt_bind_param($stmt, "ss", $new_password_hash, $reset_user_id);
                                         mysqli_stmt_execute($stmt);
+                                        addChangelog($reset_user_id, $username, "Password Changed", "users", $reset_user_id, "password", '********', '********');
+
+                                        $sql_r = "SELECT id FROM password_reset WHERE reset_user_id=?";
+                                        $stmt_r = mysqli_stmt_init($conn);
+                                        if (!mysqli_stmt_prepare($stmt_r, $sql_r)) {
+                                            header("location: $url&sqlerror=password_resetDelete&error=resubmit"); 
+                                            exit();
+                                        } else {
+                                            mysqli_stmt_bind_param($stmt_r, "s", $reset_user_id);
+                                            mysqli_stmt_execute($stmt_r);
+                                            $result_r = mysqli_stmt_get_result($stmt_r);
+                                            $row_r = $result_r->fetch_assoc();
+                                            $deleteid = $row_r['id'];
+                                        }
 
                                         $sql = "DELETE FROM password_reset WHERE reset_user_id=?";
                                         $stmt = mysqli_stmt_init($conn);
@@ -273,6 +301,8 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                             mysqli_stmt_bind_param($stmt, "s", $reset_user_id);
                                             mysqli_stmt_execute($stmt);
 
+                                            addChangelog($reset_user_id, $username, "Delete record", "password_reset", $deleteid, "id", $deleteid, NULL);
+
                                             include 'smtp.inc.php';
 
                                             $email_subject = ucwords($current_system_name)." - Password Reset!";
@@ -281,7 +311,6 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                                             send_email($user_email, $user_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
 
 
-                                            include 'login-functions.inc.php';
                                             $data = array('id'=>$reset_user_id, 'username'=>$username);
                                             deleteLoginFail($data, 'local');
                                             header("Location: ../login.php?newpwd=passwordupdated");
@@ -309,4 +338,3 @@ if (isset($_POST['password-submit'])) { // normal change password requests
     header("Location: ../".$redirect_url.$queryChar."error=noSubmit");
     exit();
 }
-?>

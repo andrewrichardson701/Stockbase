@@ -312,7 +312,8 @@ if (isset($_POST['password-submit'])) { // normal change password requests
 
 
                                             $data = array('id'=>$reset_user_id, 'username'=>$username);
-                                            deleteLoginFail($data, 'local');
+                                            $faildelete_id = deleteLoginFail($_POST, 'local');
+                                            addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL);
                                             header("Location: ../login.php?newpwd=passwordupdated");
                                             exit();
                                         }

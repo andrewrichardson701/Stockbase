@@ -627,7 +627,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <hr style="border-color:#9f9d9d; margin-left:10px">
                             <div class="row centertable">
                                 <div class="col float-left">
-                                    Count: <or class="green">'.$rowCount_inv.'</or>
+                                    Count: <or class="green">'.$totalRowCount.'</or>
                                 </div>
                                 <div class="col">');
                                 if (isset($_GET['error'])) { echo('<p class="red">Error: '.htmlspecialchars($_GET['error']).'</p>'); } 

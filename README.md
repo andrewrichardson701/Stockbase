@@ -676,6 +676,7 @@ Clone the repo first, and the follow the below steps.
 - Fixed the changelog not showing login failures/attempts.
 - Added optic_distance table.
 - Added distance_id to optic_item table.
+- Added spectrum field to optic_item table to show wavelength.
 - Added the logic for adding distances to the DB.
 - Fixed the optics page to show the correct info.
 

@@ -237,6 +237,7 @@ esac
                                                                 PRIMARY KEY (`id`)
                                                         );
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
+                                                        ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
             break;;
     esac 
@@ -331,6 +332,7 @@ esac
                                                                 PRIMARY KEY (`id`)
                                                         );
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
+                                                        ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
             break;;
     esac 
@@ -425,6 +427,7 @@ esac
                                                                 PRIMARY KEY (`id`)
                                                         );
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
+                                                        ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
             break;;
     esac 
@@ -532,6 +535,7 @@ esac
                                                                 PRIMARY KEY (`id`)
                                                         );
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
+                                                        ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
             break;;
     esac 
@@ -728,6 +732,7 @@ esac
                                                                 PRIMARY KEY (`id`)
                                                         );
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
+                                                        ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
             break;;
     esac 
@@ -955,6 +960,7 @@ esac
                                                                 PRIMARY KEY (`id`)
                                                         );
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
+                                                        ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
             break;;
     esac 
@@ -1171,9 +1177,10 @@ esac
     0.7.0-beta )
             echo "SQL Changes to be made:"
             echo " - (0.7.0-beta) Tables: optic_distance to be removed"
-            echo " - (0.7.0-beta) Column 'distance_id' to be removed from optic_item"
+            echo " - (0.7.0-beta) Column 'distance_id' and 'spectrum' to be removed from optic_item"
             mysql -u "$db_username" -p "$db_password" -e "DROP TABLE `optic_distance`;
                                                         ALTER TABLE `optic_item` DROP COLUMN distance_id;
+                                                        ALTER TABLE `optic_item` DROP COLUMN spectrum;
                                                         "                        
             break;;
     0.7.2-beta )

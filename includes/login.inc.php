@@ -434,5 +434,3 @@ if (isset($_POST['submit'])) {
     header("Location: ../login.php?error=submitNotSet");
     exit();
 }
-
-?>

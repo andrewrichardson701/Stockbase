@@ -399,7 +399,6 @@ CREATE TABLE `optic_item` (
   `type_id` int NOT NULL,
   `connector_id` int NOT NULL,
   `mode` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `spectrum` text COLLATE utf8mb3_unicode_ci NOT NULL,
   `speed_id` int NOT NULL,
   `distance_id` int NOT NULL,
   `site_id` int NOT NULL,
@@ -722,4 +721,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-02 19:09:56
+-- Dump completed on 2024-05-02 16:08:47

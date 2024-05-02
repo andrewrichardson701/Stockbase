@@ -32,7 +32,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <!-- End of Header and Nav -->
     
     <div class="content" style="padding-top:20px">
-        <div class="container" id="selection" style="margin-bottom:15px">
+        <div id="selection" style="margin-bottom:15px">
             <?php
             $site = isset($_GET['site']) ? $_GET['site'] : "0";
             $search = isset($_GET['search']) ? $_GET['search'] : "";
@@ -172,6 +172,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo ('<option value="SM"'); if ($optic_mode == 'SM') { echo(' selected'); } echo('>SM</option>');
                                 echo ('<option value="MM"'); if ($optic_mode == 'MM') { echo(' selected'); } echo('>MM</option>');
                                 echo ('<option value="Copper"'); if ($optic_mode == 'Copper') { echo(' selected'); } echo('>Copper</option>');
+                                echo ('<option value="N/A"'); if ($optic_mode == 'N/A') { echo(' selected'); } echo('>N/A</option>');
                             echo('</select>');
                         echo('</div>');
 
@@ -266,6 +267,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('
                                 </datalist>
                             </div>
+                        </div>
+                        <div class="col">
+                            <div>Spectrum</div>
+                            <div><input class="form-control text-center" type="text" id="spectrum" name="spectrum" style="min-width:120px" placeholder="1310nm" '); if (isset($_GET['form-spectrum'])) { echo ('value="'.$_GET['form-spectrum'].'"'); } echo ('required/></div>
                         </div>
                         <div class="col">
                             <div>Vendor</div>
@@ -425,6 +430,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <option value="SM"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'SM') { echo ('selected'); } echo ('>Single-Mode (SM)</option>
                                     <option value="MM"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'MM') { echo ('selected'); } echo ('>Multi-Mode (MM)</option>
                                     <option value="Copper"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'Copper') { echo ('selected'); } echo ('>Copper</option>
+                                    <option value="N/A"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'N/A') { echo ('selected'); } echo ('>N/A</option>
                                 </select>
                             </div>
                         </div>
@@ -513,7 +519,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
             include 'includes/dbh.inc.php';
             $s = 0;
-            $sql_inv_count = "SELECT I.id AS i_id, I.model AS i_model, I.serial_number AS i_serial_number, I.mode AS i_mode, I.quantity AS i_quantity,
+            $sql_inv_count = "SELECT I.id AS i_id, I.model AS i_model, I.serial_number AS i_serial_number, I.mode AS i_mode, I.quantity AS i_quantity, I.spectrum as i_spectrum,
                             V.id AS v_id, V.name AS v_name, 
                             T.id AS t_id, T.name AS t_name, 
                             C.id AS c_id, C.name AS c_name,
@@ -555,7 +561,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             } 
             if ((int)$optic_distance !== 0 ) { 
                 if (is_numeric($optic_distance)) {
-                    $sql_inv_add  .= " AND C.id=$optic_distance";
+                    $sql_inv_add  .= " AND D.id=$optic_distance";
                 }
             } 
             
@@ -650,7 +656,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-dark theme-table centertable" style="padding-bottom:0px;margin-bottom:0px;">
+                    </div>
+                    <div id="optics-table" class="text-center" style="max-width:max-content; margin:auto">
+                        <table class="table table-dark theme-table centertable" style="max-width:max-content;padding-bottom:0px;margin-bottom:0px;">
                             <thead>
                                 <tr class="align-middle text-center theme-tableOuter">
                                     <th hidden>ID</th>
@@ -659,6 +667,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <th>Model</th>
                                     <th>Speed</th>
                                     <th>Mode</th>
+                                    <th>Spectrum</th>
                                     <th>Distance</th>
                                     <th>Serial</th>
                                     <th>Vendor</th>
@@ -683,6 +692,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             $i_serial_number = $row_inv['i_serial_number'];
                             $i_model = $row_inv['i_model'];
                             $i_mode = $row_inv['i_mode'];
+                            $i_spectrum = $row_inv['i_spectrum'];
                             $i_quantity = $row_inv['i_quantity'];
                             $v_id = $row_inv['v_id'];
                             $v_name = $row_inv['v_name'];
@@ -711,6 +721,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <td class="align-middle">'.$i_model.'</td>
                                     <td class="align-middle">'.$s_name.'</td>
                                     <td class="align-middle">'.$i_mode.'</td>
+                                    <td class="align-middle">'.$i_spectrum.'</td>
                                     <td class="align-middle">'.$d_name.'</td>
                                     <td class="align-middle" id="optic-serial-'.$i_id.'">'.$i_serial_number.'</td>
                                     <td class="align-middle">'.$v_name.'</td>
@@ -910,6 +921,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
                     ');
                     // testing
                     // print_r('<pre style="margin-top:100px">');// testing
@@ -921,7 +933,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
 
             ?>
-        </div>
     </div>    
     <!-- Modal NewType Div -->
     <div id="modalDivNewType" class="modal">

@@ -112,7 +112,7 @@ if (isset($_POST['submit'])) {
                                 addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
                                 $faillog = insertLoginFail($_POST, 'local');
                                 if ($faillog['count'] == 1) {
-                                    addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "tcount", NULL, $faillog['count']);
+                                    addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
                                 } else {
                                     addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
                                 }
@@ -125,7 +125,7 @@ if (isset($_POST['submit'])) {
                             addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
                             $faillog = insertLoginFail($_POST, 'local');
                             if ($faillog['count'] == 1) {
-                                addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "tcount", NULL, $faillog['count']);
+                                addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
                             } else {
                                 addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
                             }
@@ -403,7 +403,7 @@ if (isset($_POST['submit'])) {
                             addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
                             $faillog = insertLoginFail($_POST, 'ldap');
                             if ($faillog['count'] == 1) {
-                                addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "tcount", NULL, $faillog['count']);
+                                addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
                             } else {
                                 addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
                             }
@@ -416,7 +416,7 @@ if (isset($_POST['submit'])) {
                         addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
                         $faillog = insertLoginFail($_POST, 'ldap');
                         if ($faillog['count'] == 1) {
-                            addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "tcount", NULL, $faillog['count']);
+                            addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
                         } else {
                             addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
                         }

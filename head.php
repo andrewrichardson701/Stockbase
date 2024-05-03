@@ -5,12 +5,23 @@
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
 // PAGE HEADER SETUP - SETS UP CSS, BOOTSTRAP AND OTHER STYLES AND SCRIPTS
-$versionNumber = 'v0.7.1-beta';
+$versionNumber = 'v0.7.2-beta';
 
 include './includes/get-config.inc.php'; // get config options
 
+// anti clickjacking defense
+header("X-Frame-Options: DENY");
+// Set a cookie with the Secure flag for defense against cookie attacks
+setcookie("stockbase_cookie", bin2hex(random_bytes(32)), [ 'expires' => time() + 3600, 'path' => "/", 'domain' => $current_base_url, 'secure' => true, 'httponly' => true, 'samesite' => 'Strict' ]);
 ?>
-
+<!-- CSP headers -->
+<meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+    style-src 'self' https://stackpath.bootstrapcdn.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://adobe-fonts.github.io https://use.fontawesome.com 'unsafe-inline';
+    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://adobe-fonts.github.io https://use.fontawesome.com;
+    img-src 'self' data:;
+">
 <meta charset="utf-8">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" type="image/png" href="./assets/img/config/<?php echo($current_favicon_image); ?>">
@@ -33,14 +44,13 @@ if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
     echo('<link id="theme-css" rel="stylesheet" href="./assets/css/'.$current_default_theme_file_name.'">');
 }
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="https://adobe-fonts.github.io/source-code-pro/source-code-pro.css">
 <!-- below for colour picker -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet" />
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.4.0/css/all.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <style>
 .inv-nav {

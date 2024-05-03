@@ -50,6 +50,8 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
                 <h2>Create new password</h2>
                 <p>Please enter a new password below.</p>
                 <form enctype="multipart/form-data" action="includes/changepassword.inc.php" method="post">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" name="selector" value="<?php echo $_GET['selector']; ?>" />
                     <input type="hidden" name="validator" value="<?php echo $_GET['validator']; ?>" />
                     <div class="form-group">

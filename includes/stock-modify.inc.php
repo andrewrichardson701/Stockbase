@@ -328,7 +328,16 @@ function getCableStockInfo($stock_id) {
 // exit();
 if (isset($_POST['submit'])) { // standard submit button name - this should be the case on all forms.
     include 'smtp.inc.php';
-
+    // csrf_token management
+    if (isset($_POST['csrf_token'])) {
+        if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+            header("Location: ".$redirect_url.$query_char."error=csrfMissmatch");
+            exit();
+        }
+    } else {
+        header("Location: ".$redirect_url.$query_char."?error=csrfMissmatch");
+        exit();
+    }
     if (isset($_SESSION['username']) && $_SESSION['username'] != '' && $_SESSION['username'] != null) {
         if (isset($_POST['stock-add'])) { // bits from the stock-add-new.inc.php page - need to add a hidden input with name="stock-add" for this
             if ($_POST['submit'] == 'Add Stock') {
@@ -2770,7 +2779,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     if (is_numeric($_GET['stock_id'])) {
                         // echo('Type='.$_GET['type'].'<br>ID='.$_GET['stock_id'].'<br>');
 
-                        $stock_id = $_GET['stock_id'];
+                        $stock_id = htmlspecialchars($_GET['stock_id']);
 
                         include 'dbh.inc.php';
                         $sql_checkID = "SELECT * FROM stock

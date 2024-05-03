@@ -103,6 +103,17 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     if (isset($_POST['global-submit'])) { // GLOBAL saving in admin
         $queryStrings = [];
         $errors = [];
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=global-settings#global-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=global-settings#global-settings");
+            exit();
+        }
          
         $config_system_name   = isset($_POST['system_name'])             ? $_POST['system_name']             : '';
         $config_banner_color  = isset($_POST['banner_color'])            ? $_POST['banner_color']            : '';
@@ -374,6 +385,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         exit();
 
     } elseif (isset($_POST['global-restore-defaults'])) { // restore global settings in admin
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=global-settings#global-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=global-settings#global-settings");
+            exit();
+        }
+
         include 'dbh.inc.php';
 
         $sql_config = "SELECT system_name, base_url, banner_color, logo_image, favicon_image, currency, sku_prefix, default_theme_id FROM config_default ORDER BY id LIMIT 1";
@@ -453,6 +476,17 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['admin-pwreset-submit'])) { // resetting a user's password in the admin section
         if (isset($_POST['user-id'])) {
 
+            // csrf_token management
+            if (isset($_POST['csrf_token'])) {
+                if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                    header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+                exit();
+            }
+
             include 'get-config.inc.php';
             if (in_array($_SESSION['role'], $config_admin_roles_array)) {
 
@@ -521,6 +555,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['ldap-toggle-submit'])) { // enable/disable LDAP
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=ldap-settings#ldap-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=ldap-settings#ldap-settings");
+            exit();
+        }
+
         // print_r($_POST);
         $ldap_enabled_post = isset($_POST['ldap-enabled']) ? $_POST['ldap-enabled'] : "off";
 
@@ -551,6 +597,17 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['ldap-submit'])) { // LDAP saving in admin page
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=ldap-settings#ldap-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=ldap-settings#ldap-settings");
+            exit();
+        }
 
         if (isset($_POST['auth-username']))         { $config_ldap_username         = $_POST['auth-username'];         } else { $config_ldap_username         = ''; }
         if (isset($_POST['auth-password']))         { $config_ldap_password         = base64_encode(($_POST['auth-password']));         } else { $config_ldap_password         = ''; }
@@ -604,6 +661,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
     } elseif (isset($_POST['ldap-restore-defaults'])) { // restore LDAP default settings
         // RESTORE LDAP
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=ldap-settings#ldap-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=ldap-settings#ldap-settings");
+            exit();
+        }
+
         include 'dbh.inc.php';
 
         $sql_config = "SELECT ldap_username, ldap_password, ldap_domain, ldap_host, ldap_host_secondary, ldap_port, ldap_basedn, ldap_usergroup, ldap_userfilter FROM config_default ORDER BY id LIMIT 1";
@@ -655,6 +724,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         }
     } elseif (isset($_POST['smtp-toggle-submit'])) { // enable/disable SMTP
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+            exit();
+        }
+
         // print_r($_POST);
         $smtp_enabled_post = isset($_POST['smtp-enabled']) ? $_POST['smtp-enabled'] : "off";
 
@@ -683,6 +764,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['smtp-submit'])) { // save smtp info in smtp section of admin page
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+            exit();
+        }
+
         if (isset($_POST['smtp-username']))   { $config_smtp_username   = $_POST['smtp-username'];   } else { $config_smtp_username   = ''; }
         if (isset($_POST['smtp-password']))   { $config_smtp_password   = base64_encode($_POST['smtp-password']);   } else { $config_smtp_password   = ''; }
         if (isset($_POST['smtp-encryption'])) { $config_smtp_encryption = $_POST['smtp-encryption']; } else { $config_smtp_encryption = ''; }
@@ -722,6 +815,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
     } elseif (isset($_POST['smtp-restore-defaults'])) { // restore default smtp info
         // RESTORE SMTP
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=smtp-settings#smtp-settings");
+            exit();
+        }
+
         include 'dbh.inc.php';
 
         $sql_config = "SELECT smtp_username, smtp_password, smtp_encryption, smtp_host, smtp_port, smtp_from_email, smtp_from_name, smtp_to_email FROM config_default ORDER BY id LIMIT 1";
@@ -771,6 +876,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
         }
     } elseif (isset($_POST['user_role_submit'])) { // changing users roles in admin users section
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+            exit();
+        }
+
         if (isset($_POST['user_id']) && isset($_POST['user_new_role'])) {
             $user_id = $_POST['user_id'];
             $user_new_role = $_POST['user_new_role'];
@@ -821,6 +938,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             echo('Error: Unable to submit form.');
         }
     } elseif (isset($_POST['user_enabled_submit'])) { // enabling / disabling users from the admin users section
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+            exit();
+        }
+
         if (isset($_POST['user_id']) && isset($_POST['user_new_enabled'])) {
             $user_id = $_POST['user_id'];
             $user_new_enabled = $_POST['user_new_enabled'];
@@ -871,6 +1000,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             echo('Error: Unable to submit form.');
         }
     } elseif (isset($_POST['user-impersonate'])) { // impersonating a user as Root only. This living in the admin users section
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+            exit();
+        }
+        
         if (isset($_POST['user-id'])) {
             $user_id = $_POST['user-id'];
             if (isset($_POST['role'])) {
@@ -952,6 +1093,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['user-stop-impersonate'])) { // impersonating a user as Root only. This living in the admin users section
+
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=users#users-settings");
+            exit();
+        }
+
         if (isset($_SESSION['real-user_id']) && isset($_SESSION['real-username']) && isset($_SESSION['real-first_name']) 
         && isset($_SESSION['real-last_name']) && isset($_SESSION['real-email']) && isset($_SESSION['real-role']) 
         && isset($_SESSION['real-auth'])) {
@@ -975,6 +1128,17 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['location-submit'])) { // adding locations e.g. sites/areas/shelves
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+            exit();
+        }
+
         if (isset($_POST['index'])) { // come from the index page - this only happens when there are no sites/areas/shelves
             if (!isset($_POST['site-name']))        { header("Location: ../index.php?error=missingSiteName");        exit(); }
             if (!isset($_POST['site-description'])) { header("Location: ../index.php?error=missingSiteDescription"); exit(); }
@@ -1094,6 +1258,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['location-delete-submit'])) { // section for the location deleting in admin.inc.php
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+            exit();
+        }
         // for the Stock Location Settings section on admin.inc.php page. This is only the deleting of the site/area/shelf
         if ($_POST['location-delete-submit'] == "site") {
             $site_id = $_POST['location-id'];
@@ -1255,6 +1429,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
     } elseif (isset($_POST['location-restore-submit'])) { // section for the location restoring in admin.inc.php
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+            exit();
+        }
         if ($_POST['location-restore-submit'] == "site") {
             $site_id = $_POST['location-id'];
             $sql_check = "SELECT * FROM area WHERE site_id=$site_id AND deleted=1;";
@@ -1414,6 +1598,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['location-edit-submit'])) { // editing location descriptions on admin.php modal edit popup
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+            exit();
+        }
         if (isset($_POST['location-type'])) {
             if ($_POST['location-type'] == "site" || $_POST['location-type'] == "area" || $_POST['location-type'] == "shelf") {
                 if (isset($_POST['location-id'])) {
@@ -1570,6 +1764,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['session-kill-submit'])) { // session management from admin.inc.php
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=sessionmanagement#sessionmanagement-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=sessionmanagement#sessionmanagement-settings");
+            exit();
+        }
         if (isset($_POST['session_id'])) {
             $session_response = 'NULL';
             include 'session.inc.php';
@@ -1588,6 +1792,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
         
     } elseif (isset($_POST['imagemanagement-submit'])) { // image management section in the admin.php page
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=imagemanagement-settings#imagemanagement-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=imagemanagement-settings#imagemanagement-settings");
+            exit();
+        }
         if (isset($_POST['file-name'])) {
             if (isset($_POST['file-links'])) {
                 if ($_POST['file-links'] == 0) {
@@ -1596,20 +1810,32 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     header("Location: ../admin.php?success=deleted&section=imagemanagement-settings#imagemanagement-settings");
                     exit();
                 } else {
-                    header("Location: ../admin.php?error=linksExist&section=#imagemanagement-settings#imagemanagement-settings");
+                    header("Location: ../admin.php?error=linksExist&section=imagemanagement-settings#imagemanagement-settings");
                     exit();
                 }
             } else {
-                header("Location: ../admin.php?error=missingFileLinks&section=#imagemanagement-settings#imagemanagement-settings");
+                header("Location: ../admin.php?error=missingFileLinks&section=imagemanagement-settings#imagemanagement-settings");
                 exit();
             }
         } else {
-            header("Location: ../admin.php?error=missingFileName&section=#imagemanagement-settings#imagemanagement-settings");
+            header("Location: ../admin.php?error=missingFileName&section=imagemanagement-settings#imagemanagement-settings");
             exit();
         }
     } elseif (isset($_POST['attributemanagement-submit'])) { // attribute management section in the admin.php page
         if (isset($_POST['attribute-type'])) {
             $attribute_type = $_POST['attribute-type'];
+
+            // csrf_token management
+            if (isset($_POST['csrf_token'])) {
+                if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                    header("Location: ../admin.php?error=csrfMissmatch&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=csrfMissmatch&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                exit();
+            }
+            
             if ($attribute_type == 'tag') {
                 if (isset($_POST['id'])) {
                     $attribute_id = $_POST['id'];
@@ -1756,6 +1982,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['attributemanagement-restore'])) { // attribute management section in the admin.php page
         if (isset($_POST['attribute-type'])) {
             $attribute_type = $_POST['attribute-type'];
+
+            // csrf_token management
+            if (isset($_POST['csrf_token'])) {
+                if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                    header("Location: ../admin.php?error=csrfMissmatch&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=csrfMissmatch&section=attributemanagement-$attribute_type#attributemanagement-settings");
+                exit();
+            }
+            
             if ($attribute_type == 'tag') {
                 if (isset($_POST['id'])) {
                     $attribute_id = $_POST['id'];
@@ -1857,6 +2095,18 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['opticattributemanagement-submit'])) { // optic attribute management section in the admin.php page
         if (isset($_POST['attribute-type'])) {
             $attribute_type = $_POST['attribute-type'];
+
+            // csrf_token management
+            if (isset($_POST['csrf_token'])) {
+                if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                    header("Location: ../admin.php?error=csrfMissmatch&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=csrfMissmatch&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                exit();
+            }
+            
             if ($attribute_type == 'optic_vendors') {
                 if (isset($_POST['id'])) {
                     $attribute_id = $_POST['id'];
@@ -1878,7 +2128,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         AND V.id=$attribute_id;";                         
                     $stmt_vendors = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_vendors, $sql_vendors)) {
-                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=stocklocations-settings#stocklocations-settings");
+                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_vendors);
@@ -1901,7 +2151,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 $sql_update = "UPDATE optic_vendor SET deleted=? WHERE id='$attribute_id'";
                                 $stmt_update = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=stocklocations-settings#stocklocations-settings");
+                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
                                     exit();
                                 } else {
                                     mysqli_stmt_bind_param($stmt_update, "s", $value);
@@ -2090,6 +2340,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     } elseif (isset($_POST['opticattributemanagement-restore'])) { // optic attribute management section in the admin.php page
         if (isset($_POST['attribute-type'])) {
             $attribute_type = $_POST['attribute-type'];
+            // csrf_token management
+            if (isset($_POST['csrf_token'])) {
+                if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                    header("Location: ../admin.php?error=csrfMissmatch&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                    exit();
+                }
+            } else {
+                header("Location: ../admin.php?error=csrfMissmatch&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                exit();
+            }
             if ($attribute_type == 'optic_vendors') {
                 if (isset($_POST['id'])) {
                     $attribute_id = $_POST['id'];
@@ -2282,7 +2542,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         if (isset($_GET['type'])) {
-            $type_num = $_GET['type'];
+            $type_num = htmlspecialchars($_GET['type']);
             if ($type_num == 1) {
                 $type = 'footer_enable';
             } elseif ($type_num == 2) {
@@ -2292,7 +2552,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
 
             if (isset($_GET['value'])) {
-                $value = $_GET['value'];
+                $value = htmlspecialchars($_GET['value']);
                 if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
                     include 'dbh.inc.php';
 
@@ -2354,7 +2614,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         if (isset($_GET['type'])) {
-            $type_num = $_GET['type'];
+            $type_num = htmlspecialchars($_GET['type']);
             if ($type_num == 1) {
                 $type = 'normal';
             } elseif ($type_num == 2) {
@@ -2362,7 +2622,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             }
 
             if (isset($_GET['value'])) {
-                $value = $_GET['value'];
+                $value = htmlspecialchars($_GET['value']);
                 if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
                     include 'dbh.inc.php';
 
@@ -2424,9 +2684,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         if (isset($_GET['notification'])) {
-            $notification = $_GET['notification'];
+            $notification = htmlspecialchars($_GET['notification']);
             if (isset($_GET['value'])) {
-                $value = $_GET['value'];
+                $value = htmlspecialchars($_GET['value']);
                 if ($value == 0 || $value == '0' || $value == 1 || $value == '1') {
                     include 'dbh.inc.php';
 
@@ -2475,6 +2735,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         echo(json_encode($results));
 
     } elseif (isset($_POST['stocklocation-submit'])) { // editing location info from admin.php
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+                exit();
+            }
+        } else {
+            header("Location: ../admin.php?error=csrfMissmatch&section=stocklocations-settings#stocklocations-settings");
+            exit();
+        }
         if (isset($_POST['type'])) {
             $typesArray = ['site', 'area', 'shelf'];
             if (in_array($_POST['type'], $typesArray)) {
@@ -2525,6 +2795,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['profile-submit'])) { // profile.php info e.g. email and name updates
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../profile.php?error=csrfMissmatch");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=csrfMissmatch");
+            exit();
+        }
 
         if (isset($_POST['id'])) {
             if ($_POST['id'] == $_SESSION['user_id']) {
@@ -2606,6 +2886,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['card-modify'])) { // profile.php swipe cards - assigning and re-assigning.
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../profile.php?error=csrfMissmatch");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=csrfMissmatch");
+            exit();
+        }
         if (isset($_POST['type'])) {
             if (isset($_POST['card'])) {
                 if (isset($_POST['cardData'])) {
@@ -2676,6 +2966,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['card-remove'])) { // profile.php swipe cards - deassigning.
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../profile.php?error=csrfMissmatch");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=csrfMissmatch");
+            exit();
+        }
         if (isset($_POST['card'])) {
             $card_card = $_POST['card'];
             $user_id = $_SESSION['user_id'];
@@ -2722,6 +3022,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['theme-upload'])) { // theme uploading from the theme-test page
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../profile.php?error=csrfMissmatch");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=csrfMissmatch");
+            exit();
+        }
         if (isset($_POST['submit']) && $_POST['submit'] == 'Upload Theme') {
             if (isset($_POST['theme-name'])) {
                 if (isset($_POST['theme-file-name'])) {
@@ -2815,6 +3125,16 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             exit();
         }
     } elseif (isset($_POST['tag_edit_submit'])) { // Saving tag info on tags.php
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../profile.php?error=csrfMissmatch");
+                exit();
+            }
+        } else {
+            header("Location: ../profile.php?error=csrfMissmatch");
+            exit();
+        }
         if (isset($_POST['tag_id'])) {
             if (isset($_POST['tag_name'])) {
                 if (isset($_POST['tag_description'])) {

@@ -344,6 +344,16 @@ function removeQuantity($stock_id, $cable_item_id) {
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // csrf_token management
+    if (isset($_POST['csrf_token'])) {
+        if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+            header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+            exit();
+        }
+    } else {
+        header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+        exit();
+    }
     if (isset($_POST['add-cables-submit'])) {
         if (isset($_POST['shelf']) && isset($_POST['stock-name']) && isset($_POST['stock-description']) && isset($_POST['cable-type']) && isset($_POST['stock-min-stock']) && isset($_POST['item-quantity']) && isset($_POST['item-cost'])) {
             $site_id = $_POST['site'];
@@ -557,7 +567,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             // no match found, continue to add.
                             $name = mysqli_real_escape_string($conn, $name); // escape the special characters
                             $description = mysqli_real_escape_string($conn, $description); // escape the special characters
-                            $sql_insert = "INSERT INTO cable_types (name, , parent) VALUES (?, ?, ?)";
+                            $sql_insert = "INSERT INTO cable_types (name, description, parent) VALUES (?, ?, ?)";
                             $stmt_insert = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_insert, $sql_insert)) {
                                 header("Location: ".$redirect_url.$redirect_queries."&error=cable_typesTableSQLConnection");

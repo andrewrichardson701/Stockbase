@@ -144,6 +144,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </tr>
                             <tr id="tag-'.$tag_id.'-edit" hidden>
                                 <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                                    <!-- Include CSRF token in the form -->
+                                    <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                     <input type="hidden" name="tag_edit_submit" value="1" />
                                     <input type="hidden" name="tag_id" value="'.$tag_id.'" />
                                     <td class="text-center align-middle">'.$tag_id.'</td>

@@ -22,13 +22,14 @@ if (isset($_POST['submit'])) {
         exit();
     } else {
 
-        $login_username = addslashes(trim($_POST["username"])); // remove white space before or after the username + add slashes to any special characters
+        $login_username = trim($_POST["username"]); // remove white space before or after the username
         $login_password = $_POST["password"];
 
         if (isset($_POST['local'])) {
             if ($_POST['local'] == "on") {
                 if (queryLoginBlocked($_POST, 'local') == "blocked") {
-                    updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
+                    $loginlog_id = updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
+                    addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
                     header("Location: ../login.php?error=loginBlocked");
                     exit(); 
                 }
@@ -75,8 +76,11 @@ if (isset($_POST['submit'])) {
                                 session_start();
                                 $userFound = 1; // not needed, but useful for debugging
 
+                                $_POST['user_id'] = $row['users_id'];
                                 $log_id = updateLoginLog($_POST, 'login', 'local'); // add an entry to the login_log
-                                deleteLoginFail($_POST, 'ldap');
+                                addChangelog($row['users_id'], $row['username'], "Login success", "login_log", $log_id, "type", NULL, 'login');
+                                $faildelete_id = deleteLoginFail($_POST, 'ldap');
+                                if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
 
                                 $_SESSION['login_log_id'] = $log_id;
                                 $_SESSION['user_id'] = $row['users_id'];
@@ -104,14 +108,27 @@ if (isset($_POST['submit'])) {
                                     exit();
                                 }
                             } else {
-                                updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
-                                insertLoginFail($_POST, 'ldap');
+                                $loginlog_id = updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
+                                addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
+                                $faillog = insertLoginFail($_POST, 'local');
+                                if ($faillog['count'] == 1) {
+                                    addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
+                                } else {
+                                    addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
+                                }
+                                
                                 header("Location: ../login.php?error=invalidCredentials3");
                                 exit();
                             }
                         } else {
-                            updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
-                            insertLoginFail($_POST, 'ldap');
+                            $loginlog_id = updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
+                            addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
+                            $faillog = insertLoginFail($_POST, 'local');
+                            if ($faillog['count'] == 1) {
+                                addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
+                            } else {
+                                addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
+                            }
                             header("Location: ../login.php?error=invalidCredentials4");
                             exit();
                         } 
@@ -126,13 +143,15 @@ if (isset($_POST['submit'])) {
             }
         } else { // LDAP login 
             if (queryLoginBlocked($_POST, 'ldap') == "blocked") {
-                updateLoginLog($_POST, 'failed', 'ldap'); // add an entry to the login_log
+                $log_id = updateLoginLog($_POST, 'failed', 'ldap'); // add an entry to the login_log
+                addChangelog(0, 'Root', "Login failed", "login_log", $log_id, "type", NULL, 'failed');
                 header("Location: ../login.php?error=loginBlocked");
                 exit(); 
             }
             include 'dbh.inc.php';
             $login_username = ldap_escape($login_username, '', LDAP_ESCAPE_FILTER);
-            $login_password = ldap_escape($login_password, '', LDAP_ESCAPE_FILTER);
+            // commented out because this was changing brackets into other characters. this is not needed because thre LDAP is a prepared statement.
+            // $login_password = ldap_escape($login_password, '', LDAP_ESCAPE_FILTER); 
 
             $sql_ldap_d = "SELECT * FROM config_default WHERE id=1";
             $stmt_ldap_d = mysqli_stmt_init($conn);
@@ -305,8 +324,10 @@ if (isset($_POST['submit'])) {
                                         addChangelog($insert_id, $ldap_info_samAccountName, "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }
                                     session_start();
+                                    $_POST['user_id'] = $insert_id;
                                     $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
-                                    deleteLoginFail($_POST, 'ldap');
+                                    $faildelete_id = deleteLoginFail($_POST, 'ldap');
+                                    if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
                                     $_SESSION['login_log_id'] = $log_id;
                                     $_SESSION['user_id'] = $insert_id;
                                     $_SESSION['username'] = $ldap_info_samAccountName;
@@ -341,8 +362,10 @@ if (isset($_POST['submit'])) {
                                             header("Location: ../login.php?error=userDisabled");
                                             exit();
                                         }
+                                        $_POST['user_id'] = $row['users_id'];
                                         $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
-                                        deleteLoginFail($_POST, 'ldap');
+                                        $faildelete_id = deleteLoginFail($_POST, 'ldap');
+                                        if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
                                         $_SESSION['login_log_id'] = $log_id;
                                         $_SESSION['user_id'] = $row['users_id'];
                                         $_SESSION['username'] = $row['username'];
@@ -376,15 +399,27 @@ if (isset($_POST['submit'])) {
                             }
                         } else {
                             // echo("Invalid username or password.");
-                            updateLoginLog($_POST, 'failed', 'ldap'); // add an entry to the login_log
-                            insertLoginFail($_POST, 'ldap');
+                            $loginlog_id = updateLoginLog($_POST, 'failed', 'ldap'); // add an entry to the login_log
+                            addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
+                            $faillog = insertLoginFail($_POST, 'ldap');
+                            if ($faillog['count'] == 1) {
+                                addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
+                            } else {
+                                addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
+                            }
                             header("Location: ../login.php?error=invalidCredentials5");
                             exit();
                         }
                     } else {
                         // echo("Invalid username or password.");
-                        updateLoginLog($_POST, 'failed', 'ldap'); // add an entry to the login_log
-                        insertLoginFail($_POST, 'ldap');
+                        $loginlog_id = updateLoginLog($_POST, 'failed', 'ldap'); // add an entry to the login_log
+                        addChangelog(0, 'Root', "Login failed", "login_log", $loginlog_id, "type", NULL, 'failed');
+                        $faillog = insertLoginFail($_POST, 'ldap');
+                        if ($faillog['count'] == 1) {
+                            addChangelog(0, 'Root', "New record", "login_failure", $faillog['id'], "count", NULL, $faillog['count']);
+                        } else {
+                            addChangelog(0, 'Root', "Update record", "login_failure", $faillog['id'], "count", $faillog['count']-1, $faillog['count']);
+                        }
                         header("Location: ../login.php?error=invalidCredentials6");
                         exit();
                     }
@@ -399,5 +434,3 @@ if (isset($_POST['submit'])) {
     header("Location: ../login.php?error=submitNotSet");
     exit();
 }
-
-?>

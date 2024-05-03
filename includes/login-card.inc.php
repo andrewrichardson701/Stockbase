@@ -6,6 +6,20 @@
 
 // SWIPE CARD LOGIN BACKEND - gets yuser info from the swipe card scanned and logs in.
 
+if(session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+} 
+
+if (isset($_POST['csrf_token'])) {
+    if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+        header("Location: ../login.php?error=csrfMissmatch");
+        exit();
+    }
+} else {
+    header("Location: ../login.php?error=csrfMissmatch");
+    exit();
+}
+
 if (isset($_POST['submitHidden'])) {
     if (isset($_POST['cardData'])) {
         $cardData = $_POST['cardData'];

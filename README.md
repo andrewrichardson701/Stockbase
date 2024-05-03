@@ -664,6 +664,24 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>0.7.2-beta</h3></summary>
+<h4>Beta release 0.7.2, CSRF Token added, optic distance added.</h4>
+
+- Added CSRF tokens and some slight changes to some files to make it work better.
+- Added CSP policy meta header to head.php.
+- Removed old AJAX/jquery references in head.php.
+- Added an Anti-clickjacking header in head.php (in php).
+- Used htmlspecialchars() on $_GET requests that print to the page to stop injection.
+- Fixed the get-config php page to make the theme defaults strings not an array.
+- Fixed the changelog not showing login failures/attempts.
+- Added optic_distance table.
+- Added distance_id to optic_item table.
+- Added spectrum field to optic_item table to show wavelength.
+- Added the logic for adding distances to the DB.
+- Fixed the optics page to show the correct info.
+
+</details>
+<details>
 <summary><h3>0.7.1-beta</h3></summary>
 <h4>Beta release 0.7.1, Some script fixes and visual changes.</h4>
 
@@ -678,6 +696,10 @@ Clone the repo first, and the follow the below steps.
 - Removed the form elements from the new-properties page to stop it redirecting needlessly and breaking.
 - Added some special character captures for the confirmAction on the stock removal page when deleting a stock object.
 - Index manufacturer drop down now shows exact manufacturer matches instead of partial matches.
+- Login log should now get the user id on login.
+- Login page now encrypts the data sent on login form
+- Login inc page no longer LDAP escapes the password. This was causign issues and was not necessary.
+- Added csrf tokens based on an OWASP vulnerabilitiy. This is done in session.php.
 
 </details>
 <details>

@@ -33,7 +33,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $show_inventory = 0; // for nav.php to show the site and area on the banner
         if (isset($_GET['stock_id'])) {
             if (is_numeric($_GET['stock_id'])) {
-                $stock_id = $_GET['stock_id'];
+                $stock_id = htmlspecialchars($_GET['stock_id']);
             } else {
                 if (isset($_GET['modify'])) {
                     echo('<div class="container" style="padding-top:25px"><p class="red">Non-numeric Stock ID: <or class="blue">'.$_GET['stock_id'].'</or>.<br>Please check the URL or <a class="link" onclick="navPage(updateQueryParameter(\'\', \'stock_id\', 0))">add new stock item</a>.</p></div>');
@@ -52,7 +52,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             echo("No Stock ID or Modification Selected.");
         }
         if (isset($_GET['modify'])) {
-            $stock_modify = $_GET['modify'];
+            $stock_modify = htmlspecialchars($_GET['modify']);
         }
         if (!isset($_SERVER['HTTP_REFERER'])) {
             $_SERVER['HTTP_REFERER'] = './index.php';
@@ -842,6 +842,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                 echo('
                                                                                 <tr class="align-middle">
                                                                                     <form action="includes/stock-modify.inc.php" method="POST" id="form-item-'.$row_hidden['item_id'].'" enctype="multipart/form-data"></form>
+                                                                                    <!-- Include CSRF token in the form -->
+                                                                                    <input type="hidden" form="form-item-'.$row_hidden['item_id'].'" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                                                     <input type="hidden" form="form-item-'.$row_hidden['item_id'].'" name="submit" value="row"/>
                                                                                     <td class="align-middle text-center"><input type="hidden" form="form-item-'.$row_hidden['item_id'].'" name="item-id" value="'.$row_hidden['item_id'].'" />'.$row_hidden['item_id'].'</td>
                                                                                     <td hidden>'.$row_hidden['site_name'].'</td>
@@ -933,6 +935,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                                 </td>
                                                                                                 <td class='align-middle text-center' style='padding-left:2px'>
                                                                                                     <form action='includes/stock-modify.inc.php' method='POST' id='form-item-".$row_hidden['item_id']."-container-unlink' enctype='multipart/form-data'>
+                                                                                                        <!-- Include CSRF token in the form -->
+                                                                                                        <input type='hidden' name='csrf_token' value='".htmlspecialchars($_SESSION['csrf_token'])."'>
                                                                                                         <input type='hidden' name='item_id' value='".$row_hidden['item_id']."' form='form-item-".$row_hidden['item_id']."-container-unlink' />
                                                                                                         <input type='hidden' name='container-unlink' value='1' form='form-item-".$row_hidden['item_id']."-container-unlink' />
                                                                                                         <button class='btn btn-danger' type='button' name='submit' onclick=\"modalLoadUnlinkContainer('".$row_hidden['item_id']."', '$col_id', 1)\" form='form-item-".$row_hidden['item_id']."-container-unlink' style='color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px' title='Unlink from container'>
@@ -1048,6 +1052,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-container">
                 <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" id="form-unlink-container-item-id" name="item_id" value=""  />
                     <input type="hidden" name="container-unlink" value="1"/>
                     <table class="centertable">
@@ -1120,6 +1126,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 </div>
             </div>
             <form enctype="multipart/form-data" action="./includes/stock-modify.inc.php" method="POST" style="padding: 0px; margin:0px">
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="container-link-fromstock" value="1" />
                 <input type="hidden" id="addChildrenContID" name="container_id" value="" />
                 <input type="hidden" id="addChildrenStockID" name="stock_id" value="" />
@@ -1157,6 +1165,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 </div>
             </div>
             <form class="padding:0px;margin:0px" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+                <!-- Include CSRF token in the form -->
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
                     <input type="hidden" name="container-link" value="1" />
                     <input type="hidden" id="linkToContainerTableItemID" name="item_id" />

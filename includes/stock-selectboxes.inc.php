@@ -49,7 +49,7 @@ if (isset($_GET['site'])) {
     if (is_numeric($_GET['site'])) {
         if ($_GET['site'] > 0) {
 
-            $site = $_GET['site'];
+            $site = htmlspecialchars($_GET['site']);
 
             $areas = [];
 
@@ -93,7 +93,7 @@ if (isset($_GET['area'])) {
     if (is_numeric($_GET['area'])) {
         if ($_GET['area'] > 0) {
 
-            $area = $_GET['area'];
+            $area = htmlspecialchars($_GET['area']);
 
             $shelves = [];
 
@@ -137,7 +137,7 @@ if (isset($_GET['container-shelf'])) {
     if (is_numeric($_GET['container-shelf'])) {
         if ($_GET['container-shelf'] > 0) {
 
-            $shelf_id = $_GET['container-shelf'];
+            $shelf_id = htmlspecialchars($_GET['container-shelf']);
 
             $containers = [];
 
@@ -200,7 +200,7 @@ if (isset($_GET['container-shelf'])) {
 }
 
 if (isset($_GET['type'])) {
-    $type = $_GET['type'];
+    $type = htmlspecialchars($_GET['type']);
 
     if ($type !== "site" ) {
         $output = [];
@@ -248,19 +248,19 @@ if (isset($_GET['getserials'])) {
                 $containerNum = 0;
                 if ($_GET['shelf'] < 0) {
                     $containerNum = 1;
-                    $_GET['shelf'] = $_GET['shelf'] *-1;
+                    $_GET['shelf'] = htmlspecialchars($_GET['shelf']) *-1;
                 }
 
                 include 'dbh.inc.php';
 
                 $manu = '';
                 if (isset($_GET['manufacturer'])) {
-                    $manufacturer = $_GET['manufacturer'];
+                    $manufacturer = htmlspecialchars($_GET['manufacturer']);
                     $manu = " AND i.manufacturer_id=$manufacturer ";
                 }
                 $cont = '';
                 if (isset($_GET['container']) && $_GET['container'] != 0) {
-                    $container = $_GET['container'];
+                    $container = htmlspecialchars($_GET['container']);
                     $cont = " INNER JOIN item_container AS ic ON i.id=ic.item_id AND ic.container_id=$container ";
                 }
 
@@ -351,7 +351,7 @@ if (isset($_GET['getcontainers'])) {
                 $containerNum = 0;
                 if ($_GET['shelf'] < 0) {
                     $containerNum = 1;
-                    $_GET['shelf'] = $_GET['shelf'] *-1;
+                    $_GET['shelf'] = htmlspecialchars($_GET['shelf']) *-1;
                 }
 
                 include 'dbh.inc.php';
@@ -510,7 +510,7 @@ if (isset($_GET['getquantity'])) {
                 if ($_GET['serial'] == 0 || $_GET['serial'] == null) {
                     $serial = '';
                 } else { 
-                    $serial = $_GET['serial'];
+                    $serial = htmlspecialchars($_GET['serial']);
                 }
                 
                 $quantityArr = [];
@@ -524,7 +524,7 @@ if (isset($_GET['getquantity'])) {
                 
                 $containerNum = 0;
                 if ($_GET['shelf'] < 0) {
-                    $_GET['shelf'] = $_GET['shelf'] *-1;
+                    $_GET['shelf'] = htmlspecialchars($_GET['shelf']) *-1;
                     $containerNum = 1;
                 }
 

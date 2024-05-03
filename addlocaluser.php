@@ -40,6 +40,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 <div class="col-md-6" style="margin-left:25px">
                     <p>Please fill in the below to add a local user.</p>
                     <form enctype="multipart/form-data" action="./includes/addlocaluser.inc.php" method="post">
+                        <!-- Include CSRF token in the form -->
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                         <div class="form-group">
                             <label>Username</label>
                             <input type="text" name="username" class="form-control" placeholder="username" required>
@@ -107,9 +109,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             if ($_GET["user"] == "added") {
                                 if (isset($_GET['username'])) {
                                     if (isset($_GET['userId']) && $_GET['userId'] !== '') {
-                                        echo '<p class="green">Local user: <or class="blue">'.$_GET['username'].'</or> (id: <or class="blue">'.$_GET['userId'].'</or>) added!</p>';
+                                        echo '<p class="green">Local user: <or class="blue">'.htmlspecialchars($_GET['username']).'</or> (id: <or class="blue">'.htmlspecialchars(($_GET['userId']).'</or>) added!</p>');
                                     } else {
-                                        echo '<p class="green">Local user: <or class="blue">'.$_GET['username'].'</or> added!</p>';
+                                        echo '<p class="green">Local user: <or class="blue">'.htmlspecialchars($_GET['username']).'</or> added!</p>';
                                     }
                                 } else {
                                     echo '<p class="green">Local user added!</p>';

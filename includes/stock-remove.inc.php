@@ -230,9 +230,11 @@ if ($stock_id == 0 || $stock_id == '0') {
                             }
                         }
                         
-                        $stock_id = $_GET['stock_id'];
+                        $stock_id = htmlspecialchars($_GET['stock_id']);
                         echo('
                         <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+                            <!-- Include CSRF token in the form -->
+                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                            ');
                             if ($data_is_cable == 0) {
                                 echo('<input type="hidden" name="stock-remove" value="1" /> ');
@@ -446,6 +448,8 @@ if ($stock_id == 0 || $stock_id == '0') {
     <span class="close" onclick="modalCloseContainerRemoveConfirmation()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <form class="padding:0px;margin:0px" id="containerRemoveForm" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <!-- Include CSRF token in the form -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <input type="hidden" name="submit" value="1" />
             <input type="hidden" name="container-remove" value="1" />
             <input type="hidden" id="containerRemoveItemID" name="item_id" />

@@ -23,6 +23,16 @@ include 'changelog.inc.php'; // for updating the changelog table
 if (isset($_POST['container_add_submit'])) { 
     if (isset($_POST['container_name'])) {
         if (isset($_POST['container_description'])) {
+            // csrf_token management
+            if (isset($_POST['csrf_token'])) {
+                if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                    header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+                    exit();
+                }
+            } else {
+                header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
+                exit();
+            }
             if (isset($_POST['type'])) {
                 $container_name = $_POST['container_name'];
                 $container_description = $_POST['container_description'];

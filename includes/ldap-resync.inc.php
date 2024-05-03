@@ -9,11 +9,24 @@
 // print_r($_POST);
 $redirect_url = '../profile.php';
 
+
+
 if (isset($_POST['submit']) && $_POST['submit'] == 'Re-sync') {
     if (isset($_POST['password']) && $_POST['password'] !== '') {
         include '../session.php';
         include 'get-config.inc.php';
 
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ".$redirect_url."?error=csrfMissmatch");
+                exit();
+            }
+        } else {
+            header("Location: ".$redirect_url."?error=csrfMissmatch");
+            exit();
+        }
+        
         // Check if the login type is LDAP or local
         if ($loggedin_auth == 'ldap') {
             

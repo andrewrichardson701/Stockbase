@@ -253,7 +253,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 }
                             }
                             
-                            $stock_id = $_GET['stock_id'];
+                            $stock_id = htmlspecialchars($_GET['stock_id']);
                             echo('<div class="nav-row" style="margin-top: 2px; margin-bottom:5px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
                                         <div id="heading-heading" style="margin-left:10vw;">
@@ -333,6 +333,8 @@ if ($stock_id == 0 || $stock_id == '0') {
                                                     <div class="container">                                                       
                                                         <table class="centertable" style="border: 1px solid #454d55;">
                                                             <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                                                                <!-- Include CSRF token in the form -->
+                                                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                                 <!-- below input used for the stock-modify.inc.php page to determine the type of change -->');
                                                                 if ($data_is_cable == 0) {
                                                                     echo('<input type="hidden" name="stock-move" value="1" /> ');
@@ -536,6 +538,8 @@ if ($stock_id == 0 || $stock_id == '0') {
     <span class="close" onclick="modalCloseContainerMoveConfirmation()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <form class="padding:0px;margin:0px" id="containerMoveForm" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <!-- Include CSRF token in the form -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <input type="hidden" name="submit" value="1" />
             <input type="hidden" name="container-move" value="1" />
             <input type="hidden" id="containerMoveItemID" name="item_id" />

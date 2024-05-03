@@ -77,7 +77,7 @@ VALUES
     (10, 'MM LC-SC', 'Multi Mode LC to SC Fibre Cable', 'Fibre'),
     (11, 'Power', 'Generic Power Cable', 'Power'),
     (12, 'Other', 'Other Generic Cable', 'Other');
-
+ 
 INSERT INTO notifications (id, name, title, description, enabled) 
 VALUES 
     (1, 'stock-added', 'Stock Added', 'Adding stock to the system.', 1),

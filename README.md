@@ -665,9 +665,20 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>0.7.2-beta</h3></summary>
-<h4>Beta release 0.7.2, CSRF Token added.</h4>
+<h4>Beta release 0.7.2, CSRF Token added, optic distance added.</h4>
 
 - Added CSRF tokens and some slight changes to some files to make it work better.
+- Added CSP policy meta header to head.php.
+- Removed old AJAX/jquery references in head.php.
+- Added an Anti-clickjacking header in head.php (in php).
+- Used htmlspecialchars() on $_GET requests that print to the page to stop injection.
+- Fixed the get-config php page to make the theme defaults strings not an array.
+- Fixed the changelog not showing login failures/attempts.
+- Added optic_distance table.
+- Added distance_id to optic_item table.
+- Added spectrum field to optic_item table to show wavelength.
+- Added the logic for adding distances to the DB.
+- Fixed the optics page to show the correct info.
 
 </details>
 <details>

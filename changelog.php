@@ -82,7 +82,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <?php
                                 $sql = "SELECT TABLE_NAME
                                         FROM information_schema.tables
-                                        WHERE table_schema = '$dBName' AND TABLE_NAME != 'changelog';";
+                                        WHERE table_schema = '$dBName' AND TABLE_NAME != 'changelog' ORDER BY TABLE_NAME;";
                                 $stmt = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                                     echo("<option selected disabled>Error reaching users database</option>");
@@ -115,7 +115,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <option <?php if($get_userid !== '' || $get_userid == 'all') { echo('selected '); }?> value="all">All</option>
                                 <?php
                                 $sql = "SELECT id, username
-                                        FROM users;";
+                                        FROM users
+                                        ORDER BY username;";
                                 $stmt = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                                     echo("<option selected disabled>Error reaching users table</option>");

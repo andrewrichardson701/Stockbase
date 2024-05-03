@@ -20,7 +20,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <?php // dependency PHP
     // $show_inventory = 1; // for nav.php to show the site and area on the banner - no longer used.
     if (isset($_GET['date'])) {
-        $dateString = $_GET['date'];
+        $dateString = htmlspecialchars($_GET['date']);
         $format = "Y-m-d";
 
         // Create a DateTime object from the string using the specified format
@@ -74,7 +74,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         if (isset($_GET['rows'])) {
             if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
-                $rowSelectValue = $_GET['rows'];
+                $rowSelectValue = htmlspecialchars($_GET['rows']);
             } else {
                 $rowSelectValue = 20;
             }

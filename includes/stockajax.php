@@ -24,7 +24,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
 
     if (isset($_GET['rows'])) {
         if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
-            $rowSelectValue = $_GET['rows'];
+            $rowSelectValue = htmlspecialchars($_GET['rows']);
         } else {
             $rowSelectValue = 10;
         }
@@ -436,7 +436,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
 
     if (isset($_GET['rows'])) {
         if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
-            $rowSelectValue = $_GET['rows'];
+            $rowSelectValue = htmlspecialchars($_GET['rows']);
         } else {
             $rowSelectValue = 20;
         }
@@ -841,7 +841,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
 
         if (isset($_GET['rows'])) {
             if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
-                $rowSelectValue = $_GET['rows'];
+                $rowSelectValue = htmlspecialchars($_GET['rows']);
             } else {
                 $rowSelectValue = 10;
             }
@@ -1055,7 +1055,7 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
     
     if(is_numeric($_GET['item_id'])) {
         
-        $item_id = $_GET['item_id'];
+        $item_id = htmlspecialchars($_GET['item_id']);
 
         include 'dbh.inc.php';
 
@@ -1136,11 +1136,11 @@ if (isset($_GET['request-inventory']) && $_GET['request-inventory'] == 1) {
     $results = [];
     // add a query string to decide if id is item or container and search for each
     if(isset($_GET['item_id']) && is_numeric($_GET['item_id'])) {
-        $item_id = $_GET['item_id'];
+        $item_id = htmlspecialchars($_GET['item_id']);
         include 'dbh.inc.php';
 
         if (isset($_GET['name']) && $_GET['name'] !== '' ) {
-            $name = $_GET['name'];
+            $name = htmlspecialchars($_GET['name']);
             $name_sql = " AND st.name LIKE '%$name%' ";
         } else {
             $name = '';

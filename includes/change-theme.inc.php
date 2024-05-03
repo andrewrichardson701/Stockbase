@@ -7,11 +7,11 @@
 if (isset($_GET['change']) && isset($_GET['theme_file_name']) && isset($_GET['value']) && isset($_GET['theme_name']) && isset($_GET['user-id'])) {
 
     session_start();
-    $_SESSION['theme_id'] = $_GET['value'];
-    $_SESSION['theme_name'] = $_GET['theme_name'];
-    $_SESSION['theme_file_name'] = $_GET['theme_file_name'];
+    $_SESSION['theme_id'] = htmlspecialchars($_GET['value']);
+    $_SESSION['theme_name'] = htmlspecialchars($_GET['theme_name']);
+    $_SESSION['theme_file_name'] = htmlspecialchars($_GET['theme_file_name']);
 
-    $theme = $_GET['value'];
+    $theme = htmlspecialchars($_GET['value']);
 
     include 'dbh.inc.php';
     include 'changelog.inc.php';

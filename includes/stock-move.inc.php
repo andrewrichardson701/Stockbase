@@ -253,7 +253,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                 }
                             }
                             
-                            $stock_id = $_GET['stock_id'];
+                            $stock_id = htmlspecialchars($_GET['stock_id']);
                             echo('<div class="nav-row" style="margin-top: 2px; margin-bottom:5px">
                                     <div class="nav-row" id="heading-row" style="margin-top:10px">
                                         <div id="heading-heading" style="margin-left:10vw;">

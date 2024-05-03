@@ -5,6 +5,7 @@
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
 // LOGOUT FROM THE USER - UNSET AND DESTROY THE SESSION - NAVIGATE TO LOGIN PAGE
+include 'includes/changelog.inc.php';
 include 'includes/session.inc.php';
 function getIPInfo() {  // returns array of [ip, type, convert] 
     global $_SERVER;
@@ -81,7 +82,8 @@ function updateLoginLog($type, $auth) {
 
 session_start();
 
-updateLoginLog('logout', $_SESSION['auth']);
+$log_id = updateLoginLog('logout', $_SESSION['auth']);
+addChangelog($_SESSION['user_id'], $_SESSION['username'], "Login success", "login_log", $log_id, "type", NULL, 'login');
 
 sessionLogout(); // session.inc.php
 

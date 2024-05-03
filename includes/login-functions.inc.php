@@ -1,4 +1,5 @@
 <?php 
+include 'changelog.inc.php';
 // get IP Info of current browser 
 function getIPInfo() {  // returns array of [ip, type, convert] 
     global $_SERVER;
@@ -155,7 +156,7 @@ function insertLoginFail($data, $auth) {
             } else {
                 mysqli_stmt_bind_param($stmt_update, "ss", $newCount, $id);
                 mysqli_stmt_execute($stmt_update);
-                $return = $newCount;
+                $return = array('count' => $newCount, 'id' => $id);
             }
             
         } else {
@@ -168,8 +169,8 @@ function insertLoginFail($data, $auth) {
             } else {
                 mysqli_stmt_bind_param($stmt_insert, "sss", $username, $auth, $ip);
                 mysqli_stmt_execute($stmt_insert);
-                // $log_id = mysqli_insert_id($conn);
-                $return = 1;
+                $log_id = mysqli_insert_id($conn);
+                $return = array('count' => 1, 'id' => $log_id);
             } 
         }
     }
@@ -211,11 +212,10 @@ function deleteLoginFail($data, $auth) {
             } else {
                 mysqli_stmt_bind_param($stmt_update, "s", $id);
                 mysqli_stmt_execute($stmt_update);
+                return $id;
             }
 
         } 
     }
 }
 
-
-?>

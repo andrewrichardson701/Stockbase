@@ -107,9 +107,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $type = isset($_POST['type']) ? $_POST['type'] : '';
         $speed = isset($_POST['speed']) ? $_POST['speed'] : '';
         $connector = isset($_POST['connector']) ? $_POST['connector'] : '';
+        $distance = isset($_POST['distance']) ? $_POST['distance'] : '';
         $mode = isset($_POST['mode']) ? $_POST['mode'] : '';
         $vendor = isset($_POST['vendor']) ? $_POST['vendor'] : '';
         $model = isset($_POST['model']) ? mysqli_real_escape_string($conn, $_POST['model']) : '';
+        $spectrum = isset($_POST['spectrum']) ? mysqli_real_escape_string($conn, $_POST['spectrum']) : '';
         $serial = isset($_POST['serial']) ? mysqli_real_escape_string($conn, $_POST['serial']) : '';
         if ($_POST['add-optic-submit'] !== 1) {
             $queryString = 'add-form=1';
@@ -117,43 +119,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $queryString = 'add-form=0';
         }
         
-        $queryString .= "&form-site=$site&form-type=$type&form-speed=$speed&form-connector=$connector&form-mode=$mode&form-vendor=$vendor&form-model=$model&form-serial=$serial";
+        $queryString .= "&form-site=$site&form-type=$type&form-speed=$speed&form-distance=$distance&form-connector=$connector&form-mode=$mode&form-spectrum=$spectrum&form-vendor=$vendor&form-model=$model&form-serial=$serial";
 
         if (isset($_POST['site'])) {
             if (isset($_POST['type'])) {
                 if (isset($_POST['speed'])) {
                     if (isset($_POST['connector'])) {
-                        if (isset($_POST['mode'])) {
-                            if (isset($_POST['vendor'])) {
-                                if (isset($_POST['model'])) {
-                                    if (isset($_POST['serial'])) {
-                                        $sql = "SELECT serial_number
-                                                FROM optic_item 
-                                                WHERE deleted=0 AND serial_number='$serial'";
-                                        $stmt = mysqli_stmt_init($conn);
-                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                            header("Location: ../".$redirect_url.$queryChar."error=optic_itemTableSQLConnection");
-                                            exit();
-                                        } else {
-                                            mysqli_stmt_execute($stmt);
-                                            $result = mysqli_stmt_get_result($stmt);
-                                            $rowCount = $result->num_rows;
-                                            if ($rowCount > 0) {
-                                                header("Location: ../".$redirect_url.$queryChar.$queryString."&error=duplicateSerial");
-                                                exit();
-                                            } else {
-                                                $sql = "SELECT id
+                        if (isset($_POST['distance'])) {
+                            if (isset($_POST['mode'])) {
+                                if (isset($_POST['vendor'])) {
+                                    if (isset($_POST['model'])) {
+                                        if (isset($_POST['spectrum'])) {
+                                            if (isset($_POST['serial'])) {
+                                                $sql = "SELECT serial_number
                                                         FROM optic_item 
-                                                        WHERE 
-                                                            deleted = 1
-                                                            AND model = '$model'
-                                                            AND vendor_id = '$vendor'
-                                                            AND serial_number='$serial'
-                                                            AND type_id = '$type'
-                                                            AND connector_id = '$connector'
-                                                            AND mode = '$mode'
-                                                            AND speed_id = '$speed'
-                                                            AND site_id = '$site'";
+                                                        WHERE deleted=0 AND serial_number='$serial'";
                                                 $stmt = mysqli_stmt_init($conn);
                                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
                                                     header("Location: ../".$redirect_url.$queryChar."error=optic_itemTableSQLConnection");
@@ -163,42 +143,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                                     $result = mysqli_stmt_get_result($stmt);
                                                     $rowCount = $result->num_rows;
                                                     if ($rowCount > 0) {
-                                                        $row = $result->fetch_assoc();
-                                                        $id = $row['id'];
-                                                        $sql = "UPDATE optic_item SET deleted=0, quantity=1
-                                                                WHERE id=?";
-                                                        $stmt = mysqli_stmt_init($conn);
-                                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                                            header("Location: ../".$redirect_url.$queryChar."optic_item_id=$id&error=optic_itemTableSQLConnection-RestoreItem");
-                                                            exit();
-                                                        } else {
-                                                            mysqli_stmt_bind_param($stmt, "s", $id);
-                                                            mysqli_stmt_execute($stmt);
-
-                                                            $table_name = 'optic_item';
-                                                            $type = "restore";
-                                                            $reason = "Item Restored";
-                                                            $date = date('Y-m-d'); // current date in YYY-MM-DD format
-                                                            $time = date('H:i:s'); // current time in HH:MM:SS format
-                                                            $username = $_SESSION['username'];
-
-                                                            updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site);
-                                                        
-                                                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
-                                                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                                            // // update changelog
-                                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore Item", $table_name, $id, "deleted", 1, 0);
-                                                            header("Location: ../".$redirect_url.$queryChar."success=restored");
-                                                            exit();
-                                                        }
+                                                        header("Location: ../".$redirect_url.$queryChar.$queryString."&error=duplicateSerial");
+                                                        exit();
                                                     } else {
                                                         $sql = "SELECT id
                                                                 FROM optic_item 
                                                                 WHERE 
                                                                     deleted = 1
-                                                                    AND serial_number='$serial' 
-                                                                LIMIT 1";
+                                                                    AND model = '$model'
+                                                                    AND vendor_id = '$vendor'
+                                                                    AND serial_number='$serial'
+                                                                    AND type_id = '$type'
+                                                                    AND connector_id = '$connector'
+                                                                    AND distance_id = '$distance'
+                                                                    AND mode = '$mode'
+                                                                    AND spectrum = '$spectrum'
+                                                                    AND speed_id = '$speed'
+                                                                    AND site_id = '$site'";
                                                         $stmt = mysqli_stmt_init($conn);
                                                         if (!mysqli_stmt_prepare($stmt, $sql)) {
                                                             header("Location: ../".$redirect_url.$queryChar."error=optic_itemTableSQLConnection");
@@ -210,18 +171,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                                             if ($rowCount > 0) {
                                                                 $row = $result->fetch_assoc();
                                                                 $id = $row['id'];
-                                                                // update the info with the new info
-                                                                $sql = "UPDATE optic_item 
-                                                                        SET 
-                                                                            deleted=0, 
-                                                                            quantity=1,
-                                                                            model = '$model',
-                                                                            vendor_id = '$vendor',
-                                                                            type_id = '$type',
-                                                                            connector_id = '$connector',
-                                                                            mode = '$mode',
-                                                                            speed_id = '$speed',
-                                                                            site_id = '$site'
+                                                                $sql = "UPDATE optic_item SET deleted=0, quantity=1
                                                                         WHERE id=?";
                                                                 $stmt = mysqli_stmt_init($conn);
                                                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
@@ -249,55 +199,120 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                                                     exit();
                                                                 }
                                                             } else {
-                                                                $sql = "INSERT INTO optic_item (model, vendor_id, serial_number, type_id, connector_id, mode, speed_id, site_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                                                                $sql = "SELECT id
+                                                                        FROM optic_item 
+                                                                        WHERE 
+                                                                            deleted = 1
+                                                                            AND serial_number='$serial' 
+                                                                        LIMIT 1";
                                                                 $stmt = mysqli_stmt_init($conn);
                                                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                                                    header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_itemConnectionInsert");
+                                                                    header("Location: ../".$redirect_url.$queryChar."error=optic_itemTableSQLConnection");
                                                                     exit();
                                                                 } else {
-                                                                    mysqli_stmt_bind_param($stmt, "ssssssss", $model, $vendor, $serial, $type, $connector, $mode, $speed, $site);
                                                                     mysqli_stmt_execute($stmt);
-                                                                    $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
-                                                                    
-                                                                    $table_name = 'optic_item';
-                                                                    $tran_type = "add";
-                                                                    $reason = "Item Added";
-                                                                    $date = date('Y-m-d'); // current date in YYY-MM-DD format
-                                                                    $time = date('H:i:s'); // current time in HH:MM:SS format
-                                                                    $username = $_SESSION['username'];
-                                    
-                                                                    updateOpticTransactions($table_name, $insert_id, $tran_type, $reason, $date, $time, $username, $site);
-                                                                
-                                                                    // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
-                                                                    // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                                                    // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                                                    // // update changelog
-                                                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Item", $table_name, $insert_id, "serial_number", null, $serial);
+                                                                    $result = mysqli_stmt_get_result($stmt);
+                                                                    $rowCount = $result->num_rows;
+                                                                    if ($rowCount > 0) {
+                                                                        $row = $result->fetch_assoc();
+                                                                        $id = $row['id'];
+                                                                        // update the info with the new info
+                                                                        $sql = "UPDATE optic_item 
+                                                                                SET 
+                                                                                    deleted=0, 
+                                                                                    quantity=1,
+                                                                                    model = '$model',
+                                                                                    vendor_id = '$vendor',
+                                                                                    type_id = '$type',
+                                                                                    connector_id = '$connector',
+                                                                                    distance_id = '$distance',
+                                                                                    mode = '$mode',
+                                                                                    speed_id = '$speed',
+                                                                                    site_id = '$site'
+                                                                                WHERE id=?";
+                                                                        $stmt = mysqli_stmt_init($conn);
+                                                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                                                            header("Location: ../".$redirect_url.$queryChar."optic_item_id=$id&error=optic_itemTableSQLConnection-RestoreItem");
+                                                                            exit();
+                                                                        } else {
+                                                                            mysqli_stmt_bind_param($stmt, "s", $id);
+                                                                            mysqli_stmt_execute($stmt);
 
-                                                                    header("Location: ../".$redirect_url.$queryChar.$queryString."&success=opticAdded");
-                                                                    exit();
+                                                                            $table_name = 'optic_item';
+                                                                            $type = "restore";
+                                                                            $reason = "Item Restored";
+                                                                            $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                                                            $time = date('H:i:s'); // current time in HH:MM:SS format
+                                                                            $username = $_SESSION['username'];
+
+                                                                            updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site);
+                                                                        
+                                                                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                                                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                                                                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                                                            // // update changelog
+                                                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore Item", $table_name, $id, "deleted", 1, 0);
+                                                                            header("Location: ../".$redirect_url.$queryChar."success=restored");
+                                                                            exit();
+                                                                        }
+                                                                    } else {
+                                                                        $sql = "INSERT INTO optic_item (model, vendor_id, serial_number, type_id, connector_id, distance_id, mode, spectrum, speed_id, site_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                                                        $stmt = mysqli_stmt_init($conn);
+                                                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                                                            header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_itemConnectionInsert");
+                                                                            exit();
+                                                                        } else {
+                                                                            mysqli_stmt_bind_param($stmt, "ssssssssss", $model, $vendor, $serial, $type, $connector, $distance, $mode, $spectrum, $speed, $site);
+                                                                            mysqli_stmt_execute($stmt);
+                                                                            $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+                                                                            
+                                                                            $table_name = 'optic_item';
+                                                                            $tran_type = "add";
+                                                                            $reason = "Item Added";
+                                                                            $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                                                            $time = date('H:i:s'); // current time in HH:MM:SS format
+                                                                            $username = $_SESSION['username'];
+                                            
+                                                                            updateOpticTransactions($table_name, $insert_id, $tran_type, $reason, $date, $time, $username, $site);
+                                                                        
+                                                                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                                                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                                                                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                                                            // // update changelog
+                                                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Item", $table_name, $insert_id, "serial_number", null, $serial);
+
+                                                                            header("Location: ../".$redirect_url.$queryChar.$queryString."&success=opticAdded");
+                                                                            exit();
+                                                                        }
+                                                                    }
                                                                 }
+                                                                
                                                             }
                                                         }
-                                                        
                                                     }
                                                 }
+                                            } else {
+                                                header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingSerial");
+                                                exit();
                                             }
+                                        } else {
+                                            header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingSpectrum");
+                                            exit();
                                         }
                                     } else {
-                                        header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingSerial");
+                                        header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingModel");
                                         exit();
                                     }
                                 } else {
-                                    header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingModel");
+                                    header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingVendor");
                                     exit();
                                 }
                             } else {
-                                header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingVendor");
+                                header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingMode");
                                 exit();
                             }
                         } else {
-                            header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingMode");
+                            header("Location: ../".$redirect_url.$queryChar.$queryString."&error=missingDistance");
                             exit();
                         }
                     } else {
@@ -734,6 +749,80 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../".$redirect_url.$queryChar.$queryString."error=missingConnector_name");
             exit();
         }
+    } elseif (isset($_POST['optic-distance-add'])) {
+        $queryString = '';
+        if (isset($_POST['QUERY'])){
+            $QUERY = $_POST['QUERY'];
+            if (is_array($QUERY) && count($QUERY) > 0) {
+                $i = 0;
+                foreach (array_keys($QUERY) as $key) {
+                    if ($key !== 'success' && $key !== 'error') {
+                        if ($i == 0) {
+                            $queryString .= $key.'='.$QUERY[$key];
+                        } else {
+                            $queryString .= '&'.$key.'='.$QUERY[$key];
+                        }
+                        $i++;
+                    }
+                }
+            }
+        }
+        if ($queryString !== '') {
+            $queryString .= '&';
+        }
+        if (isset($_POST['distance_name'])) {
+            $distance_name = mysqli_real_escape_string($conn, $_POST['distance_name']);
+            $sql = "SELECT name
+                    FROM optic_distance
+                    WHERE name='$distance_name'";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ../".$redirect_url.$queryChar."error=optic_distanceTableSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount > 0) {
+                    header("Location: ../".$redirect_url.$queryChar.$queryString."error=distanceExists");
+                    exit();
+                } else {
+                    // correct amount found, continue.
+                    $sql = "INSERT INTO optic_distance (name) VALUES (?)";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_commentConnectionInsert");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt, "s", $distance_name);
+                        mysqli_stmt_execute($stmt);
+                        $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+
+                        $site_id = 0;
+                        $table_name = 'optic_distance';
+                        $type = "add";
+                        $reason = "Distance Added";
+                        $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                        $time = date('H:i:s'); // current time in HH:MM:SS format
+                        $username = $_SESSION['username'];
+
+                        updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
+                    
+                        // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                        // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
+                        // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                        // // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Distance", $table_name, $insert_id, "name", null, $distance_name);
+
+                        header("Location: ../".$redirect_url.$queryChar.$queryString."success=DistanceAdded");
+                        exit();
+                    }
+                }
+            }
+        } else {
+            header("Location: ../".$redirect_url.$queryChar.$queryString."error=missingDistance_name");
+            exit();
+        }
     } elseif (isset($_POST['optic-vendor-add'])) {
         $queryString = '';
         if (isset($_POST['QUERY'])){
@@ -986,5 +1075,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header("Location: ../".$redirect_url.$queryChar."error=InvalidRequest");
     exit();
 }
-
-?>

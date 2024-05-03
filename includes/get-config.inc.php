@@ -205,7 +205,7 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_currency            = $config_d['currency'];
             $config_d_sku_prefix          = $config_d['sku_prefix'];
             $config_d_base_url            = $config_d['base_url'];
-            $config_d_default_theme_id    = $config_d['default_theme_id'];
+            $config_d_default_theme_id       = $config_d['default_theme_id'];
 
             $config_d_ldap_enabled        = $config_d['ldap_enabled'];
             $config_d_ldap_username       = $config_d['ldap_username'];
@@ -340,11 +340,10 @@ if (!mysqli_stmt_prepare($stmt_theme, $sql_theme)) {
     if ($rowCount_theme < 1) {
         echo ("No themes found for id: $current_default_theme_id");
     } else {
-        while ( $row_theme = $result_theme->fetch_assoc() ) {
-            $c_theme_id = $row_theme['id'];
-            $c_theme_name = $row_theme['name'];
-            $c_theme_file_name = $row_theme['file_name'];
-        }
+        $row_theme = $result_theme->fetch_assoc();
+        $c_theme_id = $row_theme['id'];
+        $c_theme_name = $row_theme['name'];
+        $c_theme_file_name = $row_theme['file_name'];
     }
 }
 
@@ -359,11 +358,10 @@ if (!mysqli_stmt_prepare($stmt_theme_d, $sql_theme_d)) {
     if ($rowCount_theme_d < 1) {
         echo ("No themes found for id: $default_default_theme_id");
     } else {
-        while ( $row_theme_d = $result_theme_d->fetch_assoc() ) {
-            $c_d_theme_id = $row_theme_d['id'];
-            $c_d_theme_name = $row_theme_d['name'];
-            $c_d_theme_file_name = $row_theme_d['file_name'];
-        }
+        $row_theme_d = $result_theme_d->fetch_assoc();
+        $c_d_theme_id = $row_theme_d['id'];
+        $c_d_theme_name = $row_theme_d['name'];
+        $c_d_theme_file_name = $row_theme_d['file_name'];
     }
 }
 
@@ -375,5 +373,3 @@ $current_default_theme_file_name = $c_theme_file_name;
 $default_default_theme_name = $c_d_theme_name;
 $default_default_theme_file_name = $c_d_theme_file_name;
 
-
-?>

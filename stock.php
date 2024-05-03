@@ -33,7 +33,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $show_inventory = 0; // for nav.php to show the site and area on the banner
         if (isset($_GET['stock_id'])) {
             if (is_numeric($_GET['stock_id'])) {
-                $stock_id = $_GET['stock_id'];
+                $stock_id = htmlspecialchars($_GET['stock_id']);
             } else {
                 if (isset($_GET['modify'])) {
                     echo('<div class="container" style="padding-top:25px"><p class="red">Non-numeric Stock ID: <or class="blue">'.$_GET['stock_id'].'</or>.<br>Please check the URL or <a class="link" onclick="navPage(updateQueryParameter(\'\', \'stock_id\', 0))">add new stock item</a>.</p></div>');
@@ -52,7 +52,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             echo("No Stock ID or Modification Selected.");
         }
         if (isset($_GET['modify'])) {
-            $stock_modify = $_GET['modify'];
+            $stock_modify = htmlspecialchars($_GET['modify']);
         }
         if (!isset($_SERVER['HTTP_REFERER'])) {
             $_SERVER['HTTP_REFERER'] = './index.php';

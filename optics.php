@@ -32,7 +32,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <!-- End of Header and Nav -->
     
     <div class="content" style="padding-top:20px">
-        <div class="container" id="selection" style="margin-bottom:15px">
+        <div id="selection" style="margin-bottom:15px">
             <?php
             $site = isset($_GET['site']) ? $_GET['site'] : "0";
             $search = isset($_GET['search']) ? $_GET['search'] : "";
@@ -45,11 +45,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             $optic_speed = isset($_GET['speed']) ? $_GET['speed'] : 0;
             $optic_mode = isset($_GET['mode']) ? $_GET['mode'] : 0;
             $optic_connector = isset($_GET['connector']) ? $_GET['connector'] : 0;
+            $optic_distance = isset($_GET['distance']) ? $_GET['distance'] : 0;
             $site = isset($_GET['site']) ? $_GET['site'] : 0;
 
             if (isset($_GET['rows'])) {
                 if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
-                    $rowSelectValue = $_GET['rows'];
+                    $rowSelectValue = htmlspecialchars($_GET['rows']);
                 } else {
                     $rowSelectValue = 20;
                 }
@@ -171,6 +172,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo ('<option value="SM"'); if ($optic_mode == 'SM') { echo(' selected'); } echo('>SM</option>');
                                 echo ('<option value="MM"'); if ($optic_mode == 'MM') { echo(' selected'); } echo('>MM</option>');
                                 echo ('<option value="Copper"'); if ($optic_mode == 'Copper') { echo(' selected'); } echo('>Copper</option>');
+                                echo ('<option value="N/A"'); if ($optic_mode == 'N/A') { echo(' selected'); } echo('>N/A</option>');
                             echo('</select>');
                         echo('</div>');
 
@@ -196,6 +198,29 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             echo('</select>');
                         echo('</div>');
                     }
+                    
+                    $sql_distance = "SELECT id, name FROM optic_distance WHERE deleted=0";
+                    $stmt_distance = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_distance, $sql_distance)) {
+                        echo("ERROR no optic distances found");
+                    } else {
+                        mysqli_stmt_execute($stmt_distance);
+                        $result_distance = mysqli_stmt_get_result($stmt_distance);
+                        $rowCount_distance = $result_distance->num_rows;
+                        echo ('<div class="col align-middle" style="max-width:max-content">');
+                            echo('<label class="align-middle" style="padding-right:15px;padding-top:7px">Distance:</label>');
+                            echo ('<select name="distance" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'distance\', this.value))">');
+                                echo ('<option value="0"'); if ($optic_distance == 0 || $optic_distance == '') { echo(' selected'); } echo('>All</option>');
+                        if ($rowCount_site > 0) {
+                            while ($row_distance = $result_distance->fetch_assoc()) {
+                                $distance_id = $row_distance['id'];
+                                $distance_name = $row_distance['name'];
+                                echo ('<option value="'.$distance_id.'"'); if ($distance_id == $optic_distance) { echo(' selected'); } echo('>'.$distance_name.'</option>');
+                            }
+                        }
+                            echo('</select>');
+                        echo('</div>');
+                    }
                 
             echo('</div>');
             
@@ -204,7 +229,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <!-- Add optic form section -->
         <?php 
-        // url example for return info: https://inventory-dev.ajrich.co.uk/optics.php?add-form=1form-site=1&form-type=1&form-speed=4&form-connector=2&form-mode=SM&form-vendor=1&form-model=TTYTRED
+        // url example for return info: https://inventory-dev.ajrich.co.uk/optics.php?add-form=1form-site=1&form-type=1&form-speed=4&form-distance=1&form-connector=2&form-mode=SM&form-vendor=1&form-model=TTYTRED
         echo('
         <div class="container" id="add-optic-section" style="margin-bottom:20px" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { } else { echo ('hidden'); } echo('>
             <div class="well-nopad theme-divBg text-center">
@@ -242,6 +267,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('
                                 </datalist>
                             </div>
+                        </div>
+                        <div class="col">
+                            <div>Spectrum</div>
+                            <div><input class="form-control text-center" type="text" id="spectrum" name="spectrum" style="min-width:120px" placeholder="1310nm" '); if (isset($_GET['form-spectrum'])) { echo ('value="'.$_GET['form-spectrum'].'"'); } echo ('required/></div>
                         </div>
                         <div class="col">
                             <div>Vendor</div>
@@ -347,7 +376,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     $result_connector = mysqli_stmt_get_result($stmt_connector);
                                     $rowCount_connector = $result_connector->num_rows;
                                     if ($rowCount_connector < 1) {
-                                        echo ("<option selected disabled>No Speeds Found</option> ");
+                                        echo ("<option selected disabled>No Connectors Found</option> ");
                                     } else {
                                         echo ('<option value="" selected disabled hidden>Select Connector</option>');
                                         while( $row_connector = $result_connector->fetch_assoc() ) {
@@ -364,6 +393,36 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </div>
                         </div>
                         <div class="col">
+                            <div>Distance</div>
+                            <div>
+                                <select id="distance" name="distance" class="form-control text-center" style="border-color:black;"  required>');
+                                
+                                $sql_distance = "SELECT * FROM optic_distance WHERE deleted=0";
+                                $stmt_distance = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_distance, $sql_distance)) {
+                                    echo("ERROR getting entries");
+                                } else {
+                                    mysqli_stmt_execute($stmt_distance);
+                                    $result_distance = mysqli_stmt_get_result($stmt_distance);
+                                    $rowCount_distance = $result_distance->num_rows;
+                                    if ($rowCount_distance < 1) {
+                                        echo ("<option selected disabled>No Distances Found</option> ");
+                                    } else {
+                                        echo ('<option value="" selected disabled hidden>Select Distance</option>');
+                                        while( $row_distance = $result_distance->fetch_assoc() ) {
+                                            echo("<option value='".$row_distance['id']."'"); if (isset($_GET['form-distance']) && $_GET['form-distance'] == $row_distance['id']) { echo ('selected'); } echo (">".$row_distance['name']."</option>");
+                                        }
+                                    }
+                                }   
+
+                            echo(' 
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewDistance()">Add New</a>
+                            </div>
+                        </div>
+                        <div class="col">
                             <div>Mode</div>
                             <div>
                                 <select id="mode" name="mode" class="form-control text-center" style="border-color:black;"  required>
@@ -371,6 +430,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <option value="SM"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'SM') { echo ('selected'); } echo ('>Single-Mode (SM)</option>
                                     <option value="MM"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'MM') { echo ('selected'); } echo ('>Multi-Mode (MM)</option>
                                     <option value="Copper"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'Copper') { echo ('selected'); } echo ('>Copper</option>
+                                    <option value="N/A"'); if (isset($_GET['form-mode']) && $_GET['form-mode'] == 'N/A') { echo ('selected'); } echo ('>N/A</option>
                                 </select>
                             </div>
                         </div>
@@ -418,31 +478,34 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
             <!-- Get Inventory -->
             <?php
-            $order = " ORDER BY T.id, V.name, C.id, I.model, I.serial_number";
+            $order = " ORDER BY T.id, V.name, D.name, C.id, I.model, I.serial_number";
             switch ($sort) {
                 case 'type':
-                    $order = " ORDER BY T.name, V.name, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY T.name, V.name, D.name, C.id, I.model, I.serial_number";
                     break;
                 case 'connector':
                     $order = " ORDER BY C.name, T.name, V.name, I.model, I.serial_number";
                     break;
+                case 'distance':
+                    $order = " ORDER BY D.name, T.name, C.id, V.name, I.model, I.serial_number";
+                    break;
                 case 'model':
-                    $order = " ORDER BY I.model, T.name, V.name, C.id, I.serial_number";
+                    $order = " ORDER BY I.model, T.name, V.name, D.name, C.id, I.serial_number";
                     break;
                 case 'speed':
-                    $order = " ORDER BY S.id, T.name, V.name, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY S.id, T.name, V.name, D.name, C.id, I.model, I.serial_number";
                     break;
                 case 'mode':
-                    $order = " ORDER BY I.mode, T.name, V.name, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY I.mode, T.name, V.name, D.name, C.id, I.model, I.serial_number";
                     break;
                 case 'serial':
-                    $order = " ORDER BY I.serial_number, T.name, V.name, C.id, I.model";
+                    $order = " ORDER BY I.serial_number, T.name, V.name, D.name, C.id, I.model";
                     break;
                 case 'vendor':
-                    $order = " ORDER BY V.name, T.name, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY V.name, T.name, D.name, C.id, I.model, I.serial_number";
                     break;
                 default:
-                    $order = " ORDER BY T.id, V.name, C.id, I.model, I.serial_number";
+                    $order = " ORDER BY T.id, V.name, D.name, C.id, I.model, I.serial_number";
                     break;
             }
 
@@ -456,10 +519,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
             include 'includes/dbh.inc.php';
             $s = 0;
-            $sql_inv_count = "SELECT I.id AS i_id, I.model AS i_model, I.serial_number AS i_serial_number, I.mode AS i_mode, I.quantity AS i_quantity,
+            $sql_inv_count = "SELECT I.id AS i_id, I.model AS i_model, I.serial_number AS i_serial_number, I.mode AS i_mode, I.quantity AS i_quantity, I.spectrum as i_spectrum,
                             V.id AS v_id, V.name AS v_name, 
                             T.id AS t_id, T.name AS t_name, 
                             C.id AS c_id, C.name AS c_name,
+                            D.id AS d_id, D.name AS d_name,
                             S.id AS s_id, S.name AS s_name,
                             (SELECT count(id) AS count
                                 FROM optic_comment
@@ -469,7 +533,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         INNER JOIN optic_vendor AS V on I.vendor_id = V.id 
                         INNER JOIN optic_type AS T ON I.type_id=T.id 
                         INNER JOIN optic_connector AS C ON I.connector_id=C.id 
-                        INNER JOIN optic_speed AS S ON I.speed_id=S.id 
+                        INNER JOIN optic_speed AS S ON I.speed_id=S.id
+                        INNER JOIN optic_distance AS D on I.distance_id=D.id
                         INNER JOIN site ON I.site_id=site.id ";
             $sql_inv_count .= $sql_where;
             $sql_inv_add = '';
@@ -494,6 +559,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     $sql_inv_add  .= " AND C.id=$optic_connector";
                 }
             } 
+            if ((int)$optic_distance !== 0 ) { 
+                if (is_numeric($optic_distance)) {
+                    $sql_inv_add  .= " AND D.id=$optic_distance";
+                }
+            } 
+            
             if ($search !== '') { 
                 $name = mysqli_real_escape_string($conn, $search); // escape the special characters
                 $sql_inv_add  .= " 
@@ -502,6 +573,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 OR V.name LIKE '%$search%' 
                                 OR T.name LIKE '%$search%' 
                                 OR C.name LIKE '%$search%'
+                                OR D.name LIKE '%$search%'
                                 OR I.mode LIKE '%$search%' 
                                 OR S.name LIKE '%$search%'
                                 )
@@ -555,11 +627,11 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <hr style="border-color:#9f9d9d; margin-left:10px">
                             <div class="row centertable">
                                 <div class="col float-left">
-                                    Count: <or class="green">'.$rowCount_inv.'</or>
+                                    Count: <or class="green">'.$totalRowCount.'</or>
                                 </div>
                                 <div class="col">');
-                                if (isset($_GET['error'])) { echo('<p class="red">Error: '.$_GET['error'].'</p>'); } 
-                                if (isset($_GET['success'])) { echo('<p class="green">Success: '.$_GET['success'].'</p>'); } 
+                                if (isset($_GET['error'])) { echo('<p class="red">Error: '.htmlspecialchars($_GET['error']).'</p>'); } 
+                                if (isset($_GET['success'])) { echo('<p class="green">Success: '.htmlspecialchars($_GET['success']).'</p>'); } 
                                 echo('</div>
                                 <div class="col align-middle" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
                                     <table>
@@ -571,6 +643,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 <select name="sort" class="form-control row-dropdown" style="width:max-content;height:25px; padding:0px" onchange="navPage(updateQueryParameter(\'\', \'sort\', this.value))">
                                                     <option value="type"'); if ($sort == "type" || $sort == '') { echo(' selected'); } echo('>Type</option>
                                                     <option value="connector"'); if ($sort == "connector") { echo(' selected'); } echo('>Connector</option>
+                                                    <option value="distance"'); if ($sort == "distance") { echo(' selected'); } echo('>Distance</option>
                                                     <option value="model"'); if ($sort == "model") { echo(' selected'); } echo('>Model</option>
                                                     <option value="speed"'); if ($sort == "speed") { echo(' selected'); } echo('>Speed</option>
                                                     <option value="mode"'); if ($sort == "mode") { echo(' selected'); } echo('>Mode</option>
@@ -583,7 +656,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-dark theme-table centertable" style="padding-bottom:0px;margin-bottom:0px;">
+                    </div>
+                    <div id="optics-table" class="text-center" style="max-width:max-content; margin:auto">
+                        <table class="table table-dark theme-table centertable" style="max-width:max-content;padding-bottom:0px;margin-bottom:0px;">
                             <thead>
                                 <tr class="align-middle text-center theme-tableOuter">
                                     <th hidden>ID</th>
@@ -592,7 +667,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <th>Model</th>
                                     <th>Speed</th>
                                     <th>Mode</th>
-                                    <th>Serial Number</th>
+                                    <th>Spectrum</th>
+                                    <th>Distance</th>
+                                    <th>Serial</th>
                                     <th>Vendor</th>
                                     <th'); if ((int)$site !== 0) { echo(' hidden'); } echo('>Site</th>
                                     <th>Comments</th>
@@ -615,6 +692,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             $i_serial_number = $row_inv['i_serial_number'];
                             $i_model = $row_inv['i_model'];
                             $i_mode = $row_inv['i_mode'];
+                            $i_spectrum = $row_inv['i_spectrum'];
                             $i_quantity = $row_inv['i_quantity'];
                             $v_id = $row_inv['v_id'];
                             $v_name = $row_inv['v_name'];
@@ -622,6 +700,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             $t_name = $row_inv['t_name'];
                             $c_id = $row_inv['c_id'];
                             $c_name = $row_inv['c_name'];
+                            $d_id = $row_inv['d_id'];
+                            $d_name = $row_inv['d_name'];
                             $s_id = $row_inv['s_id'];
                             $s_name = $row_inv['s_name'];
                             $i_comments = mysqli_real_escape_string($conn, $row_inv['comments']);
@@ -641,6 +721,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <td class="align-middle">'.$i_model.'</td>
                                     <td class="align-middle">'.$s_name.'</td>
                                     <td class="align-middle">'.$i_mode.'</td>
+                                    <td class="align-middle">'.$i_spectrum.'</td>
+                                    <td class="align-middle">'.$d_name.'</td>
                                     <td class="align-middle" id="optic-serial-'.$i_id.'">'.$i_serial_number.'</td>
                                     <td class="align-middle">'.$v_name.'</td>
                                     <td class="align-middle link gold" style="white-space: nowrap !important;" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$site_id.'\'))"'); if ((int)$site !== 0) { echo(' hidden'); } echo('>'.$site_name.'</td>
@@ -839,6 +921,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
                     ');
                     // testing
                     // print_r('<pre style="margin-top:100px">');// testing
@@ -850,7 +933,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             }
 
             ?>
-        </div>
     </div>    
     <!-- Modal NewType Div -->
     <div id="modalDivNewType" class="modal">
@@ -953,7 +1035,40 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             </div>
         </div> 
     </div>
-    <!-- End of Modal NewConnector Div -->
+    <!-- Modal NewDistance Div -->
+    <div id="modalDivNewDistance" class="modal">
+    <!-- <div id="modalDivNewDistance" style="display: block;"> -->
+        <span class="close" onclick="modalCloseNewDistance()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form id="add-optic-distance-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    <?php 
+                    if (is_array($_GET) && count($_GET) > 1) {
+                        foreach (array_keys($_GET) AS $key) {
+                            echo('<input type="hidden" name="QUERY['.$key.']" value="'.$_GET[$key].'"/>');
+                        }
+                    }
+                    ?>
+                    <table class="centertable">
+                        <tbody>
+                            <tr class="nav-row">
+                                <td style="width: 150px"><label for="distance_name" class="nav-v-c align-middle">Distance Name:</label></td>
+                                <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="distance_name" name="distance_name" /></td>
+                                <td></td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width:150px"></td>
+                                <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-distance-add" value="Add Distance" class="btn btn-success">Add Distance</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div> 
+    </div>
+    <!-- End of Modal NewDistance Div -->
     <!-- Modal DeleteOptic Div -->
     <div id="modalDivDeleteOptic" class="modal">
         <span class="close" onclick="modalCloseDeleteOptic()">&times;</span>
@@ -1202,6 +1317,18 @@ function toggleAddComment(id, com) {
         modal.style.display = "none";
     }
 
+    function modalLoadNewDistance(property) {
+        //get the modal div with the property
+        var modal = document.getElementById("modalDivNewDistance");
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    modalCloseNewDistance = function() { 
+        var modal = document.getElementById("modalDivNewDistance");
+        modal.style.display = "none";
+    }
+
 </script>
 <script>
         function searchSerial(search) {
@@ -1212,6 +1339,7 @@ function toggleAddComment(id, com) {
             var typeBox = document.getElementById('type');
             var speedBox = document.getElementById('speed');
             var connectorBox = document.getElementById('connector');
+            var distanceBox = document.getElementById('distance');
             var modeBox = document.getElementById('mode');
             var siteBox = document.getElementById('site');
             var responseBox = document.getElementById('optic-add-response');
@@ -1241,6 +1369,7 @@ function toggleAddComment(id, com) {
                                 typeBox.value = data['type_id'];
                                 speedBox.value = data['speed_id'];
                                 connectorBox.value = data['connector_id'];
+                                distanceBox.value = data['distance_id'];
                                 modeBox.value = data['mode'];
                                 siteBox.value = data['site_id'];
                                 responseBox.hidden = false;
@@ -1258,20 +1387,13 @@ function toggleAddComment(id, com) {
                             typeBox.value = data['type_id'];
                             speedBox.value = data['speed_id'];
                             connectorBox.value = data['connector_id'];
+                            distanceBox.value = data['distance_id'];
                             modeBox.value = data['mode'];
                             siteBox.value = data['site_id'];
                             btnAddSingle.disabled = true;
                             btnAddMultiple.disabled = true;
                             
                         }
-                        // modelBox.value = '';
-                        // vendorBox.value = '';
-                        // typeBox.value = '';
-                        // speedBox.value = '';
-                        // connectorBox.value = '';
-                        // modeBox.value = '';
-                        // siteBox.value = '';
-                        // responseBox.hidden = true;
                     }
                 }
             };

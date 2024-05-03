@@ -40,11 +40,11 @@ INSERT INTO config_default
 ldap_domain, ldap_host, ldap_port, ldap_basedn, ldap_usergroup, ldap_userfilter, currency, 
 sku_prefix, smtp_host, smtp_port, smtp_encryption, smtp_password, smtp_from_email, 
 smtp_from_name, smtp_to_email, smtp_username, system_name, ldap_host_secondary, base_url)
-VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 1, 'ldapauth', 
-'RHJvcHNCdWlsZHNTa2lsbDEyISE=', 'ajrich.co.uk', '10.0.2.2', 389, 'DC=ajrich,DC=co,DC=uk', 
-'cn=Users', '(objectClass=User)', '£', 'ITEM-', 'mail.ajrich.co.uk', 587, 'starttls', 'RGVtb1Bhc3MxIQ==',
-'inventory@ajrich.co.uk', 'Inventory System', 'inventory@ajrich.co.uk', 'inventory@ajrich.co.uk', 'Inventory System', '10.0.2.2', 
-'inventory.ajrich.co.uk');
+VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 0, 'ldapusername', 
+'SUPERSECRETPASSWORD', 'domain.com', '127.0.0.1', 389, 'DC=domain,DC=com', 
+'cn=Users', '(objectClass=User)', '£', 'ITEM-', 'mail.domain.com', 587, 'starttls', 'SUPERSECRETPASSWORD',
+'stockbase@domain.com', 'StockBase', 'stockbase@domain.com', 'stockbase@domain.com', 'StockBase', '127.0.0.1', 
+'stockbase.domain.com');
 
 -- Add user roles to the user roles table
 INSERT INTO users_roles (id, name, description, is_admin, is_root) 

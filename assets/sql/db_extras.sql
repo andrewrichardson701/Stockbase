@@ -30,7 +30,7 @@ ALTER TABLE stock_img AUTO_INCREMENT = 1;
 ALTER TABLE stock_label AUTO_INCREMENT = 1;
 ALTER TABLE transaction AUTO_INCREMENT = 1;
 
-
+ 
 -- Add blank config to config table ready to be edited
 INSERT INTO config (id) VALUES (1);
 

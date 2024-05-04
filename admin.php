@@ -82,6 +82,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <div style="display:block"> 
                         <h2 style="margin-bottom:20px">Add new Site / Area / Shelf</h2>
                         <form id="locationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <input type="hidden" name="admin" value="1" />
                             <table class="centertable">
                                 <thead>
@@ -128,6 +129,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     <div style="display:block"> 
                         <h2 style="margin-bottom:20px">Edit Location</h2>
                         <form id="editLocationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <table class="centertable">
                                 <tbody>
                                     <tr class="align-middle">
@@ -189,6 +191,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             }
             ?>
             <form id="globalForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <table id="globalTable">
                     <tbody>
                         <tr class="" id="ldap-headings">
@@ -524,6 +527,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             echo('
                                             <td style="vertical-align: middle;">   
                                                 <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0px;margin:0px">
+                                                    <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                     <button type="submit" style="padding:2px 8px 2px 8px" class="btn btn-info" id="user_'.$user_id.'_impersonate" title="Impersonate" '); if ($user_id == $_SESSION['user_id']) { echo('disabled'); } echo('><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
                                                     <input type="hidden" name="user-impersonate" value="impersonate"/>
                                                     <input type="hidden" name="role" value="Root" />
@@ -654,6 +658,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     if ($sl_logout_time == null ) {
                                         echo('<tr class="text-center" style="vertical-align: middle;">
                                             <form action="includes/admin.inc.php" method="POST">
+                                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                 <input type="hidden" name="session_id" value="'.$sl_id.'" />
                                                 <td id="sessions_'.$sl_id.'_id" style="vertical-align: middle;">'.$sl_id.'</td>
                                                 <td id="sessions_'.$sl_id.'_user_id" style="vertical-align: middle;">'.$sl_user_id.'</td>
@@ -724,6 +729,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             echo('
                                 <tr id="image-row-'.$f.'" class="align-middle">
                                     <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                         <input type="hidden" name="file-name" value="'.$filename.'" />
                                         <input type="hidden" name="file-links" value="'.$links.'" />
                                         <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
@@ -878,6 +884,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 echo('
                                     <tr id="tag-row-'.$l.'" class="align-middle '.$tag_deleted_class.'"'); if ($tag_deleted == 1) { echo(' hidden'); } echo('>
                                         <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                             <input type="hidden" name="attribute-type" value="tag"/>
                                             <input type="hidden" name="id" value="'.$l.'">
                                             <td id="tag-'.$l.'-id" class="text-center align-middle">'.$l.'</td>
@@ -1035,6 +1042,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             echo('
                                 <tr id="manufacturer-row-'.$m.'" class="align-middle '.$manufacturer_deleted_class.'"'); if ($manufacturer_deleted == 1) { echo(' hidden'); } echo('>
                                     <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                         <input type="hidden" name="attribute-type" value="manufacturer"/>
                                         <input type="hidden" name="id" value="'.$m.'">
                                         <td id="manufacturer-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
@@ -1196,6 +1204,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             echo('
                                 <tr id="vendor-row-'.$m.'" class="align-middle '.$vendor_deleted_class.'"'); if ($vendor_deleted == 1) { echo(' hidden'); } echo('>
                                     <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                         <input type="hidden" name="attribute-type" value="optic_vendors"/>
                                         <input type="hidden" name="id" value="'.$m.'">
                                         <td id="vendor-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
@@ -1345,6 +1354,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             echo('
                                 <tr id="type-row-'.$m.'" class="align-middle '.$type_deleted_class.'"'); if ($type_deleted == 1) { echo(' hidden'); } echo('>
                                     <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                         <input type="hidden" name="attribute-type" value="optic_types"/>
                                         <input type="hidden" name="id" value="'.$m.'">
                                         <td id="type-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
@@ -1494,6 +1504,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             echo('
                                 <tr id="connector-row-'.$m.'" class="align-middle '.$connector_deleted_class.'"'); if ($connector_deleted == 1) { echo(' hidden'); } echo('>
                                     <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                         <input type="hidden" name="attribute-type" value="optic_connectors"/>
                                         <input type="hidden" name="id" value="'.$m.'">
                                         <td id="connector-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
@@ -1655,6 +1666,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     echo('
                                         <tr id="deleted-stock-row-'.$s_id.' class="align-middle">
                                             <form enctype="multipart/form-data" action="./includes/stock-modify.inc.php" method="POST">
+                                                <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                 <input type="hidden" name="stockmanagement-type" value="deleted"/>
                                                 <input type="hidden" name="id" value="'.$s_id.'">
                                                 <td class="align-middle text-center">'.$s_id.'</td>
@@ -1807,6 +1819,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                                 echo('<tr class="'.$site_deleted_class.'" style="background-color:'.$color.' !important; color:black"'.$site_deleted_hidden.'>
                                         <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                             <input type="hidden" id="site-'.$site['site_id'].'-type" name="type" value="site" />
                                             <input type="hidden" id="site-'.$site['site_id'].'-id" name="id" value="'.$site['site_id'].'" />
                                             <td class="stockTD" style="">'.$site['site_id'].'</td>
@@ -1826,7 +1839,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             </td>
                                         </form>
                                         <form id="siteForm-delete-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                        <input type="hidden" name="location-id" value="'.$site_id_check.'" />
+                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                                            <input type="hidden" name="location-id" value="'.$site_id_check.'" />
                                             <td class="stockTD theme-table-blank">');
                                             if ($site['site_deleted'] !== 1) {
                                                 echo('
@@ -1875,6 +1889,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                                         echo('<tr class="'.$area_deleted_class.'" style="background-color:'.$color.' !important; color:black"'.$area_deleted_hidden.'>
                                                 <form id="areaForm-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                    <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                     <input type="hidden" id="area-'.$area['area_id'].'-type" name="type" name="type" value="area" />
                                                     <input type="hidden" id="area-'.$area['area_id'].'-id" name="id" value="'.$area['area_id'].'" />
                                                     <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td>
@@ -1895,7 +1910,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                     </td>
                                                 </form>
                                                 <form id="areaForm-delete-'.$area['area_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                                <input type="hidden" name="location-id" value="'.$area_id_check.'" />
+                                                    <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                                                    <input type="hidden" name="location-id" value="'.$area_id_check.'" />
                                                     <td class="stockTD theme-table-blank">');
                                                     if ($area['area_deleted'] !== 1) {
                                                         echo('
@@ -1941,6 +1957,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                                                 echo('<tr class="'.$shelf_deleted_class.'" style="background-color:'.$color.' !important; color:black"'.$shelf_deleted_hidden.'>
                                                         <form id="shelfForm-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                         <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-site" name="site" value="'.$site['site_id'].'" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-type" name="type" value="shelf" />
                                                             <input type="hidden" id="shelf-'.$shelf['shelf_id'].'-id" name="id" value="'.$shelf['shelf_id'].'" />
@@ -1961,6 +1978,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                             </td>
                                                         </form>
                                                         <form id="shelfForm-delete-'.$shelf['shelf_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
                                                             <input type="hidden" name="location-id" value="'.$shelf_id_check.'" />
                                                             <td class="stockTD theme-table-blank">');
                                                             if ($shelf['shelf_deleted'] !== 1) {
@@ -2026,6 +2044,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             }
             ?>
             <form id="ldapToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="ldap-toggle-submit" value="set" />
                 <table id="ldapToggleTable">
                     <tbody>
@@ -2045,6 +2064,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             </form>
             
             <form id="ldapForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" <?php if($current_ldap_enabled == 0) { echo("hidden"); } ?>>
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <hr style="border-color:white; margin-left:10px">
                 <table id="ldapTable">
                     <tbody>
@@ -2187,6 +2207,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             }
             ?>
             <form id="smtpToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="smtp-toggle-submit" value="set" />
                 <table id="smtpToggleTable">
                     <tbody>
@@ -2205,6 +2226,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 </table>
             </form>
             <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" <?php if($current_smtp_enabled == 0) { echo("hidden"); } ?>>
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <hr style="border-color:white; margin-left:10px">
                 <table id="smtpTable">
                     <tbody>
@@ -2503,6 +2525,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div style="margin:auto;text-align:center;margin-top:10px">
                 <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" name="admin-pwreset-submit" value="set" />
                     <input type="hidden" name="user-id" id="modal-user-id" value=""/>
                     <table class="centertable">

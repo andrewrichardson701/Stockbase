@@ -84,6 +84,36 @@ function getCurrentURL() {
     return $base_url;
 }
 
+function getTableInfo($table, $field_return, $field_query, $id) {
+    global $redirect_url, $queryChar;
+
+    include 'dbh.inc.php';
+
+    $sql = "SELECT $field_return FROM $table WHERE $field_query=? LIMIT 1";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location: ../".$redirect_url.$queryChar."error=".$table."TableSQLConnection");
+        exit();
+    } else {
+        mysqli_stmt_bind_param($stmt, "s", $id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $rowCount = $result->num_rows;
+        if ($rowCount < 1) {
+            header("Location: ../".$redirect_url.$queryChar."error=noRowsFound");
+            exit();
+        } elseif ($rowCount > 1) {
+            header("Location: ../".$redirect_url.$queryChar."error=tooManyRowsFound");
+            exit();
+        } else {
+            $row = $result->fetch_assoc();
+            $data = $row[$field_return];
+        }
+    }
+
+    return $data;
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     include 'dbh.inc.php';
 
@@ -190,10 +220,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                                                     updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site);
                                                                 
-                                                                    // $email_subject = " Fixed Cable Stock Removed";
-                                                                    // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                                                    // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                                                    // // update changelog
+                                                                    $email_subject = "Optic Stock Added";
+                                                                    $email_body = "<p>Optic added to <strong>".getTableInfo('site', 'name', 'id', $site)."</strong><br>
+                                                                                    <strong>Serial: </strong><a href=\"https://$current_base_url/optics.php?search=".$serial."&site=".$site."\">".$serial."</a><br>
+                                                                                    <strong>Model: </strong><a href=\"https://$current_base_url/optics.php?model=".$model."&site=".$site."\">".$model."</a><br>
+                                                                                    <strong>Vendor: </strong><a href=\"https://$current_base_url/optics.php?vendor=".$vendor."&site=".$site."\">".getTableInfo('optic_vendor', 'name', 'id', $vendor)."</a><br>
+                                                                                    <strong>Type: </strong><a href=\"https://$current_base_url/optics.php?type=".$type."&site=".$site."\">".getTableInfo('optic_type', 'name', 'id', $type)."</a><br>
+                                                                                    <strong>Speed: </strong><a href=\"https://$current_base_url/optics.php?speed=".$speed."&site=".$site."\">".getTableInfo('optic_speed', 'name', 'id', $speed)."</a><br>
+                                                                                    <strong>Mode: </strong><a href=\"https://$current_base_url/optics.php?mode=".$mode."&site=".$site."\">".$mode."</a><br>
+                                                                                    <strong>Connector: </strong><a href=\"https://$current_base_url/optics.php?connector=".$connector."&site=".$site."\">".getTableInfo('optic_connector', 'name', 'id', $connector)."</a><br>
+                                                                                    <strong>Distance: </strong><a href=\"https://$current_base_url/optics.php?distance=".$distance."&site=".$site."\">".getTableInfo('optic_distance', 'name', 'id', $distance)."</a><br>
+                                                                                    <strong>Spectrum: </strong><a href=\"https://$current_base_url/optics.php?spectrum=".$spectrum."&site=".$site."\">".$spectrum."</a><br>
+                                                                                   </p>";
+                                                                    send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 11);
+                                                                    // update changelog
                                                                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore Item", $table_name, $id, "deleted", 1, 0);
                                                                     header("Location: ../".$redirect_url.$queryChar."success=restored");
                                                                     exit();
@@ -247,9 +287,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                                                             updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site);
                                                                         
-                                                                            // $email_subject = " Fixed Cable Stock Removed";
-                                                                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                                                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                                                            $email_subject = "Optic Stock Added";
+                                                                            $email_body = "<p>Optic added to <strong>".getTableInfo('site', 'name', 'id', $site)."</strong><br>
+                                                                                            <strong>Serial: </strong><a href=\"https://$current_base_url/optics.php?search=".$serial."&site=".$site."\">".$serial."</a><br>
+                                                                                            <strong>Model: </strong><a href=\"https://$current_base_url/optics.php?model=".$model."&site=".$site."\">".$model."</a><br>
+                                                                                            <strong>Vendor: </strong><a href=\"https://$current_base_url/optics.php?vendor=".$vendor."&site=".$site."\">".getTableInfo('optic_vendor', 'name', 'id', $vendor)."</a><br>
+                                                                                            <strong>Type: </strong><a href=\"https://$current_base_url/optics.php?type=".$type."&site=".$site."\">".getTableInfo('optic_type', 'name', 'id', $type)."</a><br>
+                                                                                            <strong>Speed: </strong><a href=\"https://$current_base_url/optics.php?speed=".$speed."&site=".$site."\">".getTableInfo('optic_speed', 'name', 'id', $speed)."</a><br>
+                                                                                            <strong>Mode: </strong><a href=\"https://$current_base_url/optics.php?mode=".$mode."&site=".$site."\">".$mode."</a><br>
+                                                                                            <strong>Connector: </strong><a href=\"https://$current_base_url/optics.php?connector=".$connector."&site=".$site."\">".getTableInfo('optic_connector', 'name', 'id', $connector)."</a><br>
+                                                                                            <strong>Distance: </strong><a href=\"https://$current_base_url/optics.php?distance=".$distance."&site=".$site."\">".getTableInfo('optic_distance', 'name', 'id', $distance)."</a><br>
+                                                                                            <strong>Spectrum: </strong><a href=\"https://$current_base_url/optics.php?spectrum=".$spectrum."&site=".$site."\">".$spectrum."</a><br>
+                                                                                        </p>";
+                                                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 11);
                                                                             // // update changelog
                                                                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore Item", $table_name, $id, "deleted", 1, 0);
                                                                             header("Location: ../".$redirect_url.$queryChar."success=restored");
@@ -275,9 +325,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                             
                                                                             updateOpticTransactions($table_name, $insert_id, $tran_type, $reason, $date, $time, $username, $site);
                                                                         
-                                                                            // $email_subject = " Fixed Cable Stock Removed";
-                                                                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                                                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                                                            $email_subject = "Optic Stock Added";
+                                                                            $email_body = "<p>Optic added to <strong>".getTableInfo('site', 'name', 'id', $site)."</strong><br>
+                                                                                            <strong>Serial: </strong><a href=\"https://$current_base_url/optics.php?search=".$serial."&site=".$site."\">".$serial."</a><br>
+                                                                                            <strong>Model: </strong><a href=\"https://$current_base_url/optics.php?model=".$model."&site=".$site."\">".$model."</a><br>
+                                                                                            <strong>Vendor: </strong><a href=\"https://$current_base_url/optics.php?vendor=".$vendor."&site=".$site."\">".getTableInfo('optic_vendor', 'name', 'id', $vendor)."</a><br>
+                                                                                            <strong>Type: </strong><a href=\"https://$current_base_url/optics.php?type=".$type."&site=".$site."\">".getTableInfo('optic_type', 'name', 'id', $type)."</a><br>
+                                                                                            <strong>Speed: </strong><a href=\"https://$current_base_url/optics.php?speed=".$speed."&site=".$site."\">".getTableInfo('optic_speed', 'name', 'id', $speed)."</a><br>
+                                                                                            <strong>Mode: </strong><a href=\"https://$current_base_url/optics.php?mode=".$mode."&site=".$site."\">".$mode."</a><br>
+                                                                                            <strong>Connector: </strong><a href=\"https://$current_base_url/optics.php?connector=".$connector."&site=".$site."\">".getTableInfo('optic_connector', 'name', 'id', $connector)."</a><br>
+                                                                                            <strong>Distance: </strong><a href=\"https://$current_base_url/optics.php?distance=".$distance."&site=".$site."\">".getTableInfo('optic_distance', 'name', 'id', $distance)."</a><br>
+                                                                                            <strong>Spectrum: </strong><a href=\"https://$current_base_url/optics.php?spectrum=".$spectrum."&site=".$site."\">".$spectrum."</a><br>
+                                                                                        </p>";
+                                                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 11);
                                                                             // // update changelog
                                                                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Item", $table_name, $insert_id, "serial_number", null, $serial);
 
@@ -364,54 +424,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 $comment = $delete_reason; 
                                 $datetime = time();
 
-                                $sql = "SELECT I.site_id AS i_site_id
-                                        FROM optic_item AS I
-                                        WHERE I.deleted=0 AND I.id=$id";
+                                $sql = "INSERT INTO optic_comment (item_id, user_id, comment, timestamp) VALUES (?, ?, ?, FROM_UNIXTIME($datetime))";
                                 $stmt = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                    header("Location: ../".$redirect_url.$queryChar."error=optic_commentTableSQLConnection");
+                                    header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_commentConnectionInsert");
                                     exit();
                                 } else {
+                                    mysqli_stmt_bind_param($stmt, "sss", $id, $_SESSION['user_id'], $comment);
                                     mysqli_stmt_execute($stmt);
-                                    $result = mysqli_stmt_get_result($stmt);
-                                    $rowCount = $result->num_rows;
-                                    if ($rowCount < 1) {
-                                        header("Location: ../".$redirect_url.$queryChar."error=noRowsFound");
-                                        exit();
-                                    } elseif ($rowCount > 1) {
-                                        header("Location: ../".$redirect_url.$queryChar."error=tooManyRowsFound");
-                                        exit();
-                                    } else {
-                                        // correct amount found, continue.
-                                        $row = $result->fetch_assoc();
-                                        $site_id = $row['i_site_id'];
+                                    $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
 
-                                        $sql = "INSERT INTO optic_comment (item_id, user_id, comment, timestamp) VALUES (?, ?, ?, FROM_UNIXTIME($datetime))";
-                                        $stmt = mysqli_stmt_init($conn);
-                                        if (!mysqli_stmt_prepare($stmt, $sql)) {
-                                            header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_commentConnectionInsert");
-                                            exit();
-                                        } else {
-                                            mysqli_stmt_bind_param($stmt, "sss", $id, $_SESSION['user_id'], $comment);
-                                            mysqli_stmt_execute($stmt);
-                                            $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+                                    $table_name = 'optic_comment';
+                                    $type = "add";
+                                    $reason = "Comment Added";
+                                    $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                    $time = date('H:i:s'); // current time in HH:MM:SS format
+                                    $username = $_SESSION['username'];
 
-                                            $table_name = 'optic_comment';
-                                            $type = "add";
-                                            $reason = "Comment Added";
-                                            $date = date('Y-m-d'); // current date in YYY-MM-DD format
-                                            $time = date('H:i:s'); // current time in HH:MM:SS format
-                                            $username = $_SESSION['username'];
-
-                                            updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
-                                        
-                                            // $email_subject = " Fixed Cable Stock Removed";
-                                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                            // // update changelog
-                                            addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Comment", $table_name, $insert_id, "comment", null, $comment);
-                                        }
-                                    }
+                                    updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
+                                    
+                                    // // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Comment", $table_name, $insert_id, "comment", null, $comment);
                                 }
 
                                 $sql = "UPDATE optic_item SET deleted=1
@@ -433,10 +466,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                     updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                                 
-                                    // $email_subject = " Fixed Cable Stock Removed";
-                                    // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                    // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                    // // update changelog
+                                    $sql_optic = "SELECT *
+                                            FROM optic_item 
+                                            WHERE id=$id";
+                                    $stmt_optic = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_optic, $sql_optic)) {
+                                        header("Location: ../".$redirect_url.$queryChar."error=optic_commentTableSQLConnection");
+                                        exit();
+                                    } else {
+                                        mysqli_stmt_execute($stmt_optic);
+                                        $result_optic = mysqli_stmt_get_result($stmt_optic);
+                                        $rowCount_optic = $result_optic->num_rows;
+                                        if ($rowCount_optic < 1) {
+                                            // couldnt find it
+                                        } else {
+                                            $row_optic = $result_optic->fetch_assoc();
+                                            $email_subject = "Optic Stock Removed";
+                                            $email_body = "<p>Optic removed from stock at <strong>".getTableInfo('site', 'name', 'id', $site_id)."</strong>.<br>
+                                                            <strong>Reason for deletion: </strong>$delete_reason<br>
+                                                            <strong>Serial: </strong>".$row_optic['serial_number']."<br>
+                                                            <strong>Model: </strong>".$row_optic['model']."<br>
+                                                            <strong>Vendor: </strong>".getTableInfo('optic_vendor', 'name', 'id', $row_optic['vendor_id'])."<br>
+                                                            <strong>Type: </strong>".getTableInfo('optic_type', 'name', 'id', $row_optic['type_id'])."<br>
+                                                            <strong>Speed: </strong>".getTableInfo('optic_speed', 'name', 'id', $row_optic['speed_id'])."<br>
+                                                            <strong>Mode: </strong>".$row_optic['mode']."<br>
+                                                            <strong>Connector: </strong>".getTableInfo('optic_connector', 'name', 'id', $row_optic['connector_id'])."<br>
+                                                            <strong>Distance: </strong>".getTableInfo('optic_distance', 'name', 'id', $row_optic['distance_id'])."<br>
+                                                            <strong>Spectrum: </strong>".$row_optic['spectrum']."<br>
+                                                            </p>";
+                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 12);
+                                        }
+                                    }
                                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete Item", $table_name, $id, "deleted", 0, 1);
 
                                     header("Location: ../".$redirect_url.$queryChar."success=deleted");
@@ -511,9 +571,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                     updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                                 
-                                    // $email_subject = " Fixed Cable Stock Removed";
-                                    // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                    // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+                                    $sql_optic = "SELECT *
+                                            FROM optic_item 
+                                            WHERE id=$id";
+                                    $stmt_optic = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_optic, $sql_optic)) {
+                                        header("Location: ../".$redirect_url.$queryChar."error=optic_commentTableSQLConnection");
+                                        exit();
+                                    } else {
+                                        mysqli_stmt_execute($stmt_optic);
+                                        $result_optic = mysqli_stmt_get_result($stmt_optic);
+                                        $rowCount_optic = $result_optic->num_rows;
+                                        if ($rowCount_optic < 1) {
+                                            // couldnt find it
+                                        } else {
+                                            $row_optic = $result_optic->fetch_assoc();
+                                            $email_subject = "Optic Stock Moved";
+                                            $email_body = "<p>Optic moved from <strong>".getTableInfo('site', 'name', 'id', $site_id)."</strong> to <strong>".getTableInfo('site', 'name', 'id', $move_site)."</strong>.<br>
+                                                            <strong>Serial: </strong>".$row_optic['serial_number']."<br>
+                                                            <strong>Model: </strong>".$row_optic['model']."<br>
+                                                            <strong>Vendor: </strong>".getTableInfo('optic_vendor', 'name', 'id', $row_optic['vendor_id'])."<br>
+                                                            <strong>Type: </strong>".getTableInfo('optic_type', 'name', 'id', $row_optic['type_id'])."<br>
+                                                            <strong>Speed: </strong>".getTableInfo('optic_speed', 'name', 'id', $row_optic['speed_id'])."<br>
+                                                            <strong>Mode: </strong>".$row_optic['mode']."<br>
+                                                            <strong>Connector: </strong>".getTableInfo('optic_connector', 'name', 'id', $row_optic['connector_id'])."<br>
+                                                            <strong>Distance: </strong>".getTableInfo('optic_distance', 'name', 'id', $row_optic['distance_id'])."<br>
+                                                            <strong>Spectrum: </strong>".$row_optic['spectrum']."<br>
+                                                            </p>";
+                                            send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 13);
+                                        }
+                                    }
+
                                     // // update changelog
                                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete Item", $table_name, $id, "site_id", $site_id, $move_site);
 
@@ -581,10 +669,38 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                 updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                             
-                                // $email_subject = " Fixed Cable Stock Removed";
-                                // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
-                                // // update changelog
+                                $sql_optic = "SELECT *
+                                        FROM optic_item 
+                                        WHERE id=$id";
+                                $stmt_optic = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_optic, $sql_optic)) {
+                                    header("Location: ../".$redirect_url.$queryChar."error=optic_commentTableSQLConnection");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_execute($stmt_optic);
+                                    $result_optic = mysqli_stmt_get_result($stmt_optic);
+                                    $rowCount_optic = $result_optic->num_rows;
+                                    if ($rowCount_optic < 1) {
+                                        // couldnt find it
+                                    } else {
+                                        $row_optic = $result_optic->fetch_assoc();
+                                        $email_subject = "Optic Stock Added";
+                                        $email_body = "<p>Optic restored to <strong>".getTableInfo('site', 'name', 'id', $site_id)."</strong>.<br>
+                                                        <strong>Serial: </strong>".$row_optic['serial_number']."<br>
+                                                        <strong>Model: </strong>".$row_optic['model']."<br>
+                                                        <strong>Vendor: </strong>".getTableInfo('optic_vendor', 'name', 'id', $row_optic['vendor_id'])."<br>
+                                                        <strong>Type: </strong>".getTableInfo('optic_type', 'name', 'id', $row_optic['type_id'])."<br>
+                                                        <strong>Speed: </strong>".getTableInfo('optic_speed', 'name', 'id', $row_optic['speed_id'])."<br>
+                                                        <strong>Mode: </strong>".$row_optic['mode']."<br>
+                                                        <strong>Connector: </strong>".getTableInfo('optic_connector', 'name', 'id', $row_optic['connector_id'])."<br>
+                                                        <strong>Distance: </strong>".getTableInfo('optic_distance', 'name', 'id', $row_optic['distance_id'])."<br>
+                                                        <strong>Spectrum: </strong>".$row_optic['spectrum']."<br>
+                                                        </p>";
+                                        send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 11);
+                                    }
+                                }
+
+                                // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Restore Item", $table_name, $id, "restored", 1, 0);
 
                                 header("Location: ../".$redirect_url.$queryChar."success=restored");
@@ -660,9 +776,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
                     
-                        // $email_subject = " Fixed Cable Stock Removed";
-                        // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                        // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                         // // update changelog
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Type", $table_name, $insert_id, "name", null, $type_name);
 
@@ -733,10 +846,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $username = $_SESSION['username'];
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
-                    
-                        // $email_subject = " Fixed Cable Stock Removed";
-                        // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                        // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+
                         // // update changelog
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Connector", $table_name, $insert_id, "name", null, $connector_name);
 
@@ -808,9 +918,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
                     
-                        // $email_subject = " Fixed Cable Stock Removed";
-                        // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                        // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                         // // update changelog
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Distance", $table_name, $insert_id, "name", null, $distance_name);
 
@@ -881,10 +988,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $username = $_SESSION['username'];
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
-                    
-                        // $email_subject = " Fixed Cable Stock Removed";
-                        // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                        // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+
                         // // update changelog
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Vendor", $table_name, $insert_id, "name", null, $vendor_name);
 
@@ -943,10 +1047,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                             $username = $_SESSION['username'];
 
                             updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
-                        
-                            // $email_subject = " Fixed Cable Stock Removed";
-                            // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                            // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+
                             // // update changelog
                             addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Comment", $table_name, $insert_id, "comment", null, $comment);
 
@@ -1010,10 +1111,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 $username = $_SESSION['username'];
 
                                 updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
-                            
-                                // $email_subject = " Fixed Cable Stock Removed";
-                                // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
-                                // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
+
                                 // // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Delete Comment", $table_name, $id, "deleted", 0, 1);
 

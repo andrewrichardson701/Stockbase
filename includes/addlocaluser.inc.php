@@ -72,7 +72,7 @@ if (isset($_POST['submit'])) {
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "users", $new_id, "username", null, $new_username);
 
                         $baseUrl = ((str_contains($_SERVER['HTTP_REFERER'], "https")) ? 'https' : 'http') . "://".$current_base_url;
-                        $email_subject = " Account created";
+                        $email_subject = "Account created";
                         $email_body = "<p>Your user account has been created.<br>Your username is: <strong>$new_username</strong><br>Your temporary password is:<br><strong>$new_password</strong><br>You will be prompted to change this on login.<br>Click <a href=\"$baseUrl\">here</a> to login.</p>";
                         send_email($new_email, ucwords($new_first_name).' '.ucwords($new_last_name), $config_smtp_from_name, $email_subject, createEmail($email_body), 0);
 

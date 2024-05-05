@@ -672,6 +672,7 @@ Clone the repo first, and the follow the below steps.
 - Removed all references to affected_rows() due to deprecation.
 - Fixed the smtp test page to allow no username and no password. Also now works with no ssl/tls.
 - Allowed admins to save blank auth username/password to the db
+- Removed the system name from the subject of all email
 - TODO: Add optics notifications
 
 </details>

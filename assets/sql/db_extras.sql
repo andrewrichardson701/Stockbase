@@ -87,13 +87,17 @@ VALUES
     (5, 'stock-moved', 'Stock Moved', 'Moving stock within the system.', 1),
     (6, 'stock-edited', 'Stock Edited', 'Editing of stock details within the system.', 1),
     (7, 'stock-images', 'Stock Image Linking', 'Modification of stock image linking within the system.', 1),
-    (8, 'cablestock-added', 'Fixed Stock Added', 'Adding fixed stock to the system.', 1),
-    (9, 'cablestock-removed', 'Fixed Stock Removed', 'Removing fixed stock from the system.', 1),
-    (10, 'minstock-warning', 'Minimum Stock Warnings', 'Warning for stock being below the minimum stock count.', 1),
-    (11, 'important', 'Important', 'Important notifications. These need to be enabled', 1);
+    (8, 'cablestock-added', 'Cable Stock Added', 'Adding cable stock to the system.', 1),
+    (9, 'cablestock-removed', 'Cable Stock Removed', 'Removing cable stock from the system.', 1),
+    (10, 'cablestock-moved', 'Cable Stock Moved', 'Moving cable stock from the system.', 1),
+    (11, 'optic-added', 'Optic Stock Added', 'Adding an optic to the system.', 1),
+    (12, 'optic-removed', 'Optic Stock Removed', 'Removing an optic from the system.', 1),
+    (13, 'optic-moved', 'Optic Stock Moved', 'Moving an optic from the system.', 1),
+    (14, 'minstock-warning', 'Minimum Stock Warnings', 'Warning for stock being below the minimum stock count.', 1),
+    (15, 'important', 'Important', 'Important notifications. These need to be enabled', 1);
 
-UPDATE notifications SET id=0 WHERE id=11;
-ALTER TABLE notifications AUTO_INCREMENT = 11;
+UPDATE notifications SET id=0 WHERE id=15;
+ALTER TABLE notifications AUTO_INCREMENT = 15;
 
 INSERT INTO theme (id, name, file_name)
 VALUES

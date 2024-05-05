@@ -336,7 +336,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </div>
                         <!-- <div id="zero-div" class="nav-div viewport-large-block" style="margin-left:15px;margin-right:0px;margin-bottom:10px;">
                             <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6px 6px 6px 6px" onclick="navPage(\'cablestock.php\')">
-                                Fixed Cables
+                                Cables
                             </button>
                         </div> -->
                     </div>
@@ -363,7 +363,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </div>
                         <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0px;margin-bottom:10px;">
                             <button id="cable-stock" class="btn clickable btn-dark nav-v-b" style="opacity:90%;color:white;padding:6px 6px 6px 6px" onclick="navPage(\'cablestock.php\')">
-                                Fixed Cables
+                                Cables
                             </button>
                         </div>
                     </div>

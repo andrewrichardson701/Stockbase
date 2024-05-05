@@ -2439,7 +2439,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             ?>
             <div class="well-nopad theme-divBg" style="margin-top:20px">
                 <?php 
-                $example_body = urlencode("<p style='color:black !important'>Fixed cable stock added, for <strong><a class='link' style='color: #0000EE !important;' href='stock.php?stock_id=1'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
+                $example_body = urlencode("<p style='color:black !important'>Cable stock added, for <strong><a class='link' style='color: #0000EE !important;' href='stock.php?stock_id=1'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>");
                 ?>
                 <h4>Email example</h4>
                 <input type="hidden" value="<?php echo($example_body); ?>" id="email-template-body" />

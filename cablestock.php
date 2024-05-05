@@ -13,7 +13,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 <html lang="en">
 <head>
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
-    <title><?php echo ucwords($current_system_name);?> - Fixed Cable Stock</title>
+    <title><?php echo ucwords($current_system_name);?> - Cable Stock</title>
 </head>
 <body>
     <!-- Header and Nav -->

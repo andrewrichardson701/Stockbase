@@ -146,7 +146,7 @@
             if (isset($profile_name)) {
                 echo ('
                     <div id="menu-div" class="nav-menu theme-burger '); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div" style="cursor:pointer; color:'.$current_banner_text_color.' !important" '); if (!isset($profile_name)) { echo ('hidden'); } echo('>
-                        <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important">'.$profile_name.'<i class="fa fa-chevron-down" style="margin-left:5px; font-size:12px"></i></a>
+                        <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important">'.$profile_name.'<i class="fa fa-chevron-down" style="margin-left:5px; font-size:12px"></i></a>
                     </div>
                 ');
                 

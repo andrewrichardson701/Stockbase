@@ -785,7 +785,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         if (isset($_POST['smtp-from-name']))  { $config_smtp_from_name  = $_POST['smtp-from-name'];  } else { $config_smtp_from_name  = ''; }
         if (isset($_POST['smtp-backup-to']))  { $config_smtp_to_email   = $_POST['smtp-backup-to'];  } else { $config_smtp_to_email   = ''; }
 
-        if ($config_smtp_username === '' || $config_smtp_password === '' || $config_smtp_encryption === '' || $config_smtp_host === '' || $config_smtp_port === '' || $config_smtp_from_email === '' || $config_smtp_from_name === '' || $config_smtp_to_email === '') {
+        if ($config_smtp_encryption === '' || $config_smtp_host === '' || $config_smtp_port === '' || $config_smtp_from_email === '' || $config_smtp_from_name === '' || $config_smtp_to_email === '') {
             // DO NOT CONTINUE
             header("Location: ../admin.php?error=emptyFields&section=smtp-settings#smtp-settings");
             exit();
@@ -3228,5 +3228,3 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         exit();
     }
 }
-
-?>

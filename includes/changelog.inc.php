@@ -15,7 +15,7 @@ function addChangelog($user_id, $user_username, $action, $table_name, $record_id
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         include 'smtp.inc.php';
         $sql_command = "INSERT INTO changelog (timestamp, user_id, user_username, action, table_name, record_id, field_name, value_old, value_new) VALUES ('$timestamp', $user_id, '$user_username', '$action', '$table_name', $record_id, '$field_name', '$value_old', '$value_new');";
-        $email_subject = ucwords($current_system_name)." - Changelog update issue - please correct manually.";
+        $email_subject = "Changelog update issue - please correct manually.";
         $email_body = "<p>Changelog update failed. Please correct this manually by adding the below:</p>
                         <table style='margin:auto'>
                             <thead>

@@ -294,7 +294,7 @@ $default_smtp_from_name      = ($config_d_smtp_from_name      !== '' ? $config_d
 $default_smtp_to_email       = ($config_d_smtp_to_email       !== '' ? $config_d_smtp_to_email               : 'MISSING - PLEASE FIX');
 
 $current_smtp_enabled        = ($config_smtp_enabled          !== '' ? $config_smtp_enabled                  : $default_smtp_enabled);
-$current_smtp_username       = ($config_smtp_username         !== '' ? $config_smtp_username                 : $default_smtp_username);
+$current_smtp_username       = ($config_smtp_username         !== '' ? $config_smtp_username                 : '');
 // $current_smtp_password     = ($config_smtp_password         !== '' ? $config_smtp_password                 : $default_smtp_password);
 $current_smtp_encryption     = ($config_smtp_encryption       !== '' ? $config_smtp_encryption               : $default_smtp_encryption);
 $current_smtp_host           = ($config_smtp_host             !== '' ? $config_smtp_host                     : $default_smtp_host);

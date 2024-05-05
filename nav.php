@@ -118,35 +118,10 @@
                 ');
                 
             }
-            // if (isset($loggedin_role)) {
-            //     if (in_array($loggedin_role, $config_admin_roles_array)) {
-            //         $n = 4;
-            //         echo('
-            //         <div id="admin-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-            //             <a id="admin" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./admin.php">Admin</a>
-            //         </div> 
-            //         ');
-            //     }
-            // }
-            // if (isset($profile_name)) {
-            //     $n = 5;
-            //     echo('
-            //     <div id="profile-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-            //         <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./profile.php">Profile</a>
-            //     </div> 
-            //     ');
-            // }
-            // if (isset($profile_name)) {
-            //     echo ('
-            //         <div id="logout-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-            //             <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important" href="./logout.php">Logout</a>
-            //         </div> 
-            //     ');
-            // }
             if (isset($profile_name)) {
                 echo ('
                     <div id="menu-div" class="nav-menu theme-burger '); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div" style="cursor:pointer; color:'.$current_banner_text_color.' !important" '); if (!isset($profile_name)) { echo ('hidden'); } echo('>
-                        <a id="logout" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important">'.$profile_name.'<i class="fa fa-chevron-down" style="margin-left:5px; font-size:12px"></i></a>
+                        <a id="profile" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important">'.$profile_name.'<i class="fa fa-chevron-down" style="margin-left:5px; font-size:12px"></i></a>
                     </div>
                 ');
                 
@@ -160,7 +135,7 @@
     if (isset($profile_name)) {
         echo('
         <div style="width:100%">
-            <div class="nav-div float-right" style="min-width:120px;">
+            <div class="nav-div float-right nav-float" style="min-width:120px;">
                 <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">');
                     if (in_array($loggedin_role, $config_admin_roles_array)) { echo('<li>&#8226; <a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>'); }
                 echo('
@@ -207,11 +182,6 @@
                         }
                         echo('
                         <li><a href="./profile.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
-                        // if (isset($loggedin_role)) {
-                        //     if (in_array($loggedin_role, $config_admin_roles_array)) {
-                        //         echo('<li><a href="./admin.php">Admin</a></li>');
-                        //     }
-                        // }
                         echo('<li><a href="./logout.php">Logout</a></li>
                     </ul>
                     ');
@@ -262,10 +232,21 @@ if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
 document.addEventListener('DOMContentLoaded', function () {
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelector('.nav-links');
+    const navFloat = document.querySelector('.nav-float'); // floating div
     if (navMenu !== null) {
-        navMenu.addEventListener('click', function () {
-            navLinks.classList.toggle('show');
+        navMenu.addEventListener('mouseover', function () {
+            navLinks.classList.add('show');
         });
+        navFloat.addEventListener('mouseover', function () {
+            navLinks.classList.add('show');
+        });
+        navMenu.addEventListener('mouseout', function () {
+            navLinks.classList.remove('show');
+        });
+        navFloat.addEventListener('mouseout', function () {
+            navLinks.classList.remove('show');
+        });
+
     }
 });
 document.addEventListener('DOMContentLoaded', function () {

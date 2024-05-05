@@ -260,7 +260,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <div id="zero-div" class="nav-div" style="margin-left:15px;margin-right:0px">
                                     <button id="cable-stock" class="btn btn-dark nav-v-b"
                                         style="opacity:90%;color:white;padding:6px 6px 6px 6px">
-                                        Fixed Cables
+                                        Cables
                                     </button>
                                 </div>
                             </div>

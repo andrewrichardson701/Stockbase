@@ -375,12 +375,15 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         <script>
             $(document).ready(function() {
                 $(document).keypress(function(event) {
-                    // Assuming the card input triggers a keypress event
-                    var cardData = String.fromCharCode(event.which);
-                    var cardData_input = document.getElementById('cardData');
-                    var cardModifyForm = document.getElementById('cardModifyForm');
-                    cardData_input.value = cardData;
-                    cardModifyForm.submit();
+                    var swipeModal = document.getElementById('modalDivSwipe');
+                        if (swipeModal.display === 'block') {
+                        // Assuming the card input triggers a keypress event
+                        var cardData = String.fromCharCode(event.which);
+                        var cardData_input = document.getElementById('cardData');
+                        var cardModifyForm = document.getElementById('cardModifyForm');
+                        cardData_input.value = cardData;
+                        cardModifyForm.submit();
+                    }
                 });
             });
         </script>

@@ -514,7 +514,7 @@ Clone the repo first, and the follow the below steps.
 - Clicking the site sets the site filter
 - Clicking the tag sets the tag filter
 - Clicking the yellow clear icon clears the filters
-- Clicking Fixed Cables takes you to the cablestock
+- Clicking Cables takes you to the cablestock
 
 </details>
 <details>
@@ -664,6 +664,21 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>1.0.0</h3></summary>
+<h4>Official 1.0.0 release.</h4>
+
+- Removed all sensitive data from all versions.
+- Fixed the profile page json stopping text input.
+- Removed all references to affected_rows() due to deprecation.
+- Fixed the smtp test page to allow no username and no password. Also now works with no ssl/tls.
+- Allowed admins to save blank auth username/password to the db.
+- Removed the system name from the subject of all email.
+- Nav dropdown menu now opens on mouse over.
+- Added notifications for adding, removing and moving optics.
+- Updated the notifications table to add the new notifications.
+
+</details>
+<details>
 <summary><h3>0.7.2-beta</h3></summary>
 <h4>Beta release 0.7.2, CSRF Token added, optic distance added.</h4>
 
@@ -763,7 +778,7 @@ Clone the repo first, and the follow the below steps.
 - Pagination has been adjusted on all pages for allowing over 5 pages.
 - Cablestock now listed in the nav bar as "cables".
 - Item stock button removed from cablestock.
-- Fixed Cables button removed from index.
+- Cables button removed from index.
 - Comments button on optics is now the message icon with a number for the count inside.
 - Show/Hide deleted optics now possible. Can also restore them.
 - Added Dark Black theme.

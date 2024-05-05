@@ -664,6 +664,18 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>1.0.0</h3></summary>
+<h4>Official 1.0.0 release.</h4>
+
+- Removed all sensitive data from all versions.
+- Fixed the profile page json stopping text input.
+- Removed all references to affected_rows() due to deprecation.
+- Fixed the smtp test page to allow no username and no password. Also now works with no ssl/tls.
+- Allowed admins to save blank auth username/password to the db
+- TODO: Add optics notifications
+
+</details>
+<details>
 <summary><h3>0.7.2-beta</h3></summary>
 <h4>Beta release 0.7.2, CSRF Token added, optic distance added.</h4>
 

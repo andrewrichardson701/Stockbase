@@ -1710,8 +1710,8 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
 
             // item
             $site = $_POST['site']; // site_id
-            $area = $_POST['area']; // site_id
-            $shelf = $_POST['shelf']; // site_id
+            $area = $_POST['area']; 
+            $shelf = $_POST['shelf']; 
             $stock_id = $_POST['id'];
 
             $redirect_url = isset($_POST['redirect_url']) ? "../".$_POST['redirect_url'] : "../stock.php?stock_id=$stock_id";
@@ -1764,7 +1764,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             $sql_generic = "SELECT cable_item.id AS item_id, cable_item.quantity AS item_quantity, cable_item.cost AS item_cost, cable_item.type_id AS item_type_id
                                     FROM cable_item
                                     INNER JOIN stock ON stock.id=cable_item.stock_id
-                                    WHERE cable_item.deleted=0 WHERE stock.id=$stock_id
+                                    WHERE cable_item.deleted=0 AND stock.id=$stock_id
                                     LIMIT 1";
                             $stmt_generic = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_generic, $sql_generic)) {

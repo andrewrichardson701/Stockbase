@@ -79,7 +79,14 @@ if (isset($_POST['smtp_host']) && isset($_POST['smtp_port']) && isset($_POST['sm
         
         fclose($smtp);
     } else {
-        $host = $smtp_encryption.'://'.$smtp_host;
+        if ($smtp_encryption == 'none') {
+            $smtp_encryption = '';
+            $prefix = '';
+        } else {
+            $prefix="://";
+        }
+        $prefix = $smtp_encryption.$prefix;
+        $host = $preifx.$smtp_host;
         $port = $smtp_port;
         $errorNumber;
         $error;
@@ -140,7 +147,7 @@ if (isset($_POST['smtp_host']) && isset($_POST['smtp_port']) && isset($_POST['sm
     
 
 
-    if (isset($_POST['smtp_username']) && isset($_POST['smtp_password']) && isset($_POST['smtp_from_email']) && isset($_POST['smtp_from_name']) && isset($_POST['smtp_to_email'])) {
+    if (isset($_POST['smtp_from_email']) && isset($_POST['smtp_from_name']) && isset($_POST['smtp_to_email'])) {
         include 'smtp.inc.php';
         $email_content_test = "<p>This is a test of the Inventory mail system. <br>You're all set!</p>";
         function send_test_email($to, $toName, $from, $fromName, $subject, $body, $host, $port, $encryption, $username, $password) {

@@ -2299,7 +2299,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-username">SMTP Username:</p>
                             </td>
                             <td id="smtp-username-input">
-                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-username" name="smtp-username" value="<?php echo $current_smtp_username; ?>" required>
+                                <input class="form-control nav-v-c" type="text" style="width: 250px" id="smtp-username" name="smtp-username" value="<?php echo $current_smtp_username; ?>">
                             </td>
                             <td id="smtp-username-default-cell" style="margin-left:25px">
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-username-default"><?php echo $default_smtp_username; ?></p>
@@ -2310,7 +2310,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-password">SMTP Password:</p>
                             </td>
                             <td id="smtp-password-input">
-                                <input class="form-control nav-v-c" type="password" style="width: 250px" id="smtp-password" name="smtp-password" value="password" required>
+                                <input class="form-control nav-v-c" type="password" style="width: 250px" id="smtp-password" name="smtp-password" value="password">
                             </td>
                             <td id="smtp-password-default-cell" style="margin-left:25px">
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-password-default"><or class="green"><?php echo $default_smtp_password; ?></or></p>

@@ -636,7 +636,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 $new_quantity = getItemQuantity($id, $shelf);
                                 $base_url = getCurrentURL();
             
-                                $email_subject = ucwords($current_system_name)." - Stock inventory added";
+                                $email_subject = " Stock inventory added";
                                 $email_body = "<p>Stock inventory added, for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 1);
                                 header("Location: ../stock.php?stock_id=$id&item_id=$item_id&success=stockAdded");
@@ -849,13 +849,13 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                             $stock_min_stock = $stock_info['min_stock'];
                                             
                                             if ($stock_min_stock > $new_quantity) {
-                                                $email_subject = ucwords($current_system_name)." - Stock Needs Re-ordering at $site_name.";
+                                                $email_subject = " Stock Needs Re-ordering at $site_name.";
                                                 $email_body = "<p>Stock is below minimum stock count, for <strong><a href=\"https://$base_url?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p><p style='color:red'>Please raise a PO to order more!</p>";
                                                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 10);
                                                 send_email($current_smtp_to_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 10);
                                             }
                                 
-                                            $email_subject = ucwords($current_system_name)." - Stock inventory removed.";
+                                            $email_subject = " Stock inventory removed.";
                                             $email_body = "<p>Stock removed, from <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 2);
                                             header("Location: $redirect_url&success=stockRemoved");
@@ -1164,7 +1164,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         $stock_info = getItemStockInfo($stock_id);
                                         $base_url = getCurrentURL();
                                         if (count($changes) !== 0) {
-                                            $email_subject = ucwords($current_system_name)." - Stock information edited";
+                                            $email_subject = " Stock information edited";
                                             $email_body = "<p>Stock details updated for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> and successfully saved!</p>";
                                             $c = 1;
                                             foreach ($changes as $change) {
@@ -1223,7 +1223,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 $stock_info = getItemStockInfo($stock_id);
                                 $base_url = getCurrentURL();
             
-                                $email_subject = ucwords($current_system_name)." - Image unlinked from stock";
+                                $email_subject = " Image unlinked from stock";
                                 $email_body = "<p>Image with ID: <strong>$img_id</strong> unlinked from <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>.</p>";
                                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
                                 // update changelog
@@ -1293,7 +1293,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         $stock_info = getItemStockInfo($_POST['stock_id']);
                                         $base_url = getCurrentURL();
             
-                                        $email_subject = ucwords($current_system_name)." - Stock image added";
+                                        $email_subject = " Stock image added";
                                         $email_body = "<p>Image successfully added to <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>!</p>";
                                             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
                                         // update changelog
@@ -1337,7 +1337,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                         $stock_info = getItemStockInfo($_POST['stock_id']);
                         $base_url = getCurrentURL();
             
-                        $email_subject = ucwords($current_system_name)." - Stock image uploaded";
+                        $email_subject = " Stock image uploaded";
                         $email_body = "<p>Image successfully uploaded for <strong><a href=\"https://$base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong>!</p>";
                             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 7);
                         header("Location: ".$redi_url."&success=fileUploaded");
@@ -1835,7 +1835,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             $item_location = getItemLocation($shelf);
                             $base_url = getCurrentURL();
                         
-                            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Added";
+                            $email_subject = " Fixed Cable Stock Added";
                             $email_body = "<p>Fixed cable stock added to <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 8);
                             // update changelog
@@ -1939,7 +1939,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             $item_location = getItemLocation($shelf);
                             $base_url = getCurrentURL();
                         
-                            $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                            $email_subject = " Fixed Cable Stock Removed";
                             $email_body = "<p>Fixed cable stock removed from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                             send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                             // update changelog
@@ -3030,7 +3030,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                     mysqli_stmt_bind_param($stmt_trans, "sssssssssss", $stock_id, $empty_item_id, $type, $stock_shelf, $itemCountTotal, $empty_cost, $empty_serial_number, $reason, $date, $time, $username);
                                     mysqli_stmt_execute($stmt_trans);
 
-                                    $email_subject = ucwords($current_system_name)." - Stock inventory deleted";
+                                    $email_subject = " Stock inventory deleted";
                                     $email_body = "<p>Stock inventory deleted: <strong><a href=\"https://$base_url/stock.php?stock_id=".$checkID_id."\">".$checkID_name."</a></strong>.<br>To undo this change, navigate to <a href='https://$base_url/admin.php#stockmanagement-settings'>Admin > Stock Management</a> and restore the object.";
                                     send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 3);
                                     header("Location: ../stock.php?modify=remove&success=stockDeleted&old_stock_id=$stock_id");
@@ -3127,7 +3127,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 
                                 $base_url = getCurrentURL();
 
-                                $email_subject = ucwords($current_system_name)." - Stock inventory restored from deletion";
+                                $email_subject = " Stock inventory restored from deletion";
                                 $email_body = "<p>Stock inventory restored from deletion: <strong><a href=\"https://$base_url/stock.php?stock_id=".$id."\">".$stock_name."</a></strong>.</p>";
                                 send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 4);
                                 header("Location: ../admin.php?success=restored&id=$id&section=stockmanagement#stockmanagement-settings");

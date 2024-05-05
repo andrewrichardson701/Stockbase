@@ -190,7 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                                                     updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site);
                                                                 
-                                                                    // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                                                    // $email_subject = " Fixed Cable Stock Removed";
                                                                     // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                                                     // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                                                     // // update changelog
@@ -247,7 +247,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                                                             updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site);
                                                                         
-                                                                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                                                            // $email_subject = " Fixed Cable Stock Removed";
                                                                             // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                                                             // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                                                             // // update changelog
@@ -275,7 +275,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                             
                                                                             updateOpticTransactions($table_name, $insert_id, $tran_type, $reason, $date, $time, $username, $site);
                                                                         
-                                                                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                                                            // $email_subject = " Fixed Cable Stock Removed";
                                                                             // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                                                             // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                                                             // // update changelog
@@ -405,7 +405,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                             updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                                         
-                                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                            // $email_subject = " Fixed Cable Stock Removed";
                                             // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                             // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                             // // update changelog
@@ -433,7 +433,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                     updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                                 
-                                    // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                    // $email_subject = " Fixed Cable Stock Removed";
                                     // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                     // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                     // // update changelog
@@ -511,7 +511,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                     updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                                 
-                                    // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                    // $email_subject = " Fixed Cable Stock Removed";
                                     // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                     // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                     // // update changelog
@@ -581,7 +581,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                 updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                             
-                                // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                // $email_subject = " Fixed Cable Stock Removed";
                                 // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                 // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                 // // update changelog
@@ -660,7 +660,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
                     
-                        // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                        // $email_subject = " Fixed Cable Stock Removed";
                         // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                         // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                         // // update changelog
@@ -734,7 +734,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
                     
-                        // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                        // $email_subject = " Fixed Cable Stock Removed";
                         // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                         // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                         // // update changelog
@@ -808,7 +808,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
                     
-                        // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                        // $email_subject = " Fixed Cable Stock Removed";
                         // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                         // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                         // // update changelog
@@ -882,7 +882,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
                     
-                        // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                        // $email_subject = " Fixed Cable Stock Removed";
                         // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                         // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                         // // update changelog
@@ -944,7 +944,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                             updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                         
-                            // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                            // $email_subject = " Fixed Cable Stock Removed";
                             // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                             // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                             // // update changelog
@@ -1011,7 +1011,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                                 updateOpticTransactions($table_name, $id, $type, $reason, $date, $time, $username, $site_id);
                             
-                                // $email_subject = ucwords($current_system_name)." - Fixed Cable Stock Removed";
+                                // $email_subject = " Fixed Cable Stock Removed";
                                 // $email_body = "<p>Fixed cable stock removed, from <strong><a href=\"https://$current_base_url/stock.php?stock_id=".$stock_info['id']."\">".$stock_info['name']."</a></strong> in <strong>".$item_location['site_name']."</strong>, <strong>".$item_location['area_name']."</strong>, <strong>".$item_location['shelf_name']."</strong>!<br>New stock count: <strong>$new_quantity</strong>.</p>";
                                 // send_email($loggedin_email, $loggedin_fullname, $config_smtp_from_name, $email_subject, createEmail($email_body), 9);
                                 // // update changelog

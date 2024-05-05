@@ -83,16 +83,17 @@ VALUES
     (1, 'stock-added', 'Stock Added', 'Adding stock to the system.', 1),
     (2, 'stock-removed', 'Stock Removed', 'Removing stock from the system.', 1),
     (3, 'stock-deleted', 'Stock Deleted', 'Deleting stock from the system.', 1),
-    (4, 'stock-moved', 'Stock Moved', 'Moving stock within the system.', 1),
-    (5, 'stock-edited', 'Stock Edited', 'Editing of stock details within the system.', 1),
-    (6, 'stock-images', 'Stock Image Linking', 'Modification of stock image linking within the system.', 1),
-    (7, 'cablestock-added', 'Fixed Stock Added', 'Adding fixed stock to the system.', 1),
-    (8, 'cablestock-removed', 'Fixed Stock Removed', 'Removing fixed stock from the system.', 1),
-    (9, 'minstock-warning', 'Minimum Stock Warnings', 'Warning for stock being below the minimum stock count.', 1),
-    (10, 'important', 'Important', 'Important notifications. These need to be enabled', 1);
+    (4, 'stock-deleted-restore', 'Stock Restored', 'Restoring stock from deletion within the system.', 1),
+    (5, 'stock-moved', 'Stock Moved', 'Moving stock within the system.', 1),
+    (6, 'stock-edited', 'Stock Edited', 'Editing of stock details within the system.', 1),
+    (7, 'stock-images', 'Stock Image Linking', 'Modification of stock image linking within the system.', 1),
+    (8, 'cablestock-added', 'Fixed Stock Added', 'Adding fixed stock to the system.', 1),
+    (9, 'cablestock-removed', 'Fixed Stock Removed', 'Removing fixed stock from the system.', 1),
+    (10, 'minstock-warning', 'Minimum Stock Warnings', 'Warning for stock being below the minimum stock count.', 1),
+    (11, 'important', 'Important', 'Important notifications. These need to be enabled', 1);
 
-UPDATE notifications SET id=0 WHERE id=10;
-ALTER TABLE notifications AUTO_INCREMENT = 10;
+UPDATE notifications SET id=0 WHERE id=11;
+ALTER TABLE notifications AUTO_INCREMENT = 11;
 
 INSERT INTO theme (id, name, file_name)
 VALUES

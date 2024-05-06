@@ -401,16 +401,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                                         echo('      
                                             </select>
+                                            <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                         </td>
                                         <td>
                                             <select id="area" name="area" class="form-control" style="border-color:black;margin:0px;padding-left:0px" disabled required>
                                                 <option value="" selected disabled hidden>Select Area</option>
                                             </select>
+                                            <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                         </td>
                                         <td>
                                             <select id="shelf" name="shelf" class="form-control" style="border-color:black;margin:0px;padding-left:0px" disabled required>
                                                 <option value="" selected disabled hidden>Select Shelf</option>
                                             </select>
+                                            <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'shelf\')">Add New</a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -758,7 +761,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
 
         ?>
-    </div>    
+    </div> 
+
+    <?php include 'includes/stock-new-properties.inc.php'; ?>
+
     <div id="modalDivNewType" class="modal">
         <!-- <div id="modalDivProperties" style="display: block;"> -->
         <span class="close" onclick="modalCloseNewType()">&times;</span>

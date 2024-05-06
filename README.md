@@ -676,6 +676,7 @@ Clone the repo first, and the follow the below steps.
 - Nav dropdown menu now opens on mouse over.
 - Added notifications for adding, removing and moving optics.
 - Updated the notifications table to add the new notifications.
+- Added a type dropdown filter on the cables page.
 
 </details>
 <details>

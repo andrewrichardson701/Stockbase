@@ -14,7 +14,8 @@ if (!empty($_POST)) {
             include 'dbh.inc.php';
             $redirect_url = str_replace('includes/', '', $_SESSION['redirect_url']);
             // print_r($_POST);        
-            $name = isset($_POST['property_name']) ? $_POST['property_name'] : header("Location ../$redirect_url&error=nameEmpty"); // all
+            $name = isset($_POST['property_name']) ? $_POST['property_name'] : NULL;
+            if ($name == NULL) { header("Location ../$redirect_url&error=nameEmpty"); } // all
             $description = isset($_POST['description']) ? $_POST['description'] : ''; // site/area
             $site_id = isset($_POST['site_id']) ? $_POST['site_id'] : ''; // area
             $area_id = isset($_POST['area_id']) ? $_POST['area_id'] : ''; // shelf
@@ -259,7 +260,7 @@ if (!empty($_POST)) {
                         <tr class="nav-row" >
                             <td style="width:150px">Site: </td>
                             <td>
-                                <select class="form-control" id="site-properties" name="site_site_id" style="width:300px" required>
+                                <select class="form-control" id="site-properties" name="site_id" style="width:300px" required>
                                     <option value="" selected disabled hidden>Select Site</option>
                                     <?php
 
@@ -291,17 +292,17 @@ if (!empty($_POST)) {
                         <tr class="nav-row" >
                             <td style="width:150px">Area: </td>
                             <td>
-                                <select class="form-control" id="area-properties" name="area_area_id" style="width:300px" disabled required>
+                                <select class="form-control" id="area-properties" name="area_id" style="width:300px" disabled required>
                                     <option value="" selected disabled hidden>Select Area</option>
                                 </select>
                             </td>
                         </tr>
                         <tr class="nav-row" >
-                            <td style="width:150px"><label for="manufacturer_name" class="nav-v-c align-middle">New Shelf Name:</label></td>
-                            <td><input type="text" class="form-control nav-v-c align-middle" id="manufacturer_name" name="property_name" /></td>           
+                            <td style="width:150px"><label for="shelf_name" class="nav-v-c align-middle">New Shelf Name:</label></td>
+                            <td><input type="text" class="form-control nav-v-c align-middle" id="shelf_name" name="property_name" /></td>           
                             <!-- <td style="margin-left:5px"><input type="submit" name="submit" value="Add Shelf" class="btn btn-success"/></td> -->
                             <td style="margin-left:5px"><button type="submit" name="submit" value="Add Shelf" class="btn btn-success" onclick="addProperty('shelf')">Add Shelf</button></td>
-                            <td hidden><input type="hidden" name="type" value="manufacturer" /></td>
+                            <td hidden><input type="hidden" name="type" value="shelf" /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -318,6 +319,10 @@ if (!empty($_POST)) {
             var description = document.getElementById(property+'_description') !== null ? document.getElementById(property+'_description').value : '';
             var site_id = document.getElementById(property+'_site_id') !== null ? document.getElementById(property+'_site_id').value : '';
             var area_id = document.getElementById(property+'_area_id') !== null  ? document.getElementById(property+'_area_id').value : '';
+            if (property == 'shelf' && document.getElementById('area-properties') !== null) {
+                var area_id = document.getElementById('area-properties').value;
+            }
+            
             $.ajax({
                 type: "POST",
                 url: "./includes/stock-new-properties.inc.php",

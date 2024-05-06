@@ -913,7 +913,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
     };
     xhr.send();
-    }
+    } 
     document.getElementById("site").addEventListener("change", populateAreas);
     document.getElementById("area").addEventListener("change", populateShelves);
 

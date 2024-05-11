@@ -165,7 +165,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         }
 
         function image_upload($field) {
-            $timedate = date("dmyHis");
+            $timedate = date("YmdHis");
 
             $uploadDirectory = "../assets/img/config/custom/";
             $errors = [];                                                   // Store errors here

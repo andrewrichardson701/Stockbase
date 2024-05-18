@@ -11,7 +11,7 @@
 // "CN=Administrator,CN=Users,DC=ajrich,DC=co,DC=uk"
 
 // INSTALL PHP LDAP:    apt install php8.1-ldap       or       apt intall php-ldap
-include 'login-functions.inc.php';
+include 'login-functions.inc.php'; // also includes changelog.inc.php
 
 if (isset($_POST['submit'])) {
     include 'get-config.inc.php'; // global config stuff
@@ -319,7 +319,7 @@ if (isset($_POST['submit'])) {
                                         mysqli_stmt_bind_param($stmt_upload, "ssssss", $ldap_info_samAccountName, $ldap_info_firstName, $ldap_info_lastName, $ldap_info_upn, $default_role, $auth);
                                         mysqli_stmt_execute($stmt_upload);
                                         $insert_id = mysqli_insert_id($conn);
-                                        include 'changelog.inc.php';
+                                        // include 'changelog.inc.php';
                                         // update changelog
                                         addChangelog($insert_id, $ldap_info_samAccountName, "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }

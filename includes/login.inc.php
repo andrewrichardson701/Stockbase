@@ -248,7 +248,7 @@ if (isset($_POST['submit'])) {
                     ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0);
 
                     $ldap_dn = $ldap_usergroup.",".$ldap_basedn;
-                    $ldap_bind = ldap_bind($ldap_conn, $ldap_username, $ldap_password);
+                    $ldap_bind = @ldap_bind($ldap_conn, $ldap_username, $ldap_password);
                     if (!$ldap_bind) {
                         error_log("Could not connect to LDAP server: $ldap_host at line: ".__LINE__);
                         if ($ldap_host !== $ldap_host_secondary && $ldap_host !== '' && $ldap_host !== null) {
@@ -275,7 +275,7 @@ if (isset($_POST['submit'])) {
                     $ldap_info = ldap_get_entries($ldap_conn, $ldap_search);
 
                     if ($ldap_info['count'] == 1) {
-                        $ldap_bind = ldap_bind($ldap_conn, $ldap_info[0]['dn'], $login_password);
+                        $ldap_bind = @ldap_bind($ldap_conn, $ldap_info[0]['dn'], $login_password);
                         if ($ldap_bind) {
                             $ldap_info_samAccountName = $ldap_info[0]['samaccountname'][0];
                             $ldap_info_upn = $ldap_info[0]['userprincipalname'][0];

@@ -664,6 +664,13 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>1.0.1</h3></summary>
+<h4>1.0.1 - Login history</h4>
+
+- Added a login history to the profile page.
+
+</details>
+<details>
 <summary><h3>1.0.0</h3></summary>
 <h4>Official 1.0.0 release.</h4>
 

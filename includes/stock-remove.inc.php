@@ -328,7 +328,7 @@ if ($stock_id == 0 || $stock_id == '0') {
                                             echo('
                                             <div class="nav-row" id="price-row" style="margin-top:25px">
                                                 <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price (£)</label></div>
-                                                <div><input type="number" name="price" placeholder="0" id="price" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required'.$disabled.'></input></div>
+                                                <div><input type="number" step=".01" name="price" placeholder="0" id="price" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required'.$disabled.'></input></div>
                                             </div>
                                         </div>
                                         <hr style="border-color: gray; margin-right:15px">

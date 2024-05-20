@@ -676,6 +676,12 @@ Clone the repo first, and the follow the below steps.
 - Nav dropdown menu now opens on mouse over.
 - Added notifications for adding, removing and moving optics.
 - Updated the notifications table to add the new notifications.
+- Added a type dropdown filter on the cables page.
+- All time/date variable are now in the same format. 
+- Any cost input now has a scale to 2 decimal places.
+- Added changelog entries for logging in with LDAP.
+- Fixed the csrf_token being missing on some admin user areas.
+- Fixed the logout changelog entry to actually showing logout as the reason.
 
 </details>
 <details>

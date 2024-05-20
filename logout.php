@@ -83,7 +83,7 @@ function updateLoginLog($type, $auth) {
 session_start();
 
 $log_id = updateLoginLog('logout', $_SESSION['auth']);
-addChangelog($_SESSION['user_id'], $_SESSION['username'], "Login success", "login_log", $log_id, "type", NULL, 'login');
+addChangelog($_SESSION['user_id'], $_SESSION['username'], "Logout", "login_log", $log_id, "type", NULL, 'logout');
 
 sessionLogout(); // session.inc.php
 
@@ -91,4 +91,3 @@ session_unset();
 session_destroy();
 header("Location: ./login.php");
 exit();
-?>

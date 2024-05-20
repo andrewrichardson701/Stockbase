@@ -31,7 +31,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $site = isset($_GET['site']) ? $_GET['site'] : "0";
         $name = isset($_GET['name']) ? $_GET['name'] : "";
         $cableType = isset($_GET['cable']) ? $_GET['cable'] : 'copper';
-
+        $cable_typesType = isset($_GET['type']) ? $_GET['type'] : '';
         if (isset($_GET['rows'])) {
             if ($_GET['rows'] == 50 || $_GET['rows'] == 100) {
                 $rowSelectValue = htmlspecialchars($_GET['rows']);
@@ -80,10 +80,44 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             $name = mysqli_real_escape_string($conn, $name); // escape the special characters
             $sql_inv_add  .= " AND stock.name LIKE '%$name%'";
         }
+        if (is_numeric($cable_typesType) && $cable_typesType !== '') { // cable_types table 
+            $sql_inv_add .= " AND cable_types.id = $cable_typesType";
+        }
         if (isset($cableType)) {
-            if ($name == '' || $name == null) {
-                $type = ucwords($cableType);
-                $sql_inv_add .= " AND cable_types.parent = '$type'";
+            if (is_numeric($cable_typesType) && $cable_typesType !== '') {
+                $sql_types = "SELECT parent
+                            FROM cable_types 
+                            WHERE id=?
+                            LIMIT 1";
+                $stmt_types = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_bind_param($stmt_types, "s", $cable_typesType);
+                    mysqli_stmt_execute($stmt_types);
+                    $result_types = mysqli_stmt_get_result($stmt_types);
+                    $rowCount_types = $result_types->num_rows;
+                    if ($rowCount_types < 1) {
+                        if ($name == '' || $name == null) {
+                            $cable_type = ucwords($cableType);
+                            $sql_inv_add .= " AND cable_types.parent = '$cable_type'";
+                        }
+                    } else {
+                        $row = $result_types->fetch_assoc();
+                        $query_parent = $row['parent'];
+                        if ($name == '' || $name == null) {
+                            $cableType = strtolower($query_parent);
+                            $cable_type = ucwords($cableType);
+                            $sql_inv_add .= " AND cable_types.parent = '".ucwords($cable_type)."'";
+                            $_GET['cable'] = $query_parent;
+                        }
+                    }
+                }
+            } else {
+                if ($name == '' || $name == null) {
+                    $cable_type = ucwords($cableType);
+                    $sql_inv_add .= " AND cable_types.parent = '$cable_type'";
+                }
             }
         }    
         $sql_inv_count .= $sql_inv_add;
@@ -220,6 +254,40 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <label for="search-input-name">Name</label><br>
                                     <input id="search-input-name" type="text" name="name" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
                                 </span>
+                                ');
+                                // GET the count of the cable_types table
+                                $types = array();
+                                $sql_types = "SELECT DISTINCT id, name, description, parent
+                                            FROM cable_types 
+                                            ORDER BY parent";
+                                $stmt_types = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
+                                    echo("ERROR getting entries");
+                                } else {
+                                    mysqli_stmt_execute($stmt_types);
+                                    $result_types = mysqli_stmt_get_result($stmt_types);
+                                    $rowCount_types = $result_types->num_rows;
+                                    if ($rowCount_types < 1) {
+                                        // echo ("No Types found");
+                                        // exit();
+                                    } else {
+                                        while( $row = $result_types->fetch_assoc() ) {
+                                            $types[] = array('id' => $row['id'], 'name' => $row['name'], 'description' => $row['description'], 'parent' => $row['parent']);
+                                        }
+                                    }
+                                }
+
+                                echo('
+                                <span id="search-input-type-span" style="margin-right:0.5em;margin-bottom:10px;">
+                                    <label for="search-input-type">Type</label><br>
+                                    <select id="search-input-type" name="type" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Type" onchange="this.form.submit()">
+                                        <option value="" '); echo ((isset($_GET['type']) && !is_numeric($_GET['type'])) ? 'selected' : ''); echo('>All</option>');
+                                    foreach ($types as $type) {
+                                        echo('<option value="'.$type['id'].'" title="'.$type['description'].' ('.$type['parent'].')" '); if(isset($_GET['type']) && $_GET['type'] == $type['id']) { echo ('selected'); } echo('>'.$type['name'].'</option>');
+                                    }
+                                echo('
+                                    </select>
+                                </span>
                                 <input type="submit" value="submit" hidden>
                             </form>');
 
@@ -333,16 +401,19 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                                         echo('      
                                             </select>
+                                            <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                         </td>
                                         <td>
                                             <select id="area" name="area" class="form-control" style="border-color:black;margin:0px;padding-left:0px" disabled required>
                                                 <option value="" selected disabled hidden>Select Area</option>
                                             </select>
+                                            <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                         </td>
                                         <td>
                                             <select id="shelf" name="shelf" class="form-control" style="border-color:black;margin:0px;padding-left:0px" disabled required>
                                                 <option value="" selected disabled hidden>Select Shelf</option>
                                             </select>
+                                            <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadProperties(\'shelf\')">Add New</a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -408,7 +479,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                 </div>
                                                 <div class="col" style="max-width:max-content"><div>Min.Stock</div><div><input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:70px" value="10" required/></div></div>
                                                 <div class="col" style="max-width:max-content"><div>Quantity</div><div><input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:70px" value="1" required/></div></div>
-                                                <div class="col" style="max-width:max-content"'); if ($current_cost_enable_cable == 0) { echo(' hidden'); } echo('><div>Cost</div><div><input class="form-control" type="number" name="item-cost" placeholder="Cost" style="width:70px" value="0" required/></div></div>
+                                                <div class="col" style="max-width:max-content"'); if ($current_cost_enable_cable == 0) { echo(' hidden'); } echo('><div>Cost</div><div><input class="form-control" type="number" step=".01" name="item-cost" placeholder="Cost" style="width:70px" value="0" required/></div></div>
                                                 <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button></div></div>
                                             </div>
                                         </td>
@@ -690,7 +761,10 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
 
         ?>
-    </div>    
+    </div> 
+
+    <?php include 'includes/stock-new-properties.inc.php'; ?>
+
     <div id="modalDivNewType" class="modal">
         <!-- <div id="modalDivProperties" style="display: block;"> -->
         <span class="close" onclick="modalCloseNewType()">&times;</span>

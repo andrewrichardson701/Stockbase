@@ -2716,10 +2716,12 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             data: {
                 user_id: id,
                 user_new_role: selectedValue,
-                user_role_submit: 'yes'
+                user_role_submit: 'yes',
+                csrf_token: '<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>'
             },
             dataType: "html",
             success: function(response) {
+                console.log(response);
                 var tr = document.getElementById('users_table_info_tr');
                 var td = document.getElementById('users_table_info_td');
                 tr.hidden = false;
@@ -2748,7 +2750,8 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             data: {
                 user_id: id,
                 user_new_enabled: checkboxValue,
-                user_enabled_submit: 'yes'
+                user_enabled_submit: 'yes',
+                csrf_token: '<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>'
             },
             dataType: "html",
             success: function(response) {

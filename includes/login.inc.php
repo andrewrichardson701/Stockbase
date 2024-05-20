@@ -11,7 +11,7 @@
 // "CN=Administrator,CN=Users,DC=ajrich,DC=co,DC=uk"
 
 // INSTALL PHP LDAP:    apt install php8.1-ldap       or       apt intall php-ldap
-include 'login-functions.inc.php';
+include 'login-functions.inc.php'; // also includes changelog.inc.php
 
 if (isset($_POST['submit'])) {
     include 'get-config.inc.php'; // global config stuff
@@ -248,7 +248,7 @@ if (isset($_POST['submit'])) {
                     ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0);
 
                     $ldap_dn = $ldap_usergroup.",".$ldap_basedn;
-                    $ldap_bind = ldap_bind($ldap_conn, $ldap_username, $ldap_password);
+                    $ldap_bind = @ldap_bind($ldap_conn, $ldap_username, $ldap_password);
                     if (!$ldap_bind) {
                         error_log("Could not connect to LDAP server: $ldap_host at line: ".__LINE__);
                         if ($ldap_host !== $ldap_host_secondary && $ldap_host !== '' && $ldap_host !== null) {
@@ -275,7 +275,7 @@ if (isset($_POST['submit'])) {
                     $ldap_info = ldap_get_entries($ldap_conn, $ldap_search);
 
                     if ($ldap_info['count'] == 1) {
-                        $ldap_bind = ldap_bind($ldap_conn, $ldap_info[0]['dn'], $login_password);
+                        $ldap_bind = @ldap_bind($ldap_conn, $ldap_info[0]['dn'], $login_password);
                         if ($ldap_bind) {
                             $ldap_info_samAccountName = $ldap_info[0]['samaccountname'][0];
                             $ldap_info_upn = $ldap_info[0]['userprincipalname'][0];
@@ -319,13 +319,14 @@ if (isset($_POST['submit'])) {
                                         mysqli_stmt_bind_param($stmt_upload, "ssssss", $ldap_info_samAccountName, $ldap_info_firstName, $ldap_info_lastName, $ldap_info_upn, $default_role, $auth);
                                         mysqli_stmt_execute($stmt_upload);
                                         $insert_id = mysqli_insert_id($conn);
-                                        include 'changelog.inc.php';
+                                        // include 'changelog.inc.php';
                                         // update changelog
                                         addChangelog($insert_id, $ldap_info_samAccountName, "LDAP resync", "users", $insert_id, "username", null, $ldap_info_samAccountName);
                                     }
                                     session_start();
                                     $_POST['user_id'] = $insert_id;
                                     $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
+                                    addChangelog($insert_id, $ldap_info_samAccountName, "Login success", "login_log", $log_id, "type", NULL, 'login');
                                     $faildelete_id = deleteLoginFail($_POST, 'ldap');
                                     if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
                                     $_SESSION['login_log_id'] = $log_id;
@@ -364,6 +365,7 @@ if (isset($_POST['submit'])) {
                                         }
                                         $_POST['user_id'] = $row['users_id'];
                                         $log_id = updateLoginLog($_POST, 'login', 'ldap'); // add an entry to the login_log
+                                        addChangelog($row['users_id'], $row['username'], "Login success", "login_log", $log_id, "type", NULL, 'login');
                                         $faildelete_id = deleteLoginFail($_POST, 'ldap');
                                         if (is_numeric($faildelete_id)) { addChangelog(0, 'Root', "Delete record", "login_failure", $faildelete_id, "id", $faildelete_id, NULL); }
                                         $_SESSION['login_log_id'] = $log_id;

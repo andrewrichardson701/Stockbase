@@ -18,7 +18,7 @@ include 'changelog.inc.php';
 include 'smtp.inc.php';
 
 function image_upload($field, $stock_id, $redirect_url, $redirect_queries) {
-    $timedate = date("dmyHis");
+    $timedate = date("YmdHis");
 
     $uploadDirectory = "../assets/img/stock/";
     $errors = [];                                                   // Store errors here
@@ -607,9 +607,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header("Location: ../".$redirect_url.$queryChar."error=notPOST");
     exit();
 }
-
-
-
-
-
-?>

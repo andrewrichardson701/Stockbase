@@ -1797,11 +1797,11 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                         $cable_item_id= mysqli_insert_id($conn);
 
                                         $type = "add";
-                                        $reason = "New Stock and Cable Item added";
+                                        $reason = "New Cable Item added";
                                         $date = date('Y-m-d'); // current date in YYY-MM-DD format
                                         $time = date('H:i:s'); // current time in HH:MM:SS format
                                         $username = $_SESSION['username'];
-                                        updateCableTransactions($stock_id, $cable_item_id, $type, $zero_q, $reason, $date, $time, $username, $shelf);
+                                        // updateCableTransactions($stock_id, $cable_item_id, $type, $zero_q, $reason, $date, $time, $username, $shelf);
                                         // update changelog
                                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "New record", "cable_item", $cable_item_id, "quantity", null, $zero_q);
                                     }
@@ -1829,6 +1829,9 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                             mysqli_stmt_bind_param($stmt, "ss", $new_quantity, $cable_item_id);
                             mysqli_stmt_execute($stmt);
                             $type = 'add';
+                            $reason = "Quantity added";
+                            $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                            $time = date('H:i:s'); // current time in HH:MM:SS format
                             updateCableTransactions($stock_id, $cable_item_id, $type, $quantity, $reason, $date, $time, $username, $shelf);
 
                             $stock_info = getCableStockInfo($stock_id);

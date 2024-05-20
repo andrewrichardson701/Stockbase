@@ -308,7 +308,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     $card_secondary = isset($row_card['card_secondary']) ? $row_card['card_secondary'] : '';
                 }
                 // echo('<tr class="nav-row"><th class="text-center" style="width:180px;margin-top:20px">Swipe card 1</th><th class="text-center" style="width:185px;margin-top:20px">Swipe card 2</th></tr>');
-                echo('<tr class="nav-row">');
+                echo('<tr class="nav-row" hidden>');
                 if ($card_primary == '' || $card_primary == null) {
                     echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
                 } else {
@@ -348,7 +348,10 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     echo('</td>
                     </tr>');
                 }
-                ?>          
+                ?> 
+                            <tr id="login_history">
+                                <td colspan=100%><p class="gold link" style="margin-top:20px" onclick="modalLoadLoginHistory()">View login history</p></td>
+                            </tr>         
                         </tbody>
                     </table>
                 <?php if($_SESSION['auth'] == "ldap") { echo("</form>"); } ?>
@@ -387,6 +390,66 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 });
             });
         </script>
+    </div>
+    <div id="modalDivLoginHistory" class="modal">
+        <span class="close" onclick="modalCloseLoginHistory()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <h2 style="margin-left:20px">Login History</h2>
+            <div class="well-nopad theme-divBg" style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-top:50px">
+                <table class="table table-dark theme-table centertable" style="max-width:max-content">
+                    <thead class="text-center align-middle theme-tableOuter">
+                        <th class="text-center align-middle">id</th>
+                        <th class="text-center align-middle">type</th>
+                        <th class="text-center align-middle">username</th>
+                        <th class="text-center align-middle">user_id</th>
+                        <th class="text-center align-middle">ipv4</th>
+                        <th class="text-center align-middle">ipv6</th>
+                        <th class="text-center align-middle">timestamp</th>
+                        <th class="text-center align-middle">auth</th>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $sql_log = "SELECT id, type, username, user_id, INET_NTOA(ipv4) AS ipv4, INET6_NTOA(ipv6) AS ipv6, timestamp, auth
+                                    FROM login_log 
+                                    WHERE username=?
+                                        AND (user_id=? OR user_id IS NULL) 
+                                        AND auth=?
+                                    ORDER BY id DESC;";
+                        $stmt_log = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_log, $sql_log)) {
+                            echo("ERROR getting entries");
+                        } else {
+                            mysqli_stmt_bind_param($stmt_log, "sss", $_SESSION['username'], $_SESSION['user_id'], $_SESSION['auth']);
+                            mysqli_stmt_execute($stmt_log);
+                            $result_log = mysqli_stmt_get_result($stmt_log);
+                            $rowCount_log = $result_log->num_rows;
+                            while($row_log = $result_log->fetch_assoc()) {
+                                $color = '';
+                                if ($row_log['type'] == 'failed') {
+                                    $color = 'transactionRemove';
+                                } elseif ($row_log['type'] == 'login') {
+                                    $color = 'transactionAdd';
+                                } elseif ($row_log['type'] == 'logout') {
+                                    $color = 'transactionDelete';
+                                }
+                                echo('<tr class="text-center align-middle '.$color.'">
+                                        <td class="text-center align-middle">'.$row_log['id'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['type'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['username'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['user_id'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['ipv4'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['ipv6'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['timestamp'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['auth'].'</td>
+                                    </tr>');
+                            }
+                        }
+                            
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
         
 <?php include 'foot.php'; ?>
@@ -442,6 +505,17 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         cardTypeInput.value = '';
         cardCardInput.value = '';
         cardHead.innerText = '';
+    }
+
+    function modalLoadLoginHistory() {
+        var modal = document.getElementById("modalDivLoginHistory");
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    function modalCloseLoginHistory() { 
+        var modal = document.getElementById("modalDivLoginHistory");
+        modal.style.display = "none";
     }
 </script>
 

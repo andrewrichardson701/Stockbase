@@ -668,6 +668,7 @@ Clone the repo first, and the follow the below steps.
 <h4>1.0.1 - Login history</h4>
 
 - Added a login history to the profile page.
+- Fixed the stock description showing the /r/n instead of line breaks on the stock edit text area and the stock main page.
 
 </details>
 <details>

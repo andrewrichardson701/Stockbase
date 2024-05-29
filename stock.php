@@ -153,16 +153,16 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 </div>
                             </div>');                            
                             showResponse(); 
-                            echo('
-                            <div class="row " style="margin-top:5px;margin-top:10px;">
-                                <div class="col" style="margin-top:auto;margin-bottom:auto;">
-                                    <h3 style="font-size:22px;margin-bottom:0px;" id="stock-name">'.$stock_name.' ('.$stock_sku.')</h3>
-                                    <input type="hidden" id="hiddenStockName" value="'.$stock_name.'">
+                            echo("
+                            <div class='row ' style='margin-top:5px;margin-top:10px;'>
+                                <div class='col' style='margin-top:auto;margin-bottom:auto;'>
+                                    <h3 style='font-size:22px;margin-bottom:0px;' id='stock-name'>".$stock_name." (".$stock_sku.")</h3>
+                                    <input type='hidden' id='hiddenStockName' value='".$stock_name."'>
                                 </div>
                                 
                             </div>
-                            <p id=stock-description style="color:#898989;margin-bottom:0px;margin-top:10px">'.$stock_description.'</p>
-                            '); 
+                            <p id='stock-description' style='color:#898989;margin-bottom:0px;margin-top:10px'>".str_replace(array("\r\n","\\r\\n"), "<br/>", $stock_description)."</p>
+                            "); 
                             if ($stock_stock_deleted == 1) { echo('<p class="red" style="margin-top:20px;font-size:20">Stock Deleted. <a class="link" style="font-size:20" href="admin.php#stockmanagement-settings">Restore?</a></p>');} 
                             echo('
                         </div>

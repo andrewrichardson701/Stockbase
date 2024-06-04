@@ -50,7 +50,6 @@ if (!isset($_SESSION['csrf_token'])) {
             <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
                 <p style="margin-top:2vh;margin-bottom:3vh">Please input your credentials to login.</p>
-                <!-- <p class="red">Demo LDAP username: <or class="blue">demo</or> password: <or class="blue">InventoryPass1!</or></p> -->
                 <form enctype="application/x-www-form-urlencoded" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
                     <!-- Include CSRF token in the form -->
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">

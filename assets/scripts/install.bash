@@ -4,7 +4,7 @@
 # PHP Bits
 #---------------------------------------------------------------------------------
 
-phpversion=8.1;
+phpversion=8.3;
 
 # List of php modules without the php version prefix
 modules=("curl" "fpm" "gd" "igbinary" "imagick" "imap" "intl" "ldap" "mbstring" "mysql" "readline" "redis" "soap" "xml" "xsl" "zip")

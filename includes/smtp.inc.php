@@ -29,10 +29,17 @@ function send_email($to, $toName, $fromName, $subject, $body, $notif_id) {
         if (is_numeric($notif_id)) {
 
             // get folder info to get the dbh config
-            $folder = dirname($_SERVER['PHP_SELF']);
-            $folder = explode('/', $folder)[1]; // inventory folder
+	    $folder = dirname($_SERVER['PHP_SELF']);
+	    if ($folder == '/includes') {
+                $folder = '';
+            }
 
-            include $_SERVER['DOCUMENT_ROOT'].'/'.$folder.'/includes/dbh.inc.php';
+	    include $_SERVER['DOCUMENT_ROOT'].$folder.'/includes/dbh.inc.php';
+
+//            $folder = dirname($_SERVER['PHP_SELF']);
+//            $folder = explode('/', $folder)[1]; // inventory folder
+
+//            include $_SERVER['DOCUMENT_ROOT'].'/'.$folder.'/includes/dbh.inc.php';
 
             // check if notification number exists (0 = general notifications)
             $sql_notif = "SELECT * FROM notifications WHERE id=$notif_id";

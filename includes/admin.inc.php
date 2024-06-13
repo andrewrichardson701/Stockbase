@@ -31,7 +31,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['tag_edit_submit'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
     && !isset($_POST['opticattributemanagement-submit']) && !isset($_POST['opticattributemanagement-restore'])
-    && !isset($_POST['stockmanagement-restore'])) {
+    && !isset($_POST['stockmanagement-restore']) 
+    && !isset($_POST['request_stock_images'])) {
 
     header("Location: ../admin.php?error=noSubmit&section=none");
     exit();
@@ -3223,6 +3224,94 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../tags.php?error=missingID");
             exit();
         }
+    } elseif (isset($_POST['request_stock_images'])) { // request a list of all stock images to be dumped onto the admin page.
+        include 'dbh.inc.php';
+        $filepath = '../assets/img/stock';
+
+        // Get list of all files
+        $files = array_values(array_diff(scandir($filepath), array('..', '.')));     
+
+        $tableRows = []; // initialise the array
+
+        for ($f=0; $f<count($files); $f++) {
+            $filename = $files[$f];
+
+            // Get the list of how used the image is.
+            $sql_images = "SELECT stock_img.id AS id, stock_img.stock_id AS stock_id, stock_img.image AS image,
+                                stock.name AS stock_name
+                            FROM stock_img 
+                            LEFT JOIN stock ON stock_img.stock_id=stock.id ANd stock.deleted=0
+                            WHERE image='$filename'";
+            $stmt_images = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt_images, $sql_images)) {
+                echo("ERROR getting entries");
+            } else {
+                mysqli_stmt_execute($stmt_images);
+                $result_images = mysqli_stmt_get_result($stmt_images);
+                $rowCount_images = $result_images->num_rows;
+                $links = $rowCount_images;
+            }
+
+            if ($links !== 0) { 
+                $disabled = 'disabled title="Image still linked to stock. Remove these links before deleting."';
+                $links_button = '<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showLinks(\'image\', \''.$f.'\')">Show Links</button>';
+            } else {
+                $disabled = $links_button = '';
+            }
+
+            $tableRows[] = '<tr id="image-row-'.$f.'" class="align-middle">
+                                <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                    <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                                    <input type="hidden" name="file-name" value="'.$filename.'" />
+                                    <input type="hidden" name="file-links" value="'.$links.'" />
+                                    <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
+                                    <td id="image-'.$f.'-name" class="text-center align-middle">'.$filepath.'/'.$filename.'</td>
+                                    <td class="text-center align-middle">'.$links.'</td>
+                                    <td class="text-center align-middle"><button class="btn btn-danger" type="submit" name="imagemanagement-submit" '.$disabled.'><i class="fa fa-trash"></i></button></td>
+                                    <td class="text-center align-middle">'.$links_button.'</td>
+                                </form>
+                            </tr>
+                        ';
+            if ($links !== 0) { 
+                $sub_rows = '';
+                while ($row_images = $result_images->fetch_assoc()) {
+                    $sub_rows .= '<tr class="clickable" onclick=navPage("stock.php?stock_id='.$row_images['stock_id'].'")>
+                                    <td>'.$row_images['id'].'</td>
+                                    <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_id'].'</a></td>
+                                    <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_name'].'</a></td>
+                                    <td>'.$row_images['image'].'</td>
+                                </tr>';
+                }
+                $tableRows[] = '<tr id="image-row-'.$f.'-links" class="align-middle" hidden>
+                                    <td colspan=100%>
+                                        <div>
+                                            <table class="table table-dark theme-table">
+                                                <thead>
+                                                    <tr class="theme-tableOuter">
+                                                        <th>ID</th>
+                                                        <th>Stock ID</th>
+                                                        <th>Stock Name</th>
+                                                        <th>Image</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                '.$sub_rows.'
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>';
+            }
+        }
+
+        if (empty($tableRows)) {
+            $tableRows[0] = "ERROR";
+        } 
+        // print_r($tableRows);
+        // print_r('<table><tbody>');
+        // print_r($tableRows);
+        // print_r('</tbody></table>');
+        print_r(json_encode($tableRows));
     } else {
         header("Location: ../admin.php?error=submitIssue");
         exit();

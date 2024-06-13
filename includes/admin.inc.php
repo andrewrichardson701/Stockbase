@@ -3232,7 +3232,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $current_page = $_POST['current_page'];
 
                 $filepath = '../assets/img/stock';
-                $interval=5;
+                $interval = 20; // how many images load each button click
 
                 // Get list of all files
                 $files = array_values(array_diff(scandir($filepath), array('..', '.')));     

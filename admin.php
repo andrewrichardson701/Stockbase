@@ -692,6 +692,10 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             }
             ?>
             <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                <?php 
+                $files = array_values(array_diff(scandir('./assets/img/stock'), array('..', '.'))); 
+                ?>
+                <p>Image Count: <or class="green"><?php echo(count($files));?></or></p>
                 <table class="table table-dark theme-table" style="max-width:max-content">
                     <thead>
                         <tr class="theme-tableOuter">
@@ -706,7 +710,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         <tr id="loader-tr">
                             <td id="loader-td" colspan=100% class="algin-middle text-center">
                                 <div id="loader-outerdiv">
-                                    <button class="btn btn-info" id="show-images" onclick="loadAdminImages()">Load Images</button>
+                                    <button class="btn btn-info" id="show-images" onclick="loadAdminImages(0, 1)">Load Images</button>
                                     <div class="loader" id="loaderDiv" style="margin-top:10px;width:130px;display:none">
                                         <div class="loaderBar"></div>
                                     </div>
@@ -3209,9 +3213,10 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             document.getElementById('loaderDiv').style.display = type;
         }
 
-        function loadAdminImages() {
+        function loadAdminImages(currentPage, pageNum) {
             var tbody = document.getElementById('image-management-tbody');
             var data = 1;
+            var loaderRow = document.getElementById('loader-tr');
 
             viewLoaderDiv('block');
             
@@ -3219,7 +3224,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 type: "POST",
                 url: "./includes/admin.inc.php",
                 data: {
-                    request_stock_images: data
+                    request_stock_images: data,
+                    current_page: currentPage,
+                    page: pageNum
                 },
                 dataType: "json",
                 success: function(response){
@@ -3229,7 +3236,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         for (var i = 0; i < rows.length; i++) {
                             var row = rows[i];
                             if (i == 0) {
-                                tbody.innerHTML = '';
+                                loaderRow.remove();
                             }
                             if (row == "ERROR" && i == 0) {
                                 tbody.innerHTML += "<tr><td colspan=100%>Error getting images</td></tr>";

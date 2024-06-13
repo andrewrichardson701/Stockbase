@@ -702,83 +702,17 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             <th class="text-center theme-tableOuter" style="position: sticky; top: -1;">&nbsp;</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    <?php
-                        $filepath = 'assets/img/stock';
-                        $files = array_values(array_diff(scandir($filepath), array('..', '.')));
-                        // print_r($files);
-                        
-
-                        for ($f=0; $f<count($files); $f++) {
-                            $filename = $files[$f];
-
-                            $sql_images = "SELECT stock_img.id AS id, stock_img.stock_id AS stock_id, stock_img.image AS image,
-                                                stock.name AS stock_name
-                                            FROM stock_img 
-                                            LEFT JOIN stock ON stock_img.stock_id=stock.id ANd stock.deleted=0
-                                            WHERE image='$filename'";
-                            $stmt_images = mysqli_stmt_init($conn);
-                            if (!mysqli_stmt_prepare($stmt_images, $sql_images)) {
-                                echo("ERROR getting entries");
-                            } else {
-                                mysqli_stmt_execute($stmt_images);
-                                $result_images = mysqli_stmt_get_result($stmt_images);
-                                $rowCount_images = $result_images->num_rows;
-                                $links = $rowCount_images;
-                            }
-                            echo('
-                                <tr id="image-row-'.$f.'" class="align-middle">
-                                    <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                        <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
-                                        <input type="hidden" name="file-name" value="'.$filename.'" />
-                                        <input type="hidden" name="file-links" value="'.$links.'" />
-                                        <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
-                                        <td id="image-'.$f.'-name" class="text-center align-middle">'.$filepath.'/'.$filename.'</td>
-                                        <td class="text-center align-middle">'.$links.'</td>
-                                        <td class="text-center align-middle"><button class="btn btn-danger" type="submit" name="imagemanagement-submit" '); if ($links !== 0) { echo('disabled title="Image still linked to stock. Remove these links before deleting."'); } echo('><i class="fa fa-trash"></i></button></td>
-                                        <td class="text-center align-middle">'); if ($links !== 0) { echo('<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showLinks(\'image\', \''.$f.'\')">Show Links</button>'); } echo('</td>
-                                    </form>
-                                </tr>
-                            ');
-                            if ($links !== 0) { 
-                                echo('
-                                    <tr id="image-row-'.$f.'-links" class="align-middle" hidden>
-                                        <td colspan=100%>
-                                            <div>
-                                                <table class="table table-dark theme-table">
-                                                    <thead>
-                                                        <tr class="theme-tableOuter">
-                                                            <th>ID</th>
-                                                            <th>Stock ID</th>
-                                                            <th>Stock Name</th>
-                                                            <th>Image</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>');
-                                                    while ($row_images = $result_images->fetch_assoc()) {
-                                                        echo('
-                                                            <tr class="clickable" onclick=navPage("stock.php?stock_id='.$row_images['stock_id'].'")>
-                                                                <td>'.$row_images['id'].'</td>
-                                                                <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_id'].'</a></td>
-                                                                <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_name'].'</a></td>
-                                                                <td>'.$row_images['image'].'</td>
-                                                            </tr>
-                                                        ');
-                                                    }
-                                                    
-                                                    echo('
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ');
-                            }
-                        }
-                        
-
-                    ?>
-                        
+                    <tbody id="image-management-tbody">
+                        <tr id="loader-tr">
+                            <td id="loader-td" colspan=100% class="algin-middle text-center">
+                                <div id="loader-outerdiv">
+                                    <button class="btn btn-info" id="show-images" onclick="loadAdminImages()">Load Images</button>
+                                    <div class="loader" id="loaderDiv" style="margin-top:10px;width:130px;display:none">
+                                        <div class="loaderBar"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>                        
                     </tbody>
                 </table>
             </div>
@@ -3268,6 +3202,53 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         }
 
         document.onload = emailTemplate();
+    </script>
+
+    <script>
+        function viewLoaderDiv(type) {
+            document.getElementById('loaderDiv').style.display = type;
+        }
+
+        function loadAdminImages() {
+            var tbody = document.getElementById('image-management-tbody');
+            var data = 1;
+
+            viewLoaderDiv('block');
+            
+            $.ajax({
+                type: "POST",
+                url: "./includes/admin.inc.php",
+                data: {
+                    request_stock_images: data
+                },
+                dataType: "json",
+                success: function(response){
+                    var rows = response;
+                    //console.log(response);
+                    if (Array.isArray(rows)) {
+                        for (var i = 0; i < rows.length; i++) {
+                            var row = rows[i];
+                            if (i == 0) {
+                                tbody.innerHTML = '';
+                            }
+                            if (row == "ERROR" && i == 0) {
+                                tbody.innerHTML += "<tr><td colspan=100%>Error getting images</td></tr>";
+                                continue;
+                            } else {
+                                tbody.innerHTML += row;
+                            }
+                        }
+                        // viewLoaderDiv('none');
+                    } else {
+                        tbody.innerHTML += "<tr><td colspan=100%>Error getting images</td></tr>";
+                    } 
+                },
+                error: function(response) {
+                    tbody.innerHTML += "<tr><td colspan=100%>Error getting images</td></tr>";
+                },
+                async: true // <- this turns it into synchronous
+            });
+        }
     </script>
     
 <?php include 'foot.php'; ?>

@@ -11,7 +11,21 @@ $dBUsername = 'admin';
 $dBPassword = 'admin';
 $dBName = 'stockbase';
 
-$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+try {
+	$conn = mysqli_connect($servername, $dBUsername, $dBPassword, $dBName);
+
+	// Check connection
+	if ($conn->connect_error) {
+		throw new Exception("Connection failed: " . $conn->connect_error);
+	}
+} catch (Exception $e) {
+	error_log("Database connection failed: $e ");
+	// redirect due to error
+	echo '<script type="text/javascript">
+			window.location.href = "error.php?sqlerror=credentials";
+		  </script>';
+	exit();
+}
 
 if (!$conn) {
 	die("Connection Failed: ".mysqli_connect_error());

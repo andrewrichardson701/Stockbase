@@ -669,6 +669,8 @@ Clone the repo first, and the follow the below steps.
 
 - Added a login history to the profile page.
 - Fixed the stock description showing the /r/n instead of line breaks on the stock edit text area and the stock main page.
+- Image management section of the admin page, now loads images on an interval of 20 per button click to save loading times.
+- Added a credential login checker on the db credentials to redirect to an error page if there is an issue.
 
 </details>
 <details>

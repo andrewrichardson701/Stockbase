@@ -240,6 +240,12 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
     }
 }
 
+
+$default_default_theme_id    = ($config_d_default_theme_id    !== '' ? $config_d_default_theme_id            : $predefined_default_theme_id); 
+
+$current_default_theme_id    = ($config_default_theme_id      !== '' ? $config_default_theme_id              : $default_default_theme_id);
+
+
 // get theme info for defaults
 $sql_theme = "SELECT * FROM theme WHERE id=$current_default_theme_id";
 $stmt_theme = mysqli_stmt_init($conn);
@@ -351,11 +357,6 @@ $current_smtp_to_email       = ($config_smtp_to_email         !== '' ? $config_s
 
 # ---
 
-$default_default_theme_id    = ($config_d_default_theme_id    !== '' ? $config_d_default_theme_id            : $predefined_default_theme_id); 
-
-$current_default_theme_id    = ($config_default_theme_id      !== '' ? $config_default_theme_id              : $default_default_theme_id);
-
-# ---
 
 $default_cost_enable_normal  = ($config_d_cost_enable_normal  !== '' ? $config_d_cost_enable_normal          : 1); 
 $default_cost_enable_cable   = ($config_d_cost_enable_cable   !== '' ? $config_d_cost_enable_cable           : 1); 

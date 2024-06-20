@@ -173,7 +173,7 @@ if (isset($_POST['make2fa'])) {
 
             $accountName = getAccountName($accountID);
             $data = create2FA($accountName);
-            $prompt = makeOTPPrompt($data, $accountName, $accountID, $redirect_url, 'return');
+            $prompt = make2FAPrompt($data, $accountName, $accountID, $redirect_url, 'return');
             
             $return['status'] = 'true';
             $return['data'] = $prompt;

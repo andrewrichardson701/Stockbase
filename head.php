@@ -20,7 +20,7 @@ setcookie("stockbase_cookie", bin2hex(random_bytes(32)), [ 'expires' => time() +
     script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
     style-src 'self' https://stackpath.bootstrapcdn.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://adobe-fonts.github.io https://use.fontawesome.com 'unsafe-inline';
     font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://adobe-fonts.github.io https://use.fontawesome.com;
-    img-src 'self' data:;
+    img-src 'self' https://api.qrserver.com data:;
 ">
 <meta charset="utf-8">
 <meta name="theme-color" content="#ffffff">

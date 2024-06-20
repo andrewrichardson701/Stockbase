@@ -139,7 +139,7 @@ if (isset($_POST['submit'])) {
         $login_username = trim($_POST["username"]); // remove white space before or after the username
         $login_password = $_POST["password"];
 
-        if (isset($_POST['local']) && $_POST['local'] === true) {
+        if (isset($_POST['local']) && $_POST['local'] == "true") {
             
             if (queryLoginBlocked($_POST, 'local') == "blocked") {
                 $loginlog_id = updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log

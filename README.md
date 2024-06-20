@@ -678,6 +678,8 @@ Clone the repo first, and the follow the below steps.
 - mysqldump of new changes added.
 - Changes noted in the update bash file
 - Admin page now shows larger tables better
+- Admin page now has an authentication section for toggling 2FA globally.
+- All swipe card code has been commented out as this is likely not going to be used. Can be removed later.
 
 </details>
 <details>

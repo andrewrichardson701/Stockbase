@@ -664,6 +664,22 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>1.1.0</h3></summary>
+<h4>1.1.0 - 2FA Tntegration</h4>
+
+- Added CSRF token checking to login.inc.php. This was missing.
+- Added ids to login.php inputs
+- Changed all of the Location headers in the login.inc.php to be returns for ajax.
+- Added the Google Authenticator package
+- Added the Google Authenticator url to the meta tag
+- Added login.js for all the login js bits
+- Added 2fa.inc.php for the 2fa bits
+- Reconfigured the login.inc.php page to fully work via AJAX and check for 2FA settings.
+- mysqldump of new changes added.
+- Changes noted in the update bash file
+
+</details>
+<details>
 <summary><h3>1.0.1</h3></summary>
 <h4>1.0.1 - Login history</h4>
 

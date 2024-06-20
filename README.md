@@ -677,6 +677,7 @@ Clone the repo first, and the follow the below steps.
 - Reconfigured the login.inc.php page to fully work via AJAX and check for 2FA settings.
 - mysqldump of new changes added.
 - Changes noted in the update bash file
+- Admin page now shows larger tables better
 
 </details>
 <details>

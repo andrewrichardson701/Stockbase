@@ -1189,3 +1189,14 @@ esac
             
     esac 
 }
+
+# 1.0.0 - no changes to be added
+# 1.0.1 - no changes to add
+#
+# 1.1.0 changes to add below:
+#alter table users add column 2fa_enabled boolean default 0;
+#alter table users add column 2fa_secret text;
+#alter table config add column 2fa_enabled boolean default 0;
+#alter table config add column 2fa_enforced boolean default 0;
+#alter table config_default add column 2fa_enabled boolean default 0;
+#alter table config_default add column 2fa_enforced boolean default 0;

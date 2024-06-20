@@ -605,6 +605,72 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         </div>
 
         <div class="container" style="padding-bottom:0px">
+            <h3 class="clickable" style="margin-top:50px;font-size:22px" id="authentication-settings" onclick="toggleSection(this, 'authentication')">Authentication <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+            <!-- Authentication -->
+            <div style="padding-top: 20px" id="authentication" hidden>
+                <?php
+                if ((isset($_GET['section']) && $_GET['section'] == 'authentication')) {
+                    showResponse();
+                }
+                ?>
+                <p id="authentication-output" class="last-edit-T" hidden></p>
+
+                <?php
+                $sql_check = "SELECT 2fa_enabled, 2fa_enforced FROM config WHERE id=1";
+                $stmt_check = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                    echo ('ERRORRRR');
+                } else {
+                    mysqli_stmt_execute($stmt_check);
+                    $result_check = mysqli_stmt_get_result($stmt_check);
+
+                    $row_check = $result_check->fetch_assoc();
+                    $enabled_2fa = $row_check['2fa_enabled'];
+                    $enforced_2fa = $row_check['2fa_enforced'];
+
+                    if ($enabled_2fa == 1) {
+                        $enabled_checked = 'checked';
+                    } else {
+                        $enabled_checked = '';
+                    }
+                    
+                    if ($enforced_2fa == 1) {
+                        $enforced_checked = 'checked';
+                    } else {
+                        $enforced_checked = '';
+                    }
+                    
+                }
+                ?>
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px">
+                                <p style="min-height:max-content;margin:0px" class="align-middle">Enable 2FA:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:50px" id="enable_2fa_toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
+                                    <input type="checkbox" name="enable_2fa" onchange="authSettings(this, '2fa_enabled')" <?php echo($enabled_checked); ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px">
+                                <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enforce the use of 2FA for ALL users (except Root)">Enforce 2FA:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:50px" id="enforce_2fa_toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
+                                    <input type="checkbox" name="enforce_2fa" onchange="authSettings(this, '2fa_enforced')" <?php echo($enforced_checked); ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container" style="padding-bottom:0px">
             <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sessionmanagement-settings" onclick="toggleSection(this, 'sessionmanagement')">Session Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
             <!-- Session Management -->
             <div style="padding-top: 20px" id="sessionmanagement" hidden>
@@ -2901,6 +2967,40 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         };
         xhr.send();
     } 
+
+    // auth setting checkboxes
+    function authSettings(checkbox, id) {
+        var outputBox = document.getElementById('authentication-output');
+        if (checkbox.checked) {
+            // enable the auth setting
+            var value = 1;
+        } else {
+            // disable the auth setting
+            var value = 0;
+        }
+        $.ajax({
+            type: "POST",
+            url: "includes/admin.inc.php",
+            data: {
+                auth_setting: 1,
+                id: id,
+                value: value
+            },
+            dataType: "json",
+            success: function(response){
+                // do something with redirect_url to put it on the page.
+                if (response['status'] == 'true') {
+                    outputBox.hidden = false;
+                    outputBox.classList="last-edit-T";
+                    outputBox.innerHTML = response[0];
+                }
+            },
+            error: function(response) {
+                console.log(response);
+            },
+            async: true // <- this turns it into synchronous
+        });
+    }
     </script>
 
     <script> // MODAL SCRIPT

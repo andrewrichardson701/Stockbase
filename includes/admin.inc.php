@@ -32,7 +32,8 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
     && !isset($_POST['opticattributemanagement-submit']) && !isset($_POST['opticattributemanagement-restore'])
     && !isset($_POST['stockmanagement-restore']) 
-    && !isset($_POST['request_stock_images'])) {
+    && !isset($_POST['request_stock_images'])
+    && !isset($_POST['auth_setting'])) {
 
     header("Location: ../admin.php?error=noSubmit&section=none");
     exit();
@@ -3357,6 +3358,58 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
         } else {
             echo('ERROR');
         }
+    } elseif (isset($_POST['auth_setting'])) { // change auth settings in admin.php for 2fa
+        $return = [];
+        if (isset($_POST['id'])) {
+            if (isset($_POST['value'])) {
+                include 'dbh.inc.php';
+                $value = $_POST['value'];
+
+                if (($_POST['id'] == "2fa_enabled" || $_POST['id'] == "2fa_enforced") && ((int)$value == 1 || (int)$value == 0)) {
+                    $field = $_POST['id'];
+
+                    $sql_check = "SELECT $field FROM config WHERE id=1";
+                    $stmt_check = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                        $return[0] = '<or class="red">Unable to get Data</or>';
+                    } else {
+                        mysqli_stmt_execute($stmt_check);
+                        $result_check = mysqli_stmt_get_result($stmt_check);
+                        $rowCount_check = $result_check->num_rows;
+                        if ($rowCount_check != 1) {
+                            $return[0] = '<or class="red">Missing Data in Table</or>';
+                        } else {
+                            $row_check = $result_check->fetch_assoc();
+                            $field_check = $row_check[$field];
+
+                            if ((int)$field_check == (int)$field) {
+                                $return[0] = '<or class="red">No changes made.</or>';
+                            } else {
+                                $sql = "UPDATE config SET $field=? WHERE id=1";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    $return[0] = '<or class="red">Unable to get Data</or>';
+                                } else {
+                                    mysqli_stmt_bind_param($stmt, "s", $value);
+                                    mysqli_stmt_execute($stmt);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, $field, $field_check, $value);
+                                    $return[0] = '<or class="green">Authentication udpated.</or>';
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $return[0] = '<or class="red">Incorrect field.</or>';
+                }
+
+            } else {
+                $return[0] = '<or class="red">No Value Set</or>';
+            }
+        } else {
+            $return[0] = '<or class="red">No ID set</or>';
+        }
+        echo json_encode($return);
     } else {
         header("Location: ../admin.php?error=submitIssue");
         exit();

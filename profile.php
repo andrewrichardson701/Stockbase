@@ -295,60 +295,61 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                 showResponse();
 
-                $sql_card = "SELECT card_primary, card_secondary FROM users WHERE id=$profile_id";
-                $stmt_card = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt_card, $sql_card)) {
-                    echo("ERROR getting entries");
-                } else {
-                    mysqli_stmt_execute($stmt_card);
-                    $result_card = mysqli_stmt_get_result($stmt_card);
-                    $rowCount_card = $result_card->num_rows;
-                    $row_card = $result_card->fetch_assoc(); 
-                    $card_primary = isset($row_card['card_primary']) ? $row_card['card_primary'] : '';
-                    $card_secondary = isset($row_card['card_secondary']) ? $row_card['card_secondary'] : '';
-                }
-                // echo('<tr class="nav-row"><th class="text-center" style="width:180px;margin-top:20px">Swipe card 1</th><th class="text-center" style="width:185px;margin-top:20px">Swipe card 2</th></tr>');
-                echo('<tr class="nav-row" hidden>');
-                if ($card_primary == '' || $card_primary == null) {
-                    echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
-                } else {
-                    echo('<td style="width:200px"><button class="btn btn-warning" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 1)">Re-assign swipe card 1</button></td>');
-                }
-                if ($card_secondary == '' || $card_secondary == null) {
-                    echo('<td><button class="btn btn-success" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 2)">Assign swipe card 2</button></td>');
-                } else {
-                    echo('<td><button class="btn btn-warning" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 2)">Re-assign swipe card 2</button></td>');
-                }
-                echo('</tr>');
-                if ($card_primary !== '' || $card_secondary !== '') {
-                    echo ('<tr class="nav-row">
-                    <td style="width:200px">');
-                    if ($card_primary !== '') {
-                        echo('
-                        <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                            <!-- Include CSRF token in the form -->
-                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
-                            <input type="hidden" name="card-remove" value="1" />
-                            <input type="hidden" id="removeCard" name="card" value="1" />
-                            <button class="btn btn-danger" style="width:180px;margin-top:20px" type="submit">De-assign swipe card 1</button>
-                        </form>');
-                    }
-                    echo('</td>
-                    <td>');
-                    if ($card_secondary !== '') {
-                        echo('
-                        <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                            <!-- Include CSRF token in the form -->
-                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
-                            <input type="hidden" name="card-remove" value="1" />
-                            <input type="hidden" id="removeCard" name="card" value="2" />
-                            <button class="btn btn-danger" style="width:185px;margin-top:20px" type="submit">De-assign swipe card 2</button>
-                        </form>');
-                    }
-                    echo('</td>
-                    </tr>');
-                }
-                ?> 
+                // below commented out due to card reader stuff probably not going to be happening
+                // $sql_card = "SELECT card_primary, card_secondary FROM users WHERE id=$profile_id";
+                // $stmt_card = mysqli_stmt_init($conn);
+                // if (!mysqli_stmt_prepare($stmt_card, $sql_card)) {
+                //     echo("ERROR getting entries");
+                // } else {
+                //     mysqli_stmt_execute($stmt_card);
+                //     $result_card = mysqli_stmt_get_result($stmt_card);
+                //     $rowCount_card = $result_card->num_rows;
+                //     $row_card = $result_card->fetch_assoc(); 
+                //     $card_primary = isset($row_card['card_primary']) ? $row_card['card_primary'] : '';
+                //     $card_secondary = isset($row_card['card_secondary']) ? $row_card['card_secondary'] : '';
+                // }
+                // // echo('<tr class="nav-row"><th class="text-center" style="width:180px;margin-top:20px">Swipe card 1</th><th class="text-center" style="width:185px;margin-top:20px">Swipe card 2</th></tr>');
+                // echo('<tr class="nav-row" hidden>');
+                // if ($card_primary == '' || $card_primary == null) {
+                //     echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
+                // } else {
+                //     echo('<td style="width:200px"><button class="btn btn-warning" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 1)">Re-assign swipe card 1</button></td>');
+                // }
+                // if ($card_secondary == '' || $card_secondary == null) {
+                //     echo('<td><button class="btn btn-success" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 2)">Assign swipe card 2</button></td>');
+                // } else {
+                //     echo('<td><button class="btn btn-warning" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 2)">Re-assign swipe card 2</button></td>');
+                // }
+                // echo('</tr>');
+                // if ($card_primary !== '' || $card_secondary !== '') {
+                //     echo ('<tr class="nav-row">
+                //     <td style="width:200px">');
+                //     if ($card_primary !== '') {
+                //         echo('
+                //         <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                //             <!-- Include CSRF token in the form -->
+                //             <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                //             <input type="hidden" name="card-remove" value="1" />
+                //             <input type="hidden" id="removeCard" name="card" value="1" />
+                //             <button class="btn btn-danger" style="width:180px;margin-top:20px" type="submit">De-assign swipe card 1</button>
+                //         </form>');
+                //     }
+                //     echo('</td>
+                //     <td>');
+                //     if ($card_secondary !== '') {
+                //         echo('
+                //         <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                //             <!-- Include CSRF token in the form -->
+                //             <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                //             <input type="hidden" name="card-remove" value="1" />
+                //             <input type="hidden" id="removeCard" name="card" value="2" />
+                //             <button class="btn btn-danger" style="width:185px;margin-top:20px" type="submit">De-assign swipe card 2</button>
+                //         </form>');
+                //     }
+                //     echo('</td>
+                //     </tr>');
+                // }
+                // ?> 
                             <tr id="login_history">
                                 <td colspan=100%><p class="gold link" style="margin-top:20px" onclick="modalLoadLoginHistory()">View login history</p></td>
                             </tr>         

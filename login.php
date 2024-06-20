@@ -101,7 +101,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 ?>
                 <p id="js-info" style="display:none"></p>
                 <p><a href="login.php?reset=true" id="password-reset">Forgot password?</a>
-                <button class="btn btn-info viewport-small-block" onclick="modalLoadSwipe()">Swipe card login</button>
+                <!-- <button class="btn btn-info viewport-small-block" onclick="modalLoadSwipe()">Swipe card login</button> -->
                 <!-- <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p> -->
             </div>
         </div>
@@ -147,12 +147,11 @@ if (!isset($_SESSION['csrf_token'])) {
         }
     ?>
 
-    <div id="modalDivSwipe" class="modal viewport-small-block"<?php if (isset($_GET['reset']) && $_GET['reset'] == 'true') { echo(' hidden');}?> >
-    <!-- <div id="modalDivSwipe" class="modal" style="display: block !important;">  -->
+    <!-- <div id="modalDivSwipe" class="modal viewport-small-block"<?php if (isset($_GET['reset']) && $_GET['reset'] == 'true') { echo(' hidden');}?> >
+
         <span class="close" onclick="modalCloseSwipe()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <form id='cardLoginForm' action="includes/login-card.inc.php" method="POST" enctype="application/x-www-form-urlencoded">
-                <!-- Include CSRF token in the form -->
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <input type="hidden" name="submitHidden" value="1" />
                 <input type="hidden" name="cardData" id="cardData" />
@@ -180,7 +179,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 });
             });
         </script>
-    </div>
+    </div> -->
 <script src='assets/js/login.js'></script>
 <script>
 var toggle = document.getElementById("local-toggle");

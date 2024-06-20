@@ -7,6 +7,7 @@
 // DEFAULT LANDING PAGE IF NOT LOGGED IN. 
 // ALLOWS USERS TO LOGIN TO THE SYSTEM TO VIEW AND MODIFY CONTENT
 session_start();
+
 // if session not set, go to login page
 if (session_status() !== PHP_SESSION_ACTIVE) {
     header("Location: ./");
@@ -28,6 +29,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a random token
 }
+
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
@@ -37,7 +39,7 @@ if (!isset($_SESSION['csrf_token'])) {
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
     <title><?php echo ucwords($current_system_name);?> - Login</title>
 </head>
-<body>
+<body id="body">
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
@@ -50,21 +52,21 @@ if (!isset($_SESSION['csrf_token'])) {
             <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
                 <p style="margin-top:2vh;margin-bottom:3vh">Please input your credentials to login.</p>
-                <form enctype="application/x-www-form-urlencoded" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
+                <form id="loginForm" style="margin-bottom:0px">
                     <!-- Include CSRF token in the form -->
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    <input id="csrf_token" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <div class="form-group">
                         <label>Username / Email Address</label>
-                        <input type="username" name="username" class="form-control" placeholder="username@domain.com" required>
+                        <input id="username" type="username" name="username" class="form-control" placeholder="username@domain.com" required>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <input id="password" type="password" name="password" class="form-control" placeholder="Password" required>
                     </div>
                     
                         <div class="nav-row">
                             <div class="form-group">
-                                <input type="submit" name="submit" class="btn btn-primary" value="Login">
+                                <input id="submit" type="submit" name="submit" class="btn btn-primary" value="Login">
                             </div>
                             <?php 
                             if ($current_ldap_enabled == 1) {
@@ -78,7 +80,7 @@ if (!isset($_SESSION['csrf_token'])) {
                                     <label class="nav-div" style="margin-left:0px">Local Login<p></p></label>
                                 ');
                             } else {
-                                echo('<input type="hidden" name="local" value="on" />');
+                                echo('<input id="local-toggle" type="hidden" name="local" value="on" />');
                             }
                             ?>
                         </div>
@@ -97,6 +99,7 @@ if (!isset($_SESSION['csrf_token'])) {
                         }
                     }
                 ?>
+                <p id="js-info" style="display:none"></p>
                 <p><a href="login.php?reset=true" id="password-reset">Forgot password?</a>
                 <button class="btn btn-info viewport-small-block" onclick="modalLoadSwipe()">Swipe card login</button>
                 <!-- <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p> -->
@@ -178,7 +181,7 @@ if (!isset($_SESSION['csrf_token'])) {
             });
         </script>
     </div>
-
+<script src='assets/js/login.js'></script>
 <script>
 var toggle = document.getElementById("local-toggle");
 var reset = document.getElementById("password-reset");

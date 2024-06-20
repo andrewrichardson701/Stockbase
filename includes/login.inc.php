@@ -139,7 +139,7 @@ if (isset($_POST['submit'])) {
         $login_username = trim($_POST["username"]); // remove white space before or after the username
         $login_password = $_POST["password"];
 
-        if (isset($_POST['local']) &&$_POST['local'] == true) {
+        if (isset($_POST['local']) && $_POST['local'] === true) {
             
             if (queryLoginBlocked($_POST, 'local') == "blocked") {
                 $loginlog_id = updateLoginLog($_POST, 'failed', 'local'); // add an entry to the login_log
@@ -390,7 +390,8 @@ if (isset($_POST['submit'])) {
                 }
 
                 function ldapConnection($ldap_username, $ldap_password, $ldap_domain, $ldap_host, $ldap_host_secondary, $ldap_port, $ldap_basedn, $ldap_usergroup, $ldap_userfilter, $login_username, $login_password) {
-                    global $_SESSION, $log_id;
+                    global $_SESSION, $log_id, $global2FAEnabled, $global2FAEnforced;
+                    
                     $return = [];
 
                     $ldap_conn = ldap_connect($ldap_host, $ldap_port);
@@ -533,17 +534,6 @@ if (isset($_POST['submit'])) {
                                         $_SESSION['impersonate'] = 0;
                                         sessionLogin();
 
-                                        if (isset($_SESSION['redirect_url'])) {
-                                            if (str_contains($_SESSION['redirect_url'], "?")) {
-                                                header("Location: ../".$_SESSION['redirect_url']."&login=success");
-                                            } else {
-                                                header("Location: ../".$_SESSION['redirect_url']."?login=success");
-                                            }
-                                            exit();
-                                        } else {
-                                            header("Location: ../?login=success");
-                                            exit();
-                                        }
                                     }
                                     
                                     if (isset($_SESSION['redirect_url'])) {
@@ -618,17 +608,6 @@ if (isset($_POST['submit'])) {
                                             $_SESSION['impersonate'] = 0;
                                             sessionLogin();
 
-                                            if (isset($_SESSION['redirect_url'])) {
-                                                if (str_contains($_SESSION['redirect_url'], "?")) {
-                                                    header("Location: ../".$_SESSION['redirect_url']."&login=success");
-                                                } else {
-                                                    header("Location: ../".$_SESSION['redirect_url']."?login=success");
-                                                }
-                                                exit();
-                                            } else {
-                                                header("Location: ../?login=success");
-                                                exit();
-                                            }
                                         }
 
                                         if (isset($_SESSION['redirect_url'])) {

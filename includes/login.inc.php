@@ -199,12 +199,11 @@ if (isset($_POST['submit'])) {
                             $_POST['user_id'] = $row['users_id'];
 
                             // 2FA checking
-                            if ($global2FAEnabled == true) {
-                                if ($global2FAEnforced == true) {
-                                    $return['2fa'] = true;
-                                } else {
-                                    $user2FAEnabled = checkUser2FAEnabled($row['users_id']);
-                                    if ($user2FAEnabled == true) {
+                            if ($row['users_id'] == 0) {
+                                $return['2fa'] = false;
+                            } else {
+                                if ($global2FAEnabled == true) {
+                                    if ($global2FAEnforced == true) {
                                         $return['2fa'] = true;
                                         $user2FASet = checkUser2FASet($row['users_id']);
                                         if ($user2FASet == true) {
@@ -213,12 +212,24 @@ if (isset($_POST['submit'])) {
                                             $return['2fa_set'] = false;
                                         }
                                     } else {
-                                        $return['2fa'] = false;
+                                        $user2FAEnabled = checkUser2FAEnabled($row['users_id']);
+                                        if ($user2FAEnabled == true) {
+                                            $return['2fa'] = true;
+                                            $user2FASet = checkUser2FASet($row['users_id']);
+                                            if ($user2FASet == true) {
+                                                $return['2fa_set'] = true;
+                                            } else {
+                                                $return['2fa_set'] = false;
+                                            }
+                                        } else {
+                                            $return['2fa'] = false;
+                                        }
                                     }
+                                } else {
+                                    $return['2fa'] = false;
                                 }
-                            } else {
-                                $return['2fa'] = false;
                             }
+                            
 
                             if ($return['2fa'] == false) {
                                 $log_id = updateLoginLog($_POST, 'login', 'local'); // add an entry to the login_log
@@ -493,12 +504,11 @@ if (isset($_POST['submit'])) {
                                     $_POST['user_id'] = $insert_id;
 
                                     // 2FA checking
-                                    if ($global2FAEnabled == true) {
-                                        if ($global2FAEnforced == true) {
-                                            $return['2fa'] = true;
-                                        } else {
-                                            $user2FAEnabled = checkUser2FAEnabled($row['users_id']);
-                                            if ($user2FAEnabled == true) {
+                                    if ($row['users_id'] == 0) {
+                                        $return['2fa'] = false;
+                                    } else {
+                                        if ($global2FAEnabled == true) {
+                                            if ($global2FAEnforced == true) {
                                                 $return['2fa'] = true;
                                                 $user2FASet = checkUser2FASet($row['users_id']);
                                                 if ($user2FASet == true) {
@@ -507,11 +517,22 @@ if (isset($_POST['submit'])) {
                                                     $return['2fa_set'] = false;
                                                 }
                                             } else {
-                                                $return['2fa'] = false;
+                                                $user2FAEnabled = checkUser2FAEnabled($row['users_id']);
+                                                if ($user2FAEnabled == true) {
+                                                    $return['2fa'] = true;
+                                                    $user2FASet = checkUser2FASet($row['users_id']);
+                                                    if ($user2FASet == true) {
+                                                        $return['2fa_set'] = true;
+                                                    } else {
+                                                        $return['2fa_set'] = false;
+                                                    }
+                                                } else {
+                                                    $return['2fa'] = false;
+                                                }
                                             }
+                                        } else {
+                                            $return['2fa'] = false;
                                         }
-                                    } else {
-                                        $return['2fa'] = false;
                                     }
                                     
                                     if ($return['2fa'] == false) {
@@ -567,12 +588,11 @@ if (isset($_POST['submit'])) {
                                         $_POST['user_id'] = $row['users_id'];
 
                                         // 2FA checking
-                                        if ($global2FAEnabled == true) {
-                                            if ($global2FAEnforced == true) {
-                                                $return['2fa'] = true;
-                                            } else {
-                                                $user2FAEnabled = checkUser2FAEnabled($row['users_id']);
-                                                if ($user2FAEnabled == true) {
+                                        if ($row['users_id'] == 0) {
+                                            $return['2fa'] = false;
+                                        } else {
+                                            if ($global2FAEnabled == true) {
+                                                if ($global2FAEnforced == true) {
                                                     $return['2fa'] = true;
                                                     $user2FASet = checkUser2FASet($row['users_id']);
                                                     if ($user2FASet == true) {
@@ -581,11 +601,22 @@ if (isset($_POST['submit'])) {
                                                         $return['2fa_set'] = false;
                                                     }
                                                 } else {
-                                                    $return['2fa'] = false;
+                                                    $user2FAEnabled = checkUser2FAEnabled($row['users_id']);
+                                                    if ($user2FAEnabled == true) {
+                                                        $return['2fa'] = true;
+                                                        $user2FASet = checkUser2FASet($row['users_id']);
+                                                        if ($user2FASet == true) {
+                                                            $return['2fa_set'] = true;
+                                                        } else {
+                                                            $return['2fa_set'] = false;
+                                                        }
+                                                    } else {
+                                                        $return['2fa'] = false;
+                                                    }
                                                 }
+                                            } else {
+                                                $return['2fa'] = false;
                                             }
-                                        } else {
-                                            $return['2fa'] = false;
                                         }
                                         
                                         if ($return['2fa'] == false) {
@@ -696,14 +727,20 @@ if (isset($_POST['submit'])) {
             $rowCount = $result->num_rows;
             $row = $result->fetch_assoc();
             
-            // 2FA checking
+            
             if ($global2FAEnabled == true) {
                 if ($global2FAEnforced == true) {
                     $return['2fa'] = true;
                 } else {
-                    $user2FAEnabled = checkUser2FAEnabled($_POST['user_id']);
+                    $user2FAEnabled = checkUser2FAEnabled($row['users_id']);
                     if ($user2FAEnabled == true) {
                         $return['2fa'] = true;
+                        $user2FASet = checkUser2FASet($row['users_id']);
+                        if ($user2FASet == true) {
+                            $return['2fa_set'] = true;
+                        } else {
+                            $return['2fa_set'] = false;
+                        }
                     } else {
                         $return['2fa'] = false;
                     }

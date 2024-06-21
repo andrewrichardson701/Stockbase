@@ -193,3 +193,33 @@ function askFor2FA(user_id, redirect_url) {
 
 }
 
+
+
+var toggle = document.getElementById("local-toggle");
+var reset = document.getElementById("password-reset");
+if (toggle.checked) {
+    reset.hidden=false;
+} else {
+    reset.hidden=true;
+}
+
+toggle.addEventListener('change', (event) => {
+    var reset = document.getElementById("password-reset");
+    if (event.currentTarget.checked) {
+        reset.hidden=false;
+    } else {
+        reset.hidden=true;
+    }
+})
+
+function modalLoadSwipe() {
+    var modal = document.getElementById("modalDivSwipe");
+    modal.style.display = "block";
+    modal.hidden = false;
+}
+
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseSwipe = function() { 
+    var modal = document.getElementById("modalDivSwipe");
+    modal.style.display = "none";
+}

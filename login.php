@@ -181,36 +181,7 @@ if (!isset($_SESSION['csrf_token'])) {
         </script>
     </div> -->
 <script src='assets/js/login.js'></script>
-<script>
-var toggle = document.getElementById("local-toggle");
-var reset = document.getElementById("password-reset");
-if (toggle.checked) {
-    reset.hidden=false;
-} else {
-    reset.hidden=true;
-}
-toggle.addEventListener('change', (event) => {
-    var reset = document.getElementById("password-reset");
-    if (event.currentTarget.checked) {
-        reset.hidden=false;
-    } else {
-        reset.hidden=true;
-    }
-})
-</script>
-<script>
-    function modalLoadSwipe() {
-        var modal = document.getElementById("modalDivSwipe");
-        modal.style.display = "block";
-        modal.hidden = false;
-    }
 
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseSwipe = function() { 
-        var modal = document.getElementById("modalDivSwipe");
-        modal.style.display = "none";
-    }
-</script>
 <?php include 'foot.php'; ?>
 
 </body>

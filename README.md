@@ -665,7 +665,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>1.1.0</h3></summary>
-<h4>1.1.0 - 2FA Tntegration</h4>
+<h4>1.1.0 - 2FA Integration</h4>
 
 - Added CSRF token checking to login.inc.php. This was missing.
 - Added ids to login.php inputs
@@ -680,6 +680,11 @@ Clone the repo first, and the follow the below steps.
 - Admin page now shows larger tables better
 - Admin page now has an authentication section for toggling 2FA globally.
 - All swipe card code has been commented out as this is likely not going to be used. Can be removed later.
+- Fixed the success message on the addlocaluser page
+- Profile page now allows users to toggle 2FA except for the root user. This is actioned by admin.inc.php
+- Profile page allows you to reset your 2FA.
+- Admin users table now has a reset 2FA option for resetting other users' 2FA
+- Root user can no longer have 2FA prompts.
 
 </details>
 <details>

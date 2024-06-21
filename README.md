@@ -685,6 +685,7 @@ Clone the repo first, and the follow the below steps.
 - Profile page allows you to reset your 2FA.
 - Admin users table now has a reset 2FA option for resetting other users' 2FA
 - Root user can no longer have 2FA prompts.
+- 2FA prompts now submit on enter key.
 
 </details>
 <details>

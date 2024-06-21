@@ -27,11 +27,11 @@ function OTPverify($user_id, $secret, $otp) {
 
     if ($checkResult) {
         $return ='2FA verification successful';
+        saveSecret($user_id, $secret);
     } else {
         $return = 'Invalid OTP';
     }
 
-    saveSecret($user_id, $secret);
     return $return;
 
 }

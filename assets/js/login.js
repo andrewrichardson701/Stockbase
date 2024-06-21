@@ -9,6 +9,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.addEventListener('keydown', function(event) {
+    var target = event.target;
+    if (target && target.id === 'otp_code' && event.key === 'Enter') {
+        // Prevent the default action if needed
+        event.preventDefault();
+
+        // Call the desired function
+        checkotp();
+    }
+});
+
 function jsInfo(info, color) { // used to type in the hidden p element on the login page.
     var p = document.getElementById('js-info');
     

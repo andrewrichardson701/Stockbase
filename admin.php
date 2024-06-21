@@ -445,6 +445,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             <th>Auth</th>
                             <th>Enabled</th>
                             <th>Password</th>
+                            <th>2FA</th>
                             <?php if ($_SESSION['role'] == "Root") { echo ("<th></th>"); }?>
                         </tr>
                     </thead>
@@ -530,6 +531,12 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             <td style="vertical-align: middle;">
                                                 <button class="btn btn-warning" style="padding: 2px 6px 2px 6px" id="user_'.$user_id.'_pwreset" onclick="resetPassword(\''.$user_id.'\')"'); if ($user_auth == "ldap" || $user_role == "Admin" || $user_role == "Root") { echo("disabled"); } echo('>Reset</button>
                                             </td>
+                                            <td style="vertical-align: middle;">');
+                                                if ($user_id !== 0) {
+                                                    echo ('<button class="btn btn-primary" id="reset_2fa" style="padding: 2px 6px 2px 6px" onclick="modalLoadReset2FA('.$user_id.')">Reset 2FA</button>');
+                                                }
+                                            echo('
+                                            </td>
                                             ');
                                             if ($_SESSION['role'] == 'Root') {
                                                 echo('
@@ -550,6 +557,24 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         ?>
                     </tbody>
                 </table>
+            </div>
+            <div id="modalDivReset2FA" class="modal" style="display: none;">
+                <span class="close" onclick="modalCloseReset2FA()">×</span>
+                <div class="container well-nopad theme-divBg" style="padding:25px">
+                    <div style="margin:auto;text-align:center;margin-top:10px">
+                        <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                            <input type="hidden" name="2fareset_submit" value="admin" />
+                            <input type="hidden" name="2fa_user_id" id="2fareset_user_id" value=""/>
+                            <p>Are you sure you want to reset the 2FA for <or class="green" id="2fareset_username"></or>?<br>
+                            This will prompt a reset on the user's next login.</p>
+                            <span>
+                                <button class="btn btn-danger" type="submit" name="submit" value="1">Reset</button>
+                                <button class="btn btn-warning" type="button" onclick="modalCloseReset2FA()">Cancel</button>
+                            </span>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -3138,6 +3163,25 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         modalCloseResetPW = function() { 
             var modal = document.getElementById("modalDivResetPW");
             modal.style.display = "none";
+        }
+
+        function modalLoadReset2FA(id) {
+            var modal = document.getElementById("modalDivReset2FA");
+
+            modal.style.display = "block";
+            var user_id_element = document.getElementById('2fareset_user_id');
+            var username_text_element = document.getElementById('2fareset_username');
+            var username = document.getElementById('user_'+id+'_username').innerHTML;
+            user_id_element.value = id;
+            username_text_element.innerHTML = username;
+        }
+        function modalCloseReset2FA() { 
+            var modal = document.getElementById("modalDivReset2FA");
+            modal.style.display = "none";
+            var user_id_element = document.getElementById('2fareset_user_id');
+            var username_text_element = document.getElementById('2fareset_username');
+            user_id_element.value = '';
+            username_text_element.innerHTML = '';
         }
 
     </script>

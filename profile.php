@@ -44,14 +44,14 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         FROM users 
                         INNER JOIN users_roles ON users.role_id = users_roles.id
                         LEFT JOIN theme ON users.theme_id = theme.id
-                        WHERE username=?";
+                        WHERE users.id=?";
         $stmt_users = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
             echo('<p class="red">ERROR: SQL Error. Table = users. Check '.__FILE__.' at line:'.__LINE__.'.');
             // header("Location: ../index.php?error=sqlerror&table=users");
             // exit();
         } else {
-            mysqli_stmt_bind_param($stmt_users, "s", $_SESSION['username']);
+            mysqli_stmt_bind_param($stmt_users, "s", $_SESSION['user_id']);
             mysqli_stmt_execute($stmt_users);
             $result = mysqli_stmt_get_result($stmt_users);
             $rowCount = $result->num_rows;
@@ -91,7 +91,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <input id="profile-id" type="hidden" value="'.$profile_id.'" name="id"/>
                                 <tr class="nav-row" id="username">
                                     <td id="username_header" style="width:200px">
-                                        <!-- Custodian Colour: #72BE2A -->
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
                                     </td>
                                     <td id="username_info">
@@ -140,7 +139,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                     </td>
                                 </tr>');
-                                if ($profile_id !== 0) {
+                                if ($_SESSION['user_id'] != 0) {
                                     $sql_2fa = "SELECT 2fa_enabled FROM users WHERE id=?";
                                     $stmt_2fa = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_2fa, $sql_2fa)) {
@@ -160,12 +159,11 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         
                                     }
 
-                                    $sql_2faGlobal = "SELECT 2fa_enabled, 2fa_enforced FROM config WHERE id=?";
+                                    $sql_2faGlobal = "SELECT 2fa_enabled, 2fa_enforced FROM config WHERE id=1";
                                     $stmt_2faGlobal = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_2faGlobal, $sql_2faGlobal)) {
                                         echo("ERROR getting entries");
                                     } else {
-                                        mysqli_stmt_bind_param($stmt_2faGlobal, "s", $profile_id);
                                         mysqli_stmt_execute($stmt_2faGlobal);
                                         $result_2faGlobal = mysqli_stmt_get_result($stmt_2faGlobal);
                                         $rowCount_2faGlobal = $result_2faGlobal->num_rows;
@@ -256,7 +254,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             <tbody>
                                 <tr class="nav-row" id="username">
                                     <td id="username_header" style="width:200px">
-                                        <!-- Custodian Colour: #72BE2A -->
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
                                     </td>
                                     <td id="username_info">
@@ -304,18 +301,66 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <td id="auth_info">
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                     </td>
-                                </tr>
-                                <tr class="nav-row profile-table-row" id="2fa_enable">
-                                    <td id="2fa_enable_header" style="width:200px">
-                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Enable 2FA:</p>
-                                    </td>
-                                    <td id="2fa_enable_selection">
-                                        <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
-                                            <input type="checkbox" name="enable_2fa">
-                                            <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                        </label>
-                                    </td>
-                                </tr>
+                                </tr>');
+                                if ($_SESSION['user_id'] != 0) {
+                                    $sql_2fa = "SELECT 2fa_enabled FROM users WHERE id=?";
+                                    $stmt_2fa = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_2fa, $sql_2fa)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt_2fa, "s", $profile_id);
+                                        mysqli_stmt_execute($stmt_2fa);
+                                        $result_2fa = mysqli_stmt_get_result($stmt_2fa);
+                                        $rowCount_2fa = $result_2fa->num_rows;
+                                        $row_2fa = $result_2fa->fetch_assoc();
+                                        $data_2fa_enabled = $row_2fa['2fa_enabled'];
+                                        if ($data_2fa_enabled == 1) {
+                                            $checked_2fa_enabled = 'checked';
+                                        } else {
+                                            $checked_2fa_enabled = '';
+                                        }
+                                        
+                                    }
+
+                                    $sql_2faGlobal = "SELECT 2fa_enabled, 2fa_enforced FROM config WHERE id=1";
+                                    $stmt_2faGlobal = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_2faGlobal, $sql_2faGlobal)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_2faGlobal);
+                                        $result_2faGlobal = mysqli_stmt_get_result($stmt_2faGlobal);
+                                        $rowCount_2faGlobal = $result_2faGlobal->num_rows;
+                                        $row_2faGlobal = $result_2faGlobal->fetch_assoc();
+                                        $data_2faGlobal_enabled = $row_2faGlobal['2fa_enabled'];
+                                        $data_2faGlobal_enforced = $row_2faGlobal['2fa_enforced'];
+                                        
+                                        if ($data_2faGlobal_enforced == 1) {
+                                            $disabled_2fa_class = ' title';
+                                            $disabled_2fa_props = ' title="2FA is enforced Globally." disabled';
+                                        } elseif ($data_2faGlobal_enforced == 0 && $data_2faGlobal_enabled == 1) {
+                                            $disabled_2fa_class = '';
+                                            $disabled_2fa_props = '';
+                                        } elseif ($data_2faGlobal_enforced == 0 && $data_2faGlobal_enabled == 0) {
+                                            $disabled_2fa_class = ' title';
+                                            $disabled_2fa_props = ' title="2FA is disabled Globally." disabled';
+                                        }
+                                        
+                                    }
+
+                                    echo('
+                                    <tr class="nav-row profile-table-row" id="2fa_enable">
+                                        <td id="2fa_enable_header" style="width:200px">
+                                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>Enable 2FA:</p>
+                                        </td>
+                                        <td id="2fa_enable_selection">
+                                            <label class="switch align-middle'.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.' style="margin-bottom:0px;margin-top:3px" >
+                                                <input type="checkbox" name="enable_2fa" '.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>
+                                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                            </label>
+                                        </td>
+                                    </tr>');
+                                }
+                                echo('
                                 <tr class="nav-row profile-table-row2">
                                     <td id="theme_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Theme:</p>

@@ -3417,6 +3417,56 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             $return[0] = '<or class="red">No ID set</or>';
         }
         echo json_encode($return);
+    } elseif (isset($_POST['2fareset_submit'])) { // reset a users' 2FA
+        if ($_POST['2fareset_submit'] == 'admin') {
+            $uri = 'admin.php';
+            $qry = '&section=users-settings#users-settings';
+        } else {
+            $uri = 'profile.php';
+            $qry = '';
+        }
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../$uri?error=csrfMissmatch$qry");
+                exit();
+            }
+        } else {
+            header("Location: ../$uri?error=csrfMissmatch$qry");
+            exit();
+        }
+
+        if (isset($_POST['2fa_user_id'])) {
+            $user_id = $_POST['2fa_user_id'];
+            if (is_numeric($user_id)) {
+                if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Root') {
+                    $sql = "UPDATE users SET 2fa_secret=NULL WHERE id=?";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        header("Location: ../$uri?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=reset_2fa_secret$qry");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt, "s", $user_id);
+                        mysqli_stmt_execute($stmt);
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, "2fa_secret", '#####', 'NULL');
+
+                        header("Location: ../$uri?success=reset$qry");
+                        exit();
+                    } 
+                } else {
+                    header("Location: ../$uri?error=invalidPermissions$qry");
+                    exit();
+                }
+            } else {
+                header("Location: ../$uri?error=nonNumericID$qry");
+                exit();
+            }
+        } else {
+            header("Location: ../$uri?error=missingID$qry");
+            exit();
+        }
+
     } else {
         header("Location: ../admin.php?error=submitIssue");
         exit();

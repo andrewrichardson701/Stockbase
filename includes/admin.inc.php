@@ -2814,6 +2814,12 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 if (isset($_POST['first-name']) && isset($_POST['last-name']) && isset($_POST['email'])) {
                     if ($_POST['first-name'] !== '' && $_POST['last-name'] !== '' && $_POST['email'] !== '') {
                         if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                            $enable_2fa = 0;
+                            if (isset($_POST['enable_2fa'])) {
+                                if ($_POST['enable_2fa'] == 'on') {
+                                    $enable_2fa = 1;
+                                }
+                            } 
                             $id = $_POST['id'];
                             $first_name = $_POST['first-name'];
                             $last_name = $_POST['last-name'];
@@ -2835,7 +2841,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     exit();
                                 } else {
                                     // no emails exist in the row, can be used.
-                                    $sql_check1 = "SELECT first_name, last_name, email FROM users WHERE id=$id;";
+                                    $sql_check1 = "SELECT first_name, last_name, email, 2fa_enabled FROM users WHERE id=$id;";
                                     $stmt_check1 = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                                         header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=get-users&email=$email&first_name=$first_name&last_name=$last_name");
@@ -2849,7 +2855,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         $first_name = mysqli_real_escape_string($conn, $first_name); // escape the special characters
                                         $last_name = mysqli_real_escape_string($conn, $last_name); // escape the special characters
 
-                                        $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
+                                        $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email', 2fa_enabled='$enable_2fa' WHERE id=$id";
                                         $stmt = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt, $sql)) {
                                             header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=update-users&email=$email&first_name=$first_name&last_name=$last_name");
@@ -2860,6 +2866,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                             if ($row_check1['first_name'] !== $first_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "first_name", $row_check1['first_name'], $first_name); $_SESSION['first_name'] = $first_name;}
                                             if ($row_check1['last_name'] !== $last_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "last_name", $row_check1['last_name'], $last_name); $_SESSION['last_name'] = $last_name;}
                                             if ($row_check1['email'] !== $email) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "email", $row_check1['email'], $email); $_SESSION['email'] = $email;}
+                                            if ($row_check1['2fa_enabled'] !== $enable_2fa) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "2fa_enabled", $row_check1['2fa_enabled'], $enable_2fa);}
                                             header("Location: ../profile.php?success=profileUpdated");
                                             exit();
                                         }  

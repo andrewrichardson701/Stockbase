@@ -130,13 +130,6 @@ function login() {
         },
         dataType: "json",
         success: function(response){
-            // expected good outcome:
-            // login=success    &&     redirect_url = redirect location      &&    user_id = id      &&    2fa = true
-            //
-            // expected bad outcome:
-            // error = ????
-            // sqlerror = ?????
-
             if (response.hasOwnProperty('login') && response['login'] == 'success') {
                 if (response.hasOwnProperty('user_id')) { // check if user_id is set
                     var user_id = response['user_id'];

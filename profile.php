@@ -195,6 +195,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                                 <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
                                             </label>
                                         </td>
+                                        <td>
+                                            <button class="btn btn-primary" id="reset2fa-button" type="button" onclick="modalLoadReset2FA('.$profile_id.')">Reset 2FA</button>
+                                        </td>
                                     </tr>');
                                 }
                                 echo('
@@ -352,11 +355,14 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <td id="2fa_enable_header" style="width:200px">
                                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>Enable 2FA:</p>
                                         </td>
-                                        <td id="2fa_enable_selection">
+                                        <td id="2fa_enable_selection"style="margin-right:125px">
                                             <label class="switch align-middle'.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.' style="margin-bottom:0px;margin-top:3px" >
                                                 <input type="checkbox" name="enable_2fa" '.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>
                                                 <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
                                             </label>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary" id="reset2fa-button" type="button" onclick="modalLoadReset2FA('.$profile_id.')">Reset 2FA</button>
                                         </td>
                                     </tr>');
                                 }
@@ -508,6 +514,38 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             });
         </script>
     </div>
+    <div id="modalDivReset2FA" class="modal" style="display: none;">
+        <span class="close" onclick="modalCloseReset2FA()">×</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div style="margin:auto;text-align:center;margin-top:10px">
+                <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    <input type="hidden" name="2fareset_submit" value="set" />
+                    <input type="hidden" name="2fa_user_id" id="2fareset_user_id" value=""/>
+                    <p>Are you sure you want to reset your 2FA?<br>
+                    This will prompt a reset on your next login.</p>
+                    <span>
+                        <button class="btn btn-danger" type="submit" name="submit" value="1">Reset</button>
+                        <button class="btn btn-warning" type="button" onclick="modalCloseReset2FA()">Cancel</button>
+                    </span>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function modalLoadReset2FA(id) {
+            var modal = document.getElementById("modalDivReset2FA");
+            modal.style.display = "block";
+            var user_id_element = document.getElementById('2fareset_user_id');
+            user_id_element.value = id;
+        }
+        function modalCloseReset2FA() { 
+            var modal = document.getElementById("modalDivReset2FA");
+            modal.style.display = "none";
+            var user_id_element = document.getElementById('2fareset_user_id');
+            user_id_element.value = '';
+        }
+    </script>
     <div id="modalDivLoginHistory" class="modal">
         <span class="close" onclick="modalCloseLoginHistory()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">

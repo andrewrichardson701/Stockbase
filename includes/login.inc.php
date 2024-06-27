@@ -115,7 +115,7 @@ function checkUser2FASet($user_id) {
         $result = mysqli_stmt_get_result($stmt_users);
         $row = $result->fetch_assoc();
         $secret = $row['2fa_secret'];
-        if (!is_null($secret) && $secret !== NULL && $secret !== '') {
+        if (!is_null($secret) && $secret !== NULL && $secret !== '' && $secret !=='NULL') {
             return true;
         } else {
             return false;

@@ -262,12 +262,11 @@ if (isset($_POST['checkotp'])) {
             if (isset($_POST['otp'])) {
                 if (isset($_POST['secret'])) {
                     $return = [];
-                    if (isset($_POST['bypass_2fa'])) {
-                        $bypass_2fa = $_POST['bypass_2fa'];
-                    } else {
-                        $bypass_2fa = false;
-                    }
-
+                    $bypass_2fa = 'false';
+                    if (isset($_POST['bypass_2fa']) && $_POST['bypass_2fa'] == 'true') {
+                        $bypass_2fa = 'true';
+                    } 
+                    
                     $accountName = $_POST['accountName'];
                     $user_id = $_POST['user_id'];
                     
@@ -276,7 +275,7 @@ if (isset($_POST['checkotp'])) {
                     
                     $output = OTPverify($user_id, $secret, $otp);
                     
-                    if ($output !== 'Invalid OTP' && ($bypass_2fa == true || $bypass_2fa == 'true'))  {
+                    if ($output !== 'Invalid OTP' && $bypass_2fa == 'true')  {
                         remember2FA($user_id, $_COOKIE['PHPSESSID'], $_SERVER);
                     }
 

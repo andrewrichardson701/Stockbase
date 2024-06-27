@@ -3450,6 +3450,15 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         mysqli_stmt_execute($stmt);
                         // update changelog
                         addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, "2fa_secret", '#####', 'NULL');
+                        
+                        $sql_update = "UPDATE bypass_2fa SET deleted=1 WHERE user_id=? AND deleted=0";
+                        $stmt_update = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                            echo("ERROR getting entries");
+                        } else {
+                            mysqli_stmt_bind_param($stmt_update, "s", $user_id);
+                            mysqli_stmt_execute($stmt_update);
+                        }
 
                         header("Location: ../$uri?success=reset$qry");
                         exit();

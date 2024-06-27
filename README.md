@@ -686,6 +686,8 @@ Clone the repo first, and the follow the below steps.
 - Admin users table now has a reset 2FA option for resetting other users' 2FA
 - Root user can no longer have 2FA prompts.
 - 2FA prompts now submit on enter key.
+- 2FA can now be "remembered" so you only have to input it once every 30 days on a device
+- Resetting a local user password will clear all "remembered" 2FAs for the user
 
 </details>
 <details>

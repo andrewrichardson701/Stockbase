@@ -48,7 +48,7 @@ function makeOTPPrompt($data, $accountName, $user_id, $redirect_url, $format) {
                     </span>
                     <span>
                         <input type="checkbox" id="bypass_2fa" name="bypass_2fa" style="margin-top:20px;margin-right:10px">
-                        <label>Remember me</label>
+                        <label class="title" title="Don\'t use 2FA for 30 days on this device">Remember me</label>
                     </span>
                     <input id="otp_secret" type="hidden" name="otp_secret" value="'.$data['secret'].'">
                     <input id="account_name" type="hidden" name="account_name" value="'.$accountName.'">
@@ -78,7 +78,7 @@ function make2FAPrompt($data, $accountName, $user_id, $redirect_url, $format) {
                     </span>
                     <span>
                         <input type="checkbox" id="bypass_2fa" name="bypass_2fa" style="margin-top:20px;margin-right:10px">
-                        <label>Remember me</label>
+                        <label class="title" title="Don\'t use 2FA for 30 days on this device">Remember me</label>
                     </span>
                     <input id="otp_secret" type="hidden" name="otp_secret" value="'.$data['secret'].'">
                     <input id="account_name" type="hidden" name="account_name" value="'.$accountName.'">

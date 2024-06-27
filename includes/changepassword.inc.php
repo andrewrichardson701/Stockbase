@@ -19,6 +19,18 @@ if (strpos($redirect_url, "?")) {
 
 include 'login-functions.inc.php';
 
+function delete2FABypasses($user_id) {
+    include 'dbh.inc.php';
+    $sql_update = "UPDATE bypass_2fa SET deleted=1 WHERE user_id=? AND deleted=0";
+    $stmt_update = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+        echo("ERROR getting entries");
+    } else {
+        mysqli_stmt_bind_param($stmt_update, "s", $user_id);
+        mysqli_stmt_execute($stmt_update);
+    }
+}
+
 if (isset($_POST['password-submit'])) { // normal change password requests
     if (isset($_POST['user-id'])) {
         $user_id = $_POST['user-id'];
@@ -75,6 +87,7 @@ if (isset($_POST['password-submit'])) { // normal change password requests
                             $_SESSION['password_expired'] = 0;
                             if ($password_expired == 1) { addChangelog($user_id, $username, "Password Changed", "users", $user_id, "password", 1, 0); }
                             addChangelog($user_id, $username, "Password Changed", "users", $user_id, "password", '********', '********');
+                            delete2FABypasses($user_id);
                             header("Location: ../profile.php?success=PasswordChanged");
                             exit();
                         }

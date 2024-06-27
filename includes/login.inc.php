@@ -466,7 +466,7 @@ if (isset($_POST['submit'])) {
                 }
 
                 function ldapConnection($ldap_username, $ldap_password, $ldap_domain, $ldap_host, $ldap_host_secondary, $ldap_port, $ldap_basedn, $ldap_usergroup, $ldap_userfilter, $login_username, $login_password) {
-                    global $_SESSION, $log_id, $global2FAEnabled, $global2FAEnforced;
+                    global $_SESSION, $log_id, $global2FAEnabled, $global2FAEnforced, $cookie;
                     
                     $return = [];
 

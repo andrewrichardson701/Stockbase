@@ -46,6 +46,10 @@ function makeOTPPrompt($data, $accountName, $user_id, $redirect_url, $format) {
                         <input id="otp_code" type="text" class="form-control text-center" style="max-width:150px; display:revert;margin-right:5px;margin-top:1px" name="otp" placeholder="######">
                         <button class="form-control btn btn-success" style="max-width:max-content; margin-bottom:1px" onclick="checkotp()">Submit</button>
                     </span>
+                    <span>
+                        <input type="checkbox" id="bypass_2fa" name="bypass_2fa" style="margin-top:20px;margin-right:10px">
+                        <label>Remember me</label>
+                    </span>
                     <input id="otp_secret" type="hidden" name="otp_secret" value="'.$data['secret'].'">
                     <input id="account_name" type="hidden" name="account_name" value="'.$accountName.'">
                     <input id="redirect_url" type="hidden" name="redirect_url" value="'.$redirect_url.'">
@@ -71,6 +75,10 @@ function make2FAPrompt($data, $accountName, $user_id, $redirect_url, $format) {
                     <span>
                         <input id="otp_code" type="text" class="form-control text-center" style="max-width:150px; display:revert;margin-right:5px;margin-top:1px" name="otp" placeholder="######">
                         <button class="form-control btn btn-success" style="max-width:max-content; margin-bottom:1px" onclick="checkotp()">Submit</button>
+                    </span>
+                    <span>
+                        <input type="checkbox" id="bypass_2fa" name="bypass_2fa" style="margin-top:20px;margin-right:10px">
+                        <label>Remember me</label>
                     </span>
                     <input id="otp_secret" type="hidden" name="otp_secret" value="'.$data['secret'].'">
                     <input id="account_name" type="hidden" name="account_name" value="'.$accountName.'">
@@ -140,6 +148,69 @@ function getAccountName($accountID) {
     }
 }
 
+function remember2FA($user_id, $cookie) {
+    include 'session.inc.php';
+    include 'dbh.inc.php';
+
+    $ip = getIPAddress();
+    $browser = getBrowser();
+    $os =  getOS();
+
+    if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        $ip_field = 'ipv4';
+        $ip_insert = 'INET_ATON(?)';
+    } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        $ip_field = 'ipv6';
+        $ip_insert = 'INET6_ATON(?)';
+    } else {
+        $ip_field = 'ipv4';
+        $ip_insert = '?';
+        $ip = null;
+    }
+
+    $sql = "SELECT *
+            FROM bypass_2fa
+            WHERE user_id=? AND cookie=? 
+            AND deleted=0";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        // error but no need to show.
+    } else {
+        mysqli_stmt_bind_param($stmt, "ss", $user_id, $cookie);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $result_count = $result->num_rows;
+
+        if ($result_count > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $id = $row['id'];
+
+                $sql_update = "UPDATE bypass_2fa SET deleted=1 WHERE id=?";
+                $stmt_update = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_bind_param($stmt_update, "s", $id);
+                    mysqli_stmt_execute($stmt_update);
+                }
+            }
+        }
+
+        $sql = "INSERT into bypass_2fa (user_id, cookie, $ip_field, browser, os, deleted) 
+                    VALUES (?, ?, $ip_insert, ?, ?, 0)";
+        $stmt = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            echo("ERROR getting entries");
+        } else {
+            mysqli_stmt_bind_param($stmt, "sssss", $user_id, $cookie, $ip, $browser, $os);
+            mysqli_stmt_execute($stmt);
+        }
+    }
+
+   
+
+}
+
 if (isset($_POST['makeotp'])) {
     if (isset($_POST['user_id'])) {
         if (isset($_POST['redirect_url'])) {
@@ -191,6 +262,11 @@ if (isset($_POST['checkotp'])) {
             if (isset($_POST['otp'])) {
                 if (isset($_POST['secret'])) {
                     $return = [];
+                    if (isset($_POST['bypass_2fa'])) {
+                        $bypass_2fa = $_POST['bypass_2fa'];
+                    } else {
+                        $bypass_2fa = false;
+                    }
 
                     $accountName = $_POST['accountName'];
                     $user_id = $_POST['user_id'];
@@ -200,6 +276,10 @@ if (isset($_POST['checkotp'])) {
                     
                     $output = OTPverify($user_id, $secret, $otp);
                     
+                    if ($output !== 'Invalid OTP' && ($bypass_2fa == true || $bypass_2fa == 'true'))  {
+                        remember2FA($user_id, $_COOKIE['PHPSESSID'], $_SERVER);
+                    }
+
                     $return['status'] = 'true';
                     $return['data'] = $output;
                     

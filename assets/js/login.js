@@ -61,6 +61,7 @@ async function checkotp() {
     var statusP = document.getElementById("status_info");
     var secret = document.getElementById("otp_secret").value;
     var user_id = document.getElementById("user_id").value;
+    var bypass_2fa = document.getElementById("bypass_2fa").checked;
 
     if (redirect_url == '' || redirect_url == null) {
         redirect_url = 'index.php?login=success';
@@ -74,7 +75,8 @@ async function checkotp() {
             accountName: accountName,
             user_id: user_id,
             otp: otp,
-            secret: secret
+            secret: secret,
+            bypass_2fa: bypass_2fa
         },
         dataType: "json",
         success: async function(response){

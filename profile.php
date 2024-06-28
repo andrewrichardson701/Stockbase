@@ -44,14 +44,14 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                         FROM users 
                         INNER JOIN users_roles ON users.role_id = users_roles.id
                         LEFT JOIN theme ON users.theme_id = theme.id
-                        WHERE username=?";
+                        WHERE users.id=?";
         $stmt_users = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
             echo('<p class="red">ERROR: SQL Error. Table = users. Check '.__FILE__.' at line:'.__LINE__.'.');
             // header("Location: ../index.php?error=sqlerror&table=users");
             // exit();
         } else {
-            mysqli_stmt_bind_param($stmt_users, "s", $_SESSION['username']);
+            mysqli_stmt_bind_param($stmt_users, "s", $_SESSION['user_id']);
             mysqli_stmt_execute($stmt_users);
             $result = mysqli_stmt_get_result($stmt_users);
             $rowCount = $result->num_rows;
@@ -91,7 +91,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                 <input id="profile-id" type="hidden" value="'.$profile_id.'" name="id"/>
                                 <tr class="nav-row" id="username">
                                     <td id="username_header" style="width:200px">
-                                        <!-- Custodian Colour: #72BE2A -->
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
                                     </td>
                                     <td id="username_info">
@@ -132,14 +131,76 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_role.'</p>
                                     </td>
                                 </tr>
-                                <tr class="nav-row profile-table-row" id="role">
+                                <tr class="nav-row profile-table-row" id="auth">
                                     <td id="auth_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Auth:</p>
                                     </td>
                                     <td id="auth_info">
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                     </td>
-                                </tr>
+                                </tr>');
+                                if ($_SESSION['user_id'] != 0) {
+                                    $sql_2fa = "SELECT 2fa_enabled FROM users WHERE id=?";
+                                    $stmt_2fa = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_2fa, $sql_2fa)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt_2fa, "s", $profile_id);
+                                        mysqli_stmt_execute($stmt_2fa);
+                                        $result_2fa = mysqli_stmt_get_result($stmt_2fa);
+                                        $rowCount_2fa = $result_2fa->num_rows;
+                                        $row_2fa = $result_2fa->fetch_assoc();
+                                        $data_2fa_enabled = $row_2fa['2fa_enabled'];
+                                        if ($data_2fa_enabled == 1) {
+                                            $checked_2fa_enabled = 'checked';
+                                        } else {
+                                            $checked_2fa_enabled = '';
+                                        }
+                                        
+                                    }
+
+                                    $sql_2faGlobal = "SELECT 2fa_enabled, 2fa_enforced FROM config WHERE id=1";
+                                    $stmt_2faGlobal = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_2faGlobal, $sql_2faGlobal)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_2faGlobal);
+                                        $result_2faGlobal = mysqli_stmt_get_result($stmt_2faGlobal);
+                                        $rowCount_2faGlobal = $result_2faGlobal->num_rows;
+                                        $row_2faGlobal = $result_2faGlobal->fetch_assoc();
+                                        $data_2faGlobal_enabled = $row_2faGlobal['2fa_enabled'];
+                                        $data_2faGlobal_enforced = $row_2faGlobal['2fa_enforced'];
+                                        
+                                        if ($data_2faGlobal_enforced == 1) {
+                                            $disabled_2fa_class = ' title';
+                                            $disabled_2fa_props = ' title="2FA is enforced Globally." disabled';
+                                        } elseif ($data_2faGlobal_enforced == 0 && $data_2faGlobal_enabled == 1) {
+                                            $disabled_2fa_class = '';
+                                            $disabled_2fa_props = '';
+                                        } elseif ($data_2faGlobal_enforced == 0 && $data_2faGlobal_enabled == 0) {
+                                            $disabled_2fa_class = ' title';
+                                            $disabled_2fa_props = ' title="2FA is disabled Globally." disabled';
+                                        }
+                                        
+                                    }
+
+                                    echo('
+                                    <tr class="nav-row profile-table-row" id="2fa_enable">
+                                        <td id="2fa_enable_header" style="width:200px">
+                                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>Enable 2FA:</p>
+                                        </td>
+                                        <td id="2fa_enable_selection">
+                                            <label class="switch align-middle'.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.' style="margin-bottom:0px;margin-top:3px" >
+                                                <input type="checkbox" name="enable_2fa" '.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>
+                                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary" id="reset2fa-button" type="button" onclick="modalLoadReset2FA('.$profile_id.')">Reset 2FA</button>
+                                        </td>
+                                    </tr>');
+                                }
+                                echo('
                                 <tr class="nav-row profile-table-row2">
                                     <td id="theme_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Theme:</p>
@@ -196,7 +257,6 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                             <tbody>
                                 <tr class="nav-row" id="username">
                                     <td id="username_header" style="width:200px">
-                                        <!-- Custodian Colour: #72BE2A -->
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
                                     </td>
                                     <td id="username_info">
@@ -244,7 +304,69 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                     <td id="auth_info">
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">'.$profile_auth.'</p>
                                     </td>
-                                </tr>
+                                </tr>');
+                                if ($_SESSION['user_id'] != 0) {
+                                    $sql_2fa = "SELECT 2fa_enabled FROM users WHERE id=?";
+                                    $stmt_2fa = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_2fa, $sql_2fa)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_bind_param($stmt_2fa, "s", $profile_id);
+                                        mysqli_stmt_execute($stmt_2fa);
+                                        $result_2fa = mysqli_stmt_get_result($stmt_2fa);
+                                        $rowCount_2fa = $result_2fa->num_rows;
+                                        $row_2fa = $result_2fa->fetch_assoc();
+                                        $data_2fa_enabled = $row_2fa['2fa_enabled'];
+                                        if ($data_2fa_enabled == 1) {
+                                            $checked_2fa_enabled = 'checked';
+                                        } else {
+                                            $checked_2fa_enabled = '';
+                                        }
+                                        
+                                    }
+
+                                    $sql_2faGlobal = "SELECT 2fa_enabled, 2fa_enforced FROM config WHERE id=1";
+                                    $stmt_2faGlobal = mysqli_stmt_init($conn);
+                                    if (!mysqli_stmt_prepare($stmt_2faGlobal, $sql_2faGlobal)) {
+                                        echo("ERROR getting entries");
+                                    } else {
+                                        mysqli_stmt_execute($stmt_2faGlobal);
+                                        $result_2faGlobal = mysqli_stmt_get_result($stmt_2faGlobal);
+                                        $rowCount_2faGlobal = $result_2faGlobal->num_rows;
+                                        $row_2faGlobal = $result_2faGlobal->fetch_assoc();
+                                        $data_2faGlobal_enabled = $row_2faGlobal['2fa_enabled'];
+                                        $data_2faGlobal_enforced = $row_2faGlobal['2fa_enforced'];
+                                        
+                                        if ($data_2faGlobal_enforced == 1) {
+                                            $disabled_2fa_class = ' title';
+                                            $disabled_2fa_props = ' title="2FA is enforced Globally." disabled';
+                                        } elseif ($data_2faGlobal_enforced == 0 && $data_2faGlobal_enabled == 1) {
+                                            $disabled_2fa_class = '';
+                                            $disabled_2fa_props = '';
+                                        } elseif ($data_2faGlobal_enforced == 0 && $data_2faGlobal_enabled == 0) {
+                                            $disabled_2fa_class = ' title';
+                                            $disabled_2fa_props = ' title="2FA is disabled Globally." disabled';
+                                        }
+                                        
+                                    }
+
+                                    echo('
+                                    <tr class="nav-row profile-table-row" id="2fa_enable">
+                                        <td id="2fa_enable_header" style="width:200px">
+                                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>Enable 2FA:</p>
+                                        </td>
+                                        <td id="2fa_enable_selection"style="margin-right:125px">
+                                            <label class="switch align-middle'.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.' style="margin-bottom:0px;margin-top:3px" >
+                                                <input type="checkbox" name="enable_2fa" '.$checked_2fa_enabled.' class="'.$disabled_2fa_class.'"'.$disabled_2fa_props.'>
+                                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary" id="reset2fa-button" type="button" onclick="modalLoadReset2FA('.$profile_id.')">Reset 2FA</button>
+                                        </td>
+                                    </tr>');
+                                }
+                                echo('
                                 <tr class="nav-row profile-table-row2">
                                     <td id="theme_header" style="width:200px">
                                         <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Theme:</p>
@@ -295,60 +417,64 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                 showResponse();
 
-                $sql_card = "SELECT card_primary, card_secondary FROM users WHERE id=$profile_id";
-                $stmt_card = mysqli_stmt_init($conn);
-                if (!mysqli_stmt_prepare($stmt_card, $sql_card)) {
-                    echo("ERROR getting entries");
-                } else {
-                    mysqli_stmt_execute($stmt_card);
-                    $result_card = mysqli_stmt_get_result($stmt_card);
-                    $rowCount_card = $result_card->num_rows;
-                    $row_card = $result_card->fetch_assoc(); 
-                    $card_primary = isset($row_card['card_primary']) ? $row_card['card_primary'] : '';
-                    $card_secondary = isset($row_card['card_secondary']) ? $row_card['card_secondary'] : '';
-                }
-                // echo('<tr class="nav-row"><th class="text-center" style="width:180px;margin-top:20px">Swipe card 1</th><th class="text-center" style="width:185px;margin-top:20px">Swipe card 2</th></tr>');
-                echo('<tr class="nav-row">');
-                if ($card_primary == '' || $card_primary == null) {
-                    echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
-                } else {
-                    echo('<td style="width:200px"><button class="btn btn-warning" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 1)">Re-assign swipe card 1</button></td>');
-                }
-                if ($card_secondary == '' || $card_secondary == null) {
-                    echo('<td><button class="btn btn-success" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 2)">Assign swipe card 2</button></td>');
-                } else {
-                    echo('<td><button class="btn btn-warning" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 2)">Re-assign swipe card 2</button></td>');
-                }
-                echo('</tr>');
-                if ($card_primary !== '' || $card_secondary !== '') {
-                    echo ('<tr class="nav-row">
-                    <td style="width:200px">');
-                    if ($card_primary !== '') {
-                        echo('
-                        <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                            <!-- Include CSRF token in the form -->
-                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
-                            <input type="hidden" name="card-remove" value="1" />
-                            <input type="hidden" id="removeCard" name="card" value="1" />
-                            <button class="btn btn-danger" style="width:180px;margin-top:20px" type="submit">De-assign swipe card 1</button>
-                        </form>');
-                    }
-                    echo('</td>
-                    <td>');
-                    if ($card_secondary !== '') {
-                        echo('
-                        <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                            <!-- Include CSRF token in the form -->
-                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
-                            <input type="hidden" name="card-remove" value="1" />
-                            <input type="hidden" id="removeCard" name="card" value="2" />
-                            <button class="btn btn-danger" style="width:185px;margin-top:20px" type="submit">De-assign swipe card 2</button>
-                        </form>');
-                    }
-                    echo('</td>
-                    </tr>');
-                }
-                ?>          
+                // below commented out due to card reader stuff probably not going to be happening
+                // $sql_card = "SELECT card_primary, card_secondary FROM users WHERE id=$profile_id";
+                // $stmt_card = mysqli_stmt_init($conn);
+                // if (!mysqli_stmt_prepare($stmt_card, $sql_card)) {
+                //     echo("ERROR getting entries");
+                // } else {
+                //     mysqli_stmt_execute($stmt_card);
+                //     $result_card = mysqli_stmt_get_result($stmt_card);
+                //     $rowCount_card = $result_card->num_rows;
+                //     $row_card = $result_card->fetch_assoc(); 
+                //     $card_primary = isset($row_card['card_primary']) ? $row_card['card_primary'] : '';
+                //     $card_secondary = isset($row_card['card_secondary']) ? $row_card['card_secondary'] : '';
+                // }
+                // // echo('<tr class="nav-row"><th class="text-center" style="width:180px;margin-top:20px">Swipe card 1</th><th class="text-center" style="width:185px;margin-top:20px">Swipe card 2</th></tr>');
+                // echo('<tr class="nav-row" hidden>');
+                // if ($card_primary == '' || $card_primary == null) {
+                //     echo('<td style="width:200px"><button class="btn btn-success" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 1)">Assign swipe card 1</button></td>');
+                // } else {
+                //     echo('<td style="width:200px"><button class="btn btn-warning" style="width:180px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 1)">Re-assign swipe card 1</button></td>');
+                // }
+                // if ($card_secondary == '' || $card_secondary == null) {
+                //     echo('<td><button class="btn btn-success" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'assign\', 2)">Assign swipe card 2</button></td>');
+                // } else {
+                //     echo('<td><button class="btn btn-warning" style="width:185px;margin-top:20px" type="button" onclick="modalLoadSwipe(\'re-assign\', 2)">Re-assign swipe card 2</button></td>');
+                // }
+                // echo('</tr>');
+                // if ($card_primary !== '' || $card_secondary !== '') {
+                //     echo ('<tr class="nav-row">
+                //     <td style="width:200px">');
+                //     if ($card_primary !== '') {
+                //         echo('
+                //         <form id="cardRemoveForm-1" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                //             <!-- Include CSRF token in the form -->
+                //             <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                //             <input type="hidden" name="card-remove" value="1" />
+                //             <input type="hidden" id="removeCard" name="card" value="1" />
+                //             <button class="btn btn-danger" style="width:180px;margin-top:20px" type="submit">De-assign swipe card 1</button>
+                //         </form>');
+                //     }
+                //     echo('</td>
+                //     <td>');
+                //     if ($card_secondary !== '') {
+                //         echo('
+                //         <form id="cardRemoveForm-2" action="includes/admin.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                //             <!-- Include CSRF token in the form -->
+                //             <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                //             <input type="hidden" name="card-remove" value="1" />
+                //             <input type="hidden" id="removeCard" name="card" value="2" />
+                //             <button class="btn btn-danger" style="width:185px;margin-top:20px" type="submit">De-assign swipe card 2</button>
+                //         </form>');
+                //     }
+                //     echo('</td>
+                //     </tr>');
+                // }
+                // ?> 
+                            <tr id="login_history">
+                                <td colspan=100%><p class="gold link" style="margin-top:20px" onclick="modalLoadLoginHistory()">View login history</p></td>
+                            </tr>         
                         </tbody>
                     </table>
                 <?php if($_SESSION['auth'] == "ldap") { echo("</form>"); } ?>
@@ -387,6 +513,98 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 });
             });
         </script>
+    </div>
+    <div id="modalDivReset2FA" class="modal" style="display: none;">
+        <span class="close" onclick="modalCloseReset2FA()">×</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div style="margin:auto;text-align:center;margin-top:10px">
+                <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    <input type="hidden" name="2fareset_submit" value="set" />
+                    <input type="hidden" name="2fa_user_id" id="2fareset_user_id" value=""/>
+                    <p>Are you sure you want to reset your 2FA?<br>
+                    This will prompt a reset on your next login.</p>
+                    <span>
+                        <button class="btn btn-danger" type="submit" name="submit" value="1">Reset</button>
+                        <button class="btn btn-warning" type="button" onclick="modalCloseReset2FA()">Cancel</button>
+                    </span>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function modalLoadReset2FA(id) {
+            var modal = document.getElementById("modalDivReset2FA");
+            modal.style.display = "block";
+            var user_id_element = document.getElementById('2fareset_user_id');
+            user_id_element.value = id;
+        }
+        function modalCloseReset2FA() { 
+            var modal = document.getElementById("modalDivReset2FA");
+            modal.style.display = "none";
+            var user_id_element = document.getElementById('2fareset_user_id');
+            user_id_element.value = '';
+        }
+    </script>
+    <div id="modalDivLoginHistory" class="modal">
+        <span class="close" onclick="modalCloseLoginHistory()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <h2 style="margin-left:20px">Login History</h2>
+            <div class="well-nopad theme-divBg" style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-top:50px">
+                <table class="table table-dark theme-table centertable" style="max-width:max-content">
+                    <thead class="text-center align-middle theme-tableOuter">
+                        <th class="text-center align-middle">id</th>
+                        <th class="text-center align-middle">type</th>
+                        <th class="text-center align-middle">username</th>
+                        <th class="text-center align-middle">user_id</th>
+                        <th class="text-center align-middle">ipv4</th>
+                        <th class="text-center align-middle">ipv6</th>
+                        <th class="text-center align-middle">timestamp</th>
+                        <th class="text-center align-middle">auth</th>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $sql_log = "SELECT id, type, username, user_id, INET_NTOA(ipv4) AS ipv4, INET6_NTOA(ipv6) AS ipv6, timestamp, auth
+                                    FROM login_log 
+                                    WHERE username=?
+                                        AND (user_id=? OR user_id IS NULL) 
+                                        AND auth=?
+                                    ORDER BY id DESC;";
+                        $stmt_log = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_log, $sql_log)) {
+                            echo("ERROR getting entries");
+                        } else {
+                            mysqli_stmt_bind_param($stmt_log, "sss", $_SESSION['username'], $_SESSION['user_id'], $_SESSION['auth']);
+                            mysqli_stmt_execute($stmt_log);
+                            $result_log = mysqli_stmt_get_result($stmt_log);
+                            $rowCount_log = $result_log->num_rows;
+                            while($row_log = $result_log->fetch_assoc()) {
+                                $color = '';
+                                if ($row_log['type'] == 'failed') {
+                                    $color = 'transactionRemove';
+                                } elseif ($row_log['type'] == 'login') {
+                                    $color = 'transactionAdd';
+                                } elseif ($row_log['type'] == 'logout') {
+                                    $color = 'transactionDelete';
+                                }
+                                echo('<tr class="text-center align-middle '.$color.'">
+                                        <td class="text-center align-middle">'.$row_log['id'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['type'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['username'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['user_id'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['ipv4'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['ipv6'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['timestamp'].'</td>
+                                        <td class="text-center align-middle">'.$row_log['auth'].'</td>
+                                    </tr>');
+                            }
+                        }
+                            
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
         
 <?php include 'foot.php'; ?>
@@ -442,6 +660,17 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
         cardTypeInput.value = '';
         cardCardInput.value = '';
         cardHead.innerText = '';
+    }
+
+    function modalLoadLoginHistory() {
+        var modal = document.getElementById("modalDivLoginHistory");
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal or if they click the image.
+    function modalCloseLoginHistory() { 
+        var modal = document.getElementById("modalDivLoginHistory");
+        modal.style.display = "none";
     }
 </script>
 

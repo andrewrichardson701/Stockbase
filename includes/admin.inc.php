@@ -31,7 +31,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
     && !isset($_POST['tag_edit_submit'])
     && !isset($_POST['attributemanagement-submit']) && !isset($_POST['attributemanagement-restore']) 
     && !isset($_POST['opticattributemanagement-submit']) && !isset($_POST['opticattributemanagement-restore'])
-    && !isset($_POST['stockmanagement-restore'])) {
+    && !isset($_POST['stockmanagement-restore']) 
+    && !isset($_POST['request_stock_images'])
+    && !isset($_POST['auth_setting'])) {
 
     header("Location: ../admin.php?error=noSubmit&section=none");
     exit();
@@ -2812,6 +2814,12 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 if (isset($_POST['first-name']) && isset($_POST['last-name']) && isset($_POST['email'])) {
                     if ($_POST['first-name'] !== '' && $_POST['last-name'] !== '' && $_POST['email'] !== '') {
                         if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                            $enable_2fa = 0;
+                            if (isset($_POST['enable_2fa'])) {
+                                if ($_POST['enable_2fa'] == 'on') {
+                                    $enable_2fa = 1;
+                                }
+                            } 
                             $id = $_POST['id'];
                             $first_name = $_POST['first-name'];
                             $last_name = $_POST['last-name'];
@@ -2833,7 +2841,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     exit();
                                 } else {
                                     // no emails exist in the row, can be used.
-                                    $sql_check1 = "SELECT first_name, last_name, email FROM users WHERE id=$id;";
+                                    $sql_check1 = "SELECT first_name, last_name, email, 2fa_enabled FROM users WHERE id=$id;";
                                     $stmt_check1 = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_check1, $sql_check1)) {
                                         header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=get-users&email=$email&first_name=$first_name&last_name=$last_name");
@@ -2847,7 +2855,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         $first_name = mysqli_real_escape_string($conn, $first_name); // escape the special characters
                                         $last_name = mysqli_real_escape_string($conn, $last_name); // escape the special characters
 
-                                        $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email' WHERE id=$id";
+                                        $sql = "UPDATE users SET first_name='$first_name', last_name='$last_name', email='$email', 2fa_enabled='$enable_2fa' WHERE id=$id";
                                         $stmt = mysqli_stmt_init($conn);
                                         if (!mysqli_stmt_prepare($stmt, $sql)) {
                                             header("Location: ../profile.php?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=update-users&email=$email&first_name=$first_name&last_name=$last_name");
@@ -2858,6 +2866,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                             if ($row_check1['first_name'] !== $first_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "first_name", $row_check1['first_name'], $first_name); $_SESSION['first_name'] = $first_name;}
                                             if ($row_check1['last_name'] !== $last_name) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "last_name", $row_check1['last_name'], $last_name); $_SESSION['last_name'] = $last_name;}
                                             if ($row_check1['email'] !== $email) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "email", $row_check1['email'], $email); $_SESSION['email'] = $email;}
+                                            if ($row_check1['2fa_enabled'] !== $enable_2fa) { addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $id, "2fa_enabled", $row_check1['2fa_enabled'], $enable_2fa);}
                                             header("Location: ../profile.php?success=profileUpdated");
                                             exit();
                                         }  
@@ -3223,6 +3232,250 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             header("Location: ../tags.php?error=missingID");
             exit();
         }
+    } elseif (isset($_POST['request_stock_images'])) { // request a list of all stock images to be dumped onto the admin page.
+        if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+            if (isset($_POST['current_page'])) {
+                include 'dbh.inc.php';
+                $page = $_POST['page'];
+                $current_page = $_POST['current_page'];
+
+                $filepath = '../assets/img/stock';
+                $interval = 20; // how many images load each button click
+
+                // Get list of all files
+                $files = array_values(array_diff(scandir($filepath), array('..', '.')));     
+
+                $tableRows = []; // initialise the array
+
+                if ($page == -1) {
+                    $start = 0;
+                    $end = count($files);
+                } else {
+                    if ($page == 0) {
+                        $page = 1;
+                    }
+                    $start = ($page*$interval)-$interval;
+                    $end = $start+$interval;
+                    if ($end > count($files)) {
+                        $end = count($files);
+                    }
+                }
+                
+                if (count($files) > $end) {
+                    $nextPage = $page+1;
+                } else {
+                    $nextPage = -1;
+                }
+
+                for ($f=$start; $f<$end; $f++) {
+                    $filename = $files[$f];
+
+                    // Get the list of how used the image is.
+                    $sql_images = "SELECT stock_img.id AS id, stock_img.stock_id AS stock_id, stock_img.image AS image,
+                                        stock.name AS stock_name
+                                    FROM stock_img 
+                                    LEFT JOIN stock ON stock_img.stock_id=stock.id ANd stock.deleted=0
+                                    WHERE image='$filename'";
+                    $stmt_images = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_images, $sql_images)) {
+                        echo("ERROR getting entries");
+                    } else {
+                        mysqli_stmt_execute($stmt_images);
+                        $result_images = mysqli_stmt_get_result($stmt_images);
+                        $rowCount_images = $result_images->num_rows;
+                        $links = $rowCount_images;
+                    }
+
+                    if ($links !== 0) { 
+                        $disabled = 'disabled title="Image still linked to stock. Remove these links before deleting."';
+                        $links_button = '<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showLinks(\'image\', \''.$f.'\')">Show Links</button>';
+                    } else {
+                        $disabled = $links_button = '';
+                    }
+
+                    $tableRows[] = '<tr id="image-row-'.$f.'" class="align-middle">
+                                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                                            <input type="hidden" name="file-name" value="'.$filename.'" />
+                                            <input type="hidden" name="file-links" value="'.$links.'" />
+                                            <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
+                                            <td id="image-'.$f.'-name" class="text-center align-middle">'.$filepath.'/'.$filename.'</td>
+                                            <td class="text-center align-middle">'.$links.'</td>
+                                            <td class="text-center align-middle"><button class="btn btn-danger" type="submit" name="imagemanagement-submit" '.$disabled.'><i class="fa fa-trash"></i></button></td>
+                                            <td class="text-center align-middle">'.$links_button.'</td>
+                                        </form>
+                                    </tr>
+                                ';
+                    if ($links !== 0) { 
+                        $sub_rows = '';
+                        while ($row_images = $result_images->fetch_assoc()) {
+                            $sub_rows .= '<tr class="clickable" onclick=navPage("stock.php?stock_id='.$row_images['stock_id'].'")>
+                                            <td>'.$row_images['id'].'</td>
+                                            <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_id'].'</a></td>
+                                            <td><a href="stock.php?stock_id='.$row_images['stock_id'].'">'.$row_images['stock_name'].'</a></td>
+                                            <td>'.$row_images['image'].'</td>
+                                        </tr>';
+                        }
+                        $tableRows[] = '<tr id="image-row-'.$f.'-links" class="align-middle" hidden>
+                                            <td colspan=100%>
+                                                <div>
+                                                    <table class="table table-dark theme-table">
+                                                        <thead>
+                                                            <tr class="theme-tableOuter">
+                                                                <th>ID</th>
+                                                                <th>Stock ID</th>
+                                                                <th>Stock Name</th>
+                                                                <th>Image</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        '.$sub_rows.'
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>';
+                    }
+                }
+
+                if (empty($tableRows)) {
+                    $tableRows[0] = "ERROR";
+                } else {
+                    if ($nextPage !== -1) {
+                        $tableRows[] = '<tr id="loader-tr">
+                                            <td id="loader-td" colspan=100% class="algin-middle text-center">
+                                                <div id="loader-outerdiv">
+                                                    <button class="btn btn-info" id="show-images" onclick="loadAdminImages('.$current_page.', '.$nextPage.')">Load More Images</button>
+                                                    <div class="loader" id="loaderDiv" style="margin-top:10px;width:130px;display:none">
+                                                        <div class="loaderBar"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>';
+                    }
+                }
+                // print_r($tableRows);
+                // print_r('<table><tbody>');
+                // print_r($tableRows);
+                // print_r('</tbody></table>');
+                print_r(json_encode($tableRows));
+            } else {
+                echo ('ERROR');
+            }
+        } else {
+            echo('ERROR');
+        }
+    } elseif (isset($_POST['auth_setting'])) { // change auth settings in admin.php for 2fa
+        $return = [];
+        if (isset($_POST['id'])) {
+            if (isset($_POST['value'])) {
+                include 'dbh.inc.php';
+                $value = $_POST['value'];
+
+                if (($_POST['id'] == "2fa_enabled" || $_POST['id'] == "2fa_enforced") && ((int)$value == 1 || (int)$value == 0)) {
+                    $field = $_POST['id'];
+
+                    $sql_check = "SELECT $field FROM config WHERE id=1";
+                    $stmt_check = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
+                        $return[0] = '<or class="red">Unable to get Data</or>';
+                    } else {
+                        mysqli_stmt_execute($stmt_check);
+                        $result_check = mysqli_stmt_get_result($stmt_check);
+                        $rowCount_check = $result_check->num_rows;
+                        if ($rowCount_check != 1) {
+                            $return[0] = '<or class="red">Missing Data in Table</or>';
+                        } else {
+                            $row_check = $result_check->fetch_assoc();
+                            $field_check = $row_check[$field];
+
+                            if ((int)$field_check == (int)$field) {
+                                $return[0] = '<or class="red">No changes made.</or>';
+                            } else {
+                                $sql = "UPDATE config SET $field=? WHERE id=1";
+                                $stmt = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                                    $return[0] = '<or class="red">Unable to get Data</or>';
+                                } else {
+                                    mysqli_stmt_bind_param($stmt, "s", $value);
+                                    mysqli_stmt_execute($stmt);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "config", 1, $field, $field_check, $value);
+                                    $return[0] = '<or class="green">Authentication udpated.</or>';
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    $return[0] = '<or class="red">Incorrect field.</or>';
+                }
+
+            } else {
+                $return[0] = '<or class="red">No Value Set</or>';
+            }
+        } else {
+            $return[0] = '<or class="red">No ID set</or>';
+        }
+        echo json_encode($return);
+    } elseif (isset($_POST['2fareset_submit'])) { // reset a users' 2FA
+        if ($_POST['2fareset_submit'] == 'admin') {
+            $uri = 'admin.php';
+            $qry = '&section=users-settings#users-settings';
+        } else {
+            $uri = 'profile.php';
+            $qry = '';
+        }
+        // csrf_token management
+        if (isset($_POST['csrf_token'])) {
+            if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
+                header("Location: ../$uri?error=csrfMissmatch$qry");
+                exit();
+            }
+        } else {
+            header("Location: ../$uri?error=csrfMissmatch$qry");
+            exit();
+        }
+
+        if (isset($_POST['2fa_user_id'])) {
+            $user_id = $_POST['2fa_user_id'];
+            if (is_numeric($user_id)) {
+                if ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Root') {
+                    $sql = "UPDATE users SET 2fa_secret=NULL WHERE id=?";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        header("Location: ../$uri?error=sqlerror&table=users&file=".__FILE__."&line=".__LINE__."&purpose=reset_2fa_secret$qry");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt, "s", $user_id);
+                        mysqli_stmt_execute($stmt);
+                        // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "users", $user_id, "2fa_secret", '#####', 'NULL');
+                        
+                        $sql_update = "UPDATE bypass_2fa SET deleted=1 WHERE user_id=? AND deleted=0";
+                        $stmt_update = mysqli_stmt_init($conn);
+                        if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                            echo("ERROR getting entries");
+                        } else {
+                            mysqli_stmt_bind_param($stmt_update, "s", $user_id);
+                            mysqli_stmt_execute($stmt_update);
+                        }
+
+                        header("Location: ../$uri?success=reset$qry");
+                        exit();
+                    } 
+                } else {
+                    header("Location: ../$uri?error=invalidPermissions$qry");
+                    exit();
+                }
+            } else {
+                header("Location: ../$uri?error=nonNumericID$qry");
+                exit();
+            }
+        } else {
+            header("Location: ../$uri?error=missingID$qry");
+            exit();
+        }
+
     } else {
         header("Location: ../admin.php?error=submitIssue");
         exit();

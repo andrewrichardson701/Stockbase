@@ -664,6 +664,43 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>1.1.0</h3></summary>
+<h4>1.1.0 - 2FA Integration</h4>
+
+- Added CSRF token checking to login.inc.php. This was missing.
+- Added ids to login.php inputs
+- Changed all of the Location headers in the login.inc.php to be returns for ajax.
+- Added the Google Authenticator package
+- Added the Google Authenticator url to the meta tag
+- Added login.js for all the login js bits
+- Added 2fa.inc.php for the 2fa bits
+- Reconfigured the login.inc.php page to fully work via AJAX and check for 2FA settings.
+- mysqldump of new changes added.
+- Changes noted in the update bash file
+- Admin page now shows larger tables better
+- Admin page now has an authentication section for toggling 2FA globally.
+- All swipe card code has been commented out as this is likely not going to be used. Can be removed later.
+- Fixed the success message on the addlocaluser page
+- Profile page now allows users to toggle 2FA except for the root user. This is actioned by admin.inc.php
+- Profile page allows you to reset your 2FA.
+- Admin users table now has a reset 2FA option for resetting other users' 2FA
+- Root user can no longer have 2FA prompts.
+- 2FA prompts now submit on enter key.
+- 2FA can now be "remembered" so you only have to input it once every 30 days on a device
+- Resetting a local user password will clear all "remembered" 2FAs for the user
+
+</details>
+<details>
+<summary><h3>1.0.1</h3></summary>
+<h4>1.0.1 - Login history</h4>
+
+- Added a login history to the profile page.
+- Fixed the stock description showing the /r/n instead of line breaks on the stock edit text area and the stock main page.
+- Image management section of the admin page, now loads images on an interval of 20 per button click to save loading times.
+- Added a credential login checker on the db credentials to redirect to an error page if there is an issue.
+
+</details>
+<details>
 <summary><h3>1.0.0</h3></summary>
 <h4>Official 1.0.0 release.</h4>
 

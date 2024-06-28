@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
+-- MySQL dump 10.19  Distrib 10.3.39-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: stockbase
 -- ------------------------------------------------------
--- Server version	8.0.36-0ubuntu0.20.04.1
+-- Server version	10.3.39-MariaDB-0ubuntu0.20.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -19,7 +19,7 @@
 -- Current Database: `stockbase`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `stockbase` /*!40100 DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `stockbase` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 
 USE `stockbase`;
 
@@ -29,15 +29,37 @@ USE `stockbase`;
 
 DROP TABLE IF EXISTS `area`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `area` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `site_id` bigint NOT NULL,
-  `deleted` tinyint(1) DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `site_id` bigint(20) NOT NULL,
+  `deleted` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bypass_2fa`
+--
+
+DROP TABLE IF EXISTS `bypass_2fa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bypass_2fa` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL,
+  `cookie` text NOT NULL,
+  `ipv4` int(11) DEFAULT NULL,
+  `ipv6` varbinary(16) DEFAULT NULL,
+  `browser` text NOT NULL,
+  `os` text NOT NULL,
+  `created_timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expires_timestamp` timestamp NOT NULL DEFAULT cast(current_timestamp() + interval 30 day as datetime),
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,17 +68,17 @@ CREATE TABLE `area` (
 
 DROP TABLE IF EXISTS `cable_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cable_item` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `stock_id` int NOT NULL,
-  `quantity` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `stock_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
   `cost` decimal(10,0) DEFAULT NULL,
-  `shelf_id` int NOT NULL DEFAULT '0',
-  `type_id` int NOT NULL DEFAULT '1',
-  `deleted` tinyint(1) DEFAULT '0',
+  `shelf_id` int(11) NOT NULL DEFAULT 0,
+  `type_id` int(11) NOT NULL DEFAULT 1,
+  `deleted` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,20 +87,20 @@ CREATE TABLE `cable_item` (
 
 DROP TABLE IF EXISTS `cable_transaction`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cable_transaction` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `stock_id` bigint NOT NULL,
-  `item_id` bigint NOT NULL,
-  `type` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `quantity` int NOT NULL,
-  `reason` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `stock_id` bigint(20) NOT NULL,
+  `item_id` bigint(20) NOT NULL,
+  `type` text NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `reason` text NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
-  `username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `shelf_id` int DEFAULT NULL,
+  `username` text NOT NULL,
+  `shelf_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -87,14 +109,14 @@ CREATE TABLE `cable_transaction` (
 
 DROP TABLE IF EXISTS `cable_types`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cable_types` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `parent` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `parent` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,20 +125,20 @@ CREATE TABLE `cable_types` (
 
 DROP TABLE IF EXISTS `changelog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `changelog` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `timestamp` datetime NOT NULL,
-  `user_id` int NOT NULL,
-  `user_username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `action` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `table_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `record_id` int DEFAULT NULL,
-  `field_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `value_old` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `value_new` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `user_id` int(11) NOT NULL,
+  `user_username` text DEFAULT NULL,
+  `action` varchar(255) NOT NULL,
+  `table_name` varchar(255) DEFAULT NULL,
+  `record_id` int(11) DEFAULT NULL,
+  `field_name` varchar(255) DEFAULT NULL,
+  `value_old` text DEFAULT NULL,
+  `value_new` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1279 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,43 +147,45 @@ CREATE TABLE `changelog` (
 
 DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `banner_color` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `logo_image` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `favicon_image` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_enabled` tinyint DEFAULT NULL,
-  `ldap_username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_password` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_domain` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_host` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_port` int DEFAULT NULL,
-  `ldap_basedn` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_usergroup` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_userfilter` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `currency` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `sku_prefix` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_host` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_port` int DEFAULT NULL,
-  `smtp_encryption` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_password` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_from_email` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_from_name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_to_email` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_username` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `system_name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_host_secondary` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `base_url` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_enabled` tinyint(1) DEFAULT '0',
-  `default_theme_id` int NOT NULL DEFAULT '1',
-  `cost_enable_normal` tinyint(1) NOT NULL DEFAULT '1',
-  `cost_enable_cable` tinyint(1) NOT NULL DEFAULT '1',
-  `footer_enable` tinyint(1) NOT NULL DEFAULT '1',
-  `footer_left_enable` tinyint(1) NOT NULL DEFAULT '1',
-  `footer_right_enable` tinyint(1) NOT NULL DEFAULT '1',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `banner_color` text DEFAULT NULL,
+  `logo_image` text DEFAULT NULL,
+  `favicon_image` text DEFAULT NULL,
+  `ldap_enabled` tinyint(4) DEFAULT NULL,
+  `ldap_username` text DEFAULT NULL,
+  `ldap_password` longtext DEFAULT NULL,
+  `ldap_domain` text DEFAULT NULL,
+  `ldap_host` text DEFAULT NULL,
+  `ldap_port` int(11) DEFAULT NULL,
+  `ldap_basedn` text DEFAULT NULL,
+  `ldap_usergroup` text DEFAULT NULL,
+  `ldap_userfilter` text DEFAULT NULL,
+  `currency` text DEFAULT NULL,
+  `sku_prefix` text DEFAULT NULL,
+  `smtp_host` text DEFAULT NULL,
+  `smtp_port` int(11) DEFAULT NULL,
+  `smtp_encryption` text DEFAULT NULL,
+  `smtp_password` longtext DEFAULT NULL,
+  `smtp_from_email` text DEFAULT NULL,
+  `smtp_from_name` text DEFAULT NULL,
+  `smtp_to_email` text DEFAULT NULL,
+  `smtp_username` longtext DEFAULT NULL,
+  `system_name` text DEFAULT NULL,
+  `ldap_host_secondary` text DEFAULT NULL,
+  `base_url` text DEFAULT NULL,
+  `smtp_enabled` tinyint(1) DEFAULT 0,
+  `default_theme_id` int(11) NOT NULL DEFAULT 1,
+  `cost_enable_normal` tinyint(1) NOT NULL DEFAULT 1,
+  `cost_enable_cable` tinyint(1) NOT NULL DEFAULT 1,
+  `footer_enable` tinyint(1) NOT NULL DEFAULT 1,
+  `footer_left_enable` tinyint(1) NOT NULL DEFAULT 1,
+  `footer_right_enable` tinyint(1) NOT NULL DEFAULT 1,
+  `2fa_enabled` tinyint(1) DEFAULT 0,
+  `2fa_enforced` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,43 +194,45 @@ CREATE TABLE `config` (
 
 DROP TABLE IF EXISTS `config_default`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config_default` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `banner_color` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `logo_image` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `favicon_image` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `ldap_enabled` tinyint DEFAULT NULL,
-  `ldap_username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_password` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_domain` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_host` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_port` int DEFAULT NULL,
-  `ldap_basedn` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_usergroup` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_userfilter` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `currency` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `sku_prefix` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_host` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_port` int DEFAULT NULL,
-  `smtp_encryption` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_password` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_from_email` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_from_name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_to_email` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_username` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `system_name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ldap_host_secondary` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `base_url` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `smtp_enabled` tinyint(1) DEFAULT '0',
-  `default_theme_id` int NOT NULL DEFAULT '1',
-  `cost_enable_normal` tinyint(1) NOT NULL DEFAULT '1',
-  `cost_enable_cable` tinyint(1) NOT NULL DEFAULT '1',
-  `footer_enable` tinyint(1) NOT NULL DEFAULT '1',
-  `footer_left_enable` tinyint(1) NOT NULL DEFAULT '1',
-  `footer_right_enable` tinyint(1) NOT NULL DEFAULT '1',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `banner_color` text NOT NULL,
+  `logo_image` text NOT NULL,
+  `favicon_image` text NOT NULL,
+  `ldap_enabled` tinyint(4) DEFAULT NULL,
+  `ldap_username` text DEFAULT NULL,
+  `ldap_password` longtext DEFAULT NULL,
+  `ldap_domain` text DEFAULT NULL,
+  `ldap_host` text DEFAULT NULL,
+  `ldap_port` int(11) DEFAULT NULL,
+  `ldap_basedn` text DEFAULT NULL,
+  `ldap_usergroup` text DEFAULT NULL,
+  `ldap_userfilter` text DEFAULT NULL,
+  `currency` text DEFAULT NULL,
+  `sku_prefix` text DEFAULT NULL,
+  `smtp_host` text DEFAULT NULL,
+  `smtp_port` int(11) DEFAULT NULL,
+  `smtp_encryption` text DEFAULT NULL,
+  `smtp_password` longtext DEFAULT NULL,
+  `smtp_from_email` text DEFAULT NULL,
+  `smtp_from_name` text DEFAULT NULL,
+  `smtp_to_email` text DEFAULT NULL,
+  `smtp_username` longtext DEFAULT NULL,
+  `system_name` text DEFAULT NULL,
+  `ldap_host_secondary` text DEFAULT NULL,
+  `base_url` text DEFAULT NULL,
+  `smtp_enabled` tinyint(1) DEFAULT 0,
+  `default_theme_id` int(11) NOT NULL DEFAULT 1,
+  `cost_enable_normal` tinyint(1) NOT NULL DEFAULT 1,
+  `cost_enable_cable` tinyint(1) NOT NULL DEFAULT 1,
+  `footer_enable` tinyint(1) NOT NULL DEFAULT 1,
+  `footer_left_enable` tinyint(1) NOT NULL DEFAULT 1,
+  `footer_right_enable` tinyint(1) NOT NULL DEFAULT 1,
+  `2fa_enabled` tinyint(1) DEFAULT 0,
+  `2fa_enforced` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,15 +241,15 @@ CREATE TABLE `config_default` (
 
 DROP TABLE IF EXISTS `container`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `container` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `shelf_id` int NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` tinytext NOT NULL,
+  `description` text DEFAULT NULL,
+  `shelf_id` int(11) NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,21 +258,21 @@ CREATE TABLE `container` (
 
 DROP TABLE IF EXISTS `item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `stock_id` bigint NOT NULL,
-  `upc` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `quantity` int NOT NULL DEFAULT '0',
-  `cost` decimal(10,0) DEFAULT '0',
-  `serial_number` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `comments` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `manufacturer_id` bigint DEFAULT NULL,
-  `shelf_id` int NOT NULL DEFAULT '0',
-  `is_container` tinyint(1) NOT NULL DEFAULT '0',
-  `deleted` tinyint(1) DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `stock_id` bigint(20) NOT NULL,
+  `upc` text DEFAULT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 0,
+  `cost` decimal(10,0) DEFAULT 0,
+  `serial_number` text DEFAULT NULL,
+  `comments` longtext DEFAULT NULL,
+  `manufacturer_id` bigint(20) DEFAULT NULL,
+  `shelf_id` int(11) NOT NULL DEFAULT 0,
+  `is_container` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=498 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,14 +281,14 @@ CREATE TABLE `item` (
 
 DROP TABLE IF EXISTS `item_container`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item_container` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `item_id` bigint NOT NULL,
-  `container_id` int NOT NULL,
-  `container_is_item` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `item_id` bigint(20) NOT NULL,
+  `container_id` int(11) NOT NULL,
+  `container_is_item` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -271,17 +297,17 @@ CREATE TABLE `item_container` (
 
 DROP TABLE IF EXISTS `login_failure`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `login_failure` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `auth` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ipv4` int DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` text NOT NULL,
+  `auth` text DEFAULT NULL,
+  `ipv4` int(11) DEFAULT NULL,
   `ipv6` varbinary(16) DEFAULT NULL,
-  `last_timestamp` timestamp NOT NULL COMMENT 'Last failed attempet',
-  `count` int NOT NULL COMMENT 'Count of failures',
+  `last_timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Last failed attempet',
+  `count` int(11) NOT NULL COMMENT 'Count of failures',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,18 +316,18 @@ CREATE TABLE `login_failure` (
 
 DROP TABLE IF EXISTS `login_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `login_log` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `type` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL COMMENT 'login / logout / fail',
-  `username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `user_id` int DEFAULT NULL COMMENT 'Can be blank if the user doesnt match anything',
-  `ipv4` int DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `type` text NOT NULL COMMENT 'login / logout / fail',
+  `username` text NOT NULL,
+  `user_id` int(11) DEFAULT NULL COMMENT 'Can be blank if the user doesnt match anything',
+  `ipv4` int(11) DEFAULT NULL,
   `ipv6` varbinary(16) DEFAULT NULL,
-  `timestamp` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `auth` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp(),
+  `auth` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=205 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,13 +336,13 @@ CREATE TABLE `login_log` (
 
 DROP TABLE IF EXISTS `manufacturer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `manufacturer` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,15 +351,15 @@ CREATE TABLE `manufacturer` (
 
 DROP TABLE IF EXISTS `notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `notifications` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `title` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `title` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,16 +368,16 @@ CREATE TABLE `notifications` (
 
 DROP TABLE IF EXISTS `optic_comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_comment` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `item_id` bigint NOT NULL,
-  `comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `user_id` int NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `item_id` bigint(20) NOT NULL,
+  `comment` text NOT NULL,
+  `user_id` int(11) NOT NULL,
   `timestamp` datetime NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -360,13 +386,13 @@ CREATE TABLE `optic_comment` (
 
 DROP TABLE IF EXISTS `optic_connector`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_connector` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -375,13 +401,13 @@ CREATE TABLE `optic_connector` (
 
 DROP TABLE IF EXISTS `optic_distance`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_distance` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -390,23 +416,23 @@ CREATE TABLE `optic_distance` (
 
 DROP TABLE IF EXISTS `optic_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_item` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `model` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `vendor_id` int NOT NULL,
-  `serial_number` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `type_id` int NOT NULL,
-  `connector_id` int NOT NULL,
-  `mode` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `spectrum` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `speed_id` int NOT NULL,
-  `distance_id` int NOT NULL,
-  `site_id` int NOT NULL,
-  `quantity` int NOT NULL DEFAULT '1',
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `model` text NOT NULL,
+  `vendor_id` int(11) NOT NULL,
+  `serial_number` text NOT NULL,
+  `type_id` int(11) NOT NULL,
+  `connector_id` int(11) NOT NULL,
+  `mode` tinytext NOT NULL,
+  `spectrum` text NOT NULL,
+  `speed_id` int(11) NOT NULL,
+  `distance_id` int(11) NOT NULL,
+  `site_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -415,12 +441,12 @@ CREATE TABLE `optic_item` (
 
 DROP TABLE IF EXISTS `optic_speed`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_speed` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -429,19 +455,19 @@ CREATE TABLE `optic_speed` (
 
 DROP TABLE IF EXISTS `optic_transaction`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_transaction` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `table_name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `item_id` bigint NOT NULL,
-  `type` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `reason` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `table_name` text NOT NULL,
+  `item_id` bigint(20) NOT NULL,
+  `type` text NOT NULL,
+  `reason` text NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
-  `username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `site_id` bigint NOT NULL,
+  `username` text NOT NULL,
+  `site_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -450,13 +476,13 @@ CREATE TABLE `optic_transaction` (
 
 DROP TABLE IF EXISTS `optic_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_type` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -465,13 +491,13 @@ CREATE TABLE `optic_type` (
 
 DROP TABLE IF EXISTS `optic_vendor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `optic_vendor` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -480,15 +506,15 @@ CREATE TABLE `optic_vendor` (
 
 DROP TABLE IF EXISTS `password_reset`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `password_reset` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reset_user_id` int NOT NULL,
-  `reset_selector` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `reset_token` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `reset_expires` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `reset_user_id` int(11) NOT NULL,
+  `reset_selector` text NOT NULL,
+  `reset_token` longtext NOT NULL,
+  `reset_expires` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -497,21 +523,21 @@ CREATE TABLE `password_reset` (
 
 DROP TABLE IF EXISTS `session_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `session_log` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `login_time` int NOT NULL,
-  `logout_time` int DEFAULT NULL,
-  `ipv4` int unsigned DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `login_time` int(11) NOT NULL,
+  `logout_time` int(11) DEFAULT NULL,
+  `ipv4` int(10) unsigned DEFAULT NULL,
   `ipv6` varbinary(16) DEFAULT NULL,
-  `browser` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `os` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `status` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `last_activity` int NOT NULL,
-  `login_log_id` bigint NOT NULL,
+  `browser` text NOT NULL,
+  `os` text NOT NULL,
+  `status` text NOT NULL,
+  `last_activity` int(11) NOT NULL,
+  `login_log_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -520,14 +546,14 @@ CREATE TABLE `session_log` (
 
 DROP TABLE IF EXISTS `shelf`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shelf` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `area_id` bigint NOT NULL,
-  `deleted` tinyint(1) DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `area_id` bigint(20) NOT NULL,
+  `deleted` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -536,14 +562,14 @@ CREATE TABLE `shelf` (
 
 DROP TABLE IF EXISTS `site`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `site` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `deleted` tinyint(1) DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `deleted` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -552,19 +578,19 @@ CREATE TABLE `site` (
 
 DROP TABLE IF EXISTS `stock`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stock` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `sku` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `min_stock` int DEFAULT '0',
-  `is_cable` tinyint(1) NOT NULL DEFAULT '0',
-  `deleted` tinyint(1) DEFAULT '0',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `sku` text NOT NULL,
+  `min_stock` int(11) DEFAULT 0,
+  `is_cable` tinyint(1) NOT NULL DEFAULT 0,
+  `deleted` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   FULLTEXT KEY `name` (`name`),
   FULLTEXT KEY `description` (`description`)
-) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -573,15 +599,15 @@ CREATE TABLE `stock` (
 
 DROP TABLE IF EXISTS `stock_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stock_audit` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `stock_id` bigint NOT NULL,
-  `user_id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `stock_id` bigint(20) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
   `date` date NOT NULL,
-  `comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `comment` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -590,13 +616,13 @@ CREATE TABLE `stock_audit` (
 
 DROP TABLE IF EXISTS `stock_img`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stock_img` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `stock_id` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `image` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `stock_id` text NOT NULL,
+  `image` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -605,13 +631,13 @@ CREATE TABLE `stock_img` (
 
 DROP TABLE IF EXISTS `stock_tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stock_tag` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `stock_id` bigint NOT NULL,
-  `tag_id` bigint DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `stock_id` bigint(20) NOT NULL,
+  `tag_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -620,14 +646,14 @@ CREATE TABLE `stock_tag` (
 
 DROP TABLE IF EXISTS `tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tag` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `description` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -636,13 +662,13 @@ CREATE TABLE `tag` (
 
 DROP TABLE IF EXISTS `theme`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `theme` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `file_name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `file_name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -651,23 +677,23 @@ CREATE TABLE `theme` (
 
 DROP TABLE IF EXISTS `transaction`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `transaction` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `stock_id` bigint NOT NULL,
-  `item_id` bigint NOT NULL,
-  `type` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `quantity` int NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `stock_id` bigint(20) NOT NULL,
+  `item_id` bigint(20) NOT NULL,
+  `type` text NOT NULL,
+  `quantity` int(11) NOT NULL,
   `price` decimal(10,0) DEFAULT NULL,
-  `serial_number` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `reason` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `comments` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `serial_number` text DEFAULT NULL,
+  `reason` text NOT NULL,
+  `comments` longtext DEFAULT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
-  `username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `shelf_id` int DEFAULT NULL,
+  `username` text NOT NULL,
+  `shelf_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=570 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -676,23 +702,25 @@ CREATE TABLE `transaction` (
 
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `username` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `first_name` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `last_name` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `email` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `auth` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `password` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `role_id` int DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `password_expired` tinyint(1) NOT NULL DEFAULT '0',
-  `theme_id` int DEFAULT '0',
-  `card_primary` int DEFAULT NULL,
-  `card_secondary` int DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` tinytext NOT NULL,
+  `first_name` tinytext NOT NULL,
+  `last_name` tinytext NOT NULL,
+  `email` text NOT NULL,
+  `auth` tinytext DEFAULT NULL,
+  `password` longtext DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT 1,
+  `password_expired` tinyint(1) NOT NULL DEFAULT 0,
+  `theme_id` int(11) DEFAULT 0,
+  `card_primary` int(11) DEFAULT NULL,
+  `card_secondary` int(11) DEFAULT NULL,
+  `2fa_secret` text DEFAULT NULL,
+  `2fa_enabled` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -701,16 +729,16 @@ CREATE TABLE `users` (
 
 DROP TABLE IF EXISTS `users_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users_roles` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `is_optic` tinyint(1) NOT NULL DEFAULT '0',
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `is_root` tinyint(1) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `is_optic` tinyint(1) NOT NULL DEFAULT 0,
+  `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `is_root` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -722,4 +750,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-05 18:22:53
+-- Dump completed on 2024-06-27 23:30:19

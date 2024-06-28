@@ -7,6 +7,7 @@
 // DEFAULT LANDING PAGE IF NOT LOGGED IN. 
 // ALLOWS USERS TO LOGIN TO THE SYSTEM TO VIEW AND MODIFY CONTENT
 session_start();
+
 // if session not set, go to login page
 if (session_status() !== PHP_SESSION_ACTIVE) {
     header("Location: ./");
@@ -28,6 +29,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Generate a random token
 }
+
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
@@ -37,7 +39,7 @@ if (!isset($_SESSION['csrf_token'])) {
     <?php include 'head.php'; // Sets up bootstrap and other dependencies ?>
     <title><?php echo ucwords($current_system_name);?> - Login</title>
 </head>
-<body>
+<body id="body">
     <!-- Header and Nav -->
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
@@ -50,22 +52,21 @@ if (!isset($_SESSION['csrf_token'])) {
             <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
                 <p style="margin-top:2vh;margin-bottom:3vh">Please input your credentials to login.</p>
-                <!-- <p class="red">Demo LDAP username: <or class="blue">demo</or> password: <or class="blue">InventoryPass1!</or></p> -->
-                <form enctype="application/x-www-form-urlencoded" action="includes/login.inc.php" method="post" style="margin-bottom:0px">
+                <form id="loginForm" style="margin-bottom:0px">
                     <!-- Include CSRF token in the form -->
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    <input id="csrf_token" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <div class="form-group">
                         <label>Username / Email Address</label>
-                        <input type="username" name="username" class="form-control" placeholder="username@domain.com" required>
+                        <input id="username" type="username" name="username" class="form-control" placeholder="username@domain.com" required>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <input id="password" type="password" name="password" class="form-control" placeholder="Password" required>
                     </div>
                     
                         <div class="nav-row">
                             <div class="form-group">
-                                <input type="submit" name="submit" class="btn btn-primary" value="Login">
+                                <input id="submit" type="submit" name="submit" class="btn btn-primary" value="Login">
                             </div>
                             <?php 
                             if ($current_ldap_enabled == 1) {
@@ -79,7 +80,7 @@ if (!isset($_SESSION['csrf_token'])) {
                                     <label class="nav-div" style="margin-left:0px">Local Login<p></p></label>
                                 ');
                             } else {
-                                echo('<input type="hidden" name="local" value="on" />');
+                                echo('<input id="local-toggle" type="hidden" name="local" value="on" />');
                             }
                             ?>
                         </div>
@@ -98,8 +99,9 @@ if (!isset($_SESSION['csrf_token'])) {
                         }
                     }
                 ?>
+                <p id="js-info" style="display:none"></p>
                 <p><a href="login.php?reset=true" id="password-reset">Forgot password?</a>
-                <button class="btn btn-info viewport-small-block" onclick="modalLoadSwipe()">Swipe card login</button>
+                <!-- <button class="btn btn-info viewport-small-block" onclick="modalLoadSwipe()">Swipe card login</button> -->
                 <!-- <p><a href="https://todo.ajrich.co.uk/#/board/16" id="todo" class="link" target="_blank"> To do list for the ongoing project</a></p> -->
             </div>
         </div>
@@ -145,71 +147,8 @@ if (!isset($_SESSION['csrf_token'])) {
         }
     ?>
 
-    <div id="modalDivSwipe" class="modal viewport-small-block"<?php if (isset($_GET['reset']) && $_GET['reset'] == 'true') { echo(' hidden');}?> >
-    <!-- <div id="modalDivSwipe" class="modal" style="display: block !important;">  -->
-        <span class="close" onclick="modalCloseSwipe()">&times;</span>
-        <div class="container well-nopad theme-divBg" style="padding:25px">
-            <form id='cardLoginForm' action="includes/login-card.inc.php" method="POST" enctype="application/x-www-form-urlencoded">
-                <!-- Include CSRF token in the form -->
-                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                <input type="hidden" name="submitHidden" value="1" />
-                <input type="hidden" name="cardData" id="cardData" />
-                <h3 class="text-center">Present swipe card to login</h3>
-                <p class="text-center" style="margin-top:20px">or <or class="link gold" onclick="modalCloseSwipe()">click here</or> to login manually.</p>
-                <button class="btn btn-danger" onclick="document.getElementById('cardData').value='17322435'">Temp</button>
-            </form>
-        </div>
-        <script>
-            $(document).ready(function() {
-                $(document).keypress(function(event) {
-                    // Assuming the card input triggers a keypress event
-                    var modalDiv = document.getElementById('modalDivSwipe');
-                    var computedStyle = window.getComputedStyle(modalDiv);
-                    var displayValue = computedStyle.getPropertyValue('display');
-                    // console.log(displayValue);
-                    if (displayValue !== 'none') {
-                        var cardData = String.fromCharCode(event.which);
-                        var cardData_input = document.getElementById('cardData');
-                        var cardLoginForm = document.getElementById('cardLoginForm');
-                        
-                        cardData_input.textContent = cardData;
-                        cardLoginForm.submit();
-                    }
-                });
-            });
-        </script>
-    </div>
+<script src='assets/js/login.js'></script>
 
-<script>
-var toggle = document.getElementById("local-toggle");
-var reset = document.getElementById("password-reset");
-if (toggle.checked) {
-    reset.hidden=false;
-} else {
-    reset.hidden=true;
-}
-toggle.addEventListener('change', (event) => {
-    var reset = document.getElementById("password-reset");
-    if (event.currentTarget.checked) {
-        reset.hidden=false;
-    } else {
-        reset.hidden=true;
-    }
-})
-</script>
-<script>
-    function modalLoadSwipe() {
-        var modal = document.getElementById("modalDivSwipe");
-        modal.style.display = "block";
-        modal.hidden = false;
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseSwipe = function() { 
-        var modal = document.getElementById("modalDivSwipe");
-        modal.style.display = "none";
-    }
-</script>
 <?php include 'foot.php'; ?>
 
 </body>

@@ -225,6 +225,7 @@ esac
                                                         ALTER TABLE `session_log` DROP COLUMN login_log_id;
                                                         ALTER TABLE `area` ADD COLUMN parent_id INT;
                                                         ALTER TABLE `item` DROP COLUMN is_container;"
+             0.3.X-beta "0.6.0-beta" 
              break;;
     0.7.2-beta )
             echo "SQL Changes to be made:"
@@ -238,7 +239,16 @@ esac
                                                         );
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
                                                         ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
-                                                        "                        
+                                                        " 
+            0.3.X-beta "0.7.0-beta"                        
+            break;;
+    1.0.0 )
+            echo "No SQL changes to be made."  
+            0.3.X-beta "0.7.2-beta"                                        
+            break;;
+    1.0.1 )
+            echo "No SQL changes to be made."   
+            0.3.X-beta "1.0.0"                                       
             break;;
     esac 
 }
@@ -320,6 +330,7 @@ esac
                                                         ALTER TABLE `session_log` DROP COLUMN login_log_id;
                                                         ALTER TABLE `area` ADD COLUMN parent_id INT;
                                                         ALTER TABLE `item` DROP COLUMN is_container;"
+             0.4.0-beta "0.6.0-beta"  
              break;;
     0.7.2-beta )
             echo "SQL Changes to be made:"
@@ -334,6 +345,15 @@ esac
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
                                                         ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
+            0.4.0-beta "0.7.0-beta"  
+            break;;
+    1.0.0 )
+            echo "No SQL changes to be made."                                        
+            0.4.0-beta "0.7.2-beta"  
+            break;;
+    1.0.1 )
+            echo "No SQL changes to be made."                                        
+            0.4.0-beta "1.0.0"  
             break;;
     esac 
 }
@@ -415,6 +435,7 @@ esac
                                                         ALTER TABLE `session_log` DROP COLUMN login_log_id;
                                                         ALTER TABLE `area` ADD COLUMN parent_id INT;
                                                         ALTER TABLE `item` DROP COLUMN is_container;"
+             0.4.1-beta "0.6.0-beta" 
              break;;
     0.7.2-beta )
             echo "SQL Changes to be made:"
@@ -429,6 +450,15 @@ esac
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
                                                         ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
+            0.4.1-beta "0.7.0-beta" 
+            break;;
+    1.0.0 )
+            echo "No SQL changes to be made."                                        
+            0.4.1-beta "0.7.2-beta" 
+            break;;
+    1.0.1 )
+            echo "No SQL changes to be made."                                        
+            0.4.1-beta "1.0.0" 
             break;;
     esac 
 }
@@ -523,7 +553,8 @@ esac
                                                         ALTER TABLE `session_log` DROP COLUMN login_log_id;
                                                         ALTER TABLE `area` ADD COLUMN parent_id INT;
                                                         ALTER TABLE `item` DROP COLUMN is_container;"
-	    break;;
+	    0.5.0-beta "0.6.0-beta"
+            break;;
     0.7.2-beta )
             echo "SQL Changes to be made:"
             echo " - (0.7.0-beta) Tables: optic_distance to be added"
@@ -537,6 +568,15 @@ esac
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
                                                         ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
+            0.5.0-beta "0.7.0-beta"
+            break;;
+    1.0.0 )
+            echo "No SQL changes to be made."                                        
+            0.5.0-beta "0.7.2-beta"
+            break;;
+    1.0.1 )
+            echo "No SQL changes to be made."                                        
+            0.5.0-beta "1.0.0"
             break;;
     esac 
 }
@@ -553,7 +593,7 @@ esac
             echo " - 'stock_tag' table becomes 'stock_label'"
             echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
-            0.5.0-beta "0.4.0-beta"
+            0.6.0-beta "0.4.0-beta"
             break;;
             
     0.4.0-beta )
@@ -573,7 +613,7 @@ esac
                                                           ALTER TABLE `config` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
                                                           ALTER TABLE `config` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
                                                           ALTER TABLE `config` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
-            0.5.0-beta "0.4.1-beta"
+            0.6.0-beta "0.4.1-beta"
             break;;
     0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
@@ -592,6 +632,7 @@ esac
                                                             `status` text NOT NULL,
                                                             PRIMARY KEY (`id`)
                                                           );"
+            0.6.0-beta "0.5.0-beta"
             break;;
 
     0.5.0-beta )
@@ -699,6 +740,7 @@ esac
                                                                 ALTER TABLE `stock` ADD FULLTEXT(name);
                                                                 ALTER TABLE `stock` ADD FULLTEXT(description);
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
+            0.6.0-beta "0.6.0-beta"
             break;;
     0.6.0-beta )
             echo "No SQL changes to be made."                                        
@@ -720,7 +762,7 @@ esac
                                                         ALTER TABLE `item` DROP COLUMN is_container;
                                                         DROP TABLE `item_container`;
                                                         DROP TABLE `container`;"
-	    break;;
+            break;;
     0.7.2-beta )
             echo "SQL Changes to be made:"
             echo " - (0.7.0-beta) Tables: optic_distance to be added"
@@ -734,6 +776,15 @@ esac
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
                                                         ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
+            0.6.0-beta "0.7.0-beta"
+            break;;
+    1.0.0 )
+            echo "No SQL changes to be made."                                        
+            0.6.0-beta "0.7.2-beta"
+            break;;
+    1.0.1 )
+            echo "No SQL changes to be made."                                        
+            0.6.0-beta "1.0.0"
             break;;
     esac 
 }
@@ -749,7 +800,7 @@ esac
             echo " - 'stock_tag' table becomes 'stock_label'"
             echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
-            0.5.0-beta "0.4.0-beta"
+            0.7.0-beta "0.4.0-beta"
             break;;
             
     0.4.0-beta )
@@ -769,7 +820,7 @@ esac
                                                           ALTER TABLE `config` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
                                                           ALTER TABLE `config` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
                                                           ALTER TABLE `config` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
-            0.5.0-beta "0.4.1-beta"
+            0.7.0-beta "0.4.1-beta"
             break;;
     0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
@@ -788,6 +839,7 @@ esac
                                                             `status` text NOT NULL,
                                                             PRIMARY KEY (`id`)
                                                           );"
+            0.7.0-beta "0.5.0-beta"
             break;;
 
     0.5.0-beta )
@@ -895,6 +947,7 @@ esac
                                                                 ALTER TABLE `stock` ADD FULLTEXT(name);
                                                                 ALTER TABLE `stock` ADD FULLTEXT(description);
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
+            0.7.0-beta "0.6.0-beta"
             break;;
     0.6.0-beta )
             echo "SQL Changes to be made:"
@@ -945,6 +998,7 @@ esac
                                                                 `deleted` tinyint(1) NOT NULL DEFAULT '0',
                                                                 PRIMARY KEY (`id`)
                                                         );"                                     
+            0.7.0-beta "0.7.0-beta"
             break;;
     0.7.0-beta )
             echo "No SQL changes to be made."                                        
@@ -962,6 +1016,15 @@ esac
                                                         ALTER TABLE optic_item ADD COLUMN distance_id INT NOT NULL AFTER speed_id;
                                                         ALTER TABLE `optic_item` ADD COLUMN spectrum TEXT NOT NULL AFTER mode;
                                                         "                        
+            0.7.0-beta "0.7.0-beta"
+            break;;
+    1.0.0 )
+            echo "No SQL changes to be made."                                        
+            0.7.0-beta "0.7.2-beta"
+            break;;
+    1.0.1 )
+            echo "No SQL changes to be made."                                        
+            0.7.0-beta "1.0.0"
             break;;
     esac 
 }
@@ -977,7 +1040,7 @@ esac
             echo " - 'stock_tag' table becomes 'stock_label'"
             echo "    - 'stock_tag.tag_id' becomes 'stock_label.label_id'"
             mysql -u "$db_username" -p "$db_password" -e "USE inventory; ALTER TABLE tag RENAME label; ALTER TABLE stock_tag RENAME stock_label; ALTER TABLE stock_label RENAME COLUMN tag_id TO label_id;"
-            0.5.0-beta "0.4.0-beta"
+            0.7.2-beta "0.4.0-beta"
             break;;
             
     0.4.0-beta )
@@ -997,7 +1060,7 @@ esac
                                                           ALTER TABLE `config` ADD COLUMN footer_enable BOOLEAN NOT NULL DEFAULT 1; 
                                                           ALTER TABLE `config` ADD COLUMN footer_left_enable BOOLEAN NOT NULL DEFAULT 1; 
                                                           ALTER TABLE `config` ADD COLUMN footer_right_enable BOOLEAN NOT NULL DEFAULT 1;"
-            0.5.0-beta "0.4.1-beta"
+            0.7.2-beta "0.4.1-beta"
             break;;
     0.4.1-beta|0.4.2-beta )
             echo "SQL Changes to be made:"
@@ -1016,6 +1079,7 @@ esac
                                                             `status` text NOT NULL,
                                                             PRIMARY KEY (`id`)
                                                           );"
+            0.7.2-beta "0.5.0-beta"
             break;;
 
     0.5.0-beta )
@@ -1123,6 +1187,7 @@ esac
                                                                 ALTER TABLE `stock` ADD FULLTEXT(name);
                                                                 ALTER TABLE `stock` ADD FULLTEXT(description);
                                                                 ALTER TABLE `password_reset` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ciutf8mb4_unicode_520_ci;"
+            0.7.2-beta "0.6.0-beta"
             break;;
     0.6.0-beta )
             echo "SQL Changes to be made:"
@@ -1173,6 +1238,7 @@ esac
                                                                 `deleted` tinyint(1) NOT NULL DEFAULT '0',
                                                                 PRIMARY KEY (`id`)
                                                         );"                                     
+            0.7.2-beta "0.7.0-beta"
             break;;
     0.7.0-beta )
             echo "SQL Changes to be made:"
@@ -1182,10 +1248,43 @@ esac
                                                         ALTER TABLE `optic_item` DROP COLUMN distance_id;
                                                         ALTER TABLE `optic_item` DROP COLUMN spectrum;
                                                         "                        
+            0.7.2-beta "0.7.2-beta"
             break;;
     0.7.2-beta )
             echo "No SQL changes to be made."                                        
             break;;
+    1.0.0 )
+            echo "No SQL changes to be made."                                        
+            0.7.2-beta "0.7.2-beta"
+            break;;
+    1.0.1 )
+            echo "No SQL changes to be made."                                        
+            0.7.2-beta "1.0.0-beta"
+            break;;
             
     esac 
 }
+
+# 1.0.0 - no changes to be added
+# 1.0.1 - no changes to add
+#
+# 1.1.0 changes to add below:
+#alter table users add column 2fa_enabled boolean default 0;
+#alter table users add column 2fa_secret text;
+#alter table config add column 2fa_enabled boolean default 0;
+#alter table config add column 2fa_enforced boolean default 0;
+#alter table config_default add column 2fa_enabled boolean default 0;
+#alter table config_default add column 2fa_enforced boolean default 0;
+#CREATE TABLE `bypass_2fa` (
+#  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+#  `user_id` bigint(20) NOT NULL,
+#  `cookie` text NOT NULL,
+#  `ipv4` int(11) DEFAULT NULL,
+#  `ipv6` varbinary(16) DEFAULT NULL,
+#  `browser` text NOT NULL,
+#  `os` text NOT NULL,
+#  `created_timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+#  `expires_timestamp` timestamp NOT NULL DEFAULT cast(current_timestamp() + interval 30 day as datetime),
+#  `deleted` tinyint(1) NOT NULL DEFAULT 0,
+#  PRIMARY KEY (`id`)
+#)

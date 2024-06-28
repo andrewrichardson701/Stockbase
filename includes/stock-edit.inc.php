@@ -99,7 +99,7 @@ if (isset($_GET['stock_id'])) {
                                     </div>
                                     <div class="nav-row" id="description-row" style="margin-top:25px">
                                         <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>
-                                        <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.htmlspecialchars($stock['description'], ENT_QUOTES, 'UTF-8').'" >'.$stock['description'].'</textarea></div>
+                                        <div><textarea class="form-control nav-v-c stock-inputSize" id="description" name="description" rows="3" style="resize: both; overflow: auto; word-wrap: break-word;" placeholder="Stock description/summary" value="'.htmlspecialchars($stock['description'], ENT_QUOTES, 'UTF-8').'" >'.str_replace(array("\r\n","\\r\\n"), "&#010;", $stock['description']).'</textarea></div>
                                     </div>');
                                     if ($stock['is_cable'] == 0) {
                                         echo('

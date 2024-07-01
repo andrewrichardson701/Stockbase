@@ -95,7 +95,7 @@ if (isset($_GET['error'])) {
 		$errorPtext = 'Form submit condition not met.';
 	} elseif ($_GET['error'] == 'SKUexists') {
 		$errorPtext = 'SKU already exists. Please pick another, or leave empty to generate a new one.';
-        if (isset($_GEt['sku'])) {
+        if (isset($_GET['sku'])) {
             $errorPtext .= ' <or class="blue">'.$_GET['sku'].'</or>.';
         }
 	} elseif ($_GET['error'] == 'multipleItemsFound') {

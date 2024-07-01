@@ -1,4 +1,8 @@
 <?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 function create2FA($accountName) {
     require_once 'GoogleAuthenticator/PHPGangsta/GoogleAuthenticator.php';
 
@@ -36,7 +40,9 @@ function OTPverify($user_id, $secret, $otp) {
 
 }
 
-function makeOTPPrompt($data, $accountName, $user_id, $redirect_url, $format) {
+function makeOTPPrompt($data, $accountName, $user_id, $redirect_url, $format) {#
+    $_SESSION['otp_secret'] = $data['secret'];
+    $_SESSION['otp_account_name'] = $accountName;
     $info = '<div class="modal" style="display:block">
                 <div id="2fa-qr" class="container col-md-2 text-center well-nopad theme-divBg" style="padding:30px">
                     <h2 style="margin-bottom:20px">Two-Factor Authentication</h2>
@@ -50,8 +56,6 @@ function makeOTPPrompt($data, $accountName, $user_id, $redirect_url, $format) {
                         <input type="checkbox" id="bypass_2fa" name="bypass_2fa" style="margin-top:20px;margin-right:10px">
                         <label class="title" title="Don\'t use 2FA for 30 days on this device">Remember me</label>
                     </span>
-                    <input id="otp_secret" type="hidden" name="otp_secret" value="'.$data['secret'].'">
-                    <input id="account_name" type="hidden" name="account_name" value="'.$accountName.'">
                     <input id="redirect_url" type="hidden" name="redirect_url" value="'.$redirect_url.'">
                     <input id="user_id" type="hidden" name="user_id" value="'.$user_id.'">
                 </div>
@@ -65,6 +69,9 @@ function makeOTPPrompt($data, $accountName, $user_id, $redirect_url, $format) {
 }
 
 function make2FAPrompt($data, $accountName, $user_id, $redirect_url, $format) {
+    $_SESSION['otp_secret'] = $data['secret'];
+    $_SESSION['otp_account_name'] = $accountName;
+    $_SESSION['otp_user_id'] = $user_id;
     $info = '<div class="modal" style="display:block">
                 <div id="2fa-qr" class="container col-md-2 text-center well-nopad theme-divBg" style="padding:30px">
                     <h2 style="margin-bottom:20px">Two-Factor Authentication</h2>
@@ -80,10 +87,7 @@ function make2FAPrompt($data, $accountName, $user_id, $redirect_url, $format) {
                         <input type="checkbox" id="bypass_2fa" name="bypass_2fa" style="margin-top:20px;margin-right:10px">
                         <label class="title" title="Don\'t use 2FA for 30 days on this device">Remember me</label>
                     </span>
-                    <input id="otp_secret" type="hidden" name="otp_secret" value="'.$data['secret'].'">
-                    <input id="account_name" type="hidden" name="account_name" value="'.$accountName.'">
                     <input id="redirect_url" type="hidden" name="redirect_url" value="'.$redirect_url.'">
-                    <input id="user_id" type="hidden" name="user_id" value="'.$user_id.'">
                 </div>
             </div>';
 
@@ -224,12 +228,12 @@ function remember2FA($user_id) {
 }
 
 if (isset($_POST['makeotp'])) {
-    if (isset($_POST['user_id'])) {
+    if (isset($_SESSION['otp_user_id'])) {
         if (isset($_POST['redirect_url'])) {
             $return = [];
             $redirect_url = $_POST['redirect_url'];
 
-            $accountID = $_POST['user_id'];
+            $accountID = $_SESSION['otp_user_id'];
 
             $accountName = getAccountName($accountID);
             $secret = getSecret($accountID);
@@ -269,20 +273,20 @@ if (isset($_POST['make2fa'])) {
 }
 
 if (isset($_POST['checkotp'])) {
-    if (isset($_POST['accountName'])) {
-        if (isset($_POST['user_id'])) {
+    if (isset($_SESSION['otp_account_name'])) {
+        if (isset($_SESSION['otp_user_id'])) {
             if (isset($_POST['otp'])) {
-                if (isset($_POST['secret'])) {
+                if (isset($_SESSION['otp_secret'])) {
                     $return = [];
                     $bypass_2fa = 'false';
                     if (isset($_POST['bypass_2fa']) && $_POST['bypass_2fa'] == 'true') {
                         $bypass_2fa = 'true';
                     } 
                     
-                    $accountName = $_POST['accountName'];
-                    $user_id = $_POST['user_id'];
+                    $accountName = $_SESSION['otp_account_name'];
+                    $user_id = $_SESSION['otp_user_id'];
                     
-                    $secret = $_POST['secret'];
+                    $secret = $_SESSION['otp_secret'];
                     $otp = $_POST['otp'];
                     
                     $output = OTPverify($user_id, $secret, $otp);
@@ -291,12 +295,23 @@ if (isset($_POST['checkotp'])) {
                         remember2FA($user_id);
                     }
 
+
                     $return['status'] = 'true';
                     $return['data'] = $output;
-                    
+                    $return['user_id'] = $user_id;
+
+                    unset($_SESSION['otp_secret']);
+                    unset($_SESSION['otp_user_id']);
+                    unset($_SESSION['otp_account_name']);
+                   
                     echo json_encode($return); 
                     
-                }      
+                } else {
+                    $return['status'] = 'false';
+                    $return['data'] = 'Invalid OTP';
+                    
+                    echo json_encode($return); 
+                }   
             }    
         }
     }

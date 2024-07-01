@@ -337,6 +337,7 @@ if (isset($_POST['submit'])) {
                             $return['login'] = 'success';
                             $return['redirect_url'] = $redirect;
                             $return['user_id'] = $row['users_id'];
+                            $_SESSION['otp_user_id'] = $row['users_id'];
                             echo json_encode($return);
                             exit();
                         } else {
@@ -648,6 +649,7 @@ if (isset($_POST['submit'])) {
                                     $return['login'] = 'success';
                                     $return['redirect_url'] = $redirect;
                                     $return['user_id'] = $insert_id;
+                                    $_SESSION['otp_user_id'] = $row['users_id'];
                                     echo json_encode($return);
                                     exit();
                                 } elseif ($rowCount == 1) {
@@ -739,6 +741,7 @@ if (isset($_POST['submit'])) {
                                         $return['login'] = 'success';
                                         $return['redirect_url'] = $redirect;
                                         $return['user_id'] = $row['users_id'];
+                                        $_SESSION['otp_user_id'] = $row['users_id'];
                                         echo json_encode($return);
                                         exit();
                                     }  

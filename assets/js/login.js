@@ -56,11 +56,8 @@ async function otpLogin(user_id, redirect_url) {
 async function checkotp() {
     var body = document.getElementById("body");
     var otp = document.getElementById("otp_code").value;
-    var accountName = document.getElementById("account_name").value;
     var redirect_url = document.getElementById("redirect_url").value;
     var statusP = document.getElementById("status_info");
-    var secret = document.getElementById("otp_secret").value;
-    var user_id = document.getElementById("user_id").value;
     var bypass_2fa = document.getElementById("bypass_2fa").checked;
 
     if (redirect_url == '' || redirect_url == null) {
@@ -72,10 +69,7 @@ async function checkotp() {
         url: "includes/2fa.inc.php",
         data: {
             checkotp: 1,
-            accountName: accountName,
-            user_id: user_id,
             otp: otp,
-            secret: secret,
             bypass_2fa: bypass_2fa
         },
         dataType: "json",
@@ -83,12 +77,16 @@ async function checkotp() {
             if (response["status"] == "true") {
                 statusP.style.display = "block";
                 statusP.innerText = response["data"];
-                if (response['data'].includes('successful')) {
+                if (response['data'].includes('successful') && response.hasOwnProperty('user_id')) {
+                    var user_id = response['user_id'];
                     statusP.innerText += '. Redirecting...';
                     await delay(1500);
                     // do final ajax
                     otpLogin(user_id, redirect_url);
                 }
+            } else {
+                console.log(response['status']);
+                console.log(response['data']);
             }
         },
         error: function(response) {

@@ -669,6 +669,8 @@ Clone the repo first, and the follow the below steps.
 
 - Bypass_2fa now uses randomly generated cookies and cookie names, stored in the DB
 - Adjusted login scripts to check for the new cookies.
+- Secret now removed from the form on the 2FA input and moved to the SESSION array.
+- 2FA functions now more secure and no hidden info left on the page.
 
 </details>
 <details>

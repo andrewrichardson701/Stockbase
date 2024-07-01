@@ -282,6 +282,18 @@ if (isset($_GET['success'])) {
     }
 }
 
+if (isset($_GET['ajax']) && $_GET['ajax'] == 1) {
+    if ($errorPtext !== '') {
+        echo $errorPtext;
+    }
+    if ($sqlerrorPtext !== '') {
+        echo $sqlerrorPtext;
+    }
+    if ($successPtext !== '') {
+        echo $successPtext;
+    }
+}
+
 function showResponse() {
     global $errorPtext, $errorPprefix, $errorPsuffix, $sqlerrorPtext, $successPprefix, $successPtext, $successPsuffix;
     if ($errorPtext !== '') {

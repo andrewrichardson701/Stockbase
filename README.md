@@ -671,6 +671,7 @@ Clone the repo first, and the follow the below steps.
 - Adjusted login scripts to check for the new cookies.
 - Secret now removed from the form on the 2FA input and moved to the SESSION array.
 - 2FA functions now more secure and no hidden info left on the page.
+- Fixed the login error output not showing correctly by adding some ajax to query the responsehandling inc page.
 
 </details>
 <details>

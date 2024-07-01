@@ -148,9 +148,21 @@ function getAccountName($accountID) {
     }
 }
 
-function remember2FA($user_id, $cookie) {
+function remember2FA($user_id) {
     include 'session.inc.php';
     include 'dbh.inc.php';
+
+    // unset all cookies
+    foreach ( $_COOKIE as $key => $value ) {
+        if ($key !== 'PHPSESSID') {
+            unset($_COOKIE[$key]);
+            setcookie($key, '', time()+30, '/' );
+        }
+    }
+
+    $cookie_name = bin2hex(random_bytes(32));
+    $cookie_value = bin2hex(random_bytes(32));
+    setcookie($cookie_name, $cookie_value, time()+2592000, '/');
 
     $ip = getIPAddress();
     $browser = getBrowser();
@@ -170,13 +182,13 @@ function remember2FA($user_id, $cookie) {
 
     $sql = "SELECT *
             FROM bypass_2fa
-            WHERE user_id=? AND cookie=? 
+            WHERE user_id=? AND cookie_name=? AND cookie_value=? 
             AND deleted=0";
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         // error but no need to show.
     } else {
-        mysqli_stmt_bind_param($stmt, "ss", $user_id, $cookie);
+        mysqli_stmt_bind_param($stmt, "sss", $user_id, $cookie_name, $cookie_value);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $result_count = $result->num_rows;
@@ -196,13 +208,13 @@ function remember2FA($user_id, $cookie) {
             }
         }
 
-        $sql = "INSERT into bypass_2fa (user_id, cookie, $ip_field, browser, os, deleted) 
-                    VALUES (?, ?, $ip_insert, ?, ?, 0)";
+        $sql = "INSERT into bypass_2fa (user_id, cookie_name, cookie_value, $ip_field, browser, os, deleted) 
+                    VALUES (?, ?, ?, $ip_insert, ?, ?, 0)";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             echo("ERROR getting entries");
         } else {
-            mysqli_stmt_bind_param($stmt, "sssss", $user_id, $cookie, $ip, $browser, $os);
+            mysqli_stmt_bind_param($stmt, "ssssss", $user_id, $cookie_name, $cookie_value, $ip, $browser, $os);
             mysqli_stmt_execute($stmt);
         }
     }
@@ -276,7 +288,7 @@ if (isset($_POST['checkotp'])) {
                     $output = OTPverify($user_id, $secret, $otp);
                     
                     if ($output !== 'Invalid OTP' && $bypass_2fa == 'true')  {
-                        remember2FA($user_id, $_COOKIE['PHPSESSID'], $_SERVER);
+                        remember2FA($user_id);
                     }
 
                     $return['status'] = 'true';

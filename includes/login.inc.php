@@ -123,7 +123,7 @@ function checkUser2FASet($user_id) {
     }
 }
 
-function checkBypass2FA($user_id, $cookie) {
+function checkBypass2FA($user_id) {
     include 'dbh.inc.php';
     // include 'session.inc.php';
 
@@ -147,7 +147,6 @@ function checkBypass2FA($user_id, $cookie) {
     $sql_users = "SELECT *
                     FROM bypass_2fa 
                     WHERE user_id = ?
-                    AND cookie = ? 
                     AND $ip_field = $ip_insert
                     AND browser = ?
                     AND os = ?
@@ -156,20 +155,27 @@ function checkBypass2FA($user_id, $cookie) {
     if (!mysqli_stmt_prepare($stmt_users, $sql_users)) {
         // error but no need to show.
     } else {
-        mysqli_stmt_bind_param($stmt_users, "sssss", $user_id, $cookie, $ip, $browser, $os);
+        mysqli_stmt_bind_param($stmt_users, "ssss", $user_id, $ip, $browser, $os);
         mysqli_stmt_execute($stmt_users);
         $result = mysqli_stmt_get_result($stmt_users);
         $result_count = $result->num_rows;
         if ($result_count > 0) {
             while ($row = $result->fetch_assoc()) {
                 $id = $row['id'];
+                $cookie_name = $row['cookie_name'];
+                $cookie_value = $row['cookie_value'];
                 $expires_timestamp = $row['expires_timestamp'];
                 $expires_php_timestamp = new DateTime($expires_timestamp);
                 $current_timestamp = new DateTime();
-                if ($expires_php_timestamp > $current_timestamp) {
-                    $bypass = true;
-                } else {
-                    $bypass = false;
+                if (array_key_exists($cookie_name, $_COOKIE)) {
+                    if ($_COOKIE[$cookie_name] == $cookie_value) {
+                        if ($expires_php_timestamp > $current_timestamp) {
+                            $bypass = true;
+                            continue;
+                        } else {
+                            $bypass = false;
+                        }
+                    }
                 }
             }
         } else {
@@ -182,7 +188,6 @@ function checkBypass2FA($user_id, $cookie) {
 
 $global2FAEnabled = checkGlobal2FAEnabled();
 $global2FAEnforced = checkGlobal2FAEnforced($global2FAEnabled);
-$cookie = $_COOKIE['PHPSESSID'];
 
 if (isset($_POST['submit'])) {
     include 'get-config.inc.php'; // global config stuff
@@ -260,7 +265,7 @@ if (isset($_POST['submit'])) {
                             if ($row['users_id'] == 0) {
                                 $return['2fa'] = false;
                             } else {
-                                if (checkBypass2FA($row['users_id'], $cookie) == false) {
+                                if (checkBypass2FA($row['users_id']) == false) {
                                     // no bypass set
                                     if ($global2FAEnabled == true) {
                                         // 2fa enabled
@@ -466,7 +471,7 @@ if (isset($_POST['submit'])) {
                 }
 
                 function ldapConnection($ldap_username, $ldap_password, $ldap_domain, $ldap_host, $ldap_host_secondary, $ldap_port, $ldap_basedn, $ldap_usergroup, $ldap_userfilter, $login_username, $login_password) {
-                    global $_SESSION, $log_id, $global2FAEnabled, $global2FAEnforced, $cookie;
+                    global $_SESSION, $log_id, $global2FAEnabled, $global2FAEnforced;
                     
                     $return = [];
 
@@ -572,7 +577,7 @@ if (isset($_POST['submit'])) {
                                     if ($row['users_id'] == 0) {
                                         $return['2fa'] = false;
                                     } else {
-                                        if (checkBypass2FA($row['users_id'], $cookie) == false) {
+                                        if (checkBypass2FA($row['users_id']) == false) {
                                             // no bypass set
                                             if ($global2FAEnabled == true) {
                                                 // 2fa enabled
@@ -663,7 +668,7 @@ if (isset($_POST['submit'])) {
                                         if ($row['users_id'] == 0) {
                                             $return['2fa'] = false;
                                         } else {
-                                            if (checkBypass2FA($row['users_id'], $cookie) == false) {
+                                            if (checkBypass2FA($row['users_id']) == false) {
                                                 // no bypass set
                                                 if ($global2FAEnabled == true) {
                                                     // 2fa enabled

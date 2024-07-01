@@ -664,6 +664,14 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>1.1.1</h3></summary>
+<h4>1.1.1 - 2FA Cookie fixes</h4>
+
+- Bypass_2fa now uses randomly generated cookies and cookie names, stored in the DB
+- Adjusted login scripts to check for the new cookies.
+
+</details>
+<details>
 <summary><h3>1.1.0</h3></summary>
 <h4>1.1.0 - 2FA Integration</h4>
 

@@ -1290,5 +1290,5 @@ esac
 #)
 #
 # 1.1.1 change to add below:
-#alter table bypass_2fa change cookie cooke_name text not null;
+#alter table bypass_2fa change cookie cookie_name text not null;
 #alter table bypass_2fa add column cookie_value text not null after cookie_name;

@@ -785,6 +785,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                     $hidden_shelf_id = $stock_inv_data[$i]['shelf_id'];
                                                                     $hidden_serial = $stock_inv_data[$i]['serial_number']; 
                                                                     $hidden_cost = $stock_inv_data[$i]['cost'];
+                                                                    $hidden_manufacturer = $stock_inv_data[$i]['manufacturer_id'];
                                                                     $hidden_comments = $stock_inv_data[$i]['comments'];
                                                                     $hidden_comments = mysqli_real_escape_string($conn, $hidden_comments); // escape the special characters
                             
@@ -801,7 +802,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                             LEFT JOIN manufacturer ON item.manufacturer_id=manufacturer.id
                                                                             LEFT JOIN item_container AS ic ON item.id=ic.item_id OR item.id=ic.container_id
                                                                             LEFT JOIN container AS c ON ic.container_id=c.id
-                                                                            WHERE stock.id=? AND shelf.id=$hidden_shelf_id AND quantity!=0 AND item.deleted=0 AND item.serial_number='$hidden_serial' AND item.cost='$hidden_cost' AND item.comments='$hidden_comments'
+                                                                            WHERE stock.id=? AND shelf.id=$hidden_shelf_id AND quantity!=0 AND item.deleted=0 AND item.serial_number='$hidden_serial' AND item.cost='$hidden_cost' AND item.comments='$hidden_comments' AND item.manufacturer_id='$hidden_manufacturer'
                                                                             GROUP BY stock_id, stock_name, stock_description, stock_sku, stock_min_stock, area_id, area_name, shelf_id, shelf_name, site_id, site_name, site_description, item.id, item_serial_number, item_upc, item_cost, item_comments, item_quantity, manufacturer_id, manufacturer_name 
                                                                             ORDER BY item.serial_number, item.upc, item.comments DESC";
                                                                     $stmt_hidden = mysqli_stmt_init($conn);
@@ -851,7 +852,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                     <td hidden>'.$row_hidden['shelf_name'].'</td>
                                                                                     <td class="align-middle text-center">
                                                                                         <select class="form-control" form="form-item-'.$row_hidden['item_id'].'" name="manufacturer_id" style="max-width:max-content">');
-                                                                                        $sql_manufacturer = "SELECT * FROM manufacturer;";
+                                                                                        $sql_manufacturer = "SELECT * FROM manufacturer ORDER BY name;";
                                                                                         $stmt_manufacturer = mysqli_stmt_init($conn);
                                                                                         if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
                                                                                             echo("ERROR getting entries");

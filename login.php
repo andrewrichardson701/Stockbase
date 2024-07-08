@@ -56,8 +56,8 @@ if (!isset($_SESSION['csrf_token'])) {
                     <!-- Include CSRF token in the form -->
                     <input id="csrf_token" type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <div class="form-group">
-                        <label>Username / Email Address</label>
-                        <input id="username" type="username" name="username" class="form-control" placeholder="username@domain.com" required>
+                        <label>Username</label>
+                        <input id="username" type="username" name="username" class="form-control" placeholder="username" required>
                     </div>
                     <div class="form-group">
                         <label>Password</label>

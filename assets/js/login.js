@@ -22,10 +22,25 @@ document.addEventListener('keydown', function(event) {
 
 function jsInfo(info, color) { // used to type in the hidden p element on the login page.
     var p = document.getElementById('js-info');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "includes/responsehandling.inc.php?error="+info+"&ajax=1", true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var output = xhr.responseText;
+            var infoText = output;
+            p.style.color = color;
+            p.style.display = 'block';
+            p.innerText = infoText;
+        } else {
+            p.style.color = color;
+            p.style.display = 'block';
+            p.innerText = info;
+        }
+    };
+    xhr.send();
     
-    p.style.color = color;
-    p.style.display = 'block';
-    p.innerText = info;
+    
 }
 
 async function otpLogin(user_id, redirect_url) {

@@ -374,8 +374,6 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     exit();
                 }
 
-
-
                 include 'dbh.inc.php';
                 if (!isset($_POST['id']) || $_POST['id'] == 0 || $_POST['id'] == '0') {
                     // adding new stock
@@ -562,7 +560,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                     $id = $_POST['id'];
                 }
 
-// #588 feedback changes
+
                 // get the individual serial numbers from the input field
                 $serial_number_array = [];
                 if ($serial_number !== '') {
@@ -1586,7 +1584,7 @@ if (isset($_POST['submit'])) { // standard submit button name - this should be t
                                 // update changelog
                                 addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "item", $_POST['item-id'], "manufacturer_id", $row['manufacturer_id'], $_POST['manufacturer_id']);
                             }
-                        }
+                        } 
 
                         if ($row['upc'] !== $_POST['upc']) {
                             $upc = $_POST['upc'];

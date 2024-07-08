@@ -252,7 +252,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('
                                 <span id="search-input-name-span" style="margin-right:0.5em;margin-bottom:10px;">
                                     <label for="search-input-name">Name</label><br>
-                                    <input id="search-input-name" type="text" name="name" class="form-control" style="width:180px;display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
+                                    <input id="search-input-name" type="text" name="name" class="form-control" style="display:inline-block" placeholder="Search by Name" value="'); echo(isset($_GET['name']) ? $_GET['name'] : ''); echo('" />
                                 </span>
                                 ');
                                 // GET the count of the cable_types table
@@ -280,7 +280,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo('
                                 <span id="search-input-type-span" style="margin-right:0.5em;margin-bottom:10px;">
                                     <label for="search-input-type">Type</label><br>
-                                    <select id="search-input-type" name="type" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Type" onchange="this.form.submit()">
+                                    <select id="search-input-type" name="type" class="form-control" style="display:inline-block" placeholder="Search by Type" onchange="this.form.submit()">
                                         <option value="" '); echo ((isset($_GET['type']) && !is_numeric($_GET['type'])) ? 'selected' : ''); echo('>All</option>');
                                     foreach ($types as $type) {
                                         echo('<option value="'.$type['id'].'" title="'.$type['description'].' ('.$type['parent'].')" '); if(isset($_GET['type']) && $_GET['type'] == $type['id']) { echo ('selected'); } echo('>'.$type['name'].'</option>');

@@ -181,7 +181,9 @@
                             }
                         }
                         echo('
-                        <li><a href="./profile.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>'.$profile_name.'</a></li>');
+                        <li><a href="./containers.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Containers</a></li>
+                        <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp</li>
+                        <li><a href="./profile.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>');
                         echo('<li><a href="./logout.php">Logout</a></li>
                     </ul>
                     ');

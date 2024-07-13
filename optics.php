@@ -736,7 +736,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     <div id="optics-table" class="text-center" style="max-width:max-content; margin:auto">
                         <table class="table table-dark theme-table centertable viewport-font" style="max-width:max-content;padding-bottom:0px;margin-bottom:0px;">
                             <thead>
-                                <tr class="align-middle text-center theme-tableOuter viewport-large">
+                                <tr class="align-middle text-center theme-tableOuter viewport-large-empty">
                                     <th hidden>ID</th>
                                     <th>Type</th>
                                     <th>Connector</th>
@@ -752,7 +752,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <th hidden>Quantity</th>
                                     <th colspan=2></th>
                                 <tr>
-                                <tr class="align-middle text-center theme-tableOuter viewport-small">
+                                <tr class="align-middle text-center theme-tableOuter viewport-small-empty">
                                     <th hidden>ID</th>
                                     <th>Type</th>
                                     <th>Conn.</th>

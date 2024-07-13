@@ -71,7 +71,6 @@ $remoteIP = isset($_SERVER['HTTP_X_REAL_IP']) ? $_SERVER['HTTP_X_REAL_IP'] : (is
 if (str_contains($remoteIP, ',')) {
     $remoteIP = strtok($remoteIP, ',');
 }
-echo $remoteIP;
 
 $requestedUri = isset($_SERVER['HTTP_X_REQUEST_URI']) ? $_SERVER['HTTP_X_REQUEST_URI'] : '';
 

@@ -32,7 +32,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <!-- End of Header and Nav -->
     
     <div class="content" style="padding-top:20px">
-        <div id="selection" style="margin-bottom:15px">
+        <div id="selection" class="viewport-selection" style="margin-bottom:15px">
             <?php
             $site = isset($_GET['site']) ? $_GET['site'] : "0";
             $search = isset($_GET['search']) ? $_GET['search'] : "";
@@ -91,7 +91,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         <form action="" method="GET" style="display:inline">
                             <label class="align-middle" style="padding-top:7px;padding-right:15px;">Search:</label>
                             <input type="text" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:200px;padding-right:0px"'); if (isset($_GET['search'])) { echo('value="'.$_GET['search'].'"');} echo('>
-                            <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 8px 6px 8px 6px;opacity:80%;color:black" type="submit">
+                            <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 6px 6px 6px 6px;opacity:80%;color:black" type="submit">
                                 <i class="fa fa-search" style="padding-top:4px"></i>
                             </button>
                         </form>

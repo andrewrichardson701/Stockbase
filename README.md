@@ -667,9 +667,10 @@ Clone the repo first, and the follow the below steps.
 <summary><h3>1.2.0</h3></summary>
 <h4>1.2.0 - Mobile Form Factor</h4>
 
-- Fixed the burger menu on the nav to show the containers page and fit on the screen correctly
+- Fixed the burger menu on the nav to show the containers page and fit on the screen correctly.
 - Fixed the 2FA issuer being 'testing' to now getting the system name from the DB.
-- Fixed the 2FA prompt showing weird on mobile
+- Fixed the 2FA prompt showing weird on mobile.
+- Changed the login_log ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
 
 </details>
 <details>

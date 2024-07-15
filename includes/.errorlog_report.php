@@ -103,6 +103,6 @@ function sendErrorLog($file, $subject_suffix) {
 }
 
 sendErrorLog('/var/log/nginx/error-stock.log', 'local');
-sendErrorLog('/var/log/nginx/error-stock_pub.log', 'public')
+sendErrorLog('/var/log/nginx/error-stock_pub.log', 'public');
 
 ?>

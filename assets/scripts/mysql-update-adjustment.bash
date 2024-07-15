@@ -1292,3 +1292,9 @@ esac
 # 1.1.1 change to add below:
 #alter table bypass_2fa change cookie cookie_name text not null;
 #alter table bypass_2fa add column cookie_value text not null after cookie_name;
+#
+# 1.2.0 change to add below:
+#ALTER TABLE login_log MODIFY ipv4 BIGINT(11) NULL;
+#ALTER TABLE bypass_2fa MODIFY ipv4 BIGINT(11) NULL;
+#ALTER TABLE session_log MODIFY ipv4 BIGINT(11) NULL;
+#ALTER TABLE login_log MODIFY ipv4 BIGINT(11) NULL;

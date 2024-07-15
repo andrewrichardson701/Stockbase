@@ -671,6 +671,9 @@ Clone the repo first, and the follow the below steps.
 - Fixed the 2FA issuer being 'testing' to now getting the system name from the DB.
 - Fixed the 2FA prompt showing weird on mobile.
 - Changed the login_log ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Changed the login_failure ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Changed the session_log ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Changed the bypass_2fa ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
 
 </details>
 <details>

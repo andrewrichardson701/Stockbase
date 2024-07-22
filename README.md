@@ -624,6 +624,231 @@ Clone the repo first, and the follow the below steps.
 
 </details>
 <details>
+<summary><h3>includes/</h3></summary>
+
+<details>
+<summary><h3>GoogleAuthenticator/</h3></summary>
+
+- Google Authenticator package for 2FA
+
+</details>
+<details>
+<summary><h3>PHPMailer/</h3></summary>
+
+- PHPMailer package for SMTP setup.
+
+</details>
+<details>
+<summary><h3>.errorlog_report.php</h3></summary>
+
+- Send the error log to the specified email address.
+- Add cronjob entry for this e.g. "55 23 * * * /usr/bin/php /var/www/stockbase/includes/.errorlog_report.php"
+
+</details>
+<details>
+<summary><h3>2fa.inc.php</h3></summary>
+
+- Creates the 2FA code and authenticates the 2FA code.
+- Saves the secret to the database.
+
+</details>
+<details>
+<summary><h3>addlocaluser.inc.php</h3></summary>
+
+- Backend for the addlocaluser.php page
+- Used to add local user information to the user table for login.
+
+</details>
+<details>
+<summary><h3>admin.inc.php</h3></summary>
+
+- Backend for the admin.php page and a few others with similar functions
+- TBC
+
+</details>
+<details>
+<summary><h3>audit.inc.php</h3></summary>
+
+- Backend for the audit.php page
+- Used to store the audit information to the database.
+
+</details>
+<details>
+<summary><h3>cablestock.inc.php</h3></summary>
+
+- Backend for the cablestock.php page
+- Used for database manipulation for all cablestock changes
+
+</details>
+<details>
+<summary><h3>change-theme.inc.php</h3></summary>
+
+- Called when changing themes to update the user table with the new theme.
+
+</details>
+<details>
+<summary><h3>changelog.inc.php</h3></summary>
+
+- Included in pages where the changelog needs updates.
+- Home of the changelog functions.
+
+</details>
+<details>
+<summary><h3>changepassword.inc.php</h3></summary>
+
+- Backend for the changepassword.php page
+- Backend for the reset-password.php page
+- Does the updating of passwords for local users in the user table.
+
+</details>
+<details>
+<summary><h3>containers.inc.php</h3></summary>
+
+- Backend for all container adjustments.
+- Does the logic for changing the container database information.
+
+</details>
+<details>
+<summary><h3>dbh.inc.php</h3></summary>
+
+- Database credentials
+- Navigates to error.php if unable to reach database.
+
+</details>
+<details>
+<summary><h3>get-config.inc.php</h3></summary>
+
+- Retrieves all config from the config table
+- Retrieves all config from the config-default table
+- Collates the 2x configs to get the actively running coniguration
+- Include this file to get the config
+
+</details>
+<details>
+<summary><h3>ldap-resync.inc.php</h3></summary>
+
+- Backend for re-syncing the LDAP information for the user profile.
+
+</details>
+<details>
+<summary><h3>ldap-test.inc.php</h3></summary>
+
+- Backend for testing LDAP connection on the admin page.
+
+</details>
+<details>
+<summary><h3>login-card.inc.php</h3></summary>
+
+- Backend for logging in with access passes
+- This is no longer in use and will be removed in a future update.
+
+</details>
+<details>
+<summary><h3>login-functions.inc.php</h3></summary>
+
+- Home of the login and login management functions
+- Queries to see if you are allowed to login or if you are blocked for failures
+
+</details>
+<details>
+<summary><h3>login.inc.php</h3></summary>
+
+- Backend for the login.php page
+- Handles the logging in and confirmation of user credentials
+- Handles the 2FA checking.
+- Handles the LDAP connection for logins.
+
+</details>
+<details>
+<summary><h3>optics.inc.php</h3></summary>
+
+- Backend for the optics.php page
+- Handles all logic for the optics
+
+</details>
+<details>
+<summary><h3>responsehandling.inc.php</h3></summary>
+
+- include this file to display errors or responses from the query string correctly on the page
+- Has a collection of pre-defined response codes to translate.
+
+</details>
+<details>
+<summary><h3>session.inc.php</h3></summary>
+
+- Functions for the session.php page
+- Used for storing the session in the database and querying the session
+
+</details>
+<details>
+<summary><h3>smtp-test.inc.php</h3></summary>
+
+- Used for testing the SMTP configuration on the admin page
+
+</details>
+<details>
+<summary><h3>stock-add.inc.php</h3></summary>
+
+- Included on the stock page when adding stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=add is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-edit.inc.php</h3></summary>
+
+- Included on the stock page when editing stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=edit is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-remove.inc.php</h3></summary>
+
+- Included on the stock page when removing stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=remove is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-move.inc.php</h3></summary>
+
+- Included on the stock page when moving stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=move is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-modify.inc.php</h3></summary>
+
+- Backend for anu stock management e.g. adding/removing/moving/editing stock
+- Does all the database changes for stock manipulation.
+
+</details>
+<details>
+<summary><h3>stock-selectboxes.inc.php</h3></summary>
+
+- Handles AJAX request for dynamicly updated select boxes
+
+</details>
+<details>
+<summary><h3>stockajax.inc.php</h3></summary>
+
+- Handles AJAX requests for loading the stock onto the index page
+- Handles AJAX requests for loading the stock onto the audit page
+- Handles AJAX requests for loading the stock onto the containers page
+
+</details>
+<details>
+<summary><h3>transactions.inc.php</h3></summary>
+
+- Include this file to show the transactions at the bottom of the stock page.
+- Shows the most recent transactions
+
+</details>
+
+</details>
+<details>
 <summary><h3>about.php</h3></summary>
 
 - Shows version number

@@ -7,10 +7,11 @@ The purpose of this project is for stock tracking and locating.
 ## Dependent Packages
 - Linux 
 - Apache2 / Nginx (user choice, or whichever is installed)
-- PHP 8.1 (v8.1.22)
-    - php8.1, php-8.1-cli php8.1-common, php8.1-curl, php8.1-fpm, php8.1-gd, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-ldap, php8.1-mbstring, php8.1-mysql, php8.1-readline, php8.1-redis, php8.1-soap, php8.1-xml, php8.1-xsl, php8.1-zip
+- PHP 8.3 (v8.3.8)
+    - php8.3, php-8.3-cli php8.3-common, php8.3-curl, php8.3-fpm, php8.3-gd, php8.3-igbinary, php8.3-imagick, php8.3-imap, php8.3-intl, php8.3-ldap, php8.3-mbstring, php8.3-mysql, php8.3-readline, php8.3-redis, php8.3-soap, php8.3-xml, php8.3-xsl, php8.3-zip
 - MySQL Server (v8.0.34) (or similar DB using mysql syntax)
 - PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
+- Google Authenticator (v1.0.0) (Packaged at includes/GoogleAuthenticator)
 - Bootstrap (v4.5.2) (included in headers)
 - Jquery (v3.5.1) (included in headers)
 - Font Awesome (v6.4.0) (included in headers)
@@ -19,7 +20,9 @@ The purpose of this project is for stock tracking and locating.
 *These packages are all installed as part of the install script at* `assets/scripts/install.bash`*.*
 
 ## Installation
-### Automated Deployment
+<details>
+<summary><h3>Automated Deployment (Not recommended unless on a fresh instal)</h3></summary>
+
 For automated deployment, run the below command to clone the repository and run the install script:
 
 `git clone http://git.ajrich.co.uk/web/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
@@ -28,6 +31,7 @@ This will run the setup for the system and provide a username and password to lo
 
 Login to your site to continue with any further setup
 
+</details>
 <details>
 <summary><h3>Manual Deployment</h3></summary>
 For manual deployment, it requires all packages to be installed manually and the database to be configured and setup correctly.
@@ -41,7 +45,7 @@ Clone the repo first, and the follow the below steps.
 
     `sudo apt upgrade`
 
-2. Install PHP 8.1 and all dependencies required
+2. Install PHP 8.3 and all dependencies required
 
     a. Install the PHP repository
 
@@ -55,10 +59,13 @@ Clone the repo first, and the follow the below steps.
 
     b. Install the package and dependencies
     ```
-    sudo apt install -y php8.1 php8.1-cli php8.1-common php8.1-curl php8.1-fpm php8.1-gd php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-ldap php8.1-mbstring php8.1-mysql php8.1-readline php8.1-redis php8.1-soap php8.1-xml php8.1-xsl php8.1-zip
+    sudo apt install -y php8.3 php8.3-cli php8.3-common php8.3-curl php8.3-fpm php8.3-gd php8.3-igbinary php8.3-imagick php8.3-imap php8.3-intl php8.3-ldap php8.3-mbstring php8.3-mysql php8.3-readline php8.3-redis php8.3-soap php8.3-xml php8.3-xsl php8.3-zip
     ```
 
 3. Install MySQL Server and run first setup
+
+    *Confirm whether or not a MySQL database is installed first, for example MariaDB. If MariaDB is installed, it WILL stop the MariaDB service to break.*
+    *Run:  'mysql -u root -p'  to confirm if there are any mysql databases installed. If it lets you login with a password, there is one already. Skip this step if it exists.*
 
     ``` 
     sudo apt install mysql-server 
@@ -308,7 +315,7 @@ Clone the repo first, and the follow the below steps.
 
         location ~ \.php$ {
             include fastcgi_params;
-            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
             fastcgi_index index.php;
             fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;
         }
@@ -413,7 +420,7 @@ Clone the repo first, and the follow the below steps.
 
         location ~ \.php$ {
             include fastcgi_params;
-            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
             fastcgi_index index.php;
             fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;
         }
@@ -446,7 +453,7 @@ Clone the repo first, and the follow the below steps.
         error_page 404 /index.php;
 
         location ~ \.php$ {
-            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
             fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
             include fastcgi_params;
             fastcgi_read_timeout 300s;

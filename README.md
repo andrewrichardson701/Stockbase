@@ -25,7 +25,7 @@ The purpose of this project is for stock tracking and locating.
 
 For automated deployment, run the below command to clone the repository and run the install script:
 
-`git clone http://git.ajrich.co.uk/web/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
+`git clone https://gitlab.cdc.local.co.uk/noc/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
 
 This will run the setup for the system and provide a username and password to login with.
 
@@ -37,7 +37,7 @@ Login to your site to continue with any further setup
 For manual deployment, it requires all packages to be installed manually and the database to be configured and setup correctly.
 
 Clone the repo first, and the follow the below steps.
-`git clone http://git.ajrich.co.uk/web/stockbase.git`
+`git clone https://gitlab.cdc.local.co.uk/noc/stockbase.git`
 
 1. Update your packages and install them if you are confident they are okay to be updated
 

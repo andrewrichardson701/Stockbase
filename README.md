@@ -487,85 +487,156 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>File Breakdown</h2></summary>
 <details>
-<summary><h3>login.php</h3></summary>
+<summary><h3>assets/</h3></summary>
 
-- Login to user account
-- Reset password if local user
-- Select local/ldap user if enabled
+<details>
+<summary><h3>css/</h3></summary>
+
+<details>
+<summary><h3>4.5.2-bootstrap.min.css</h3></summary>
+
+- Bootstrap 4.5.2 css file
 
 </details>
 <details>
-<summary><h3>logout.php</h3></summary>
+<summary><h3>carousel.css</h3></summary>
 
-- Kills sessions
-- Logs user out
-- Redirects to login page
+- Carousel css for the image carousel on stock page
 
 </details>
 <details>
-<summary><h3>index.php</h3></summary>
+<summary><h3>inv.css</h3></summary>
 
-- Show all stock
-- Filter stock by search, tag, manufacturer
-- Show or hide out of stock
-- Navigate to a stock item
-- Clicking images makes them larger
-- Clicking the name of a stock row navigates to the stock page
-- Clicking the site sets the site filter
-- Clicking the tag sets the tag filter
-- Clicking the yellow clear icon clears the filters
-- Clicking Cables takes you to the cablestock
+- Stock system specific css file.
 
 </details>
 <details>
-<summary><h3>cablestock.php</h3></summary>
+<summary><h3>main.css</h3></summary>
 
-- Shows all cablestock categoorised by type (copper/fibre/power/other)
-- Add/remove/moved cable stock
-- Clicking the name takes you to the stock page for the item
-- Clicking the site link sets the site filter
-- Search by name
-- Filter by site
-- Show/hide out of stock items
-- Navigate back to stock page with the Item Stock button
+- Main css file for the system, wiht the building blocks.
 
 </details>
 <details>
-<summary><h3>stock.php</h3></summary>
+<summary><h3>theme-*.css</h3></summary>
 
-- Shows stock info for the item
-- Shows the items linked to the stock
-- Shows transaction for the stock
-- View full transaction log using show all link
-- Allows editing the info and images
-- Allows adding more
-- Allows deleting stock
-- Allows moving stock
-- Allows adding new stock objects
+- Theme files for the stock system to overwrite the default css.
+
+</details>
 
 </details>
 <details>
-<summary><h3>optics.php</h3></summary>
+<summary><h3>img/</h3></summary>
 
-- Shows all fibre optic modules
-- Can filter and search 
-- Allows adding new optics
-- Allows adding new vendors/connectors/types
-- Allows adding comments
-- Allows removing comments
-- Allows removing optics
+<details>
+<summary><h3>config/</h3></summary>
+
+- Any config images e.g. favicon/logo.
+
+<details>
+<summary><h3>default/</h3></summary>
+
+<details>
+<summary><h3>default-favicon.png</h3></summary>
+
+- Default favicon.
 
 </details>
 <details>
-<summary><h3>profile.php</h3></summary>
+<summary><h3>default-logo.png</h3></summary>
 
-- Allows editign profile info for local users
-- Shows all profile info
-- Allows the assigning, reassigning and deassigning of swipe cards
-- Allows password resets for local users
-- Change theme
-- Test theme via them test link
-- Resync ldap info if logged in via ldap
+- Default logo.
+
+</details>
+
+</details>
+
+</details>
+<details>
+<summary><h3>db relationships.png</h3></summary>
+
+- Visual view of the database relationships.
+
+</details>
+</details>
+<details>
+<summary><h3>js/</h3></summary>
+
+<details>
+<summary><h3>carousel.js</h3></summary>
+
+- Carousel specific js for images on stock page.
+
+</details>
+<details>
+<summary><h3>login.js</h3></summary>
+
+- JS for the login page to do the 2FA and login without page navigation.
+
+</details>
+
+</details>
+<details>
+<summary><h3>scripts/</h3></summary>
+
+<details>
+<summary><h3>install.bash</h3></summary>
+
+- Install script to run through all of the install steps
+
+</details>
+<details>
+<summary><h3>mysql-update-adjustment.bash</h3></summary>
+
+- Update the mysql schema when running the update script.
+
+</details>
+<details>
+<summary><h3>update.bash</h3></summary>
+
+- Used for udpating the system.
+
+</details>
+
+</details>
+<details>
+<summary><h3>sql/</h3></summary>
+
+<details>
+<summary><h3>db_extras.sql</h3></summary>
+
+- Extra sql bits used after the db_setup.sql to setup the initial required information
+
+</details>
+<details>
+<summary><h3>db_setup.sql</h3></summary>
+
+- Database setup to create the tables.
+
+</details>
+<details>
+<summary><h3>Stock.accdb</h3></summary>
+
+- Microsoft Access file for the stockbase SQL schema and relationships.
+
+</details>
+
+</details>
+
+</details>
+<details>
+<summary><h3>about.php</h3></summary>
+
+- Shows version number
+- Shows information about the system.
+- Shows the GNU licence.
+- Links to GitLab.
+
+</details>
+<details>
+<summary><h3>addlocaluser.php</h3></summary>
+
+- Used for adding a local user.
+- Requires: username, password, first name, last name, email, role.
 
 </details>
 <details>
@@ -590,15 +661,21 @@ Clone the repo first, and the follow the below steps.
   - Change user roles
   - Enable/disabled users
   - Reset user passwords
+  - Reset 2FA secret
   - Impersonate users (if root user)
   - Add new local users
 - User Roles
   - View user role permissions
+- Authentication
+  - Enable 2FA 
+  - Enforce 2FA globally for every user
 - Session Management
   - Kill any active sessions to the site
   - View active sessions
 - Image management
+  - Load all used images
   - Delete unsued images
+  - Show image linking
 - Attribute Management
   - Delete/restore unused tags
   - Delete/restore unused manufacturers
@@ -613,14 +690,16 @@ Clone the repo first, and the follow the below steps.
   - Show all links for types
   - Show all links for connectors
 - Stock Management
-  - Enable/Disabled Costs for normal and cablestock
+  - Enable/Disabled Costs for normal and cable stock
   - Restore Deleted stock
 - Stock Location Settings
   - View/Add/Edit/Restore/Delete Locations
 - LDAP Settings
+  - Enable/Disable LDAP
   - View and edit LDAP settings
   - Test LDAP settings
 - SMTP Settings
+  - Enable/Disable SMTP
   - View and edit SMTP Settings
   - Test SMTP settings
 - Email Notification Settings
@@ -631,10 +710,162 @@ Clone the repo first, and the follow the below steps.
 
 </details>
 <details>
+<summary><h3>audit.php</h3></summary>
+
+- Lists all items to be audited
+- Saves information input in the table based on auditing
+- Used to make sure the stock is still correct on the system
+
+</details>
+<details>
+<summary><h3>cablestock.php</h3></summary>
+
+- Shows all cablestock categoorised by type (copper/fibre/power/other)
+- Add/remove/moved cable stock
+- Clicking the name takes you to the stock page for the item
+- Clicking the site link sets the site filter
+- Search by name
+- Filter by site
+- Filter by type
+- Show/hide out of stock items
+
+</details>
+<details>
 <summary><h3>changelog.php</h3></summary>
 
 - View all logs 
 - Filter logs based on date/table/user
+
+</details>
+<details>
+<summary><h3>changepassword.php</h3></summary>
+
+- Used for changing a local user password
+- If an LDAP user navigates here, it redirects back to profile
+
+</details>
+<details>
+<summary><h3>containers.php</h3></summary>
+
+- Lists containers
+- Add/Remove containers
+- Add/Remove items from containers
+
+</details>
+<details>
+<summary><h3>COPYING.txt</h3></summary>
+
+- GNU GENERAL PUBLIC LICENSE
+
+</details>
+<details>
+<summary><h3>error.php</h3></summary>
+
+- General error page for things like 404s
+
+</details>
+<details>
+<summary><h3>foot.php</h3></summary>
+
+- Footer for the website
+- Shows the gitlab/version number/roadmap/copyright
+
+</details>
+<details>
+<summary><h3>head.php</h3></summary>
+
+- All required setup for every page
+- Includes the fonts used
+- Includes any scripts needed
+- Includes the includes/get-config.inc.php page to gather the config information
+- Sets the version number
+- Sets the security policy
+- Includes the stylesheets
+- Includes the ajax script
+- Includes a series of js functions
+- Includes some css from the config
+
+</details>
+<details>
+<summary><h3>index.php</h3></summary>
+
+- Show all stock
+- Filter stock by name, SKU, shelf, tag, manufacturer
+- Filter stock by site / Area
+- Show or hide out of stock
+- Navigate to a stock item
+- Clicking images makes them larger
+- Clicking the name of a stock row navigates to the stock page
+- Clicking the site sets the site filter
+- Clicking the tag sets the tag filter
+- Clicking the yellow clear icon clears the filters
+
+</details>
+<details>
+<summary><h3>login.php</h3></summary>
+
+- Login to user account
+- Reset password if local user
+- Select local/ldap user if enabled
+- Prompts for 2FA if enabled
+- Prompts for 2FA setup if enabled
+
+</details>
+<details>
+<summary><h3>logout.php</h3></summary>
+
+- Kills sessions
+- Logs user out
+- Redirects to login page
+
+</details>
+<details>
+<summary><h3>nav.php</h3></summary>
+
+- Sets up the global nav at the top of each page
+
+</details>
+<details>
+<summary><h3>profile.php</h3></summary>
+
+- Change password on local user
+- Reset 2FA secret
+- Enable 2FA if enabled globally
+- Change theme
+- Re-sync LDAP information
+- View user information
+- View login history
+- Link to Theme Testing page
+
+</details>
+<details>
+<summary><h3>reset-password.php</h3></summary>
+
+- Reset local user password after a forced change from an admin.
+- Will be redirected here if set in the user table
+
+</details>
+<details>
+<summary><h3>session.php</h3></summary>
+
+- Sets up the session for the user
+
+</details>
+<details>
+<summary><h3>stock.php</h3></summary>
+
+- Shows stock info for the item
+- Shows the items linked to the stock
+- Shows transaction for the stock
+- View full transaction log using show all link
+- Allows editing the info and images
+- Allows adding more
+- Allows deleting stock
+- Allows moving stock
+- Allows adding new stock objects
+- Filter by Site / Search / Type / Speed / Mode / Connector / Distance
+- View/Add comments on each optic
+- Add new Speed / Connector / Distance / Vendor / Type 
 
 </details>
 <details>

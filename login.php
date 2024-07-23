@@ -146,7 +146,7 @@ if (!isset($_SESSION['csrf_token'])) {
     <?php
         }
     ?>
-
+<!-- Add the JS for the file -->
 <script src='assets/js/login.js'></script>
 
 <?php include 'foot.php'; ?>

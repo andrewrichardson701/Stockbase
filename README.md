@@ -576,15 +576,93 @@ Clone the repo first, and the follow the below steps.
 <summary><h3>js/</h3></summary>
 
 <details>
+<summary><h3>admin.js</h3></summary>
+
+- Specific JS for the admin.php page.
+
+</details>
+<details>
+<summary><h3>audit.js</h3></summary>
+
+- Specific JS for the audit.php page.
+
+</details>
+<details>
+<summary><h3>cablestock.js</h3></summary>
+
+- Specific JS for the cablestock.php page.
+
+</details>
+<details>
 <summary><h3>carousel.js</h3></summary>
 
 - Carousel specific js for images on stock page.
 
 </details>
 <details>
+<summary><h3>changelog.js</h3></summary>
+
+- Specific JS for the changelog.php page.
+
+</details>
+<details>
+<summary><h3>foot.js</h3></summary>
+
+- Specific JS for the foot.php page.
+
+</details>
+<details>
+<summary><h3>head.js</h3></summary>
+
+- Specific JS for the head.php page.
+
+</details>
+<details>
+<summary><h3>index.js</h3></summary>
+
+- Specific JS for the index.php page.
+
+</details>
+<details>
 <summary><h3>login.js</h3></summary>
 
 - JS for the login page to do the 2FA and login without page navigation.
+
+</details>
+<details>
+<summary><h3>nav.js</h3></summary>
+
+- Specific JS for the nav.php page.
+
+</details>
+<details>
+<summary><h3>optics.js</h3></summary>
+
+- Specific JS for the optics.php page.
+
+</details>
+<details>
+<summary><h3>profile.js</h3></summary>
+
+- Specific JS for the profile.php page.
+
+</details>
+<details>
+<summary><h3>stock.js</h3></summary>
+
+- Specific JS for the stock.php page.
+
+</details>
+<details>
+<summary><h3>tags.js</h3></summary>
+
+- Specific JS for the tags.php page.
+
+</details>
+<details>
+<summary><h3>theme-test.js</h3></summary>
+
+- Specific JS for the theme-test.php page.
 
 </details>
 

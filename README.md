@@ -559,6 +559,13 @@ Clone the repo first, and the follow the below steps.
 
 </details>
 <details>
+<summary><h3>stock/</h3></summary>
+
+- Stock image files, named based on the stock id and time/date of upload.
+- There are some default images here too for cables.
+
+</details>
+<details>
 <summary><h3>db relationships.png</h3></summary>
 
 - Visual view of the database relationships.
@@ -600,7 +607,7 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h3>update.bash</h3></summary>
 
-- Used for udpating the system.
+- Used for updating the system.
 
 </details>
 

@@ -29,6 +29,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         $successPsuffix = '</p>';
 
         include 'includes/responsehandling.inc.php';
+        include 'includes/stock-new-properties.inc.php';
 
         $show_inventory = 0; // for nav.php to show the site and area on the banner
         if (isset($_GET['stock_id'])) {
@@ -851,7 +852,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                     <td hidden>'.$row_hidden['area_name'].'</td>
                                                                                     <td hidden>'.$row_hidden['shelf_name'].'</td>
                                                                                     <td class="align-middle text-center">
-                                                                                        <select class="form-control" form="form-item-'.$row_hidden['item_id'].'" name="manufacturer_id" style="max-width:max-content">');
+                                                                                        <select class="form-control manufacturer-select" form="form-item-'.$row_hidden['item_id'].'" name="manufacturer_id" style="max-width:max-content">');
                                                                                         $sql_manufacturer = "SELECT * FROM manufacturer ORDER BY name;";
                                                                                         $stmt_manufacturer = mysqli_stmt_init($conn);
                                                                                         if (!mysqli_stmt_prepare($stmt_manufacturer, $sql_manufacturer)) {
@@ -860,6 +861,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                                                                             mysqli_stmt_execute($stmt_manufacturer);
                                                                                             $result_manufacturer = mysqli_stmt_get_result($stmt_manufacturer);
                                                                                             $rowCount_manufacturer = $result_manufacturer->num_rows;
+                                                                                            echo('<option value="-1" class="gold link theme-tableOuter">Add New</option>');
                                                                                             if ($rowCount_manufacturer == 0){
                                                                                                 echo('<option value="" selected disabled>No Manufacturers Found...</option>');
                                                                                             } else {
@@ -1494,5 +1496,26 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             Row.classList.add('theme-th-selected');
         }
     }
+    </script>
+    <script>
+        // script to make the add new button in the manufacturer select box work
+
+        window.onload = function() { // set the data-prev value for checking the Add New option in the manufacturerid selects.
+            const selectElements = document.querySelectorAll('.manufacturer-select');
+            selectElements.forEach(selectElement => {
+                selectElement.setAttribute('data-prev', selectElement.value);
+                selectElement.addEventListener('change', checkAddNew);
+            });
+        };
+        function checkAddNew(event) {
+            const element = event.target;
+            const prevValue = element.getAttribute('data-prev'); // This is set on page load 
+
+            if (element.value == -1) {
+                element.value = prevValue;
+                modalLoadProperties('manufacturer');
+                element.setAttribute('data-prev', element.value); // reset the data-prev value
+            }
+        }
     </script>
 </body>

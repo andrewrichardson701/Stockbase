@@ -1135,7 +1135,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h2>Change Log</h2></summary>
 <details>
 <summary><h3>1.2.0</h3></summary>
-<h4>1.2.0 - Mobile Form Factor</h4>
+<h4>1.2.0 - Mobile Form Factor and additonal fixes</h4>
 
 - Fixed the burger menu on the nav to show the containers page and fit on the screen correctly.
 - Fixed the 2FA issuer being 'testing' to now getting the system name from the DB.
@@ -1144,6 +1144,8 @@ Clone the repo first, and the follow the below steps.
 - Changed the login_failure ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
 - Changed the session_log ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
 - Changed the bypass_2fa ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Moved JS from the standard php files to the assets/js folder where possible and sourced them in.
+- Added a "Add New" button to the manufacturer select on the stock page.
 
 </details>
 <details>

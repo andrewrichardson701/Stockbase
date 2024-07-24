@@ -7,6 +7,15 @@ body {
     position: relative;
     /*margin: 8px;*/
 }
+
+@font-face {
+  font-family: 'Poppins';
+  src: url('https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJfecg.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Ensures text is visible while the font is loading */
+}
+
 a {
     text-decoration: none!important;
     color: #e1b12c !important;

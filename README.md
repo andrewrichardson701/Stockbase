@@ -1224,6 +1224,8 @@ Clone the repo first, and the follow the below steps.
 - Changed the bypass_2fa ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
 - Moved JS from the standard php files to the assets/js folder where possible and sourced them in.
 - Added a "Add New" button to the manufacturer select on the stock page.
+- Fixed the SKU patterns on the stock-*.inc.php pages.
+- Fixed a bunch of meta tags and preloading in the head.php
 
 </details>
 <details>

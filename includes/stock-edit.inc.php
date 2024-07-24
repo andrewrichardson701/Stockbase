@@ -72,7 +72,6 @@ if (isset($_GET['stock_id'])) {
                         
 
                 // print_r($stock_img);
-
                 echo ('
                 
                 <div class="container well-nopad theme-divBg" style="margin-bottom:5px">
@@ -95,7 +94,7 @@ if (isset($_GET['stock_id'])) {
                                     </div>
                                     <div class="nav-row" id="sku-row" style="margin-top:25px">
                                         <div class="stock-inputLabelSize" style="max-width:200px"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
-                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c stock-inputSize" value="'.$stock['sku'].'" pattern="^[A-Za-z\s\p{P}-]+$"></input></div>
+                                        <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c stock-inputSize" value="'.$stock['sku'].'" pattern="^[A-Za-z0-9\p{P}]+$"></div>
                                     </div>
                                     <div class="nav-row" id="description-row" style="margin-top:25px">
                                         <div class="stock-inputLabelSize" style="max-width:200px"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>

@@ -58,7 +58,7 @@ $stock_id = isset($_GET['stock_id']) ? $_GET['stock_id'] : '';
                                 </div>
                                 <div class="nav-row" id="sku-row" style="margin-top:25px">
                                     <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="sku" id="sku-label">SKU</label></div>
-                                    <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c stock-inputSize" value="'.$input_sku.'" pattern="^[A-Za-z\s\p{P}]+$"></input></div>
+                                    <div><input type="text" name="sku" placeholder="Auto generated if blank" id="sku" class="form-control nav-v-c stock-inputSize" value="'.$input_sku.'" pattern="^[A-Za-z0-9\p{P}]+$"></input></div>
                                 </div>
                                 <div class="nav-row" id="description-row" style="margin-top:25px">
                                     <div class="stock-inputLabelSize"><label class="text-right" style="padding-top:5px;width:100%" for="description" id="description-label">Description</label></div>

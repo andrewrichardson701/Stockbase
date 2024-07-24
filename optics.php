@@ -1262,7 +1262,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     </div>
     <!-- End of MoveOptic Div -->
     <!-- Add the JS for the file -->
-    <script src="assets/js/optics/js"></script>
+    <script src="assets/js/optics.js"></script>
 
     <?php include 'foot.php'; ?>
 

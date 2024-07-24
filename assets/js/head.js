@@ -1,4 +1,24 @@
- // color-picker box json - for Admin.php
+// Lazy preloading
+document.addEventListener("DOMContentLoaded", function() {
+    var fonts = [
+        "https://use.fontawesome.com/releases/v6.4.0/webfonts/fa-regular-400.woff2",
+        "https://use.fontawesome.com/releases/v6.4.0/webfonts/fa-regular-400.ttf",
+        "https://use.fontawesome.com/releases/v6.4.0/webfonts/fa-solid-900.woff2",
+        "https://use.fontawesome.com/releases/v6.4.0/webfonts/fa-brands-400.woff2",
+        "https://fonts.gstatic.com/s/poppins/v21/pxiEyp8kv8JHgFVrJJfecg.woff2"
+    ];
+
+    fonts.forEach(function(font) {
+        var link = document.createElement("link");
+        link.rel = "preload";
+        link.href = font;
+        link.as = "font";
+        link.crossOrigin = "anonymous";
+        document.head.appendChild(link);
+    });
+});
+
+// color-picker box json - for Admin.php
 $("input.color").each(function() {
     var that = this;
     $(this).parent().prepend($("<i class='fa fa-paint-brush color-icon'></i>").click(function() {

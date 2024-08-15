@@ -3,13 +3,15 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
+
 function create2FA($accountName) {
     require_once 'GoogleAuthenticator/PHPGangsta/GoogleAuthenticator.php';
-
+    require_once 'get-config.inc.php';
+    
     $g = new PHPGangsta_GoogleAuthenticator();
     $secret = $g->createSecret();
 
-    $issuer = 'testing'; // Replace with your website or app name
+    $issuer = $current_system_name; // stockbase.domain.com
     $qrCodeUrl = $g->getQRCodeGoogleUrl($issuer . ':' . $accountName, $secret, $issuer);
 
     // echo "Secret: " . $secret . "<br>";
@@ -52,6 +54,7 @@ function makeOTPPrompt($data, $accountName, $user_id, $redirect_url, $format) {#
                         <input id="otp_code" type="text" class="form-control text-center" style="max-width:150px; display:revert;margin-right:5px;margin-top:1px" name="otp" placeholder="######">
                         <button class="form-control btn btn-success" style="max-width:max-content; margin-bottom:1px" onclick="checkotp()">Submit</button>
                     </span>
+                    <br>
                     <span>
                         <input type="checkbox" id="bypass_2fa" name="bypass_2fa" style="margin-top:20px;margin-right:10px">
                         <label class="title" title="Don\'t use 2FA for 30 days on this device">Remember me</label>

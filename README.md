@@ -7,10 +7,11 @@ The purpose of this project is for stock tracking and locating.
 ## Dependent Packages
 - Linux 
 - Apache2 / Nginx (user choice, or whichever is installed)
-- PHP 8.1 (v8.1.22)
-    - php8.1, php-8.1-cli php8.1-common, php8.1-curl, php8.1-fpm, php8.1-gd, php8.1-igbinary, php8.1-imagick, php8.1-imap, php8.1-intl, php8.1-ldap, php8.1-mbstring, php8.1-mysql, php8.1-readline, php8.1-redis, php8.1-soap, php8.1-xml, php8.1-xsl, php8.1-zip
+- PHP 8.3 (v8.3.8)
+    - php8.3, php-8.3-cli php8.3-common, php8.3-curl, php8.3-fpm, php8.3-gd, php8.3-igbinary, php8.3-imagick, php8.3-imap, php8.3-intl, php8.3-ldap, php8.3-mbstring, php8.3-mysql, php8.3-readline, php8.3-redis, php8.3-soap, php8.3-xml, php8.3-xsl, php8.3-zip
 - MySQL Server (v8.0.34) (or similar DB using mysql syntax)
 - PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
+- Google Authenticator (v1.0.0) (Packaged at includes/GoogleAuthenticator)
 - Bootstrap (v4.5.2) (included in headers)
 - Jquery (v3.5.1) (included in headers)
 - Font Awesome (v6.4.0) (included in headers)
@@ -19,21 +20,24 @@ The purpose of this project is for stock tracking and locating.
 *These packages are all installed as part of the install script at* `assets/scripts/install.bash`*.*
 
 ## Installation
-### Automated Deployment
+<details>
+<summary><h3>Automated Deployment (Not recommended unless on a fresh instal)</h3></summary>
+
 For automated deployment, run the below command to clone the repository and run the install script:
 
-`git clone http://git.ajrich.co.uk/web/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
+`git clone https://gitlab.cdc.local.co.uk/noc/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
 
 This will run the setup for the system and provide a username and password to login with.
 
 Login to your site to continue with any further setup
 
+</details>
 <details>
 <summary><h3>Manual Deployment</h3></summary>
 For manual deployment, it requires all packages to be installed manually and the database to be configured and setup correctly.
 
 Clone the repo first, and the follow the below steps.
-`git clone http://git.ajrich.co.uk/web/stockbase.git`
+`git clone https://gitlab.cdc.local.co.uk/noc/stockbase.git`
 
 1. Update your packages and install them if you are confident they are okay to be updated
 
@@ -41,7 +45,7 @@ Clone the repo first, and the follow the below steps.
 
     `sudo apt upgrade`
 
-2. Install PHP 8.1 and all dependencies required
+2. Install PHP 8.3 and all dependencies required
 
     a. Install the PHP repository
 
@@ -55,10 +59,13 @@ Clone the repo first, and the follow the below steps.
 
     b. Install the package and dependencies
     ```
-    sudo apt install -y php8.1 php8.1-cli php8.1-common php8.1-curl php8.1-fpm php8.1-gd php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-ldap php8.1-mbstring php8.1-mysql php8.1-readline php8.1-redis php8.1-soap php8.1-xml php8.1-xsl php8.1-zip
+    sudo apt install -y php8.3 php8.3-cli php8.3-common php8.3-curl php8.3-fpm php8.3-gd php8.3-igbinary php8.3-imagick php8.3-imap php8.3-intl php8.3-ldap php8.3-mbstring php8.3-mysql php8.3-readline php8.3-redis php8.3-soap php8.3-xml php8.3-xsl php8.3-zip
     ```
 
 3. Install MySQL Server and run first setup
+
+    *Confirm whether or not a MySQL database is installed first, for example MariaDB. If MariaDB is installed, it WILL stop the MariaDB service to break.*
+    *Run:  'mysql -u root -p'  to confirm if there are any mysql databases installed. If it lets you login with a password, there is one already. Skip this step if it exists.*
 
     ``` 
     sudo apt install mysql-server 
@@ -308,7 +315,7 @@ Clone the repo first, and the follow the below steps.
 
         location ~ \.php$ {
             include fastcgi_params;
-            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
             fastcgi_index index.php;
             fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;
         }
@@ -413,7 +420,7 @@ Clone the repo first, and the follow the below steps.
 
         location ~ \.php$ {
             include fastcgi_params;
-            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
             fastcgi_index index.php;
             fastcgi_param SCRIPT_FILENAME $document_root\$fastcgi_script_name;
         }
@@ -446,7 +453,7 @@ Clone the repo first, and the follow the below steps.
         error_page 404 /index.php;
 
         location ~ \.php$ {
-            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
             fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
             include fastcgi_params;
             fastcgi_read_timeout 300s;
@@ -487,85 +494,466 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>File Breakdown</h2></summary>
 <details>
-<summary><h3>login.php</h3></summary>
+<summary><h3>assets/</h3></summary>
 
-- Login to user account
-- Reset password if local user
-- Select local/ldap user if enabled
+<details>
+<summary><h3>css/</h3></summary>
+
+<details>
+<summary><h3>4.5.2-bootstrap.min.css</h3></summary>
+
+- Bootstrap 4.5.2 css file
 
 </details>
 <details>
-<summary><h3>logout.php</h3></summary>
+<summary><h3>carousel.css</h3></summary>
 
-- Kills sessions
-- Logs user out
-- Redirects to login page
+- Carousel css for the image carousel on stock page
 
 </details>
 <details>
-<summary><h3>index.php</h3></summary>
+<summary><h3>inv.css</h3></summary>
 
-- Show all stock
-- Filter stock by search, tag, manufacturer
-- Show or hide out of stock
-- Navigate to a stock item
-- Clicking images makes them larger
-- Clicking the name of a stock row navigates to the stock page
-- Clicking the site sets the site filter
-- Clicking the tag sets the tag filter
-- Clicking the yellow clear icon clears the filters
-- Clicking Cables takes you to the cablestock
+- Stock system specific css file.
 
 </details>
 <details>
-<summary><h3>cablestock.php</h3></summary>
+<summary><h3>main.css</h3></summary>
 
-- Shows all cablestock categoorised by type (copper/fibre/power/other)
-- Add/remove/moved cable stock
-- Clicking the name takes you to the stock page for the item
-- Clicking the site link sets the site filter
-- Search by name
-- Filter by site
-- Show/hide out of stock items
-- Navigate back to stock page with the Item Stock button
+- Main css file for the system, wiht the building blocks.
 
 </details>
 <details>
-<summary><h3>stock.php</h3></summary>
+<summary><h3>theme-*.css</h3></summary>
 
-- Shows stock info for the item
-- Shows the items linked to the stock
-- Shows transaction for the stock
-- View full transaction log using show all link
-- Allows editing the info and images
-- Allows adding more
-- Allows deleting stock
-- Allows moving stock
-- Allows adding new stock objects
+- Theme files for the stock system to overwrite the default css.
+
+</details>
 
 </details>
 <details>
-<summary><h3>optics.php</h3></summary>
+<summary><h3>img/</h3></summary>
 
-- Shows all fibre optic modules
-- Can filter and search 
-- Allows adding new optics
-- Allows adding new vendors/connectors/types
-- Allows adding comments
-- Allows removing comments
-- Allows removing optics
+<details>
+<summary><h3>config/</h3></summary>
+
+- Any config images e.g. favicon/logo.
+
+<details>
+<summary><h3>default/</h3></summary>
+
+<details>
+<summary><h3>default-favicon.png</h3></summary>
+
+- Default favicon.
 
 </details>
 <details>
-<summary><h3>profile.php</h3></summary>
+<summary><h3>default-logo.png</h3></summary>
 
-- Allows editign profile info for local users
-- Shows all profile info
-- Allows the assigning, reassigning and deassigning of swipe cards
-- Allows password resets for local users
-- Change theme
-- Test theme via them test link
-- Resync ldap info if logged in via ldap
+- Default logo.
+
+</details>
+
+</details>
+
+</details>
+<details>
+<summary><h3>stock/</h3></summary>
+
+- Stock image files, named based on the stock id and time/date of upload.
+- There are some default images here too for cables.
+
+</details>
+<details>
+<summary><h3>db relationships.png</h3></summary>
+
+- Visual view of the database relationships.
+
+</details>
+</details>
+<details>
+<summary><h3>js/</h3></summary>
+
+<details>
+<summary><h3>admin.js</h3></summary>
+
+- Specific JS for the admin.php page.
+
+</details>
+<details>
+<summary><h3>audit.js</h3></summary>
+
+- Specific JS for the audit.php page.
+
+</details>
+<details>
+<summary><h3>cablestock.js</h3></summary>
+
+- Specific JS for the cablestock.php page.
+
+</details>
+<details>
+<summary><h3>carousel.js</h3></summary>
+
+- Carousel specific js for images on stock page.
+
+</details>
+<details>
+<summary><h3>changelog.js</h3></summary>
+
+- Specific JS for the changelog.php page.
+
+</details>
+<details>
+<summary><h3>foot.js</h3></summary>
+
+- Specific JS for the foot.php page.
+
+</details>
+<details>
+<summary><h3>head.js</h3></summary>
+
+- Specific JS for the head.php page.
+
+</details>
+<details>
+<summary><h3>index.js</h3></summary>
+
+- Specific JS for the index.php page.
+
+</details>
+<details>
+<summary><h3>login.js</h3></summary>
+
+- JS for the login page to do the 2FA and login without page navigation.
+
+</details>
+<details>
+<summary><h3>nav.js</h3></summary>
+
+- Specific JS for the nav.php page.
+
+</details>
+<details>
+<summary><h3>optics.js</h3></summary>
+
+- Specific JS for the optics.php page.
+
+</details>
+<details>
+<summary><h3>profile.js</h3></summary>
+
+- Specific JS for the profile.php page.
+
+</details>
+<details>
+<summary><h3>stock.js</h3></summary>
+
+- Specific JS for the stock.php page.
+
+</details>
+<details>
+<summary><h3>tags.js</h3></summary>
+
+- Specific JS for the tags.php page.
+
+</details>
+<details>
+<summary><h3>theme-test.js</h3></summary>
+
+- Specific JS for the theme-test.php page.
+
+</details>
+
+</details>
+<details>
+<summary><h3>scripts/</h3></summary>
+
+<details>
+<summary><h3>install.bash</h3></summary>
+
+- Install script to run through all of the install steps
+
+</details>
+<details>
+<summary><h3>mysql-update-adjustment.bash</h3></summary>
+
+- Update the mysql schema when running the update script.
+
+</details>
+<details>
+<summary><h3>update.bash</h3></summary>
+
+- Used for updating the system.
+
+</details>
+
+</details>
+<details>
+<summary><h3>sql/</h3></summary>
+
+<details>
+<summary><h3>db_extras.sql</h3></summary>
+
+- Extra sql bits used after the db_setup.sql to setup the initial required information
+
+</details>
+<details>
+<summary><h3>db_setup.sql</h3></summary>
+
+- Database setup to create the tables.
+
+</details>
+<details>
+<summary><h3>Stock.accdb</h3></summary>
+
+- Microsoft Access file for the stockbase SQL schema and relationships.
+
+</details>
+
+</details>
+
+</details>
+<details>
+<summary><h3>includes/</h3></summary>
+
+<details>
+<summary><h3>GoogleAuthenticator/</h3></summary>
+
+- Google Authenticator package for 2FA
+
+</details>
+<details>
+<summary><h3>PHPMailer/</h3></summary>
+
+- PHPMailer package for SMTP setup.
+
+</details>
+<details>
+<summary><h3>.errorlog_report.php</h3></summary>
+
+- Send the error log to the specified email address.
+- Add cronjob entry for this e.g. "55 23 * * * /usr/bin/php /var/www/stockbase/includes/.errorlog_report.php"
+
+</details>
+<details>
+<summary><h3>2fa.inc.php</h3></summary>
+
+- Creates the 2FA code and authenticates the 2FA code.
+- Saves the secret to the database.
+
+</details>
+<details>
+<summary><h3>addlocaluser.inc.php</h3></summary>
+
+- Backend for the addlocaluser.php page
+- Used to add local user information to the user table for login.
+
+</details>
+<details>
+<summary><h3>admin.inc.php</h3></summary>
+
+- Backend for the admin.php page and a few others with similar functions
+- TBC
+
+</details>
+<details>
+<summary><h3>audit.inc.php</h3></summary>
+
+- Backend for the audit.php page
+- Used to store the audit information to the database.
+
+</details>
+<details>
+<summary><h3>cablestock.inc.php</h3></summary>
+
+- Backend for the cablestock.php page
+- Used for database manipulation for all cablestock changes
+
+</details>
+<details>
+<summary><h3>change-theme.inc.php</h3></summary>
+
+- Called when changing themes to update the user table with the new theme.
+
+</details>
+<details>
+<summary><h3>changelog.inc.php</h3></summary>
+
+- Included in pages where the changelog needs updates.
+- Home of the changelog functions.
+
+</details>
+<details>
+<summary><h3>changepassword.inc.php</h3></summary>
+
+- Backend for the changepassword.php page
+- Backend for the reset-password.php page
+- Does the updating of passwords for local users in the user table.
+
+</details>
+<details>
+<summary><h3>containers.inc.php</h3></summary>
+
+- Backend for all container adjustments.
+- Does the logic for changing the container database information.
+
+</details>
+<details>
+<summary><h3>dbh.inc.php</h3></summary>
+
+- Database credentials
+- Navigates to error.php if unable to reach database.
+
+</details>
+<details>
+<summary><h3>get-config.inc.php</h3></summary>
+
+- Retrieves all config from the config table
+- Retrieves all config from the config-default table
+- Collates the 2x configs to get the actively running coniguration
+- Include this file to get the config
+
+</details>
+<details>
+<summary><h3>ldap-resync.inc.php</h3></summary>
+
+- Backend for re-syncing the LDAP information for the user profile.
+
+</details>
+<details>
+<summary><h3>ldap-test.inc.php</h3></summary>
+
+- Backend for testing LDAP connection on the admin page.
+
+</details>
+<details>
+<summary><h3>login-card.inc.php</h3></summary>
+
+- Backend for logging in with access passes
+- This is no longer in use and will be removed in a future update.
+
+</details>
+<details>
+<summary><h3>login-functions.inc.php</h3></summary>
+
+- Home of the login and login management functions
+- Queries to see if you are allowed to login or if you are blocked for failures
+
+</details>
+<details>
+<summary><h3>login.inc.php</h3></summary>
+
+- Backend for the login.php page
+- Handles the logging in and confirmation of user credentials
+- Handles the 2FA checking.
+- Handles the LDAP connection for logins.
+
+</details>
+<details>
+<summary><h3>optics.inc.php</h3></summary>
+
+- Backend for the optics.php page
+- Handles all logic for the optics
+
+</details>
+<details>
+<summary><h3>responsehandling.inc.php</h3></summary>
+
+- include this file to display errors or responses from the query string correctly on the page
+- Has a collection of pre-defined response codes to translate.
+
+</details>
+<details>
+<summary><h3>session.inc.php</h3></summary>
+
+- Functions for the session.php page
+- Used for storing the session in the database and querying the session
+
+</details>
+<details>
+<summary><h3>smtp-test.inc.php</h3></summary>
+
+- Used for testing the SMTP configuration on the admin page
+
+</details>
+<details>
+<summary><h3>stock-add.inc.php</h3></summary>
+
+- Included on the stock page when adding stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=add is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-edit.inc.php</h3></summary>
+
+- Included on the stock page when editing stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=edit is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-remove.inc.php</h3></summary>
+
+- Included on the stock page when removing stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=remove is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-move.inc.php</h3></summary>
+
+- Included on the stock page when moving stock to shwo the correct information
+- Split off the stock.php page to reduce file size
+- When ?modiy=move is set, includes this page.
+
+</details>
+<details>
+<summary><h3>stock-modify.inc.php</h3></summary>
+
+- Backend for anu stock management e.g. adding/removing/moving/editing stock
+- Does all the database changes for stock manipulation.
+
+</details>
+<details>
+<summary><h3>stock-selectboxes.inc.php</h3></summary>
+
+- Handles AJAX request for dynamicly updated select boxes
+
+</details>
+<details>
+<summary><h3>stockajax.inc.php</h3></summary>
+
+- Handles AJAX requests for loading the stock onto the index page
+- Handles AJAX requests for loading the stock onto the audit page
+- Handles AJAX requests for loading the stock onto the containers page
+
+</details>
+<details>
+<summary><h3>transactions.inc.php</h3></summary>
+
+- Include this file to show the transactions at the bottom of the stock page.
+- Shows the most recent transactions
+
+</details>
+
+</details>
+<details>
+<summary><h3>about.php</h3></summary>
+
+- Shows version number
+- Shows information about the system.
+- Shows the GNU licence.
+- Links to GitLab.
+
+</details>
+<details>
+<summary><h3>addlocaluser.php</h3></summary>
+
+- Used for adding a local user.
+- Requires: username, password, first name, last name, email, role.
 
 </details>
 <details>
@@ -590,15 +978,21 @@ Clone the repo first, and the follow the below steps.
   - Change user roles
   - Enable/disabled users
   - Reset user passwords
+  - Reset 2FA secret
   - Impersonate users (if root user)
   - Add new local users
 - User Roles
   - View user role permissions
+- Authentication
+  - Enable 2FA 
+  - Enforce 2FA globally for every user
 - Session Management
   - Kill any active sessions to the site
   - View active sessions
 - Image management
+  - Load all used images
   - Delete unsued images
+  - Show image linking
 - Attribute Management
   - Delete/restore unused tags
   - Delete/restore unused manufacturers
@@ -613,14 +1007,16 @@ Clone the repo first, and the follow the below steps.
   - Show all links for types
   - Show all links for connectors
 - Stock Management
-  - Enable/Disabled Costs for normal and cablestock
+  - Enable/Disabled Costs for normal and cable stock
   - Restore Deleted stock
 - Stock Location Settings
   - View/Add/Edit/Restore/Delete Locations
 - LDAP Settings
+  - Enable/Disable LDAP
   - View and edit LDAP settings
   - Test LDAP settings
 - SMTP Settings
+  - Enable/Disable SMTP
   - View and edit SMTP Settings
   - Test SMTP settings
 - Email Notification Settings
@@ -631,10 +1027,162 @@ Clone the repo first, and the follow the below steps.
 
 </details>
 <details>
+<summary><h3>audit.php</h3></summary>
+
+- Lists all items to be audited
+- Saves information input in the table based on auditing
+- Used to make sure the stock is still correct on the system
+
+</details>
+<details>
+<summary><h3>cablestock.php</h3></summary>
+
+- Shows all cablestock categoorised by type (copper/fibre/power/other)
+- Add/remove/moved cable stock
+- Clicking the name takes you to the stock page for the item
+- Clicking the site link sets the site filter
+- Search by name
+- Filter by site
+- Filter by type
+- Show/hide out of stock items
+
+</details>
+<details>
 <summary><h3>changelog.php</h3></summary>
 
 - View all logs 
 - Filter logs based on date/table/user
+
+</details>
+<details>
+<summary><h3>changepassword.php</h3></summary>
+
+- Used for changing a local user password
+- If an LDAP user navigates here, it redirects back to profile
+
+</details>
+<details>
+<summary><h3>containers.php</h3></summary>
+
+- Lists containers
+- Add/Remove containers
+- Add/Remove items from containers
+
+</details>
+<details>
+<summary><h3>COPYING.txt</h3></summary>
+
+- GNU GENERAL PUBLIC LICENSE
+
+</details>
+<details>
+<summary><h3>error.php</h3></summary>
+
+- General error page for things like 404s
+
+</details>
+<details>
+<summary><h3>foot.php</h3></summary>
+
+- Footer for the website
+- Shows the gitlab/version number/roadmap/copyright
+
+</details>
+<details>
+<summary><h3>head.php</h3></summary>
+
+- All required setup for every page
+- Includes the fonts used
+- Includes any scripts needed
+- Includes the includes/get-config.inc.php page to gather the config information
+- Sets the version number
+- Sets the security policy
+- Includes the stylesheets
+- Includes the ajax script
+- Includes a series of js functions
+- Includes some css from the config
+
+</details>
+<details>
+<summary><h3>index.php</h3></summary>
+
+- Show all stock
+- Filter stock by name, SKU, shelf, tag, manufacturer
+- Filter stock by site / Area
+- Show or hide out of stock
+- Navigate to a stock item
+- Clicking images makes them larger
+- Clicking the name of a stock row navigates to the stock page
+- Clicking the site sets the site filter
+- Clicking the tag sets the tag filter
+- Clicking the yellow clear icon clears the filters
+
+</details>
+<details>
+<summary><h3>login.php</h3></summary>
+
+- Login to user account
+- Reset password if local user
+- Select local/ldap user if enabled
+- Prompts for 2FA if enabled
+- Prompts for 2FA setup if enabled
+
+</details>
+<details>
+<summary><h3>logout.php</h3></summary>
+
+- Kills sessions
+- Logs user out
+- Redirects to login page
+
+</details>
+<details>
+<summary><h3>nav.php</h3></summary>
+
+- Sets up the global nav at the top of each page
+
+</details>
+<details>
+<summary><h3>profile.php</h3></summary>
+
+- Change password on local user
+- Reset 2FA secret
+- Enable 2FA if enabled globally
+- Change theme
+- Re-sync LDAP information
+- View user information
+- View login history
+- Link to Theme Testing page
+
+</details>
+<details>
+<summary><h3>reset-password.php</h3></summary>
+
+- Reset local user password after a forced change from an admin.
+- Will be redirected here if set in the user table
+
+</details>
+<details>
+<summary><h3>session.php</h3></summary>
+
+- Sets up the session for the user
+
+</details>
+<details>
+<summary><h3>stock.php</h3></summary>
+
+- Shows stock info for the item
+- Shows the items linked to the stock
+- Shows transaction for the stock
+- View full transaction log using show all link
+- Allows editing the info and images
+- Allows adding more
+- Allows deleting stock
+- Allows moving stock
+- Allows adding new stock objects
+- Filter by Site / Search / Type / Speed / Mode / Connector / Distance
+- View/Add comments on each optic
+- Add new Speed / Connector / Distance / Vendor / Type 
 
 </details>
 <details>
@@ -664,7 +1212,24 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
-<summary><h3>1.1.1</h3></summary>
+<summary><h3>1.2.0</h3></summary>
+<h4>1.2.0 - Mobile Form Factor and additional fixes</h4>
+
+- Fixed the burger menu on the nav to show the containers page and fit on the screen correctly.
+- Fixed the 2FA issuer being 'testing' to now getting the system name from the DB.
+- Fixed the 2FA prompt showing weird on mobile.
+- Changed the login_log ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Changed the login_failure ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Changed the session_log ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Changed the bypass_2fa ipv4 data type from int(11) to bigint(11) to allow for public ips that exceed the int limits.
+- Moved JS from the standard php files to the assets/js folder where possible and sourced them in.
+- Added a "Add New" button to the manufacturer select on the stock page.
+- Fixed the SKU patterns on the stock-*.inc.php pages.
+- Fixed a bunch of meta tags and preloading in the head.php
+
+</details>
+<details>
+<summary><h3>1.1.2</h3></summary>
 <h4>1.1.2 - Bug fixes</h4>
 
 - Fixed the stock page showing duplicate items based on manufacturer.

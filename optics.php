@@ -31,8 +31,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     ?>
     <!-- End of Header and Nav -->
     
-    <div class="content" style="padding-top:20px">
-        <div id="selection" style="margin-bottom:15px">
+    <div class="content viewport-content" style="padding-top:20px">
+        <div id="selection" class="viewport-selection" style="margin-bottom:15px">
             <?php
             $site = isset($_GET['site']) ? $_GET['site'] : "0";
             $search = isset($_GET['search']) ? $_GET['search'] : "";
@@ -57,9 +57,83 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             } else {
                 $rowSelectValue = 20;
             }
+            echo('<div class="centertable viewport-small" style="max-width:max-content">
+                <table class="centertable">
+                    <tbody>
+                        <tr>
+                            <td>Site:</td>
+                            <td>Search:</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select name="site" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'site\', this.value))">');
+                                $sql_site = "SELECT id, name
+                                            FROM site
+                                            WHERE site.deleted != 1";
+                                $stmt_site = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_site, $sql_site)) {
+                                    echo('<option value="0" selected>ERROR</option>');
+                                } else {
+                                    mysqli_stmt_execute($stmt_site);
+                                    $result_site = mysqli_stmt_get_result($stmt_site);
+                                    $rowCount_site = $result_site->num_rows;
+                                    if ($rowCount_site < 1) {
+                                        // error
+                                        echo('<option value="0" selected>No Sites Found...</option>');
+                                    } else {
+                                        echo('<option value="0" '); if ($site == '' || $site == 0) { echo('selected'); } echo('>All</option>');
+                                        while ($row_site = $result_site->fetch_assoc()) {
+                                            $id = $row_site['id'];
+                                            $name = $row_site['name'];
 
-            echo('<div class="row centertable" style="max-width:max-content">
-                    <div class="col align-middle" style="max-width:max-content">
+                                            echo('<option value="'.$id.'"'); if ($site == $id) { echo('selected'); } echo('>'.$name.'</option>');
+                                        }
+                                    }
+                                }
+                            echo('</select>
+                            </td>
+                            <td>
+                                <form action="" method="GET" style="display:inline-block">
+                                    <span style="">
+                                        <input type="text" id="search" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:100px;padding-right:0px"'); if (isset($_GET['search'])) { echo('value="'.$_GET['search'].'"');} echo('>
+                                        <button id="search-submit" class="btn btn-info" style="vertical-align:middle;margin-top: 0px !important;padding: 5px 6px 5px 6px !important;opacity:80%;color:black;" type="submit">
+                                            <i class="fa fa-search" style="padding-top:4px"></i>
+                                        </button>
+                                    </span>
+                                </form>
+                            </td>
+                            <td>
+                                <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'optics.php\')">
+                                    <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button id="add-optic-small" class="btn btn-success nav-v-b" style="opacity:80%;color:white;padding:6px 2px 5px 2px" onclick="toggleAddDivSmall()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { echo ('hidden'); } else { } echo('>
+                                    <i class="fa fa-plus" style="padding-top:4px"></i> Add
+                                </button>
+                                <button id="add-optic-hide-small" class="btn btn-danger nav-v-b viewport-small" style="opacity:80%;color:black;padding:6px 2px 5px 2px" onclick="toggleAddDivSmall()" '); if (isset($_GET['add-form']) && $_GET['add-form'] == 1) { } else { echo ('hidden'); } echo('>
+                                    Hide Add
+                                </button>
+                            </td>
+                                
+                            <td>
+                                <button id="show-deleted-optics-small" class="btn btn-success nav-v-b" style="padding:6px 2px 5px 2px;opacity:80%;color:white" onclick="navPage(updateQueryParameter(\'\', \'deleted\', 1))" '); if((isset($deleted) && $deleted == 1)) { echo('hidden'); } echo('>
+                                    Deleted
+                                </button>
+                                <button id="hide-deleted-optics-small" class="btn btn-danger nav-v-b viewport-small" style="padding:6px 2px 5px 2px;opacity:80%;color:black" onclick="navPage(updateQueryParameter(\'\', \'deleted\', 0))" '); if(isset($deleted) && ($deleted == 0 || $deleted == '')) { echo('hidden'); } echo('>
+                                    Deleted
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            ');
+            echo('<div class="row centertable viewport-large" style="max-width:max-content">
+                    <div class="col align-middle viewport-large" style="max-width:max-content">
                         <label class="align-middle" style="padding-right:15px;padding-top:7px">Site:</label>
                         <select name="site" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter(\'\', \'site\', this.value))">');
                         $sql_site = "SELECT id, name
@@ -87,13 +161,15 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         }
                     echo('</select>
                     </div>');
-                echo('<div class="col align-middle" style="max-width:max-content">
-                        <form action="" method="GET" style="display:inline">
+                echo('<div class="col align-middle" style="display:inline-block;max-width:max-content">
+                        <form action="" method="GET" style="display:inline-block">
                             <label class="align-middle" style="padding-top:7px;padding-right:15px;">Search:</label>
-                            <input type="text" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:200px;padding-right:0px"'); if (isset($_GET['search'])) { echo('value="'.$_GET['search'].'"');} echo('>
-                            <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 8px 6px 8px 6px;opacity:80%;color:black" type="submit">
-                                <i class="fa fa-search" style="padding-top:4px"></i>
-                            </button>
+                            <span style="">
+                                <input type="text" id="search" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:200px;padding-right:0px"'); if (isset($_GET['search'])) { echo('value="'.$_GET['search'].'"');} echo('>
+                                <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 6px 6px 6px 6px;opacity:80%;color:black" type="submit">
+                                    <i class="fa fa-search" style="padding-top:4px"></i>
+                                </button>
+                            </span>
                         </form>
                     </div>');
                 echo('<div class="col align-middle" style="max-width:max-content">
@@ -624,23 +700,23 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                     echo('
                         <div class="container">
-                            <hr style="border-color:#9f9d9d; margin-left:10px">
+                            <hr class="viewport-hr" style="border-color:#9f9d9d; margin-left:10px">
                             <div class="row centertable">
-                                <div class="col float-left">
+                                <div class="col-3 float-left viewport-font" >
                                     Count: <or class="green">'.$totalRowCount.'</or>
                                 </div>
                                 <div class="col">');
                                 if (isset($_GET['error'])) { echo('<p class="red">Error: '.htmlspecialchars($_GET['error']).'</p>'); } 
                                 if (isset($_GET['success'])) { echo('<p class="green">Success: '.htmlspecialchars($_GET['success']).'</p>'); } 
                                 echo('</div>
-                                <div class="col align-middle" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
-                                    <table>
+                                <div class="col align-middle viewport-padding-0-lr" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
+                                    <table class="viewport-font viewport-table">
                                         <tr class="align-middle">
                                             <td class="align-middle" style="padding-right:10px">
                                                 Sort By:
                                             </td>
                                             <td class="align-middle">
-                                                <select name="sort" class="form-control row-dropdown" style="width:max-content;height:25px; padding:0px" onchange="navPage(updateQueryParameter(\'\', \'sort\', this.value))">
+                                                <select name="sort" class="form-control row-dropdown viewport-width-50" style="width:max-content;height:25px; padding:0px" onchange="navPage(updateQueryParameter(\'\', \'sort\', this.value))">
                                                     <option value="type"'); if ($sort == "type" || $sort == '') { echo(' selected'); } echo('>Type</option>
                                                     <option value="connector"'); if ($sort == "connector") { echo(' selected'); } echo('>Connector</option>
                                                     <option value="distance"'); if ($sort == "distance") { echo(' selected'); } echo('>Distance</option>
@@ -658,9 +734,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </div>
                     </div>
                     <div id="optics-table" class="text-center" style="max-width:max-content; margin:auto">
-                        <table class="table table-dark theme-table centertable" style="max-width:max-content;padding-bottom:0px;margin-bottom:0px;">
+                        <table class="table table-dark theme-table centertable viewport-font" style="max-width:max-content;padding-bottom:0px;margin-bottom:0px;">
                             <thead>
-                                <tr class="align-middle text-center theme-tableOuter">
+                                <tr class="align-middle text-center theme-tableOuter viewport-large-empty">
                                     <th hidden>ID</th>
                                     <th>Type</th>
                                     <th>Connector</th>
@@ -673,6 +749,22 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                     <th>Vendor</th>
                                     <th'); if ((int)$site !== 0) { echo(' hidden'); } echo('>Site</th>
                                     <th>Comments</th>
+                                    <th hidden>Quantity</th>
+                                    <th colspan=2></th>
+                                <tr>
+                                <tr class="align-middle text-center theme-tableOuter viewport-small-empty">
+                                    <th hidden>ID</th>
+                                    <th>Type</th>
+                                    <th>Conn.</th>
+                                    <th>Model</th>
+                                    <th>Speed</th>
+                                    <th>Mode</th>
+                                    <th>Spect.</th>
+                                    <th>Dist.</th>
+                                    <th>S/N</th>
+                                    <th>Vendor</th>
+                                    <th'); if ((int)$site !== 0) { echo(' hidden'); } echo('>Site</th>
+                                    <th>Comm.</th>
                                     <th hidden>Quantity</th>
                                     <th colspan=2></th>
                                 <tr>
@@ -1169,236 +1261,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </div>
     </div>
     <!-- End of MoveOptic Div -->
+    <!-- Add the JS for the file -->
+    <script src="assets/js/optics.js"></script>
 
     <?php include 'foot.php'; ?>
 
 </body>
-
-<script> // toggle hidden row below current
-function toggleHidden(id) {
-    var Row = document.getElementById('item-'+id);
-    var hiddenID = 'item-'+id+'-comments';
-    var hiddenRow = document.getElementById(hiddenID);
-    var allRows = document.getElementsByClassName('row-show');
-    var allHiddenRows = document.getElementsByClassName('row-hide');
-    if (hiddenRow.hidden == false) {
-        hiddenRow.hidden=true;
-        hiddenRow.classList.remove('theme-th-selected');
-        Row.classList.remove('theme-th-selected');
-    } else {
-        for(var i = 0; i < allHiddenRows.length; i++) {
-            allHiddenRows[i].hidden=true;
-        } 
-        for (var j = 0; j < allRows.length; j++) {
-            allRows[j].classList.remove('theme-th-selected');
-        }     
-        hiddenRow.hidden=false;
-        hiddenRow.classList.add('theme-th-selected');
-        Row.classList.add('theme-th-selected');
-    }
-}
-function toggleAddComment(id, com) {
-    var Row = document.getElementById('item-'+id);
-    var hiddenID = 'item-'+id+'-add-comments';
-    var hiddenRow = document.getElementById(hiddenID);
-    if (hiddenRow.hidden == false) {
-        hiddenRow.hidden=true;
-        hiddenRow.classList.remove('theme-th-selected');
-        Row.classList.remove('theme-th-selected');
-    } else { 
-        hiddenRow.hidden=false;
-        hiddenRow.classList.add('theme-th-selected');
-        Row.classList.add('theme-th-selected');
-    }
-    if (com > 0) {
-        toggleHidden(id);
-    }
-}
-</script>
-<script>
-    function toggleAddDiv() {
-        var div = document.getElementById('add-optic-section');
-        var addButton = document.getElementById('add-optic');
-        var addButtonHide = document.getElementById('add-optic-hide');
-        var serial = document.getElementById('serial');
-        if (div.hidden === true) {
-            div.hidden = false;
-            addButton.hidden = true;
-            addButtonHide.hidden = false;
-            serial.focus(); // for James to use barcode reader - selects the serial number box immediately.
-        } else {
-            div.hidden = true;
-            addButton.hidden = false;
-            addButtonHide.hidden = true;
-        }
-
-    }
-</script>
-<script>
-    function modalLoadDeleteOptic(id) {
-        console.log(id);
-        var modal = document.getElementById("modalDivDeleteOptic");
-        var serial = document.getElementById('optic-serial-'+id).innerHTML;
-
-        var deleteInputID = document.getElementById('delete-id');
-        var deleteHeadingSerial = document.getElementById('delete-optic-serial');
-
-
-        deleteHeadingSerial.innerText = serial+" (ID: "+id+")";
-        deleteInputID.value = id;
-        modal.style.display = "block";
-
-
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseDeleteOptic = function() { 
-        var modal = document.getElementById("modalDivDeleteOptic");
-        modal.style.display = "none";
-    }
-
-    function modalLoadMoveOptic(id) {
-        console.log(id);
-        var modal = document.getElementById("modalDivMoveOptic");
-        var serial = document.getElementById('optic-serial-'+id).innerHTML;
-
-        var moveInputID = document.getElementById('move-id');
-        var moveHeadingSerial = document.getElementById('move-optic-serial');
-
-
-        moveHeadingSerial.innerText = serial+" (ID: "+id+")";
-        moveInputID.value = id;
-        modal.style.display = "block";
-
-
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseMoveOptic = function() { 
-        var modal = document.getElementById("modalDivMoveOptic");
-        modal.style.display = "none";
-    }
-</script>
-<script> // MODAL SCRIPT
-    // Get the modal
-    function modalLoadNewType(property) {
-        //get the modal div with the property
-        var modal = document.getElementById("modalDivNewType");
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseNewType = function() { 
-        var modal = document.getElementById("modalDivNewType");
-        modal.style.display = "none";
-    }
-
-    function modalLoadNewVendor(property) {
-        //get the modal div with the property
-        var modal = document.getElementById("modalDivNewVendor");
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseNewVendor = function() { 
-        var modal = document.getElementById("modalDivNewVendor");
-        modal.style.display = "none";
-    }
-
-    function modalLoadNewConnector(property) {
-        //get the modal div with the property
-        var modal = document.getElementById("modalDivNewConnector");
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseNewConnector = function() { 
-        var modal = document.getElementById("modalDivNewConnector");
-        modal.style.display = "none";
-    }
-
-    function modalLoadNewDistance(property) {
-        //get the modal div with the property
-        var modal = document.getElementById("modalDivNewDistance");
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal or if they click the image.
-    modalCloseNewDistance = function() { 
-        var modal = document.getElementById("modalDivNewDistance");
-        modal.style.display = "none";
-    }
-
-</script>
-<script>
-        function searchSerial(search) {
-            // Make an AJAX request to retrieve the corresponding sites
-            var serialBox = document.getElementById('serial');
-            var modelBox = document.getElementById('model');
-            var vendorBox = document.getElementById('vendor');
-            var typeBox = document.getElementById('type');
-            var speedBox = document.getElementById('speed');
-            var connectorBox = document.getElementById('connector');
-            var distanceBox = document.getElementById('distance');
-            var modeBox = document.getElementById('mode');
-            var siteBox = document.getElementById('site');
-            var responseBox = document.getElementById('optic-add-response');
-            var btnAddSingle = document.getElementById('optic-add-single');
-            var btnAddMultiple = document.getElementById('optic-add-multiple');
-            
-            responseBox.hidden = true;
-            btnAddSingle.disabled = false;
-            btnAddMultiple.disabled = false;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "includes/optics.inc.php?request-optic=1&serial="+search, true);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Parse the response and populate the shelf select box
-                    var data = JSON.parse(xhr.responseText);
-                    console.log(data);
-                    if (data["skip"] === undefined) {
-                        // console.log('noskip');
-                        if (data["error"] === undefined) {
-                            // console.log('noerror');
-                            if (data["success"] !== undefined) {
-                                // console.log('success');
-                                serialBox.value = data['serial_number'];
-                                modelBox.value = data['model'];
-                                vendorBox.value = data['vendor_id'];
-                                typeBox.value = data['type_id'];
-                                speedBox.value = data['speed_id'];
-                                connectorBox.value = data['connector_id'];
-                                distanceBox.value = data['distance_id'];
-                                modeBox.value = data['mode'];
-                                siteBox.value = data['site_id'];
-                                responseBox.hidden = false;
-                                responseBox.innerHTML = "<or class='green'>"+data['success']+"</or>";
-                                btnAddSingle.disabled = false;
-                                btnAddMultiple.disabled = false;
-                            }
-                        } else {
-                            // console.log("error");
-                            responseBox.hidden = false;
-                            responseBox.innerHTML = "<or class='red'>"+data['error']+"</or>";
-                            serialBox.value = data['serial_number'];
-                            modelBox.value = data['model'];
-                            vendorBox.value = data['vendor_id'];
-                            typeBox.value = data['type_id'];
-                            speedBox.value = data['speed_id'];
-                            connectorBox.value = data['connector_id'];
-                            distanceBox.value = data['distance_id'];
-                            modeBox.value = data['mode'];
-                            siteBox.value = data['site_id'];
-                            btnAddSingle.disabled = true;
-                            btnAddMultiple.disabled = true;
-                            
-                        }
-                    }
-                }
-            };
-            xhr.send();
-        }
-
-
-    </script>

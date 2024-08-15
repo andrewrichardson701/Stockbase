@@ -74,12 +74,12 @@ function send_email($to, $toName, $from, $fromName, $subject, $body) {
 //send_email('andrew@custodiandc.com', 'Andrew', 'root@boycie.cdc.local', 'Root', 'Test', 'TESTING');
 
 // Function to get today's error log
-function getErrorLogToday() {
+function getErrorLogToday($file) {
     // Get today's date
     $today = date('Y/m/d');
 
     // Read nginx error log
-    $errorLog = file('/var/log/nginx/error-stock.log');
+    $errorLog = file($file);
 
     // Filter log entries for today
     $todayLogEntries = array_filter($errorLog, function($entry) use ($today) {
@@ -88,20 +88,21 @@ function getErrorLogToday() {
 
     return implode("<br><br>", $todayLogEntries);
 }
-$body = getErrorLogToday();
 
-if (!empty($body)) {
-    // Send email with today's error log
-    send_email($to, $toName, $from, $fromName, $subject, $body);
-} else {
-	echo "No Errors found, no send needed.\n";
+function sendErrorLog($file, $subject_suffix) {
+	global $to, $toName, $from, $fromName, $subject;
+	$body = getErrorLogToday($file);
+	$formatted_subject = $subject.' - '.$subject_suffix;
+
+	if (!empty($body)) {
+		// Send email with today's error log
+		send_email($to, $toName, $from, $fromName, $formatted_subject, $body);
+	} else {
+		echo "No Errors found, no send needed.\n";
+	}
 }
 
-
-
-
-
-
-
+sendErrorLog('/var/log/nginx/error-stock.log', 'local');
+sendErrorLog('/var/log/nginx/error-stock_pub.log', 'public');
 
 ?>

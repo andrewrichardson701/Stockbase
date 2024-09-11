@@ -207,7 +207,7 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
             $config_d_currency            = $config_d['currency'];
             $config_d_sku_prefix          = $config_d['sku_prefix'];
             $config_d_base_url            = $config_d['base_url'];
-            $config_d_default_theme_id       = $config_d['default_theme_id'];
+            $config_d_default_theme_id    = $config_d['default_theme_id'];
 
             $config_d_ldap_enabled        = $config_d['ldap_enabled'];
             $config_d_ldap_username       = $config_d['ldap_username'];
@@ -241,9 +241,9 @@ if (!mysqli_stmt_prepare($stmt_config_d, $sql_config_d)) {
 }
 
 
-$default_default_theme_id    = ($config_d_default_theme_id    !== '' ? $config_d_default_theme_id            : $predefined_default_theme_id); 
+$default_default_theme_id    = ((isset($config_d_default_theme_id) && $config_d_default_theme_id !== '') ? $config_d_default_theme_id            : $predefined_default_theme_id); 
 
-$current_default_theme_id    = ($config_default_theme_id      !== '' ? $config_default_theme_id              : $default_default_theme_id);
+$current_default_theme_id    = ((isset($config_default_theme_id)   && $config_default_theme_id !== '')   ? $config_default_theme_id              : $default_default_theme_id);
 
 
 // get theme info for defaults

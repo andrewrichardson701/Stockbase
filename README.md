@@ -1226,6 +1226,7 @@ Clone the repo first, and the follow the below steps.
 - Added a "Add New" button to the manufacturer select on the stock page.
 - Fixed the SKU patterns on the stock-*.inc.php pages.
 - Fixed a bunch of meta tags and preloading in the head.php
+- Hopefully finally fixed the theme_id error recieved when a user first logs in
 
 </details>
 <details>

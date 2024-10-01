@@ -80,7 +80,7 @@ if (!isset($_SESSION['csrf_token'])) {
                                     <label class="nav-div" style="margin-left:0px">Local Login<p></p></label>
                                 ');
                             } else {
-                                echo('<input id="local-toggle" type="hidden" name="local" value="on" />');
+                                echo('<input id="local-toggle" type="hidden" name="local" value="on" checked />');
                             }
                             ?>
                         </div>

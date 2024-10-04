@@ -122,7 +122,39 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     } else {
                         $cable_disable = '';
                     }
+
+                    // check if current stock is favourited
+		    function checkFavouriteStatus($stock_id, $user_id) {
+                       include 'includes/dbh.inc.php';
+
+                       $sql = "SELECT * FROM favourites WHERE stock_id=? AND user_id=?";
+                       $stmt = mysqli_stmt_init($conn);
+                       if (!mysqli_stmt_prepare($stmt, $sql)) {
+                            return '';
+                       } else {
+                            mysqli_stmt_bind_param($stmt, "ss", $stock_id, $user_id);
+                            mysqli_stmt_execute($stmt);
+                            $result = mysqli_stmt_get_result($stmt);
+                            $rowCount = $result->num_rows;
+                            if ($rowCount < 1) {
+                                return 'add';
+                            } else {
+                                return 'remove';
+                            }
+                        }
+                    }
+		    $favourite_check = checkFavouriteStatus($stock_id, $_SESSION['user_id']);
+                    if ($favourite_check == 'add') {
+                        $fa_type = 'fa-regular';
+                    } else {
+                        $fa_type = 'fa-solid';
+                    }
                     echo('
+			<div id="favouriteButton" class="" style="width: max-content">
+			    <button onclick="favouriteStock('.$stock_id.')" class="favouriteBtn" id="favouriteBtn" title="Favourite Stock">
+			        <i id="favouriteIcon" class="'.$fa_type.' fa-star"></i>
+			    </button>
+			</div>
                         <div class="container stock-heading">
                             <div class="row">
                                 <div class="col">

@@ -46,11 +46,11 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
     ?>
     <!-- End of Header and Nav -->
 
-    <div class="container">
+    <div class="container" style="padding-top:60px;padding-bottom:20px">
         <h2 class="header-small">Admin</h2>
     </div>
 
-    <div class="content">
+    <div style="padding-bottom:75px">
         <div class="container" style="padding-bottom:0px">
             <?php
             

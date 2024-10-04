@@ -6,8 +6,8 @@
 ?>
 
 <!-- Navigation Bar for the top of the page, using the config settings for logo and colour -->
-<a href="./" class="nav-head" style="color:<?php echo($current_banner_text_color); ?> !important"><?php echo($current_system_name); ?></a>
-<header class="nav inv-nav">
+<a href="./" class="nav-head" style="position:fixed;z-index:999;color:<?php echo($current_banner_text_color); ?> !important"><?php echo($current_system_name); ?></a>
+<header class="nav inv-nav" style="position:fixed;width:100%;z-index:900">
     <div id="nav-row" class="nav-row viewport-large">
         <div class="logo-div">
             <a href="./">
@@ -198,7 +198,7 @@
 <?php
 if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
 ?>
-<header class="nav inv-nav-secondary viewport-small">
+<header class="nav inv-nav-secondary viewport-small" style="position: relative;top:60px">
     <table class="centertable">
         <tbody>
             <tr>

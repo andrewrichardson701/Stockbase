@@ -27,7 +27,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <?php include 'nav.php'; ?>
     <!-- End of Header and Nav -->
 
-    <div class="container">
+    <div class="container" style="padding-top:60px">
         <h2 class="header-small">Changelog</h2>
     </div> 
 
@@ -48,7 +48,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     $changelog_user = $get_userid !== '' ? " AND user_id='".$get_userid."' " : '';
     ?>
 
-    <div class="content" style="margin-top:10px;margin-bottom:10px;padding-bottom:0px">
+    <div style="margin-top:10px;margin-bottom:10px;padding-bottom:0px">
         <form action="" method="GET" class="text-center centertable" style="max-width:max-content">
             <div class="row" style="max-width:max-content">
                 <div class="col" style="max-width:max-content">
@@ -151,7 +151,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </form>
     </div>
 
-    <div class="content" style="margin-left:20px;margin-right:20px">
+    <div style="margin-bottom:75px;margin-left:20px;margin-right:20px">
         <?php 
         include 'includes/dbh.inc.php';
         $sql = "SELECT * 

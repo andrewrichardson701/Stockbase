@@ -1217,11 +1217,13 @@ Clone the repo first, and the follow the below steps.
 
 - Added FontAwesome icons to the burger menu list to clearly display what each link does
 - Changes some css to allow the burger menu to show correctly with the new changes
-- TODO: Add a favourites table to DB
-- TODO: Add a favourites star icon below the banner
-- TODO: Make the banner position:fixed to stop it moving down the page
-- TODO: Make a function to add/remove a favourite using AJAX when the favourite star is clicked
+- Addded a favourites table to DB
+- Added a favourites star icon below the banner
+- Made the banner position:fixed to stop it moving down the page
+- Added a function to add/remove a favourite using AJAX when the favourite star is clicked
+- Added includes/favourites.inc.php page to do the favouriting logic
 - TODO: Add a favourites section on the user burger menu
+- Adjusted a bunch of pages to work with the new fixed banner.
 
 </details>
 <details>

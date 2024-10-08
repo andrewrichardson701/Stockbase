@@ -100,14 +100,13 @@ if (isset($_POST['stock_id'])) {
 		$fav_result = removeFavourite($stock_id, $user_id);
             }
 
-            if (is_numeric((int)$fav_result)) {
+            if (is_numeric((int)$fav_result)) { // should always be a number if the result is correct.
                 $return['id'] = $fav_result;
                 $return['status'] = 'true';
-            } else {
+            } else { // set error condition. this can be checked in the stock.js page
                 $return['id'] = '';
                 $return['status'] = 'false';
             }
-            // do the logic - check if the favourite is there or not and remove/add, also set the $return['type'] and $return['status'] to be correct.
         }
 	echo(json_encode($return));
     } else {

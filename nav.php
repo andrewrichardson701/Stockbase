@@ -36,7 +36,7 @@
                 case 'favourites':
                     $highlight = 6;
                     break;
-		case 'profile':
+		        case 'profile':
                     $highlight = 7;
                     break;
                 default:

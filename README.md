@@ -1183,6 +1183,7 @@ Clone the repo first, and the follow the below steps.
 - Filter by Site / Search / Type / Speed / Mode / Connector / Distance
 - View/Add comments on each optic
 - Add new Speed / Connector / Distance / Vendor / Type 
+- Fixed the admin.inc.php for fetching images. The form now deletes correctly.
 
 </details>
 <details>

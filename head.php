@@ -57,6 +57,16 @@ if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
     z-index:0px;
 }
 
+.favouriteBtn {
+    background-color: <?php echo $current_banner_color; ?> !important;
+    color: <?php echo getWorB($current_banner_color); ?> !important;
+}
+
+.favouriteBtn:hover {
+    background-color: <?php echo adjustBrightness($current_banner_color, -0.1); ?> !important;
+    color: <?php echo getWorB(adjustBrightness($current_banner_color, -0.1)); ?> !important;
+}
+
 </style>
 
 <?php

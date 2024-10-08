@@ -1222,8 +1222,11 @@ Clone the repo first, and the follow the below steps.
 - Made the banner position:fixed to stop it moving down the page
 - Added a function to add/remove a favourite using AJAX when the favourite star is clicked
 - Added includes/favourites.inc.php page to do the favouriting logic
-- TODO: Add a favourites section on the user burger menu
+- Added a favourites section on the user burger menu
+- Can remove favourites from the favourites.php page
+- Split the stock and favourites JS into seperate files
 - Adjusted a bunch of pages to work with the new fixed banner.
+- Favourites button is now coloured to the general banner colour.
 
 </details>
 <details>

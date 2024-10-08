@@ -88,16 +88,16 @@ $return = [];
 if (isset($_POST['stock_id'])) {
     if (isset($_SESSION['user_id'])) {
         $stock_id = $_POST['stock_id'];
-	$user_id = $_SESSION['user_id'];
+	    $user_id = $_SESSION['user_id'];
         if (getItemStockInfo($stock_id) != '') { // check if the item exists in the stock list - doesnt matter if it is deleted or not, we will allow favourites on them.
             $type = checkFavouriteStatus($stock_id, $user_id);
-	    $return['type'] = $type;
-	    if ($type == "add") {
-		// add the favourite
-		$fav_result = addFavourite($stock_id, $user_id);
-	    } else {
-		// remove the favourite
-		$fav_result = removeFavourite($stock_id, $user_id);
+            $return['type'] = $type;
+            if ($type == "add") {
+                // add the favourite
+                $fav_result = addFavourite($stock_id, $user_id);
+            } else {
+                // remove the favourite
+                $fav_result = removeFavourite($stock_id, $user_id);
             }
 
             if (is_numeric((int)$fav_result)) { // should always be a number if the result is correct.
@@ -107,8 +107,15 @@ if (isset($_POST['stock_id'])) {
                 $return['id'] = '';
                 $return['status'] = 'false';
             }
+            if (isset($_POST['reload']) && (int)$_POST['reload'] == 1) {
+                $return['reload'] = 1;
+            } else {
+                $return['reload'] = 0;
+            }
         }
-	echo(json_encode($return));
+        
+	    echo(json_encode($return));
+        
     } else {
     }
 } else {

@@ -149,8 +149,8 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             }
                             echo('</td>
                             <td class="text-center align-middle">
-                                <button onclick="favouriteStockReload('.$stock_id.')" class="btn btn-warning" style="padding:3px 6px 3px 6px" title="Remove Favourite">
-                                    <i id="favouriteIcon" class="fa-solid fa-star"></i>
+                                <button onclick="favouriteStockReload('.$stock_id.')" class="btn btn-danger" style="padding:3px 6px 3px 6px; color:black" title="Remove Favourite">
+                                    <i id="favouriteIcon" class="fa-regular fa-star"></i>
                                 </button>
                             </td>
                         </tr>

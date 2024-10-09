@@ -21,7 +21,7 @@ The purpose of this project is for stock tracking and locating.
 
 ## Installation
 <details>
-<summary><h3>Automated Deployment (Not recommended unless on a fresh instal)</h3></summary>
+<summary><h3>Automated Deployment (Not recommended unless on a fresh install)</h3></summary>
 
 For automated deployment, run the below command to clone the repository and run the install script:
 
@@ -95,7 +95,7 @@ Clone the repo first, and the follow the below steps.
         quit;
         ```
 
-        If mysql throws an error, the database doesnt exist. This is what we want. 
+        If mysql throws an error, the database doesn’t exist. This is what we want. 
         If it does exist, it will be overwritten.
     
     - Run the MySQL DB setup
@@ -118,7 +118,7 @@ Clone the repo first, and the follow the below steps.
     
     - Create a user for the database to verify against
 
-        We will first check if a user exists under the name 'stocbaseuser'.
+        We will first check if a user exists under the name 'stockbaseuser'.
 
         ```
         mysql -u root -p
@@ -268,7 +268,7 @@ Clone the repo first, and the follow the below steps.
 
     <details>
     <summary>Apache</summary>
-    - Run the below to create the config, replacing `[DOMAIN NAME]` and `[LOCATION]` with your domain name and fodler location
+    - Run the below to create the config, replacing `[DOMAIN NAME]` and `[LOCATION]` with your domain name and folder location
 
     ```
     web_domain='[DOMAIN NAME]'
@@ -298,7 +298,7 @@ Clone the repo first, and the follow the below steps.
 
     <details>
     <summary>Nginx</summary>
-    - Run the below to create the config, replacing `[DOMAIN NAME]` and `[LOCATION]` with your domain name and fodler location
+    - Run the below to create the config, replacing `[DOMAIN NAME]` and `[LOCATION]` with your domain name and folder location
 
     ```
     cat > /etc/nginx/sites-available/$web_domain <<EOL
@@ -336,7 +336,7 @@ Clone the repo first, and the follow the below steps.
 
     <details>
     <summary><h5>Using SSL</h5></summary>
-    <em>This assumes you have an SSL certificate and will not cover LetsEncrypt but it can be used for your cert if needed.</em>
+    <em>This assumes you have an SSL certificate and will not cover Lets Encrypt but it can be used for your cert if needed.</em>
 
     Make a note of your SSL key and certificate file locations
 
@@ -520,7 +520,7 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h3>main.css</h3></summary>
 
-- Main css file for the system, wiht the building blocks.
+- Main css file for the system, with the building blocks.
 
 </details>
 <details>
@@ -603,6 +603,12 @@ Clone the repo first, and the follow the below steps.
 <summary><h3>changelog.js</h3></summary>
 
 - Specific JS for the changelog.php page.
+
+</details>
+<details>
+<summary><h3>favourites.js</h3></summary>
+
+- Specific JS for the favourites.php page and stock.php favourite button.
 
 </details>
 <details>
@@ -808,11 +814,18 @@ Clone the repo first, and the follow the below steps.
 
 </details>
 <details>
+<summary><h3>favourites.inc.php</h3></summary>
+
+- Backend DB management for the favourites.php page to add and remove favourites.
+- Used in the AJAX request in favourite.js.
+
+</details>
+<details>
 <summary><h3>get-config.inc.php</h3></summary>
 
 - Retrieves all config from the config table
 - Retrieves all config from the config-default table
-- Collates the 2x configs to get the actively running coniguration
+- Collates the 2x configs to get the actively running configuration
 - Include this file to get the config
 
 </details>
@@ -881,9 +894,9 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h3>stock-add.inc.php</h3></summary>
 
-- Included on the stock page when adding stock to shwo the correct information
+- Included on the stock page when adding stock to show the correct information
 - Split off the stock.php page to reduce file size
-- When ?modiy=add is set, includes this page.
+- When ?modify=add is set, includes this page.
 
 </details>
 <details>
@@ -891,23 +904,23 @@ Clone the repo first, and the follow the below steps.
 
 - Included on the stock page when editing stock to shwo the correct information
 - Split off the stock.php page to reduce file size
-- When ?modiy=edit is set, includes this page.
+- When ?modify=edit is set, includes this page.
 
 </details>
 <details>
 <summary><h3>stock-remove.inc.php</h3></summary>
 
-- Included on the stock page when removing stock to shwo the correct information
+- Included on the stock page when removing stock to show the correct information
 - Split off the stock.php page to reduce file size
-- When ?modiy=remove is set, includes this page.
+- When ?modify=remove is set, includes this page.
 
 </details>
 <details>
 <summary><h3>stock-move.inc.php</h3></summary>
 
-- Included on the stock page when moving stock to shwo the correct information
+- Included on the stock page when moving stock to show the correct information
 - Split off the stock.php page to reduce file size
-- When ?modiy=move is set, includes this page.
+- When ?modify=move is set, includes this page.
 
 </details>
 <details>
@@ -920,7 +933,7 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h3>stock-selectboxes.inc.php</h3></summary>
 
-- Handles AJAX request for dynamicly updated select boxes
+- Handles AJAX request for dynamically updated select boxes
 
 </details>
 <details>
@@ -991,7 +1004,7 @@ Clone the repo first, and the follow the below steps.
   - View active sessions
 - Image management
   - Load all used images
-  - Delete unsued images
+  - Delete unused images
   - Show image linking
 - Attribute Management
   - Delete/restore unused tags
@@ -1037,7 +1050,7 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h3>cablestock.php</h3></summary>
 
-- Shows all cablestock categoorised by type (copper/fibre/power/other)
+- Shows all cablestock categorised by type (copper/fibre/power/other)
 - Add/remove/moved cable stock
 - Clicking the name takes you to the stock page for the item
 - Clicking the site link sets the site filter
@@ -1079,6 +1092,13 @@ Clone the repo first, and the follow the below steps.
 <summary><h3>error.php</h3></summary>
 
 - General error page for things like 404s
+
+</details>
+<details>
+<summary><h3>favourites.php</h3></summary>
+
+- Shows a list of the user's favourited stock.
+- Favourites can also be removed here.
 
 </details>
 <details>
@@ -1197,7 +1217,7 @@ Clone the repo first, and the follow the below steps.
 <summary><h3>theme-test.php</h3></summary>
 
 - Shows snippets of all theme based css
-- Test differetnt themes to see what they look like
+- Test different themes to see what they look like
 - Create new themes live
 - Download theme
 - Upload theme
@@ -1218,14 +1238,14 @@ Clone the repo first, and the follow the below steps.
 
 - Added FontAwesome icons to the burger menu list to clearly display what each link does
 - Changes some css to allow the burger menu to show correctly with the new changes
-- Addded a favourites table to DB
+- Added a favourites table to DB
 - Added a favourites star icon below the banner
 - Made the banner position:fixed to stop it moving down the page
 - Added a function to add/remove a favourite using AJAX when the favourite star is clicked
 - Added includes/favourites.inc.php page to do the favouriting logic
 - Added a favourites section on the user burger menu
 - Can remove favourites from the favourites.php page
-- Split the stock and favourites JS into seperate files
+- Split the stock and favourites JS into separate files
 - Adjusted a bunch of pages to work with the new fixed banner.
 - Favourites button is now coloured to the general banner colour.
 
@@ -1245,7 +1265,7 @@ Clone the repo first, and the follow the below steps.
 - Added a "Add New" button to the manufacturer select on the stock page.
 - Fixed the SKU patterns on the stock-*.inc.php pages.
 - Fixed a bunch of meta tags and preloading in the head.php
-- Hopefully finally fixed the theme_id error recieved when a user first logs in
+- Hopefully finally fixed the theme_id error received when a user first logs in
 
 </details>
 <details>
@@ -1354,14 +1374,14 @@ Clone the repo first, and the follow the below steps.
 - Changed the padding on the buttons in the user table to look nicer
 - Index page now only loads the non-deleted manufacturer/tags and in alphabetical order.
 - Added a row count to the deleted stock under stock management in admin.php
-- Ajax selectboxes now order by name rather than id
+- Ajax select boxes now order by name rather than id
 - Removed the form elements from the new-properties page to stop it redirecting needlessly and breaking.
 - Added some special character captures for the confirmAction on the stock removal page when deleting a stock object.
 - Index manufacturer drop down now shows exact manufacturer matches instead of partial matches.
 - Login log should now get the user id on login.
 - Login page now encrypts the data sent on login form
-- Login inc page no longer LDAP escapes the password. This was causign issues and was not necessary.
-- Added csrf tokens based on an OWASP vulnerabilitiy. This is done in session.php.
+- Login inc page no longer LDAP escapes the password. This was causing issues and was not necessary.
+- Added csrf tokens based on an OWASP vulnerability. This is done in session.php.
 
 </details>
 <details>
@@ -1373,7 +1393,7 @@ Clone the repo first, and the follow the below steps.
 - Renamed sessionlog table to session_log.
 - Added login_log_id to session_log table.
 - New include file added for login tracking and blocking, as includes/login-functions.inc.php
-- Adjusted the login.in, session.inc and logout php pages to accomodate the new login blocking and tracking.
+- Adjusted the login.in, session.inc and logout php pages to accommodate the new login blocking and tracking.
 - Fixed some LDAP testing bugs.
 - "parent_id" field dropped from area table. This was unused.
 - "is_container" field added to item table. This marks the item as a container.
@@ -1384,9 +1404,9 @@ Clone the repo first, and the follow the below steps.
 - Items can now be linked to and unlinked from containers
 - Stock move page now shows the container the item is in. 
 - Stock move page now warns you when moving stock that is within a container.
-- Moving stock no longer deleted the previous one and adds a new copy. No idea why i did this...
+- Moving stock no longer deleted the previous one and adds a new copy. No idea why I did this...
 - Removing stock page now only shows the serials of the selected manufacturer. This was missed before and it showed all for the shelf regardless of manufacturer.
-- Container field added to the remove stokc page and checks for the container the item is in for removal.
+- Container field added to the remove stock page and checks for the container the item is in for removal.
 - Removing a container now prompts to remove/move the contents
 - The remove page now shows what is and is not in a container.
 - Containers page now shows the location of the container. The SQL query for this is rather large though, so might need to be changed at a later date.
@@ -1395,7 +1415,7 @@ Clone the repo first, and the follow the below steps.
 - Can now remove children from containers on the containers page
 - Can now link and unlink children from the stock page
 - Can now add children on the containers page.
-- Can now see cotnainers which have no children on the containers page.
+- Can now see containers which have no children on the containers page.
 
 </details>
 <details>
@@ -1452,7 +1472,7 @@ Clone the repo first, and the follow the below steps.
 - Admin page now has a "Session Management" section to kill any inactive or suspicious sessions.
 - Admin sections moved around to be more logical
 - Changelog page now has onclicks to show a hidden row with the table data for the record_id
-- Some table formatting changes to the move hidden rows. These are now centered
+- Some table formatting changes to the move hidden rows. These are now cantered
 - Fixed the assign card buttons causing instant errors and not working on profile page
 - Added changelog filters to the changelog page. This allows time frames and table/user filtering.
 

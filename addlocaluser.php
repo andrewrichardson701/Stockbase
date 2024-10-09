@@ -26,12 +26,11 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
             exit();
         }
     ?>
+    <!-- Header and Nav -->
+    <?php include 'nav.php'; ?>
+    <!-- End of Header and Nav -->
 
     <div class="content">
-        <!-- Header and Nav -->
-        <?php include 'nav.php'; ?>
-        <!-- End of Header and Nav -->
-
         <div class="container">
             <h2 class="header-small">Add Local User</h2>
         </div>

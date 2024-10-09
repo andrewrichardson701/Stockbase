@@ -5,7 +5,7 @@
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
 // PAGE HEADER SETUP - SETS UP CSS, BOOTSTRAP AND OTHER STYLES AND SCRIPTS
-$versionNumber = 'v1.2.0';
+$versionNumber = 'v1.2.1';
 
 include './includes/get-config.inc.php'; // get config options
 
@@ -55,6 +55,16 @@ if (isset($loggedin_theme_file_name) && $loggedin_theme_file_name !== '') {
 .inv-nav-secondary {
     background-color: <?php echo(adjustBrightness($current_banner_color, -0.2));?> ;
     z-index:0px;
+}
+
+.favouriteBtn {
+    background-color: <?php echo $current_banner_color; ?> !important;
+    color: <?php echo getWorB($current_banner_color); ?> !important;
+}
+
+.favouriteBtn:hover {
+    background-color: <?php echo adjustBrightness($current_banner_color, -0.1); ?> !important;
+    color: <?php echo getWorB(adjustBrightness($current_banner_color, -0.1)); ?> !important;
 }
 
 </style>

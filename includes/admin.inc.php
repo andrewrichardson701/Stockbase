@@ -3240,6 +3240,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $current_page = $_POST['current_page'];
 
                 $filepath = '../assets/img/stock';
+                $display_filepath = 'assets/img/stock';
                 $interval = 20; // how many images load each button click
 
                 // Get list of all files
@@ -3294,14 +3295,14 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                     }
 
                     $tableRows[] = '<tr id="image-row-'.$f.'" class="align-middle">
-                                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
-                                            <input type="hidden" name="file-name" value="'.$filename.'" />
-                                            <input type="hidden" name="file-links" value="'.$links.'" />
-                                            <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
-                                            <td id="image-'.$f.'-name" class="text-center align-middle">'.$filepath.'/'.$filename.'</td>
+                                        <form enctype="multipart/form-data" id="image-row-'.$f.'-form" action="./includes/admin.inc.php" method="POST">
+                                            <input type="hidden" name="csrf_token" form="image-row-'.$f.'-form" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                                            <input type="hidden" name="file-name" form="image-row-'.$f.'-form" value="'.$filename.'" />
+                                            <input type="hidden" name="file-links" form="image-row-'.$f.'-form" value="'.$links.'" />
+                                            <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$display_filepath.'/'.$filename.'" onclick="modalLoad(this)"></td>
+                                            <td id="image-'.$f.'-name" class="text-center align-middle">'.$display_filepath.'/'.$filename.'</td>
                                             <td class="text-center align-middle">'.$links.'</td>
-                                            <td class="text-center align-middle"><button class="btn btn-danger" type="submit" name="imagemanagement-submit" '.$disabled.'><i class="fa fa-trash"></i></button></td>
+                                            <td class="text-center align-middle"><button class="btn btn-danger" type="submit" form="image-row-'.$f.'-form" name="imagemanagement-submit" '.$disabled.'><i class="fa fa-trash"></i></button></td>
                                             <td class="text-center align-middle">'.$links_button.'</td>
                                         </form>
                                     </tr>

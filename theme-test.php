@@ -25,14 +25,14 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
     <style id="style">
     </style>
 
+        <!-- Header and Nav -->
+        <?php include 'nav.php'; ?>
+        <!-- End of Header and Nav -->
+
     <div class="content" id="content">
         <?php // dependency PHP
         
         ?>
-
-        <!-- Header and Nav -->
-        <?php include 'nav.php'; ?>
-        <!-- End of Header and Nav -->
 
         <div class="container text-center">
             <h2 class="header-small">Theme Test</h2>

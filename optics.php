@@ -31,7 +31,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     ?>
     <!-- End of Header and Nav -->
     
-    <div class="content viewport-content" style="padding-top:20px">
+    <div class="content viewport-content" style="padding-top:80px">
         <div id="selection" class="viewport-selection" style="margin-bottom:15px">
             <?php
             $site = isset($_GET['site']) ? $_GET['site'] : "0";

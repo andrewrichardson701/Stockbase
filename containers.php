@@ -39,7 +39,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         ?>
 
-        <div class="container" style="margin-top:20px">
+        <div class="container">
             <h2 class="header-small" style="padding-bottom:5px"><?php if (isset($_GET['return'])) { echo('<button class="btn btn-dark" style="margin-right:20px" onclick="window.location.href=\''.urldecode($_GET['return']).'\'"><i class="fa fa-chevron-left"></i> Back</button>'); } ?>Containers</h2>
         </div>
 
@@ -219,7 +219,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             print_r($container_array);
             print_r('</pre>');
             ?>
-                <div class="content">
+                <div style="padding-bottom:75px">
                     <table class="table table-dark theme-table centertable" style="max-width:max-content;margin-bottom:0px;">
                         <thead style="text-align: center; white-space: nowrap;">
                             <tr class="theme-tableOuter align-middle text-center">

@@ -17,10 +17,8 @@
     <title><?php echo ucwords($current_system_name);?> - About</title>
 </head>
 <body>
+    <?php include 'nav.php';?>
     <div class="content">
-
-        <?php include 'nav.php'; ?>
-
         <div class="container">
             <h2 class="header-small">About</h2>
         </div>

@@ -47,7 +47,7 @@ if (!isset($_SESSION['csrf_token'])) {
     
     include 'includes/responsehandling.inc.php'; // Used to manage the error / success / sqlerror querystrings. ?>
     
-    <div class="container" style="margin-top:75px">
+    <div class="container" style="padding-top:135px">
         <div class="row">
             <div class="col-md-6" style="margin-left:25px; margin-right:25px">
                 <h3>Login</h3>
@@ -80,7 +80,7 @@ if (!isset($_SESSION['csrf_token'])) {
                                     <label class="nav-div" style="margin-left:0px">Local Login<p></p></label>
                                 ');
                             } else {
-                                echo('<input id="local-toggle" type="hidden" name="local" value="on" />');
+                                echo('<input id="local-toggle" type="hidden" name="local" value="on" checked />');
                             }
                             ?>
                         </div>

@@ -1183,6 +1183,7 @@ Clone the repo first, and the follow the below steps.
 - Filter by Site / Search / Type / Speed / Mode / Connector / Distance
 - View/Add comments on each optic
 - Add new Speed / Connector / Distance / Vendor / Type 
+- Fixed the admin.inc.php for fetching images. The form now deletes correctly.
 
 </details>
 <details>
@@ -1211,6 +1212,24 @@ Clone the repo first, and the follow the below steps.
 </details>
 <details>
 <summary><h2>Change Log</h2></summary>
+<details>
+<summary><h3>1.2.1</h3></summary>
+<h4>1.2.1 - Quality of life changes</h4>
+
+- Added FontAwesome icons to the burger menu list to clearly display what each link does
+- Changes some css to allow the burger menu to show correctly with the new changes
+- Addded a favourites table to DB
+- Added a favourites star icon below the banner
+- Made the banner position:fixed to stop it moving down the page
+- Added a function to add/remove a favourite using AJAX when the favourite star is clicked
+- Added includes/favourites.inc.php page to do the favouriting logic
+- Added a favourites section on the user burger menu
+- Can remove favourites from the favourites.php page
+- Split the stock and favourites JS into seperate files
+- Adjusted a bunch of pages to work with the new fixed banner.
+- Favourites button is now coloured to the general banner colour.
+
+</details>
 <details>
 <summary><h3>1.2.0</h3></summary>
 <h4>1.2.0 - Mobile Form Factor and additional fixes</h4>

@@ -6,8 +6,8 @@
 ?>
 
 <!-- Navigation Bar for the top of the page, using the config settings for logo and colour -->
-<a href="./" class="nav-head" style="color:<?php echo($current_banner_text_color); ?> !important"><?php echo($current_system_name); ?></a>
-<header class="nav inv-nav">
+<a href="./" class="nav-head" style="position:fixed;z-index:999;color:<?php echo($current_banner_text_color); ?> !important"><?php echo($current_system_name); ?></a>
+<header class="nav inv-nav" style="position:fixed;width:100%;z-index:900">
     <div id="nav-row" class="nav-row viewport-large">
         <div class="logo-div">
             <a href="./">
@@ -33,8 +33,11 @@
                 case 'admin':
                     $highlight = 5;
                     break;
-                case 'profile':
+                case 'favourites':
                     $highlight = 6;
+                    break;
+		        case 'profile':
+                    $highlight = 7;
                     break;
                 default:
                     $highlight = 0;
@@ -137,10 +140,11 @@
         <div style="width:100%">
             <div class="nav-div float-right nav-float" style="min-width:120px;">
                 <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">');
-                    if (in_array($loggedin_role, $config_admin_roles_array)) { echo('<li>&#8226; <a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>'); }
+                    if (in_array($loggedin_role, $config_admin_roles_array)) { echo('<li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="./admin.php"'); if ($highlight == 5) { echo(' style="text-decoration: underline !important;"'); } echo('>Admin</a></li>'); }
                 echo('
-                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./profile.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>
-                    <li>&#8226; <a class="clickable link" style="margin-left:5px" href="./logout.php">Logout</a></li>
+		    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a class="clickable link" style="margin-left:5px" href="./favourites.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>Favourites</a></li>
+                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a class="clickable link" style="margin-left:5px" href="./profile.php"'); if ($highlight == 7) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>
+                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-right-from-bracket"></i></span><a class="clickable link" style="margin-left:5px" href="./logout.php">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -173,18 +177,19 @@
             if (isset($profile_name)) { 
                 echo('
                     <ul class="burger-links">
-                        <li><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>
-                        <li><a href="./cablestock.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Cables</a></li>');
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-boxes-stacked"></i></span><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-ethernet"></i></span><a href="./cablestock.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Cables</a></li>');
                         if (isset($loggedin_role)) {
                             if (in_array($loggedin_role, $config_optics_roles_array)) {
-                                echo('<li><a href="./optics.php"'); if ($highlight == 3) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>');
+                                echo('<li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wave-square"></i></span><a href="./optics.php"'); if ($highlight == 3) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>');
                             }
                         }
                         echo('
-                        <li><a href="./containers.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Containers</a></li>
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-box-open"></i></span><a href="./containers.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Containers</a></li>
                         <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp</li>
-                        <li><a href="./profile.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>');
-                        echo('<li><a href="./logout.php">Logout</a></li>
+			<li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a href="./favourites.php"'); if ($highlight == 6) { echo(' style="text-decoration: underline !important;"'); } echo('>Favourites</a></li>
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a href="./profile.php"'); if ($highlight == 7) { echo(' style="text-decoration: underline !important;"'); } echo('>Profile</a></li>');
+                        echo('<li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-right-from-bracket"></i></span><a href="./logout.php">Logout</a></li>
                     </ul>
                     ');
             }
@@ -198,7 +203,7 @@
 <?php
 if ((isset($_SESSION['username'])) && ($_SESSION['username'] !== '')) {
 ?>
-<header class="nav inv-nav-secondary viewport-small">
+<header class="nav inv-nav-secondary viewport-small" style="position: relative;top:60px">
     <table class="centertable">
         <tbody>
             <tr>

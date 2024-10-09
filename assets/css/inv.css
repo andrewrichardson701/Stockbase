@@ -388,6 +388,7 @@ select[disabled] {
 
 .content {
     padding-bottom: 50px;
+    padding-top:60px
 }
 
 
@@ -778,6 +779,35 @@ table {
     border-collapse: collapse;         
 } 
 
+#favouriteButton {
+    display: block;
+    position: fixed;
+    top: 60px;
+    left: 210px;
+    z-index: 1;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    overflow: hidden;
+}
+.favouriteBtn {
+    font-size: 18px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0px 10px 0px 10px;
+    border-radius: 0px 0px 4px 4px;
+    position: inline-block;
+    width: 38px;
+    height: 38px;
+    transition: width 0.2s ease; /* Apply smooth width and position transitions */
+    overflow: hidden;
+    background-color:#E1B12C;
+}
+.favouriteBtn:hover {
+    background-color:white;
+}
 
 
 
@@ -814,7 +844,7 @@ table {
         width: 100%;
         background-color: #333;
         padding: 15px;
-        left:-50px;
+        left:-85px;
         min-width: max-content;
     }
 
@@ -972,6 +1002,10 @@ table {
     .btn-move {
         padding: 2px 5px 2px 5px;
     }
+    
+    #favouriteButton {
+        display:none;
+    }
 
 }
 @media only screen and (max-width: 600px) {
@@ -1024,7 +1058,7 @@ table {
         width: 100%;
         background-color: #333;
         padding: 15px;
-        left:-60px;
+        left:-85px;
         min-width: max-content;
     }
 

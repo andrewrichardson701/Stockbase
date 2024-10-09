@@ -18,18 +18,16 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
     <title><?php echo ucwords($current_system_name);?> - Profile</title>
 </head>
 <body>
+    <!-- Header and Nav -->
+    <?php
+        $navHighlight = 'profile'; // for colouring the nav bar link
+        include 'nav.php';
+    ?>
+    <!-- End of Header and Nav -->
     <div class="content">
         <?php // dependency PHP
 
         ?>
-
-        <!-- Header and Nav -->
-        <?php 
-            $navHighlight = 'profile'; // for colouring the nav bar link
-            include 'nav.php'; 
-        ?>
-        <!-- End of Header and Nav -->
-
         <div class="container">
             <h2 class="header-small">Profile</h2>
         </div>

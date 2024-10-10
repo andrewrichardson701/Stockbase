@@ -20,7 +20,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
     <!-- Header and Nav -->
     <?php 
         $navHighlight = 'favourites'; // for colouring the nav bar link
-        $navBtnDim = 1;
+        $navBtnDim = 0;
         include 'nav.php'; 
     ?>
     <!-- End of Header and Nav -->

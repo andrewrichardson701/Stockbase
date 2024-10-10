@@ -1233,6 +1233,14 @@ Clone the repo first, and the follow the below steps.
 <details>
 <summary><h2>Change Log</h2></summary>
 <details>
+<summary><h3>1.2.2</h3></summary>
+<h4>1.2.2 - Auditing fixes</h4>
+
+- Removed the nav button dimming on the favourites page.
+- Fixed the audit.php page not working due to a missing csrf token.
+
+</details>
+<details>
 <summary><h3>1.2.1</h3></summary>
 <h4>1.2.1 - Quality of life changes</h4>
 

@@ -3,15 +3,25 @@ function auditUpdate(stockID) {
     var comment = document.getElementById('audit-comment-'+stockID).value;
     var checkbox = document.getElementById('audit-checkbox-'+stockID).checked;
     var user_id = document.getElementById('user_id').value;
+    
+    // Extract the path and query string
+    var path = window.location.pathname + window.location.search;
 
+    var redirect_url = path.startsWith('/') ? path.substring(1) : path;
+
+    var csrf_token = document.getElementById('csrf_token').value;
+    
+    console.log(redirect_url);
     $.ajax({
         type: "POST",
         url: "./includes/audit.inc.php",
         data: {
+            csrf_token: csrf_token,
             comment: comment, 
             checked: checkbox, 
             user_id: user_id,
-            stock_id: stockID
+            stock_id: stockID,
+            redirect_url: redirect_url
         },
         dataType: "json",
         success: function(response){

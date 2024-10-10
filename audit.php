@@ -84,6 +84,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         echo('<input id="hidden-row-count" type="hidden" value="'.$rowSelectValue.'" />
         <input id="hidden-page-number" type="hidden" value="'.$page.'" />
         <input id="hidden-oos" type="hidden" value="'.$showOOS.'" />
+        <input id="csrf_token" type="hidden" value="'.$_SESSION['csrf_token'].'"/>
         <pre id="hidden-sql" hidden></pre>');
 
         
@@ -336,7 +337,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
                         echo('
                         <div id="clear-div" class="nav-div viewport-large-block" style="margin-left:0px;margin-right:0px;margin-bottom:10px;">
-                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'/\')">
+                            <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(\'audit.php\')">
                                 <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
                             </button>
                         </div>

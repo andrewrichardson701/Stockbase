@@ -4,19 +4,31 @@
 // StockBase is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
+// Logic for saving the audit information in audit.php
+
+$redirect_url = 'audit.php';
+
 if(session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 } 
 
+if (isset($_POST['redirect_url'])) {
+    $redirect_url = $_POST['redirect_url'];
+}
+
+if (str_contains($redirect_url, '&')) {
+    $queryChar = '&';
+} else {
+    $queryChar = '?';
+}
+
 // csrf_token management
 if (isset($_POST['csrf_token'])) {
     if (isset($_POST['csrf_token']) && ($_POST['csrf_token'] !== $_SESSION['csrf_token'])) {
-        header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
-        exit();
+        return 'error=csrfMissmatch';
     }
 } else {
-    header("Location: ../".$redirect_url.$queryChar."error=csrfMissmatch");
-    exit();
+    return 'error=csrfMissmatch';
 }
 
 $comment = $_POST['comment'];
@@ -76,7 +88,6 @@ function getAuditRow($input_stock_id, $type) {
 
 include 'dbh.inc.php';
 $date = date('Y-m-d');
-
 
 if ($checked == "true") {
     // add to table with current date

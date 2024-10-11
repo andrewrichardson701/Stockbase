@@ -8,6 +8,8 @@
 - Fixed the audit.php page not working due to a missing csrf token.
 - Added a JS scroll feature for anchor tags to head.js to stop the content being hidden under the banner.
 - Updated all git references "GitLab" -> "GitHub"
+- New README format.
+- Changelog moved to CHANGELOG.md
 
 </details>
 <details>

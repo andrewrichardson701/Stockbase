@@ -56,11 +56,21 @@ CREATE TABLE `bypass_2fa` (
   `browser` text NOT NULL,
   `os` text NOT NULL,
   `created_timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
-  `expires_timestamp` timestamp NOT NULL DEFAULT cast(current_timestamp() + interval 30 day as datetime),
+  `expires_timestamp` timestamp NOT NULL,
   `deleted` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+DELIMITER //
+CREATE TRIGGER before_insert_bypass_2fa
+BEFORE INSERT ON bypass_2fa
+FOR EACH ROW
+BEGIN
+  SET NEW.expires_timestamp = CURRENT_TIMESTAMP() + INTERVAL 30 DAY;
+END;
+//
+DELIMITER ;
 
 --
 -- Table structure for table `cable_item`

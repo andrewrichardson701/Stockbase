@@ -1069,7 +1069,8 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## File Breakdown
+<details>
+<summary><h2>File Breakdown</h2></summary>
 
 <details>
 
@@ -2540,6 +2541,8 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 - Shows full list of transactions for the item selected
 
   
+
+</details>
 
 </details>
 

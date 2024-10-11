@@ -10,6 +10,7 @@
 - Updated all git references "GitLab" -> "GitHub"
 - New README format.
 - Changelog moved to CHANGELOG.md
+- Fixed the install script not allowing a +30 days timestamp for bypass_2fa.
 
 </details>
 <details>

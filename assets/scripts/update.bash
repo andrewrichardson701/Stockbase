@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the name of the remote repository and your desired branch prefix
-REMOTE_REPO="https://git.ajrich.co.uk/web/stockbase.git"
+REMOTE_REPO="https://github.com/andrewrichardson701/Stockbase.git"
 
 # Navigate to the root directory of the Git repository
 cd "$(git rev-parse --show-toplevel)"
@@ -134,7 +134,7 @@ download_dir="/tmp/stockbase-$selected_branch"
 echo ""
 echo "Downloading branch: $selected_branch to $tmp_dir ..."
 sleep 1
-git clone --branch $selected_branch http://git.ajrich.co.uk/web/stockbase.git $tmp_dir
+git clone --branch $selected_branch https://github.com/andrewrichardson701/Stockbase.git $tmp_dir
 echo "Done."
 sleep 1
 

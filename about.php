@@ -5,7 +5,7 @@
 // You should have received a copy of the GNU General Public License along with StockBase. If not, see <https://www.gnu.org/licenses/>.
 
 // ABOUT PAGE
-// SHOWS INFO ABOUT THE SYSTEM AND WHERE TO FIND IT ON GITLAB ETC.
+// SHOWS INFO ABOUT THE SYSTEM AND WHERE TO FIND IT ON GITHUB ETC.
 
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*'] 
 ?> 
@@ -28,7 +28,7 @@
             <div style="padding-top: 20px;margin-left:25px">
                 <p>StockBase, an inventory and stock system, with less of the <i>bloat</i>. </p>
                 <p style="margin-top:30px"><?php echo ucwords($current_system_name);?> is powered by StockBase, an open source, minimalist stock management system.<br>
-                Learn more at the <a href="https://git.ajrich.co.uk/web/stockbase">GitLab page</a>.</p>
+                Learn more at the <a href="https://github.com/andrewrichardson701/Stockbase">GitHub page</a>.</p>
                 <p>StockBase is licenced under the <a href="https://www.gnu.org/licenses/gpl-3.0.txt">GNU GPL licence</a>.</p>
                 <p>StockBase Copyright © <?php echo(date("Y"));?> Andrew Richardson. All rights reserved.</p>
             </div>

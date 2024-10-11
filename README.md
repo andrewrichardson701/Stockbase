@@ -25,7 +25,7 @@ The purpose of this project is for stock tracking and locating.
 
 For automated deployment, run the below command to clone the repository and run the install script:
 
-`git clone https://gitlab.cdc.local.co.uk/noc/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
+`git clone https://github.com/andrewrichardson701/Stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
 
 This will run the setup for the system and provide a username and password to login with.
 
@@ -37,7 +37,7 @@ Login to your site to continue with any further setup
 For manual deployment, it requires all packages to be installed manually and the database to be configured and setup correctly.
 
 Clone the repo first, and the follow the below steps.
-`git clone https://gitlab.cdc.local.co.uk/noc/stockbase.git`
+`git clone https://github.com/andrewrichardson701/Stockbase.git`
 
 1. Update your packages and install them if you are confident they are okay to be updated
 
@@ -1232,6 +1232,16 @@ Clone the repo first, and the follow the below steps.
 </details>
 <details>
 <summary><h2>Change Log</h2></summary>
+<details>
+<summary><h3>1.2.2</h3></summary>
+<h4>1.2.2 - Auditing fixes</h4>
+
+- Removed the nav button dimming on the favourites page.
+- Fixed the audit.php page not working due to a missing csrf token.
+- Added a JS scroll feature for anchor tags to head.js to stop the content being hidden under the banner.
+- Updated all git references "GitLab" -> "GitHub"
+
+</details>
 <details>
 <summary><h3>1.2.1</h3></summary>
 <h4>1.2.1 - Quality of life changes</h4>

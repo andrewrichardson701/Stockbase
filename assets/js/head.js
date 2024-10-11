@@ -177,3 +177,7 @@ function sortTable(n, header) {
 function navPage(url) {
     window.location.href = url;
 }
+
+var shiftWindow = function() { scrollBy(0, -100) };
+if (location.hash) shiftWindow();
+window.addEventListener("hashchange", shiftWindow);

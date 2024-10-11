@@ -88,6 +88,34 @@ The installation steps are important to be followed in order.
 
 If this is not a fresh install (e.g. a new VM or you have no existing database or web server) feel free to use the Automated Deployment script.
 
+### Dependent Packages
+
+- Linux
+
+- Apache2 / Nginx (user choice, or whichever is installed)
+
+- PHP 8.3 (v8.3.8)
+
+- php8.3, php-8.3-cli php8.3-common, php8.3-curl, php8.3-fpm, php8.3-gd, php8.3-igbinary, php8.3-imagick, php8.3-imap, php8.3-intl, php8.3-ldap, php8.3-mbstring, php8.3-mysql, php8.3-readline, php8.3-redis, php8.3-soap, php8.3-xml, php8.3-xsl, php8.3-zip
+
+- MySQL Server (v8.0.34) (or similar DB using mysql syntax)
+
+- PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
+
+- Google Authenticator (v1.0.0) (Packaged at includes/GoogleAuthenticator)
+
+- Bootstrap (v4.5.2) (included in headers)
+
+- Jquery (v3.5.1) (included in headers)
+
+- Font Awesome (v6.4.0) (included in headers)
+
+- Google Font - Poppins (included in headers)
+
+  
+
+*These packages are all installed as part of the install script at*  `assets/scripts/install.bash`*.*
+
 
 ### Installation
 

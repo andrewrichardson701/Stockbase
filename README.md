@@ -1238,6 +1238,7 @@ Clone the repo first, and the follow the below steps.
 
 - Removed the nav button dimming on the favourites page.
 - Fixed the audit.php page not working due to a missing csrf token.
+- Added a JS scroll feature for anchor tags to head.js to stop the content being hidden under the banner.
 
 </details>
 <details>

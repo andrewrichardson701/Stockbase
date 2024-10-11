@@ -2209,7 +2209,6 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 <details>
 
 <summary><h3>changelog.php</h3></summary>
-
   
 
 - View all logs

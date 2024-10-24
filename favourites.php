@@ -162,7 +162,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <?php
             } else {
                 ?>
-                <p class="red">No favourites found.</p>
+                <p class="container red" style="margin-top:20px">No favourites found.</p>
                 <?php
             }
             ?>

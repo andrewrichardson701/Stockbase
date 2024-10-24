@@ -18,7 +18,7 @@
 <h3 align="center">Stockbase</h3>
 
   <p align="center">
-    An inventory management system, tailed to data centres, with less of the bloat.
+    An inventory management and asset tracking system, tailed to data centres, with less of the bloat.
     <br />
     <a href="https://github.com/andrewrichardson701/Stockbase"><strong>Explore the docs »</strong></a>
     <br />
@@ -65,7 +65,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://stockbase-demo.ajrich.co.uk)
 
-Stockbase is an inventory management system, tailored to data centres, designed to have less of the bloat that commercial and other open source systems have.
+Stockbase is an inventory management and asset tracking system, tailored to data centres, designed to have less of the bloat that commercial and other open source systems have.
 
 The design aims to make managing and tracking devices, parts, cables, fibre optics and anything else of use in an easy to manage platform.
 
@@ -1053,7 +1053,7 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 <!-- ROADMAP -->
 ## Roadmap
 
-[Restyaboard Roadmap](todo.ajrich.co.uk)
+[Restyaboard Roadmap](https://todo.ajrich.co.uk)
 
 - [x] Favourites list
 - [ ] Cable stock auditing

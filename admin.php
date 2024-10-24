@@ -1797,7 +1797,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         <th>shelf_name</th>
                                         <th hidden>shelf_area_id</th>
                                         <th style="border-left:2px solid #95999c" colspan=3>
-                                            <button id="show-deleted-location" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes(\'location\', 1) '); if ($locations_deleted_count == 0) { echo('hidden'); } echo('">
+                                            <button id="show-deleted-location" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes(\'location\', 1)" '); if ($locations_deleted_count == 0) { echo('hidden'); } echo('>
                                             <span class="zeroStockFont">
                                                 <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
                                             </span>

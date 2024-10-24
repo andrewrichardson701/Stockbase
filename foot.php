@@ -36,7 +36,7 @@ if ($current_footer_enable == 1) {
                 <div class="col text-center viewport-large-empty">
                     <?php
                     if ($current_footer_left_enable == 1) {
-                        echo('<a href="https://github.com/andrewrichardson701/Stockbase" class="link" style="font-size:12px" target="_blank">GitHub</a>');
+                        echo('<a href="https://gitlab.com/andrewrichardson701/stockbase" class="link" style="font-size:12px" target="_blank">GitLab</a>');
                     }
                     ?>
                 </div>                

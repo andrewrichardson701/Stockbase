@@ -11,7 +11,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/andrewrichardson701/Stockbase">
+  <a href="https://gitlab.com/andrewrichardson701/stockbase">
     <img src="assets/img/config/default/default-logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -20,14 +20,14 @@
   <p align="center">
     An inventory management and asset tracking system, tailed to data centres, with less of the bloat.
     <br />
-    <a href="https://github.com/andrewrichardson701/Stockbase"><strong>Explore the docs »</strong></a>
+    <a href="https://gitlab.com/andrewrichardson701/stockbase"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://stockbase-demo.ajrich.co.uk">View Demo</a>
     ·
-    <a href="https://github.com/andrewrichardson701/Stockbase/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://gitlab.com/andrewrichardson701/stockbase/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/andrewrichardson701/Stockbase/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://gitlab.com/andrewrichardson701/stockbase/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -130,7 +130,7 @@ For automated deployment, run the below command to clone the repository and run 
 
   
 
-`git clone https://github.com/andrewrichardson701/Stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
+`git clone https://gitlab.com/andrewrichardson701/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
 
   
 
@@ -154,7 +154,7 @@ For manual deployment, it requires all packages to be installed manually and the
 
 Clone the repo first, and the follow the below steps.
 
-`git clone https://github.com/andrewrichardson701/Stockbase.git`
+`git clone https://gitlab.com/andrewrichardson701/stockbase.git`
 
   
 
@@ -1058,7 +1058,7 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 - [x] Favourites list
 - [ ] Cable stock auditing
 
-See the [open issues](https://github.com/andrewrichardson701/Stockbase/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -2567,7 +2567,7 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/andrewrichardson701/Stockbase/graphs/contributors">
+<a href="https://gitlab.com/andrewrichardson701/stockbase/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=andrewrichardson701/Stockbase" alt="contrib.rocks image" />
 </a>
 
@@ -2585,7 +2585,7 @@ Distributed under the GNU General Public License v3.0. See `COPYING.txt` for mor
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://github.com/andrewrichardson701/Stockbase](https://github.com/andrewrichardson701/Stockbase)
+Project Link: [https://gitlab.com/andrewrichardson701/stockbase](https://gitlab.com/andrewrichardson701/stockbase)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -2596,15 +2596,15 @@ Project Link: [https://github.com/andrewrichardson701/Stockbase](https://github.
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/andrewrichardson701/Stockbase.svg?style=for-the-badge
-[contributors-url]: https://github.com/andrewrichardson701/Stockbase/graphs/contributors
+[contributors-url]: https://gitlab.com/andrewrichardson701/stockbase/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/andrewrichardson701/Stockbase.svg?style=for-the-badge
-[forks-url]: https://github.com/andrewrichardson701/Stockbase/network/members
+[forks-url]: https://gitlab.com/andrewrichardson701/stockbase/network/members
 [stars-shield]: https://img.shields.io/github/stars/andrewrichardson701/Stockbase.svg?style=for-the-badge
-[stars-url]: https://github.com/andrewrichardson701/Stockbase/stargazers
+[stars-url]: https://gitlab.com/andrewrichardson701/stockbase/stargazers
 [issues-shield]: https://img.shields.io/github/issues/andrewrichardson701/Stockbase.svg?style=for-the-badge
-[issues-url]: https://github.com/andrewrichardson701/Stockbase/issues
+[issues-url]: https://gitlab.com/andrewrichardson701/stockbase/issues
 [license-shield]: https://img.shields.io/github/license/andrewrichardson701/Stockbase.svg?style=for-the-badge
-[license-url]: https://github.com/andrewrichardson701/Stockbase/blob/master/COPYING.txt
+[license-url]: https://gitlab.com/andrewrichardson701/stockbase/blob/master/COPYING.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/andrewrichardson701
 [product-screenshot]: assets/img/index-screenshot.png

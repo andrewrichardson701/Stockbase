@@ -269,7 +269,7 @@ function toggleFooter(checkbox, id) {
         var value = 0;
     }
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/admin.inc.php?footer-toggle=1&type="+type+"&value="+value, true);
+    xhr.open("GET", "includes/admin.inc.php?footer-toggle=1&type="+type+"&value="+value + "&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             var output = JSON.parse(xhr.responseText);
@@ -293,7 +293,7 @@ function toggleCost(checkbox, id) {
         var value = 0;
     }
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/admin.inc.php?cost-toggle=1&type="+type+"&value="+value, true);
+    xhr.open("GET", "includes/admin.inc.php?cost-toggle=1&type="+type+"&value="+value + "&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             var output = JSON.parse(xhr.responseText);
@@ -317,7 +317,7 @@ function mailNotification(checkbox, id) {
         var value = 0;
     }
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/admin.inc.php?mail-notification=1&notification="+notification+"&value="+value, true);
+    xhr.open("GET", "includes/admin.inc.php?mail-notification=1&notification="+notification+"&value="+value + "&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             var output = JSON.parse(xhr.responseText);
@@ -555,7 +555,7 @@ function populateSites(field, current_site) {
     // Make an AJAX request to retrieve the corresponding sites
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1", true);
+    xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
@@ -581,7 +581,7 @@ function populateAreas(field, current_site, current_area) {
     // Make an AJAX request to retrieve the corresponding areas
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site, true);
+    xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site + "&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
@@ -610,7 +610,7 @@ function populateAreasUpdate() {
     if (type === "shelf") {
         // Make an AJAX request to retrieve the corresponding areas
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+        xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site + "&_=" + new Date().getTime(), true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 // Parse the response and populate the area select box
@@ -656,7 +656,7 @@ function populateParent() {
     
     // Make an AJAX request to retrieve the corresponding parents
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type, true);
+    xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type + "&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the area select box
@@ -700,7 +700,7 @@ function emailTemplate() {
 
     // Make an AJAX request to retrieve cotnent
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/smtp.inc.php?template=echo&body="+body);
+    xhr.open("GET", "includes/smtp.inc.php?template=echo&body="+body + "&_=" + new Date().getTime());
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the field

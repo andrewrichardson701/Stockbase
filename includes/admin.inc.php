@@ -170,6 +170,9 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
             $timedate = date("YmdHis");
 
             $uploadDirectory = "../assets/img/config/custom/";
+            if (!file_exists($uploadDirectory)) {
+                mkdir($uploadDirectory);
+            }
             $errors = [];                                                   // Store errors here
             $fileExtensionsAllowed = ['png', 'gif', 'jpg', 'jpeg', 'ico'];  // These will be the only file extensions allowed 
             $fileName = $_FILES[$field]['name'];                            // Get uploaded file name

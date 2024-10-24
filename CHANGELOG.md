@@ -1,5 +1,4 @@
-<details>
-<summary><h2>Changelog</h2></summary>
+<h2>Changelog</h2>
 <details>
 <summary><h3>1.2.2</h3></summary>
 <h4>1.2.2 - Auditing fixes</h4>
@@ -11,6 +10,9 @@
 - New README format.
 - Changelog moved to CHANGELOG.md
 - Fixed the install script not allowing a +30 days timestamp for bypass_2fa.
+- Fixed the styling for the favourites error message box
+- Fixed the caching on the stock-selectboxes.inc.php ajax requests
+- Correctly hidden the "show deleted" button on the admin stock locations table.
 
 </details>
 <details>
@@ -458,5 +460,4 @@
 
 - Some page redirects are not redirecting correctly and will be addressed when found.
 
-</details>
 </details>

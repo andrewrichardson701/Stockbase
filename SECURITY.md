@@ -15,7 +15,7 @@
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, please log an issue [here](https://github.com/andrewrichardson701/Stockbase/issues/new) with [VULN] in the title.
+To report a vulnerability, please log an issue [here](https://gitlab.com/andrewrichardson701/stockbase/issues/new) with [VULN] in the title.
 e.g. Title: *[VULN] - User list visible on example.php in cleartext*
 Please include what steps you took to uncover the vulnerability and any other relevant information required to replicate.
 

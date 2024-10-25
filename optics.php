@@ -362,7 +362,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                         $result_vendor = mysqli_stmt_get_result($stmt_vendor);
                                         $rowCount_vendor = $result_vendor->num_rows;
                                         if ($rowCount_vendor < 1) {
-                                            echo ("<option selected disabled>No Sites Found</option> ");
+                                            echo ("<option selected disabled>No Vendors Found</option> ");
                                         } else {
                                             echo ("<option selected disabled>Select Vendor</option>");
                                             while( $row_vendor = $result_vendor->fetch_assoc() ) {

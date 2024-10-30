@@ -642,7 +642,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             } 
             
             if ($search !== '') { 
-                $name = mysqli_real_escape_string($conn, $search); // escape the special characters
+                $search = mysqli_real_escape_string($conn, $search); // escape the special characters
                 $sql_inv_add  .= " 
                             AND (I.serial_number LIKE '%$search%' 
                                 OR I.model LIKE '%$search%' 

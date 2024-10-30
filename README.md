@@ -1056,9 +1056,11 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 [Restyaboard Roadmap](https://todo.ajrich.co.uk)
 
 - [x] Favourites list
+- [x] Make the Optics search do a broader search, including spectrum
 - [ ] Add a "show password" button on the login screen
 - [ ] Add an optional 'sign up' page that can be enabled in the admin page
 - [ ] Make a way of importing a spreadsheet, including a template sheet (csv) for optics and normal stock
+- [ ] Add option to link optics to site / area / shelf, not only the site
 - [ ] Cable stock auditing
 
 See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) for a full list of proposed features (and known issues).

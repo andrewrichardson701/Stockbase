@@ -646,6 +646,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 $sql_inv_add  .= " 
                             AND (I.serial_number LIKE '%$search%' 
                                 OR I.model LIKE '%$search%' 
+                                OR I.spectrum LIKE '%$search%' 
                                 OR V.name LIKE '%$search%' 
                                 OR T.name LIKE '%$search%' 
                                 OR C.name LIKE '%$search%'

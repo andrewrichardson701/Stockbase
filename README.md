@@ -1056,13 +1056,15 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 [Restyaboard Roadmap](https://todo.ajrich.co.uk)
 
 - [x] Favourites list
+- [ ] Add a "show password" button on the login screen
+- [ ] Add an optional 'sign up' page that can be enabled in the admin page
 - [ ] Cable stock auditing
 
 See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ROADMAP -->
+<!-- Changelog -->
 ## Changelog
 
 All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)

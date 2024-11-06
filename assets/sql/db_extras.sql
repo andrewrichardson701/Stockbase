@@ -51,12 +51,12 @@ INSERT INTO config_default
 ldap_domain, ldap_host, ldap_port, ldap_basedn, ldap_usergroup, ldap_userfilter, currency, 
 sku_prefix, smtp_host, smtp_port, smtp_encryption, smtp_password, smtp_from_email, 
 smtp_from_name, smtp_to_email, smtp_username, system_name, ldap_host_secondary, base_url, smtp_enabled, default_theme_id,
-cost_enable_normal, cost_enable_cable, footer_enable, footer_left_enable, footer_right_enable, 2fa_enabled, 2fa_enforced)
+cost_enable_normal, cost_enable_cable, footer_enable, footer_left_enable, footer_right_enable, 2fa_enabled, 2fa_enforced, signup_allowed)
 VALUES ('#E1B12C', 'default/default-logo.png', 'default/default-favicon.png', 0, 'ldapusername', 
 'SUPERSECRETPASSWORD', 'domain.com', '127.0.0.1', 389, 'DC=domain,DC=com', 
 'cn=Users', '(objectClass=User)', '£', 'ITEM-', 'mail.domain.com', 587, 'starttls', 'SUPERSECRETPASSWORD',
 'stockbase@domain.com', 'StockBase', 'stockbase@domain.com', 'stockbase@domain.com', 'StockBase', '127.0.0.1', 
-'stockbase.domain.com', 0, 1, 1, 1, 1, 1, 1, 0, 0);
+'stockbase.domain.com', 0, 1, 1, 1, 1, 1, 1, 0, 0, 0);
 
 -- Duplicaye the config_default table to config table
 INSERT INTO config SELECT * FROM config_default;

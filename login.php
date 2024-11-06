@@ -63,7 +63,7 @@ if (!isset($_SESSION['csrf_token'])) {
                         <label>Password</label>
                         <div id="password-div" style="position:relative">
                             <input id="password" type="password" name="password" class="form-control" placeholder="Password" required="">
-                            <i class="fa fa-eye" id="password-eye" style="color: black; position:absolute; right:20px;top:12px; cursor: pointer" onclick="togglePassword()"></i>
+                            <i class="fa fa-eye" id="password-eye" style="color: black; position:absolute; right:20px;top:12px; cursor: pointer" onclick="togglePassword()" title="Toggle password visibility."></i>
                         </div>
                     </div>
                     

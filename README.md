@@ -1411,6 +1411,18 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 <details>
 
+<summary><h3>signup.js</h3></summary>
+
+  
+
+- JS for signing up a new user. This is mostly empty.
+
+  
+
+</details>
+
+<details>
+
 <summary><h3>stock.js</h3></summary>
 
   
@@ -1717,6 +1729,18 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 <details>
 
+<summary><h3>credentials.inc.php</h3></summary>
+
+
+- Does the ajax post requests for the credentials verifications. 
+
+- Used in the signup.php credentials checks.
+  
+
+</details>
+
+<details>
+
 <summary><h3>dbh.inc.php</h3></summary>
 
   
@@ -1872,6 +1896,19 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
   
 
 </details>
+
+<details>
+
+<summary><h3>signup.inc.php</h3></summary>
+
+
+- Backend for the signup.php page
+
+- Handles the verification and addition of credentials for new users.
+  
+
+</details>
+
 
 <details>
 
@@ -2473,6 +2510,20 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
   
 
 - Sets up the session for the user
+
+  
+
+</details>
+
+<summary><h3>signup.php</h3></summary>
+
+  
+
+- Allows a new user creation without login
+
+- Can be disabled in admin settings
+
+- Verifies all information before submit
 
   
 

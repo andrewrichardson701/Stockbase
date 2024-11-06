@@ -13,6 +13,9 @@
 - Fixed the styling for the favourites error message box
 - Fixed the caching on the stock-selectboxes.inc.php ajax requests
 - Correctly hidden the "show deleted" button on the admin stock locations table.
+- Added a show/hide password button on the login page.
+- Added assets/js/passwords.js
+- Added a signup page and the logic to turn it off in the admin settings.
 
 </details>
 <details>

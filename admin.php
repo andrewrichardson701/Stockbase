@@ -625,7 +625,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 <p id="authentication-output" class="last-edit-T" hidden></p>
 
                 <?php
-                $sql_check = "SELECT 2fa_enabled, 2fa_enforced FROM config WHERE id=1";
+                $sql_check = "SELECT signup_allowed, 2fa_enabled, 2fa_enforced FROM config WHERE id=1";
                 $stmt_check = mysqli_stmt_init($conn);
                 if (!mysqli_stmt_prepare($stmt_check, $sql_check)) {
                     echo ('ERRORRRR');
@@ -634,8 +634,15 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     $result_check = mysqli_stmt_get_result($stmt_check);
 
                     $row_check = $result_check->fetch_assoc();
+                    $signup_allowed = $row_check['signup_allowed'];
                     $enabled_2fa = $row_check['2fa_enabled'];
                     $enforced_2fa = $row_check['2fa_enforced'];
+
+                    if ($signup_allowed == 1) {
+                        $signup_checked = 'checked';
+                    } else {
+                        $signup_checked = '';
+                    }
 
                     if ($enabled_2fa == 1) {
                         $enabled_checked = 'checked';
@@ -655,6 +662,15 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 <table>
                     <tbody>
                         <tr>
+                            <td class="align-middle" style="margin-left:25px;margin-right:10px">
+                                <p style="min-height:max-content;margin:0px" class="align-middle">Self sign up allowed:</p>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px;padding-right:50px" id="signup_allowed_toggle">
+                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
+                                    <input type="checkbox" name="signup_allowed" onchange="authSettings(this, 'signup_allowed')" <?php echo($signup_checked); ?>>
+                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                </label>
+                            </td>
                             <td class="align-middle" style="margin-left:25px;margin-right:10px">
                                 <p style="min-height:max-content;margin:0px" class="align-middle">Enable 2FA:</p>
                             </td>

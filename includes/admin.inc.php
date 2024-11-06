@@ -3376,7 +3376,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 include 'dbh.inc.php';
                 $value = $_POST['value'];
 
-                if (($_POST['id'] == "2fa_enabled" || $_POST['id'] == "2fa_enforced") && ((int)$value == 1 || (int)$value == 0)) {
+                if (($_POST['id'] == "2fa_enabled" || $_POST['id'] == "2fa_enforced" || $_POST['id'] == "signup_allowed") && ((int)$value == 1 || (int)$value == 0)) {
                     $field = $_POST['id'];
 
                     $sql_check = "SELECT $field FROM config WHERE id=1";
@@ -3393,7 +3393,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             $row_check = $result_check->fetch_assoc();
                             $field_check = $row_check[$field];
 
-                            if ((int)$field_check == (int)$field) {
+                            if ($field_check == $field) {
                                 $return[0] = '<or class="red">No changes made.</or>';
                             } else {
                                 $sql = "UPDATE config SET $field=? WHERE id=1";

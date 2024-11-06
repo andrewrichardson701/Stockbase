@@ -251,8 +251,8 @@ modalCloseSwipe = function() {
 }
 
 // show/hide the password on login screen
-function togglePassword(password) {
-    var eye = document.getElementById('password-eye');
+function togglePassword(eye, passID) {
+    var password = document.getElementById(passID);
     if (password.type == 'password') {
         password.type = 'text';
         if (eye.classList.contains('fa-eye')) {

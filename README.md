@@ -1303,6 +1303,18 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 <details>
 
+<summary><h3>credentials.js</h3></summary>
+
+  
+
+- JS for password manipulation
+
+  
+
+</details>
+
+<details>
+
 <summary><h3>favourites.js</h3></summary>
 
   

@@ -353,7 +353,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <div>
                                 <select id="vendor" name="vendor" class="form-control text-center" style="border-color:black;" required>');
 
-                                    $sql_vendor = "SELECT * FROM optic_vendor ORDER BY name";
+                                    $sql_vendor = "SELECT * FROM optic_vendor WHERE deleted = 0 ORDER BY name";
                                     $stmt_vendor = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_vendor, $sql_vendor)) {
                                         echo("ERROR getting entries");
@@ -383,7 +383,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <div>
                                 <select id="type" name="type" class="form-control text-center" style="border-color:black;"  required>');
                                 
-                                    $sql_type = "SELECT * FROM optic_type WHERE deleted=0";
+                                    $sql_type = "SELECT * FROM optic_type WHERE deleted=0 ORDER BY name";
                                     $stmt_type = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_type, $sql_type)) {
                                         echo("ERROR getting entries");
@@ -416,7 +416,17 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <div>
                                 <select id="speed" name="speed" class="form-control text-center" style="border-color:black;"  required>');
                                 
-                                    $sql_speed = "SELECT * FROM optic_speed";
+                                    $sql_speed = "SELECT * FROM optic_speed WHERE deleted = 0 
+                                                    ORDER BY  
+                                                        CASE 
+                                                            WHEN name LIKE '%M' THEN 0  -- First sort by 'M'
+                                                            ELSE 1  -- Then 'G'
+                                                        END,
+                                                        CASE 
+                                                            WHEN name LIKE '%M' THEN CAST(SUBSTRING(name, 1, LENGTH(name) - 1) AS SIGNED)
+                                                            WHEN name LIKE '%G' THEN CAST(SUBSTRING(name, 1, LENGTH(name) - 1) AS SIGNED) * 1000
+                                                            ELSE 0
+                                                        END; "; // this orders the items based on M and G, so it will be 100M, 200M, 1G, 2.5G, 100G etc
                                     $stmt_speed = mysqli_stmt_init($conn);
                                     if (!mysqli_stmt_prepare($stmt_speed, $sql_speed)) {
                                         echo("ERROR getting entries");
@@ -437,13 +447,16 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 echo(' 
                                 </select>
                             </div>
+                            <div class="text-center">
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewSpeed()">Add New</a>
+                            </div>
                         </div>
                         <div class="col">
                             <div>Connector</div>
                             <div>
                                 <select id="connector" name="connector" class="form-control text-center" style="border-color:black;"  required>');
                                 
-                                $sql_connector = "SELECT * FROM optic_connector WHERE deleted=0";
+                                $sql_connector = "SELECT * FROM optic_connector WHERE deleted=0 ORDER BY name";
                                 $stmt_connector = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_connector, $sql_connector)) {
                                     echo("ERROR getting entries");
@@ -473,7 +486,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             <div>
                                 <select id="distance" name="distance" class="form-control text-center" style="border-color:black;"  required>');
                                 
-                                $sql_distance = "SELECT * FROM optic_distance WHERE deleted=0";
+                                $sql_distance = "SELECT * FROM optic_distance WHERE deleted=0 ORDER BY name";
                                 $stmt_distance = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_distance, $sql_distance)) {
                                     echo("ERROR getting entries");
@@ -541,7 +554,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                     <div class="row align-middle" style="margin-right:25px">
                         <div class="col" style="margin-top:10px">
                             <button id="optic-add-single" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="" value="1">Add</button>
-                            <button id="optic-add-multiple" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="margin-left:20px" value="2">Add Multiple</button>
                         </div>
                     </div>        
                 </form>
@@ -1095,6 +1107,39 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         </div> 
     </div>
     <!-- End of Modal NewVendor Div -->
+    <!-- Modal NewSpeed Div -->
+    <div id="modalDivNewSpeed" class="modal">
+    <!-- <div id="modalDivNewSpeed" style="display: block;"> -->
+        <span class="close" onclick="modalCloseNewSpeed()">&times;</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <form id="add-optic-speed-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                    <!-- Include CSRF token in the form -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    <?php 
+                    if (is_array($_GET) && count($_GET) > 1) {
+                        foreach (array_keys($_GET) AS $key) {
+                            echo('<input type="hidden" name="QUERY['.$key.']" value="'.$_GET[$key].'"/>');
+                        }
+                    }
+                    ?>
+                    <table class="centertable">
+                        <tbody>
+                            <tr class="nav-row">
+                                <td style="width: 150px"><label for="speed_name" class="nav-v-c align-middle">Speed:</label></td>
+                                <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="speed_name" name="speed_name" /></td>
+                                <td></td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width:150px"></td>
+                                <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-speed-add" value="Add Speed" class="btn btn-success">Add Speed</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div> 
+    </div>
     <!-- Modal NewConnector Div -->
     <div id="modalDivNewConnector" class="modal">
     <!-- <div id="modalDivNewConnector" style="display: block;"> -->

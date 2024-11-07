@@ -2207,7 +2207,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         AND T.id=$attribute_id;";                         
                     $stmt_types = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_types, $sql_types)) {
-                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=stocklocations-settings#stocklocations-settings");
+                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_types);
@@ -2230,7 +2230,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 $sql_update = "UPDATE optic_type SET deleted=? WHERE id='$attribute_id'";
                                 $stmt_update = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=stocklocations-settings#stocklocations-settings");
+                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
                                     exit();
                                 } else {
                                     mysqli_stmt_bind_param($stmt_update, "s", $value);
@@ -2281,7 +2281,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                         AND C.id=$attribute_id;";                         
                     $stmt_connectors = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_connectors, $sql_connectors)) {
-                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=stocklocations-settings#stocklocations-settings");
+                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
                         exit();
                     } else {
                         mysqli_stmt_execute($stmt_connectors);
@@ -2304,7 +2304,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                 $sql_update = "UPDATE optic_connector SET deleted=? WHERE id='$attribute_id'";
                                 $stmt_update = mysqli_stmt_init($conn);
                                 if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=stocklocations-settings#stocklocations-settings");
+                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
                                     exit();
                                 } else {
                                     mysqli_stmt_bind_param($stmt_update, "s", $value);
@@ -2313,6 +2313,154 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                                     addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "optic_connector", $attribute_id, 'deleted', 0, 1);
 
                                     $table_name = 'optic_connector';
+                                    $tran_type = "delete";
+                                    $reason = "Item Deleted";
+                                    $site = 0;
+                                    $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                    $time = date('H:i:s'); // current time in HH:MM:SS format
+                                    $username = $_SESSION['username'];
+    
+                                    updateOpticTransactions($table_name, $attribute_id, $tran_type, $reason, $date, $time, $username, $site);
+                                    header("Location: ../admin.php?success=deleted&id=$attribute_id&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                                    exit();
+                                }
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=opticattributemanagement-$attribute_types#opticattributemanagement-settings");
+                            exit();
+                        }
+                    }    
+                } else {
+                    header("Location: ../admin.php?error=missingAttributeID&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                    exit();
+                }
+            } elseif ($attribute_type == 'optic_distances') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $distances = [];
+                    $distances_links = [];
+
+                    $sql_distances = "SELECT 
+                                        C.id AS distance_id, 
+                                        C.name AS distance_name, 
+                                        I.id AS item_id, 
+                                        I.distance_id AS item_distance_id,
+                                        I.serial_number AS item_serial_number
+                                    FROM 
+                                        optic_distance AS C
+                                    LEFT JOIN 
+                                        optic_item AS I ON C.id = I.distance_id AND I.deleted=0
+                                    WHERE C.deleted=0
+                                        AND C.id=$attribute_id;";                         
+                    $stmt_distances = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_distances, $sql_distances)) {
+                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_distances);
+                        $result_distances = mysqli_stmt_get_result($stmt_distances);
+                        $rowCount_distances = $result_distances->num_rows;
+                        if ($rowCount_distances !== 0) {
+                            while ($row_distances = $result_distances->fetch_assoc()) {
+                                if (!array_key_exists($row_distances['distance_id'], $distances)) {
+                                    $distances[$row_distances['distance_id']] = array('id' =>  $row_distances['distance_id'], 'name' => $row_distances['distance_name']);
+                                }
+                                if (isset($row_distances['item_id']) && $row_distances['item_id'] !== NULL && $row_distances['item_distance_id'] !== '') {
+                                    $distances_links[$row_distances['distance_id']][] = array('id' => $row_distances['item_id'], 'serial_number' => $row_distances['item_serial_number']);
+                                }
+                            }
+                            if (array_key_exists($attribute_id, $distances_links)) {
+                                header("Location: ../admin.php?error=dependenciesPresent&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                                exit();
+                            } else {
+                                $value=1;
+                                $sql_update = "UPDATE optic_distance SET deleted=? WHERE id='$attribute_id'";
+                                $stmt_update = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                    mysqli_stmt_execute($stmt_update);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "optic_distance", $attribute_id, 'deleted', 0, 1);
+
+                                    $table_name = 'optic_distance';
+                                    $tran_type = "delete";
+                                    $reason = "Item Deleted";
+                                    $site = 0;
+                                    $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                    $time = date('H:i:s'); // current time in HH:MM:SS format
+                                    $username = $_SESSION['username'];
+    
+                                    updateOpticTransactions($table_name, $attribute_id, $tran_type, $reason, $date, $time, $username, $site);
+                                    header("Location: ../admin.php?success=deleted&id=$attribute_id&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                                    exit();
+                                }
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=opticattributemanagement-$attribute_types#opticattributemanagement-settings");
+                            exit();
+                        }
+                    }    
+                } else {
+                    header("Location: ../admin.php?error=missingAttributeID&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                    exit();
+                }
+            } elseif ($attribute_type == 'optic_speeds') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $speeds = [];
+                    $speeds_links = [];
+
+                    $sql_speeds = "SELECT 
+                                        C.id AS speed_id, 
+                                        C.name AS speed_name, 
+                                        I.id AS item_id, 
+                                        I.speed_id AS item_speed_id,
+                                        I.serial_number AS item_serial_number
+                                    FROM 
+                                        optic_speed AS C
+                                    LEFT JOIN 
+                                        optic_item AS I ON C.id = I.speed_id AND I.deleted=0
+                                    WHERE C.deleted=0
+                                        AND C.id=$attribute_id;";                         
+                    $stmt_speeds = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_speeds, $sql_speeds)) {
+                        header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=get-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_speeds);
+                        $result_speeds = mysqli_stmt_get_result($stmt_speeds);
+                        $rowCount_speeds = $result_speeds->num_rows;
+                        if ($rowCount_speeds !== 0) {
+                            while ($row_speeds = $result_speeds->fetch_assoc()) {
+                                if (!array_key_exists($row_speeds['speed_id'], $speeds)) {
+                                    $speeds[$row_speeds['speed_id']] = array('id' =>  $row_speeds['speed_id'], 'name' => $row_speeds['speed_name']);
+                                }
+                                if (isset($row_speeds['item_id']) && $row_speeds['item_id'] !== NULL && $row_speeds['item_speed_id'] !== '') {
+                                    $speeds_links[$row_speeds['speed_id']][] = array('id' => $row_speeds['item_id'], 'serial_number' => $row_speeds['item_serial_number']);
+                                }
+                            }
+                            if (array_key_exists($attribute_id, $speeds_links)) {
+                                header("Location: ../admin.php?error=dependenciesPresent&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                                exit();
+                            } else {
+                                $value=1;
+                                $sql_update = "UPDATE optic_speed SET deleted=? WHERE id='$attribute_id'";
+                                $stmt_update = mysqli_stmt_init($conn);
+                                if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                    header("Location: ../admin.php?error=sqlerror&table=tag&file=".__FILE__."&line=".__LINE__."&purpose=mark-deleted-tag&section=opticattributemanagement-settings#opticattributemanagement-settings");
+                                    exit();
+                                } else {
+                                    mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                    mysqli_stmt_execute($stmt_update);
+                                    // update changelog
+                                    addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "optic_speed", $attribute_id, 'deleted', 0, 1);
+
+                                    $table_name = 'optic_speed';
                                     $tran_type = "delete";
                                     $reason = "Item Deleted";
                                     $site = 0;
@@ -2384,7 +2532,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             $sql_update = "UPDATE optic_vendor SET deleted=? WHERE id='$attribute_id'";
                             $stmt_update = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                header("Location: ../admin.php?error=sqlerror&table=vendor&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-vendor&section=stocklocations-settings#stocklocations-settings");
+                                header("Location: ../admin.php?error=sqlerror&table=vendor&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-vendor&section=opticattributemanagement-settings#opticattributemanagement-settings");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_update, "s", $value);
@@ -2440,7 +2588,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             $sql_update = "UPDATE optic_type SET deleted=? WHERE id='$attribute_id'";
                             $stmt_update = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                header("Location: ../admin.php?error=sqlerror&table=type&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-type&section=stocklocations-settings#stocklocations-settings");
+                                header("Location: ../admin.php?error=sqlerror&table=type&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-type&section=opticattributemanagement-settings#opticattributemanagement-settings");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_update, "s", $value);
@@ -2496,7 +2644,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                             $sql_update = "UPDATE optic_connector SET deleted=? WHERE id='$attribute_id'";
                             $stmt_update = mysqli_stmt_init($conn);
                             if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
-                                header("Location: ../admin.php?error=sqlerror&table=connector&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-connector&section=stocklocations-settings#stocklocations-settings");
+                                header("Location: ../admin.php?error=sqlerror&table=connector&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-connector&section=opticattributemanagement-settings#opticattributemanagement-settings");
                                 exit();
                             } else {
                                 mysqli_stmt_bind_param($stmt_update, "s", $value);
@@ -2523,12 +2671,124 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                         }
                     }
                 }
+            } if ($attribute_type == 'optic_distances') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $distances = [];
+
+                    $sql_distances = "SELECT 
+                                        T.id AS distance_id, 
+                                        T.name AS distance_name
+                                    FROM 
+                                        optic_distance AS T
+                                    WHERE T.deleted=1
+                                        AND T.id=$attribute_id;";                         
+                    $stmt_distances = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_distances, $sql_distances)) {
+                        header("Location: ../admin.php?error=sqlerror&table=distance&file=".__FILE__."&line=".__LINE__."&purpose=get-distance&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_distances);
+                        $result_distances = mysqli_stmt_get_result($stmt_distances);
+                        $rowCount_distances = $result_distances->num_rows;
+                        if ($rowCount_distances !== 0) {
+                            $row_distances = $result_distances->fetch_assoc();
+                            $distance[$row_distances['distance_id']] = array('id' =>  $row_distances['distance_id'], 'name' => $row_distances['distance_name']);
+
+                            $value=0;
+                            $sql_update = "UPDATE optic_distance SET deleted=? WHERE id='$attribute_id'";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                header("Location: ../admin.php?error=sqlerror&table=distance&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-distance&section=opticattributemanagement-settings#opticattributemanagement-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "optic_distance", $attribute_id, 'deleted', 1, 0);
+                                
+                                $table_name = 'optic_distance';
+                                $tran_type = "restore";
+                                $reason = "Item Restore";
+                                $site = 0;
+                                $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                $time = date('H:i:s'); // current time in HH:MM:SS format
+                                $username = $_SESSION['username'];
+
+                                updateOpticTransactions($table_name, $attribute_id, $tran_type, $reason, $date, $time, $username, $site);
+
+                                header("Location: ../admin.php?success=restored&id=$attribute_id&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                                exit();
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=opticattributemanagement-$attribute_types#opticattributemanagement-settings");
+                            exit();
+                        }
+                    }
+                }
+            } if ($attribute_type == 'optic_speeds') {
+                if (isset($_POST['id'])) {
+                    $attribute_id = $_POST['id'];
+
+                    $speeds = [];
+
+                    $sql_speeds = "SELECT 
+                                        T.id AS speed_id, 
+                                        T.name AS speed_name
+                                    FROM 
+                                        optic_speed AS T
+                                    WHERE T.deleted=1
+                                        AND T.id=$attribute_id;";                         
+                    $stmt_speeds = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt_speeds, $sql_speeds)) {
+                        header("Location: ../admin.php?error=sqlerror&table=speed&file=".__FILE__."&line=".__LINE__."&purpose=get-speed&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                        exit();
+                    } else {
+                        mysqli_stmt_execute($stmt_speeds);
+                        $result_speeds = mysqli_stmt_get_result($stmt_speeds);
+                        $rowCount_speeds = $result_speeds->num_rows;
+                        if ($rowCount_speeds !== 0) {
+                            $row_speeds = $result_speeds->fetch_assoc();
+                            $speed[$row_speeds['speed_id']] = array('id' =>  $row_speeds['speed_id'], 'name' => $row_speeds['speed_name']);
+
+                            $value=0;
+                            $sql_update = "UPDATE optic_speed SET deleted=? WHERE id='$attribute_id'";
+                            $stmt_update = mysqli_stmt_init($conn);
+                            if (!mysqli_stmt_prepare($stmt_update, $sql_update)) {
+                                header("Location: ../admin.php?error=sqlerror&table=speed&file=".__FILE__."&line=".__LINE__."&purpose=mark-not-deleted-speed&section=opticattributemanagement-settings#opticattributemanagement-settings");
+                                exit();
+                            } else {
+                                mysqli_stmt_bind_param($stmt_update, "s", $value);
+                                mysqli_stmt_execute($stmt_update);
+                                // update changelog
+                                addChangelog($_SESSION['user_id'], $_SESSION['username'], "Update record", "optic_speed", $attribute_id, 'deleted', 1, 0);
+                                
+                                $table_name = 'optic_speed';
+                                $tran_type = "restore";
+                                $reason = "Item Restore";
+                                $site = 0;
+                                $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                                $time = date('H:i:s'); // current time in HH:MM:SS format
+                                $username = $_SESSION['username'];
+
+                                updateOpticTransactions($table_name, $attribute_id, $tran_type, $reason, $date, $time, $username, $site);
+
+                                header("Location: ../admin.php?success=restored&id=$attribute_id&section=opticattributemanagement-$attribute_type#opticattributemanagement-settings");
+                                exit();
+                            }
+                        } else {
+                            header("Location: ../admin.php?sqlerror=noRowsFound&table=shelf&file=".__FILE__."&line=".__LINE__."&purpose=update-shelf&section=opticattributemanagement-$attribute_types#opticattributemanagement-settings");
+                            exit();
+                        }
+                    }
+                }
             } else {
-                header("Location: ../admin.php?error=incorrectAttributeType&section=attributemanagement#attributemanagement-settings");
+                header("Location: ../admin.php?error=incorrectAttributeType&section=opticattributemanagement#opticattributemanagement-settings");
                 exit();
             }
         } else {
-            header("Location: ../admin.php?error=missingAttributeType&section=attributemanagement#attributemanagement-settings");
+            header("Location: ../admin.php?error=missingAttributeType&section=opticattributemanagement#opticattributemanagement-settings");
             exit();
         }
     } elseif (isset($_GET['footer-toggle'])) { // cost toggleing section in admin.php page for stock management. this is ajax'd

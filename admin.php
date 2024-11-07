@@ -1468,6 +1468,156 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
 
                 <hr style="border-color:white; margin-left:10px"> 
 
+                <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Speeds</h4>
+                <?php
+                if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_speeds')) {
+                    echo('<div style="margin-right: 10px; margin-left: 10px">');
+                    showResponse();
+                    echo('</div>');
+                }
+
+                $speeds = [];
+                $speeds_links = [];
+
+                $t_d = 0;
+
+                $sql_speeds = "SELECT 
+                                    C.id AS speed_id, 
+                                    C.name AS speed_name, 
+                                    C.deleted AS speed_deleted,
+                                    I.id AS item_id, I.speed_id AS item_speed_id, I.serial_number AS item_serial_number, I.model AS item_model
+                                FROM 
+                                    optic_speed AS C
+                                LEFT JOIN
+                                    optic_item AS I ON C.id=I.speed_id AND I.deleted=0";                
+                $stmt_speeds = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_speeds, $sql_speeds)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_execute($stmt_speeds);
+                    $result_speeds = mysqli_stmt_get_result($stmt_speeds);
+                    $rowCount_speeds = $result_speeds->num_rows;
+                    while ($row_speeds = $result_speeds->fetch_assoc()) {
+                        if ($row_speeds['speed_deleted'] == 1) {
+                            $t_d++;
+                        }
+                        if (!array_key_exists($row_speeds['speed_id'], $speeds)) {
+                            $speeds[$row_speeds['speed_id']] = array('id' =>  $row_speeds['speed_id'], 'name' => $row_speeds['speed_name'], 'deleted' => $row_speeds['speed_deleted']);
+                        }
+                        if (isset($row_speeds['item_speed_id']) && $row_speeds['item_speed_id'] !== NULL && $row_speeds['item_speed_id'] !== '') {
+                            $speeds_links[$row_speeds['speed_id']][] = array('id' => $row_speeds['item_speed_id'], 'item_id' => $row_speeds['item_id'],
+                                                                                    'item_serial' => $row_speeds['item_serial_number'], 'item_model' => $row_speeds['item_model']);
+                        }
+                    }
+                    ?>
+                    <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                        <table class="table table-dark theme-table" style="max-width:max-content">
+                            <thead>
+                                <tr class="theme-tableOuter">
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Item ID</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
+                                        <button id="show-deleted-optic_speeds" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_speeds', 1)" <?php if($t_d == 0) { echo "hidden"; } ?> >
+                                            <span class="zeroStockFont">
+                                                <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
+                                                
+                                            </span>
+                                        </button>
+                                        <button id="hide-deleted-optic_speeds" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_speeds', 0)" hidden>
+                                            <span class="zeroStockFont">
+                                                <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                            </span>
+                                        </button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <?php
+                            foreach ($speeds as $speed) {
+                                $m = $speed['id'];
+                                $speed_deleted = $speed['deleted'];
+                                $speed_deleted_class = '';
+                                if ($speed_deleted == 1) {
+                                    $speed_deleted_class = 'red theme-divBg optic_speeds-deleted';
+                                }
+                                if (array_key_exists($m, $speeds_links)) {
+                                    $speed_link_count = count($speeds_links[$m]);
+                                } else {
+                                    $speed_link_count = 0;
+                                }
+                                
+                                echo('
+                                    <tr id="speed-row-'.$m.'" class="align-middle '.$speed_deleted_class.'"'); if ($speed_deleted == 1) { echo(' hidden'); } echo('>
+                                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                                            <input type="hidden" name="attribute-type" value="optic_speeds"/>
+                                            <input type="hidden" name="id" value="'.$m.'">
+                                            <td id="speed-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
+                                            <td id="speed-'.$m.'-name" class="text-center align-middle">'.$speed['name'].'</td>
+                                            <td class="text-center align-middle">'.$speed_link_count.'</td>
+                                            <td class="text-center align-middle">');
+                                            if ($speed_deleted !== 1) {
+                                                echo('<button class="btn btn-danger" type="submit" name="opticattributemanagement-submit" '); 
+                                                    if ($speed_link_count !== 0) { echo('disabled title="speed still linked to stock. Remove these links before deleting."'); } 
+                                                    echo('><i class="fa fa-trash"></i></button></td>');
+                                            } else {
+                                                echo('<button class="btn btn-success" type="submit" name="opticattributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
+                                            }
+                                            echo('<td class="text-center align-middle">'); 
+                                                if ($speed_deleted !== 1) {
+                                                    if ($speed_link_count !== 0) { echo('<button class="btn btn-warning" id="speed-'.$m.'-links" type="button" onclick="showLinks(\'speed\', \''.$m.'\')">Show Links</button>'); }
+                                                } else {
+                                                    echo('<or class="green">Restore?</or>');
+                                                }
+                                            echo('</td>');
+                                    echo('</form>
+                                    </tr>
+                                ');
+                                if ($speed_link_count !== 0) { 
+                                    echo('
+                                        <tr id="speed-row-'.$m.'-links" class="align-middle" hidden>
+                                            <td colspan=100%>
+                                                <div>
+                                                    <table class="table table-dark theme-table">
+                                                        <thead>
+                                                            <tr class="theme-tableOuter">
+                                                                <th>Optic ID</th>
+                                                                <th>Optic Model</th>
+                                                                <th>Optic Serial</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>');
+                                                        $links = $speeds_links[$m];
+                                                        foreach ($links as $mm) {
+                                                            echo('
+                                                                <tr class="">
+                                                                    <td class="text-center">'.$mm['item_id'].'</td>
+                                                                    <td class="text-center">'.$mm['item_model'].'</td>
+                                                                    <td class="text-center">'.$mm['item_serial'].'</td>
+                                                                </tr>
+                                                            ');
+                                                        }                                                    
+                                                        echo('
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ');
+                                }
+                            }
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php
+                    }  
+                ?>
+
+                <hr style="border-color:white; margin-left:10px"> 
+
                 <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Connectors</h4>
                 <?php
                 if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_connectors')) {
@@ -1614,7 +1764,157 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                 </div>
                 <?php
                     }  
-                ?>                 
+                ?>   
+                
+                <hr style="border-color:white; margin-left:10px"> 
+
+                <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Distances</h4>
+                <?php
+                if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_distances')) {
+                    echo('<div style="margin-right: 10px; margin-left: 10px">');
+                    showResponse();
+                    echo('</div>');
+                }
+
+                $distances = [];
+                $distances_links = [];
+
+                $t_d = 0;
+
+                $sql_distances = "SELECT 
+                                    C.id AS distance_id, 
+                                    C.name AS distance_name, 
+                                    C.deleted AS distance_deleted,
+                                    I.id AS item_id, I.distance_id AS item_distance_id, I.serial_number AS item_serial_number, I.model AS item_model
+                                FROM 
+                                    optic_distance AS C
+                                LEFT JOIN
+                                    optic_item AS I ON C.id=I.distance_id AND I.deleted=0";                
+                $stmt_distances = mysqli_stmt_init($conn);
+                if (!mysqli_stmt_prepare($stmt_distances, $sql_distances)) {
+                    echo("ERROR getting entries");
+                } else {
+                    mysqli_stmt_execute($stmt_distances);
+                    $result_distances = mysqli_stmt_get_result($stmt_distances);
+                    $rowCount_distances = $result_distances->num_rows;
+                    while ($row_distances = $result_distances->fetch_assoc()) {
+                        if ($row_distances['distance_deleted'] == 1) {
+                            $t_d++;
+                        }
+                        if (!array_key_exists($row_distances['distance_id'], $distances)) {
+                            $distances[$row_distances['distance_id']] = array('id' =>  $row_distances['distance_id'], 'name' => $row_distances['distance_name'], 'deleted' => $row_distances['distance_deleted']);
+                        }
+                        if (isset($row_distances['item_distance_id']) && $row_distances['item_distance_id'] !== NULL && $row_distances['item_distance_id'] !== '') {
+                            $distances_links[$row_distances['distance_id']][] = array('id' => $row_distances['item_distance_id'], 'item_id' => $row_distances['item_id'],
+                                                                                    'item_serial' => $row_distances['item_serial_number'], 'item_model' => $row_distances['item_model']);
+                        }
+                    }
+                    ?>
+                    <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                        <table class="table table-dark theme-table" style="max-width:max-content">
+                            <thead>
+                                <tr class="theme-tableOuter">
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Item ID</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Name</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">Links</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1; z-index:10">Delete</th>
+                                    <th class="text-center theme-tableOuter align-middle" style="position: sticky; top: -1;">
+                                        <button id="show-deleted-optic_distances" class="btn btn-success" style="opacity:90%;color:black;" onclick="toggleDeletedAttributes('optic_distances', 1)" <?php if($t_d == 0) { echo "hidden"; } ?> >
+                                            <span class="zeroStockFont">
+                                                <p style="margin:0px;padding:0px"><i class="fa fa-plus"></i> Show Deleted</p>
+                                                
+                                            </span>
+                                        </button>
+                                        <button id="hide-deleted-optic_distances" class="btn btn-danger" style="opacity:80%;color:black;" onclick="toggleDeletedAttributes('optic_distances', 0)" hidden>
+                                            <span class="zeroStockFont">
+                                                <p style="margin:0px;padding:0px"><i class="fa fa-minus"></i> Hide Deleted</p>
+                                            </span>
+                                        </button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <?php
+                            foreach ($distances as $distance) {
+                                $m = $distance['id'];
+                                $distance_deleted = $distance['deleted'];
+                                $distance_deleted_class = '';
+                                if ($distance_deleted == 1) {
+                                    $distance_deleted_class = 'red theme-divBg optic_distances-deleted';
+                                }
+                                if (array_key_exists($m, $distances_links)) {
+                                    $distance_link_count = count($distances_links[$m]);
+                                } else {
+                                    $distance_link_count = 0;
+                                }
+                                
+                                echo('
+                                    <tr id="distance-row-'.$m.'" class="align-middle '.$distance_deleted_class.'"'); if ($distance_deleted == 1) { echo(' hidden'); } echo('>
+                                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                            <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
+                                            <input type="hidden" name="attribute-type" value="optic_distances"/>
+                                            <input type="hidden" name="id" value="'.$m.'">
+                                            <td id="distance-'.$m.'-id" class="text-center align-middle">'.$m.'</td>
+                                            <td id="distance-'.$m.'-name" class="text-center align-middle">'.$distance['name'].'</td>
+                                            <td class="text-center align-middle">'.$distance_link_count.'</td>
+                                            <td class="text-center align-middle">');
+                                            if ($distance_deleted !== 1) {
+                                                echo('<button class="btn btn-danger" type="submit" name="opticattributemanagement-submit" '); 
+                                                    if ($distance_link_count !== 0) { echo('disabled title="distance still linked to stock. Remove these links before deleting."'); } 
+                                                    echo('><i class="fa fa-trash"></i></button></td>');
+                                            } else {
+                                                echo('<button class="btn btn-success" type="submit" name="opticattributemanagement-restore"><i class="fa fa-trash-restore"></i></button></td>');
+                                            }
+                                            echo('<td class="text-center align-middle">'); 
+                                                if ($distance_deleted !== 1) {
+                                                    if ($distance_link_count !== 0) { echo('<button class="btn btn-warning" id="distance-'.$m.'-links" type="button" onclick="showLinks(\'distance\', \''.$m.'\')">Show Links</button>'); }
+                                                } else {
+                                                    echo('<or class="green">Restore?</or>');
+                                                }
+                                            echo('</td>');
+                                    echo('</form>
+                                    </tr>
+                                ');
+                                if ($distance_link_count !== 0) { 
+                                    echo('
+                                        <tr id="distance-row-'.$m.'-links" class="align-middle" hidden>
+                                            <td colspan=100%>
+                                                <div>
+                                                    <table class="table table-dark theme-table">
+                                                        <thead>
+                                                            <tr class="theme-tableOuter">
+                                                                <th>Optic ID</th>
+                                                                <th>Optic Model</th>
+                                                                <th>Optic Serial</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>');
+                                                        $links = $distances_links[$m];
+                                                        foreach ($links as $mm) {
+                                                            echo('
+                                                                <tr class="">
+                                                                    <td class="text-center">'.$mm['item_id'].'</td>
+                                                                    <td class="text-center">'.$mm['item_model'].'</td>
+                                                                    <td class="text-center">'.$mm['item_serial'].'</td>
+                                                                </tr>
+                                                            ');
+                                                        }                                                    
+                                                        echo('
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ');
+                                }
+                            }
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php
+                    }  
+                ?>
             </div>
 
             

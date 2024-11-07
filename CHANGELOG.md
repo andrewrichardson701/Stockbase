@@ -16,6 +16,8 @@
 - Added a show/hide password button on the login page.
 - Added assets/js/passwords.js
 - Added a signup page and the logic to turn it off in the admin settings.
+- Added the ability to add new speeds to the optic_speed table from the optic page.
+- Added the missing optic attributes (distance and speed) to the optic attribute managemend in the admin page.
 
 </details>
 <details>

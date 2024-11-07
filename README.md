@@ -1059,6 +1059,8 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 - [x] Make the Optics search do a broader search, including spectrum
 - [x] Add a "show password" button on the login screen
 - [x] Add an optional 'sign up' page that can be enabled in the admin page
+- [x] Enable the addition of more optic speeds.
+- [x] Allow the editing of all optic attributes in the admin section.
 - [ ] Make a way of importing a spreadsheet, including a template sheet (csv) for optics and normal stock
 - [ ] Add option to link optics to site / area / shelf, not only the site
 - [ ] Cable stock auditing

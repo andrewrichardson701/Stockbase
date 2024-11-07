@@ -1056,13 +1056,20 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 [Restyaboard Roadmap](https://todo.ajrich.co.uk)
 
 - [x] Favourites list
+- [x] Make the Optics search do a broader search, including spectrum
+- [x] Add a "show password" button on the login screen
+- [x] Add an optional 'sign up' page that can be enabled in the admin page
+- [x] Enable the addition of more optic speeds.
+- [x] Allow the editing of all optic attributes in the admin section.
+- [ ] Make a way of importing a spreadsheet, including a template sheet (csv) for optics and normal stock
+- [ ] Add option to link optics to site / area / shelf, not only the site
 - [ ] Cable stock auditing
 
 See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ROADMAP -->
+<!-- Changelog -->
 ## Changelog
 
 All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
@@ -1298,6 +1305,18 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 <details>
 
+<summary><h3>credentials.js</h3></summary>
+
+  
+
+- JS for password manipulation
+
+  
+
+</details>
+
+<details>
+
 <summary><h3>favourites.js</h3></summary>
 
   
@@ -1387,6 +1406,18 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
   
 
 - Specific JS for the profile.php page.
+
+  
+
+</details>
+
+<details>
+
+<summary><h3>signup.js</h3></summary>
+
+  
+
+- JS for signing up a new user. This is mostly empty.
 
   
 
@@ -1700,6 +1731,18 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 <details>
 
+<summary><h3>credentials.inc.php</h3></summary>
+
+
+- Does the ajax post requests for the credentials verifications. 
+
+- Used in the signup.php credentials checks.
+  
+
+</details>
+
+<details>
+
 <summary><h3>dbh.inc.php</h3></summary>
 
   
@@ -1855,6 +1898,19 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
   
 
 </details>
+
+<details>
+
+<summary><h3>signup.inc.php</h3></summary>
+
+
+- Backend for the signup.php page
+
+- Handles the verification and addition of credentials for new users.
+  
+
+</details>
+
 
 <details>
 
@@ -2456,6 +2512,20 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
   
 
 - Sets up the session for the user
+
+  
+
+</details>
+
+<summary><h3>signup.php</h3></summary>
+
+  
+
+- Allows a new user creation without login
+
+- Can be disabled in admin settings
+
+- Verifies all information before submit
 
   
 

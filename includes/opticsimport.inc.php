@@ -6,7 +6,7 @@ if(session_status() !== PHP_SESSION_ACTIVE) {
 include 'changelog.inc.php';
 
 function getOpticProperties($property) {
-    include '../../inlcudes/dbh.inc.php';
+    include 'dbh.inc.php';
 
     $table = 'optic_'.$property;
     $return = []; // return array
@@ -47,7 +47,7 @@ function checkPropertyExists($value, $array) {
     }
 }
 function addPropery($property, $value) {
-    include '../../inlcudes/dbh.inc.php';
+    include 'dbh.inc.php';
 
     $table = 'optic_'.$property;
     $sql = "INSERT INTO $table (name) 
@@ -65,7 +65,7 @@ function addPropery($property, $value) {
     }
 }
 function addSite($property, $value) {
-    include '../../inlcudes/dbh.inc.php';
+    include 'dbh.inc.php';
 
     $sql = "INSERT INTO site (name, description) 
             VALUES (?, ?)";
@@ -82,7 +82,7 @@ function addSite($property, $value) {
     }
 }
 function getSites() {
-    include '../../inlcudes/dbh.inc.php';
+    include 'dbh.inc.php';
 
     $table = 'site';
     $return = []; // return array
@@ -103,7 +103,7 @@ function getSites() {
     return $return;
 }
 function undeleteProperty($table, $property, $value) {
-    include '../../inlcudes/dbh.inc.php';
+    include 'dbh.inc.php';
 
     $value = $value*-1;
     $return = []; // return array
@@ -191,7 +191,7 @@ if (isset($_POST['opticsimport-submit'])) {
 
         if (isset($csvData)){
 
-            include '../../inlcudes/dbh.inc.php'; 
+            include 'dbh.inc.php'; 
             $quanrantined_lines = []; // for rows that cant be added
             $actioned_lines = []; // for rows that have been added
 

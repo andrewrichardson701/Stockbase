@@ -33,26 +33,28 @@ function checkCredentials(field, type) {
     var csrf_token = document.getElementById('csrf_token').value;
     var ajax_needed = 0;
     var submit = document.getElementById('submit');
+    var meter = document.getElementById('password-strength-meter');
 
     if (type == 'password') {
         var passwordMeter = document.getElementById('password-strength-meter');
         ajax_needed = 0;
         var check = checkPasswordStrength(data);
+        meter.classList = '';
         switch(check) {
             case 1: 
-                passwordMeter.value = 1;
-                break;
-            case 2: 
                 passwordMeter.value = 2;
                 break;
-            case 3: 
-                passwordMeter.value = 3;
-                break;
-            case 4: 
+            case 2: 
                 passwordMeter.value = 4;
                 break;
+            case 3: 
+                passwordMeter.value = 6;
+                break;
+            case 4: 
+                passwordMeter.value = 8;
+                break;
             case 5: 
-                passwordMeter.value = 5;
+                passwordMeter.value = 10;
                 break;
             default:
                 passwordMeter.value = 0;

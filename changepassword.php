@@ -86,7 +86,7 @@ if ($_SESSION['auth'] == "ldap") {
             <div style="padding-top: 20px;margin-left:25px">
                 <form action="includes/changepassword.inc.php" method="POST" enctype="multipart/form-data">
                     <!-- Include CSRF token in the form -->
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+                    <input type="hidden" id="csrf_token" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="hidden" name="user-id" value="<?php echo($profile_id); ?>">
                     <input type="hidden" name="user-role" value="<?php echo($profile_role); ?>">
                     <table>
@@ -94,10 +94,13 @@ if ($_SESSION['auth'] == "ldap") {
                             <tr class="nav-row">
                                 <td style="width:200px">
                                     <!-- Custodian Colour: #72BE2A -->
-                                    <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">New Password:</p>
+                                    <p style="min-height:max-content;margin:0px;padding-bottom:16px" class="nav-v-c align-middle">New Password:</p>
                                 </td>
                                 <td>
-                                    <input class="form-control" id="password" type="password" name="password" />
+                                    <input class="form-control" id="password" type="password" name="password"  oninput="checkCredentials(this, 'password')" required/>
+                                    <meter min="0" max="10" low="6" optimum="10" high="9" id="password-strength-meter" value="0" style="width:100%"></meter>
+                                    <i class="fa fa-eye" id="password-eye" style="color: black; position:absolute; right:20px;top:12px; cursor: pointer" onclick="togglePassword(this, 'password')" title="Toggle password visibility."></i>
+                                    <i class="fa fa-check" id="password-check" style="color: green; position:absolute; right:-20px;top:12px;" hidden></i>
                                 </td>
                             </tr>
                             <tr class="nav-row" style="margin-top:20px">
@@ -106,7 +109,16 @@ if ($_SESSION['auth'] == "ldap") {
                                     <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Confirm Password:</p>
                                 </td>
                                 <td>
-                                    <input class="form-control" id="confirm-password" type="password" name="confirm-password" />
+                                    <input class="form-control" id="confirm-password" type="password" name="confirm-password" oninput="checkCredentials(this, 'password-confirm')" required/>
+                                    <i class="fa fa-eye" id="password-eye-confirm" style="color: black; position:absolute; right:20px;top:12px; cursor: pointer" onclick="togglePassword(this, 'password-confirm')" title="Toggle password visibility."></i>
+                                    <i class="fa fa-check" id="password-confirm-check" style="color: green; position:absolute; right:-20px;top:12px;" hidden></i>
+                                </td>
+                            </tr>
+                            <tr class="nav-row">
+                                <td style="width:200px"></td>
+                                <td>
+                                    <p class="red" id="password-confirm-error" style="margin-bottom:0px" hidden>Password does not match.</p>
+                                    <p class="green" id="password-confirm-success" style=margin-bottom:0px" hidden>Password matches.</p>
                                 </td>
                             </tr>
                             <tr class="nav-row" style="margin-top:20px">
@@ -122,6 +134,7 @@ if ($_SESSION['auth'] == "ldap") {
 
         </div>
     </div>
+    <script src="assets/js/credentials.js"></script>
     <?php include 'foot.php'; ?>
 
 </body>

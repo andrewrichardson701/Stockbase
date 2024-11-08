@@ -1,5 +1,13 @@
 <h2>Changelog</h2>
 <details>
+<summary><h3>1.2.3</h3></summary>
+<h4>1.2.3 - Credential features</h4>
+
+- Updated changepassword page to include the new credentials features from the signup page
+- Signup page password meter adjusted to use correct colour scheme
+
+</details>
+<details>
 <summary><h3>1.2.2</h3></summary>
 <h4>1.2.2 - Auditing fixes</h4>
 

@@ -39,7 +39,9 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <input class="" type="file" name="csv">
                 <input type="submit" class="btn btn-success" name="opticsimport-submit" value="Import">
             </form>
-            <a class="link" href="assets/files/optics_template.csv">Download Template</a>
+            <a class="link"href="assets/files/optics_template.csv">Download Template</a>
+            <p style="margin-top:50px"><or class="red">WARNING!</or> Make sure to remove the first row from the template.</p>
+            <p><or class="red">WARNING!</or> Some optics may not be added if there is a conflict. Please double check once complete.</p>
         </div>
 
 

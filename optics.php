@@ -552,8 +552,13 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                         </div> 
                     </div> 
                     <div class="row align-middle" style="margin-right:25px">
+                        <div class="col-sm" style="margin-top:10px"> 
+                        </div>
                         <div class="col" style="margin-top:10px">
                             <button id="optic-add-single" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="" value="1">Add</button>
+                        </div>
+                        <div class="col-sm text-right" style="margin-top:10px">
+                            <a href="optic-import.php" class="link" style="font-size:12px; padding-bottom:10px">Import from CSV</a>
                         </div>
                     </div>        
                 </form>

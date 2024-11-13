@@ -6,6 +6,8 @@
 
 
 include 'session.php'; // Session setup and redirect if the session is not active 
+include 'includes/dbh.inc.php'; // for database bits
+include 'includes/changelog.inc.php'; // changelog stuff
 // include 'http-headers.php'; // $_SERVER['HTTP_X_*']
 ?>
 
@@ -35,7 +37,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
 
         <div class="container" style="margin-top:20px">
             <h2 class="header-small" style="padding-bottom:5px"><?php if (isset($_GET['return'])) { echo('<button class="btn btn-dark" style="margin-right:20px" onclick="window.location.href=\''.urldecode($_GET['return']).'\'"><i class="fa fa-chevron-left"></i> Back</button>'); } ?>Optic Upload</h2>
-            <form enctype="multipart/form-data" action="./includes/opticimport.inc.php" method="POST" style="margin-bottom:20px;margin-top:50px">
+            <form enctype="multipart/form-data" method="POST" style="margin-bottom:20px;margin-top:50px">
                 <input class="" type="file" name="csv">
                 <input type="submit" class="btn btn-success" name="opticsimport-submit" value="Import">
             </form>
@@ -43,7 +45,13 @@ include 'session.php'; // Session setup and redirect if the session is not activ
             <p style="margin-top:50px"><or class="red">WARNING!</or> Make sure to remove the first row from the template.</p>
             <p><or class="red">WARNING!</or> Some optics may not be added if there is a conflict. Please double check once complete.</p>
         </div>
+    
+        <div class="" style="margin-top:40px">
+            <?php 
+            include 'includes/opticimport.inc.php' // optic csv importing bits 
+            ?>
+        </div>
+    </div>
+    <?php include 'foot.php'; ?>
 
-
-
-        
+</body>  

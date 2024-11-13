@@ -1,12 +1,11 @@
 <?php
-if(session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
-} 
+// This will be used as an include file inline within the optic-import.php file, to make everything clean.
 
-include 'changelog.inc.php';
+// include 'changelog.inc.php';
+// include 'dbh.inc.php';
 
 function getOpticProperties($property) {
-    include 'dbh.inc.php';
+    global $conn;
 
     $table = 'optic_'.$property;
     $return = []; // return array
@@ -47,7 +46,7 @@ function checkPropertyExists($value, $array) {
     }
 }
 function addPropery($property, $value) {
-    include 'dbh.inc.php';
+    global $conn;
 
     $table = 'optic_'.$property;
     $sql = "INSERT INTO $table (name) 
@@ -65,7 +64,7 @@ function addPropery($property, $value) {
     }
 }
 function addSite($property, $value) {
-    include 'dbh.inc.php';
+    global $conn;
 
     $sql = "INSERT INTO site (name, description) 
             VALUES (?, ?)";
@@ -82,7 +81,7 @@ function addSite($property, $value) {
     }
 }
 function getSites() {
-    include 'dbh.inc.php';
+    global $conn;
 
     $table = 'site';
     $return = []; // return array
@@ -103,7 +102,7 @@ function getSites() {
     return $return;
 }
 function undeleteProperty($table, $property, $value) {
-    include 'dbh.inc.php';
+    global $conn;
 
     $value = $value*-1;
     $return = []; // return array
@@ -190,8 +189,6 @@ if (isset($_POST['opticsimport-submit'])) {
 
 
         if (isset($csvData)){
-
-            include 'dbh.inc.php'; 
             $quanrantined_lines = []; // for rows that cant be added
             $actioned_lines = []; // for rows that have been added
 
@@ -401,23 +398,8 @@ if (isset($_POST['opticsimport-submit'])) {
                 fclose($fp);
             }
             
-        
-            // download the csv
-            //downloadCSV($quanrantined_lines, 'manual-review.csv');
-        
-            // check for an image in the folder
-            // get all images into an array.
-            if (isset($quanrantined_lines) && count($quanrantined_lines) > 0 ) {
-                echo('
-                <h3 class="clickable" onclick="toggleSection(this, \'manual\')">Quarantined<i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3>
-                <a class="btn btn-info" style="color:black !important" href="quarantined.csv" download="manualreview.csv">Download CSV</a>
-                <br>
-                <div class="" id="quarantine" hidden>');
-                print_r('<pre>');
-                print_r($quanrantined_lines);
-                print_r('</pre><br></div>');
-            }
             ?>
+
             <script>
                 function toggleSection(element, section) {
                     var div = document.getElementById(section);
@@ -433,33 +415,99 @@ if (isset($_POST['opticsimport-submit'])) {
                     }
                 }
             </script>
+
             <?php
+            // show the quarantined items
+            if (isset($quanrantined_lines) && count($quanrantined_lines) > 0 ) {
+                echo('
+                <div class="container">
+                    <h3 class="clickable" onclick="toggleSection(this, \'quarantine\')">Quarantined<i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3>
+                    <a class="btn btn-info" style="color:black !important" href="quarantined.csv" download="quanratined.csv">Download CSV</a>
+                    <br>
+                    <div class="" id="quarantine" hidden>');
+                print_r('<pre>');
+                print_r($quanrantined_lines);
+                print_r('</pre>
+                        <br>
+                    </div>');
+                echo('</div>');
+            }
+            
             
         
             
             
-            echo('<h3 class="clickable" onclick="toggleSection(this, \'actioned\')">Actioned<i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3>
+            echo('<h3 class="container clickable" onclick="toggleSection(this, \'actioned\')">Actioned<i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px; margin-top:40px"></i></h3>
             <div class="" id="actioned" hidden>');
-            print_r('<pre>');
-            print_r($actioned_lines);
-            print_r('</pre></div>');
+            // print_r('<pre>');
+            // print_r($actioned_lines);
+            // print_r('</pre></div>');
         
-            print_r('<pre hidden>');
+            print_r('<pre hidden id="actioned-pre">');
             print_r($csvData);
             print_r('</pre>');
+
             if (isset($actioned_lines) && count($actioned_lines) > 0 ) {
                 // print_r($actioned_lines);
+                // create table
+                echo('
+                    <table class="table table-dark theme-table centertable" id="actioned-table">
+                        <thead style="text-align: center; white-space: nowrap;">
+                            <tr class="theme-tableOuter">
+                                <th>id</th>
+                                <th>model</th>
+                                <th>vendor_id</th>
+                                <th>serial_number</th>
+                                <th>type_id</th>
+                                <th>connector_id</th>
+                                <th>mode</th>
+                                <th>spectrum</th>
+                                <th>speed_id</th>
+                                <th>distance_id</th>
+                                <th>site_id</th>
+                                <th>quantity</th>
+                                <th>deleted</th>
+                            </tr>
+                        </thead>
+                ');
+                echo('
+                    <tbody>
+                ');
                 foreach ($actioned_lines as $line) {
-                    print_r($line['Item']);
-                    print_r('<br>');
+                    $row = $line['new_row'];
+                    echo('
+                        <tr class="align-middle text-center">
+                            <td>'.$row['id'].'</td>
+                            <td>'.$row['model'].'</td>
+                            <td>'.$row['vendor_id'].'</td>
+                            <td>'.$row['serial_number'].'</td>
+                            <td>'.$row['type_id'].'</td>
+                            <td>'.$row['connector_id'].'</td>
+                            <td>'.$row['mode'].'</td>
+                            <td>'.$row['spectrum'].'</td>
+                            <td>'.$row['speed_id'].'</td>
+                            <td>'.$row['distance_id'].'</td>
+                            <td>'.$row['site_id'].'</td>
+                            <td>'.$row['quantity'].'</td>
+                            <td>'.$row['deleted'].'</td>
+                        </tr>
+                    ');
                 }
+                echo('
+                        </tbody>
+                    </table>
+                ');
+                
                 foreach ($actioned_lines as $row) {
                     $line = $row['line'];
 
                     // print the completed list on the page in a table
                     
                 }
+            } else {
+                echo('<p>No rows actioned</p>');
             }
+            echo('</div>');
         
         }
 
@@ -467,7 +515,9 @@ if (isset($_POST['opticsimport-submit'])) {
 
 
     } else {
-        echo "Error uploading the file.";
-        exit();
+        echo "<div class='container'>
+            <p class='bg-dark red' style='width:100%' id='error-p'>Error uploading the file.</p>
+        </div>";
     }
+    echo('<div class="container"><a href="optics.php" class="btn btn-dark" style="color:black !important; margin-top:40px"><i class="fa fa-chevron-left"></i>&nbsp; Return to optics</a></div>');
 }

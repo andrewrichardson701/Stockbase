@@ -1302,11 +1302,6 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                             </tr>
                         </tbody>
                     </table>
-                    <!-- <h3 id="move-optic-serial" style="margin-bottom:20px"></h3>
-                    <p style="margin-bottom:5px">Reason for Deletion:</p>
-                    <input id="move-reason" type="text" class="form-control" placeholder="Reason..." name="reason" style="margin-bottom:10px" required/>
-                    <input type="hidden" id="move-id" name="id" />
-                    <input type="submit" value="Move" class="btn btn-danger" name="optic-move-submit" /> -->
                 </form>
             </div>  
         </div>

@@ -1061,7 +1061,9 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 - [x] Add an optional 'sign up' page that can be enabled in the admin page
 - [x] Enable the addition of more optic speeds.
 - [x] Allow the editing of all optic attributes in the admin section.
-- [ ] Make a way of importing a spreadsheet, including a template sheet (csv) for optics and normal stock
+- [x] Make a way of importing a spreadsheet, including a template sheet (csv) for optics and normal stock.
+- [x] Format the output of the spreadsheet import for optics.
+- [ ] Add pagination to the changelog.php page
 - [ ] Add option to link optics to site / area / shelf, not only the site
 - [ ] Cable stock auditing
 

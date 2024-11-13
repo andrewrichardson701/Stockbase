@@ -1287,7 +1287,7 @@ if (!isset($_POST['global-submit']) && !isset($_POST['global-restore-defaults'])
                 $rowCount_check = $result_check->num_rows;
 
                 if ($rowCount_check == 0) {
-                    $sql_check2 = "SELECT * site WHERE id=$site_id AND deleted=0;";
+                    $sql_check2 = "SELECT * FROM site WHERE id=$site_id AND deleted=0;";
                     $stmt_check2 = mysqli_stmt_init($conn);
                     if (!mysqli_stmt_prepare($stmt_check2, $sql_check2)) {
                         header("Location: ../admin.php?error=sqlerror&table=site&file=".__FILE__."&line=".__LINE__."&purpose=get-site&section=stocklocations-settings#stocklocations-settings");

@@ -56,11 +56,19 @@ if ($current_footer_enable == 1) {
 
             </div>
         </div> 
-        <div class="align-right" style="display: block;position: absolute;bottom: 4px;right: 20px;z-index: 99;font-size: 18px;border: none;outline: none;cursor: pointer;overflow: hidden;" >
-            <a href="./about.php" style="font-size:12px"><?php echo $versionNumber; ?></a>
+        
+        <?php include 'includes/updatecheck.inc.php'; ?>
+        <div class="align-right popupBox-owner" style="display: block;position: absolute;bottom: 4px;right: 20px;z-index: 99;font-size: 18px;border: none;outline: none;cursor: pointer;overflow: hidden;">
+            <a href="./about.php" style="font-size:12px" id="version-about"><?php if (isset($update_available) && $update_available == 1) { echo('<i class="fa-solid fa-circle-exclamation" style="color: #ff3000; margin-right:7px"></i>');} echo $versionNumber; ?></a>
         </div>
+        
     </div>
-    <?php
+    <?php 
+    if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'Admin') {
+        echo('<span id="version-check" class="popupBox well-nopad text-center theme-divBg">');
+            if (isset($update_text)) { echo($update_text); } else { echo('Unable to check for updates.'); }
+        echo('</span>');
+    }
 }
 ?>
 

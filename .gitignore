@@ -1,4 +1,5 @@
 .git.old
+version.json
 fulldump.sql
 hidden/images
 hidden/ignore

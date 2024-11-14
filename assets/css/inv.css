@@ -1219,3 +1219,29 @@ table {
 
 /* Mobile format stuff end */
 
+/* meter bar colouring */
+meter::-webkit-meter-optimum-value { background: green; }
+meter::-webkit-meter-suboptimum-value { background: orange; }
+meter::-webkit-meter-even-less-good-value { background: red; }
+
+/* for the rollover boxes, like the version number */
+.popupBox-owner {
+    position: relative;
+    color: #3498db;
+    font-size: 16px;
+}
+
+.popupBox {
+    position: fixed;
+    bottom: 0%; /* Position above the link */
+    right: 0%;
+    margin-bottom: 42px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    z-index: 9999;
+}

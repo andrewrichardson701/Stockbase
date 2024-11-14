@@ -10,6 +10,7 @@
 - Optic importing now possible from a csv including provided template
 - Admin page now correctly deletes sites again for the location management section
 - Admin page now correctly displays the hidden deleted sites with the spacing and add button hidden too
+- Added a version checker that runs every 15 minutes when the page is refreshed. Hover the version number to see it.
 
 </details>
 <details>

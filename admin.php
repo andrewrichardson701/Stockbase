@@ -2139,9 +2139,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         $color3 = '#c1e9fc';
                                         
                                     }
-                                    if ($l > 1) {
-                                        echo('<tr class="theme-tableOuter"><td colspan=9></td></tr>');
-                                    }
+                                    
 
                                     $site_id_check = $site['site_id'];
 
@@ -2164,7 +2162,10 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                         $site_deleted_hidden = '';
                                         $color = $color1;
                                     }
-
+                                    
+                                    if ($l > 1) {
+                                        echo('<tr class="theme-tableOuter'.$site_deleted_class.'"'.$site_deleted_hidden.'><td colspan=9></td></tr>');
+                                    }
                                     echo('<tr class="'.$site_deleted_class.'" style="background-color:'.$color.' !important; color:black"'.$site_deleted_hidden.'>
                                             <form id="siteForm-'.$site['site_id'].'" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                                 <input type="hidden" name="csrf_token" value="'.htmlspecialchars($_SESSION['csrf_token']).'">
@@ -2352,7 +2353,7 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                                             }
                                         }
                                     }
-                                    echo('<tr class="theme-table-blank">
+                                    echo('<tr class="theme-table-blank'.$site_deleted_class.'"'.$site_deleted_hidden.'>
                                         <td colspan=6 class="stockTD">
                                             <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px; width: 50px" onclick="modalLoadAdd(\''.$site['site_id'].'\')">
                                                 <i class="fa fa-plus"></i>

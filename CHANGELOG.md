@@ -1,5 +1,19 @@
 <h2>Changelog</h2>
 <details>
+<summary><h3>1.2.3</h3></summary>
+<h4>1.2.3 - Credential features and optic importing</h4>
+
+- Updated changepassword page to include the new credentials features from the signup page
+- Signup page password meter adjusted to use correct colour scheme
+- Added the optic-import.php page for adding optics from a csv
+- Added the includes/opticimport.inc.php page to handle the optic-import logic
+- Optic importing now possible from a csv including provided template
+- Admin page now correctly deletes sites again for the location management section
+- Admin page now correctly displays the hidden deleted sites with the spacing and add button hidden too
+- Added a version checker that runs every 15 minutes when the page is refreshed. Hover the version number to see it.
+
+</details>
+<details>
 <summary><h3>1.2.2</h3></summary>
 <h4>1.2.2 - Auditing fixes</h4>
 

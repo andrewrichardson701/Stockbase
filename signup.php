@@ -106,7 +106,7 @@ if (!mysqli_stmt_prepare($stmt, $sql)) {
                         <label>Password</label>
                         <div id="password-div" style="position:relative">
                             <input id="password" type="password" name="password" class="form-control" placeholder="Password" oninput="checkCredentials(this, 'password')" data-strength required>
-                            <meter max="5" id="password-strength-meter" min="0" low="1" optimum="5" value="0" style="width:100%"></meter>
+                            <meter min="0" max="10" low="6" optimum="10" high="9" id="password-strength-meter" value="0" style="width:100%"></meter>
                             <i class="fa fa-eye" id="password-eye" style="color: black; position:absolute; right:20px;top:12px; cursor: pointer" onclick="togglePassword(this, 'password')" title="Toggle password visibility."></i>
                             <i class="fa fa-check" id="password-check" style="color: green; position:absolute; right:-20px;top:12px;" hidden></i>
                         </div>

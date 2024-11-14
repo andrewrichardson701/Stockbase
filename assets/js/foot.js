@@ -22,3 +22,21 @@ function scrollFunction() {
 function topFunction() {
     window.scrollTo({top: 0, behavior: 'smooth'});
 }
+
+
+// script to show the rollover box when hovering the version number in the bottom right corner
+var popupBoxOwner = document.getElementById('version-about');
+var popupBox = document.getElementById('version-check');
+
+if (popupBox !== null) {
+    popupBoxOwner.addEventListener('mouseenter', () => {
+        popupBox.style.opacity = '1';
+        popupBox.style.visibility = 'visible';
+    });
+
+    popupBoxOwner.addEventListener('mouseleave', () => {
+        popupBox.style.opacity = '0';
+        popupBox.style.visibility = 'hidden';
+    });
+}
+//

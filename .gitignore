@@ -1,4 +1,5 @@
 .git.old
+version.json
 fulldump.sql
 hidden/images
 hidden/ignore
@@ -11,9 +12,11 @@ includes/recovery
 assets/img/stock/stock-*
 assets/img/config/custom/*
 assets/sql/db_setup-*
+assets/sql/sb_setup.sql.old
 hidden/cavnusimport.php
 hidden/dbh.inc.php
 hidden/manualreviewlines.csv
 hidden/downloads
 hidden/canvusimport.php
 includes/smtp_tester.log
+

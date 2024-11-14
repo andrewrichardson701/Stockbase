@@ -1,5 +1,19 @@
 <h2>Changelog</h2>
 <details>
+<summary><h3>1.2.3</h3></summary>
+<h4>1.2.3 - Credential features and optic importing</h4>
+
+- Updated changepassword page to include the new credentials features from the signup page
+- Signup page password meter adjusted to use correct colour scheme
+- Added the optic-import.php page for adding optics from a csv
+- Added the includes/opticimport.inc.php page to handle the optic-import logic
+- Optic importing now possible from a csv including provided template
+- Admin page now correctly deletes sites again for the location management section
+- Admin page now correctly displays the hidden deleted sites with the spacing and add button hidden too
+- Added a version checker that runs every 15 minutes when the page is refreshed. Hover the version number to see it.
+
+</details>
+<details>
 <summary><h3>1.2.2</h3></summary>
 <h4>1.2.2 - Auditing fixes</h4>
 
@@ -13,6 +27,11 @@
 - Fixed the styling for the favourites error message box
 - Fixed the caching on the stock-selectboxes.inc.php ajax requests
 - Correctly hidden the "show deleted" button on the admin stock locations table.
+- Added a show/hide password button on the login page.
+- Added assets/js/passwords.js
+- Added a signup page and the logic to turn it off in the admin settings.
+- Added the ability to add new speeds to the optic_speed table from the optic page.
+- Added the missing optic attributes (distance and speed) to the optic attribute managemend in the admin page.
 
 </details>
 <details>

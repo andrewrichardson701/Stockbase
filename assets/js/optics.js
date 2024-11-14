@@ -122,7 +122,7 @@ modalCloseMoveOptic = function() {
 
 // MODAL SCRIPT
 // Get the modal
-function modalLoadNewType(property) {
+function modalLoadNewType() {
     //get the modal div with the property
     var modal = document.getElementById("modalDivNewType");
     modal.style.display = "block";
@@ -134,7 +134,7 @@ modalCloseNewType = function() {
     modal.style.display = "none";
 }
 
-function modalLoadNewVendor(property) {
+function modalLoadNewVendor() {
     //get the modal div with the property
     var modal = document.getElementById("modalDivNewVendor");
     modal.style.display = "block";
@@ -146,7 +146,19 @@ modalCloseNewVendor = function() {
     modal.style.display = "none";
 }
 
-function modalLoadNewConnector(property) {
+function modalLoadNewSpeed() {
+    //get the modal div with the property
+    var modal = document.getElementById("modalDivNewSpeed");
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseNewSpeed = function() { 
+    var modal = document.getElementById("modalDivNewSpeed");
+    modal.style.display = "none";
+}
+
+function modalLoadNewConnector() {
     //get the modal div with the property
     var modal = document.getElementById("modalDivNewConnector");
     modal.style.display = "block";
@@ -158,7 +170,7 @@ modalCloseNewConnector = function() {
     modal.style.display = "none";
 }
 
-function modalLoadNewDistance(property) {
+function modalLoadNewDistance() {
     //get the modal div with the property
     var modal = document.getElementById("modalDivNewDistance");
     modal.style.display = "block";

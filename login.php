@@ -61,7 +61,10 @@ if (!isset($_SESSION['csrf_token'])) {
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input id="password" type="password" name="password" class="form-control" placeholder="Password" required>
+                        <div id="password-div" style="position:relative">
+                            <input id="password" type="password" name="password" class="form-control" placeholder="Password" required="">
+                            <i class="fa fa-eye" id="password-eye" style="color: black; position:absolute; right:20px;top:12px; cursor: pointer" onclick="togglePassword(this, 'password')" title="Toggle password visibility."></i>
+                        </div>
                     </div>
                     
                         <div class="nav-row">
@@ -148,6 +151,7 @@ if (!isset($_SESSION['csrf_token'])) {
     ?>
 <!-- Add the JS for the file -->
 <script src='assets/js/login.js'></script>
+<script src='assets/js/credentials.js'></script>
 
 <?php include 'foot.php'; ?>
 

@@ -1001,6 +1001,77 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: ../".$redirect_url.$queryChar.$queryString."error=missingType_name");
             exit();
         }
+    } elseif (isset($_POST['optic-speed-add'])) {
+        $queryString = '';
+        if (isset($_POST['QUERY'])){
+            $QUERY = $_POST['QUERY'];
+            if (is_array($QUERY) && count($QUERY) > 0) {
+                $i = 0;
+                foreach (array_keys($QUERY) as $key) {
+                    if ($key !== 'success' && $key !== 'error') {
+                        if ($i == 0) {
+                            $queryString .= $key.'='.$QUERY[$key];
+                        } else {
+                            $queryString .= '&'.$key.'='.$QUERY[$key];
+                        }
+                        $i++;
+                    }
+                }
+            }
+        }
+        if ($queryString !== '') {
+            $queryString .= '&';
+        }
+        if (isset($_POST['speed_name'])) {
+            $speed_name = mysqli_real_escape_string($conn, $_POST['speed_name']);
+            $sql = "SELECT name
+                    FROM optic_speed
+                    WHERE deleted=0 AND name='$speed_name'";
+            $stmt = mysqli_stmt_init($conn);
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location: ../".$redirect_url.$queryChar."error=optic_speedTableSQLConnection");
+                exit();
+            } else {
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+                $rowCount = $result->num_rows;
+                if ($rowCount > 0) {
+                    header("Location: ../".$redirect_url.$queryChar.$queryString."error=speedExists");
+                    exit();
+                } else {
+                    // correct amount found, continue.
+                    $sql = "INSERT INTO optic_speed (name) VALUES (?)";
+                    $stmt = mysqli_stmt_init($conn);
+                    if (!mysqli_stmt_prepare($stmt, $sql)) {
+                        header("Location: ../".$redirect_url.$queryChar."sqlerror=optic_commentConnectionInsert");
+                        exit();
+                    } else {
+                        mysqli_stmt_bind_param($stmt, "s", $speed_name);
+                        mysqli_stmt_execute($stmt);
+                        $insert_id = mysqli_insert_id($conn); // ID of the new row in the table
+
+                        $site_id = 0;
+                        $table_name = 'optic_speed';
+                        $type = "add";
+                        $reason = "Speed Added";
+                        $date = date('Y-m-d'); // current date in YYY-MM-DD format
+                        $time = date('H:i:s'); // current time in HH:MM:SS format
+                        $username = $_SESSION['username'];
+
+                        updateOpticTransactions($table_name, $insert_id, $type, $reason, $date, $time, $username, $site_id);
+
+                        // // update changelog
+                        addChangelog($_SESSION['user_id'], $_SESSION['username'], "Add Speed", $table_name, $insert_id, "name", null, $speed_name);
+
+                        header("Location: ../".$redirect_url.$queryChar.$queryString."success=SpeedAdded");
+                        exit();
+                    }
+                }
+            }
+        } else {
+            header("Location: ../".$redirect_url.$queryChar.$queryString."error=missingType_name");
+            exit();
+        }
     } elseif (isset($_POST['optic-comment-add'])) {
         if (isset($_POST['id'])) {
             if (isset($_POST['comment'])) {

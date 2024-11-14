@@ -64,7 +64,7 @@ if ($current_footer_enable == 1) {
         
     </div>
     <?php 
-    if (isset($_SESSION['user_id']) && $_SESSION['role'] == 'Admin') {
+    if (isset($_SESSION['user_id']) && ($_SESSION['role'] == 'Admin' || $_SESSION['role'] == 'Root')) {
         echo('<span id="version-check" class="popupBox well-nopad text-center theme-divBg">');
             if (isset($update_text)) { echo($update_text); } else { echo('Unable to check for updates.'); }
         echo('</span>');

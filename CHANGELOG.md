@@ -2,7 +2,10 @@
 <details>
 <summary><h3>1.2.3</h3></summary>
 <h4>1.2.3 - Credential features and optic importing</h4>
-
+<ul>
+<li>test</li>
+<li>test</li>
+</ul>
 - Updated changepassword page to include the new credentials features from the signup page
 - Signup page password meter adjusted to use correct colour scheme
 - Added the optic-import.php page for adding optics from a csv

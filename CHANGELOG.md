@@ -1,7 +1,7 @@
 <h2>Changelog</h2>
 <details>
 <summary><h3>1.2.3</h3></summary>
-<h4>1.2.3 - Credential features and optic importing</h4>
+<h4>Credential features and optic importing</h4>
 <ul>
 <li>test</li>
 <li>test</li>
@@ -18,7 +18,7 @@
 </details>
 <details>
 <summary><h3>1.2.2</h3></summary>
-<h4>1.2.2 - Auditing fixes</h4>
+<h4>Auditing fixes</h4>
 
 - Removed the nav button dimming on the favourites page.
 - Fixed the audit.php page not working due to a missing csrf token.
@@ -39,7 +39,7 @@
 </details>
 <details>
 <summary><h3>1.2.1</h3></summary>
-<h4>1.2.1 - Quality of life changes</h4>
+<h4>Quality of life changes</h4>
 
 - Added FontAwesome icons to the burger menu list to clearly display what each link does
 - Changes some css to allow the burger menu to show correctly with the new changes
@@ -57,7 +57,7 @@
 </details>
 <details>
 <summary><h3>1.2.0</h3></summary>
-<h4>1.2.0 - Mobile Form Factor and additional fixes</h4>
+<h4>Mobile Form Factor and additional fixes</h4>
 
 - Fixed the burger menu on the nav to show the containers page and fit on the screen correctly.
 - Fixed the 2FA issuer being 'testing' to now getting the system name from the DB.
@@ -75,7 +75,7 @@
 </details>
 <details>
 <summary><h3>1.1.2</h3></summary>
-<h4>1.1.2 - Bug fixes</h4>
+<h4>Bug fixes</h4>
 
 - Fixed the stock page showing duplicate items based on manufacturer.
 - Removed the email address prompt on the login page.
@@ -83,7 +83,7 @@
 </details>
 <details>
 <summary><h3>1.1.1</h3></summary>
-<h4>1.1.1 - 2FA Cookie fixes</h4>
+<h4>2FA Cookie fixes</h4>
 
 - Bypass_2fa now uses randomly generated cookies and cookie names, stored in the DB
 - Adjusted login scripts to check for the new cookies.
@@ -94,7 +94,7 @@
 </details>
 <details>
 <summary><h3>1.1.0</h3></summary>
-<h4>1.1.0 - 2FA Integration</h4>
+<h4>2FA Integration</h4>
 
 - Added CSRF token checking to login.inc.php. This was missing.
 - Added ids to login.php inputs

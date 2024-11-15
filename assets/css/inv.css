@@ -1245,3 +1245,17 @@ meter::-webkit-meter-even-less-good-value { background: red; }
     white-space: nowrap;
     z-index: 9999;
 }
+
+
+#version-changelog h2 {
+    font-size:22px;
+}
+
+#version-changelog h3 {
+    font-size:12px;
+    font-weight:bold;
+}
+
+#version-changelog li{
+    font-size:10px;
+}

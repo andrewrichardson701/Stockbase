@@ -9,6 +9,7 @@
     <li>Admin page now correctly deletes sites again for the location management section</li>
     <li>Admin page now correctly displays the hidden deleted sites with the spacing and add button hidden too</li>
     <li>Added a version checker that runs every 15 minutes when the page is refreshed. Hover the version number to see it.</li>
+    <li>Added the changelog to the about page.</li>
 </ul>
 
 <h3>1.2.2 - Auditing fixes</h3>

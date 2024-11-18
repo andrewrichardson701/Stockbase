@@ -49,7 +49,7 @@ if ($current_footer_enable == 1) {
                 <div class="col text-center viewport-large-empty">
                     <?php
                     if ($current_footer_right_enable == 1) {
-                        echo('<a href="https://todo.ajrich.co.uk/#/board/16" class="link" style="font-size:12px" target="_blank">Road Map</a>');
+                        echo('<a href="https://gitlab.com/andrewrichardson701/stockbase#roadmap" class="link" style="font-size:12px" target="_blank">Road Map</a>');
                     }
                     ?>
                 </div>

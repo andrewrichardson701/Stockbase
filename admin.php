@@ -1981,9 +1981,9 @@ include 'includes/responsehandling.inc.php'; // Used to manage the error / succe
                     $result_stock = mysqli_stmt_get_result($stmt_stock);
                     $rowCount_stock = $result_stock->num_rows;
                     if ($rowCount_stock !== 0) {
-                        echo('<p class="margin-left:10px">Count: <or class="green">'.$rowCount_stock.'</or></p>');
                         ?>
                         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
+                        <?php echo('<p class="margin-left:10px">Count: <or class="green">'.$rowCount_stock.'</or></p>'); ?>
                             <table class="table table-dark theme-table" style="max-width:max-content">
                                 <thead>
                                     <tr class="theme-tableOuter">

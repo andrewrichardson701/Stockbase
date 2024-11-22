@@ -1067,6 +1067,8 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 - [x] Put the changelog on the about page
 - [ ] Add an Assets page, for links to other asset management pages (e.g. optics, drives)
 - [ ] Add a drive storage page
+- [ ] Add a RAM / Memory storage page
+- [ ] Add a CPU storage page
 - [ ] Add pagination to the changelog.php page
 - [ ] Add option to link optics to site / area / shelf, not only the site
 - [ ] Cable stock auditing

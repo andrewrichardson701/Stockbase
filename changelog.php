@@ -329,7 +329,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 <?php
             }
         }
-        if ($total_pages !== NULL && $total_pages > 0) {
+        if ($total_pages !== NULL && $total_pages > 1) {
             if ( $total_pages > 1 && $total_pages <= 15){
                 if ($current_page > 1) {
                     echo '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';

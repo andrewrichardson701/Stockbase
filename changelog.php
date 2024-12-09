@@ -331,6 +331,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
         }
         if ($total_pages !== NULL && $total_pages > 1) {
             if ( $total_pages > 1 && $total_pages <= 15){
+                echo '<div class="container" style="text-align: center;">';
                 if ($current_page > 1) {
                     echo '<or class="gold clickable" style="padding-right:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page - 1).'\') + \'\')"><</or>';
                 }
@@ -363,6 +364,7 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                 if ($current_page < $total_pages) {
                     echo '<or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter(\'\', \'page\', \''.($current_page + 1).'\') + \'\')">></or>';
                 }  
+                echo ('</div>');
             } else {
                 echo ('
                 <form style="margin-bottom:0px">

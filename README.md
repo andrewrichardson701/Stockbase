@@ -1070,6 +1070,7 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 - [ ] Add a RAM / Memory storage page
 - [ ] Add a CPU storage page
 - [ ] Add pagination to the changelog.php page
+- [x] Add pagination to the transactions.php page
 - [ ] Add option to link optics to site / area / shelf, not only the site
 - [ ] Cable stock auditing
 

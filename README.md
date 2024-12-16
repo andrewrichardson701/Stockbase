@@ -1065,7 +1065,8 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 - [x] Format the output of the spreadsheet import for optics.
 - [x] Add a version checker, prompting when out of date and by how many releases
 - [x] Put the changelog on the about page
-- [ ] Add an Assets page, for links to other asset management pages (e.g. optics, drives)
+- [x] Add an Assets page, for links to other asset management pages (e.g. optics, drives)
+- [x] Change the optics link to be assets instead on the nav
 - [ ] Add a drive storage page
 - [ ] Add a RAM / Memory storage page
 - [ ] Add a CPU storage page

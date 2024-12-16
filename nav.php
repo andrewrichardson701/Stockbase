@@ -24,7 +24,7 @@
                 case 'cables':
                     $highlight = 2;
                     break;
-                case 'optics':
+                case 'assets':
                     $highlight = 3;
                     break;
                 case 'containers':
@@ -103,14 +103,12 @@
                 
             }
             if (isset($loggedin_role)) {
-                if (in_array($loggedin_role, $config_optics_roles_array)) {
-                    $n = 3;
-                    echo('
-                    <div id="optics-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-                        <a id="optics" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./optics.php">Optics</a>
-                    </div> 
-                    ');
-                }
+                $n = 3;
+                echo('
+                <div id="assets-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
+                    <a id="assets" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:'.$current_banner_text_color.' !important;'); if ($highlight == $n) { echo('text-decoration: underline !important;'); }  echo('" href="./assets.php">Assets</a>
+                </div> 
+                ');
             }
             if (isset($loggedin_role)) {
                 $n = 4;
@@ -183,9 +181,7 @@
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-boxes-stacked"></i></span><a href="./"'); if ($highlight == 1) { echo(' style="text-decoration: underline !important;"'); } echo('>Stock</a></li>
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-ethernet"></i></span><a href="./cablestock.php"'); if ($highlight == 2) { echo(' style="text-decoration: underline !important;"'); } echo('>Cables</a></li>');
                         if (isset($loggedin_role)) {
-                            if (in_array($loggedin_role, $config_optics_roles_array)) {
-                                echo('<li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wave-square"></i></span><a href="./optics.php"'); if ($highlight == 3) { echo(' style="text-decoration: underline !important;"'); } echo('>Optics</a></li>');
-                            }
+                            echo('<li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wave-square"></i></span><a href="./assets.php"'); if ($highlight == 3) { echo(' style="text-decoration: underline !important;"'); } echo('>Assets</a></li>');
                         }
                         echo('
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-box-open"></i></span><a href="./containers.php"'); if ($highlight == 4) { echo(' style="text-decoration: underline !important;"'); } echo('>Containers</a></li>

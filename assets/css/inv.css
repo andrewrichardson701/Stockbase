@@ -1259,3 +1259,8 @@ meter::-webkit-meter-even-less-good-value { background: red; }
 #version-changelog li{
     font-size:10px;
 }
+
+.no-perms {
+    opacity:.5; 
+    cursor: not-allowed;
+}

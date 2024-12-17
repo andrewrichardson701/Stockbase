@@ -22,7 +22,7 @@ $WorB_complement_banner_color = getWorB($complemenent_banner_color);
 </style>
 <div id="scrollTop" class="hideTranslate">
     <button onclick="topFunction()" class="scrollBtn" id="scrollBtn" title="Go to top.">
-        <i class="fa fa-chevron-up scrollIcon"></i> <span id="scrollText">Scroll to Top</span>
+        <i class="fa fa-chevron-up scrollIcon"></i> &nbsp;<span id="scrollText">Scroll to Top</span>
     </button>
 </div>
 

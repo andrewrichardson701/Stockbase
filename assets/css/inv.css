@@ -732,7 +732,7 @@ img.stock-imageOther {
 #scrollTop {
     display: block;
     position: fixed;
-    bottom: 35px;
+    bottom: 40px;
     right: -100px;
     z-index: 99;
     font-size: 18px;

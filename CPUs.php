@@ -53,9 +53,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <th class="align-middle">Vendor</th>
                                 <th class="align-middle">Model</th>
                                 <th class="align-middle">Cores</th>
-                                <th class="align-middle">Clock Speed</th>
+                                <th class="align-middle">Frequency</th>
                                 <th class="align-middle">Socket</th>
-                                <th colspan=2 class="align-middle"><button type="button" style="padding: 3px 6px 3px 6px" class="btn btn-success" onclick="no_modalLoadAddContainer()">+ Add New</button></th>
+                                <th class="align-middle">Site</th>
+                                <th class="align-middle">Area</th>
+                                <th class="align-middle">Shelf</th>
+                                <th colspan=3 class="align-middle"><button type="button" style="padding: 3px 6px 3px 6px" class="btn btn-success" onclick="no_modalLoadAddContainer()">+ Add New</button></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,8 +70,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <td class="text-center align-middle">4</td>
                                 <td class="text-center align-middle">4.2GHz</td>
                                 <td class="text-center align-middle">LGA 1151</td>
-                                <td></td>
-                                <td></td>
+                                <td class="text-center align-middle"><a href="">DC1</a></td>
+                                <td class="text-center align-middle"><a href="">Location 1</a></td>
+                                <td class="text-center align-middle"><a href="">Shelf 1</a></td>
+                                <td class="text-center align-middle" style="padding-right:2.5px"><button class="btn btn-info"><i class="fa fa-pencil"></i></button></td>
+                                <td class="text-center align-middle" style="padding-left:2.5px;padding-right:2.5px"><button class="btn btn-warning"><i class="fa fa-arrows-h"></i></button></td>
+                                <td class="text-center align-middle" style="padding-left:2.5px"><button class="btn btn-danger"><i class="fa fa-trash"></i></button></td>
                             </tr>  
                             <tr id="">
                                 <td class="text-center align-middle"><img id="image-'.$container_img_id.'" class="inv-img-main thumb" style="cursor:default !important" src="assets/img/stock/CPU.png"></td>
@@ -78,8 +85,12 @@ include 'session.php'; // Session setup and redirect if the session is not activ
                                 <td class="text-center align-middle">6</td>
                                 <td class="text-center align-middle">5.2GHz</td>
                                 <td class="text-center align-middle">AM5</td>
-                                <td></td>
-                                <td></td>
+                                <td class="text-center align-middle"><a href="">DC1</a></td>
+                                <td class="text-center align-middle"><a href="">Location 1</a></td>
+                                <td class="text-center align-middle"><a href="">Shelf 1</a></td>
+                                <td class="text-center align-middle" style="padding-right:2.5px"><button class="btn btn-info"><i class="fa fa-pencil"></i></button></td>
+                                <td class="text-center align-middle" style="padding-left:2.5px;padding-right:2.5px"><button class="btn btn-warning"><i class="fa fa-arrows-h"></i></button></td>
+                                <td class="text-center align-middle" style="padding-left:2.5px"><button class="btn btn-danger"><i class="fa fa-trash"></i></button></td>
                             </tr>   
                         </tbody>
                     </table>

@@ -1,4 +1,13 @@
 <h2>Changelog</h2>
+<h3>1.3.0 - Asset management</h3>
+<ul>
+    <li>Added an assets page. This shows all asset types that are stored (Optic, CPUs, RAM, PSUs, Fans, HDDs)</li>
+    <li>Changed the Nav links from optics to assets and all associations</li>
+    <li>Trialling an API (api.php) to GET information from the database</li>
+    <li>Added a CPU storage page (CPUs.php - this could change still)</li>
+    <li>Database structure changes for new asset management</li>
+    <li>API Keys being stored in the Database</li>
+</ul>
 <h3>1.2.3 - Credential features and optic importing</h3>
 <ul>
     <li>Updated changepassword page to include the new credentials features from the signup page</li>
@@ -10,6 +19,8 @@
     <li>Admin page now correctly displays the hidden deleted sites with the spacing and add button hidden too</li>
     <li>Added a version checker that runs every 15 minutes when the page is refreshed. Hover the version number to see it.</li>
     <li>Added the changelog to the about page.</li>
+    <li>Added pagination to the changelog for large content</li>
+    <li>Added pagination to the transactions page.</li>
 </ul>
 
 <h3>1.2.2 - Auditing fixes</h3>

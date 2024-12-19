@@ -1055,6 +1055,21 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 
 [Restyaboard Roadmap](https://todo.ajrich.co.uk)
 
+### In Progress
+
+- [ ] Add an API to GET information
+- [ ] Add API key storage to the database
+- [ ] Add a CPU storage page
+
+### Planned Changes
+
+- [ ] Add a drive storage page
+- [ ] Add a RAM / Memory storage page
+- [ ] Add option to link optics to site / area / shelf, not only the site
+- [ ] Cable stock auditing
+
+### Completed
+
 - [x] Favourites list
 - [x] Make the Optics search do a broader search, including spectrum
 - [x] Add a "show password" button on the login screen
@@ -1067,13 +1082,8 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 - [x] Put the changelog on the about page
 - [x] Add an Assets page, for links to other asset management pages (e.g. optics, drives)
 - [x] Change the optics link to be assets instead on the nav
-- [ ] Add a drive storage page
-- [ ] Add a RAM / Memory storage page
-- [ ] Add a CPU storage page
 - [x] Add pagination to the changelog.php page
 - [x] Add pagination to the transactions.php page
-- [ ] Add option to link optics to site / area / shelf, not only the site
-- [ ] Cable stock auditing
 
 See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) for a full list of proposed features (and known issues).
 

@@ -39,10 +39,17 @@ class StockController extends Controller
 
         $stock_inv_data = StockModel::getStockInvData($stock_id, $stock_data['is_cable']);
 
-        $stock_item_data = StockModel::getStockItemData($sock_id, $stock_data['is_cable']);
+        $stock_item_data = StockModel::getStockItemData($stock_id, $stock_data['is_cable']);
 
         $serial_numbers = StockModel::getDistinctSerials($stock_id);
 
+        $container_data = StockModel::getAllContainerData($stock_id);
+        $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
+
+        $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
+        $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area', 0));
+        $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf', 0));
+        
         return view('stock', ['params' => $params,
                                 'nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
@@ -51,7 +58,11 @@ class StockController extends Controller
                                 'stock_item_data' => $stock_item_data,
                                 'favourited' => $favourited,
                                 'serial_numbers' => $serial_numbers,
-                                
+                                'container_data' => $container_data,
+                                'manufacturers' => $manufacturers,
+                                'sites' => $sites,
+                                'areas' => $areas,
+                                'shelves' => $shelves,
                                 ]);
     }
 }

@@ -11,8 +11,9 @@ use App\Models\IndexModel;
 use App\Models\GeneralModel;
 use App\Models\FunctionsModel;
 use App\Models\ResponseHandlingModel;
-use App\Models\CablestockModel;
-use App\Models\AdminModel;
+
+
+use App\Models\StockModel;
 
 class IndexController extends Controller
 {
@@ -42,101 +43,46 @@ class IndexController extends Controller
                             ]);
     }
 
-    static public function test(Request $request)
+    static public function test(Request $request, $stock_id, $modify_type = null)
     {
-        $nav_highlight = 'admin'; // for the nav highlighting
+        $nav_highlight = 'stock'; // for the nav highlighting
+$stock_id=126;
+        $modify_types = ['add', 'remove', 'edit', 'move'];
 
+        // handle redirection on invalid modify type
+        if (!empty($modify_type) && !in_array($modify_type, $modify_types)) {
+            $modify_type = null;
+            return redirect()->route('stock', ['stock_id' => $stock_id]);
+        }
+
+        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type];
+        
         $nav_data = GeneralModel::navData($nav_highlight);
         $response_handling = ResponseHandlingModel::responseHandling($request);
-        
-        $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site'));
-        $site_links = AdminModel::attributeLinks('area', 'site_id', null, 1);
-        $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area'));
-        $area_links = AdminModel::attributeLinks('shelf', 'area_id', null, 1);
-        $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf'));
-        $shelf_links = AdminModel::attributeLinks('item', 'shelf_id', null, 1);
-        $location_colors = [
-                            0 => ['site' => '#F4BB44', 'area' => '#FFE47A', 'shelf' => '#FFDEAD'],
-                            1 => ['site' => '#6ABAD6', 'area' => '#99D4EF', 'shelf' => '#C1E9FC'],
-                            'deleted' => '#7E1515'
-                            ];
-        
-        $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));
-        
-        $users = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_old')); //update this to the correct users table
-        $user_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_roles'));
-        
-        $active_sessions = GeneralModel::formatArrayOnIdAndCount(AdminModel::getActiveSessionLog());
-        
-        $image_management_count = AdminModel::imageManagementCount();
-        
-        $stock = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('stock'));
-        $tags = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('tag'));
-        $tag_links = AdminModel::taggedStockByTagId();
+
+        $stock_data = StockModel::getStockData($stock_id);
+
+        $favourited = StockModel::checkFavourited($stock_id);
+
+        $stock_inv_data = StockModel::getStockInvData($stock_id, $stock_data['is_cable']);
+
+        $stock_item_data = StockModel::getStockItemData($stock_id, $stock_data['is_cable']);
+
+        $serial_numbers = StockModel::getDistinctSerials($stock_id);
+
+        $container_data = StockModel::getAllContainerData($stock_id);
         $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
-        $manufacturer_links = AdminModel::attributeLinks('item', 'manufacturer_id', null, 1);
         
-        $optics = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_item'));
-        $optic_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_vendor'));
-        $optic_vendor_links = AdminModel::attributeLinks('optic_item', 'vendor_id', 'id, vendor_id, model, serial_number', 1);
-        $optic_types = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_type'));
-        $optic_type_links = AdminModel::attributeLinks('optic_item', 'type_id', 'id, type_id, model, serial_number', 1);
-        $optic_speeds = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_type'));
-        $optic_speed_links = AdminModel::attributeLinks('optic_item', 'speed_id', 'id, speed_id, model, serial_number', 1);
-        $optic_connectors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_type'));
-        $optic_connector_links = AdminModel::attributeLinks('optic_item', 'connector_id', 'id, connector_id, model, serial_number', 1);
-        $optic_distances = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_type'));
-        $optic_distance_links = AdminModel::attributeLinks('optic_item', 'distance_id', 'id, distance_id, model, serial_number', 1);
-        
-        $deleted_stock = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('stock', 1));
-        
-        $notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('notifications'));
-
-        $changelog = GeneralModel::formatArrayOnIdAndCount(AdminModel::getChangelog10());
-        // $q_data = IndexModel::queryData($request); // query string data
-                    //  dd($optic_vendors);       
-        return view('test', ['nav_data' => $nav_data,
+        dd('stock', ['params' => $params,
+                                'nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
-                                'sites' => $sites,
-                                'site_links' => $site_links,
-                                'areas' => $areas,
-                                'area_links' => $area_links,
-                                'shelves' => $shelves,
-                                'shelf_links' => $shelf_links,
-                                'themes' => $themes,
-                                
-                                'users' => $users,
-                                'user_roles' => $user_roles,
-                                
-                                'active_sessions' => $active_sessions,
-                                
-                                'image_management_count' => $image_management_count,
-                                
-                                'stock' => $stock,
-                                'tags' => $tags,
-                                'tag_links' => $tag_links,
+                                'stock_data' => $stock_data,
+                                'stock_inv_data' => $stock_inv_data,
+                                'stock_item_data' => $stock_item_data,
+                                'favourited' => $favourited,
+                                'serial_numbers' => $serial_numbers,
+                                'container_data' => $container_data,
                                 'manufacturers' => $manufacturers,
-                                'manufacturer_links' => $manufacturer_links,
-                                
-                                'optics' => $optics,
-                                'optic_vendors' => $optic_vendors,
-                                'optic_vendor_links' => $optic_vendor_links,
-                                'optic_types' => $optic_types,
-                                'optic_type_links' => $optic_type_links,
-                                'optic_speeds' => $optic_speeds,
-                                'optic_speed_links' => $optic_speed_links,
-                                'optic_connectors' => $optic_connectors,
-                                'optic_connector_links' => $optic_connector_links,
-                                'optic_distances' => $optic_distances,
-                                'optic_distance_links' => $optic_distance_links,
-                                
-                                'deleted_stock' => $deleted_stock,
-                                'location_colors' => $location_colors,
-
-                                'notifications' => $notifications,
-
-                                'changelog' => $changelog,
-                                // 'q_data' => $q_data,
-                            ]);
+                                ]);
     }
 }

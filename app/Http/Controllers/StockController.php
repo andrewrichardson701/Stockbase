@@ -12,6 +12,7 @@ use Illuminate\View\View;
 use App\Models\GeneralModel;
 use App\Models\StockModel;
 use App\Models\ResponseHandlingModel;
+use App\Models\TransactionModel;
 
 class StockController extends Controller
 {
@@ -41,6 +42,8 @@ class StockController extends Controller
 
         $stock_item_data = StockModel::getStockItemData($stock_id, $stock_data['is_cable']);
 
+        $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, $stock_data['is_cable']);
+
         $serial_numbers = StockModel::getDistinctSerials($stock_id);
 
         $container_data = StockModel::getAllContainerData($stock_id);
@@ -49,13 +52,18 @@ class StockController extends Controller
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
         $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area', 0));
         $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf', 0));
-        
+
+        $page = $request['page'];
+
+        $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
+
         return view('stock', ['params' => $params,
                                 'nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
                                 'stock_data' => $stock_data,
-                                'stock_inv_data' => $stock_item_data,
+                                'stock_inv_data' => $stock_inv_data,
                                 'stock_item_data' => $stock_item_data,
+                                'stock_distinct_item_data' => $stock_distinct_item_data,
                                 'favourited' => $favourited,
                                 'serial_numbers' => $serial_numbers,
                                 'container_data' => $container_data,
@@ -63,6 +71,7 @@ class StockController extends Controller
                                 'sites' => $sites,
                                 'areas' => $areas,
                                 'shelves' => $shelves,
+                                'transactions' => $transactions
                                 ]);
     }
 }

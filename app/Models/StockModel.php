@@ -452,21 +452,25 @@ class StockModel extends Model
                         ->toarray();
 
         $r = 0;
-        foreach ($data as $row) {
-            if ($r == 0) {
-                $return = ['id' => $row['stock_id'],
-                    'name' => $row['stock_name'],
-                    'description' => $row['stock_description'],
-                    'sku' => $row['stock_sku'],
-                    'min_stock' => $row['stock_min_stock'],
-                    'is_cable' => $row['stock_is_cable'],
-                    'deleted' => $row['stock_deleted']
-                    ];
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                if ($r == 0) {
+                    $return = ['id' => $row['stock_id'],
+                        'name' => $row['stock_name'],
+                        'description' => $row['stock_description'],
+                        'sku' => $row['stock_sku'],
+                        'min_stock' => $row['stock_min_stock'],
+                        'is_cable' => $row['stock_is_cable'],
+                        'deleted' => $row['stock_deleted']
+                        ];
+                }
+                if (!empty($row['stock_img_id'])) {
+                    $return['img_data']['rows'][$row['stock_img_id']]['id'] = $row['stock_img_id'];
+                    $return['img_data']['rows'][$row['stock_img_id']]['stock_id'] = $row['stock_img_stock_id'];
+                    $return['img_data']['rows'][$row['stock_img_id']]['image'] = $row['stock_img_image'];
+                }
+                $r++;
             }
-            $return['img_data']['rows'][$row['stock_img_id']]['id'] = $row['stock_img_id'];
-            $return['img_data']['rows'][$row['stock_img_id']]['stock_id'] = $row['stock_img_stock_id'];
-            $return['img_data']['rows'][$row['stock_img_id']]['image'] = $row['stock_img_image'];
-            $r++;
         }
         $return['img_data']['count'] = count($return['img_data']['rows'] ?? []) ;
         $return['count'] = $r;
@@ -693,12 +697,12 @@ class StockModel extends Model
         $instance->setTable('item_container AS ic');
 
         $data = $instance->selectRaw('
-                            s.name AS s_name, 
-                            s.id AS s_id, 
-                            i.id AS i_id, 
-                            i.upc AS i_upc, 
-                            i.serial_number AS i_serial_number, 
-                            i.comments AS i_comments, 
+                            s.name AS stock_name, 
+                            s.id AS stock_id, 
+                            i.id AS item_id, 
+                            i.upc AS item_upc, 
+                            i.serial_number AS item_serial_number, 
+                            i.comments AS item_comments, 
                             ic.id AS ic_id
                         ')
                         ->join('item as i', function ($join) {
@@ -719,7 +723,8 @@ class StockModel extends Model
         
         return $return;
     }
-    static public function getStockItemData($stock_id, $is_cable)
+
+    static public function getDistinctStockItemData($stock_id, $is_cable)
     {
         $stock_inv_data = [];
 
@@ -745,16 +750,15 @@ class StockModel extends Model
                                     item.cost AS item_cost, 
                                     item.comments AS item_comments, 
                                     item.is_container AS item_is_container,
-                                    item.id as item_id,
                                     (SELECT SUM(quantity) 
-                                    FROM item 
+                                    FROM item AS i
                                     WHERE item.stock_id = stock.id 
-                                    AND item.shelf_id = shelf.id 
-                                    AND item.manufacturer_id = manufacturer.id 
-                                    AND item.serial_number = item.serial_number 
-                                    AND item.upc = item.upc 
-                                    AND item.comments = item.comments 
-                                    AND item.cost = item.cost) AS item_quantity, 
+                                    AND i.shelf_id = shelf.id 
+                                    AND i.manufacturer_id = manufacturer.id 
+                                    AND i.serial_number = item.serial_number 
+                                    AND i.upc = item.upc 
+                                    AND i.comments = item.comments 
+                                    AND i.cost = item.cost) AS item_quantity, 
                                     manufacturer.id AS manufacturer_id, 
                                     manufacturer.name AS manufacturer_name, 
                                     (SELECT GROUP_CONCAT(DISTINCT manufacturer.id ORDER BY manufacturer.name SEPARATOR ', ') 
@@ -791,8 +795,190 @@ class StockModel extends Model
                                     'area_id', 'area_name', 
                                     'shelf_id', 'shelf_name', 
                                     'manufacturer_name', 'manufacturer_id', 
-                                    'item_serial_number', 'item_upc', 'item_comments', 'item_cost', 'item_is_container', 'item_id'
+                                    'item_serial_number', 'item_upc', 'item_comments', 'item_cost', 'item_is_container'
                                 ])
+                                ->orderBy('site.id')
+                                ->orderBy('area.name')
+                                ->orderBy('shelf.name')
+                                ->get()
+                                ->toArray();
+
+        } elseif ($is_cable == 1) {
+            $rows = $instance->selectRaw('
+                        stock.id AS stock_id, 
+                        stock.name AS stock_name, 
+                        stock.description AS stock_description, 
+                        stock.sku AS stock_sku, 
+                        stock.min_stock AS stock_min_stock, 
+                        area.id AS area_id, 
+                        area.name AS area_name, 
+                        shelf.id AS shelf_id, 
+                        shelf.name AS shelf_name, 
+                        site.id AS site_id, 
+                        site.name AS site_name, 
+                        site.description AS site_description, 
+                        cable_item.cost AS item_cost, 
+                        (SELECT SUM(quantity) FROM cable_item 
+                            WHERE cable_item.stock_id = stock.id 
+                            AND cable_item.shelf_id = shelf.id) AS item_quantity, 
+                        (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                            FROM stock_tag 
+                            INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                            WHERE stock_tag.stock_id = stock.id 
+                            ORDER BY tag.name) AS tag_names, 
+                        (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                            FROM stock_tag 
+                            INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                            WHERE stock_tag.stock_id = stock.id 
+                            ORDER BY tag.name) AS tag_ids')
+                    ->leftJoin('cable_item', 'stock.id', '=', 'cable_item.stock_id')
+                    ->leftJoin('shelf', 'cable_item.shelf_id', '=', 'shelf.id')
+                    ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
+                    ->leftJoin('site', 'area.site_id', '=', 'site.id')
+                    ->where('stock.id', '=', $stock_id)
+                    ->where('quantity', '!=', 0)
+                    ->groupBy([
+                        'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
+                        'site_id', 'site_name', 'site_description', 
+                        'area_id', 'area_name', 
+                        'shelf_id', 'shelf_name',
+                        'item_cost'
+                    ])
+                    ->orderBy('site.id')
+                    ->orderBy('area.name')
+                    ->orderBy('shelf.name')
+                    ->get()
+                    ->toArray();
+        }
+
+        foreach ($rows as $row) {
+            if ($is_cable == 0) {
+                $stock_manufacturer_ids = $row['manufacturer_ids'];
+                $stock_manufacturer_names = $row['manufacturer_names'];
+                $stock_tag_ids = $row['tag_ids'];
+                $stock_tag_names = $row['tag_names'];
+
+                $stock_tag_data = [];
+                if ($stock_tag_ids !== null) {
+                    for ($n=0; $n < count(explode(", ", $stock_tag_ids)); $n++) {
+                        $stock_tag_data[$n] = array('id' => explode(", ", $stock_tag_ids)[$n],
+                                                            'name' => explode(", ", $stock_tag_names)[$n]);
+                    }
+                } else {
+                    $stock_tag_data = null;
+                }
+
+            } else {
+                $stock_tag_data = null;
+            }
+
+            $stock_item_data['rows'][] = array('id' => $row['stock_id'],
+                                        'name' => $row['stock_name'],
+                                        'sku' => $row['stock_sku'],
+                                        'quantity' => $row['item_quantity'] ?? 0,
+                                        'min_stock' => $row['stock_min_stock'],
+                                        'quantity' => $row['item_quantity'],
+                                        'shelf_id' => $row['shelf_id'],
+                                        'shelf_name' => $row['shelf_name'],
+                                        'area_id' => $row['area_id'],
+                                        'area_name' => $row['area_name'],
+                                        'site_id' => $row['site_id'],
+                                        'site_name' => $row['site_name'],
+                                        'manufacturer_id' => $row['manufacturer_id'] ?? null,
+                                        'manufacturer_name' => $row['manufacturer_name'] ?? null,
+                                        'tag_names' => $row['tag_names'] ?? null,
+                                        'upc' => $row['item_upc'] ?? null,
+                                        'cost' => $row['item_cost'] ?? 0,
+                                        'comments' => $row['item_comments'] ?? null,
+                                        'serial_number' => $row['item_serial_number'] ?? null,
+                                        'is_container' => $row['item_is_container'] ?? null,
+                                        ); 
+        }
+
+        $stock_item_data['count'] = count($stock_item_data['rows']);
+        $stock_item_data['tags'] = $stock_tag_data;
+
+        $total_quantity = 0;
+        foreach ($stock_item_data['rows'] as $row) {
+            $total_quantity = $total_quantity + (int)$row['quantity'];
+        }
+        $stock_item_data['total_quantity'] = $total_quantity;
+        
+        return $stock_item_data;
+    }
+
+    static public function getStockItemData($stock_id, $is_cable)
+    {
+        $stock_inv_data = [];
+
+        $instance = new self();
+        $instance->setTable('stock');
+
+        if ($is_cable == 0) {
+            $rows = $instance->selectRaw("
+                                    stock.id AS stock_id, 
+                                    stock.name AS stock_name, 
+                                    stock.description AS stock_description, 
+                                    stock.sku AS stock_sku, 
+                                    stock.min_stock AS stock_min_stock, 
+                                    area.id AS area_id, 
+                                    area.name AS area_name, 
+                                    shelf.id AS shelf_id, 
+                                    shelf.name AS shelf_name, 
+                                    site.id AS site_id, 
+                                    site.name AS site_name, 
+                                    site.description AS site_description, 
+                                    item.serial_number AS item_serial_number, 
+                                    item.upc AS item_upc, 
+                                    item.cost AS item_cost, 
+                                    item.comments AS item_comments, 
+                                    item.is_container AS item_is_container,
+                                    item.id AS item_id,
+                                    item.quantity AS item_quantity, 
+                                    manufacturer.id AS manufacturer_id, 
+                                    manufacturer.name AS manufacturer_name, 
+                                    item_container.container_id as container_id,
+                                    container.name as container_name,
+                                    container_item_stock.name as container_item_name,
+                                    item_container.container_is_item as container_is_item,
+                                    (SELECT GROUP_CONCAT(DISTINCT manufacturer.id ORDER BY manufacturer.name SEPARATOR ', ') 
+                                        FROM item 
+                                        INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
+                                        WHERE item.stock_id = stock.id
+                                    ) AS manufacturer_ids,
+                                    (SELECT GROUP_CONCAT(DISTINCT manufacturer.name ORDER BY manufacturer.name SEPARATOR ', ') 
+                                        FROM item 
+                                        INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
+                                        WHERE item.stock_id = stock.id
+                                    ) AS manufacturer_names,
+                                    (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                    FROM stock_tag 
+                                    INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                    WHERE stock_tag.stock_id = stock.id 
+                                    ORDER BY tag.name) AS tag_names, 
+                                    (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                    FROM stock_tag 
+                                    INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                    WHERE stock_tag.stock_id = stock.id 
+                                    ORDER BY tag.name) AS tag_ids
+                                ")
+                                ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+                                ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
+                                ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
+                                ->leftJoin('site', 'area.site_id', '=', 'site.id')
+                                ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+                                ->leftJoin('item_container', 'item_container.item_id', '=', 'item.id')
+                                ->leftJoin('container', function ($join) {
+                                    $join->on('item_container.container_id', '=', 'container.id')
+                                         ->where('item_container.container_is_item', '=', 0);
+                                })
+                                ->leftJoin('item AS container_item', function ($join) {
+                                    $join->on('item_container.container_id', '=', 'container_item.id')
+                                         ->where('item_container.container_is_item', '=', 1);
+                                })
+                                ->leftJoin('stock AS container_item_stock', 'container_item.stock_id', '=', 'container_item_stock.id')
+                                ->where('stock.id', $stock_id)
+                                ->where('item.quantity', '!=', 0)
                                 ->orderBy('site.id')
                                 ->orderBy('area.name')
                                 ->orderBy('shelf.name')
@@ -889,6 +1075,10 @@ class StockModel extends Model
                                         'comments' => $row['item_comments'] ?? null,
                                         'serial_number' => $row['item_serial_number'] ?? null,
                                         'is_container' => $row['item_is_container'] ?? null,
+                                        'container_id' => $row['container_id'] ?? null,
+                                        'container_name' => $row['container_name'] ?? null,
+                                        'container_item_name' => $row['container_item_name'] ?? null,
+                                        'container_is_item' => $row['container_is_item'] ?? null,
                                         ); 
         }
 

@@ -142,4 +142,4 @@
 </div>
 <!-- End of Modal Image Properties Div -->
 
-<script src="js/new-properties.js"></script>
+<script src="{{ asset('js/new-properties.js') }}"></script>

@@ -36,7 +36,7 @@
                 <a href="https://gitlab.com/andrewrichardson701/stockbase" class="link" style="font-size:12px" target="_blank">GitLab</a>
             @endif
             </div>                
-            <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="window.location.href='about'">
+            <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="window.location.href='{{ url('about') }}'">
                 Copyright &copy; {{ now()->year }} StockBase. All rights reserved.
             </div>
             <div class="col text-center viewport-large-empty">
@@ -66,4 +66,4 @@
 ?>
 
 <!-- Add the JS for the file -->
-<script src="js/foot.js"></script>
+<script src="{{ asset('js/foot.js') }}"></script>

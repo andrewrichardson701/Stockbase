@@ -25,7 +25,7 @@
 ">
 
 
-<link rel="icon" type="image/png" href="img/config/{{$head_data['config_compare']['favicon_image']}}">
+<link rel="icon" type="image/png" href="{{ asset('img/config/'. $head_data['config_compare']['favicon_image']) }}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap" rel="stylesheet">
@@ -33,16 +33,16 @@
 <!-- <link rel="stylesheet" href="./assets/css/main.css">
 <link rel="stylesheet" href="./assets/css/inv.css"> -->
 
-<link rel="stylesheet" href="css/main.css">
-<link rel="stylesheet" href="css/inv.css">
+<link rel="stylesheet" href="{{ asset('css/main.css') }}">
+<link rel="stylesheet" href="{{ asset('css/inv.css') }}">
 
 
 @if (isset($head_data['active_user']['theme_file_name']) && $head_data['active_user']['theme_file_name'] !== '') 
-    <link id="theme-css" rel="stylesheet" name="user-theme" href="css/{{$head_data['active_user']['theme_file_name']}}">
+    <link id="theme-css" rel="stylesheet" name="user-theme" href="{{ asset('css/'. $head_data['active_user']['theme_file_name']) }}">
 @elseif (isset($head_data['default_theme']['file_name']))
-    <link id="theme-css" rel="stylesheet" name="default-theme" href="css/{{$head_data['default_theme']['file_name']}}">
+    <link id="theme-css" rel="stylesheet" name="default-theme" href="{{ asset('css/'. $head_data['default_theme']['file_name']) }}">
 @else 
-    <link id="theme-css" rel="stylesheet" name="fallback-theme" href="css/theme-dark.css">
+    <link id="theme-css" rel="stylesheet" name="fallback-theme" href="{{ asset('css/theme-dark.css') }}">
 @endif
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -73,4 +73,4 @@
 </style>
 
 <!-- Add the JS for the file -->
-<script src="js/head.js"></script>
+<script src="{{ asset('js/head.js') }}"></script>

@@ -3,23 +3,23 @@
 <header class="nav inv-nav" style="position:fixed;width:100%;z-index:900">
     <div id="nav-row" class="nav-row viewport-large">
         <div class="logo-div">
-            <a href="./">
-                <img class="logo" src="img/config/{{$head_data['config_compare']['logo_image']}}" />
+            <a href="{{ url('/') }}">
+                <img class="logo" src="{{ asset('img/config/'. $head_data['config_compare']['logo_image']) }}" />
             </a>
         </div>
     @if (isset($head_data['user']['username'])) 
         <div id="add-div" class="nav-div" style="margin-right:5px">
-            <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @else style="opacity:90%" @endif onclick="navPage(updateQueryParameter('stock', 'modify', 'add'))">
+            <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @else style="opacity:90%" @endif onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'add'))">
                 <i class="fa fa-plus"></i> Add 
             </button>
         </div> 
         <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-            <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @endif onclick="navPage(updateQueryParameter('stock', 'modify', 'remove'))">
+            <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @endif onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'remove'))">
                 <i class="fa fa-minus"></i> Remove 
             </button>
         </div>
         <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-            <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav"  @if ($nav_data['button_dimming'] == 1) style="color:black;opacity:60%" @else style="color:black" @endif onclick="navPage(updateQueryParameter('stock', 'modify', 'move'))">
+            <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav"  @if ($nav_data['button_dimming'] == 1) style="color:black;opacity:60%" @else style="color:black" @endif onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'move'))">
                 <i class="fa fa-arrows-h"></i> Move 
             </button>
         </div>
@@ -38,16 +38,16 @@
 
     @if (isset($head_data['user']['id']))
         <div id="stock-div" class="nav-right nav-div">
-            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 1) text-decoration: underline !important; @endif" href="./">Stock</a>
+            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 1) text-decoration: underline !important; @endif" href="{{ url('/') }}">Stock</a>
         </div> 
         <div id="cables-div" class="nav-div">
-            <a id="cables" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 2) text-decoration: underline !important; @endif" href="cablestock">Cables</a>
+            <a id="cables" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 2) text-decoration: underline !important; @endif" href="{{ url('cablestock') }}">Cables</a>
         </div> 
         <div id="assets-div" class="nav-div">
-            <a id="assets" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 3) text-decoration: underline !important; @endif" href="assets">Assets</a>
+            <a id="assets" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 3) text-decoration: underline !important; @endif" href="{{ url('assets') }}">Assets</a>
         </div> 
         <div id="stock-div" class="nav-div">
-            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 4) text-decoration: underline !important; @endif" href="containers">Containers</a>
+            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 4) text-decoration: underline !important; @endif" href="{{ url('containers') }}">Containers</a>
         </div>
         
         @if (isset($head_data['user']['name']))
@@ -58,11 +58,11 @@
             <div class="nav-div float-right nav-float" style="width:120px;">
                 <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">
                      @if ($head_data['user']['role_id'] == 0 || $head_data['user']['role_id'] == 2) 
-                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="admin" @if ($nav_data['highlight_num'] == 5) style="text-decoration: underline !important" @endif>Admin</a></li>
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="{{ url('admin') }}" @if ($nav_data['highlight_num'] == 5) style="text-decoration: underline !important" @endif>Admin</a></li>
                         <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp;</li>
                      @endif
-                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a class="clickable link" style="margin-left:5px" href="profile" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
-                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a class="clickable link" style="margin-left:5px" href="favourites" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
+                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a class="clickable link" style="margin-left:5px" href="{{ url('profile') }}" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
+                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a class="clickable link" style="margin-left:5px" href="{{ url('favourites') }}" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
                     <li>
                         <span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-right-from-bracket"></i></span>
                         <form style="display:inline" method="POST" action="{{ route('logout') }}">
@@ -84,8 +84,8 @@
 
     <div id="nav-row" class="nav-row viewport-small">
         <div class="logo-div">
-            <a href="./">
-                <img class="logo" src="img/config/{{$head_data['config_compare']['logo_image']}}" />
+            <a href="{{ url('/') }}">
+                <img class="logo" src="{{ asset('img/config/'. $head_data['config_compare']['logo_image']) }}" />
             </a>
         </div>
         
@@ -102,14 +102,14 @@
         <div class="nav-div nav-right">
         @if (isset($head_data['user']['name']))
             <ul class="burger-links">
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-boxes-stacked"></i></span><a href="/" @if ($nav_data['highlight_num'] == 1) style="text-decoration: underline !important" @endif>Stock</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-ethernet"></i></span><a href="cablestock" @if ($nav_data['highlight_num'] == 2) style="text-decoration: underline !important" @endif>Cables</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-cubes-stacked"></i></span><a href="assets" @if ($nav_data['highlight_num'] == 3) style="text-decoration: underline !important" @endif>Assets</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-box-open"></i></span><a href="containers" @if ($nav_data['highlight_num'] == 4) style="text-decoration: underline !important" @endif>Containers</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-boxes-stacked"></i></span><a href="{{ url('/') }}" @if ($nav_data['highlight_num'] == 1) style="text-decoration: underline !important" @endif>Stock</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-ethernet"></i></span><a href="{{ url('cablestock') }}" @if ($nav_data['highlight_num'] == 2) style="text-decoration: underline !important" @endif>Cables</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-cubes-stacked"></i></span><a href="{{ url('assets') }}" @if ($nav_data['highlight_num'] == 3) style="text-decoration: underline !important" @endif>Assets</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-box-open"></i></span><a href="{{ url('containers') }}" @if ($nav_data['highlight_num'] == 4) style="text-decoration: underline !important" @endif>Containers</a></li>
                 <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp</li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a href="profile" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a href="favourites" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-right-from-bracket"></i></span><a href="logout">Logout</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a href="{{ url('profile') }}" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a href="{{ url('favourites') }}" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-right-from-bracket"></i></span><a href="{{ route('logout') }}">Logout</a></li>
             </ul>
             <div class="burger-menu nav-v-c theme-burger" style="color:{{$head_data['extras']['banner_text_color']}} !important"><i class="fa-solid fa-bars"></i></div>
         @endif
@@ -124,21 +124,21 @@
             <tr>
                 <td>
                     <div style="margin-right:5vw">
-                        <button id="add-stock" class="btn btn-success cw nav-v-b btn-nav scale_1-15" style="width:80px;opacity:90%" onclick="navPage(updateQueryParameter('stock.php', 'modify', 'add'))">
+                        <button id="add-stock" class="btn btn-success cw nav-v-b btn-nav scale_1-15" style="width:80px;opacity:90%" onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'add'))">
                             <i class="fa fa-plus"></i> Add 
                         </button>
                     </div>
                 </td>
                 <td>
                     <div>
-                        <button id="remove-stock" class="btn btn-danger cw btn-nav scale_1-15" style="width:80px;" onclick="navPage(updateQueryParameter('stock.php', 'modify', 'remove'))">
+                        <button id="remove-stock" class="btn btn-danger cw btn-nav scale_1-15" style="width:80px;" onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'remove'))">
                             <i class="fa fa-minus"></i> Remove 
                         </button>
                     </div>
                 </td>
                 <td>
                     <div style="margin-left:5vw">
-                        <button id="transfer-stock" class="btn btn-warning btn-nav scale_1-15" style="width:80px;color:black" onclick="navPage(updateQueryParameter('stock.php', 'modify', 'move'))">
+                        <button id="transfer-stock" class="btn btn-warning btn-nav scale_1-15" style="width:80px;color:black" onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'move'))">
                             <i class="fa fa-arrows-h"></i> Move 
                         </button>
                     </div>
@@ -150,4 +150,4 @@
 @endif
 
 <!-- Add the JS for the file -->
-<script src="js/nav.js"></script>
+<script src="{{ asset('js/nav.js') }}"></script>

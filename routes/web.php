@@ -11,6 +11,7 @@ use App\Http\Controllers\AssetsController;
 use App\Http\Controllers\ContainersController;
 use App\Http\Controllers\CablestockController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TransactionController;
 
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\AddHeadData;
@@ -39,6 +40,9 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::get('/stock/{stock_id}/{modify_type?}', [StockController::class, 'index'])
                 ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric
                 ->name('stock');
+            Route::get('/transactions/{stock_id?}', [TransactionController::class, 'index'])
+                ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric
+                ->name('transactions');
 
             // optics routes - auth in progress
 

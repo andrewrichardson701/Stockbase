@@ -16,12 +16,18 @@ Done    - Split the sections up into include files in /admin/<section-name>.blad
 
 
 - Stock page
-    - Figure out how to do the includes pages, perhaps like: stock/{stock_id}/{modify_type} - e.g. /stock/1/add
-    - Function 
+Done    - Figure out how to do the includes pages, perhaps like: stock/{stock_id}/{modify_type} - e.g. /stock/1/add
+Done    - Rewrite it all
+        - Figure out the Edit / Add / Delete / Move includes and rewrite them
+        - Figure out the backend bits for the form submission etc 
+        - all references to includes/stock-modify.inc.php need to be changed and fixed
+
 
 - Transactions include
-    - Create a function to get the transactions based on the requested id - not sure how this works with the stock/{stock_id}/{modify_type} stuff
-
+Done    - Create a function to get the transactions based on the requested id - not sure how this works with the stock/{stock_id}/{modify_type} stuff
+        - The information has been retrieved. The includes for the stock pages work filtering
+        - Need to figure out the Transactions page for purely transactions.
+        - ^ this currently loads all 100 in, but is needing some work
 
 - SMTP / Email stuff
     - create the email function

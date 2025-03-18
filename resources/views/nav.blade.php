@@ -9,17 +9,17 @@
         </div>
     @if (isset($head_data['user']['username'])) 
         <div id="add-div" class="nav-div" style="margin-right:5px">
-            <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @else style="opacity:90%" @endif onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'add'))">
+            <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @else style="opacity:90%" @endif onclick="navPage('{{ url('stock') }}/0/add')">
                 <i class="fa fa-plus"></i> Add 
             </button>
         </div> 
         <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-            <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @endif onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'remove'))">
+            <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @endif onclick="navPage('{{ url('stock') }}/0/remove')">
                 <i class="fa fa-minus"></i> Remove 
             </button>
         </div>
         <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-            <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav"  @if ($nav_data['button_dimming'] == 1) style="color:black;opacity:60%" @else style="color:black" @endif onclick="navPage(updateQueryParameter('{{ url('stock') }}', 'modify', 'move'))">
+            <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav"  @if ($nav_data['button_dimming'] == 1) style="color:black;opacity:60%" @else style="color:black" @endif onclick="navPage('{{ url('stock') }}/0/move')">
                 <i class="fa fa-arrows-h"></i> Move 
             </button>
         </div>

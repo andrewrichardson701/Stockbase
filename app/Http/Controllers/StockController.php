@@ -29,50 +29,53 @@ class StockController extends Controller
             return redirect()->route('stock', ['stock_id' => $stock_id]);
         }
 
-        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type];
-        
+        // if the modify_type isnt set to a valid type, and the id is 0, go to the add page
+        if ((empty($modify_type) || (!empty($modify_type) && !in_array($modify_type, $modify_types))) && $stock_id == 0) {
+            return redirect()->route('stock', ['stock_id' => $stock_id, 'modify_type' => 'add']);
+        }
+
+        $page = $request['page'] ?? 1;
+
+        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type, 'page' => $page];
+
         $nav_data = GeneralModel::navData($nav_highlight);
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
-        $stock_data = StockModel::getStockData($stock_id);
+        if ($stock_id != 0) {
+            $stock_data = StockModel::getStockData($stock_id);
 
-        $favourited = StockModel::checkFavourited($stock_id);
-        // dd((int)$stock_data['is_cable']);
-        $stock_inv_data = StockModel::getStockInvData($stock_id, (int)$stock_data['is_cable']);
+            $favourited = StockModel::checkFavourited($stock_id);
+            $stock_inv_data = StockModel::getStockInvData($stock_id, (int)$stock_data['is_cable']);
+            $stock_item_data = StockModel::getStockItemData($stock_id, (int)$stock_data['is_cable']);
+            $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, (int)$stock_data['is_cable']);
+            $serial_numbers = StockModel::getDistinctSerials($stock_id);
+            $container_data = StockModel::getAllContainerData($stock_id);
+            $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
+            
+        }
 
-        $stock_item_data = StockModel::getStockItemData($stock_id, (int)$stock_data['is_cable']);
-
-        $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, (int)$stock_data['is_cable']);
-
-        $serial_numbers = StockModel::getDistinctSerials($stock_id);
-
-        $container_data = StockModel::getAllContainerData($stock_id);
-        $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
+        $transactions['view'] = 'stock';
 
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
         $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area', 0));
         $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf', 0));
-
-        $page = $request['page'];
-
-        $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
-        $transactions['view'] = 'stock';
+        $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
 
         return view('stock', ['params' => $params,
                                 'nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
-                                'stock_data' => $stock_data,
-                                'stock_inv_data' => $stock_inv_data,
-                                'stock_item_data' => $stock_item_data,
-                                'stock_distinct_item_data' => $stock_distinct_item_data,
-                                'favourited' => $favourited,
-                                'serial_numbers' => $serial_numbers,
-                                'container_data' => $container_data,
-                                'manufacturers' => $manufacturers,
-                                'sites' => $sites,
-                                'areas' => $areas,
-                                'shelves' => $shelves,
-                                'transactions' => $transactions
+                                'stock_data' => $stock_data ?? null,
+                                'stock_inv_data' => $stock_inv_data ?? null,
+                                'stock_item_data' => $stock_item_data ?? null,
+                                'stock_distinct_item_data' => $stock_distinct_item_data ?? null,
+                                'favourited' => $favourited ?? null,
+                                'serial_numbers' => $serial_numbers ?? null,
+                                'container_data' => $container_data ?? null,
+                                'manufacturers' => $manufacturers ?? null,
+                                'sites' => $sites ?? null,
+                                'areas' => $areas ?? null,
+                                'shelves' => $shelves ?? null,
+                                'transactions' => $transactions ?? null,
                                 ]);
     }
 }

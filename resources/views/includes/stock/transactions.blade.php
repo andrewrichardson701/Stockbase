@@ -1,6 +1,4 @@
-<div class="container well-nopad theme-divBg viewport-large-empty" style="margin-top:5px">
 @if (isset($transactions) && $transactions['count'] > 0)
-    <h2 style="font-size:22px">Transactions</h2>
     <table class="table table-dark theme-table centertable" id="transactions">
         <thead>
             <tr style="white-space: nowrap;" class="theme-tableOuter">
@@ -75,7 +73,9 @@
             @if ($transactions['page'] < $transactions['pages'])
                 <or class="gold clickable" style="padding-left:2px" onclick="navPage(updateQueryParameter('', 'page', '{{ $transactions['page'] + 1}}') + '')">></or>
             @endif
-                &nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage('{{ url('transactions') }}/{{ $params['stock_id'] }}')">view all</or>
+                @if (isset($transactions['view']) && $transactions['view'] !== 'transactions')
+                    &nbsp;&nbsp;<or class="specialColor clickable" onclick="navPage('{{ url('transactions') }}/{{ $params['stock_id'] }}')">view all</or>
+                @endif
         @else 
             <form style="margin-bottom:0px">
                 <table class="centertable">
@@ -89,7 +89,9 @@
                                 @endfor
                                 </select>
                             </td>
+                            @if (isset($transactions['view']) && $transactions['view'] !== 'transactions')
                             <td><or class="specialColor clickable" onclick="navPage('{{ url('transactions') }}/{{ $params['stock_id'] }}')">view all</or></td>
+                            @endif
                         <tr>
                     </tbody>
                 </table>        
@@ -99,7 +101,3 @@
 @else 
     No Transactions
 @endif
-</div>
-<div class="container well-nopad theme-divBg viewport-small-empty text-center" style="margin-top:5px">
-    <or class="specialColor clickable" style="font-size:12px" onclick="navPage('{{ url('transactions') }}/{{ $params['stock_id'] }}')">View Transactions</or>
-</div>

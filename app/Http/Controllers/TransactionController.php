@@ -27,10 +27,14 @@ class TransactionController extends Controller
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         $transactions = TransactionModel::getTransactions($stock_id, 100, $page);
+        $transactions['view'] = 'transactions';
+        
+        $stock_data = StockModel::getStockData($stock_id);
 
         return view('transactions', ['params' => $params,
                                     'nav_data' => $nav_data,
                                     'response_handling' => $response_handling,
+                                    'stock_data' => $stock_data,
                                     'transactions' => $transactions
                                     ]);
     }

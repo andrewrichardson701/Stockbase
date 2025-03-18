@@ -85,82 +85,39 @@
                             </form>
                         </tr>
                         @foreach ($areas['rows'] as $area)
-                            @if ($area['deleted'] == 1)
-                            <tr class="location-deleted" style="background-color:{{ $location_colors['deleted'] }} !important; color:black" hidden>
-                            @else
-                            <tr style="background-color:{{ $location_colors[$loop->parent->iteration % 2]['area'] }} !important; color:black">
-                            @endif
-                                <form id="areaForm-{{ $area['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                    @csrf
-                                    <input type="hidden" id="area-{{ $area['id'] }}-type" name="type" value="area" />
-                                    <input type="hidden" id="area-{{ $area['id'] }}-id" name="id" value="{{ $area['id'] }}" />
-                                    <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td>
-                                    <td class="stockTD" style="border-left:2px solid #454d55; ">{{ $area['id'] }}</td>
-                                    <td class="stockTD" style=""><input id="area-{{ $area['id'] }}-name" class="form-control stockTD-input" type="text" name="name" value="{{ htmlspecialchars($area['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
-                                    <td class="stockTD" hidden><input id="area-{{ $area['id'] }}-description" class="form-control stockTD-input" type="text" name="description" value="{{ htmlspecialchars($area['description'], ENT_QUOTES, 'UTF-8') }}" /></td>
-                                    <td class="stockTD" hidden><input id="area-{{ $area['id'] }}-parent" type="hidden" name="area-site-id" value="{{ $area['site_id'] }}" /></td>
-                                    <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
-                                    <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
-                                        <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
-                                            <i class="fa fa-save"></i>
-                                        </button>
-                                    </td>
-                                    <td class="stockTD theme-table-blank">
-                                        <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit('{{ $area['id'] }}', 'area')">
-                                            <i class="fa fa-pencil"></i>
-                                        </button>
-                                    </td>
-                                </form>
-                                <form id="areaForm-delete-{{ $area['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="location-id" value="{{ $area['id'] }}" />
-                                    <td class="stockTD theme-table-blank">
-                                    @if ($area['deleted'] != 1)
-                                        <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" @if (($area_links[$area['id']]['count'] ?? 0) !== 0) disabled title="Dependencies exist for this object." @else title="Delete object" @endif >
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    @else
-                                        <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-restore-submit" value="area" type="submit" title="Restore object">
-                                            <i class="fa fa-trash-restore"></i>
-                                        </button>
-                                    @endif
-                                    </td>
-                                </form>
-                            </tr>
-                            
-                            @foreach($shelves['rows'] as $shelf)
-                                @if ($shelf['deleted'] == 1)
+                            @if ($area['site_id'] == $site['id'])
+                                @if ($area['deleted'] == 1)
                                 <tr class="location-deleted" style="background-color:{{ $location_colors['deleted'] }} !important; color:black" hidden>
                                 @else
-                                <tr style="background-color:{{ $location_colors[$loop->parent->parent->iteration % 2]['shelf'] }} !important; color:black">
+                                <tr style="background-color:{{ $location_colors[$loop->parent->iteration % 2]['area'] }} !important; color:black">
                                 @endif
-                                    <form id="shelfForm-{{ $shelf['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                    <form id="areaForm-{{ $area['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                         @csrf
-                                        <input type="hidden" id="shelf-{{ $shelf['id'] }}-site" name="site" value="{{ $site['id'] }}" />
-                                        <input type="hidden" id="shelf-{{ $shelf['id'] }}-type" name="type" value="shelf" />
-                                        <input type="hidden" id="shelf-{{ $shelf['id'] }}-id" name="id" value="{{ $shelf['id'] }}" />
-                                        <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td> 
-                                        <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden></td> <td hidden></td> <td hidden></td>
-                                        <td class="stockTD" style="border-left:2px solid #454d55; ">{{ $shelf['id'] }}</td>
-                                        <td class="stockTD" style=""><input id="shelf-{{ $shelf['id'] }}-name" class="form-control stockTD-input" type="text" name="name" value="{{ htmlspecialchars($shelf['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
-                                        <td class="stockTD" hidden><input id="shelf-{{ $shelf['id'] }}-parent" type="hidden" name="shelf-area-id" value="{{ $shelf['area_id']  }}" /></td>
+                                        <input type="hidden" id="area-{{ $area['id'] }}-type" name="type" value="area" />
+                                        <input type="hidden" id="area-{{ $area['id'] }}-id" name="id" value="{{ $area['id'] }}" />
+                                        <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td>
+                                        <td class="stockTD" style="border-left:2px solid #454d55; ">{{ $area['id'] }}</td>
+                                        <td class="stockTD" style=""><input id="area-{{ $area['id'] }}-name" class="form-control stockTD-input" type="text" name="name" value="{{ htmlspecialchars($area['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
+                                        <td class="stockTD" hidden><input id="area-{{ $area['id'] }}-description" class="form-control stockTD-input" type="text" name="description" value="{{ htmlspecialchars($area['description'], ENT_QUOTES, 'UTF-8') }}" /></td>
+                                        <td class="stockTD" hidden><input id="area-{{ $area['id'] }}-parent" type="hidden" name="area-site-id" value="{{ $area['site_id'] }}" /></td>
+                                        <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                         <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                             <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
                                                 <i class="fa fa-save"></i>
                                             </button>
                                         </td>
                                         <td class="stockTD theme-table-blank">
-                                            <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit('{{ $shelf['id'] }}', 'shelf')" >
+                                            <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit('{{ $area['id'] }}', 'area')">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
                                         </td>
                                     </form>
-                                    <form id="shelfForm-delete-{{ $shelf['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                    <form id="areaForm-delete-{{ $area['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
                                         @csrf
-                                        <input type="hidden" name="location-id" value="{{ $shelf['id'] }}" />
+                                        <input type="hidden" name="location-id" value="{{ $area['id'] }}" />
                                         <td class="stockTD theme-table-blank">
-                                        @if ($shelf['deleted'] != 1)
-                                            <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" @if (($shelf_links[$shelf['id']]['count'] ?? 0) !== 0) disabled title="Dependencies exist for this object." @else title="Delete object" @endif >
+                                        @if ($area['deleted'] != 1)
+                                            <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" @if (($area_links[$area['id']]['count'] ?? 0) !== 0) disabled title="Dependencies exist for this object." @else title="Delete object" @endif >
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         @else
@@ -171,7 +128,54 @@
                                         </td>
                                     </form>
                                 </tr>
-                            @endforeach
+                                
+                                @foreach($shelves['rows'] as $shelf)
+                                    @if ($shelf['area_id'] == $area['id'])
+                                        @if ($shelf['deleted'] == 1)
+                                        <tr class="location-deleted" style="background-color:{{ $location_colors['deleted'] }} !important; color:black" hidden>
+                                        @else
+                                        <tr style="background-color:{{ $location_colors[$loop->parent->parent->iteration % 2]['shelf'] }} !important; color:black">
+                                        @endif
+                                            <form id="shelfForm-{{ $shelf['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                @csrf
+                                                <input type="hidden" id="shelf-{{ $shelf['id'] }}-site" name="site" value="{{ $site['id'] }}" />
+                                                <input type="hidden" id="shelf-{{ $shelf['id'] }}-type" name="type" value="shelf" />
+                                                <input type="hidden" id="shelf-{{ $shelf['id'] }}-id" name="id" value="{{ $shelf['id'] }}" />
+                                                <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td> 
+                                                <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden></td> <td hidden></td> <td hidden></td>
+                                                <td class="stockTD" style="border-left:2px solid #454d55; ">{{ $shelf['id'] }}</td>
+                                                <td class="stockTD" style=""><input id="shelf-{{ $shelf['id'] }}-name" class="form-control stockTD-input" type="text" name="name" value="{{ htmlspecialchars($shelf['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
+                                                <td class="stockTD" hidden><input id="shelf-{{ $shelf['id'] }}-parent" type="hidden" name="shelf-area-id" value="{{ $shelf['area_id']  }}" /></td>
+                                                <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
+                                                    <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
+                                                        <i class="fa fa-save"></i>
+                                                    </button>
+                                                </td>
+                                                <td class="stockTD theme-table-blank">
+                                                    <button class="btn btn-info cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" type="button" onclick="modalLoadEdit('{{ $shelf['id'] }}', 'shelf')" >
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                </td>
+                                            </form>
+                                            <form id="shelfForm-delete-{{ $shelf['id'] }}" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="location-id" value="{{ $shelf['id'] }}" />
+                                                <td class="stockTD theme-table-blank">
+                                                @if ($shelf['deleted'] != 1)
+                                                    <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="area" type="submit" @if (($shelf_links[$shelf['id']]['count'] ?? 0) !== 0) disabled title="Dependencies exist for this object." @else title="Delete object" @endif >
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                @else
+                                                    <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-restore-submit" value="area" type="submit" title="Restore object">
+                                                        <i class="fa fa-trash-restore"></i>
+                                                    </button>
+                                                @endif
+                                                </td>
+                                            </form>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            @endif
                         @endforeach
                         <tr class="theme-table-blank @if ($site['deleted'] == 1) location-deleted" hidden @else " @endif>
                             <td colspan=6 class="stockTD">

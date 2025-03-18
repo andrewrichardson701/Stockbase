@@ -804,7 +804,7 @@ class StockModel extends Model
                                 ->toArray();
 
         } elseif ($is_cable == 1) {
-            $rows = $instance->selectRaw('
+            $rows = $instance->selectRaw("
                         stock.id AS stock_id, 
                         stock.name AS stock_name, 
                         stock.description AS stock_description, 
@@ -830,7 +830,7 @@ class StockModel extends Model
                             FROM stock_tag 
                             INNER JOIN tag ON stock_tag.tag_id = tag.id 
                             WHERE stock_tag.stock_id = stock.id 
-                            ORDER BY tag.name) AS tag_ids')
+                            ORDER BY tag.name) AS tag_ids")
                     ->leftJoin('cable_item', 'stock.id', '=', 'cable_item.stock_id')
                     ->leftJoin('shelf', 'cable_item.shelf_id', '=', 'shelf.id')
                     ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
@@ -909,7 +909,9 @@ class StockModel extends Model
 
     static public function getStockItemData($stock_id, $is_cable)
     {
-        $stock_inv_data = [];
+        $stock_item_data = [];
+        $stock_item_data['rows'] = [];
+        $stock_tag_data = null;
 
         $instance = new self();
         $instance->setTable('stock');
@@ -986,7 +988,7 @@ class StockModel extends Model
                                 ->toArray();
 
         } elseif ($is_cable == 1) {
-            $rows = $instance->selectRaw('
+            $rows = $instance->selectRaw("
                         stock.id AS stock_id, 
                         stock.name AS stock_name, 
                         stock.description AS stock_description, 
@@ -1012,7 +1014,7 @@ class StockModel extends Model
                             FROM stock_tag 
                             INNER JOIN tag ON stock_tag.tag_id = tag.id 
                             WHERE stock_tag.stock_id = stock.id 
-                            ORDER BY tag.name) AS tag_ids')
+                            ORDER BY tag.name) AS tag_ids")
                     ->leftJoin('cable_item', 'stock.id', '=', 'cable_item.stock_id')
                     ->leftJoin('shelf', 'cable_item.shelf_id', '=', 'shelf.id')
                     ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
@@ -1050,10 +1052,8 @@ class StockModel extends Model
                     $stock_tag_data = null;
                 }
 
-            } else {
-                $stock_tag_data = null;
             }
-
+            
             $stock_item_data['rows'][] = array('id' => $row['stock_id'],
                                         'name' => $row['stock_name'],
                                         'sku' => $row['stock_sku'],
@@ -1066,7 +1066,7 @@ class StockModel extends Model
                                         'area_name' => $row['area_name'],
                                         'site_id' => $row['site_id'],
                                         'site_name' => $row['site_name'],
-                                        'item_id' => $row['item_id'],
+                                        'item_id' => $row['item_id'] ?? null,
                                         'manufacturer_id' => $row['manufacturer_id'] ?? null,
                                         'manufacturer_name' => $row['manufacturer_name'] ?? null,
                                         'tag_names' => $row['tag_names'] ?? null,

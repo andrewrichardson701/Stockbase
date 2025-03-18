@@ -37,12 +37,12 @@ class StockController extends Controller
         $stock_data = StockModel::getStockData($stock_id);
 
         $favourited = StockModel::checkFavourited($stock_id);
+        // dd((int)$stock_data['is_cable']);
+        $stock_inv_data = StockModel::getStockInvData($stock_id, (int)$stock_data['is_cable']);
 
-        $stock_inv_data = StockModel::getStockInvData($stock_id, $stock_data['is_cable']);
+        $stock_item_data = StockModel::getStockItemData($stock_id, (int)$stock_data['is_cable']);
 
-        $stock_item_data = StockModel::getStockItemData($stock_id, $stock_data['is_cable']);
-
-        $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, $stock_data['is_cable']);
+        $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, (int)$stock_data['is_cable']);
 
         $serial_numbers = StockModel::getDistinctSerials($stock_id);
 
@@ -56,6 +56,7 @@ class StockController extends Controller
         $page = $request['page'];
 
         $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
+        $transactions['view'] = 'stock';
 
         return view('stock', ['params' => $params,
                                 'nav_data' => $nav_data,

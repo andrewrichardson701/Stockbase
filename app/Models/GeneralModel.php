@@ -232,13 +232,19 @@ class GeneralModel extends Model
 
         $keys = array_keys($config_default);
 
+        $nullable_fields = array('smtp_password', 'smtp_host', 'smtp_username',
+                                'ldap_host', 'ldap_host_secondary', 'ldap_port', 'ldap_basedn', 'ldap_usergroup', 'ldap_userfilter', 'ldap_password', 'ldap_domain');
+
         for ($k = 0; $k < count($keys); $k++) {
             $default = $config_default[$keys[$k]];
             $current = $config[$keys[$k]];
-
-            if ($current == null || $current == '') {
-                $current = $default;
+                
+            if (!in_array($keys[$k], $nullable_fields)) {
+                if ($current === null || $current === '') {
+                    $current = $default;
+                }
             }
+            
             $return_array[$keys[$k]] = $current;
         }
 

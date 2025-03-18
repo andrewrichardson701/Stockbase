@@ -491,7 +491,7 @@
                 </div>                 
             @endif
 
-            @include('includes.stock.transactions')
+            @include('includes.stock.stock-transactions')
         @endif
 
     </div>

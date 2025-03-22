@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     @include('head')
-    <title>{{$head_data['config_compare']['system_name']}} - Transactions</title>
+    <title>{{$head_data['config_compare']['system_name']}} - Stock</title>
 </head>
 <body>
     <!-- Header and Nav -->

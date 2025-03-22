@@ -24,7 +24,7 @@ function getInventory(search) {
         tagSelect.options[0].selected=true;
         getInventory(1); // run again to reset the filter if tags is stored.
         // console.log(url);
-        window.location.href = './tags.php?return='+encodeURIComponent(url);
+        window.location.href = './tags';
     }
 
     //console.log("_ajax-stock?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page);

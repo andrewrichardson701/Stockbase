@@ -14,7 +14,8 @@ use App\Models\ResponseHandlingModel;
 
 
 use App\Models\StockModel;
-use App\Models\TransactionModel;
+use App\Models\FavouritesModel;
+use App\Models\TagModel;
 
 class IndexController extends Controller
 {
@@ -44,61 +45,27 @@ class IndexController extends Controller
                             ]);
     }
 
-    static public function test(Request $request, $stock_id, $modify_type = null)
+    static public function error(Request $request)
     {
-        $nav_highlight = 'stock'; // for the nav highlighting
-$stock_id=88;
-        $modify_types = ['add', 'remove', 'edit', 'move'];
+        return view('error');
+    }
 
-        // handle redirection on invalid modify type
-        if (!empty($modify_type) && !in_array($modify_type, $modify_types)) {
-            $modify_type = null;
-            return redirect()->route('stock', ['stock_id' => $stock_id]);
-        }
-
-        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type];
-        
+    static public function test(Request $request)
+    {
+        $nav_highlight = 'tags'; // for the nav highlighting
         $nav_data = GeneralModel::navData($nav_highlight);
         $response_handling = ResponseHandlingModel::responseHandling($request);
+        $previous_url = GeneralModel::previousURL();
 
-        $stock_data = StockModel::getStockData($stock_id);
+        $tags = GeneralModel::getAllWhere('tag', ['deleted' => 0], 'name');
 
-        $favourited = StockModel::checkFavourited($stock_id);
+        $tag_data = TagModel::getAllStockFromTags($tags);
 
-        $stock_inv_data = StockModel::getStockInvData($stock_id, $stock_data['is_cable']);
-
-        $stock_item_data = StockModel::getStockItemData($stock_id, $stock_data['is_cable']);
-
-        $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, $stock_data['is_cable']);
-
-        $serial_numbers = StockModel::getDistinctSerials($stock_id);
-
-        $container_data = StockModel::getAllContainerData($stock_id);
-        $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
-        
-        $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
-        $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area', 0));
-        $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf', 0));
-
-        $page = $request['page'];
-
-        $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
-        // dd($transactions);
-        dd('stock', ['params' => $params,
-                                'nav_data' => $nav_data,
-                                'response_handling' => $response_handling,
-                                'stock_data' => $stock_data,
-                                'stock_inv_data' => $stock_inv_data,
-                                'stock_item_data' => $stock_item_data,
-                                'stock_distinct_item_data' => $stock_distinct_item_data,
-                                'favourited' => $favourited,
-                                'serial_numbers' => $serial_numbers,
-                                'container_data' => $container_data,
-                                'manufacturers' => $manufacturers,
-                                'sites' => $sites,
-                                'areas' => $areas,
-                                'shelves' => $shelves,
-                                'transactions' => $transactions
-                                ]);
+        dd('tags', ['previous_url' => $previous_url,
+                            'nav_data' => $nav_data,
+                            'response_handling' => $response_handling,
+                            'tag_data' => $tag_data,
+                            'tags' => $tags,
+                            ]);
     }
 }

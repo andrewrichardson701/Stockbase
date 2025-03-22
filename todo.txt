@@ -29,6 +29,18 @@ Done    - Create a function to get the transactions based on the requested id - 
         - Need to figure out the Transactions page for purely transactions.
         - ^ this currently loads all 100 in, but is needing some work
 
+
+- Favourites Page
+        - Needed:
+                - Stock info -> StockModel::getStockData($stock_id); this will be used to customise. Do the same as the img_data with areas and tags.
+                - Areas list ^
+                - Tags list ^
+                - SKU ^
+                - Name ^
+                - ID ^
+                - main image ^ img_data['rows'][0]
+
+
 - SMTP / Email stuff
     - create the email function
     - find a way to do SMTP in laravel easily

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneralModel;
+use App\Models\FavouritesModel;
 use Illuminate\Support\Facades\DB;
 
 class StockModel extends Model
@@ -478,9 +479,73 @@ class StockModel extends Model
         return $return;
     }
 
+    static public function getStockDataByTag($tag_id)
+    {
+        $return['rows'] = [];
+        $return['count'] = 0;
+
+        $instance = new self();
+        $instance->setTable('stock');
+
+        $data = $instance->distinct()
+                            ->selectRaw('stock.id AS stock_id, 
+                                        stock.name AS stock_name, 
+                                        stock.description AS stock_description, 
+                                        stock.sku AS stock_sku, 
+                                        stock.min_stock AS stock_min_stock, 
+                                        stock.is_cable AS stock_is_cable,
+                                        stock.deleted AS stock_deleted,
+                                        SUM(item.quantity) AS quantity')
+                            ->leftJoin('stock_tag', 'stock_tag.stock_id', '=', 'stock.id')
+                            ->leftJoin('tag', 'tag.id', '=', 'stock_tag.tag_id')
+                            ->leftJoin('item', 'item.stock_id', '=', 'stock.id')
+                            ->where('tag.id', '=', $tag_id)
+                            ->groupBy('stock.id', 
+                                    'stock.name', 
+                                    'stock.description', 
+                                    'stock.sku', 
+                                    'stock.min_stock', 
+                                    'stock.is_cable', 
+                                    'stock.deleted')
+                            ->get()
+                            ->toArray();
+
+        $img_instance = new self();
+        $img_instance->setTable('stock_img');          
+
+        if (count($data) > 0) {
+            foreach ($data as $row) {
+                $return['rows'][$row['stock_id']] = ['id' => $row['stock_id'],
+                    'name' => $row['stock_name'],
+                    'description' => $row['stock_description'],
+                    'sku' => $row['stock_sku'],
+                    'min_stock' => $row['stock_min_stock'],
+                    'is_cable' => $row['stock_is_cable'],
+                    'deleted' => $row['stock_deleted'],
+                    'quantity' => $row['quantity']
+                    ];
+                
+                $img_data = $img_instance->distinct()->selectRaw('stock_img.id AS id, 
+                                                    stock_img.stock_id AS stock_id, 
+                                                    stock_img.image AS image')
+                                        ->where('stock_img.stock_id', '=', $row['stock_id'])
+                                        ->orderby('stock_img.id')
+                                        ->get()
+                                        ->toarray();
+                
+                $return['rows'][$row['stock_id']]['img_data']['rows'] = $img_data;
+                $return['rows'][$row['stock_id']]['img_data']['count'] = count($return['rows'][$row['stock_id']]['img_data']['rows']);
+            }
+        }
+        
+        $return['count'] = count($return['rows']);
+
+        return $return;
+    }
+
     static public function checkFavourited($stock_id) 
     {
-        $favourites_list = GeneralModel::getUserFavourites(GeneralModel::getUser()['id']);
+        $favourites_list = FavouritesModel::getUserFavourites(GeneralModel::getUser()['id']);
 
         $favourites_rows = $favourites_list['rows'];
 
@@ -641,6 +706,7 @@ class StockModel extends Model
         
         return $stock_inv_data;
     }
+
     static public function getContainerChildren($container_id, $is_item) 
     {
         $return = [];
@@ -671,6 +737,7 @@ class StockModel extends Model
 
         return $return;
     }
+
     static public function getAllContainerData($stock_id)
     {
         $return = [];
@@ -688,6 +755,7 @@ class StockModel extends Model
 
         return $return;
     }
+
     static public function getContainerData($container_id, $is_item=0) 
     {
         $return = [];
@@ -1108,5 +1176,89 @@ class StockModel extends Model
                         ->distinct()
                         ->get()
                         ->toarray();
+    }
+
+    static public function getFavouriteStockData($stock_id)
+    {
+        $return = [];
+        $return['stock_data'] = [];
+        $return['img_data'] = [];
+        $return['area_data'] = [];
+        $return['tag_data'] = [];
+
+        $stock_instance = new self();
+        $stock_instance->setTable('stock');
+        $stock_data = $stock_instance->distinct()->selectRaw('stock.id AS id, 
+                                            stock.name AS name, 
+                                            stock.description AS description, 
+                                            stock.sku AS sku, 
+                                            stock.min_stock AS min_stock, 
+                                            stock.is_cable AS is_cable,
+                                            stock.deleted AS deleted')
+                                ->where('stock.id', '=', $stock_id)
+                                ->get()
+                                ->toarray();
+
+        $tag_instance = new self();
+        $tag_instance->setTable('tag');
+        $tag_data = $tag_instance->distinct()->selectRaw('tag.id AS id,
+                                        tag.name AS name,
+                                        tag.description AS description,
+                                        tag.deleted AS deleted,
+                                        stock_tag.id AS stock_tag_id,
+                                        stock_tag.stock_id AS stock_id')
+                                ->leftJoin('stock_tag', 'stock_tag.tag_id', '=', 'tag.id')
+                                ->where('stock_tag.stock_id', '=', $stock_id)
+                                ->get()
+                                ->toarray();
+
+        $img_instance = new self();
+        $img_instance->setTable('stock_img');          
+        $img_data = $img_instance->distinct()->selectRaw('stock_img.id AS id, 
+                                            stock_img.stock_id AS stock_id, 
+                                            stock_img.image AS image')
+                                ->where('stock_img.stock_id', '=', $stock_id)
+                                ->get()
+                                ->toarray();
+
+        $area_instance = new self();
+        $area_instance->setTable('area');         
+        $area_data = $area_instance->distinct()->selectRaw('area.id AS id,
+                                                area.name AS name,
+                                                area.site_id AS site_id')
+                                ->leftJoin('shelf', 'shelf.area_id', '=', 'area.id')
+                                ->leftJoin('item', 'item.shelf_id', '=', 'shelf.id')
+                                ->where('item.stock_id', '=', $stock_id)
+                                ->get()
+                                ->toarray();
+
+        if (count($stock_data) == 1) {
+            $data = $stock_data[0];
+            $return['stock_data'] = $data;
+            
+            if (count($tag_data) > 0) {
+                $return['tag_data']['rows'] = [];
+                foreach($tag_data as $tag) {
+                    $return['tag_data']['rows'][] = $tag;
+                }
+                $return['tag_data']['count'] = count($tag_data);
+            }
+            if (count($img_data) > 0) {
+                $return['img_data']['rows'] = [];
+                foreach($img_data as $img) {
+                    $return['img_data']['rows'][] = $img;
+                }
+                $return['img_data']['count'] = count($img_data);
+            }
+            if (count($area_data) > 0) {
+                $return['area_data']['rows'] = [];
+                foreach($area_data as $area) {
+                    $return['area_data']['rows'][] = $area;
+                }
+                $return['area_data']['count'] = count($area_data);
+            }
+        } 
+        
+        return $return;
     }
 }

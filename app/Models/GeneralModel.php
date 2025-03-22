@@ -69,22 +69,21 @@ class GeneralModel extends Model
                         ->toarray();
     }
 
-    static public function getAllWhere($table, $params)
+    static public function getAllWhere($table, $params, $orderby=null)
     {
-        if (empty($params)) {
-            return [];
-        }
-
         $instance = new self();
         $instance->setTable($table);
 
-        foreach (array_keys($params) as $key) {
-            $instance->where($key, '=', $params[$key]);
-        } 
+        if (!empty($params)) {
+            foreach (array_keys($params) as $key) {
+                $instance->where($key, '=', $params[$key]);
+            } 
+        }
 
-        return $instance->get()
-                ->toArray();
+        $query = $instance->orderBy($orderby ?? 'id'); // Default to 'id' if $orderby is null
 
+        return $query->get()
+                    ->toArray();
     }
 
     static public function allDistinctShelves($area, $deleted=null) 
@@ -366,26 +365,9 @@ class GeneralModel extends Model
         
         return $user_data;
     }
-    
-    static public function getUserFavourites($user_id)
+
+    static public function sessionData() 
     {
-        $return = [];
-        $instance = new self();
-        $instance->setTable('favourites');
-
-        $data = $instance->where('user_id', '=', $user_id)
-                        ->get()
-                        ->toarray();
-
-        $return['count'] = count($data) ?? 0;
-        foreach ($data as $row) {
-            $return['rows'][$row['stock_id']] = $row;
-        }
-
-        return $return;
-    }
-
-    static public function sessionData() {
         
     }
     

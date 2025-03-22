@@ -12,6 +12,8 @@ use App\Http\Controllers\ContainersController;
 use App\Http\Controllers\CablestockController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\FavouritesController;
+use App\Http\Controllers\TagController;
 
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\AddHeadData;
@@ -43,6 +45,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::get('/transactions/{stock_id?}', [TransactionController::class, 'index'])
                 ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric
                 ->name('transactions');
+            Route::get('/favourites', [FavouritesController::class, 'index'])->name('favourites'); // favourites page
+            Route::get('/tags', [TagController::class, 'index'])->name('tags'); // favourites page
 
             // optics routes - auth in progress
 
@@ -72,7 +76,7 @@ Route::middleware([AddHeadData::class])->group(function () {
 
         // no auth needed
         Route::get('/about', [AboutController::class, 'index'])->name('about'); // no auth needed
-
+        Route::get('/error', [IndexController::class, 'error'])->name('error'); // no auth needed
         Route::get('/test', [IndexController::class, 'test'])->name('test'); // Testing page
 
     });

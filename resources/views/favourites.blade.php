@@ -48,16 +48,14 @@
                         <td class="text-center align-middle">
                         @if ($row['area_data']['count'] > 0 && !empty($row['area_data']['rows']))
                             @foreach($row['area_data']['rows'] as $area)
-                            <or id="stock-{{ $row['stock_data']['id'] }}-area-{{ $area['id'] }}" class="gold link" onclick="navPage(updateQueryParameter(`{{ url('/') }}`, 'area', `{{ $area['id'] }}`))">{{ $area['name'] }}</or>
-                            @if (!$loop->last), @endif
+                            <or id="stock-{{ $row['stock_data']['id'] }}-area-{{ $area['id'] }}" class="gold link" onclick="navPage(updateQueryParameter(`{{ url('/') }}`, 'area', `{{ $area['id'] }}`))">{{ $area['name'] }}</or>@if (!$loop->last), @endif
                             @endforeach
                         @endif
                         </td>
                         <td class="text-center align-middle">
                         @if ($row['tag_data']['count'] > 0 && !empty($row['tag_data']['rows']))
                             @foreach($row['tag_data']['rows'] as $tag)
-                            <or id="stock-{{ $row['stock_data']['id'] }}-tag-{{ $tag['id'] }}" class="gold link" onclick="navPage(updateQueryParameter(`{{ url('/') }}`, 'tag', `{{ $tag['name'] }}`))">{{ $tag['name'] }}</or>
-                            @if (!$loop->last), @endif
+                            <or id="stock-{{ $row['stock_data']['id'] }}-tag-{{ $tag['id'] }}" class="gold link" onclick="navPage(updateQueryParameter(`{{ url('/') }}`, 'tag', `{{ $tag['name'] }}`))">{{ $tag['name'] }}</or>@if(!$loop->last), @endif
                             @endforeach
                         @endif
                         </td>

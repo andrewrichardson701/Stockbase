@@ -44,6 +44,20 @@ class GeneralModel extends Model
                         ->toarray();
     }
 
+    static public function allDistinctField($field, $table, $deleted=null) 
+    {
+        // get the current config for the system from the config table
+        $instance = new self();
+        $instance->setTable($table);
+
+        return $instance->distinct()->select($field)
+                        ->when($deleted !== null, function ($query) use ($deleted) {
+                            $query->where('deleted', '=', $deleted);
+                        })
+                        ->get()
+                        ->toarray();
+    }
+
     static public function allDistinctAreas($site, $deleted=null) 
     {
         // get the current config for the system from the config table
@@ -114,8 +128,15 @@ class GeneralModel extends Model
     static public function formatArrayOnId($array) 
     {
         $formatted = [];
+        $formatted['rows'] = [];
+        $i = 0;
         foreach ($array as $entry) { // format the data
-            $formatted[$entry['id']] = $entry;
+            if(isset($entry['id'])){
+                $formatted[$entry['id']] = $entry;
+            } else {
+                $formatted[$i] = $entry;
+            }
+            $i++;
         }
         return $formatted;
     }
@@ -123,9 +144,12 @@ class GeneralModel extends Model
     static public function formatArrayOnIdAndCount($array) 
     {
         $formatted = [];
+        $formatted['rows'] = [];
         
         $count = count($array);
         $formatted['count'] = $count;
+
+        $i = 0;
 
         foreach ($array as $entry) { // format the data
             if (isset($entry['deleted'])) {
@@ -136,7 +160,12 @@ class GeneralModel extends Model
                     $formatted['deleted_count']++;
                 }
             }
-            $formatted['rows'][$entry['id']] = $entry;
+            if (isset($entry['id'])) {
+                $formatted['rows'][$entry['id']] = $entry;
+            } else {
+                $formatted['rows'][$i] = $entry;
+            }
+            $i++;
         }
         
         return $formatted;

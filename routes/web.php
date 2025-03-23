@@ -14,6 +14,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\FavouritesController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\OpticsController;
 
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\AddHeadData;
@@ -49,6 +50,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::get('/tags', [TagController::class, 'index'])->name('tags'); // favourites page
 
             // optics routes - auth in progress
+            Route::get('/optics', [OpticsController::class, 'index'])->name('optics'); // admin page
 
             // admin routes - auth in progress
             Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // admin page

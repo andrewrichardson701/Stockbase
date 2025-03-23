@@ -121,7 +121,6 @@
                                 </tr>
                             @endif
 
-                            
                                 </tbody>
                             </table>
                             <p id="min-stock" style="margin-top:15px"><strong>Minimum Stock Count:</strong> <or class="specialColor">{{ $stock_data['min_stock'] }}</or></p>

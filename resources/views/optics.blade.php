@@ -623,7 +623,7 @@
     </div>  
     
 
-    @include('includes.optics.optics-modal')
+    @include('includes.optics.optics-modals')
 
     <!-- Add the JS for the file -->
     <script src="{{ asset('js/optics.js') }}"></script>

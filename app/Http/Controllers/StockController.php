@@ -59,7 +59,7 @@ class StockController extends Controller
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
         $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area', 0));
         $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf', 0));
-        $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
+        $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer', 0));
 
         return view('stock', ['params' => $params,
                                 'nav_data' => $nav_data,

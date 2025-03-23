@@ -26,6 +26,7 @@ class IndexController extends Controller
 
         $nav_data = GeneralModel::navData($nav_highlight);
         // $head_data = GeneralModel::headData();
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
         $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area', 0));
@@ -47,6 +48,7 @@ class IndexController extends Controller
 
     static public function error(Request $request)
     {
+        $request = $request->all(); // turn request into an array
         return view('error');
     }
 
@@ -54,6 +56,7 @@ class IndexController extends Controller
     {
         $nav_highlight = 'tags'; // for the nav highlighting
         $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
         $previous_url = GeneralModel::previousURL();
 

@@ -22,6 +22,7 @@ class FavouritesController extends Controller
         $nav_highlight = 'favourites'; // for the nav highlighting
 
         $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         $favourites = FavouritesModel::getFavouriteData(GeneralModel::getUser()['id']);

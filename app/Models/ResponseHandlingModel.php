@@ -9,6 +9,8 @@ class ResponseHandlingModel extends Model
     //
     static public function responseHandling($request) 
     {
+        $return = null;
+
         $defaultMessages = [
             'error' => [
                 'submitIssue' => 'Submission issue. Check your form for any submit values required.',
@@ -114,24 +116,30 @@ class ResponseHandlingModel extends Model
         $successPprefix = '<p class="container green">';
         $successPsuffix = '</p>';
 
-        $errorText = $defaultMessages['error'][$request['error']] ?? htmlspecialchars($request['error'] ?? '');
-        $sqlErrorText = $defaultMessages['sqlerror'][$request['sqlerror']] ?? htmlspecialchars($request['sqlerror'] ?? '');
-        $successText = $defaultMessages['success'][$request['success']] ?? htmlspecialchars($request['success'] ?? '');
+        if (isset($request['error'])) {
+            $errorText = $defaultMessages['error'][$request['error']] ?? htmlspecialchars($request['error'] ?? '');
+        }
+        if (isset($request['sqlerror'])) {
+            $sqlErrorText = $defaultMessages['sqlerror'][$request['sqlerror']] ?? htmlspecialchars($request['sqlerror'] ?? '');
+        }
+        if (isset($request['success'])) {
+            $successText = $defaultMessages['success'][$request['success']] ?? htmlspecialchars($request['success'] ?? '');
+        }
 
         if (isset($request['ajax']) && $request['ajax'] == 1) {
             return $errorText ?: $sqlErrorText ?: $successText;
         }
 
-        if ($errorText) {
-            return $errorPprefix . $errorText . $errorPsuffix;
+        if (isset($errorText)) {
+            $return .= $errorPprefix . $errorText . $errorPsuffix;
         }
-        if ($sqlErrorText) {
-            return $errorPprefix . $sqlErrorText . $errorPsuffix;
+        if (isset($sqlErrorText)) {
+            $return .= $errorPprefix . $sqlErrorText . $errorPsuffix;
         }
-        if ($successText) {
-            return $successPprefix . $successText . $successPsuffix;
+        if (isset($successText)) {
+            $return .= $successPprefix . $successText . $successPsuffix;
         }
 
-        return null;
+        return $return;
     }
 }

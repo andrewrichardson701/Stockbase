@@ -19,6 +19,7 @@ class AssetsController extends Controller
         $nav_highlight = 'assets'; // for the nav highlighting
 
         $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         return view('assets', ['nav_data' => $nav_data,

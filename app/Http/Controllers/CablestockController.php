@@ -21,6 +21,7 @@ class CablestockController extends Controller
         $nav_highlight = 'cables'; // for the nav highlighting
 
         $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
         $cable_types = GeneralModel::formatArrayOnIdAndCount(CablestockModel::getCableTypesByParent());

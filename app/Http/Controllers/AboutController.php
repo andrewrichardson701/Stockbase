@@ -19,6 +19,8 @@ class AboutController extends Controller
         $nav_highlight = 'about'; // for the nav highlighting
 
         $nav_data = GeneralModel::navData($nav_highlight);
+
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         return view('about', ['nav_data' => $nav_data,

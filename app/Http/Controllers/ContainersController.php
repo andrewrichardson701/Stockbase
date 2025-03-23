@@ -21,6 +21,7 @@ class ContainersController extends Controller
         $nav_highlight = 'containers'; // for the nav highlighting
 
         $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
         
         $container_data = ContainersModel::compileContainers();

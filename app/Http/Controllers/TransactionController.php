@@ -24,6 +24,7 @@ class TransactionController extends Controller
         $params = ['stock_id' => $stock_id, 'page' => $page];
         
         $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         $transactions = TransactionModel::getTransactions($stock_id, 100, $page);

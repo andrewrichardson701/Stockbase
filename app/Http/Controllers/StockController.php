@@ -39,6 +39,7 @@ class StockController extends Controller
         $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type, 'page' => $page];
 
         $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         if ($stock_id != 0) {

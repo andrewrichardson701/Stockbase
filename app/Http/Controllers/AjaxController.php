@@ -21,6 +21,7 @@ class AjaxController extends Controller
     public function getStockAjax(Request $request)
     {
         // Replace this with the actual DB logic from your PHP script
+        $request = $request->all(); // turn request into an array
         $stock = StockModel::returnStockAjax($request);
 
         // Return data as JSON
@@ -30,6 +31,7 @@ class AjaxController extends Controller
     public function getCablesAjax(Request $request)
     {
         // Replace this with the actual DB logic from your PHP script
+        $request = $request->all(); // turn request into an array
         $stock = CablestockModel::returnCablesAjax($request);
 
         // Return data as JSON
@@ -39,6 +41,7 @@ class AjaxController extends Controller
     public function getNearbyStockAjax(Request $request)
     {
         // Replace this with the actual DB logic from your PHP script
+        $request = $request->all(); // turn request into an array
         $stock = StockModel::getNearbyStockAjax($request);
 
         // Return data as JSON
@@ -47,6 +50,8 @@ class AjaxController extends Controller
 
     public function getSelectBoxes(Request $request)
     {
+        $request = $request->all(); // turn request into an array
+        
         if (isset($request['site'])) {
             $areas = AjaxController::getSelectBoxAreas(htmlspecialchars($request['site']));
 

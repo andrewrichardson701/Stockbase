@@ -21,17 +21,19 @@ class OpticsController extends Controller
         $nav_highlight = 'assets'; // for the nav highlighting
 
         $nav_data = GeneralModel::navData($nav_highlight);
+
+        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         $site = $request['site'] ?? 0;
         $search = $request['search'] ?? null;
         $add_form = $request['add_form'] ?? null;
         $deleted = $request['deleted'] ?? 0;
-        $optic_type = $request['optic_type'] ?? 0;
-        $optic_speed = $request['optic_speed'] ?? 0;
-        $optic_mode = $request['optic_mode'] ?? 0;
-        $optic_connector = $request['optic_connector'] ?? 0;
-        $optic_distance = $request['optic_distance'] ?? 0;
+        $optic_type = $request['type'] ?? 0;
+        $optic_speed = $request['speed'] ?? 0;
+        $optic_mode = $request['mode'] ?? 0;
+        $optic_connector = $request['connector'] ?? 0;
+        $optic_distance = $request['distance'] ?? 0;
 
         $form_model = $request['form_model'] ?? null;
         $form_spectrum = $request['form_spectrum'] ?? null;
@@ -48,7 +50,7 @@ class OpticsController extends Controller
         $rows = $request['rows'] ?? 20;
         $page = $request['page'] ?? 1;
 
-        $optics_data = OpticsModel::getoptics($request, $request['sort'], $deleted, $rows, $page);
+        $optics_data = OpticsModel::getOptics($request, $sort, $deleted, $rows, $page);
 
         $params = ['asset_type' => 'optics', 
                     'page' => $page,
@@ -58,7 +60,7 @@ class OpticsController extends Controller
                     'deleted' => $deleted,
                     'sort' => $sort,
                     'rows' => $rows,
-                    'request' => $request->toArray(),
+                    'request' => $request,
                     'optic_type' => $optic_type,
                     'optic_speed' => $optic_speed,
                     'optic_mode' => $optic_mode,

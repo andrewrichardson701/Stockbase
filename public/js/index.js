@@ -29,7 +29,7 @@ function getInventory(search) {
 
     //console.log("_ajax-stock?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page);
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "_ajax-stock?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
+    xhr.open("GET", "/_ajax-stock?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box

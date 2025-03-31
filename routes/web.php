@@ -40,8 +40,9 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::get('/cablestock', [CablestockController::class, 'index'])->name('cablestock'); // cablestock page
             Route::get('/assets', [AssetsController::class, 'index'])->name('assets'); // assets page
             Route::get('/containers', [ContainersController::class, 'index'])->name('containers'); // containers page
-            Route::get('/stock/{stock_id}/{modify_type?}', [StockController::class, 'index'])
-                ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric
+            Route::get('/stock/{stock_id}/{modify_type?}/{add_new?}/{search?}', [StockController::class, 'index'])
+                ->where('stock_id', '[0-9\-]+') // Ensure stock_id is numeric or -
+                ->where('add_new', '[a-z\-]+') // allow text and -
                 ->name('stock');
             Route::get('/transactions/{stock_id?}', [TransactionController::class, 'index'])
                 ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric

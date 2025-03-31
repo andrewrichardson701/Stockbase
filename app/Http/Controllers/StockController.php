@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 use Illuminate\View\View;
 
@@ -17,43 +18,95 @@ use App\Models\TransactionModel;
 class StockController extends Controller
 {
     //
-    static public function index(Request $request, $stock_id, $modify_type = null): View|RedirectResponse  
+    static public function index(Request $request, $stock_id, $modify_type = null, $add_new = null, $search = null): View|RedirectResponse  
     {
         $nav_highlight = 'stock'; // for the nav highlighting
 
         $modify_types = ['add', 'remove', 'edit', 'move'];
 
-        // handle redirection on invalid modify type
-        if (!empty($modify_type) && !in_array($modify_type, $modify_types)) {
-            $modify_type = null;
-            return redirect()->route('stock', ['stock_id' => $stock_id]);
+        // filtering urls for stock
+        // general rule:
+        if ($stock_id < 0) {
+            // route to stock/0/<modify_type>
+            if (isset($modify_type)) {
+                return redirect()->route('stock', ['stock_id' => 0, 'modify_type' => $modify_type]); 
+            } else {
+                return redirect()->route('stock', ['stock_id' => 0, 'modify_type' => 'add']);
+            }
         }
-
-        // if the modify_type isnt set to a valid type, and the id is 0, go to the add page
-        if ((empty($modify_type) || (!empty($modify_type) && !in_array($modify_type, $modify_types))) && $stock_id == 0) {
+        if (in_array($modify_type, $modify_types)) {
+            if ($modify_type == 'add') { // Adding of stock
+                // all non specified stock queries
+                if ((int)$stock_id == 0) {
+                    if ($add_new == 'new') {
+                        // this will be for brand new stock
+                        //  stock/0/add/new
+                        // no redirect needed
+                    } elseif ($add_new == '-') {
+                        // only valid for $search being set
+                        //    stock/0/add/-/search
+                        if ($search !== null) {
+                            // this is for the search page
+                            //    stock/0/add/-/search 
+                            // no redirect needed this page is valid
+                        } else {
+                            // route to stock/0/type
+                            return redirect()->route('stock', ['stock_id' => $stock_id, 'modify_type' => $modify_type]);
+                        }
+                    } elseif ($add_new !== null || $search !== null) {
+                        return redirect()->route('stock', ['stock_id' => $stock_id, 'modify_type' => $modify_type]);
+                    } 
+                } else {
+                    if ($add_new !== null || $search !== null) {
+                        // if the queries are filled, they shouldnt be, clear them
+                        return redirect()->route('stock', ['stock_id' => $stock_id, 'modify_type' => $modify_type]);
+                    }
+                }
+            } elseif ($modify_type == 'edit') {
+                if ($stock_id <= 0 || !is_numeric($stock_id)) {
+                    return redirect()->route('stock', ['stock_id' => 0, 'modify_type' => 'add']);
+                }
+            } else {
+                if ($add_new !== null || $search !== null) {
+                    // if the queries are filled, they shouldnt be, clear them
+                    return redirect()->route('stock', ['stock_id' => $stock_id, 'modify_type' => $modify_type]);
+                }
+            }
+        } elseif ($modify_type !== null) {
+            // if there is a modify_type set and it isnt expected, throw back to index
+            return redirect()->route('stock', ['stock_id' => $stock_id]);
+        } elseif ($stock_id == 0 && $modify_type == null) {
+            // if you hit /stock/0 -> go to /stock/0/add
             return redirect()->route('stock', ['stock_id' => $stock_id, 'modify_type' => 'add']);
         }
 
-        $page = $request['page'] ?? 1;
 
-        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type, 'page' => $page];
+        $page = $request['page'] ?? 1;
 
         $nav_data = GeneralModel::navData($nav_highlight);
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
-        if ($stock_id != 0) {
-            $stock_data = StockModel::getStockData($stock_id);
+        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type, 'page' => $page, 'add_new' => $add_new, 'search' => $search, 'request' => $request];
 
-            $favourited = StockModel::checkFavourited($stock_id);
-            $stock_inv_data = StockModel::getStockInvData($stock_id, (int)$stock_data['is_cable']);
-            $stock_item_data = StockModel::getStockItemData($stock_id, (int)$stock_data['is_cable']);
-            $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, (int)$stock_data['is_cable']);
-            $serial_numbers = StockModel::getDistinctSerials($stock_id);
-            $container_data = StockModel::getAllContainerData($stock_id);
-            $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
-            
-        }
+        if ($stock_id > 0 && is_numeric($stock_id)) {
+            $stock_data = StockModel::getStockData($stock_id);
+            if (isset($stock_data['id'])) {
+                $favourited = StockModel::checkFavourited($stock_id);
+                $stock_inv_data = StockModel::getStockInvData($stock_id, (int)$stock_data['is_cable']);
+                $stock_item_data = StockModel::getStockItemData($stock_id, (int)$stock_data['is_cable']);
+                $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, (int)$stock_data['is_cable']);
+                $serial_numbers = StockModel::getDistinctSerials($stock_id);
+                $container_data = StockModel::getAllContainerData($stock_id);
+                $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
+                $tagged = GeneralModel::formatArrayOnIdAndCount($stock_inv_data['tags']) ?? [];
+                $untagged = GeneralModel::formatArrayOnIdAndCount(GeneralModel::getAllWhereNotIn('tag', ['id' => array_keys($tagged) ?? []]));
+                $tag_data = ['tagged' => $tagged, 'untagged' => $untagged];
+            } else {
+                // if the item doesnt have any entry in the stocm table, default back to adding a new item.
+                return redirect()->route('stock', ['stock_id' => 0, 'modify_type' => 'add']);
+            }
+        } 
 
         $transactions['view'] = 'stock';
 
@@ -62,6 +115,10 @@ class StockController extends Controller
         $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf', 0));
         $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer', 0));
 
+        if ($modify_type == 'edit') {
+            $img_files = GeneralModel::getFilesInDirectory('img/stock');
+        } 
+        
         return view('stock', ['params' => $params,
                                 'nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
@@ -77,6 +134,8 @@ class StockController extends Controller
                                 'areas' => $areas ?? null,
                                 'shelves' => $shelves ?? null,
                                 'transactions' => $transactions ?? null,
+                                'tag_data' => $tag_data ?? null,
+                                'img_files' => $img_files ?? null,
                                 ]);
     }
 }

@@ -6,19 +6,6 @@
     <title>{{ $head_data['config_compare']['system_name'] }} - Admin</title>
 </head>
 <body>
-    <script>
-        // Redirect if the user is not in the admin list in the get-config.inc.php page. - this needs to be after the "include head.php" 
-        // if (!
-        // <?php 
-        // echo json_encode(in_array($_SESSION['role'], $head_data['config']_admin_roles_array)); 
-        // ?>
-        // ) {
-        //     window.location.href = './login.php';
-        // }
-    </script>
-
-    <!-- hidden link, commented out as no purpose currently -->
-    <!-- <a href="changelog.php" class="skip-nav-link-inv">changelog</a> -->
 
     <!-- Header and Nav -->
     @include('nav')
@@ -95,6 +82,7 @@
         // blade reliant scripts
 
         // scripts for users modifications
+        // this needs to be here instead of admin.js due to the csrf token being put in with blade
         function userRoleChange(id) {
             var select = document.getElementById("user_"+id+"_role_select");
             var selectedValue = select.value;

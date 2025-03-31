@@ -21,6 +21,7 @@ class StockModel extends Model
         $shelf = isset($request['shelf']) ? $request['shelf'] : "";
         $tag = isset($request['tag']) ? $request['tag'] : "";
         $manufacturer = isset($request['manufacturer']) ? $request['manufacturer'] : "";
+        $type = isset($request['type']) ? $request['type'] : null; // for checking if this is a normal search or for the add / remove query
 
         // Confirm the site and area are a match
         if (($site !== "0" && $site !== '' && $site !== 0) && ($area !== "0" && $area !== '' && $area !== 0)) {
@@ -45,112 +46,193 @@ class StockModel extends Model
             ->groupBy('item.stock_id', 'area.site_id');
 
         // Main query
-        $query = $instance->select([
-                'stock.id AS stock_id',
-                'stock.name AS stock_name',
-                'stock.description AS stock_description',
-                'stock.sku AS stock_sku',
-                'stock.min_stock AS stock_min_stock',
-                'stock.is_cable AS stock_is_cable',
-                DB::raw("GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names"),
-                'site.id AS site_id',
-                'site.name AS site_name',
-                'site.description AS site_description',
-                DB::raw('COALESCE(quantity_cte.total_item_quantity, 0) AS item_quantity'),
-                'tag_names.tag_names AS tag_names',
-                'tag_ids.tag_ids AS tag_ids',
-                'stock_img_image.stock_img_image',
-            ])
-            // ->distinct()
-            ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
-            ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
-            ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
-            ->leftJoin('site', 'area.site_id', '=', 'site.id')
-            ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
-            ->leftJoinSub(
-                DB::table('stock_img')
-                    ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
-                    ->groupBy('stock_id'),
-                'stock_img_image',
-                'stock_img_image.stock_id',
-                '=',
-                'stock.id'
-            )
-            ->leftJoinSub(
-                DB::table('stock_tag')
-                    ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
-                    ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
-                    ->groupBy('stock_tag.stock_id'),
-                'tag_names',
-                'tag_names.stock_id',
-                '=',
-                'stock.id'
-            )
-            ->leftJoinSub(
-                DB::table('stock_tag')
-                    ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
-                    ->groupBy('stock_tag.stock_id'),
-                'tag_ids',
-                'tag_ids.stock_id',
-                '=',
-                'stock.id'
-            )
-            ->leftJoinSub($quantityCTE, 'quantity_cte', function ($join) {
-                $join->on('stock.id', '=', 'quantity_cte.stock_id')
-                    ->on('site.id', '=', 'quantity_cte.site_id');
-            })
-            ->where('stock.is_cable', 0)
-            ->where('stock.deleted', 0)
-            ->when($oos === 0, function ($query) {
-                $query->where('item.deleted', 0);
-            })
-            ->when($site !== '0', function ($query) use ($site) {
-                $query->where('site.id', $site);
-            })
-            ->when($area !== '0', function ($query) use ($area) {
-                $query->where('area.id', $area);
-            })
-            ->when(!empty($name), function ($query) use ($name) {
-                $query->where(function ($subQuery) use ($name) {
-                    $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
-                            ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
-                            ->orWhere('stock.name', 'LIKE', "%{$name}%");
-                });
-            })
-            ->when(!empty($sku), function ($query) use ($sku) {
-                $query->where('stock.sku', 'LIKE', "%{$sku}%");
-            })
-            ->when(!empty($location), function ($query) use ($location) {
-                $query->where('area.name', 'LIKE', "%{$location}%");
-            })
-            ->when(!empty($shelf), function ($query) use ($shelf) {
-                $query->where('shelf.name', 'LIKE', "%{$shelf}%");
-            })
-            ->when(!empty($tag), function ($query) use ($tag) {
-                $query->where('tag_names', 'LIKE', "%{$tag}%");
-            })
-            ->when(!empty($manufacturer), function ($query) use ($manufacturer) {
-                $query->where('manufacturer.name', $manufacturer);
-            })
-            ->when($oos === 1, function ($query) {
-                $query->havingRaw('item_quantity IS NULL OR item_quantity = 0');
-            })
-            ->when($limit !== 0, function ($query) use ($limit) {
-                $query->limit($limit);
-            })
-            ->when($offset > 0, function ($query) use ($offset) {
-                $query->offset($offset);
-            })
-            ->groupBy([
-                'stock.id', 'stock.name', 'stock.description', 'stock.sku',
-                'stock.min_stock', 'stock.is_cable', 'site.id', 'site.name',
-                'site.description', 'stock_img_image.stock_img_image', 'quantity_cte.total_item_quantity',
-            ])
-            ->when($area != 0, function ($query) {
-                $query->groupBy('area.id');
-            })
-            ->orderBy('stock.name');
-
+        if ($type == null) {
+            $query = $instance->select([
+                    'stock.id AS stock_id',
+                    'stock.name AS stock_name',
+                    'stock.description AS stock_description',
+                    'stock.sku AS stock_sku',
+                    'stock.min_stock AS stock_min_stock',
+                    'stock.is_cable AS stock_is_cable',
+                    DB::raw("GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names"),
+                    'site.id AS site_id',
+                    'site.name AS site_name',
+                    'site.description AS site_description',
+                    DB::raw('COALESCE(quantity_cte.total_item_quantity, 0) AS item_quantity'),
+                    'tag_names.tag_names AS tag_names',
+                    'tag_ids.tag_ids AS tag_ids',
+                    'stock_img_image.stock_img_image',
+                ])
+                // ->distinct()
+                ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+                ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
+                ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
+                ->leftJoin('site', 'area.site_id', '=', 'site.id')
+                ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+                ->leftJoinSub(
+                    DB::table('stock_img')
+                        ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+                        ->groupBy('stock_id'),
+                    'stock_img_image',
+                    'stock_img_image.stock_id',
+                    '=',
+                    'stock.id'
+                )
+                ->leftJoinSub(
+                    DB::table('stock_tag')
+                        ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+                        ->groupBy('stock_tag.stock_id'),
+                    'tag_names',
+                    'tag_names.stock_id',
+                    '=',
+                    'stock.id'
+                )
+                ->leftJoinSub(
+                    DB::table('stock_tag')
+                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+                        ->groupBy('stock_tag.stock_id'),
+                    'tag_ids',
+                    'tag_ids.stock_id',
+                    '=',
+                    'stock.id'
+                )
+                ->leftJoinSub($quantityCTE, 'quantity_cte', function ($join) {
+                    $join->on('stock.id', '=', 'quantity_cte.stock_id')
+                        ->on('site.id', '=', 'quantity_cte.site_id');
+                })
+                ->where('stock.is_cable', 0)
+                ->where('stock.deleted', 0)
+                ->when($oos === 0, function ($query) {
+                    $query->where('item.deleted', 0);
+                })
+                ->when($site !== '0', function ($query) use ($site) {
+                    $query->where('site.id', $site);
+                })
+                ->when($area !== '0', function ($query) use ($area) {
+                    $query->where('area.id', $area);
+                })
+                ->when(!empty($name), function ($query) use ($name) {
+                    $query->where(function ($subQuery) use ($name) {
+                        $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+                                ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+                                ->orWhere('stock.name', 'LIKE', "%{$name}%");
+                    });
+                })
+                ->when(!empty($sku), function ($query) use ($sku) {
+                    $query->where('stock.sku', 'LIKE', "%{$sku}%");
+                })
+                ->when(!empty($location), function ($query) use ($location) {
+                    $query->where('area.name', 'LIKE', "%{$location}%");
+                })
+                ->when(!empty($shelf), function ($query) use ($shelf) {
+                    $query->where('shelf.name', 'LIKE', "%{$shelf}%");
+                })
+                ->when(!empty($tag), function ($query) use ($tag) {
+                    $query->where('tag_names', 'LIKE', "%{$tag}%");
+                })
+                ->when(!empty($manufacturer), function ($query) use ($manufacturer) {
+                    $query->where('manufacturer.name', $manufacturer);
+                })
+                ->when($oos === 1, function ($query) {
+                    $query->havingRaw('item_quantity IS NULL OR item_quantity = 0');
+                })
+                ->when($limit !== 0, function ($query) use ($limit) {
+                    $query->limit($limit);
+                })
+                ->when($offset > 0, function ($query) use ($offset) {
+                    $query->offset($offset);
+                })
+                ->groupBy([
+                    'stock.id', 'stock.name', 'stock.description', 'stock.sku',
+                    'stock.min_stock', 'stock.is_cable', 'site.id', 'site.name',
+                    'site.description', 'stock_img_image.stock_img_image', 'quantity_cte.total_item_quantity',
+                ])
+                ->when($area != 0, function ($query) {
+                    $query->groupBy('area.id');
+                })
+                ->orderBy('stock.name');
+        } else {
+            $query = $instance->select([
+                    'stock.id AS stock_id',
+                    'stock.name AS stock_name',
+                    'stock.description AS stock_description',
+                    'stock.sku AS stock_sku',
+                    'stock.min_stock AS stock_min_stock',
+                    'stock.is_cable AS stock_is_cable',
+                    DB::raw("SUM(item.quantity) AS item_quantity"),
+                    'tag_names.tag_names AS tag_names',
+                    'tag_ids.tag_ids AS tag_ids',
+                    'stock_img_image.stock_img_image',
+                    ])
+                // ->distinct()
+                ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+                ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+                ->leftJoinSub(
+                    DB::table('stock_img')
+                        ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+                        ->groupBy('stock_id'),
+                    'stock_img_image',
+                    'stock_img_image.stock_id',
+                    '=',
+                    'stock.id'
+                )
+                ->leftJoinSub(
+                    DB::table('stock_tag')
+                        ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+                        ->groupBy('stock_tag.stock_id'),
+                    'tag_names',
+                    'tag_names.stock_id',
+                    '=',
+                    'stock.id'
+                )
+                ->leftJoinSub(
+                    DB::table('stock_tag')
+                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+                        ->groupBy('stock_tag.stock_id'),
+                    'tag_ids',
+                    'tag_ids.stock_id',
+                    '=',
+                    'stock.id'
+                )
+                ->where('stock.is_cable', 0)
+                ->where('stock.deleted', 0)
+                ->when($oos === 0, function ($query) {
+                    $query->where('item.deleted', 0);
+                })
+                ->when(!empty($name), function ($query) use ($name) {
+                    $query->where(function ($subQuery) use ($name) {
+                        $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+                                ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+                                ->orWhere('stock.name', 'LIKE', "%{$name}%");
+                    });
+                })
+                ->when(!empty($sku), function ($query) use ($sku) {
+                    $query->where('stock.sku', 'LIKE', "%{$sku}%");
+                })
+                ->when(!empty($tag), function ($query) use ($tag) {
+                    $query->where('tag_names', 'LIKE', "%{$tag}%");
+                })
+                ->when(!empty($manufacturer), function ($query) use ($manufacturer) {
+                    $query->where('manufacturer.name', $manufacturer);
+                })
+                ->when($oos === 1, function ($query) {
+                    $query->havingRaw('item_quantity IS NULL OR item_quantity = 0');
+                })
+                ->when($limit !== 0, function ($query) use ($limit) {
+                    $query->limit($limit);
+                })
+                ->when($offset > 0, function ($query) use ($offset) {
+                    $query->offset($offset);
+                })
+                ->groupBy([
+                    'stock.id', 'stock.name', 'stock.description', 'stock.sku',
+                    'stock.min_stock', 'stock.is_cable',
+                    'stock_img_image.stock_img_image',
+                ])
+                ->orderBy('stock.name');
+        }
         return [
             'query' => $query,
             'data' => [
@@ -171,6 +253,7 @@ class StockModel extends Model
     {
         $results = []; // to return
         if (isset($request['request-inventory']) && $request['request-inventory'] == 1) {
+            $query_type = $request['type'] ?? null;
             $all_rows_data = StockModel::getStockAjax($request, 0, -1);
             if ($all_rows_data == null) {
                 return null;
@@ -206,19 +289,19 @@ class StockModel extends Model
 
             $page_number_area = StockModel::getPageNumberArea($total_pages, $current_page);
                 
-            $results[-1]['site'] = $site = $requested_rows_data['data']['site'];
-            $results[-1]['area'] = $area = $requested_rows_data['data']['area'];
-            $results[-1]['shelf'] = $shelf = $requested_rows_data['data']['shelf'];
-            $results[-1]['name'] = $name = $requested_rows_data['data']['name'];
-            $results[-1]['sku'] = $sku = $requested_rows_data['data']['sku'];
-            $results[-1]['location'] = $location = $requested_rows_data['data']['location'];
-            $results[-1]['tag'] = $tag = $requested_rows_data['data']['tag'];
-            $results[-1]['manufacturer'] = $manufacturer = $requested_rows_data['data']['manufacturer'];
+            $results[-1]['site'] = $site = $requested_rows_data['data']['site'] ?? 0;
+            $results[-1]['area'] = $area = $requested_rows_data['data']['area'] ?? 0;
+            $results[-1]['shelf'] = $shelf = $requested_rows_data['data']['shelf'] ?? 0;
+            $results[-1]['name'] = $name = $requested_rows_data['data']['name'] ?? null;
+            $results[-1]['sku'] = $sku = $requested_rows_data['data']['sku'] ?? null;
+            $results[-1]['location'] = $location = $requested_rows_data['data']['location'] ?? null;
+            $results[-1]['tag'] = $tag = $requested_rows_data['data']['tag'] ?? null;
+            $results[-1]['manufacturer'] = $manufacturer = $requested_rows_data['data']['manufacturer'] ?? null;
             $results[-1]['total-pages'] = $total_pages;
             $results[-1]['page-number-area'] = $page_number_area;
             $results[-1]['page'] = $page = $current_page;
             $results[-1]['rows'] = $rows = $results_per_page;
-            $results[-1]['oos'] = $oos = $requested_rows_data['data']['oos'];
+            $results[-1]['oos'] = $oos = $requested_rows_data['data']['oos'] ?? null;
             $results[-1]['url'] = "./?oos=$oos&site=$site&area=$area&name=$name&sku=$sku&shelf=$shelf&manufacturer=$manufacturer&tag=$tag&page=$page&rows=$rows";
             $results[-1]['sql'] = GeneralModel::interpolatedQuery($requested_rows_data['query']->toSql(),$requested_rows_data['query']->getBindings());
             $results[-1]['areas'] = GeneralModel::allDistinctAreas($site, 0);
@@ -236,24 +319,27 @@ class StockModel extends Model
                     $stock_name = $row['stock_name'];
                     $stock_sku = $row['stock_sku'];
                     $stock_quantity_total = $row['item_quantity'];
-                    $stock_locations = $row['area_names'];
-                    $stock_site_id = $row['site_id'];
-                    $stock_site_name = $row['site_name'];
+                    $stock_locations = $row['area_names'] ?? null;
+                    $stock_site_id = $row['site_id'] ?? null;
+                    $stock_site_name = $row['site_name'] ?? null;
                     $stock_tag_names = ($row['tag_names'] !== null) ? explode(", ", $row['tag_names']) : '---';
                     
 
                     // Echo each row (inside of SQL results)
 
                     $result =
-                    '<tr class="vertical-align align-middle highlight" id="'.$stock_id.'">
-                        <td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>
-                        <td class="align-middle" id="'.$stock_id.'-img-td">
-                        ';
+                    '<tr class="vertical-align align-middle highlight" id="'.$stock_id.'">';
+                    if ($query_type !== null) { 
+                        $result .= '<td class="align-middle" id="'.$stock_id.'-id">'.$stock_id.'</td>';
+                    } else {
+                        $result .= '<td class="align-middle" id="'.$stock_id.'-id" hidden>'.$stock_id.'</td>';
+                    }
+                    $result .= '<td class="align-middle" id="'.$stock_id.'-img-td">';
                     if (!is_null($stock_img_file_name)) {
-                        $result .= '<img id="'.$stock_id.'-img" class="inv-img-main thumb" src="'.$img_directory.$stock_img_file_name.'" alt="'.$stock_name.'" onclick="modalLoad(this)" />';
+                        $result .= '<img id="'.$stock_id.'-img" class="inv-img-main thumb" src="'.url($img_directory.$stock_img_file_name).'" alt="'.$stock_name.'" onclick="modalLoad(this)" />';
                     }
                     $result .= '</td>
-                        <td class="align-middle gold" id="'.$stock_id.'-name" style="white-space:wrap"><a class="link" href="stock/'.$stock_id.'">'.$stock_name.'</a></td>
+                        <td class="align-middle gold" id="'.$stock_id.'-name" style="white-space:wrap"><a class="link" href="'.url('stock/'.$stock_id.'/'.$query_type).'">'.$stock_name.'</a></td>
                         <td class="align-middle viewport-large-empty" id="'.$stock_id.'-sku">'.$stock_sku.'</td>
                         <td class="align-middle" id="'.$stock_id.'-quantity">'; 
                     if ($stock_quantity_total == 0) {
@@ -262,17 +348,19 @@ class StockModel extends Model
                         $result .= $stock_quantity_total;
                     }
                     $result .= '</td>';
-                    if ($site == 0) { $result .= '<td class="align-middle link gold" style="white-space: nowrap !important;"id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
-                    $result .= '</td>
-                    <td class="align-middle" id="'.$stock_id.'-location">'.$stock_locations.'</td>
-                    ';
-                    $result .= '<td class="align-middle viewport-large-empty" style="white-space: wrap" id="'.$stock_id.'-tag">';
-                    if (is_array($stock_tag_names)) {
-                        for ($o=0; $o < count($stock_tag_names); $o++) {
-                            $divider = $o < count($stock_tag_names)-1 ? ', ' : '';
-                            $result .= '<or class="gold link" onclick="navPage(updateQueryParameter(\'\', \'tag\', \''.$stock_tag_names[$o].'\'))">'.$stock_tag_names[$o].'</or>'.$divider;
-                        }
-                    } 
+                    if ($query_type == null) {
+                        if ($site == 0) { $result .= '<td class="align-middle link gold" style="white-space: nowrap !important;"id="'.$stock_id.'-site" onclick="navPage(updateQueryParameter(\'\', \'site\', \''.$stock_site_id.'\'))">'.$stock_site_name.'</td>'; }
+                        $result .= '</td>
+                        <td class="align-middle" id="'.$stock_id.'-location">'.$stock_locations.'</td>
+                        ';
+                        $result .= '<td class="align-middle viewport-large-empty" style="white-space: wrap" id="'.$stock_id.'-tag">';
+                        if (is_array($stock_tag_names)) {
+                            for ($o=0; $o < count($stock_tag_names); $o++) {
+                                $divider = $o < count($stock_tag_names)-1 ? ', ' : '';
+                                $result .= '<or class="gold link" onclick="navPage(updateQueryParameter(\'\', \'tag\', \''.$stock_tag_names[$o].'\'))">'.$stock_tag_names[$o].'</or>'.$divider;
+                            }
+                        } 
+                    }
                     $result .= '</tr>';
                     
                     $results[] = $result;
@@ -799,6 +887,8 @@ class StockModel extends Model
         $instance = new self();
         $instance->setTable('stock');
 
+        $stock_item_data = $stock_tag_data = ['rows' => []];
+        
         if ($is_cable == 0) {
             $rows = $instance->selectRaw("
                                     stock.id AS stock_id, 
@@ -963,7 +1053,7 @@ class StockModel extends Model
                                         ); 
         }
 
-        $stock_item_data['count'] = count($stock_item_data['rows']);
+        $stock_item_data['count'] = count($stock_item_data['rows']) ?? 0;
         $stock_item_data['tags'] = $stock_tag_data;
 
         $total_quantity = 0;

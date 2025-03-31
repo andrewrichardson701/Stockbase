@@ -92,9 +92,9 @@ function modalImageInputFill(element) {
 
     var imageThumb = document.getElementById('img-selected-thumb');
 
-    inputBoxVisible.value = '/assets/img/stock/'+element.alt;
+    inputBoxVisible.value = '/img/stock/'+element.alt;
     inputBox.value = element.alt;
-    imageThumb.src = '/assets/img/stock/'+element.alt;
+    imageThumb.src = '/img/stock/'+element.alt;
     imageThumb.alt = element.alt;
 }
 

@@ -695,6 +695,7 @@ class StockModel extends Model
                 ->leftJoin('area AS a', 'sh.area_id', '=', 'a.id')
                 ->leftJoin('site AS si', 'a.site_id', '=', 'si.id')
                 ->where('s.id', '=', $stock_id)
+                ->where('quantity', '>', 0)
                 ->groupBy(
                     's.id', 's.name', 's.description', 's.sku', 's.min_stock', 
                     'si.id', 'si.name', 'si.description', 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\FunctionsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class GeneralModel extends Model
 {
@@ -91,6 +92,23 @@ class GeneralModel extends Model
         if (!empty($params)) {
             foreach (array_keys($params) as $key) {
                 $instance->where($key, '=', $params[$key]);
+            } 
+        }
+
+        $query = $instance->orderBy($orderby ?? 'id'); // Default to 'id' if $orderby is null
+
+        return $query->get()
+                    ->toArray();
+    }
+
+    static public function getAllWhereNotIn($table, $params, $orderby=null)
+    {
+        $instance = new self();
+        $instance->setTable($table);
+
+        if (!empty($params)) {
+            foreach (array_keys($params) as $key) {
+                $instance->whereNotIn($key, $params[$key]);
             } 
         }
 
@@ -711,5 +729,16 @@ class GeneralModel extends Model
     static public function newProperty($request) 
     {
 
+    }
+
+    static public function getFilesInDirectory($directory)
+    {
+        $path = public_path('img/stock'); // Get full path to the folder
+        $files = File::files($path); // Get all files in the directory
+
+        // Extract filenames without full paths
+        $fileNames = array_map(fn($file) => $file->getFilename(), $files);
+
+        return $fileNames;
     }
 }

@@ -84,20 +84,21 @@ class GeneralModel extends Model
                         ->toarray();
     }
 
-    static public function getAllWhere($table, $params, $orderby=null)
+    static public function getAllWhere($table, $params, $orderby = null)
     {
         $instance = new self();
         $instance->setTable($table);
 
+        $query = $instance->newQuery(); // ✅ Start a new query builder
+
         if (!empty($params)) {
-            foreach (array_keys($params) as $key) {
-                $instance->where($key, '=', $params[$key]);
-            } 
+            foreach ($params as $key => $value) {
+                $query->where($key, $value); // ✅ Correctly applying `where()`
+            }
         }
 
-        $query = $instance->orderBy($orderby ?? 'id'); // Default to 'id' if $orderby is null
-
-        return $query->get()
+        return $query->orderBy($orderby ?? 'id') // ✅ Correctly chaining `orderBy()`
+                    ->get()
                     ->toArray();
     }
 
@@ -106,15 +107,16 @@ class GeneralModel extends Model
         $instance = new self();
         $instance->setTable($table);
 
+        $query = $instance->newQuery(); // ✅ Start a new query builder
+
         if (!empty($params)) {
             foreach (array_keys($params) as $key) {
-                $instance->whereNotIn($key, $params[$key]);
+                $query->whereNotIn($key, $params[$key]);
             } 
         }
 
-        $query = $instance->orderBy($orderby ?? 'id'); // Default to 'id' if $orderby is null
-
-        return $query->get()
+        return $query->orderBy($orderby ?? 'id') // Default to 'id' if $orderby is null
+                    ->get()
                     ->toArray();
     }
 
@@ -408,6 +410,9 @@ class GeneralModel extends Model
                     $user_data[$key] = $data[0][$key];
                 }
             } 
+            
+            $user_data['role_data'] = GeneralModel::getAllWhere('users_roles', ['id' => $user_data['role_id'] ?? 1])[0] ?? [];
+            $user_data['theme_data'] = GeneralModel::getAllWhere('theme', ['id' => $user_data['theme_id'] ?? 1])[0] ?? [];
         }
         
         return $user_data;

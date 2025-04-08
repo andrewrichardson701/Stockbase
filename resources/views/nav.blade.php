@@ -1,4 +1,25 @@
 <!-- Navigation Bar for the top of the page, using the config settings for logo and colour -->
+<style>
+.inv-nav {
+    background-color: {{$head_data['config_compare']['banner_color']}} ;
+    z-index:0px;
+}
+.inv-nav-secondary {
+    background-color: {{$head_data['extras']['nav_secondary_color']}} ;
+    z-index:0px;
+}
+
+.favouriteBtn {
+    background-color: {{$head_data['config_compare']['banner_color']}} ;
+    color: {{$head_data['extras']['banner_text_color']}} ;
+}
+
+.favouriteBtn:hover {
+    background-color: {{$head_data['extras']['fav_btn_hover_bg']}} ;
+    color: {{$head_data['extras']['fav_btn_hover_text']}} ;
+}
+
+</style>
 <a href="./" class="nav-head" style="position:fixed;z-index:999;color:{{$head_data['extras']['banner_text_color']}} !important">{{$head_data['config_compare']['system_name']}}</a>
 <header class="nav inv-nav" style="position:fixed;width:100%;z-index:900">
     <div id="nav-row" class="nav-row viewport-large">

@@ -36,9 +36,8 @@
 <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 <link rel="stylesheet" href="{{ asset('css/inv.css') }}">
 
-
-@if (isset($head_data['active_user']['theme_file_name']) && $head_data['active_user']['theme_file_name'] !== '') 
-    <link id="theme-css" rel="stylesheet" name="user-theme" href="{{ asset('css/'. $head_data['active_user']['theme_file_name']) }}">
+@if (isset($head_data['user']['theme_data']['file_name']) && $head_data['user']['theme_data']['file_name'] !== '') 
+    <link id="theme-css" rel="stylesheet" name="user-theme" href="{{ asset('css/'. $head_data['user']['theme_data']['file_name']) }}">
 @elseif (isset($head_data['default_theme']['file_name']))
     <link id="theme-css" rel="stylesheet" name="default-theme" href="{{ asset('css/'. $head_data['default_theme']['file_name']) }}">
 @else 
@@ -49,28 +48,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="https://adobe-fonts.github.io/source-code-pro/source-code-pro.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css">
-
-<style>
-.inv-nav {
-    background-color: {{$head_data['config_compare']['banner_color']}} ;
-    z-index:0px;
-}
-.inv-nav-secondary {
-    background-color: {{$head_data['extras']['nav_secondary_color']}} ;
-    z-index:0px;
-}
-
-.favouriteBtn {
-    background-color: {{$head_data['config_compare']['banner_color']}} ;
-    color: {{$head_data['extras']['banner_text_color']}} ;
-}
-
-.favouriteBtn:hover {
-    background-color: {{$head_data['extras']['fav_btn_hover_bg']}} ;
-    color: {{$head_data['extras']['fav_btn_hover_text']}} ;
-}
-
-</style>
 
 <!-- Add the JS for the file -->
 <script src="{{ asset('js/head.js') }}"></script>

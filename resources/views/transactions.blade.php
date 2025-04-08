@@ -20,5 +20,3 @@
     
     @include('foot')
 </body>
-
-{{ dd($transactions) }}

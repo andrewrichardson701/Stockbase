@@ -144,7 +144,7 @@
                                 @endif
                                 </select>
                             </div>
-                            @if (in_array($head_data['user']['role_id'], [0,2]))
+                            @if (in_array($head_data['user']['role_id'], [1,3]))
                             <div>
                                 <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('site')">Add New (admin only)</label>
                             </div>
@@ -337,7 +337,7 @@
                                 @endif
                                 </select>
                             </div>
-                            @if (in_array($head_data['user']['role_id'], [0,2]))
+                            @if (in_array($head_data['user']['role_id'], [1,3]))
                             <div>
                                 <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('site')">Add New (admin only)</label>
                             </div>

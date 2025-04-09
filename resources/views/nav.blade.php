@@ -78,7 +78,7 @@
         <div style="width:100%">
             <div class="nav-div float-right nav-float" style="width:120px;">
                 <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">
-                     @if ($head_data['user']['role_id'] == 0 || $head_data['user']['role_id'] == 2) 
+                     @if ($head_data['user']['role_id'] == 1 || $head_data['user']['role_id'] == 3) 
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="{{ url('admin') }}" @if ($nav_data['highlight_num'] == 5) style="text-decoration: underline !important" @endif>Admin</a></li>
                         <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp;</li>
                      @endif

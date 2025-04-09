@@ -21,6 +21,8 @@ class FavouritesModel extends Model
                         ->toarray();
 
         $return['count'] = count($data) ?? 0;
+        $return['rows'] = [];
+        
         foreach ($data as $row) {
             $return['rows'][$row['stock_id']] = $row;
         }

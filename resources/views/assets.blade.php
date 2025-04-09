@@ -18,7 +18,7 @@
 
         <div class="container">
             <div class="row ">
-                <div class="col text-center well-nopad theme-divBg @if (in_array($head_data['user']['role_id'], [0, 2]))  clickable" onclick="navPage(`{{ url('optics') }}`)" @else  no-perms" title="Not permitted" @endif
+                <div class="col text-center well-nopad theme-divBg @if (in_array($head_data['user']['role_id'], [1, 3]))  clickable" onclick="navPage(`{{ url('optics') }}`)" @else  no-perms" title="Not permitted" @endif
                 style="margin:5px">
                     <h4>Optics</h4>
                     <img style="max-width:100px;overflow:hidden;" src="/img/stock/SFP.png">

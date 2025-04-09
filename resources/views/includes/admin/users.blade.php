@@ -26,7 +26,7 @@
                             <th>Enabled</th>
                             <th>Password</th>
                             <th>2FA</th>
-                            @if ($head_data['user']['role_id'] == 0) <th></th> @endif
+                            @if ($head_data['user']['role_id'] == 1) <th></th> @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -43,21 +43,21 @@
                             <td id="user_{{ $user['id'] }}_role" style="vertical-align: middle;">
                                 <select class="form-control" id="user_{{ $user['id'] }}_role_select" style="min-width:max-content; padding-top:0px; padding-bottom:0px" onchange="userRoleChange('{{ $user['id'] }}')" @if ((int)$user['id'] == 0) disabled @endif >
                                 @foreach ($user_roles['rows'] as $role)
-                                    <option value="{{ $role['id'] }}" title="{{ $role['description'] }}" @if ($user['role_id'] == $role['id']) selected @endif @if ((int)$role['id'] == 0) disabled @endif>{{ ucwords($role['name']) }}</option>
+                                    <option value="{{ $role['id'] }}" title="{{ $role['description'] }}" @if ($user['role_id'] == $role['id']) selected @endif @if ((int)$role['id'] == 1) disabled @endif>{{ ucwords($role['name']) }}</option>
                                 @endforeach
                                 </select>
                             </td>
                             <td id="user_{{ $user['id'] }}_auth" style="vertical-align: middle;">{{ $user['auth'] }}</td>
                             <td style="vertical-align: middle;"><input type="checkbox" id="user_{{ $user['id'] }}_enabled_checkbox" @if ($user['enabled'] == 1) checked @endif onchange="usersEnabledChange('{{ $user['id'] }}')"></td>
                             <td style="vertical-align: middle;">
-                                <button class="btn btn-warning" style="padding: 2px 6px 2px 6px" id="user_{{ $user['id'] }}_pwreset" onclick="resetPassword('{{ $user['id'] }}')" @if ($user['auth'] == 'ldap' || (int)$user['role_id'] == 0 || (int)$user['role_id'] == 2) disabled @endif >Reset</button>
+                                <button class="btn btn-warning" style="padding: 2px 6px 2px 6px" id="user_{{ $user['id'] }}_pwreset" onclick="resetPassword('{{ $user['id'] }}')" @if ($user['auth'] == 'ldap' || (int)$user['role_id'] == 1 || (int)$user['role_id'] == 3) disabled @endif >Reset</button>
                             </td>
                             <td style="vertical-align: middle;">
                             @if ($user['id'] !== 0)
                                 <button class="btn btn-primary" id="reset_2fa" style="padding: 2px 6px 2px 6px" onclick="modalLoadReset2FA({{ $user['id'] }})">Reset 2FA</button>
                             @endif
                             </td>
-                            @if ((int)$head_data['user']['role_id'] == 0)
+                            @if ((int)$head_data['user']['role_id'] == 1)
                             <td style="vertical-align: middle;">   
                                 <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0px;margin:0px">
                                     @csrf

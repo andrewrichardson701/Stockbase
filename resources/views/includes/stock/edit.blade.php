@@ -79,23 +79,7 @@
                         @endif
                         </div>
                     </div>
-                    <style>
-                        #tags {
-                        display: inline-block;
-                        padding-top:2px;
-                        padding-bottom:2px;
-                        width: auto;
-                        }
-                        
-                        #tags option {
-                        display: inline-block;
-                        padding: 3px;
-                        margin-right: 10px;
-                        background-color: #f1f1f1;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        }
-                    </style>
+                    
                 </div>
             </form>
         </div>

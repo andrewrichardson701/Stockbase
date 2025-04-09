@@ -1264,3 +1264,27 @@ meter::-webkit-meter-even-less-good-value { background: red; }
     opacity:.5; 
     cursor: not-allowed;
 }
+
+.th-selected {
+    background-color: #202328;
+    border: 0px !important;
+}
+.th-noBorder {
+    border: 0px !important;
+}
+
+#tags {
+    display: inline-block;
+    padding-top:2px;
+    padding-bottom:2px;
+    width: auto;
+}
+
+#tags option {
+    display: inline-block;
+    padding: 3px;
+    margin-right: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

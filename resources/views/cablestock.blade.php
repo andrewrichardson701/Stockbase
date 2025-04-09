@@ -211,15 +211,7 @@
             <div id="caption" class="modal-caption"></div>
         </div>
         <!-- End of Modal Image Div -->
-        <style>
-        .th-selected {
-            background-color: #202328;
-            border: 0px !important;
-        }
-        .th-noBorder {
-            border: 0px !important;
-        }
-        </style>
+
         <!-- Table -->
         <div class="container">
             <pre id="hidden-sql" hidden></pre>

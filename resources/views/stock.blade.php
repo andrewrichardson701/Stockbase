@@ -26,7 +26,7 @@
                 <h2 class="header-small" style="padding-bottom:5px">Stock - {{ ucwords($params['modify_type']) }}</h2>
                 {!! $response_handling !!}
             </div>
-            @include('includes.stock.stock-' . $params['modify_type'])
+            @include('includes.stock.' . $params['modify_type'])
         @else
             @if (($stock_data['count'] ?? 0) < 1)
                 <div class="container" id="no-stock-found">No Stock Found</div>
@@ -490,7 +490,7 @@
                 </div>                 
             @endif
 
-            @include('includes.stock.stock-transactions')
+            @include('includes.stock.transactions')
         @endif
 
     </div>

@@ -62,23 +62,6 @@
                     </select>
 
                     <select id="tags" name="tags[]" multiple class="form-control stock-inputSize" style="margin-top:2px;display: inline-block;height:40px"></select>
-                    <style>
-                        #tags {
-                        display: inline-block;
-                        padding-top:2px;
-                        padding-bottom:2px;
-                        width: auto;
-                        }
-                        
-                        #tags option {
-                        display: inline-block;
-                        padding: 3px;
-                        margin-right: 10px;
-                        background-color: #f1f1f1;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        }
-                    </style>
                     <script>
                     var selectBox = document.getElementById("tag-select");
                     var selectedBox = document.getElementById("tags");

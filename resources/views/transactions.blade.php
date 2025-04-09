@@ -14,7 +14,7 @@
             <h2 class="header-small" style="padding-bottom:5px">Transactions - <a class="link" href="{{ url('stock') }}/{{ $params['stock_id'] }}">{{ $stock_data['name'] }}</a> - Stock ID: {{ $params['stock_id'] }} @if ($stock_data['is_cable'] == 1)  (cable)@endif</h2>
         </div>
         <div class="container">
-            @include('includes.stock.transactions')
+            @include('includes.transactions')
         </div>
     </div>
     

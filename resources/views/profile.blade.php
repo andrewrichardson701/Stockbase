@@ -12,9 +12,9 @@
     </head>
     <body class="font-sans antialiased">
         @include('nav')
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen">
             <!-- Page Heading -->
-            <header class="dark:bg-gray-800 shadow" style="padding-top:60px">
+            <header class="theme-divBg shadow" style="padding-top:60px">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                         Profile
@@ -25,7 +25,7 @@
             <main>
                 <div class="py-12">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                        <div class="p-4 sm:p-8  dark:bg-gray-800 shadow sm:rounded-lg">
+                        <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
                             <div class="max-w-xl">
                                 <section>
                                     <header>
@@ -165,7 +165,7 @@
                             </div>
                         </div>
 
-                        <div class="p-4 sm:p-8  dark:bg-gray-800 shadow sm:rounded-lg">
+                        <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
                             <div class="max-w-xl">
                                 <section>
                                     <header>

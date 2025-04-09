@@ -100,7 +100,7 @@
                         <input id="query-site" type="hidden" name="site" value="{{$q_data['site']}}" /> 
                         <input id="query-area" type="hidden" name="area" value="{{$q_data['area']}}" />
                         <input id="query-oos" type="hidden" name="oos" value="{{$q_data['oos']}}" /> 
-                        <span id="search-input-site-span" style="margin-bottom:10px;" class="index-dropdown">
+                        <span id="search-input-site-span" style="margin-bottom:10px; margin-right:10px" class="index-dropdown">
                             <label for="search-input-site">Site</label><br>
                             <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
                                 <option value="0" @if ($q_data['site'] == 0) selected @endif >All</option>
@@ -109,7 +109,7 @@
                             @endforeach
                             </select>
                         </span>
-                        <span id="search-input-area-span" style="margin-bottom:10px;" class="index-dropdown">
+                        <span id="search-input-area-span" style="margin-bottom:10px; margin-right:10px" class="index-dropdown">
                             <label for="area-dropdown">Area</label><br>
                             <select id="area-dropdown" name="area" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
                                 <option value="0" @if ($q_data['area'] == 0) selected @endif >All</option>

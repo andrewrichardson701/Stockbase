@@ -9,9 +9,6 @@
         <title>{{ $head_data['config_compare']['system_name'] }} - Profile</title>
         @include('head')
         
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        
     </head>
     <body class="font-sans antialiased">
         @include('nav')

@@ -24,6 +24,8 @@
     img-src 'self' https://api.qrserver.com data: blob:;
 ">
 
+<!-- Laravel js and css -->
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <link rel="icon" type="image/png" href="{{ asset('img/config/'. $head_data['config_compare']['favicon_image']) }}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">

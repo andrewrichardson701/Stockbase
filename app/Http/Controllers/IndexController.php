@@ -16,6 +16,7 @@ use App\Models\ResponseHandlingModel;
 use App\Models\StockModel;
 use App\Models\FavouritesModel;
 use App\Models\TagModel;
+use App\Models\ContainersModel;
 
 class IndexController extends Controller
 {
@@ -54,21 +55,8 @@ class IndexController extends Controller
 
     static public function test(Request $request)
     {
-        $nav_highlight = 'tags'; // for the nav highlighting
-        $nav_data = GeneralModel::navData($nav_highlight);
-        $request = $request->all(); // turn request into an array
-        $response_handling = ResponseHandlingModel::responseHandling($request);
-        $previous_url = GeneralModel::previousURL();
-
-        $tags = GeneralModel::getAllWhere('tag', ['deleted' => 0], 'name');
-
-        $tag_data = TagModel::getAllStockFromTags($tags);
-
-        dd('tags', ['previous_url' => $previous_url,
-                            'nav_data' => $nav_data,
-                            'response_handling' => $response_handling,
-                            'tag_data' => $tag_data,
-                            'tags' => $tags,
-                            ]);
+        dd(count(GeneralModel::getAllWhere('item', ['deleted' => 0, 'shelf_id' => 1], 'id')));
+        dd (ContainersModel::getContainersInUse(1, 1, 138));
     }
 }
+

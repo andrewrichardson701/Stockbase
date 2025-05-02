@@ -92,7 +92,7 @@ body {
 
 /* div background colours (darker) */
 .theme-divBg-m { 
-    background-color: #434749 !important;
+    background-color: rgb(43 55 74) !important;
 }
 
 /* special button look */

@@ -83,7 +83,7 @@ function confirmAction(stock_name, stock_sku, url) {
     }
 }
 
-// populate shelves from manuyfacturer
+// populate shelves from manufacturer
 async function populateRemoveShelves(elem) {
     var stock = document.getElementById('stock-id').value;
     var contButton = document.getElementById('removeContButton');
@@ -91,11 +91,12 @@ async function populateRemoveShelves(elem) {
 
     manufacturer_id = elem.value;
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?getremoveshelves=1&stock="+stock+"&manufacturer="+manufacturer_id, true);
+    xhr.open("GET", "/_ajax-selectBoxes?getremoveshelves=1&stock="+stock+"&manufacturer="+manufacturer_id, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
             var shelves = JSON.parse(xhr.responseText);
+            console.log(shelves);
             var select = document.getElementById('shelf');
             select.options.length = 0;
             if (shelves.length === 0) {
@@ -158,7 +159,7 @@ async function populateContainers(elem) {
     var manu_id = document.getElementById('manufacturer').value;
     var xhr = new XMLHttpRequest();
     // console.log("includes/stock-selectboxes.inc.php?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id);
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id, true);
+    xhr.open("GET", "_ajax-selectBoxes?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box

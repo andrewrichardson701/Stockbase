@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\FunctionsModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
 class GeneralModel extends Model
@@ -145,6 +146,43 @@ class GeneralModel extends Model
                         ->toarray();
     }
 
+    static public function allDistinctShelvesByManufacturer($manufacturer, $stock_id, $deleted=null) 
+    {
+        // get the current config for the system from the config table
+        $instance = new self();
+        $instance->setTable('shelf');
+
+        return $instance->select('shelf.id as id', 
+                                'shelf.name as shelf_name', 
+                                'shelf.area_id as area_id', 
+                                'shelf.deleted as shelf_deleted',
+                                'area.name as area_name',
+                                'site.name as site_name',
+                                DB::raw('concat(site.name, ", ", area.name, ", ", shelf.name) as location'))
+                        ->distinct()
+                        ->join('item', 'item.shelf_id', 'shelf.id')
+                        ->join('area', 'shelf.area_id', 'area.id')
+                        ->join('site', 'area.site_id', 'site.id')
+                        ->where(function($query) use ($deleted) {
+                            if ($deleted !== null) {
+                                $query->where('shelf.deleted', '=', $deleted);
+                            } else {
+                                $query->whereRaw('`deleted` = `deleted`');
+                            }
+                        })
+                        ->where(function($query) use ($manufacturer) {
+                            if ($manufacturer !== 0 && $manufacturer !== '0') {
+                                $query->where('item.manufacturer_id', '=', $manufacturer);
+                            } else {
+                                $query->whereRaw('1 = 1');
+                            }
+                        })
+                        ->where('item.deleted', '=', 0)
+                        ->where('item.stock_id', '=', $stock_id)
+                        ->get()
+                        ->toArray();
+    }
+
     static public function formatArrayOnId($array) 
     {
         $formatted = [];
@@ -166,7 +204,7 @@ class GeneralModel extends Model
         $formatted = [];
         $formatted['rows'] = [];
         
-        $count = count($array);
+        $count = count($array) ?? 0;
         $formatted['count'] = $count;
 
         $i = 0;
@@ -745,5 +783,45 @@ class GeneralModel extends Model
         $fileNames = array_map(fn($file) => $file->getFilename(), $files);
 
         return $fileNames;
+    }
+
+    static public function imageUpload($request)
+    {
+        // $request->validate([
+        //     'file' => 'required|image|mimes:jpeg,png,jpg,gif,ico|max:10000',
+        //     'stock_id' => 'required|integer',
+        // ]);
+    
+        $file = $request->file('image');
+        $stock_id = $request['id'];
+        $timestamp = now()->format('YmdHis');
+    
+        // Create a unique filename
+        $filename = "stock-{$stock_id}-img-{$timestamp}." . $file->getClientOriginalExtension();
+
+        // Move to public/img/stock
+        $destinationPath = public_path('img/stock');
+        $file->move($destinationPath, $filename);
+    
+        // Save to DB
+        $new_stock_img_id = DB::table('stock_img')->insertGetId([
+            'stock_id' => $stock_id,
+            'image' => $filename,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    
+        // update changelog
+        $user = GeneralModel::getUser();
+        $info = [
+            'user' => $user,
+            'table' => 'stock_img',
+            'record_id' => $new_stock_img_id,
+            'field' => 'image',
+            'new_value' => $filename,
+            'action' => 'New record',
+            'previous_value' => '',
+        ];
+        GeneralModel::updateChangelog($info);
     }
 }

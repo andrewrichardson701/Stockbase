@@ -138,4 +138,58 @@ class StockController extends Controller
                                 'img_files' => $img_files ?? null,
                                 ]);
     }
+
+    static public function addExistingStock(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'id' => 'integer|required',
+                'stock-add' => 'integer|required',
+                'upc' => 'string|nullable',
+                'manufacturer' => 'integer|required',
+                'site' => 'integer|required',
+                'area' => 'integer|required',
+                'shelf' => 'integer|required',
+                'contianer' => 'integer|nullable',
+                'cost' => 'numeric',
+                'quantity' => 'integer|required',
+                'serial-number' => 'string|nullable',
+                'reason' => 'string|required'
+            ]);
+
+            return StockModel::addExistingStock($request->input());
+        } else {
+            return null;
+        }
+    }
+
+    static public function addNewStock(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'name' => 'required|string',
+                'sku' => 'nullable|string',
+                'description' => 'nullable|string',
+                'min-stock' => 'integer|nullable',
+
+                'stock-add' => 'integer|required',
+
+                'upc' => 'string|nullable',
+                'manufacturer' => 'integer|required',
+                'site' => 'integer|required',
+                'area' => 'integer|required',
+                'shelf' => 'integer|required',
+                'contianer' => 'integer|nullable',
+                'cost' => 'numeric',
+                'quantity' => 'integer|required',
+                'serial-number' => 'string|nullable',
+                'reason' => 'string|required'
+            ]);
+// dd($request->toArray());
+            return StockModel::addNewStock($request, 0);
+        } else {
+            return null;
+        }
+    }
+    
 }

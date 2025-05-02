@@ -683,6 +683,7 @@ div.stock-imageMainSolo {
 img.stock-imageMainSolo {
     max-width:315px; 
     max-height:235px ;
+    margin: auto;
 }
 div.stock-imageMain {
     width:235px; 
@@ -1273,11 +1274,15 @@ meter::-webkit-meter-even-less-good-value { background: red; }
     border: 0px !important;
 }
 
-#tags {
+.tags-special {
     display: inline-block;
     padding-top:2px;
     padding-bottom:2px;
     width: auto;
+    border: 1px solid grey;
+    display: inline-block; 
+    height:90px; 
+    white-space:wrap;
 }
 
 #tags option {

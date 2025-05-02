@@ -2,13 +2,15 @@
 function loadProperty(property) {
     var select = document.getElementById(property+'-select');
     var upperProperty = property[0].toUpperCase() + property.substring(1);
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
     $.ajax({
         type: "POST",
-        url: "./includes/stock-new-properties.inc.php",
+        url: "/_ajax-loadProperty",
         data: {
             load_property: '1',
             type: property,
-            submit: '1'
+            submit: '1',
+            _token: csrf
         },
         dataType: "json",
         success: function(response) {
@@ -42,7 +44,7 @@ function populateAreas() {
   
   // Make an AJAX request to retrieve the corresponding areas
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+  xhr.open("GET", "/_ajax-selectBoxes?site=" + site, true);
   xhr.onload = function() {
     if (xhr.status === 200) {
       // Parse the response and populate the area select box
@@ -66,7 +68,7 @@ function populateShelves() {
   
   // Make an AJAX request to retrieve the corresponding shelves
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "includes/stock-selectboxes.inc.php?area=" + area, true);
+  xhr.open("GET", "/_ajax-selectBoxes?area=" + area, true);
   xhr.onload = function() {
     if (xhr.status === 200) {
       // Parse the response and populate the shelf select box
@@ -87,34 +89,44 @@ function populateShelves() {
 function populateContainers() {
   // Get the selected area
   var shelf = document.getElementById("shelf").value;
-  
+  var csrf = document.querySelector('meta[name="csrf-token"]').content;
   // Make an AJAX request to retrieve the corresponding constiners
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "includes/stock-selectboxes.inc.php?container-shelf=" + shelf, true);
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      // Parse the response and populate the container select box
-      var containers = JSON.parse(xhr.responseText);
-      console.log(containers);
-      console.log(containers['container']);
+  $.ajax({
+    type: "POST",
+    url: "/_ajax-loadProperty",
+    data: {
+        load_property: '1',
+        type: 'container',
+        submit: '1',
+        container_shelf: shelf,
+        _token: csrf
+    },
+    dataType: "json",
+    success: function(response) {
+      var data = response;
+      console.log(data);
       var select = document.getElementById("container");
       select.options.length = 0;
       select.options[0] = new Option("Select Container", "");
       select.options[0].hidden = true;
       select.options[0].disabled = true;
-      containersOnly = containers['container'];
-      itemContainers = containers['item_container'];
-      for (var i = 0; i < containersOnly.length; i++) {
-        select.options[select.options.length] = new Option(containersOnly[i].name, containersOnly[i].id);
+
+      select.options[1] = new Option("No Container", "");
+
+      var containers = data['containers'];
+      var container_items = data['container_items'];
+
+      for (var i = 0; i < containers.length; i++) {
+        select.options[select.options.length] = new Option( containers[i].name, containers[i].id);
       }
-      for (var i = 0; i < itemContainers.length; i++) {
-        contID = itemContainers[i].id * -1;
-        select.options[select.options.length] = new Option(itemContainers[i].name, contID);
+      for (var i = 0; i < container_items.length; i++) {
+        select.options[select.options.length] = new Option(container_items[i].name, container_items[i].id * -1);
       }
       select.disabled = (select.options.length === 1);
-    }
-  };
-  xhr.send();
+    },
+    async: true
+  });
 }
 if (document.getElementById("site")) {
     document.getElementById("site").addEventListener("change", populateAreas);

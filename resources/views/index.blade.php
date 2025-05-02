@@ -142,7 +142,7 @@
                         <span class="viewport-large-block" id="search-input-label-span" style="margin-right:1em;margin-bottom:10px;">
                             <label for="search-input-label">Tag</label><br>
                             <select id="search-input-tag" name="tag" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Tag" onchange="getInventory(1)">
-                                <option value="" @if ($q_data['tag'] == '' || !isset($q_data['tag'])) selected @endif >All</option>');
+                                <option value="" @if ($q_data['tag'] == '' || !isset($q_data['tag'])) selected @endif >All</option>
                             @foreach ($tags['rows'] as $tag) 
                                 <option value="{{$tag['name']}}" @if ($q_data['tag'] == $tag['name']) selected @endif >{{$tag['name']}}</option>
                             @endforeach
@@ -215,7 +215,7 @@
                             <th class="clickable sorting sorting-asc" id="name" onclick="sortTable(2, this)">Name</th>
                             <th class="clickable sorting viewport-large-empty" id="sku" onclick="sortTable(3, this)">SKU</th>
                             <th class="clickable sorting" id="quantity" onclick="sortTable(4, this)">Quantity</th>
-                            <th class="clickable sorting" id="site" onclick="sortTable(5, this)" '); if ($site == 0) { echo('hidden'); } echo('>Site</th>
+                            <th class="clickable sorting" id="site" onclick="sortTable(5, this)" @if ((int)$q_data['site'] !== 0) hidden @endif>Site</th>
                             <th id="areas">Area(s)</th>
                             <th id="tags" class="viewport-large-empty">Tags</th>
                         </tr>

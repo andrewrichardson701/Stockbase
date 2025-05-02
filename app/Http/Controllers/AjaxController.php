@@ -13,6 +13,7 @@ use App\Models\GeneralModel;
 use App\Models\PropertiesModel;
 use App\Models\StockModel;
 use App\Models\CablestockModel;
+use App\Models\ContainersModel;
 // use App\Models\ResponseHandlingModel;
 
 class AjaxController extends Controller
@@ -60,6 +61,12 @@ class AjaxController extends Controller
 
         if (isset($request['area'])) {
             $shelves = AjaxController::getSelectBoxShelves(htmlspecialchars($request['area']));
+
+            return $shelves;
+        }
+        
+        if (isset($request['getremoveshelves']) && isset($request['manufacturer']) && isset($request['stock'])) {
+            $shelves = AjaxController::getSelectBoxShelvesByManufacturer($request['manufacturer'], $request['stock']);
 
             return $shelves;
         }
@@ -113,4 +120,46 @@ class AjaxController extends Controller
             return redirect()->GeneralModel::redirectURL($previous_url, ['error' => 'csrfMissmatch']);
         }
     }
+
+    static public function loadProperty(Request $request)
+    {
+        $type = $request['type'];
+
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'type' => 'required',
+                'load_property' => 'required',
+                'submit' => 'required'
+            ]);
+        }
+
+        $where['deleted'] = 0;
+
+        
+        if (isset($request['container_shelf']) && $request['container_shelf'] > 0) {
+            // loading containers on the add page
+            $return = ContainersModel::getContainersByShelf($request['container_shelf']) ?? [];
+        } else {
+            $return = GeneralModel::getAllWhere($type, $where, 'name') ?? [];
+        }
+
+        
+        return $return;
+    }
+
+    static public function getSelectBoxShelvesByManufacturer($manufacturer_id, $stock_id) 
+    {
+        if (is_numeric($manufacturer_id) && $manufacturer_id > 0) {
+            $shelves = [];
+
+            $shelves = GeneralModel::allDistinctShelvesByManufacturer($manufacturer_id, $stock_id, 0);
+
+            if ($shelves !== null) {
+                return $shelves;
+            } else {
+                return null;
+            }
+        }
+    }
+
 }

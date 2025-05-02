@@ -1,4 +1,4 @@
-<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+<form action="{{ route('stock.add.new') }}" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
     <!-- this is for the stock-modify.inc.php page -->
     <!-- Include CSRF token in the form -->
     @csrf
@@ -61,7 +61,7 @@
                         <option value="" selected disabled hidden>-- Select a tag if needed --</option>
                     </select>
 
-                    <select id="tags" name="tags[]" multiple class="form-control stock-inputSize" style="margin-top:2px;display: inline-block;height:40px"></select>
+                    <select id="tags" name="tags[]" multiple class="tags-special form-control stock-inputSize" style="margin-top:2px;display: inline-block;height:40px"></select>
                     <script>
                     var selectBox = document.getElementById("tag-select");
                     var selectedBox = document.getElementById("tags");

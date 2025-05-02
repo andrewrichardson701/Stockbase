@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 class TransactionModel extends Model
 {
     //
+    protected $table = 'transaction'; // Specify your table name
+    protected $fillable = ['stock_id', 'item_id', 'type', 'quantity', 'price', 'serial_number', 'reason', 'comments', 'date', 'time', 'username', 'shelf_id'];
+
     static public function getTransactions($stock_id, $limit, $page)
     {
         if ($page == 0) { $page = 1; }
@@ -118,5 +121,35 @@ class TransactionModel extends Model
         }
 
         return $array;
+    }
+
+    static public function addTransaction($request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock_id' => 'integer|required',
+                'item_id' => 'integer|required',
+                'type' => 'string|required',
+                'quantity' => 'integer|required',
+                'price' => 'numeric|nullable',
+                'serial_number' => 'string|nullable',
+                'date' => 'string|required',
+                'time' => 'string|required',
+                'username' => 'required',
+                'shelf_id' => 'integer|required',
+                'reason' => 'string|required'
+            ]);
+    
+            $insert = TransactionModel::create($request->toArray());
+            $id = $insert->id;
+
+            if (is_numeric($id)) {
+                return ['success' => $id];
+            } else {
+                return ['error' => 'non-numeric id'];
+            }
+        } else {
+            return null;
+        }
     }
 }

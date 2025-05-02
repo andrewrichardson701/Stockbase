@@ -1,5 +1,5 @@
 @if (is_array($stock_data) && $stock_data['id'] == $params['stock_id'])
-<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+<form action="{{ route('stock.add.existing') }}" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
     @if ($stock_data['is_cable'] == 0)
     <input type="hidden" name="stock-add" value="1" />
     @else
@@ -11,7 +11,7 @@
         <div class="nav-row" id="heading-row" style="margin-top:10px">
             <div class="stock-inputLabelSize"></div>
             <div id="heading-heading">
-                <a href="../stock.php?stock_id='.$stock_id.'"><h2>{{ $stock_data['name'] }}</h2></a>
+                <a href="{{ url('stock/'.$stock_data['id']) }}"><h2>{{ $stock_data['name'] }}</h2></a>
                 <p id="sku"><strong>SKU:</strong> <or class="blue">{{ $stock_data['sku'] }}</or></p>
                 <p id="locations" style="margin-bottom:0px"><strong>Locations:</strong><br>
                 @if (isset($stock_inv_data) && $stock_inv_data['count'] > 0)

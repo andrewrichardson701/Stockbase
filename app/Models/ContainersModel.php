@@ -15,7 +15,7 @@ class ContainersModel extends Model
     protected $table = 'container'; // Specify your table name
     protected $fillable = ['name', 'description', 'shelf_id', 'deleted'];
 
-    static public function getContainersInUse() 
+    static public function getContainersInUse($shelf_id=null, $manufacturer_id=null, $stock_id=null) 
     {
         $instance = new self();
         $instance->setTable('item_container as ic');
@@ -61,6 +61,15 @@ class ContainersModel extends Model
                     ->leftJoin('shelf as i_sh', 'i.shelf_id', '=', 'i_sh.id')
                     ->leftJoin('area as i_a', 'i_sh.area_id', '=', 'i_a.id')
                     ->leftJoin('site as i_si', 'i_a.site_id', '=', 'i_si.id')
+                    ->when($shelf_id !== null, function ($query) use ($shelf_id) {
+                        $query->where('i_sh.id', '=', $shelf_id);
+                    })
+                    ->when($manufacturer_id !== null, function ($query) use ($manufacturer_id) {
+                        $query->where('i.manufacturer_id', '=', $manufacturer_id);
+                    })
+                    ->when($stock_id !== null, function ($query) use ($stock_id) {
+                        $query->where('s.id', '=', $stock_id);
+                    })
                     ->groupBy([
                         'c.id', 'c.name', 'c.description',
                         'ic.id', 'ic.item_id', 'ic.container_id', 'ic.container_is_item',
@@ -77,6 +86,23 @@ class ContainersModel extends Model
                     ->orderBy('scontainer.name')
                     ->get()
                     ->toArray();
+    }
+
+    static public function getContainersByShelf($shelf_id) 
+    {        
+        $return = [];
+
+        $containers = GeneralModel::getAllWhere('container', ['shelf_id' => $shelf_id], 'name') ?? [];
+        $container_items = GeneralModel::getAllWhere('item', ['deleted' => 0, 'is_container' => 1, 'shelf_id' => $shelf_id], 'id') ?? [];
+        foreach($container_items as $key => $ci) {
+            $stock_info = GeneralModel::getAllWhere('stock', ['id' => $ci['stock_id']], 'name');
+            $container_items[$key]['name'] = $stock_info[0]['name'] ?? null;
+            $container_items[$key]['description'] = $stock_info[0]['description'] ?? null;
+        }
+        $return['containers'] = $containers ?? [];
+        $return['container_items'] = $container_items ?? [];
+
+        return $return;
     }
 
     static public function getContainersEmpty() 
@@ -330,7 +356,7 @@ class ContainersModel extends Model
         }
     }
 
-    static public function linkToContainer($request) 
+    static public function linkToContainer($request, $redirect=null) 
     {
         $insert = DB::table('item_container')->insertGetId([
             'item_id' => $request['item_id'],
@@ -352,6 +378,11 @@ class ContainersModel extends Model
 
         GeneralModel::updateChangelog($info);
 
-        return redirect()->route('containers', ['success' => 'linked']);
+        if ($redirect !== null) {
+            return ['success' => 'linked', 'id' => $insert ?? null];
+        } else {
+            return redirect()->route('containers', ['success' => 'linked']);
+        }
+        
     }
 }

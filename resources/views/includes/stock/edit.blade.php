@@ -34,7 +34,7 @@
                         </div>
                         <div id="tags-group">
                             <input id="tags-selected" name="tags-selected" type="hidden" />
-                            <select id="tags" name="tags[]" multiple class="form-control nav-trans stock-inputSize" style="border: 1px solid grey;display: inline-block; height:90px; white-space:wrap">
+                            <select id="tags" name="tags[]" multiple class="tags-special form-control nav-trans stock-inputSize">
                             @if ($tag_data['tagged']['count'] > 0)
                                 @foreach($tag_data['tagged']['rows'] as $tagged) 
                                 <option class="btn-stock clickable" style="margin-top:1px;border:1px solid gray" value="{{ $tagged['id'] }}" selected>{{ $tagged['name'] }} ✕</option>
@@ -239,6 +239,7 @@
     </div>
 </div>
 <!-- Modal Image Selection Div -->
+@if (isset($params['request']['images']) && ($params['request']['images'] == 'edit')) 
 <div id="modalDivSelection" class="modal">
 <!-- <div id="modalDivSelection" style="display: block;"> -->
     <span class="close" onclick="modalCloseSelection()">&times;</span>
@@ -247,8 +248,8 @@
             <div class="nav-row">
             @if (count($img_files) > 0)
                 @foreach ($img_files as $file)
-                <div class="thumb theme-divBg-m" id="add-image-{{ $loop->index }}-div" style="width:200px;height:200px;margin:2px">
-                    <img class="nav-v-c" id="add-image-{{ $loop->index }}" style="width:200px" alt="{{ $file }}" src="{{ asset('/img/stock/'.$file) }}" onclick="modalImageInputFill(this);"/>
+                <div class="thumb theme-divBg-m text-center" id="add-image-{{ $loop->index }}-div" style="width:200px;margin:2px">
+                    <img class="nav-v-c" id="add-image-{{ $loop->index }}" style="max-width:200px; max-height:200px; margin: auto" alt="{{ $file }}" src="{{ asset('/img/stock/'.$file) }}" onclick="modalImageInputFill(this);"/>
                 </div>
                 @endforeach
             @else
@@ -282,6 +283,7 @@
     </div> 
 </div>
 <!-- End of Modal Image Selection Div -->
+@endif
 <!-- Modal Image Upload Div -->
 <div id="modalDivUpload" class="modal">
     <span class="close" onclick="modalCloseUpload()">&times;</span>

@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneralModel;
 use App\Models\FavouritesModel;
+use App\Models\ItemModel;
 use Illuminate\Support\Facades\DB;
 
 class StockModel extends Model
 {
     //
+    protected $table = 'stock'; // Specify your table name
+    protected $fillable = ['name', 'description', 'sku', 'min_stock', 'is_cable', 'deleted'];
+
     static public function getStockAjax($request, $limit, $offset)
     {
         $oos = isset($request['oos']) ? (int)$request['oos'] : 0;
@@ -306,6 +311,7 @@ class StockModel extends Model
             $results[-1]['sql'] = GeneralModel::interpolatedQuery($requested_rows_data['query']->toSql(),$requested_rows_data['query']->getBindings());
             $results[-1]['areas'] = GeneralModel::allDistinctAreas($site, 0);
             $results[-1]['query_data'] = $all_rows_data['query']->get()->toArray();
+            $results[-1]['siteNeeded'] = $site > 0 ? 0 : 1;
 
             $img_directory = 'img/stock/';
 
@@ -784,7 +790,7 @@ class StockModel extends Model
         }
 
         $stock_inv_data['count'] = count($stock_inv_data['rows']);
-        $stock_inv_data['tags'] = $stock_tag_data;
+        $stock_inv_data['tags'] = $stock_tag_data ?? [];
         $stock_inv_data['manufacturers'] = $stock_manufacturer_data;
 
         $total_quantity = 0;
@@ -1351,5 +1357,210 @@ class StockModel extends Model
         } 
         
         return $return;
+    }
+
+    static public function addExistingStock($request, $redirect=null) 
+    {
+        if (GeneralModel::checkShelfAreaMatch($request['shelf'], $request['area']) && GeneralModel::checkAreaSiteMatch($request['area'], $request['site'])) {
+            $return = [];
+            $return['ids'] = [];
+            $counter = 0;
+            $redirect_array = [];
+
+            $user = GeneralModel::getUser();
+
+            $serials = array_map('trim', explode(',', $request['serial-number']));
+
+            // check for non=uniques.
+            foreach ($serials as $sn) {
+                if ($sn !== null && $sn !== '') {
+                    if (StockModel::checkUniqueSerial($sn) == 0) {
+                        $redirect_array = ['stock_id'   => $request['id'],
+                                        'modify_type' => 'add',
+                                        'error' => 'non-unique serial found, aborted.'];
+                        return redirect()->route('stock', $redirect_array)->with('return', $return);
+                    }
+                }
+            }
+
+            for ($i = 0; $i < (int)$request['quantity']; $i++) {
+                // item data
+                if (isset($serials[$i])) {
+                    $serial = $serials[$i];
+                } else {
+                    $serial = '';
+                }
+                
+                $data = [
+                        'stock_id' => $request['id'], 
+                        'upc' => $request['upc'],
+                        'quantity' => 1,
+                        'cost' => $request['cost'] ?? 0,
+                        'serial_number' => $serial,
+                        'comments' => '',
+                        'manufacturer_id' => $request['manufacturer'],
+                        'shelf_id' => $request['shelf'],
+                        'is_container' => 0
+                        ];
+
+                $insert = ItemModel::create($data);
+                $id = $insert->id;
+                
+                // changelog data for item
+                $info = [
+                    'user' => $user,
+                    'table' => 'item',
+                    'record_id' => $id,
+                    'field' => 'quantity',
+                    'new_value' => 1,
+                    'action' => 'Add quantity',
+                    'previous_value' => '',
+                ];
+
+                $return['insert'][] = ['item_id' => $id, 
+                                        'data' => $data, 
+                                        'changelog' => $info];
+                                        
+                if ($id) {
+                    $counter++;
+                    GeneralModel::updateChangelog($info);
+
+                    // link to container if needed
+                    if (isset($request['container']) && is_numeric($request['container'])) {
+                        if ($request['container'] < 0) {
+                            $container_id = $request['container'] *-1;
+                            $container_is_item = 1;
+                        } else {
+                            $container_id = $request['container'];
+                            $container_is_item = 0;
+                        }
+                        $container_data = ['item_id' => $id, 
+                                            'container_id' => $container_id, 
+                                            'is_item' => $container_is_item];
+
+                        // add the container link
+                        ContainersModel::linkToContainer($container_data, 'no');
+                    }
+
+                    // update the transactions
+                    $transaction_data = new HttpRequest([
+                        '_token' => csrf_token(),
+                        'stock_id' => $request['id'],
+                        'item_id' => $id,
+                        'type' => 'add',
+                        'quantity' => 1,
+                        'price' => $request['cost'] ?? 0,
+                        'serial_number' => $serial ?? '',
+                        'date' => date('Y-m-d'),
+                        'time' => date('h:i:s'),
+                        'username' => $user['username'],
+                        'shelf_id' => $request['shelf'],
+                        'reason' => $request['reason']
+                    ]);
+
+                    TransactionModel::addTransaction($transaction_data);
+                }
+            }
+            
+
+            if ($counter == (int)$request['quantity']) {
+                $redirect_array = ['stock_id'   => $request['id'],
+                                    'modify_type' => 'add',
+                                    'success' => 'added'];
+            } else {
+                $redirect_array = ['stock_id'   => $request['id'],
+                                        'modify_type' => 'add',
+                                        'error' => 'partially_added'];
+            }
+            
+        } else {
+            $redirect_array = ['stock_id'   => $request['id'],
+                                    'modify_type' => 'add',
+                                    'error' => 'missmatch'];
+        }
+
+        if ($redirect !== null) {
+            return $redirect_array;
+        } else {
+            return redirect()->route('stock', $redirect_array)->with('return', $return);
+        }
+    }
+
+    static public function addNewStock($request, $is_cable)
+    {
+        $return = [];
+        $input = $request->toArray();
+
+        if (GeneralModel::checkShelfAreaMatch($input['shelf'], $input['area']) && GeneralModel::checkAreaSiteMatch($input['area'], $input['site'])) {
+            $next_sku = StockModel::getNextSKU();
+            
+            $data = [
+                'name' => $input['name'], 
+                'sku' => $input['sku'] ?? $next_sku, // use pre-defined or use the next available
+                'description' => $input['description'] ?? '',
+                'min_stock' => $input['min-stock'] ?? 0,
+                'is_cable' => $is_cable
+                ];
+            $insert = StockModel::create($data);
+
+            $stock_id = $insert->id;
+            $input['id'] = $request['id'] = $stock_id;
+            
+            // add the tag links
+            if (array_key_exists('tags', $input) && is_array($input['tags'])) {
+               foreach ($input['tags'] as $tag_id) {
+                    TagModel::addTagToStock($tag_id, $stock_id);
+                } 
+            }
+            
+            
+            // add inventory items
+            if ($input['quantity'] > 0) {
+                Stockmodel::addExistingStock($input, 'no');
+            }
+
+            // add image
+            
+            if ($request->hasFile('image')) {
+                GeneralModel::imageUpload($request);
+            }
+
+            return redirect()->route('stock', ['stock_id' => 0,
+                                                    'modify_type' => 'add',
+                                                    'success' => 'added'])
+                                                    ->with('return', $return);
+        } else {
+            return redirect()->route('stock', ['stock_id' => 0,
+                                                    'modify_type' => 'add',
+                                                    'error' => 'missmatch'])
+                                                    ->with('return', $return);
+        }
+    }
+
+    public static function getNextSKU() 
+    {
+        $sku_prefix = GeneralModel::config()['sku_prefix'] ?? GeneralModel::configDefault()['sku_prefix'];
+
+        $max_number = DB::table('stock')
+                        ->select(DB::raw("MAX(CAST(SUBSTRING(sku, LENGTH('$sku_prefix') + 1) AS UNSIGNED)) as max_number"))
+                        ->where('sku', 'LIKE', $sku_prefix . '%')
+                        ->whereRaw("sku REGEXP '^" . preg_quote($sku_prefix, '/') . "[0-9]{5}$'")
+                        ->value('max_number');
+
+        $next_number = $max_number ? $max_number + 1 : 1;
+
+        $next_sku = $sku_prefix . str_pad($next_number, 5, '0', STR_PAD_LEFT);
+
+        return $next_sku;
+    }
+
+    public static function checkUniqueSerial($serial)
+    {
+        $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial]);
+        if (count($all) < 1) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

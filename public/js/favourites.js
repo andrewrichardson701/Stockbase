@@ -1,12 +1,14 @@
 function favouriteStock(stock_id) {
     var star = document.getElementById('favouriteIcon');
     var div = document.getElementById('favouriteButton');
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
 
     $.ajax({
         type: "POST",
-        url: "includes/favourites.inc.php",
+        url: "/_ajax-favouriteStock",
         data: {
-            stock_id: stock_id
+            stock_id: stock_id,
+            _token: csrf
         },
         dataType: "json",
         success: function(response){
@@ -19,10 +21,10 @@ function favouriteStock(stock_id) {
                 } else {
                     star.classList.remove('fa-solid');
                     star.classList.add('fa-regular');
-		}
+                }
             } else {
-		console.log('Failed to adjust favourites.');
-	    }
+                console.log('Failed to adjust favourites.');
+            }
         },
         error: function(response) {
             console.log(response);

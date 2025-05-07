@@ -125,7 +125,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <select id="site-dropdown-add" name="site" class="form-control" style="border-color:black;margin:0px;padding-left:0px" required>
+                                    <select id="site-dropdown-add" name="site" class="form-control" style="border-color:black;margin:0px" required>
                                         <option value="0" @if ($q_data['site'] == 0) selected @endif >All</option>
                                     @foreach ($sites['rows'] as $site) 
                                         <option value="{{$site['id']}}" @if ($q_data['site'] == $site['id']) selected @endif >{{$site['name']}}</option>
@@ -134,13 +134,13 @@
                                     <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                 </td>
                                 <td>
-                                    <select id="area" name="area" class="form-control" style="border-color:black;margin:0px;padding-left:0px" disabled required>
+                                    <select id="area" name="area" class="form-control" style="border-color:black;margin:0px" disabled required>
                                         <option value="" selected disabled hidden>Select Area</option>
                                     </select>
                                     <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                 </td>
                                 <td>
-                                    <select id="shelf" name="shelf" class="form-control" style="border-color:black;margin:0px;padding-left:0px" disabled required>
+                                    <select id="shelf" name="shelf" class="form-control" style="border-color:black;margin:0px" disabled required>
                                         <option value="" selected disabled hidden>Select Shelf</option>
                                     </select>
                                     <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadProperties('shelf')">Add New</a>

@@ -69,7 +69,7 @@
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="container" id="container-label">Container</label></div>
                         <div>
                             <select class="form-control stock-inputSize" id="container" name="container" required onchange="populateSerials(this)" disabled>
-                                <option value="" selected disabled hidden>Select Location</option>
+                                <option value="" selected disabled hidden>Select Container</option>
                             </select>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                         <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                             <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Number to be tracked.">Serial Numbers</or></label></div>
                             <div>
-                                <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="{{ $params['request']['serial_number'] ?? null }}" @if($stock_item_data['count'] == 0) disabled @endif onchange="getQuantity()">
+                                <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="{{ $params['request']['serial_number'] ?? null }}" disabled onchange="getQuantity()">
                                     <option value="" selected disabled hidden>Serial...</option>
                                 </select>
                             </div>

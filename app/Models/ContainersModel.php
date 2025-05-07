@@ -9,6 +9,28 @@ use Illuminate\Support\Facades\DB;
 use App\Models\GeneralModel;
 
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property int $shelf_id
+ * @property int $deleted
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel whereShelfId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ContainersModel whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class ContainersModel extends Model
 {
     //

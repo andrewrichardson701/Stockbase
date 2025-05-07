@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralModel query()
+ * @mixin \Eloquent
+ */
 class GeneralModel extends Model
 {
     //
@@ -152,13 +160,13 @@ class GeneralModel extends Model
         $instance = new self();
         $instance->setTable('shelf');
 
-        return $instance->select('shelf.id as id', 
+        return $instance->select(['shelf.id as id', 
                                 'shelf.name as shelf_name', 
                                 'shelf.area_id as area_id', 
                                 'shelf.deleted as shelf_deleted',
                                 'area.name as area_name',
                                 'site.name as site_name',
-                                DB::raw('concat(site.name, ", ", area.name, ", ", shelf.name) as location'))
+                                DB::raw('concat(site.name, ", ", area.name, ", ", shelf.name) as location')])
                         ->distinct()
                         ->join('item', 'item.shelf_id', 'shelf.id')
                         ->join('area', 'shelf.area_id', 'area.id')
@@ -438,21 +446,14 @@ class GeneralModel extends Model
 
     static public function getUser() 
     {
-        $user = Auth::user();
-        $user_data = null;
-
-        if ($user !== null) {
-            $data = $user->get()->toArray();
-            if (!empty($data)) {
-                foreach (array_keys($data[0]) as $key) {
-                    $user_data[$key] = $data[0][$key];
-                }
-            } 
-            
-            $user_data['role_data'] = GeneralModel::getAllWhere('users_roles', ['id' => $user_data['role_id'] ?? 1])[0] ?? [];
-            $user_data['theme_data'] = GeneralModel::getAllWhere('theme', ['id' => $user_data['theme_id'] ?? 1])[0] ?? [];
+        if (!($user = Auth::user())) {
+            return null;
         }
-        
+
+        $user_data = $user->toArray();
+        $user_data['role_data'] = GeneralModel::getAllWhere('users_roles', ['id' => $user_data['role_id'] ?? 1])[0] ?? [];
+        $user_data['theme_data'] = GeneralModel::getAllWhere('theme', ['id' => $user_data['theme_id'] ?? 1])[0] ?? [];
+
         return $user_data;
     }
 
@@ -740,6 +741,7 @@ class GeneralModel extends Model
     static public function updateTransactions($info)
     {
         $stock_id = $info['stock_id'];
+        $shelf_id = $info['shelf_id'];
         $item_id = $info['item_id'];
         $type = $info['type'];
         $quantity = $info['quantity'];

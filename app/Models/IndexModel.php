@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IndexModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IndexModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|IndexModel query()
+ * @mixin \Eloquent
+ */
 class IndexModel extends Model
 {
     //

@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ResponseHandlingModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ResponseHandlingModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ResponseHandlingModel query()
+ * @mixin \Eloquent
+ */
 class ResponseHandlingModel extends Model
 {
     //

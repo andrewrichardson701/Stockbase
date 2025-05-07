@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminModel query()
+ * @mixin \Eloquent
+ */
 class AdminModel extends Model
 {
     //

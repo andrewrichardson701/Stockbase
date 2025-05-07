@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CablestockModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CablestockModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CablestockModel query()
+ * @mixin \Eloquent
+ */
 class CablestockModel extends Model
 {
     //

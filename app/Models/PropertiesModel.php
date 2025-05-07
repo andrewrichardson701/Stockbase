@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\DB;
 use App\Models\GeneralModel;
 
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PropertiesModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PropertiesModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PropertiesModel query()
+ * @mixin \Eloquent
+ */
 class PropertiesModel extends Model
 {
     //
@@ -28,7 +36,8 @@ class PropertiesModel extends Model
         $description = isset($request['description']) ? $request['description'] : ''; // site/area
         $site_id = isset($request['site_id']) ? $request['site_id'] : ''; // area
         $area_id = isset($request['area_id']) ? $request['area_id'] : ''; // shelf
-        
+        $type = $request['type'];
+
         $params['name'] = $name;
         if ($type == 'shelf') {
             $params['area_id'] = $area_id;
@@ -98,7 +107,7 @@ class PropertiesModel extends Model
         $instance = new self();
         $instance->setTable($table);
         
-        return $instance->select('id', 'name')
+        return $instance->select(['id', 'name'])
                 ->where('deleted', '=', 0)
                 ->orderby('name')
                 ->get()

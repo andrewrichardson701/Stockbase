@@ -6,6 +6,44 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneralModel;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $stock_id
+ * @property int $item_id
+ * @property string $type
+ * @property int $quantity
+ * @property string|null $price
+ * @property string|null $serial_number
+ * @property string $reason
+ * @property string|null $comments
+ * @property string $date
+ * @property string $time
+ * @property string $username
+ * @property int|null $shelf_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereComments($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereItemId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereSerialNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereShelfId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereStockId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TransactionModel whereUsername($value)
+ * @mixin \Eloquent
+ */
 class TransactionModel extends Model
 {
     //

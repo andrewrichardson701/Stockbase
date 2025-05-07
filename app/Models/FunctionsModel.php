@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FunctionsModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FunctionsModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FunctionsModel query()
+ * @mixin \Eloquent
+ */
 class FunctionsModel extends Model
 {
     //

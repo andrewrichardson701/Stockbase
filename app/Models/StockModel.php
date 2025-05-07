@@ -9,6 +9,32 @@ use App\Models\FavouritesModel;
 use App\Models\ItemModel;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property string $sku
+ * @property int|null $min_stock
+ * @property int $is_cable
+ * @property int|null $deleted
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereIsCable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereMinStock($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereSku($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockModel whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class StockModel extends Model
 {
     //
@@ -917,11 +943,13 @@ class StockModel extends Model
                                     item.is_container AS item_is_container,
                                     (SELECT SUM(quantity) 
                                     FROM item AS i
-                                    WHERE item.stock_id = stock.id 
+                                    WHERE i.stock_id = stock.id 
                                     AND i.shelf_id = shelf.id 
                                     AND i.manufacturer_id = manufacturer.id 
                                     AND i.serial_number = item.serial_number 
-                                    AND i.upc = item.upc 
+                                    AND (
+                                        i.upc = item.upc OR (i.upc IS NULL AND item.upc IS NULL)
+                                    )
                                     AND i.comments = item.comments 
                                     AND i.cost = item.cost) AS item_quantity, 
                                     manufacturer.id AS manufacturer_id, 

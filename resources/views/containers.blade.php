@@ -97,7 +97,7 @@
                                             <td class="text-center align-middle">@if ($stock['img_id'] !== null)<img id="image-{{ $stock['img_id'] }}" class="inv-img-main thumb" style="cursor:default !important" src="/img/stock/{{$stock['img_image']}}">@endif</td>
                                             <td class="text-center align-middle">{{$stock['item_id']}}</td>
                                             <td class="text-center align-middle">{{$stock['id']}}</td>
-                                            <td class="text-center align-middle link" ><a href="stock?stock_id={{$stock['id']}}" id="container-{{$container['id']}}-item-{{$stock['item_id']}}-name">{{$stock['name']}}</a></td>
+                                            <td class="text-center align-middle link" ><a href="stock/{{ $stock['id'] }}" id="container-{{$container['id']}}-item-{{$stock['item_id']}}-name">{{$stock['name']}}</a></td>
                                             <td class="text-center align-middle"  style="width:85px">
                                                 <form>
                                                     <button class="btn btn-danger" type="button" name="submit" onclick="modalLoadUnlinkContainer({{$container['id']}}, {{$stock['item_id']}}, 0)" style="color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px" title="Unlink from container">

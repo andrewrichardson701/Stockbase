@@ -14,6 +14,7 @@ use App\Models\PropertiesModel;
 use App\Models\StockModel;
 use App\Models\CablestockModel;
 use App\Models\ContainersModel;
+use App\Models\FavouritesModel;
 // use App\Models\ResponseHandlingModel;
 
 class AjaxController extends Controller
@@ -117,7 +118,8 @@ class AjaxController extends Controller
 
             return PropertiesModel::addProperty($request->input());
         } else {
-            return redirect()->GeneralModel::redirectURL($previous_url, ['error' => 'csrfMissmatch']);
+            $redirect = GeneralModel::redirectURL($previous_url, ['error' => 'csrfMissmatch']);
+            return redirect()->$redirect;
         }
     }
 
@@ -160,6 +162,23 @@ class AjaxController extends Controller
                 return null;
             }
         }
+    }
+
+    static public function favouriteStock(Request $request)
+    {
+        $request->validate([
+            'stock_id' => 'integer|required'
+        ]);
+        $stock_id = $request->stock_id;
+        $user = GeneralModel::getUser();
+
+        $favourited = StockModel::checkFavourited($stock_id);
+        
+        if ($favourited == 1) {
+            FavouritesModel::removeFavourite($user['id'], $stock_id);
+        } else {
+            FavouritesModel::addFavourite($user['id'], $stock_id);
+        }        
     }
 
 }

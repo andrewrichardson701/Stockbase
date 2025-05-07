@@ -64,6 +64,9 @@ Route::middleware([AddHeadData::class])->group(function () {
             //
             Route::post('/_ajax-addProperty', [AjaxController::class, 'addProperty'])->name('_ajax-addProperty'); // for the new-properties blade page to add a new property (tag/manu./etc)
             Route::post('/_ajax-loadProperty', [AjaxController::class, 'loadProperty'])->name('_ajax-loadProperty'); // for the new-properties blade page to get a list of properties (tag/manu./etc)
+            //
+            Route::post('/_ajax-favouriteStock', [AjaxController::class, 'favouriteStock'])->name('_ajax-favouriteStock'); // for adding/removing favourites in the stock page
+            
 
             //// Form requests
             //  Containers

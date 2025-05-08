@@ -55,8 +55,7 @@ class IndexController extends Controller
 
     static public function test(Request $request)
     {
-        dd(count(GeneralModel::getAllWhere('item', ['deleted' => 0, 'shelf_id' => 1], 'id')));
-        dd (ContainersModel::getContainersInUse(1, 1, 138));
+        dd(ContainersModel::getContainerChildrenSerialInfo(2, ['item.manufacturer_id' => 1, 'item.shelf_id' => 1, 'item.stock_id' => 138, 'item_container.container_is_item' => 0]));
     }
 }
 

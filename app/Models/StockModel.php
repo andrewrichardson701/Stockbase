@@ -464,12 +464,12 @@ class StockModel extends Model
 
             if (isset($request['is_item']) && $request['is_item'] == 1) {
                 $rows = $instance->select(
-                                'st.id as st_id',
+                                ['st.id as st_id',
                                 'st.name as st_name',
                                 'st.sku as st_sku',
                                 'i.serial_number as i_serial_number',
                                 DB::raw('COUNT(i.quantity) as quantity'),
-                                DB::raw('MIN(i.id) as item_id') // Ensure we get the lowest item.id, without any NULL values
+                                DB::raw('MIN(i.id) as item_id')] // Ensure we get the lowest item.id, without any NULL values
                             )
                             ->from('item as i') // Explicitly selecting from the 'item' table
                             ->join('stock as st', 'i.stock_id', '=', 'st.id') // Joining stock table
@@ -499,12 +499,12 @@ class StockModel extends Model
                             ->toArray();
             } else {
                 $rows = $instance->select(
-                                'st.id as st_id',
+                                ['st.id as st_id',
                                 'st.name as st_name',
                                 'st.sku as st_sku',
                                 'i.serial_number as i_serial_number',
                                 DB::raw('COUNT(i.quantity) as quantity'),
-                                DB::raw('MIN(i.id) as item_id') // Ensure we get the smallest item.id
+                                DB::raw('MIN(i.id) as item_id')] // Ensure we get the smallest item.id
                             )
                             ->join('stock as st', 'i.stock_id', '=', 'st.id') // Join with stock
                             ->join('shelf as sh', 'i.shelf_id', '=', 'sh.id') // Join with shelf
@@ -835,10 +835,10 @@ class StockModel extends Model
         
         $instance = new self();
         $instance->setTable('item_container');
-        $children = $instance->select('item.id AS item_id', 'stock.id AS stock_id', 'stock.name AS stock_name',
+        $children = $instance->select(['item.id AS item_id', 'stock.id AS stock_id', 'stock.name AS stock_name',
                                 'item.upc A item_upc', 'item.quantity AS item_quantity', 'item.cost AS item_cost',
                                 'item.serial_number AS item_serial_number', 'item.comments AS item_comments', 'item.manufactuer_id AS item_manufactuer_id',
-                                'item.shelf_id AS item_shelf_id', 'item.is_container AS item_is_container', 'item.deleted AS item_deleted')
+                                'item.shelf_id AS item_shelf_id', 'item.is_container AS item_is_container', 'item.deleted AS item_deleted'])
                                 ->join('item', 'item.id', '=', 'item_container.item_id')
                                 ->join('stock', 'stock.id', '=', 'item.stock_id')
                                 ->orderby('container_id')
@@ -1070,7 +1070,6 @@ class StockModel extends Model
                                         'sku' => $row['stock_sku'],
                                         'quantity' => $row['item_quantity'] ?? 0,
                                         'min_stock' => $row['stock_min_stock'],
-                                        'quantity' => $row['item_quantity'],
                                         'shelf_id' => $row['shelf_id'],
                                         'shelf_name' => $row['shelf_name'],
                                         'area_id' => $row['area_id'],
@@ -1252,7 +1251,6 @@ class StockModel extends Model
                                         'sku' => $row['stock_sku'],
                                         'quantity' => $row['item_quantity'] ?? 0,
                                         'min_stock' => $row['stock_min_stock'],
-                                        'quantity' => $row['item_quantity'],
                                         'shelf_id' => $row['shelf_id'],
                                         'shelf_name' => $row['shelf_name'],
                                         'area_id' => $row['area_id'],
@@ -1591,4 +1589,5 @@ class StockModel extends Model
             return 0;
         }
     }
+
 }

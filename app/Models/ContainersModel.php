@@ -37,6 +37,17 @@ class ContainersModel extends Model
     protected $table = 'container'; // Specify your table name
     protected $fillable = ['name', 'description', 'shelf_id', 'deleted'];
 
+    static public function checkForUncontaineredItems($shelf_id, $manufacturer_id, $stock_id, $compare_count)
+    {
+        $all_count = count(GeneralModel::getAllWhere('item', ['shelf_id' => $shelf_id, 'manufacturer_id' => $manufacturer_id, 'stock_id' => $stock_id, 'deleted' => 0]));
+
+        if ($all_count > $compare_count) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
     static public function getContainersInUse($shelf_id=null, $manufacturer_id=null, $stock_id=null) 
     {
         $instance = new self();
@@ -406,5 +417,28 @@ class ContainersModel extends Model
             return redirect()->route('containers', ['success' => 'linked']);
         }
         
+    }
+
+    static public function getContainerChildrenInfo($container_id, $params=array())
+    {
+        $return = [];
+
+        $instance = new self();
+        $instance->setTable('item');
+
+        $query = $instance->newQuery()
+                            ->join('item_container', 'item_container.item_id', '=', 'item.id');
+
+        if (!empty($params)) {
+            foreach (array_keys($params) as $key) {
+                $query->where($key, '=', $params[$key]);
+            } 
+        }
+
+        $data = $query->orderBy($orderby ?? 'item.id') // Default to 'id' if $orderby is null
+                    ->get()
+                    ->toArray();
+
+        return $data;
     }
 }

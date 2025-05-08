@@ -96,7 +96,7 @@ async function populateRemoveShelves(elem) {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
             var shelves = JSON.parse(xhr.responseText);
-            console.log(shelves);
+            // console.log(shelves);
             var select = document.getElementById('shelf');
             select.options.length = 0;
             if (shelves.length === 0) {
@@ -158,12 +158,14 @@ async function populateContainers(elem) {
     var shelf_id = elem.value;
     var manu_id = document.getElementById('manufacturer').value;
     var xhr = new XMLHttpRequest();
+    // console.log("_ajax-selectBoxes?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id);
     // console.log("includes/stock-selectboxes.inc.php?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id);
-    xhr.open("GET", "_ajax-selectBoxes?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id, true);
+    xhr.open("GET", "/_ajax-selectBoxes?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
             var containers = JSON.parse(xhr.responseText);
+            // console.log(containers);
             var select = document.getElementById('container');
             select.options.length = 0;
             if (containers.length === 0) {
@@ -171,9 +173,17 @@ async function populateContainers(elem) {
             }
             for (var i = 0; i < containers.length; i++) {
                 if (i == 0) {
-                    select.options[select.options.length] = new Option(containers[i].container_name, containers[i].container_id, true, true);
+                    if (containers[i].ic_container_is_item == 0) {
+                        select.options[select.options.length] = new Option(containers[i].c_name, containers[i].c_id, true, true);
+                    } else {
+                        select.options[select.options.length] = new Option(containers[i].s_name, containers[i].ic_container_id*-1, true, true);
+                    }
                 } else {
-                    select.options[select.options.length] = new Option(containers[i].container_name, containers[i].container_id);
+                    if (containers[i].ic_container_is_item == 0) {
+                        select.options[select.options.length] = new Option(containers[i].c_name, containers[i].c_id);
+                    } else {
+                        select.options[select.options.length] = new Option(containers[i].s_name, containers[i].ic_container_id*-1);
+                    }
                 }
             }
             select.disabled = (select.options.length === 0);
@@ -197,7 +207,7 @@ async function populateSerials(elem) {
     var shelf_id = document.getElementById('shelf').value;
     var manu_id = document.getElementById('manufacturer').value;
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?getserials=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id+"&container="+container, true);
+    xhr.open("GET", "/_ajax-selectBoxes?getserials=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id+"&container="+container, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
@@ -234,14 +244,19 @@ function getQuantity() {
     }
     
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantity=1&stock="+stock+"&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial+"&container="+container, true);
+    xhr.open("GET", "/_ajax-selectBoxes?getquantity=1&stock="+stock+"&shelf="+shelf+"&manufacturer="+manufacturer+"&serial="+serial+"&container="+container, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
             var quantityArr = JSON.parse(xhr.responseText);
             var quantity = document.getElementById('quantity');
-            quantity.value = 1;
+
             quantity.max = quantityArr[0]['quantity'];
+            if (quantity.max > 0) {
+                quantity.value = 1;
+            } else {
+                quantity.value = 0;
+            }
             // console.log(quantity.max[0]);
 
             if (quantity.min === quantity.max) {

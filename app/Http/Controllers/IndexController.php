@@ -17,6 +17,7 @@ use App\Models\StockModel;
 use App\Models\FavouritesModel;
 use App\Models\TagModel;
 use App\Models\ContainersModel;
+use App\Models\ChangelogModel;
 
 class IndexController extends Controller
 {
@@ -57,7 +58,8 @@ class IndexController extends Controller
     {
         $test = StockModel::where('sku', '=', 'example')->get()->toArray();
         // dd(array_keys($test));
-        dd(TagModel::getTagsForStock(138));
+        dd(GeneralModel::getDbTableNames(1));
+        dd(ChangelogModel::getChangelogFull(25));
     }
 }
 

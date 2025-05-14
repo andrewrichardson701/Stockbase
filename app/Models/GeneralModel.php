@@ -832,4 +832,34 @@ class GeneralModel extends Model
         $d = \DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) === $date;
     }
+
+    static public function getDbTableNames($filter = 1)
+    {
+        $exclusions = ['cache', 'cache_locks', 'failed_jobs', 'job_batches', 'jobs', 'migrations'];
+        $tables = DB::select('SHOW TABLES');
+
+        if ($filter == 0) {
+            $table_names = array_map('current', $tables);
+            return $table_names;
+        } else {
+            // Get the name of the column returned by SHOW TABLES (differs by DB name)
+            $table_key = array_key_first((array) $tables[0]);
+
+            // Map to a flat array of table names
+            $table_names = array_map(function ($table) use ($table_key) {
+                return $table->$table_key;
+            }, $tables);
+
+            // Filter out excluded table names
+            $filtered_tables = array_filter($table_names, function ($table) use ($exclusions) {
+                return !in_array($table, $exclusions);
+            });
+
+            // Optional: reindex the array
+            $filtered_tables = array_values($filtered_tables);
+
+            return $filtered_tables;
+        }
+        
+    }
 }

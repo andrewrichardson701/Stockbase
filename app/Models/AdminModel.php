@@ -147,16 +147,4 @@ class AdminModel extends Model
         return $return;
     }
 
-    static public function getChangelog10() 
-    {
-        $instance = new self();
-        $instance->setTable('changelog');
-
-        return $instance->where('table_name', 'not like', '%login%')
-                        ->limit(10)
-                        ->orderby('id', 'desc')
-                        ->orderby('timestamp', 'desc')
-                        ->get()
-                        ->toarray();
-    }
 }

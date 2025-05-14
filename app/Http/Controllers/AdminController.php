@@ -13,6 +13,7 @@ use App\Models\FunctionsModel;
 use App\Models\ResponseHandlingModel;
 use App\Models\CablestockModel;
 use App\Models\AdminModel;
+use App\Models\ChangelogModel;
 
 class AdminController extends Controller
 {
@@ -68,7 +69,7 @@ class AdminController extends Controller
         
         $notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('notifications'));
 
-        $changelog = GeneralModel::formatArrayOnIdAndCount(AdminModel::getChangelog10());
+        $changelog = GeneralModel::formatArrayOnIdAndCount(ChangelogModel::getChangelog(10));
         // $q_data = IndexModel::queryData($request); // query string data
                     //  dd($optic_vendors);       
         return view('admin', ['nav_data' => $nav_data,

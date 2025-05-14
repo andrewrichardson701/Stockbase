@@ -84,6 +84,22 @@
                         <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
                             // Table
                             {{ dd($params) }}
+                            <p class="container" style="margin-top:40px">Entry count: <or class="green"><?php echo($row_count); ?></or></p>
+                            <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
+                                <thead>
+                                    <tr class="theme-tableOuter align-middle text-center">
+                                        <th>id</th>
+                                        <th>timestamp</th>
+                                        <th>user_id</th>
+                                        <th>user_username</th>
+                                        <th>action</th>
+                                        <th>table_name</th>
+                                        <th>record_id</th>
+                                        <th>field_name</th>
+                                        <th>value_old</th>
+                                        <th>value_new</th>
+                                    </tr>
+                                </thead>
                         </div>
                     </div>
                 </div>

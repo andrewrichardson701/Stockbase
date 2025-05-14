@@ -826,4 +826,10 @@ class GeneralModel extends Model
         ];
         GeneralModel::updateChangelog($info);
     }
+
+    static public function validateDate($date, $format = 'Y-m-d')
+    {
+        $d = \DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) === $date;
+    }
 }

@@ -15,6 +15,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\FavouritesController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\OpticsController;
+use App\Http\Controllers\ChangelogController;
 
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\AddHeadData;
@@ -55,6 +56,7 @@ Route::middleware([AddHeadData::class])->group(function () {
 
             // admin routes - auth in progress
             Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // admin page
+            Route::get('/changelog/{start_date?}/{end_date?}/{table?}/{user?}', [ChangelogController::class, 'index'])->name('changelog'); // admin page
 
             //// Ajax requests
             Route::get('/_ajax-stock', [AjaxController::class, 'getStockAjax'])->name('_ajax-stock'); // for the index page ajax

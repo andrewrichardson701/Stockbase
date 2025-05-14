@@ -45,7 +45,7 @@
                     @endforeach
                 </tbody>
             </table>
-            <a class="clickable" href="changelog.php">Full Changelog</a>
+            <a class="clickable" href="{{ route('changelog') }}">Full Changelog</a>
             @endif
         </div>
     </div>

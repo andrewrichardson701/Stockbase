@@ -795,7 +795,7 @@ class GeneralModel extends Model
         // ]);
     
         $file = $request->file('image');
-        $stock_id = $request['id'];
+        $stock_id = $request->id;
         $timestamp = now()->format('YmdHis');
     
         // Create a unique filename

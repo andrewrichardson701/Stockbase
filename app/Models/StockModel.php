@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneralModel;
 use App\Models\FavouritesModel;
 use App\Models\ItemModel;
+use App\Models\TagModel;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -1542,7 +1543,7 @@ class StockModel extends Model
             
             // add inventory items
             if ($input['quantity'] > 0) {
-                Stockmodel::addExistingStock($input, 'no');
+                StockModel::addExistingStock($input, 'no');
             }
 
             // add image
@@ -1585,6 +1586,209 @@ class StockModel extends Model
         $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial]);
         if (count($all) < 1) {
             return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public static function editStock($request)
+    {
+        // change the stock info in the database
+        $return = [];
+        $errors = [];
+
+        $input = $request->toArray();
+
+        dd($input);
+
+        $data = [
+            'name' => $input['name'], 
+            'sku' => $input['sku'],
+            'description' => $input['description'] ?? '',
+            'min_stock' => $input['min-stock'] ?? 0
+        ];
+
+        $user = GeneralModel::getUser();
+
+        $stock_id = $input['id'];
+
+        $current = StockModel::where('id', '=', $stock_id)->get()->toArray()[0];
+        // dd($current);
+        if ($current['sku'] == $data['sku']) {
+            unset($data['sku']);
+        } else {
+            $matching_sku = StockModel::where('sku', '=', $data['sku'])->get()->toArray();
+            if (count($matching_sku) > 0) {
+                return redirect()->route('stock', ['stock_id' => $stock_id,
+                                                    'modify_type' => 'edit',
+                                                    'error' => 'SKU in use'])
+                                                    ->with('return', $return);
+            }
+        }
+
+        $changelog_entries = [];
+        foreach (array_keys($data) as $key) {
+            if ($current[$key] != $data[$key]) {
+                $changelog_entries[] = $key;
+            }
+        }
+
+        StockModel::where('id', $stock_id)->update($data);
+
+        foreach ($changelog_entries as $entry) {
+            $info = [
+                'user' => $user,
+                'table' => 'stock',
+                'record_id' => $stock_id,
+                'field' => $entry,
+                'new_value' => $data[$entry],
+                'action' => 'Update record',
+                'previous_value' => $current[$entry],
+            ];
+            GeneralModel::updateChangelog($info);
+        }
+
+        // image uploading
+        if ($request->hasFile('image')) {
+            GeneralModel::imageUpload($request);
+        }
+
+        $stock_tags = isset($input['tags']) ? $input['tags'] : '';
+        $stock_tags_selected = isset($input['tags-selected']) ? $input['tags-selected'] : '';
+        $stock_tags_selected = explode(', ', $stock_tags_selected);
+
+        $tags_temp_array = [];
+        $tags_selected_temp_array = [];
+
+        if (is_array($stock_tags_selected)) {
+            foreach ($stock_tags_selected as $l) {
+                array_push($tags_temp_array, $l);
+            }
+        } else {
+            array_push($tags_temp_array, $stock_tags_selected);
+        }
+
+        if (is_array($stock_tags)) {
+            foreach ($stock_tags as $ll) {
+                array_push($tags_temp_array, $ll);
+            }
+        } else {
+            array_push($tags_temp_array, $stock_tags);
+        }
+
+        // $tags is the array of selected tags on page
+        $tags = array_unique(array_merge($tags_selected_temp_array, $tags_temp_array), SORT_REGULAR);
+        
+        $current_tags = [];
+
+        $current_tags_array = TagModel::getTagsForStock($stock_id) ?? [];
+        if ($current_tags_array['count'] > 0) {
+            foreach ($current_tags_array['rows'] as $tag) {
+                $current_tags[] = $tag['tag_id'];
+            }
+        }
+        
+        $tags_to_stay = array_values(array_intersect($current_tags, $tags));
+
+        $tags_to_remove = array_values(array_diff($current_tags, $tags));
+       
+        $tags_to_add = array_values(array_diff($tags, $tags_to_stay));
+        if ($tags_to_add[0] == "") {
+            unset($tags_to_add[0]);
+        }
+
+        foreach($tags_to_remove as $tag) {
+            if (!in_array($tag, $tags)) {
+                if (TagModel::removeTagFromStock($tag, $stock_id) > 0) {
+
+                } else {
+                    $errors[] = 'failed to remove tag';
+                }
+                // changelog happens in the above function
+            }
+        }
+      
+        foreach ($tags_to_add as $tag) {
+            if (!in_array($tag, $current_tags)) {
+                if (TagModel::addTagToStock($tag, $stock_id) > 0) {
+                    
+                } else {
+                    $errors[] = 'failed to add tag';
+                }
+                // changelog happens in the above function
+            }
+        }
+        
+        if (empty($errors)) {
+            $redirect_array = ['stock_id'   => $request['id'],
+                            'modify_type' => 'edit',
+                            'success' => 'Updated Successfully'];
+            $return = 1;
+        } else {
+            $redirect_array = ['stock_id'   => $request['id'],
+                            'modify_type' => 'edit',
+                            'error' => last($errors)];
+            $return = 0;
+        }
+
+        return redirect()->route('stock', $redirect_array)->with('return', $return);
+
+    }
+
+    static public function imageUnlink($request)
+    {
+        $data = $request->toArray();
+
+        $record = DB::table('stock_img')
+            ->where('stock_id', $data['stock_id'])
+            ->where('id', $data['img_id'])
+            ->first();
+
+        if ($record) {
+            DB::table('stock_img')
+            ->where('stock_id', $data['stock_id'])
+            ->where('id', $data['img_id'])
+            ->delete();
+
+            $user = GeneralModel::getUser();
+            $info = [
+                'user' => $user,
+                'table' => 'stock_img',
+                'record_id' => $record->id,
+                'field' => 'stock_id',
+                'new_value' => '',
+                'action' => 'Delete record',
+                'previous_value' => $data['stock_id'],
+            ];
+            GeneralModel::updateChangelog($info);
+            return $record->id;
+        } else {
+            return 0;
+        }
+    }
+
+    static public function imageLink($request)
+    {
+        $data = $request->toArray();
+
+        $insert = DB::table('stock_img')->insertGetId([
+            'stock_id' => $data['stock_id'],
+            'image' => $data['img-file-name']
+        ]);
+
+        if ($insert) {
+            $user = GeneralModel::getUser();
+            $info = [
+                'user' => $user,
+                'table' => 'stock_img',
+                'record_id' => $insert,
+                'field' => 'stock_id',
+                'new_value' => $data['stock_id'],
+                'action' => 'New record',
+                'previous_value' => '',
+            ];
+            GeneralModel::updateChangelog($info);
+            return $insert;
         } else {
             return 0;
         }

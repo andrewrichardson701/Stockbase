@@ -19,7 +19,7 @@ hidden/manualreviewlines.csv
 hidden/downloads
 hidden/canvusimport.php
 includes/smtp_tester.log
-
+public/img/stock/*
 
 # Laravel Defaults:
 /.phpunit.cache

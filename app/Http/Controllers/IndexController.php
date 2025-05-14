@@ -55,7 +55,9 @@ class IndexController extends Controller
 
     static public function test(Request $request)
     {
-        dd(ContainersModel::getContainerChildrenSerialInfo(2, ['item.manufacturer_id' => 1, 'item.shelf_id' => 1, 'item.stock_id' => 138, 'item_container.container_is_item' => 0]));
+        $test = StockModel::where('sku', '=', 'example')->get()->toArray();
+        // dd(array_keys($test));
+        dd(TagModel::getTagsForStock(138));
     }
 }
 

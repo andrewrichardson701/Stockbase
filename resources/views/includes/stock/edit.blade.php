@@ -3,7 +3,7 @@
 <div class="container well-nopad theme-divBg" style="margin-bottom:5px">
     <div class="row">
         <div class="col-sm-7 text-left" id="stock-info-left">
-            <form id="edit-form" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <form id="edit-form" action="{{ route('stock.edit') }}" method="POST" enctype="multipart/form-data">
                 <!-- below input is used for the stock-modify.inc.php page -->
                 <!-- Include CSRF token in the form -->
                 @csrf
@@ -75,7 +75,7 @@
                         @if (isset($params['request']['images']) && ($params['request']['images'] == 'edit')) 
                             <button type="button" class="nav-v-c btn btn-warning" onclick="navPage(`{{ url('stock')}}/{{ $stock_data['id'] }}/edit`)" disabled>Cancel</button>
                         @else
-                            <button type="button" class="nav-v-c btn btn-warning" onclick="navPage(`{{ url('stock')}}/{{ $stock_data['id'] }}/edit`)">Cancel</button>
+                            <button type="button" class="nav-v-c btn btn-warning" onclick="navPage(`{{ url('stock')}}/{{ $stock_data['id'] }}`)">Cancel</button>
                         @endif
                         </div>
                     </div>
@@ -91,20 +91,20 @@
                     <div class="nav-row stock-imageMainSolo">
                     @foreach($stock_data['img_data']['rows'] as $img_data)
                         @if ($loop->first)
-                        <div class="thumb theme-divBg-m text-center @if($loop->iteration == $stock_data['img_data']['count']) stock-imageMainSolo @else stock-imageMain @endif" onclick="modalLoadCarousel()">
+                        <div class="thumb theme-divBg-m text-center @if($loop->iteration == $stock_data['img_data']['count']) stock-imageMainSolo @else stock-imageMain @endif" onclick="modalLoad(this.children[0])">
                             <img class="nav-v-c  @if($loop->iteration == $stock_data['img_data']['count']) stock-imageMainSolo @else stock-imageMain @endif" id="stock-{{ $stock_data['id'] }}-img-{{ $img_data['id'] }}" alt="{{ $stock_data['id'] }}-img-{{ $img_data['id'] }}" src="{{ asset('img/stock/'.$img_data['image']) }}" />
                         </div>
                         <span id="side-images" style="margin-left:5px">
                         @endif
 
                         @if ($loop->iteration == 2 || $loop->iteration == 3)
-                            <div class="thumb theme-divBg-m stock-imageOther" style="margin-bottom:5px" onclick="modalLoadCarousel()">
+                            <div class="thumb theme-divBg-m stock-imageOther" style="margin-bottom:5px" onclick="modalLoad(this.children[0])">
                                 <img class="nav-v-c stock-imageOther" id="stock-{{ $stock_data['id'] }}-img-{{ $img_data['id'] }}" alt="{{ $stock_data['id'] }}-img-{{ $img_data['id'] }}" src="{{ asset('img/stock/'.$img_data['image']) }}"/>
                             </div>
                         @endif
 
                         @if ($loop->iteration == 4)
-                            <div class="thumb theme-divBg-m stock-imageOther" onclick="modalLoadCarousel()">
+                            <div class="thumb theme-divBg-m stock-imageOther" onclick="modalLoad(this.children[0])">
                             @if ($loop->iteration < $stock_data['img_data']['count'])
                                 <p class="nav-v-c text-center stock-imageOther" id="stock-{{ $stock_data['id'] }}-img-more">+{{( $stock_data['img_data']['count']-3) }}</p>
                             @else
@@ -124,68 +124,7 @@
                         <i class="fa fa-pencil"></i> Edit images
                     </a>
                 </div>
-                @if ($stock_data['img_data']['count'] == 1)
-                    <!-- Modal Image Div -->
-                    <div id="modalDivCarousel" class="modal" onclick="modalCloseCarousel()">
-                        <span class="close" onclick="modalCloseCarousel()">&times;</span>
-                        @foreach($stock_data['img_data']['rows'] as $img_data)
-                        <img class="modal-content bg-trans modal-imgWidth" id="stock-{{ $stock_data['id'] }}-img-{{ $img_data['id'] }}" src="{{ asset('img/stock/'.$img_data['image']) }}"/>
-                        @endforeach
-                        <img class="modal-content bg-trans" id="modalImg">
-                        <div id="caption" class="modal-caption"></div>
-                    </div>
-                    <!-- End of Modal Image Div -->
-                @else
-                    <link rel="stylesheet" href="./assets/css/carousel.css">
-                    <script src="assets/js/carousel.js"></script>
-                    <!-- Modal Image Div -->
-                    <div id="modalDivCarousel" class="modal">
-                        <span class="close" onclick="modalCloseCarousel()">&times;</span>
-                        <img class="modal-content bg-trans" id="modalImg">
-                            <div id="myCarousel" class="carousel slide" data-ride="carousel" align="center" style="margin-left:10vw; margin-right:10vw">
-                                <!-- Indicators -->
-                                <ol class="carousel-indicators">
-                                @foreach ($stock_data['img_data']['rows'] as $img_data)
-                                    @if ($loop->first)
-                                    <li data-target="#myCarousel" data-slide-to="{{ $loop->index }}" class="active"></li>
-                                    @else
-                                    <li data-target="#myCarousel" data-slide-to="{{ $loop->index }}"></li>
-                                    @endif
-                                @endforeach
-                                </ol>
-
-                                <!-- Wrapper for slides -->
-                                <div class="carousel-inner" align="centre">
-                                @foreach ($stock_data['img_data']['rows'] as $img_data)
-                                    @if ($loop->first)
-                                    <div class="item active" align="centre">
-                                    @else
-                                    <div class="item" align="centre">
-                                    @endif
-                                        <img class="modal-content bg-trans modal-imgWidth" id="stock-{{ $stock_data['id'] }}-img-{{ $img_data['id'] }}" src="{{ asset('img/stock/'.$img_data['image']) }}"/>
-                                        <div class="carousel-caption">
-                                            <h3></h3>
-                                            <p></p>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                                </div>
-
-                                <!-- Left and right controls -->
-                                <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-                                    <i class="fa fa-chevron-left" style="position:absolute; top:50%; margin-top:-5px"></i>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="right carousel-control" href="#myCarousel" data-slide="next">
-                                    <i class="fa fa-chevron-right" style="position:absolute; top:50%; margin-top:-5px"></i>
-                                    <span class="sr-only">Next</span>
-                                </a>
-                            </div>
-                        <div id="caption" class="modal-caption"></div>
-                    </div>
-                    <!-- End of Modal Image Div -->
-                @endif
+                
                 
             @else
                 <div id="edit-images-div" class="nav-div-mid nav-v-c">
@@ -200,7 +139,7 @@
                 <tbody>
                 @foreach ($stock_data['img_data']['rows'] as $img_data)
                     <tr>
-                        <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" onsubmit="return confirm('Are you sure you want to unlink this image?\nThe file will remain on the system.');">
+                        <form action="{{ route('stock.edit.imageunlink') }}" method="POST" enctype="multipart/form-data" onsubmit="return confirm('Are you sure you want to unlink this image?\nThe file will remain on the system.');">
                             <!-- Include CSRF token in the form -->
                             @csrf
                             <input type="hidden" name="stock-edit" value="1" />
@@ -257,7 +196,7 @@
             @endif
             </div>
         </div>
-        <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('stock.edit.imagelink') }}" method="POST" enctype="multipart/form-data">
             <!-- Include CSRF token in the form -->
             @csrf
             <input type="hidden" name="stock-edit" value="1" />
@@ -292,7 +231,7 @@
             <img class="nav-v-c" id="upload-img-pre" style="max-width:250px;max-height:250px" />
         </div>
         <div style="margin:auto;text-align:center;margin-top:10px">
-            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('stock.edit.imageupload') }}" method="POST" enctype="multipart/form-data">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <input type="hidden" name="stock-edit" value="1" />

@@ -159,7 +159,7 @@ class StockController extends Controller
 
             return StockModel::addExistingStock($request->input());
         } else {
-            return null;
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
 
@@ -188,8 +188,88 @@ class StockController extends Controller
 // dd($request->toArray());
             return StockModel::addNewStock($request, 0);
         } else {
-            return null;
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
-    
+
+    static public function editStock(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'name' => 'required|string',
+                'sku' => 'nullable|string',
+                'description' => 'nullable|string',
+                'min-stock' => 'integer|nullable',
+                'tags' => 'array',
+            ]);
+            return StockModel::editStock($request);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function uploadStockImage(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock_id' => 'integer|required',
+                'image' => 'required',
+            ]);
+            if ($request->hasFile('image')) {
+                $request->id = $request->stock_id;
+                // dd($request->toArray());
+                GeneralModel::imageUpload($request);
+                $redirect_array = ['stock_id'   => $request->stock_id,
+                            'modify_type' => 'edit',
+                            'success' => 'Image uploaded.'];
+                return redirect()->route('stock', $redirect_array);
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'No Image');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function unlinkStockImage(Request $request) 
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock_id' => 'integer|required',
+                'img_id' => 'integer|required',
+            ]);
+
+            StockModel::imageUnlink($request);
+            $redirect_array = ['stock_id'   => $request->stock_id,
+                            'modify_type' => 'edit',
+                            'success' => 'Image unlinked.'];
+                return redirect()->route('stock', $redirect_array);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+        
+    } 
+
+    static public function linkStockImage(Request $request) 
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock_id' => 'integer|required',
+                'img-file-name' => 'string|required',
+            ]);
+
+            if (StockModel::imageLink($request) > 0) {
+                 $redirect_array = ['stock_id'   => $request->stock_id,
+                            'modify_type' => 'edit',
+                            'success' => 'Image Linked.'];
+                return redirect()->route('stock', $redirect_array);
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Linking failed.');
+            }
+           
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+        
+    }  
 }

@@ -56,7 +56,7 @@ Route::middleware([AddHeadData::class])->group(function () {
 
             // admin routes - auth in progress
             Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // admin page
-            Route::get('/changelog/{start_date?}/{end_date?}/{table?}/{user?}', [ChangelogController::class, 'index'])->name('changelog'); // admin page
+            Route::get('/changelog/{start_date?}/{end_date?}/{table?}/{user?}/{page?}', [ChangelogController::class, 'index'])->name('changelog'); // admin page
 
             //// Ajax requests
             Route::get('/_ajax-stock', [AjaxController::class, 'getStockAjax'])->name('_ajax-stock'); // for the index page ajax

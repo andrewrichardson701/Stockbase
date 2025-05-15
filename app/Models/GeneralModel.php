@@ -862,4 +862,34 @@ class GeneralModel extends Model
         }
         
     }
+
+    public static function isValidCSSFile($filePath)
+    {
+        // Check MIME type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $filePath);
+        finfo_close($finfo);
+    
+        $allowedMimeTypes = ['text/css', 'text/plain']; // Allow text/plain just in case
+        if (!in_array($mimeType, $allowedMimeTypes)) {
+            return false;
+        }
+    
+        // Read contents and scan for PHP tags
+        $contents = file_get_contents($filePath);
+        if (preg_match('/<\?(php|=)?|\?>/i', $contents)) {
+            // Contains PHP tags
+            return false;
+        }
+    
+        // (Optional) Additional check: block common dangerous content
+        $blacklist = ['<script', 'base64_decode', 'eval(', 'shell_exec', 'system('];
+        foreach ($blacklist as $danger) {
+            if (stripos($contents, $danger) !== false) {
+                return false;
+            }
+        }
+    
+        return true;
+    }
 }

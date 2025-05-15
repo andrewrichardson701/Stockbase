@@ -26,7 +26,8 @@
                 <div class="py-12">
                     <div class="mx-auto sm:px-6 lg:px-8 space-y-6">
                         <div class="text-center p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
-                            <form action="" method="GET" class="text-center centertable" style="max-width:max-content">
+                            <form action="{{ route('changelog.filter') }}" method="POST" class="text-center centertable" style="max-width:max-content">
+                                @csrf
                                 <div class="row" style="max-width:max-content">
                                     <div class="col" style="max-width:max-content">
                                         <div class="row align-middle">
@@ -55,7 +56,12 @@
                                             </div>
                                             <div class="col" style="max-width:max-content">
                                                 <select class="form-control nav-v-c row-dropdown" style="max-width:max-content; padding-right:35px" name="table">
-                                                    <option value="all">All</option>
+                                                    <option value="all" @if ($params['table'] == null) selected @endif>All</option>
+                                                    @if (!empty($tables))
+                                                        @foreach ($tables as $table)
+                                                        <option value={{ $table }} @if($params['table'] == $table) selected @endif>{{ $table }}</option>
+                                                        @endforeach
+                                                    @endif
                                                 </select>
                                             </div>
                                         </div>
@@ -67,7 +73,12 @@
                                             </div>
                                             <div class="col" style="max-width:max-content">
                                                 <select class="form-control nav-v-c row-dropdown" style="max-width:max-content; padding-right:35px" name="userid">
-                                                    <option value="all">All</option>
+                                                    <option value="" @if ($params['user'] == null) selected @endif>All</option>
+                                                    @if ($users['count'] > 0)
+                                                        @foreach ($users['rows'] as $user)
+                                                        <option value={{ $user['id'] }} title="{{ $user['name'] }}" @if($params['user'] == $user['id']) selected @endif>{{ $user['username'] }}</option>
+                                                        @endforeach
+                                                    @endif
                                                 </select>
                                             </div>
                                         </div>
@@ -82,9 +93,7 @@
                         </div>
 
                         <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
-                            // Table
-                            {{ dd($params, $changelog) }}
-                            <p class="container" style="margin-top:40px">Entry count: <or class="green"><?php echo($row_count); ?></or></p>
+                            <p class="container" style="margin-top:40px">Entry count: <or class="green">{{ $changelog['total_count'] }}</or></p>
                             <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                                 <thead>
                                     <tr class="theme-tableOuter align-middle text-center">
@@ -107,3 +116,4 @@
         </div>
     </body>
 </html>
+{{ dd($params, $changelog, $tables, $users) }}

@@ -34,7 +34,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');           // auth default
             Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');     // auth default
             Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');  // auth default
-            
+            Route::get('/theme-testing', [ProfileController::class, 'themeTesting'])->name('theme-testing'); // theme-testing page
+
             //// General routes
             // normal routes
             Route::get('/', [IndexController::class, 'index'])->name('index'); // home page
@@ -50,6 +51,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 ->name('transactions');
             Route::get('/favourites', [FavouritesController::class, 'index'])->name('favourites'); // favourites page
             Route::get('/tags', [TagController::class, 'index'])->name('tags'); // favourites page
+            
 
             // optics routes - auth in progress
             Route::get('/optics', [OpticsController::class, 'index'])->name('optics'); // admin page
@@ -86,6 +88,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/stock.edit.imageunlink', [StockController::class, 'unlinkStockImage'])->name('stock.edit.imageunlink'); // unlink stock image
             // Changelog
             Route::post('/changelog.filter', [ChangelogController::class, 'filterChangelog'])->name('changelog.filter'); // filter the changelog
+            // Theme-testing
+            Route::post('/theme-testing.uploadTheme', [ProfileController::class, 'uploadTheme'])->name('theme-testing.uploadTheme'); // filter the changelog
             //
 
             ////

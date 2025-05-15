@@ -26,7 +26,7 @@ function changeTheme() {
     var theme = document.getElementById('theme-select-option-' + value).title;
     var theme_name = document.getElementById('theme-select-option-' + value).alt;
     // css.href = "./assets/css/theme-"+theme+".css";
-    css.href = './assets/css/' + theme;
+    css.href = '/css/' + theme;
 
     const cssEditor = document.getElementById('css-editor');
     (async () => {

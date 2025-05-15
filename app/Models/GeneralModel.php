@@ -198,9 +198,9 @@ class GeneralModel extends Model
         $i = 0;
         foreach ($array as $entry) { // format the data
             if(isset($entry['id'])){
-                $formatted[$entry['id']] = $entry;
+                $formatted['rows'][$entry['id']] = $entry;
             } else {
-                $formatted[$i] = $entry;
+                $formatted['rows'][$i] = $entry;
             }
             $i++;
         }

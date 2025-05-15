@@ -83,7 +83,7 @@
 
                         <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
                             // Table
-                            {{ dd($changelog) }}
+                            {{ dd($params, $changelog) }}
                             <p class="container" style="margin-top:40px">Entry count: <or class="green"><?php echo($row_count); ?></or></p>
                             <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                                 <thead>

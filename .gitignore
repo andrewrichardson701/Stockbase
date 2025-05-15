@@ -20,6 +20,7 @@ hidden/downloads
 hidden/canvusimport.php
 includes/smtp_tester.log
 public/img/stock/*
+_ide_helper.php
 
 # Laravel Defaults:
 /.phpunit.cache

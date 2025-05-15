@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 use App\Models\GeneralModel;
+use App\Models\ResponseHandlingModel;
+use App\Models\ProfileModel;
 
 class ProfileController extends Controller
 {
@@ -60,5 +62,47 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    static public function themeTesting(Request $request) 
+    {
+        $nav_highlight = 'changelog'; // for the nav highlighting
+        $nav_data = GeneralModel::navData($nav_highlight);
+
+        $request = $request->all(); // turn request into an array
+        $response_handling = ResponseHandlingModel::responseHandling($request);
+
+        $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));
+        $params = [];
+        return view('theme-testing', ['params' => $params,
+                                                'nav_data' => $nav_data,
+                                                'response_handling' => $response_handling,
+                                                'themes' => $themes,]
+                                            );
+    }
+
+    public static function uploadTheme(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'theme-name' => 'string|required',
+                'theme-file-name' => 'string|required',
+                'css-file' => 'required|file|mimetypes:text/css,text/plain|max:10000'
+            ]);
+            if ($request->hasFile('css-file')) {
+                $upload = ProfileModel::themeUpload($request);
+                if (array_key_exists('success', $upload)) {
+                    return redirect(GeneralModel::previousURL())->with('success', $upload['success']);
+                } elseif (array_key_exists('error', $upload)) {
+                    return redirect(GeneralModel::previousURL())->with('error', $upload['error']);
+                } else {
+                    return redirect(GeneralModel::previousURL())->with('error', 'Unknown error in file upload');
+                }
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'No file found');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
     }
 }

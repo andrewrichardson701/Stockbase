@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
 use Illuminate\View\View;
 
 // use App\Models\IndexModel;
 use App\Models\GeneralModel;
-use App\Models\StockModel;
 use App\Models\ResponseHandlingModel;
 use App\Models\ChangelogModel;
 use App\Models\User;
@@ -22,7 +19,11 @@ class ChangelogController extends Controller
     static public function index(Request $request, $start_date = null, $end_date = null, $table = null, $user = null): View|RedirectResponse  
     {
         $nav_highlight = 'changelog'; // for the nav highlighting
-        
+        $nav_data = GeneralModel::navData($nav_highlight);
+
+        $request = $request->all(); // turn request into an array
+        $response_handling = ResponseHandlingModel::responseHandling($request);
+
         $page = $request['page'] ?? 1;
         $limit = 50;
         $offset = 0;
@@ -37,25 +38,20 @@ class ChangelogController extends Controller
             $end_date = date("Y-m-d");
         }
 
-        $start_date .= ' 00:00:00'; // add time so that it can filter for the same day
-        $end_date .= ' 23:59:59'; // add time so that it can filter for the same day
-
+        
         // if end date is before start date, make them the same
         if ($end_date < $start_date) {
             $end_date = $start_date;
         }
 
-        $nav_data = GeneralModel::navData($nav_highlight);
-        $request = $request->all(); // turn request into an array
-        $response_handling = ResponseHandlingModel::responseHandling($request);
+        $start_date_time = $start_date . ' 00:00:00'; // add time so that it can filter for the same day
+        $end_date_time = $end_date . ' 23:59:59'; // add time so that it can filter for the same day
 
-        $params = ['start_date' => $start_date, 'end_date' => $end_date, 'table' => $table, 'user' => $user, 'page' => $page, 'request' => $request];
-        
         $db_tables = GeneralModel::getDbTableNames(1);
-        $db_users = GeneralModel::formatArrayOnId(User::get()->toArray());
+        $db_users = GeneralModel::formatArrayOnIdAndCount(User::get()->toArray());
         $changelog_params = [];
-        $changelog_params['start_date'] = ['key' => 'timestamp', 'operator' => '>=', 'value' => date('Y-m-d H:i:s', strtotime($start_date))];
-        $changelog_params['end_date'] = ['key' => 'timestamp', 'operator' => '<=', 'value' => date('Y-m-d H:i:s', strtotime($end_date))];
+        $changelog_params['start_date'] = ['key' => 'timestamp', 'operator' => '>=', 'value' => date('Y-m-d H:i:s', strtotime($start_date_time))];
+        $changelog_params['end_date'] = ['key' => 'timestamp', 'operator' => '<=', 'value' => date('Y-m-d H:i:s', strtotime($end_date_time))];
         if ($table !== null) {
             if (in_array($table, $db_tables)) {
                 $changelog_params['table_name'] = ['key' => 'table_name', 'operator' => '=', 'value' => $table];
@@ -73,9 +69,7 @@ class ChangelogController extends Controller
         $page_count = (int)ceil($changelog_total_count/$limit);
         $changelog['pages'] = $page_count;
 
-        // needed info:
-        //// total row count of all pages
-        //// total page count (total row count / limit)
+        $params = ['start_date' => $start_date, 'end_date' => $end_date, 'table' => $table, 'user' => $user, 'page' => $page, 'pages' => $page_count, 'request' => $request];
 
         return view('changelog', ['params' => $params,
                                 'nav_data' => $nav_data,
@@ -84,5 +78,22 @@ class ChangelogController extends Controller
                                 'tables' => $db_tables,
                                 'users' => $db_users,
                                 ]);
+    }
+
+    static public function filterChangelog(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'start-date' => 'date|nullable',
+                'end-date' => 'date|nullable',
+                'user' => 'integer|nullable',
+                'table' => 'string|nullable',
+            ]);
+            $request = $request->toArray();
+            // dd($request);
+            return redirect()->route('changelog', ['start_date' => $request['start-date'], 'end_date' => $request['end-date'], 'table' => $request['table'], 'user' => $request['userid']]);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
     }
 }

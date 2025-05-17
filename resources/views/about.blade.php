@@ -6,10 +6,15 @@
 </head>
 <body>
     @include('nav')
-    <div class="content">
-        <div class="container">
-            <h2 class="header-small">About</h2>
-        </div>
+    <div class="min-h-screen">
+        <!-- Page Heading -->
+        <header class="theme-divBg shadow" style="padding-top:60px">
+            <div class="nav-row-alt max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight headerfix">
+                    About
+                </h2>
+            </div>
+        </header>
         <div class="container" style="margin-top:25px;">
             <div class="row">
                 <div class="col">

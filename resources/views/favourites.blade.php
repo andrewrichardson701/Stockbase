@@ -9,15 +9,15 @@
     @include('nav')
     <!-- End of Header and Nav -->
 
-    <div class="content">
-        <div class="container">
-            <h2 class="header-small" style="padding-bottom:5px">
-                <!-- <button class="btn btn-dark" style="margin-right:20px" onclick="window.location.href='{{ url()->previous() }}'">
-                    <i class="fa fa-chevron-left"></i> Back
-                </button> -->
-                Favourites
-            </h2>
-        </div>
+    <div class="min-h-screen">
+        <!-- Page Heading -->
+        <header class="theme-divBg shadow" style="padding-top:60px; margin-bottom:20px">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight headerfix">
+                    Favourites
+                </h2>
+            </div>
+        </header>
         {!! $response_handling !!}
         <div style="padding-bottom:75px">
         @if ($favourites['count'] > 0 && !empty($favourites['rows']))

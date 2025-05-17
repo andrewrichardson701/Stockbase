@@ -9,12 +9,16 @@
     @include('nav')
     <!-- End of Header and Nav -->
 
-    <div class="content">
+    <div class="min-h-screen">
+        <!-- Page Heading -->
+        <header class="theme-divBg shadow" style="padding-top:60px; margin-bottom:20px">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight headerfix">
+                    Containers
+                </h2>
+            </div>
+        </header>
         {!! $response_handling !!}
-
-        <div class="container">
-            <h2 class="header-small" style="padding-bottom:5px">Containers</h2>
-        </div>
         <div id='container_data' hidden>@dump($container_data)</div>
         
 

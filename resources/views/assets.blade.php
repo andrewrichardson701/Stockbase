@@ -10,12 +10,17 @@
     @include('nav')
     <!-- End of Header and Nav -->
 
-    <div class="content">
+    <div class="min-h-screen">
+        <!-- Page Heading -->
+        <header class="theme-divBg shadow" style="padding-top:60px; margin-bottom:20px">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight headerfix">
+                    Assets
+                </h2>
+            </div>
+        </header>
         {!! $response_handling !!}
-        <div class="container">
-            <h2 class="header-small" style="padding-bottom:5px">Assets</h2>
-        </div>
-
+        
         <div class="container">
             <div class="row ">
                 <div class="col text-center well-nopad theme-divBg @if (in_array($head_data['user']['role_id'], [1, 3]))  clickable" onclick="navPage(`{{ url('optics') }}`)" @else  no-perms" title="Not permitted" @endif

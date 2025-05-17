@@ -20,11 +20,11 @@
 }
 
 </style>
-<a href="./" class="nav-head" style="position:fixed;z-index:999;color:{{$head_data['extras']['banner_text_color']}} !important">{{$head_data['config_compare']['system_name']}}</a>
+<a href="{{ route('index') }}" class="nav-head" style="position:fixed;z-index:999;color:{{$head_data['extras']['banner_text_color']}} !important">{{$head_data['config_compare']['system_name']}}</a>
 <header class="nav inv-nav" style="position:fixed;width:100%;z-index:900">
     <div id="nav-row" class="nav-row viewport-large">
         <div class="logo-div">
-            <a href="{{ url('/') }}">
+            <a href="{{ route('index') }}">
                 <img class="logo" src="{{ asset('img/config/'. $head_data['config_compare']['logo_image']) }}" />
             </a>
         </div>

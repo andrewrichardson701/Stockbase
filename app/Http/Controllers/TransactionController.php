@@ -30,7 +30,7 @@ class TransactionController extends Controller
         $transactions = TransactionModel::getTransactions($stock_id, 100, $page);
         $transactions['view'] = 'transactions';
         
-        $stock_data = StockModel::getStockData($stock_id);
+        $stock_data = StockModel::getStockData($stock_id) ?? null;
 
         return view('transactions', ['params' => $params,
                                     'nav_data' => $nav_data,

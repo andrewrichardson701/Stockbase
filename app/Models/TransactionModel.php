@@ -70,13 +70,13 @@ class TransactionModel extends Model
         return $transactions;
     }
 
-    static public function getTransactionsList($stock_id, $limit, $offset)
+    static public function getTransactionsList($stock_id=null, $limit, $offset)
     {
         $instance = new self();
         $instance->setTable('transaction as t');
 
         $query = $instance->select(
-                                't.id as id',
+                                ['t.id as id',
                                 't.stock_id AS stock_id',
                                 't.item_id AS item_id',
                                 't.type AS type',
@@ -93,14 +93,14 @@ class TransactionModel extends Model
                                 'a.id AS area_id',
                                 'a.name AS area_name',
                                 'si.id AS site_id',
-                                'si.name AS site_name',
+                                'si.name AS site_name']
                             )
                             ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
                             ->leftJoin('area as a', 'a.id', '=', 's.area_id')
                             ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
-                            
-                            ->where('t.stock_id', '=', $stock_id)
-                            
+                            ->when($stock_id !== null, function ($query) use ($stock_id) {
+                                $query->where('t.stock_id', '=', $stock_id);
+                            })
                             ->groupBy('t.id',
                                         't.item_id',
                                         't.stock_id',

@@ -7,20 +7,22 @@
 <body>
     <!-- Header and Nav -->
     @include('nav')
-
-    <div class="content">
-        <div class="container" style="margin-top:20px">
-            <h2 class="header-small" style="padding-bottom:5px">
-                @if (isset($previous_url))
-                    <button class="btn btn-dark" style="margin-right:20px" onclick="window.location.href='{{ $previous_url }}'"><i class="fa fa-chevron-left"></i> Back</button>
-                @endif
-                Tags
-            </h2>
-        </div>
+    <div class="min-h-screen">
+        <!-- Page Heading -->
+        <header class="theme-divBg shadow" style="padding-top:60px">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl leading-tight headerfix">
+                    @if (isset($previous_url))
+                    {{-- <button class="btn btn-dark" style="margin-right:20px" onclick="window.location.href='{{ $previous_url }}'"><i class="fa fa-chevron-left"></i> Back</button> --}}
+                    @endif
+                    Tags
+                </h2>
+            </div>
+        </header>
 
         {!! $response_handling !!}
 
-        <div class="container">
+        <div class="container" style="margin-top:20px">
         @if ($tag_data['count'] > 0)
             <table class="table table-dark theme-table centertable" style="margin-bottom:0px;">
                 <thead style="text-align: center; white-space: nowrap;">

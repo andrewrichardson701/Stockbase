@@ -16,7 +16,7 @@
             <!-- Page Heading -->
             <header class="theme-divBg shadow" style="padding-top:60px">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <h2 class="font-semibold text-xl leading-tight">
+                    <h2 class="font-semibold text-xl leading-tight headerfix">
                         Profile
                     </h2>
                 </div>

@@ -102,6 +102,9 @@ class StockController extends Controller
                 $tagged = GeneralModel::formatArrayOnIdAndCount($stock_inv_data['tags']) ?? [];
                 $untagged = GeneralModel::formatArrayOnIdAndCount(GeneralModel::getAllWhereNotIn('tag', ['id' => array_keys($tagged) ?? []]));
                 $tag_data = ['tagged' => $tagged, 'untagged' => $untagged];
+                if (isset($modify_type) && $modify_type == 'move') {
+                    $stock_move_data = GeneralModel::formatArrayOnIdAndCount(StockModel::getMoveStockData($stock_id));
+                }
             } else {
                 // if the item doesnt have any entry in the stocm table, default back to adding a new item.
                 return redirect()->route('stock', ['stock_id' => 0, 'modify_type' => 'add']);
@@ -126,6 +129,7 @@ class StockController extends Controller
                                 'stock_inv_data' => $stock_inv_data ?? null,
                                 'stock_item_data' => $stock_item_data ?? null,
                                 'stock_distinct_item_data' => $stock_distinct_item_data ?? null,
+                                'stock_move_data' => $stock_move_data ?? null,
                                 'favourited' => $favourited ?? null,
                                 'serial_numbers' => $serial_numbers ?? null,
                                 'container_data' => $container_data ?? null,

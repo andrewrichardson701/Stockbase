@@ -58,6 +58,7 @@ class IndexController extends Controller
     {
         $test = StockModel::where('sku', '=', 'example')->get()->toArray();
         // dd(array_keys($test));
+        dd(StockModel::getMoveStockData(1));
         dd(GeneralModel::getDbTableNames(1));
         dd(ChangelogModel::getChangelogFull(25));
     }

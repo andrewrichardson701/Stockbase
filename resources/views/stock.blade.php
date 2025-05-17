@@ -23,30 +23,34 @@
                         >{{ ucwords($params['modify_type']) }}</or>
                     @endif
                 </h2>
-                <div class="col nav-div nav-right" style="max-width:max-content; width:max-content;margin-right:0px !important">
-                    <div class="nav-row">
-                        <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">
-                            <button id="edit-stock" class="btn btn-info theme-textColor nav-v-b stock-modifyBtn" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/edit')">
-                                <i class="fa fa-pencil"></i><or class="viewport-large-empty"> Edit</or>
-                            </button>
-                        </div> 
-                        <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                            <button id="add-stock" class="btn btn-success theme-textColor nav-v-b stock-modifyBtn" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/add')" @if ($stock_data['deleted'] == 1) disabled @endif>
-                                <i class="fa fa-plus"></i><or class="viewport-large-empty"> Add</or>
-                            </button>
-                        </div> 
-                        <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-                            <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b stock-modifyBtn" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/remove')" @if ($stock_data['deleted'] == 1) disabled @endif>
-                                <i class="fa fa-minus"></i><or class="viewport-large-empty"> Remove</or>
-                            </button>
-                        </div> 
-                        <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-                            <button id="transfer-stock" class="btn btn-warning nav-v-b stock-modifyBtn" style="color:black" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/move')" @if ($stock_data['deleted'] == 1) disabled @endif>
-                                <i class="fa fa-arrows-h"></i><or class="viewport-large-empty"> Move</or>
-                            </button>
+                @if (isset($params['stock_id']) && $params['stock_id'] > 0)
+                    @if (!isset($params['modify_type']))
+                        <div class="col nav-div nav-right" style="max-width:max-content; width:max-content;margin-right:0px !important">
+                            <div class="nav-row">
+                                <div id="edit-div" class="nav-div nav-right" style="margin-right:5px">
+                                    <button id="edit-stock" class="btn btn-info theme-textColor nav-v-b stock-modifyBtn" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/edit')">
+                                        <i class="fa fa-pencil"></i><or class="viewport-large-empty"> Edit</or>
+                                    </button>
+                                </div> 
+                                <div id="add-div" class="nav-div" style="margin-left:5px;margin-right:5px">
+                                    <button id="add-stock" class="btn btn-success theme-textColor nav-v-b stock-modifyBtn" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/add')" @if ($stock_data['deleted'] == 1) disabled @endif>
+                                        <i class="fa fa-plus"></i><or class="viewport-large-empty"> Add</or>
+                                    </button>
+                                </div> 
+                                <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
+                                    <button id="remove-stock" class="btn btn-danger theme-textColor nav-v-b stock-modifyBtn" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/remove')" @if ($stock_data['deleted'] == 1) disabled @endif>
+                                        <i class="fa fa-minus"></i><or class="viewport-large-empty"> Remove</or>
+                                    </button>
+                                </div> 
+                                <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
+                                    <button id="transfer-stock" class="btn btn-warning nav-v-b stock-modifyBtn" style="color:black" onclick="navPage('{{ url('stock') }}/{{ $params['stock_id'] }}/move')" @if ($stock_data['deleted'] == 1) disabled @endif>
+                                        <i class="fa fa-arrows-h"></i><or class="viewport-large-empty"> Move</or>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    @endif
+                @endif
             </div>
         </header>
         {!! $response_handling !!}

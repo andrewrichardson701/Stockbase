@@ -837,15 +837,14 @@ class StockModel extends Model
         $instance = new self();
         $instance->setTable('item_container');
         $children = $instance->select(['item.id AS item_id', 'stock.id AS stock_id', 'stock.name AS stock_name',
-                                'item.upc A item_upc', 'item.quantity AS item_quantity', 'item.cost AS item_cost',
-                                'item.serial_number AS item_serial_number', 'item.comments AS item_comments', 'item.manufactuer_id AS item_manufactuer_id',
+                                'item.upc AS item_upc', 'item.quantity AS item_quantity', 'item.cost AS item_cost',
+                                'item.serial_number AS item_serial_number', 'item.comments AS item_comments', 'item.manufacturer_id AS item_manufacturer_id',
                                 'item.shelf_id AS item_shelf_id', 'item.is_container AS item_is_container', 'item.deleted AS item_deleted'])
                                 ->join('item', 'item.id', '=', 'item_container.item_id')
                                 ->join('stock', 'stock.id', '=', 'item.stock_id')
                                 ->orderby('container_id')
                                 ->orderby('container_is_item')
                                 ->orderby('item_id')
-                                ->orderby('id')
                                 ->where('container_id', '=', $container_id)
                                 ->where('container_is_item', '=', $is_item)
                                 ->get()
@@ -868,7 +867,7 @@ class StockModel extends Model
 
         foreach($stock_item_data['rows'] as $row) {
             if ($row['is_container'] == 1) {
-                $container_data = StockModel::getContainerData($row['item_id'], 1);
+                $container_data = StockModel::getContainerChildren($row['item_id'], 1);
                 $return['rows'][$row['item_id']] = $container_data;
                 $count ++;
             }
@@ -896,7 +895,7 @@ class StockModel extends Model
                             ic.id AS ic_id
                         ')
                         ->join('item as i', function ($join) {
-                            $join->on('i.id', '=', 'ic.item_id')
+                            $join->on('i.id', '=', 'ic.container_id')
                                 ->where('ic.container_is_item', '=', 1);
                         })
                         ->join('stock as s', 's.id', '=', 'i.stock_id')
@@ -906,7 +905,7 @@ class StockModel extends Model
                         ->toArray();
 
         foreach ($data as $row) {
-            $return['rows'][] = $row;
+            $return['rows'][$row['item_id']] = $row;
             $count++;
         }
         $return['count'] = $count;#
@@ -1792,6 +1791,95 @@ class StockModel extends Model
         } else {
             return 0;
         }
+    }
+
+    static public function getMoveStockData($stock_id)
+    {
+        $return = [];
+
+        $results = DB::table('stock')
+                    ->join('item', 'item.stock_id', '=', 'stock.id')
+                    ->join('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+                    ->join('shelf', 'item.shelf_id', '=', 'shelf.id')
+                    ->join('area', 'shelf.area_id', '=', 'area.id')
+                    ->join('site', 'area.site_id', '=', 'site.id')
+                    ->leftJoin('item_container', 'item.id', '=', 'item_container.item_id')
+                    ->where('stock.id', $stock_id)
+                    ->where('stock.deleted', 0)
+                    ->where('item.quantity', 1)
+                    ->groupBy(
+                        'stock.id', 'stock.name', 'stock.description', 'stock.is_cable',
+                        'item.upc', 'item.cost', 'item.serial_number', 'item.comments', 'item.is_container',
+                        'manufacturer.id', 'manufacturer.name',
+                        'shelf.id', 'shelf.name', 'area.id', 'area.name', 'site.id', 'site.name',
+                        'item_container.id', 'item_container.container_id', 'item_container.container_is_item'
+                    )
+                    ->orderBy('shelf.id')
+                    ->orderBy('item.upc')
+                    ->orderBy('manufacturer.id')
+                    ->orderBy('item_container.container_id', 'desc')
+                    ->orderBy('item.serial_number')
+                    ->orderBy('item.comments')
+                    ->select([
+                        'stock.id as stock_id', 'stock.name as stock_name', 'stock.description as stock_description', 'stock.is_cable as stock_is_cable',
+                        'item.upc as upc', 'item.cost as cost', 'item.serial_number as serial_number', 'item.comments as comments', 'item.is_container as is_container',
+                        'manufacturer.id as manufacturer_id', 'manufacturer.name as manufacturer_name',
+                        'shelf.id as shelf_id', 'shelf.name as shelf_name', 'area.id as area_id', 'area.name as area_name', 'site.id as site_id', 'site.name as site_name',
+                        'item_container.id as item_container_id', 'item_container.container_id as container_id', 'item_container.container_is_item as container_is_item',
+                        DB::raw('SUM(item.quantity) as quantity')
+                    ])
+                    ->get()
+                    ->map(function ($item) {
+                        return (array) $item;
+                    })
+                    ->toArray();
+                    
+        foreach($results as $row) {
+            if (isset($row['container_id']) && $row['container_id'] !== null) {
+                $container_data = StockModel::getMoveContainerData($row['container_id'], $row['container_is_item'])[0];
+                $row['container_data'] = $container_data;
+            }
+            $return[] = $row;
+        }
+
+        return $return;
+    }
+
+    static public function getMoveContainerData($container_id, $is_item=0) 
+    {
+        $instance = new self();
+        $instance->setTable('item_container AS ic');
+
+        if ($is_item == 1) {
+            $data = $instance->selectRaw('
+                                s.name AS container_name, 
+                                s.id AS stock_id, 
+                                i.id AS container_id,
+                                ic.id AS ic_id
+                            ')
+                            ->join('item as i', function ($join) {
+                                $join->on('i.id', '=', 'ic.container_id')
+                                    ->where('ic.container_is_item', '=', 1);
+                            })
+                            ->join('stock as s', 's.id', '=', 'i.stock_id')
+                            ->where('ic.container_id', '=', $container_id)
+                            ->where('ic.container_is_item', '=', $is_item)
+                            ->get()
+                            ->toArray();
+        } else {
+            $data = $instance->selectRaw('
+                                c.name AS container_name, 
+                                c.id AS container_id, 
+                                ic.id AS ic_id
+                            ')
+                            ->join('container as c', 'c.id', '=', 'ic.container_id')
+                            ->where('ic.container_id', '=', $container_id)
+                            ->where('ic.container_is_item', '=', $is_item)
+                            ->get()
+                            ->toArray();
+        }
+        
+        return $data;
     }
 
 }

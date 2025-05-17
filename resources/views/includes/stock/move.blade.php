@@ -9,7 +9,7 @@
 @else
     <!-- /stock/#/move -->
     <!-- move quantity of selected stock -->
-
+    @include('includes.stock.move.existing')
     <!-- MISSING -->
 @endif
     <!-- Add the JS for the file -->

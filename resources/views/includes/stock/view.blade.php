@@ -348,7 +348,7 @@
                                             <td class="align-middle text-center"><input type="text" form="form-item-{{ $item['item_id'] }}" class="form-control" style="" value="{{ $item['serial_number'] }}" name="serial_number" /></td>
                                             <td class="align-middle text-center" @if ($head_data['config_compare']['cost_enable_normal'] == 0) hidden @endif ><input type="number" step=".01" form="form-item-{{ $item['item_id'] }}" class="form-control" style="width:75px" value="{{ $item['cost'] }}" name="cost" min=0 /></td>
                                             <td class="align-middle text-center"><input type="text" form="form-item-{{ $item['item_id'] }}" class="form-control" style="" value="{{ $item['comments'] }}" name="comments" /></td>
-                                            @if (isset($container_data['rows'][$item['item_id']]) && !empty($container_data['rows'][$item['item_id']]))
+                                            @if (isset($container_data['rows'][$item['container_id']]) && !empty($container_data['rows'][$item['container_id']]))
                                                 <td class="align-middle text-center" style="padding-right:2px" @if ($item['is_container'] == 1) colspan=2 @endif>
                                                 @if ($item['is_container'] == 1 && isset($matchCount) && $matchCount > 0) 
                                                     <input type="checkbox" form="form-item-{{ $item['item_id'] }}" name="container-toggle" checked hidden>

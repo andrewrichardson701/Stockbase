@@ -13,7 +13,7 @@
         <!-- Page Heading -->
         <header class="theme-divBg shadow" style="padding-top:60px; margin-bottom:20px">
             <div class="nav-row-alt max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 ">
-                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight nav-div-alt headerfix">
+                <h2 class="font-semibold text-xl  leading-tight nav-div-alt headerfix">
                     Stock @if(isset($params['modify_type'])) &nbsp; - &nbsp; <or 
                         @if ($params['modify_type'] == 'remove') style="color:#dc3545"
                         @elseif($params['modify_type'] == 'add') style="color:#218838"

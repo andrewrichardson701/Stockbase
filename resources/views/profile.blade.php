@@ -15,8 +15,8 @@
         <div class="min-h-screen">
             <!-- Page Heading -->
             <header class="theme-divBg shadow" style="padding-top:60px">
-                <div class="nav-row-alt max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight headerfix">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <h2 class="font-semibold text-xl leading-tight">
                         Profile
                     </h2>
                 </div>
@@ -29,11 +29,11 @@
                             <div class="max-w-xl">
                                 <section>
                                     <header>
-                                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                        <h2 class="text-lg font-medium ">
                                             {{ __('Profile Information') }}
                                         </h2>
 
-                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                        <p class="mt-1 text-sm">
                                             {{ __('Update your account\'s profile information and email address.') }}
                                         </p>
                                     </header>
@@ -48,7 +48,7 @@
                                         @method('patch')
                                         
                                         <div>
-                                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" 
+                                            <label class="block font-medium text-sm" 
                                                 for="name">{{ __('Name') }}</label>
                                             <input class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full" 
                                                     id="name" name="name" type="text" value="{{ old('name', $user->name) }}" 
@@ -61,7 +61,7 @@
                                         </div>
 
                                         <div>
-                                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300" 
+                                            <label class="block font-medium text-sm" 
                                                 for="username">{{ __('Username') }}</label>
                                             <input disabled=""
                                                 class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
@@ -75,7 +75,7 @@
                                         </div>
 
                                         <div>
-                                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                            <label class="block font-medium text-sm"
                                                 for="email">{{ __('Email') }}</label>
                                             <input
                                                 class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
@@ -88,10 +88,10 @@
                                             @endif
                                             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                                                 <div>
-                                                    <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
+                                                    <p class="text-sm mt-2 ">
                                                         {{ __('Your email address is unverified.') }}
 
-                                                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                                                        <button form="send-verification" class="underline text-sm hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                                                             {{ __('Click here to re-send the verification email.') }}
                                                         </button>
                                                     </p>
@@ -107,7 +107,7 @@
                                         </div>
 
                                         <div>
-                                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                            <label class="block font-medium text-sm"
                                                 for="theme_id">{{ __('Theme') }}</label>
                                             <select id="theme_id" name="theme_id"
                                                 class="mt-1 font-medium rounded-md text-gray-500 dark:text-gray-400  dark:bg-gray-900 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
@@ -129,21 +129,21 @@
 
                                         <div class="row">
                                             <div class="col">
-                                                <p class="block font-medium text-gray-700 dark:text-gray-300">Role:</p>
+                                                <p class="block font-medium">Role:</p>
                                             </div>
                                             <div class="col">
                                                 <p name="role" value="{{ $user->role_id }}">{{ $head_data['user']['role_data']['name'] }}</p>
                                             </div>
 
                                             <div class="col">
-                                                <p class="block font-medium text-gray-700 dark:text-gray-300">Auth:</p>
+                                                <p class="block font-medium">Auth:</p>
                                             </div>
                                             <div class="col">
                                                 <p name="auth" value="{{ $user->auth }}">{{ $user->auth }}</p>
                                             </div>
 
                                             <div class="col">
-                                                <p class="block font-medium text-gray-700 dark:text-gray-300">Verified:</p>
+                                                <p class="block font-medium">Verified:</p>
                                             </div>
                                             <div class="col">
                                                 <p name="theme" value="{{ $user->email_verified_at }}">{{ $user->email_verified_at ?? 'Never' }}</p>
@@ -157,7 +157,7 @@
                                                 {{ __('Save') }}
                                             </button>
                                             @if (session('status') === 'profile-updated')
-                                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ __('Saved.') }}</p>
+                                                <p class="text-sm">{{ __('Saved.') }}</p>
                                             @endif
                                         </div>
                                     </form>
@@ -169,11 +169,11 @@
                             <div class="max-w-xl">
                                 <section>
                                     <header>
-                                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                        <h2 class="text-lg font-medium">
                                             {{ __('Update Password') }}
                                         </h2>
 
-                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                        <p class="mt-1 text-sm">
                                             {{ __('Ensure your account is using a long, random password to stay secure.') }}
                                         </p>
                                     </header>
@@ -182,7 +182,7 @@
                                         @csrf
                                         @method('put')
                                         <div>
-                                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                            <label class="block font-medium text-sm"
                                                 for="update_password_current_password">
                                                 {{ __('Current Password') }}
                                             </label>
@@ -198,7 +198,7 @@
                                         </div>
 
                                         <div>
-                                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                            <label class="block font-medium text-sm"
                                                 for="update_password_password">
                                                 {{ __('New Password') }}
                                             </label>
@@ -214,7 +214,7 @@
                                         </div>
 
                                         <div>
-                                            <label class="block font-medium text-sm text-gray-700 dark:text-gray-300"
+                                            <label class="block font-medium text-sm"
                                                 for="update_password_password_confirmation">
                                                 {{ __('Confirm Password') }}
                                             </label>
@@ -236,7 +236,7 @@
                                                 {{ __('Save') }}
                                             </button>
                                             @if (session('status') === 'profile-updated')
-                                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ __('Saved.') }}</p>
+                                                <p class="text-sm">{{ __('Saved.') }}</p>
                                             @endif
                                         </div>
                                     </form>
@@ -247,5 +247,6 @@
                 </div>
             </main>
         </div>
+        @include('foot')
     </body>
 </html>

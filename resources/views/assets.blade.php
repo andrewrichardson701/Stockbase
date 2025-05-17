@@ -14,7 +14,7 @@
         <!-- Page Heading -->
         <header class="theme-divBg shadow" style="padding-top:60px; margin-bottom:20px">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight headerfix">
+                <h2 class="font-semibold text-xl  leading-tight headerfix">
                     Assets
                 </h2>
             </div>

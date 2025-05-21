@@ -247,7 +247,7 @@ class CablestockModel extends Model
                     $result =
                     '<tr class="vertical-align align-middle'.$last_edited.' row-show highlight" id="'.$cable_item_id.'">
                         <td hidden>
-                            <form id="modify-cable-item-'.$cable_item_id.'" action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                            <form id="modify-cable-item-'.$cable_item_id.'" action="'.route('cablestock.modifyStock').'" method="POST" enctype="multipart/form-data">
                                 <!-- Include CSRF token in the form -->
                                 ' . csrf_field() . '
                                 <input type="hidden" name="stock-id" value="'.$stock_id.'" />
@@ -421,13 +421,13 @@ class CablestockModel extends Model
         return $record;
     }
 
-    static public function adjustQuantity($stock_id, $item_id, $type, $quantity)
+    static public function adjustQuantity($stock_id, $item_id, $action, $quantity=1)
     {
         // adjust cable quantity
-        $return = ['id' => $item_id, 'stock_id' => $stock_id, 'quantity' => $quantity, 'type' => $type];
+        $return = ['id' => $item_id, 'stock_id' => $stock_id, 'quantity' => $quantity, 'action' => $action];
 
-        // allowed types
-        $types = ['add', 'remove'];
+        // allowed actions
+        $actions = ['add', 'remove'];
         $user = GeneralModel::getUser();
 
         $changelog_info = [
@@ -440,17 +440,17 @@ class CablestockModel extends Model
             'previous_value' => ''
         ];
         
-        // if it is a valid type, continue \/
-        if (in_array($type, $types)) {
-            $current_data = CablestockModel::getCableData($stock_id, $item_id);
+        // if it is a valid action, continue \/
+        if (in_array($action, $actions)) {
+            $current_data = (array)CablestockModel::getCableData($stock_id, $item_id);
             // if row exists \/
             if ($current_data) {
                 // cable item exists
                 if (isset($current_data['quantity'])) {
-                    if ($type == 'add') {
+                    if ($action == 'add') {
                         if ($current_data['deleted'] == 1 && $current_data['quantity'] == 0) {
                             // set deleted to 0 and quantity to 0 first
-                            DB::table('cable_item')::where('id', $item_id)->update(['deleted' => 0, 'quantity' => 0]);
+                            DB::table('cable_item')->where('id', $item_id)->update(['deleted' => 0, 'quantity' => 0]);
                             $restore_changelog = $changelog_info;
                             $restore_changelog['field'] = 'deleted';
                             $restore_changelog['new_value'] = 0;
@@ -460,7 +460,7 @@ class CablestockModel extends Model
                         }
                         // do the add
                         $new_quantity = $current_data['quantity'] + $quantity;
-                        DB::table('cable_item')::where('id', $item_id)->update(['quantity' => $new_quantity]);
+                        DB::table('cable_item')->where('id', $item_id)->update(['quantity' => $new_quantity]);
                         $add_changelog = $changelog_info;
                         $add_changelog['field'] = 'quantity';
                         $add_changelog['new_value'] = $new_quantity;
@@ -470,23 +470,25 @@ class CablestockModel extends Model
                         // add transaction
                         $transaction = [
                             'stock_id' => $current_data['stock_id'],
-                            'item_id' => $current_data['item_id'],
-                            'type' => $type,
+                            'item_id' => $current_data['id'],
+                            'type' => $action,
                             'quantity' => $new_quantity,
                             'date' => date('Y-m-d'),
                             'time' => date('H:i:s'),
                             'username' => $user['username'],
                             'shelf_id' => $current_data['shelf_id'],
-                            'reason' => 'Add quantity'
+                            'reason' => 'Add quantity',
+                            'created_at' => now(),
+                            'updated_at' => now()
                         ];
                         TransactionModel::addCableTransaction($transaction);
                         $return['success'] = 'Added';
                         $return['id'] = $current_data['id'];
-                    } elseif ($type == 'remove') {
+                    } elseif ($action == 'remove') {
                         if ($current_data['quantity'] >= $quantity) {
                             // removal quantity is valid
                             $new_quantity = $current_data['quantity'] - $quantity;
-                            DB::table('cable_item')::where('id', $item_id)->update(['quantity' => $new_quantity]);
+                            DB::table('cable_item')->where('id', $item_id)->update(['quantity' => $new_quantity]);
                             $remove_changelog = $changelog_info;
                             $remove_changelog['field'] = 'quantity';
                             $remove_changelog['new_value'] = $new_quantity;
@@ -496,14 +498,16 @@ class CablestockModel extends Model
                             //add transaction
                             $transaction = [
                                 'stock_id' => $current_data['stock_id'],
-                                'item_id' => $current_data['item_id'],
-                                'type' => $type,
+                                'item_id' => $current_data['id'],
+                                'type' => $action,
                                 'quantity' => $new_quantity,
                                 'date' => date('Y-m-d'),
                                 'time' => date('H:i:s'),
                                 'username' => $user['username'],
                                 'shelf_id' => $current_data['shelf_id'],
-                                'reason' => 'Remove quantity'
+                                'reason' => 'Remove quantity',
+                                'created_at' => now(),
+                                'updated_at' => now()
                             ];
                             TransactionModel::addCableTransaction($transaction);
                             $return['success'] = 'Removed';
@@ -513,7 +517,7 @@ class CablestockModel extends Model
                         }
                     } else {
                         // nothing to be here yet
-                        $return['errors'][] = 'invalid modify type';
+                        $return['errors'][] = 'invalid modify action';
                     }
                 } else {
                     $return['errors'][] = 'No quantity currently set on item';
@@ -522,7 +526,7 @@ class CablestockModel extends Model
                 $return['errors'][] = 'Cable item not found';
             }
         } else {
-            $return['error'][] = 'Invalid adjustment type';
+            $return['error'][] = 'Invalid adjustment action';
         }
 
         return $return;

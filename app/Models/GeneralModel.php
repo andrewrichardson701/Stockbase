@@ -274,6 +274,18 @@ class GeneralModel extends Model
         return $combinedUrl;
     }
 
+    public static function getURLQuery($url)
+    {
+        $parsed_url = parse_url($url); // Step 2: Parse the URL
+
+        $query_params = [];
+        if (isset($parsed_url['query'])) {
+            parse_str($parsed_url['query'], $query_params); // Step 3: Convert query string to array
+        }
+
+        return $query_params;
+    }
+
     static public function redirectURL($url, $params)
     {
         if (!empty($params)) {

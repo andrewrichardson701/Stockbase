@@ -169,6 +169,7 @@ class StockController extends Controller
 
     static public function addNewStock(Request $request)
     {
+        dd($request->toArray());
         if ($request['_token'] == csrf_token()) {
             $request->validate([
                 'name' => 'required|string',

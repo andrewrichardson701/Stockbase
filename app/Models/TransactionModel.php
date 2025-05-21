@@ -193,29 +193,13 @@ class TransactionModel extends Model
 
     static public function addCableTransaction($request)
     {
-        if ($request['_token'] == csrf_token()) {
-            $request->validate([
-                'stock_id' => 'integer|required',
-                'item_id' => 'integer|required',
-                'type' => 'string|required',
-                'quantity' => 'integer|required',
-                'date' => 'string|required',
-                'time' => 'string|required',
-                'username' => 'required',
-                'shelf_id' => 'integer|required',
-                'reason' => 'string|required'
-            ]);
-    
-            $insert = DB::table('cable_transaction')->create($request->toArray());
-            $id = $insert->id;
+        $insert = DB::table('cable_transaction')->insertGetId($request);
+        $id = $insert;
 
-            if (is_numeric($id)) {
-                return ['success' => $id];
-            } else {
-                return ['error' => 'non-numeric id'];
-            }
+        if (is_numeric($id)) {
+            return ['success' => $id];
         } else {
-            return null;
+            return ['error' => 'non-numeric id'];
         }
     }
 }

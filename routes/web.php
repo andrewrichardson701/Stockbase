@@ -41,6 +41,11 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::get('/', [IndexController::class, 'index'])->name('index'); // home page
             Route::get('/cablestock', [CablestockController::class, 'index'])->name('cablestock'); // cablestock page
             Route::get('/assets', [AssetsController::class, 'index'])->name('assets'); // assets page
+                Route::get('/assets/cpus', [AssetsController::class, 'cpus'])->name('cpus'); // assets > cpus page
+                Route::get('/assets/memory', [AssetsController::class, 'incomplete'])->name('memory'); // assets > memory page
+                Route::get('/assets/disks', [AssetsController::class, 'incomplete'])->name('disks'); // assets > disks page
+                Route::get('/assets/fans', [AssetsController::class, 'incomplete'])->name('fans'); // assets > fans page
+                Route::get('/assets/psus', [AssetsController::class, 'incomplete'])->name('psus'); // assets > psus page
             Route::get('/containers', [ContainersController::class, 'index'])->name('containers'); // containers page
             Route::get('/stock/{stock_id}/{modify_type?}/{add_new?}/{search?}', [StockController::class, 'index'])
                 ->where('stock_id', '[0-9\-]+') // Ensure stock_id is numeric or -
@@ -54,7 +59,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             
 
             // optics routes - auth in progress
-            Route::get('/optics', [OpticsController::class, 'index'])->name('optics'); // admin page
+            Route::get('/assets/optics', [OpticsController::class, 'index'])->name('optics'); // assets > optics page
 
             // admin routes - auth in progress
             Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // admin page
@@ -88,6 +93,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/stock.edit.imageunlink', [StockController::class, 'unlinkStockImage'])->name('stock.edit.imageunlink'); // unlink stock image
             // Cablestock
             Route::post('/cablestock.modifyStock', [CableStockController::class, 'modifyCableStock'])->name('cablestock.modifyStock'); // modify cable stock 
+            Route::post('/cablestock.moveStock', [CableStockController::class, 'moveCableStock'])->name('cablestock.moveStock'); // move cable stock 
             // Changelog
             Route::post('/changelog.filter', [ChangelogController::class, 'filterChangelog'])->name('changelog.filter'); // filter the changelog
             // Theme-testing

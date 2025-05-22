@@ -26,4 +26,22 @@ class AssetsController extends Controller
                                 'response_handling' => $response_handling,
                             ]);
     }
+
+    static public function cpus(Request $request)
+    {
+        $nav_highlight = 'assets'; // for the nav highlighting
+
+        $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
+        $response_handling = ResponseHandlingModel::responseHandling($request);
+
+        return view('cpus', ['nav_data' => $nav_data,
+                                'response_handling' => $response_handling,
+                            ]);
+    }
+
+    static public function incomplete(Request $request)
+    {
+        return dd('incomplete page.');
+    }
 }

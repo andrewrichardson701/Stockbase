@@ -8,9 +8,18 @@
     <!-- Header and Nav -->
     @include('nav')
 
-    <div class="content viewport-content" style="padding-top:80px">
+    {{-- <div class="content viewport-content" style="padding-top:80px"> --}}
+        <div class="min-h-screen">
+            <!-- Page Heading -->
+            <header class="theme-divBg shadow" style="padding-top:60px">
+                <div class="nav-row-alt max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <h2 class="font-semibold text-xl  leading-tight headerfix">
+                        Optics
+                    </h2>
+                </div>
+            </header>
     <!-- Selection Area -->
-        <div id="selection" class="viewport-selection" style="margin-bottom:15px">
+        <div id="selection" class="viewport-selection" style="margin-top:20px; margin-bottom:15px">
         <!-- Small viewport selection area -->
             <div class="centertable viewport-small" style="max-width:max-content">
                 <table class="centertable">

@@ -70,4 +70,20 @@ class CablestockController extends Controller
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
+
+    static public function moveCableStock(Request $request)
+    {
+        dd ($request->toArray());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock-id' => 'integer|required',
+                'cable-item-id' => 'integer|required',
+                'action' => 'string|required'
+            ]);
+
+
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
 }

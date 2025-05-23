@@ -95,6 +95,7 @@
                             <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('shelf')">Add New</label>
                         </div>
                     </div>
+                    @if ($stock_data['is_cable'] == 0)
                     <div class="nav-row" id="container-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="container" id="container-label">Container</div>
                         <div>
@@ -103,7 +104,6 @@
                             </select>
                         </div>
                     </div>
-                    @if ($stock_data['is_cable'] == 0)
                     <div class="nav-row" id="cost-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost ({{ $head_data['config_compare']['currency'] }})</label></div>
                         <div><input type="number" step=".01" name="cost" placeholder="0" id="cost" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required></input></div>

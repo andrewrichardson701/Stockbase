@@ -1387,128 +1387,131 @@ class StockModel extends Model
 
     static public function addExistingStock($request, $redirect=null) 
     {
-        if (GeneralModel::checkShelfAreaMatch($request['shelf'], $request['area']) && GeneralModel::checkAreaSiteMatch($request['area'], $request['site'])) {
-            $return = [];
-            $return['ids'] = [];
-            $counter = 0;
-            $redirect_array = [];
+        if ($request['_token'] == csrf_token()) {
+            if (GeneralModel::checkShelfAreaMatch($request['shelf'], $request['area']) && GeneralModel::checkAreaSiteMatch($request['area'], $request['site'])) {
+                $return = [];
+                $return['ids'] = [];
+                $counter = 0;
+                $redirect_array = [];
 
-            $user = GeneralModel::getUser();
+                $user = GeneralModel::getUser();
 
-            $serials = array_map('trim', explode(',', $request['serial-number']));
+                $serials = array_map('trim', explode(',', $request['serial-number']));
 
-            // check for non=uniques.
-            foreach ($serials as $sn) {
-                if ($sn !== null && $sn !== '') {
-                    if (StockModel::checkUniqueSerial($sn) == 0) {
-                        $redirect_array = ['stock_id'   => $request['id'],
-                                        'modify_type' => 'add',
-                                        'error' => 'non-unique serial found, aborted.'];
-                        return redirect()->route('stock', $redirect_array)->with('return', $return);
-                    }
-                }
-            }
-
-            for ($i = 0; $i < (int)$request['quantity']; $i++) {
-                // item data
-                if (isset($serials[$i])) {
-                    $serial = $serials[$i];
-                } else {
-                    $serial = '';
-                }
-                
-                $data = [
-                        'stock_id' => $request['id'], 
-                        'upc' => $request['upc'],
-                        'quantity' => 1,
-                        'cost' => $request['cost'] ?? 0,
-                        'serial_number' => $serial,
-                        'comments' => '',
-                        'manufacturer_id' => $request['manufacturer'],
-                        'shelf_id' => $request['shelf'],
-                        'is_container' => 0
-                        ];
-
-                $insert = ItemModel::create($data);
-                $id = $insert->id;
-                
-                // changelog data for item
-                $info = [
-                    'user' => $user,
-                    'table' => 'item',
-                    'record_id' => $id,
-                    'field' => 'quantity',
-                    'new_value' => 1,
-                    'action' => 'Add quantity',
-                    'previous_value' => '',
-                ];
-
-                $return['insert'][] = ['item_id' => $id, 
-                                        'data' => $data, 
-                                        'changelog' => $info];
-                                        
-                if ($id) {
-                    $counter++;
-                    GeneralModel::updateChangelog($info);
-
-                    // link to container if needed
-                    if (isset($request['container']) && is_numeric($request['container'])) {
-                        if ($request['container'] < 0) {
-                            $container_id = $request['container'] *-1;
-                            $container_is_item = 1;
-                        } else {
-                            $container_id = $request['container'];
-                            $container_is_item = 0;
+                // check for non=uniques.
+                foreach ($serials as $sn) {
+                    if ($sn !== null && $sn !== '') {
+                        if (StockModel::checkUniqueSerial($sn) == 0) {
+                            $redirect_array = ['stock_id'   => $request['id'],
+                                            'modify_type' => 'add',
+                                            'error' => 'non-unique serial found, aborted.'];
+                            return redirect()->route('stock', $redirect_array)->with('return', $return);
                         }
-                        $container_data = ['item_id' => $id, 
-                                            'container_id' => $container_id, 
-                                            'is_item' => $container_is_item];
-
-                        // add the container link
-                        ContainersModel::linkToContainer($container_data, 'no');
                     }
-
-                    // update the transactions
-                    $transaction_data = new HttpRequest([
-                        '_token' => csrf_token(),
-                        'stock_id' => $request['id'],
-                        'item_id' => $id,
-                        'type' => 'add',
-                        'quantity' => 1,
-                        'price' => $request['cost'] ?? 0,
-                        'serial_number' => $serial ?? '',
-                        'date' => date('Y-m-d'),
-                        'time' => date('h:i:s'),
-                        'username' => $user['username'],
-                        'shelf_id' => $request['shelf'],
-                        'reason' => $request['reason']
-                    ]);
-
-                    TransactionModel::addTransaction($transaction_data);
                 }
-            }
-            
 
-            if ($counter == (int)$request['quantity']) {
-                $redirect_array = ['stock_id'   => $request['id'],
-                                    'modify_type' => 'add',
-                                    'success' => 'added'];
+                for ($i = 0; $i < (int)$request['quantity']; $i++) {
+                    // item data
+                    if (isset($serials[$i])) {
+                        $serial = $serials[$i];
+                    } else {
+                        $serial = '';
+                    }
+                    
+                    $data = [
+                            'stock_id' => $request['id'], 
+                            'upc' => $request['upc'],
+                            'quantity' => 1,
+                            'cost' => $request['cost'] ?? 0,
+                            'serial_number' => $serial,
+                            'comments' => '',
+                            'manufacturer_id' => $request['manufacturer'],
+                            'shelf_id' => $request['shelf'],
+                            'is_container' => 0
+                            ];
+
+                    $insert = ItemModel::create($data);
+                    $id = $insert->id;
+                    
+                    // changelog data for item
+                    $info = [
+                        'user' => $user,
+                        'table' => 'item',
+                        'record_id' => $id,
+                        'field' => 'quantity',
+                        'new_value' => 1,
+                        'action' => 'Add quantity',
+                        'previous_value' => '',
+                    ];
+
+                    $return['insert'][] = ['item_id' => $id, 
+                                            'data' => $data, 
+                                            'changelog' => $info];
+                                            
+                    if ($id) {
+                        $counter++;
+                        GeneralModel::updateChangelog($info);
+
+                        // link to container if needed
+                        if (isset($request['container']) && is_numeric($request['container'])) {
+                            if ($request['container'] < 0) {
+                                $container_id = $request['container'] *-1;
+                                $container_is_item = 1;
+                            } else {
+                                $container_id = $request['container'];
+                                $container_is_item = 0;
+                            }
+                            $container_data = ['item_id' => $id, 
+                                                'container_id' => $container_id, 
+                                                'is_item' => $container_is_item];
+
+                            // add the container link
+                            ContainersModel::linkToContainer($container_data, 'no');
+                        }
+
+                        // update the transactions
+                        $transaction_data = new HttpRequest([
+                            'stock_id' => $request['id'],
+                            'item_id' => $id,
+                            'type' => 'add',
+                            'quantity' => 1,
+                            'price' => $request['cost'] ?? 0,
+                            'serial_number' => $serial ?? '',
+                            'date' => date('Y-m-d'),
+                            'time' => date('h:i:s'),
+                            'username' => $user['username'],
+                            'shelf_id' => $request['shelf'],
+                            'reason' => $request['reason']
+                        ]);
+
+                        TransactionModel::addTransaction($transaction_data);
+                    }
+                }
+                
+
+                if ($counter == (int)$request['quantity']) {
+                    $redirect_array = ['stock_id'   => $request['id'],
+                                        'modify_type' => 'add',
+                                        'success' => 'added'];
+                } else {
+                    $redirect_array = ['stock_id'   => $request['id'],
+                                            'modify_type' => 'add',
+                                            'error' => 'partially_added'];
+                }
+                
             } else {
                 $redirect_array = ['stock_id'   => $request['id'],
                                         'modify_type' => 'add',
-                                        'error' => 'partially_added'];
+                                        'error' => 'missmatch'];
             }
-            
-        } else {
-            $redirect_array = ['stock_id'   => $request['id'],
-                                    'modify_type' => 'add',
-                                    'error' => 'missmatch'];
-        }
 
-        if ($redirect !== null) {
-            return $redirect_array;
+            if ($redirect !== null) {
+                return $redirect_array;
+            } else {
+                return redirect()->route('stock', $redirect_array)->with('return', $return);
+            }
         } else {
-            return redirect()->route('stock', $redirect_array)->with('return', $return);
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
 

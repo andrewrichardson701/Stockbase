@@ -50,16 +50,16 @@ class TransactionModel extends Model
     protected $table = 'transaction'; // Specify your table name
     protected $fillable = ['stock_id', 'item_id', 'type', 'quantity', 'price', 'serial_number', 'reason', 'comments', 'date', 'time', 'username', 'shelf_id'];
 
-    static public function getTransactions($stock_id, $limit, $page)
+    static public function getTransactions($stock_id, $is_cable = 0, $limit, $page)
     {
         if ($page == 0) { $page = 1; }
 
-        $totalCount = count(TransactionModel::getTransactionsList($stock_id, 0, 0));
+        $totalCount = count(TransactionModel::getTransactionsList($stock_id, $is_cable, 0, 0));
         if ($limit == 0) { $limit = $totalCount; }
 
         $offset = $page*$limit-$limit > 0 ? $page*$limit-$limit : 0;
 
-        $transactions = GeneralModel::formatArrayOnIdAndCount(TransactionModel::getTransactionsList($stock_id, $limit, $offset));
+        $transactions = GeneralModel::formatArrayOnIdAndCount(TransactionModel::getTransactionsList($stock_id, $is_cable, $limit, $offset));
         
         $transactions['total_count'] = $totalCount;
         $transactions['pages'] = (int)ceil($totalCount / $limit);
@@ -70,58 +70,104 @@ class TransactionModel extends Model
         return $transactions;
     }
 
-    static public function getTransactionsList($stock_id=null, $limit, $offset)
+    static public function getTransactionsList($stock_id=null, $is_cable=0, $limit, $offset)
     {
         $instance = new self();
-        $instance->setTable('transaction as t');
+        if ($is_cable == 0) {
+            $instance->setTable('transaction as t');
 
-        $query = $instance->select(
-                                ['t.id as id',
-                                't.stock_id AS stock_id',
-                                't.item_id AS item_id',
-                                't.type AS type',
-                                't.quantity as quantity',
-                                't.price AS price',
-                                't.serial_number AS serial_number',
-                                't.reason AS reason',
-                                't.comments AS comments',
-                                't.date AS date',
-                                't.time AS time',
-                                't.username AS username',
-                                't.shelf_id AS shelf_id',
-                                's.name AS shelf_name',
-                                'a.id AS area_id',
-                                'a.name AS area_name',
-                                'si.id AS site_id',
-                                'si.name AS site_name']
-                            )
-                            ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
-                            ->leftJoin('area as a', 'a.id', '=', 's.area_id')
-                            ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
-                            ->when($stock_id !== null, function ($query) use ($stock_id) {
-                                $query->where('t.stock_id', '=', $stock_id);
-                            })
-                            ->groupBy('t.id',
-                                        't.item_id',
-                                        't.stock_id',
-                                        't.type',
-                                        't.price',
-                                        't.serial_number',
-                                        't.reason',
-                                        't.comments',
-                                        't.date',
-                                        't.time',
-                                        't.username',
-                                        't.shelf_id',
-                                        's.name',
-                                        'a.id',
-                                        'a.name',
-                                        'si.id',
-                                        'si.name',
-                                        'quantity') 
-                            ->orderBy('t.date', 'desc') 
-                            ->orderBy('t.time', 'desc')
-                            ->orderBy('quantity', 'desc');
+            $query = $instance->select(
+                                    ['t.id as id',
+                                    't.stock_id AS stock_id',
+                                    't.item_id AS item_id',
+                                    't.type AS type',
+                                    't.quantity as quantity',
+                                    't.price AS price',
+                                    't.serial_number AS serial_number',
+                                    't.reason AS reason',
+                                    't.comments AS comments',
+                                    't.date AS date',
+                                    't.time AS time',
+                                    't.username AS username',
+                                    't.shelf_id AS shelf_id',
+                                    's.name AS shelf_name',
+                                    'a.id AS area_id',
+                                    'a.name AS area_name',
+                                    'si.id AS site_id',
+                                    'si.name AS site_name']
+                                )
+                                ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
+                                ->leftJoin('area as a', 'a.id', '=', 's.area_id')
+                                ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
+                                ->when($stock_id !== null, function ($query) use ($stock_id) {
+                                    $query->where('t.stock_id', '=', $stock_id);
+                                })
+                                ->groupBy('t.id',
+                                            't.item_id',
+                                            't.stock_id',
+                                            't.type',
+                                            't.price',
+                                            't.serial_number',
+                                            't.reason',
+                                            't.comments',
+                                            't.date',
+                                            't.time',
+                                            't.username',
+                                            't.shelf_id',
+                                            's.name',
+                                            'a.id',
+                                            'a.name',
+                                            'si.id',
+                                            'si.name',
+                                            'quantity') 
+                                ->orderBy('t.date', 'desc') 
+                                ->orderBy('t.time', 'desc')
+                                ->orderBy('quantity', 'desc');
+        } else {
+            $instance->setTable('cable_transaction as t');
+
+            $query = $instance->select(
+                                    ['t.id as id',
+                                    't.stock_id AS stock_id',
+                                    't.item_id AS item_id',
+                                    't.type AS type',
+                                    't.quantity as quantity',
+                                    't.reason AS reason',
+                                    't.date AS date',
+                                    't.time AS time',
+                                    't.username AS username',
+                                    't.shelf_id AS shelf_id',
+                                    's.name AS shelf_name',
+                                    'a.id AS area_id',
+                                    'a.name AS area_name',
+                                    'si.id AS site_id',
+                                    'si.name AS site_name']
+                                )
+                                ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
+                                ->leftJoin('area as a', 'a.id', '=', 's.area_id')
+                                ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
+                                ->when($stock_id !== null, function ($query) use ($stock_id) {
+                                    $query->where('t.stock_id', '=', $stock_id);
+                                })
+                                ->groupBy('t.id',
+                                            't.item_id',
+                                            't.stock_id',
+                                            't.type',
+                                            't.reason',
+                                            't.date',
+                                            't.time',
+                                            't.username',
+                                            't.shelf_id',
+                                            's.name',
+                                            'a.id',
+                                            'a.name',
+                                            'si.id',
+                                            'si.name',
+                                            'quantity') 
+                                ->orderBy('t.date', 'desc') 
+                                ->orderBy('t.time', 'desc')
+                                ->orderBy('quantity', 'desc');
+        }
 
         if ($limit != 0) {
             $query->limit($limit);
@@ -163,32 +209,30 @@ class TransactionModel extends Model
 
     static public function addTransaction($request)
     {
-        if ($request['_token'] == csrf_token()) {
-            $request->validate([
-                'stock_id' => 'integer|required',
-                'item_id' => 'integer|required',
-                'type' => 'string|required',
-                'quantity' => 'integer|required',
-                'price' => 'numeric|nullable',
-                'serial_number' => 'string|nullable',
-                'date' => 'string|required',
-                'time' => 'string|required',
-                'username' => 'required',
-                'shelf_id' => 'integer|required',
-                'reason' => 'string|required'
-            ]);
-    
-            $insert = TransactionModel::create($request->toArray());
-            $id = $insert->id;
+        $request->validate([
+            'stock_id' => 'integer|required',
+            'item_id' => 'integer|required',
+            'type' => 'string|required',
+            'quantity' => 'integer|required',
+            'price' => 'numeric|nullable',
+            'serial_number' => 'string|nullable',
+            'comments' => 'string|nullable',
+            'date' => 'string|required',
+            'time' => 'string|required',
+            'username' => 'required',
+            'shelf_id' => 'integer|required',
+            'reason' => 'string|required'
+        ]);
 
-            if (is_numeric($id)) {
-                return ['success' => $id];
-            } else {
-                return ['error' => 'non-numeric id'];
-            }
+        $insert = TransactionModel::create($request->toArray());
+        $id = $insert->id;
+
+        if (is_numeric($id)) {
+            return ['success' => $id];
         } else {
-            return null;
+            return ['error' => 'non-numeric id'];
         }
+
     }
 
     static public function addCableTransaction($request)

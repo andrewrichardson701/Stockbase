@@ -98,7 +98,7 @@ class StockController extends Controller
                 $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, (int)$stock_data['is_cable']);
                 $serial_numbers = StockModel::getDistinctSerials($stock_id);
                 $container_data = StockModel::getAllContainerData($stock_id);
-                $transactions = TransactionModel::getTransactions($stock_id, 5, $page);
+                $transactions = TransactionModel::getTransactions($stock_id, (int)$stock_data['is_cable'], 5, $page);
                 $tagged = GeneralModel::formatArrayOnIdAndCount($stock_inv_data['tags']) ?? [];
                 $untagged = GeneralModel::formatArrayOnIdAndCount(GeneralModel::getAllWhereNotIn('tag', ['id' => array_keys($tagged) ?? []]));
                 $tag_data = ['tagged' => $tagged, 'untagged' => $untagged];
@@ -169,7 +169,6 @@ class StockController extends Controller
 
     static public function addNewStock(Request $request)
     {
-        dd($request->toArray());
         if ($request['_token'] == csrf_token()) {
             $request->validate([
                 'name' => 'required|string',

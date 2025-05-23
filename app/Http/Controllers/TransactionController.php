@@ -27,10 +27,10 @@ class TransactionController extends Controller
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
-        $transactions = TransactionModel::getTransactions($stock_id, 100, $page);
-        $transactions['view'] = 'transactions';
-        
         $stock_data = StockModel::getStockData($stock_id) ?? null;
+
+        $transactions = TransactionModel::getTransactions($stock_id, $stock_data['is_cable'], 100, $page);
+        $transactions['view'] = 'transactions';
 
         return view('transactions', ['params' => $params,
                                     'nav_data' => $nav_data,

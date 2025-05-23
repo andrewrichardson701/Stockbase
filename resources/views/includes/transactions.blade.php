@@ -12,9 +12,11 @@
                 <th class="viewport-mid-large">Shelf</th>
                 <th class="viewport-mid-large">Username</th>
                 <th>Quantity</th>
-                <th class="viewport-large-empty" @if ($head_data['config_compare']['cost_enable_normal'] == 0) hidden @endif>Price</th>
-                <th class="viewport-large-empty">Serial Number</th>
-                <th hidden>Comments</th>
+                @if ($stock_data['is_cable'] == 0)
+                    <th class="viewport-large-empty" @if ($head_data['config_compare']['cost_enable_normal'] == 0) hidden @endif>Price</th>
+                    <th class="viewport-large-empty">Serial Number</th>
+                    <th hidden>Comments</th>
+                @endif
                 <th>Reason</th>
             </tr>
         </thead>
@@ -32,9 +34,11 @@
                 <td id="s_name_{{ $transaction['id'] }}" class="viewport-mid-large">{{ $transaction['shelf_name'] }}</td>
                 <td id="t_username_{{ $transaction['id'] }}" class="viewport-mid-large">{{ $transaction['username'] }}</td>
                 <td id="t_quantity_{{ $transaction['id'] }}">{{ $transaction['quantity'] }}</td>
-                <td id="t_price_{{ $transaction['id'] }}" class="viewport-large-empty" @if ($head_data['config_compare']['cost_enable_normal'] == 0) hidden @endif>{{ $head_data['config_compare']['currency'].$transaction['price'] }}</td>
-                <td id="t_serial_number_{{ $transaction['id'] }}" class="viewport-large-empty">{{ $transaction['serial_number'] }}</td>
-                <td id="t_comments_{{ $transaction['id'] }}" hidden>{{ $transaction['comments'] }}</td>
+                @if ($stock_data['is_cable'] == 0)
+                    <td id="t_price_{{ $transaction['id'] }}" class="viewport-large-empty" @if ($head_data['config_compare']['cost_enable_normal'] == 0) hidden @endif>{{ $head_data['config_compare']['currency'].$transaction['price'] }}</td>
+                    <td id="t_serial_number_{{ $transaction['id'] }}" class="viewport-large-empty">{{ $transaction['serial_number'] }}</td>
+                    <td id="t_comments_{{ $transaction['id'] }}" hidden>{{ $transaction['comments'] }}</td>
+                @endif
                 <td id="t_reason_{{ $transaction['id'] }}">{{ $transaction['reason'] }}</td>
             </tr>
         @endforeach

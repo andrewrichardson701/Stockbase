@@ -41,6 +41,12 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::get('/', [IndexController::class, 'index'])->name('index'); // home page
             Route::get('/cablestock', [CablestockController::class, 'index'])->name('cablestock'); // cablestock page
             Route::get('/assets', [AssetsController::class, 'index'])->name('assets'); // assets page
+                // make these \/ work the same way as the stock/add + stock/remove etc and dynamically load the content in -> same goes for the optics page,
+                // but this has a permission with it. Might be worth making more permissions and having a full permissions matrix
+                // ^ maybe instead of doing permission groups, have a simple permissions table, with booleans
+                // This way each users' permissions can be adjusted one by one e.g.
+                //      optics: x | admin: x | cpus:   | memory: x | etc
+                // admin will default to have all of them, and will auto tick all boxes
                 Route::get('/assets/cpus', [AssetsController::class, 'cpus'])->name('cpus'); // assets > cpus page
                 Route::get('/assets/memory', [AssetsController::class, 'incomplete'])->name('memory'); // assets > memory page
                 Route::get('/assets/disks', [AssetsController::class, 'incomplete'])->name('disks'); // assets > disks page

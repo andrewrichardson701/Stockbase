@@ -71,7 +71,7 @@
                                 @else
                                     <input type="hidden" name="cablestock-move" value="1" /> 
                                         <input type="hidden" name="redirect_url" value="stock.php?stock_id={{ $params['stock_id'] }}&modify=move" />
-                                        <input type="hidden" name="current_cable_item" value="'.$row['item_id'].'" />
+                                        <input type="hidden" name="current_cable_item" value="{{ $params['stock_id'] }}" />
                                 @endif
                                 <input type="hidden" id="{{ $key }}-c-i" name="current_i" value="{{ $key }}" />
                                 <input type="hidden" id="{{ $key }}-c-stock" name="current_stock" value="{{ $params['stock_id'] }}" />
@@ -144,10 +144,10 @@
                                                     </div>
                                                 </div>
                                             @endif
-                                            @if (isset($row['container_is_item']) && $row['container_is_item'] == 1) 
+                                            @if (isset($row['is_container']) && $row['is_container'] == 1) 
                                                 <div class="row">
                                                     <div class="col text-center" style="width:100%">
-                                                        <p style="margin:15px 0px 0px 0px"><or class="red">* This item is a container. Please consider its contents before moving. *</or><br>Check container: <a href="{{ route('containers') }}?container_id={{ $row['container_id'] }}&con_is_item=1">{{ $row['stock_name'] }}</a></p>
+                                                        <p style="margin:15px 0px 0px 0px"><or class="red">* This item is a container. Please consider its contents before moving. *</or><br>Check container: <a href="{{ route('containers') }}?container_id={{ $row['container_item_data']['id'] }}&con_is_item=1">{{ $row['stock_name'] }}</a></p>
                                                     </div>
                                                 </div>
                                             @endif

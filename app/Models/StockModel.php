@@ -1839,6 +1839,21 @@ class StockModel extends Model
                 $container_data = StockModel::getMoveContainerData($row['container_id'], $row['container_is_item'])[0];
                 $row['container_data'] = $container_data;
             }
+            if (isset($row['is_container']) && $row['is_container'] == 1) {
+                $params = [
+                    'upc' => $row['upc'], 
+                    'cost' => $row['cost'], 
+                    'serial_number' => $row['serial_number'], 
+                    'comments' => $row['comments'],
+                    'is_container' => $row['is_container'],
+                    'stock_id' => $row['stock_id'],
+                    'shelf_id' => $row['shelf_id']
+                ];
+                $item_data = GeneralModel::getAllWhere('item', $params);
+                if (array_key_exists(0, $item_data)) {
+                    $row['container_item_data'] = $item_data[0];
+                }
+            }
             $return[] = $row;
         }
 

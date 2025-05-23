@@ -10,7 +10,7 @@
     @include('nav')
     <!-- End of Header and Nav -->
 
-    <div class="min-h-screen">
+    <div class="min-h-screen-sub20">
         <!-- Page Heading -->
         <header class="theme-divBg shadow" style="padding-top:60px">
             <div class="nav-row-alt max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -21,7 +21,7 @@
         </header>
         {!! $response_handling !!}
         
-        <div class="container">
+        <div class="container" style="margin-top:20px">
             <div class="row ">
                 <div class="col text-center well-nopad theme-divBg @if (in_array($head_data['user']['role_id'], [1, 3]))  clickable" onclick="navPage(`{{ route('optics') }}`)" @else  no-perms" title="Not permitted" @endif
                 style="margin:5px">

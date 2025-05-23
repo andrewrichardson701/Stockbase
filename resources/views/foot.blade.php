@@ -28,6 +28,8 @@
 
 
 @if ($head_data['config_compare']['footer_enable'] == 1)
+<div class="footer-spacer" style="height:20px">
+</div>
 <div class="footer">
     <div class="container">
         <div class="row">

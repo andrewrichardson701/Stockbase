@@ -11,7 +11,7 @@
     @include('nav')
     <!-- End of Header and Nav -->
 
-    <div class="min-h-screen">
+    <div class="min-h-screen-sub20">
         <!-- Page Heading -->
         <header class="theme-divBg shadow" style="padding-top:60px; margin-bottom:20px">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">

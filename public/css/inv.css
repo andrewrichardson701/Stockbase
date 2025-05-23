@@ -1314,3 +1314,7 @@ meter::-webkit-meter-even-less-good-value { background: red; }
     margin-bottom: 0px !important;
     height:38px;
 }
+
+.min-h-screen-sub20 {
+    min-height: calc(100vh - 20px);
+}

@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use App\Models\IndexModel;
 use App\Models\GeneralModel;
 use App\Models\FunctionsModel;
+use App\Models\ProfileModel;
 use App\Models\ResponseHandlingModel;
 
 
@@ -56,11 +57,7 @@ class IndexController extends Controller
 
     static public function test(Request $request)
     {
-        $test = StockModel::where('sku', '=', 'example')->get()->toArray();
-        // dd(array_keys($test));
-        dd(StockModel::getMoveStockData(1));
-        dd(GeneralModel::getDbTableNames(1));
-        dd(ChangelogModel::getChangelogFull(25));
+        dd(ProfileModel::getLoginHistory());
     }
 }
 

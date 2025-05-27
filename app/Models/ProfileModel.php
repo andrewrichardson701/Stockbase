@@ -62,4 +62,34 @@ class ProfileModel extends Model
         }
         return $return;
     }
+
+    static public function getLoginColorClasses($type=null)
+    {
+        $array = array(
+                    'login' => 'transactionAdd',
+                    'failed' => 'transactionRemove',
+                    'logout' => 'transactionDelete',
+                    );
+        
+        if (isset($type)) {
+            if (isset($array[$type])) {
+                return $array[$type];
+            } else {
+                return null;
+            }
+        }
+
+        return $array;
+    }
+
+    static public function getLoginHistory() 
+    {
+        $user = GeneralModel::getUser();
+
+        $username = $user['username'];
+
+        $login_history = GeneralModel::getAllWhere('login_log', ['username' => $username]);
+        return $login_history;
+
+    }
 }

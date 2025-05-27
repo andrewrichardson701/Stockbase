@@ -59,16 +59,16 @@
 
     @if (isset($head_data['user']['id']))
         <div id="stock-div" class="nav-right nav-div">
-            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 1) text-decoration: underline !important; @endif" href="{{ url('/') }}">Stock</a>
+            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 1) text-decoration: underline !important; @endif" href="{{ route('index') }}">Stock</a>
         </div> 
         <div id="cables-div" class="nav-div">
-            <a id="cables" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 2) text-decoration: underline !important; @endif" href="{{ url('cablestock') }}">Cables</a>
+            <a id="cables" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 2) text-decoration: underline !important; @endif" href="{{ route('cablestock') }}">Cables</a>
         </div> 
         <div id="assets-div" class="nav-div">
-            <a id="assets" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 3) text-decoration: underline !important; @endif" href="{{ url('assets') }}">Assets</a>
+            <a id="assets" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 3) text-decoration: underline !important; @endif" href="{{ route('assets') }}">Assets</a>
         </div> 
         <div id="stock-div" class="nav-div">
-            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 4) text-decoration: underline !important; @endif" href="{{ url('containers') }}">Containers</a>
+            <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 4) text-decoration: underline !important; @endif" href="{{ route('containers') }}">Containers</a>
         </div>
         
         @if (isset($head_data['user']['name']))
@@ -79,11 +79,12 @@
             <div class="nav-div float-right nav-float" style="width:120px;">
                 <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">
                      @if ($head_data['user']['role_id'] == 1 || $head_data['user']['role_id'] == 3) 
-                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="{{ url('admin') }}" @if ($nav_data['highlight_num'] == 5) style="text-decoration: underline !important" @endif>Admin</a></li>
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('admin') }}" @if ($nav_data['highlight_num'] == 5) style="text-decoration: underline !important" @endif>Admin</a></li>
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-list-ul"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('changelog') }}" @if ($nav_data['highlight_num'] == 8) style="text-decoration: underline !important" @endif>Changelog</a></li>
                         <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp;</li>
                      @endif
-                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a class="clickable link" style="margin-left:5px" href="{{ url('profile') }}" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
-                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a class="clickable link" style="margin-left:5px" href="{{ url('favourites') }}" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
+                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('profile.edit') }}" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
+                    <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('favourites') }}" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
                     <li>
                         <span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-right-from-bracket"></i></span>
                         <form style="display:inline" method="POST" action="{{ route('logout') }}">
@@ -105,7 +106,7 @@
 
     <div id="nav-row" class="nav-row viewport-small">
         <div class="logo-div">
-            <a href="{{ url('/') }}">
+            <a href="{{ route('index') }}">
                 <img class="logo" src="{{ asset('img/config/'. $head_data['config_compare']['logo_image']) }}" />
             </a>
         </div>
@@ -123,13 +124,13 @@
         <div class="nav-div nav-right">
         @if (isset($head_data['user']['name']))
             <ul class="burger-links">
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-boxes-stacked"></i></span><a href="{{ url('/') }}" @if ($nav_data['highlight_num'] == 1) style="text-decoration: underline !important" @endif>Stock</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-ethernet"></i></span><a href="{{ url('cablestock') }}" @if ($nav_data['highlight_num'] == 2) style="text-decoration: underline !important" @endif>Cables</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-cubes-stacked"></i></span><a href="{{ url('assets') }}" @if ($nav_data['highlight_num'] == 3) style="text-decoration: underline !important" @endif>Assets</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-box-open"></i></span><a href="{{ url('containers') }}" @if ($nav_data['highlight_num'] == 4) style="text-decoration: underline !important" @endif>Containers</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-boxes-stacked"></i></span><a href="{{ route('index') }}" @if ($nav_data['highlight_num'] == 1) style="text-decoration: underline !important" @endif>Stock</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-ethernet"></i></span><a href="{{ route('cablestock') }}" @if ($nav_data['highlight_num'] == 2) style="text-decoration: underline !important" @endif>Cables</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-cubes-stacked"></i></span><a href="{{ route('assets') }}" @if ($nav_data['highlight_num'] == 3) style="text-decoration: underline !important" @endif>Assets</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-box-open"></i></span><a href="{{ route('containers') }}" @if ($nav_data['highlight_num'] == 4) style="text-decoration: underline !important" @endif>Containers</a></li>
                 <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp</li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a href="{{ url('profile') }}" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
-                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a href="{{ url('favourites') }}" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a href="{{ route('profile.edit') }}" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
+                <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a href="{{ route('favourites') }}" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
                 <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-right-from-bracket"></i></span><a href="{{ route('logout') }}">Logout</a></li>
             </ul>
             <div class="burger-menu nav-v-c theme-burger" style="color:{{$head_data['extras']['banner_text_color']}} !important"><i class="fa-solid fa-bars"></i></div>

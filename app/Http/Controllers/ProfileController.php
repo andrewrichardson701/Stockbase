@@ -11,6 +11,7 @@ use Illuminate\View\View;
 
 use App\Models\GeneralModel;
 use App\Models\ResponseHandlingModel;
+use App\Models\TransactionModel;
 use App\Models\ProfileModel;
 
 class ProfileController extends Controller
@@ -20,10 +21,15 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $login_history = ProfileModel::getLoginHistory();
+        $log_colors = ProfileModel::getLoginColorClasses();
+
         return view('profile', [
             'nav_data' => GeneralModel::navData('profile'),
             'user' => $request->user(),
             'themes' => GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme')),
+            'login_history' => $login_history,
+            'log_colors' => $log_colors,
         ]);
     }
 
@@ -73,11 +79,13 @@ class ProfileController extends Controller
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));
+
         $params = [];
         return view('theme-testing', ['params' => $params,
                                                 'nav_data' => $nav_data,
                                                 'response_handling' => $response_handling,
-                                                'themes' => $themes,]
+                                                'themes' => $themes,
+                                                ]
                                             );
     }
 

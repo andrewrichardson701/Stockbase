@@ -148,8 +148,11 @@
                                             <div class="col">
                                                 <p name="theme" value="{{ $user->email_verified_at }}">{{ $user->email_verified_at ?? 'Never' }}</p>
                                             </div>
+                                            
                                         </div>
 
+                                        <p class="gold link" onclick="modalLoadLoginHistory()" style="margin-top:20px">View login history</p>
+                                        
                                         <div class="flex items-center gap-4">
                                             <button type="submit"
                                                 class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
@@ -247,6 +250,57 @@
                 </div>
             </main>
         </div>
+
+        <div id="modalDivLoginHistory" class="modal">
+            <span class="close" onclick="modalCloseLoginHistory()">&times;</span>
+            <div class="container well-nopad theme-divBg" style="padding:25px">
+                <h2 style="margin-left:20px">Login History</h2>
+                <div class="well-nopad theme-divBg" style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-top:50px">
+                    <table class="table table-dark theme-table centertable" style="max-width:max-content">
+                        <thead class="text-center align-middle theme-tableOuter">
+                            <th class="text-center align-middle">id</th>
+                            <th class="text-center align-middle">type</th>
+                            <th class="text-center align-middle">username</th>
+                            <th class="text-center align-middle">user_id</th>
+                            <th class="text-center align-middle">ipv4</th>
+                            <th class="text-center align-middle">ipv6</th>
+                            <th class="text-center align-middle">timestamp</th>
+                            <th class="text-center align-middle">auth</th>
+                        </thead>
+                        <tbody>
+                            @if (isset($login_history) && !empty($login_history))
+                                @if (isset($log_colors) && !empty($log_colors))
+                                    @foreach($login_history as $log)
+                                        <tr class="text-center align-middle {{ $log_colors[$log['type']] }}">
+                                            <td class="text-center align-middle">{{ $log['id'] }}</td>
+                                            <td class="text-center align-middle">{{ $log['type'] }}</td>
+                                            <td class="text-center align-middle">{{ $log['username'] }}</td>
+                                            <td class="text-center align-middle">{{ $log['user_id'] }}</td>
+                                            <td class="text-center align-middle">{{ long2ip($log['ipv4']) }}</td>
+                                            <td class="text-center align-middle">{{ $log['ipv6'] }}</td>
+                                            <td class="text-center align-middle">{{ $log['timestamp'] }}</td>
+                                            <td class="text-center align-middle">{{ $log['auth'] }}</td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                <tr class="text-center align-middle">
+                                    <td colspan=100%>Error: Transaction colours missing...</td>
+                                </tr>
+                                @endif
+                            @else
+                            <tr class="text-center align-middle">
+                                <td colspan=100%>No login history found.</td>
+                            </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add the JS for the file -->
+        <script src="{{ asset('js/profile.js') }}"></script>
+
         @include('foot')
     </body>
 </html>

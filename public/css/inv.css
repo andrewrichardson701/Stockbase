@@ -1345,4 +1345,6 @@ meter::-webkit-meter-even-less-good-value { background: red; }
 
 .min-h-screen-sub20 {
     min-height: calc(100vh - 20px);
+    padding-bottom: 20px; /* Makes room for the footer */
+    box-sizing: border-box;
 }

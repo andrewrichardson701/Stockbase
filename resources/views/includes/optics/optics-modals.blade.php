@@ -14,7 +14,7 @@
                     <tbody>
                         <tr class="nav-row">
                             <td style="width: 150px"><label for="type_name" class="nav-v-c align-middle">Type Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="type_name" name="type_name" /></td>
+                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="type_name" name="type_name" /></td>
                             <td></td>
                         </tr>
                         <tr class="nav-row">
@@ -44,7 +44,7 @@
                     <tbody>
                         <tr class="nav-row">
                             <td style="width: 150px"><label for="vendor_name" class="nav-v-c align-middle">Vendor Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="vendor_name" name="vendor_name" /></td>
+                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="vendor_name" name="vendor_name" /></td>
                             <td></td>
                         </tr>
                         <tr class="nav-row">
@@ -74,7 +74,7 @@
                     <tbody>
                         <tr class="nav-row">
                             <td style="width: 150px"><label for="speed_name" class="nav-v-c align-middle">Speed:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="speed_name" name="speed_name" /></td>
+                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="speed_name" name="speed_name" /></td>
                             <td></td>
                         </tr>
                         <tr class="nav-row">
@@ -103,7 +103,7 @@
                     <tbody>
                         <tr class="nav-row">
                             <td style="width: 150px"><label for="connector_name" class="nav-v-c align-middle">Connector Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="connector_name" name="connector_name" /></td>
+                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="connector_name" name="connector_name" /></td>
                             <td></td>
                         </tr>
                         <tr class="nav-row">
@@ -132,7 +132,7 @@
                     <tbody>
                         <tr class="nav-row">
                             <td style="width: 150px"><label for="distance_name" class="nav-v-c align-middle">Distance Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="distance_name" name="distance_name" /></td>
+                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="distance_name" name="distance_name" /></td>
                             <td></td>
                         </tr>
                         <tr class="nav-row">
@@ -165,7 +165,7 @@
                         </tr>
                         <tr>
                             <td class="align-middle text-center" style="border:none; padding-right:0px;">
-                                <input id="delete-reason" type="text" class="form-control" placeholder="Reason..." name="reason" required/>
+                                <input id="delete-reason" type="text" class="form-control theme-input" placeholder="Reason..." name="reason" required/>
                                 <input type="hidden" id="delete-id" name="id" />
                             </td>
                             <td class="align-middle text-center" style="border:none"><input type="submit" value="Delete" class="btn btn-danger" name="optic-delete-submit" /></td>
@@ -197,7 +197,7 @@
                         </tr>
                         <tr>
                             <td class="align-middle text-center" style="border:none; padding-right:0px;">
-                                <select name="move-site" class="form-control" style="display:inline !important; max-width:max-content">');
+                                <select name="move-site" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">');
                                 @if ($sites['count'] > 0)
                                     @foreach ($sites['rows'] as $site) 
                                     <option value="{{ $site['id'] }}">{{ $site['name'] }}</option>

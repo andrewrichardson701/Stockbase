@@ -70,8 +70,8 @@
                             <input type="hidden" name="container_id" form="form-container-{{ $container['id'] }}-edit" value="{{ $container['id'] }}" />
                             <td class="text-center align-middle">@if($container['img_id'] !== '' && $container['img_id'] !== null) <img id="image-{{ $container['img_id'] }}" class="inv-img-main thumb" style="cursor:default !important" src="img/stock/{{ $container['img_image'] }}">@endif</td>
                             <td class="text-center align-middle">{{ $container['id'] }}</td>
-                            <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center" style="max-width:100%" name="container_name" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['name'], ENT_QUOTES, 'UTF-8') }}"></td>
-                            <td class="text-center align-middle"><input type="text" class="form-control text-center" style="max-width:100%" name="container_description" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['description'], ENT_QUOTES, 'UTF-8') }}"></td>
+                            <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center theme-input" style="max-width:100%" name="container_name" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['name'], ENT_QUOTES, 'UTF-8') }}"></td>
+                            <td class="text-center align-middle"><input type="text" class="form-control text-center theme-input" style="max-width:100%" name="container_description" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['description'], ENT_QUOTES, 'UTF-8') }}"></td>
                             <td class="text-center align-middle">{{$container['location']}}</th>
                             <td class="text-center align-middle @if ($container['count'] < 1) red @endif">{{$container['count']}}</td>
                             <td class="text-center align-middle red">No</td>
@@ -149,8 +149,8 @@
                             <input type="hidden" name="container_id" form="form-container-{{ $container['id'] }}-edit" value="{{ $container['id'] }}" />
                             <td class="text-center align-middle">@if($container['img_id'] !== '' && $container['img_id'] !== null) <img id="image-{{ $container['img_id'] }}" class="inv-img-main thumb" style="cursor:default !important" src="img/stock/{{ $container['img_image'] }}">@endif</td>
                             <td class="text-center align-middle">{{ $container['id'] }}</td>
-                            <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center" style="max-width:100%" name="container_name" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['name'], ENT_QUOTES, 'UTF-8') }}"></td>
-                            <td class="text-center align-middle"><input type="text" class="form-control text-center" style="max-width:100%" name="container_description" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['description'], ENT_QUOTES, 'UTF-8') }}"></td>
+                            <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center theme-input" style="max-width:100%" name="container_name" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['name'], ENT_QUOTES, 'UTF-8') }}"></td>
+                            <td class="text-center align-middle"><input type="text" class="form-control text-center theme-input" style="max-width:100%" name="container_description" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['description'], ENT_QUOTES, 'UTF-8') }}"></td>
                             <td class="text-center align-middle">{{$container['location']}}</th>
                             <td class="text-center align-middle @if ($container['count'] < 1) red @endif">{{$container['count']}}</td>
                             <td class="text-center align-middle red">No</td>
@@ -268,18 +268,18 @@
                         <tbody>
                             <tr class="nav-row">
                                 <td style="width: 200px"><label for="container_name" class="nav-v-c align-middle">Container Name:</label></td>
-                                <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="container_name" name="container_name" placeholder="Name" /></td>
+                                <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="container_name" name="container_name" placeholder="Name" /></td>
                                 <td></td>
                             </tr>
                             <tr class="nav-row">
                                 <td style="width:200px"><label for="container_description" class="nav-v-c align-middle">Container Description:</label></td>
-                                <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle" id="container_description" name="container_description" placeholder="Description" /></td>              
+                                <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="container_description" name="container_description" placeholder="Description" /></td>              
                                 <!-- <td style="margin-left:5px"><input type="submit" name="submit" value="Add Container" class="btn btn-success"/></td> -->
                             </tr>
                             <tr class="nav-row">
                                 <td style="width:200px"><label for="container_description" class="nav-v-c align-middle">Site:</label></td>
                                 <td style="margin-left:10px">
-                                    <select class="form-control stock-inputSize" id="site" name="site" style="width:228px !important" required>
+                                    <select class="form-control stock-inputSize theme-dropdown" id="site" name="site" style="width:228px !important" required>
                                         
                                         @if ($sites['rows'] !== null && count($sites['rows']) > 0)
                                             <option value="" selected disabled hidden>Select Site</option>
@@ -296,7 +296,7 @@
                             <tr class="nav-row">
                                 <td style="width:200px"><label for="container_description" class="nav-v-c align-middle">Area:</label></td>
                                 <td style="margin-left:10px">
-                                    <select class="form-control stock-inputSize" id="area" name="area" style="width:228px !important" disabled required>
+                                    <select class="form-control stock-inputSize theme-dropdown" id="area" name="area" style="width:228px !important" disabled required>
                                         <option value="" selected disabled hidden>Select Area</option>
                                     </select>
                                 </td>
@@ -304,7 +304,7 @@
                             <tr class="nav-row">
                                 <td style="width:200px"><label for="container_description" class="nav-v-c align-middle">Shelf:</label></td>
                                 <td style="margin-left:10px">
-                                <select class="form-control stock-inputSize" id="shelf" name="shelf" style="width:228px !important" disabled required>
+                                <select class="form-control stock-inputSize theme-dropdown" id="shelf" name="shelf" style="width:228px !important" disabled required>
                                         <option value="" selected disabled hidden>Select Shelf</option>
                                     </select>
                                 </td>
@@ -330,7 +330,7 @@
                 <div class="row" id="TheRow" style="min-width: 100%; max-width:1920px; flex-wrap:nowrap !important; padding-left:10px;padding-right:10px; max-width:max-content">
                     <div class="col well-nopad theme-divBg" style="margin: 20px 10px 20px 10px; padding:20px;">
                         <p><strong>Stock</strong></p>
-                        <input type="text" name="search" class="form-control" style="width:300px; margin-bottom:5px" placeholder="Search" oninput="addChildrenSearch(document.getElementById('contID').innerHTML, this.value)"/>
+                        <input type="text" name="search" class="form-control theme-input" style="width:300px; margin-bottom:5px" placeholder="Search" oninput="addChildrenSearch(document.getElementById('contID').innerHTML, this.value)"/>
                         <div style=" overflow-y:auto; overflow-x: hidden; height:300px; ">
                             <table id="containerSelectTable" class="table table-dark theme-table centertable" style="margin-bottom:0px; white-space:nowrap;">
                                 <thead>

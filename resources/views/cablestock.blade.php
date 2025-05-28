@@ -309,7 +309,7 @@
                         <tr class="align-middle">
                                 <td style="width:150px">Parent:</td>
                                 <td>
-                                    <select class="form-control" name="type-parent" style="min-width:150px;max-width:300px" required>
+                                    <select class="form-control theme-dropdown" name="type-parent" style="min-width:150px;max-width:300px" required>
                                             <option value="" selected disabled hidden>Select Parent</option>
                                             <option value="Copper">Copper</option>
                                             <option value="Fibre">Fibre</option>
@@ -321,13 +321,13 @@
                             <tr class="align-middle">
                                 <td style="width:150px">New Type:</td>
                                 <td>
-                                    <input class="form-control" type="text" style="min-width:150px;max-width:300px" placeholder="New Type" name="type-name" required/>
+                                    <input class="form-control theme-input" type="text" style="min-width:150px;max-width:300px" placeholder="New Type" name="type-name" required/>
                                 </td>
                             </tr>
                             <tr class="align-middle">
                                 <td style="width:150px">Description:</td>
                                 <td>
-                                    <input class="form-control" type="text" style="min-width:150px;max-width:300px" placeholder="Description" name="type-description" required/>
+                                    <input class="form-control theme-input" type="text" style="min-width:150px;max-width:300px" placeholder="Description" name="type-description" required/>
                                 </td>
                             </tr>
                             <tr class="align-middle">

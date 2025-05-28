@@ -11,6 +11,14 @@ body {
     color: black;
 }
 
+.theme-input:focus {
+    color: rgb(41, 41, 41);
+}
+
+.theme-input-alt:focus {
+    color: rgb(41, 41, 41);
+}
+
 .theme-input-alt {
     background-color:#aaa9a9 !important;
     border-color:#505050 !important;

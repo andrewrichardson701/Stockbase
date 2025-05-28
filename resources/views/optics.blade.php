@@ -493,7 +493,7 @@
                                             </div>
                                             <div class="col" style="max-width:max-content">
                                                 <input type="hidden" name="id" value="{{ $row['id'] }}" />
-                                                <input name="comment" class="form-control row-dropdown" type="text" style="padding: 2px 7px 2px 7px; width:250px" placeholder="Comment..."/>
+                                                <input name="comment" class="form-control row-dropdown theme-input" type="text" style="padding: 2px 7px 2px 7px; width:250px" placeholder="Comment..."/>
                                             </div>
                                             <div class="col" style="max-width:max-content">
                                                 <button class="btn btn-success align-bottom" type="submit" name="optic-comment-add" style="margin-left:10px" value="1">Add</button>

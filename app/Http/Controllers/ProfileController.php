@@ -11,7 +11,6 @@ use Illuminate\View\View;
 
 use App\Models\GeneralModel;
 use App\Models\ResponseHandlingModel;
-use App\Models\TransactionModel;
 use App\Models\ProfileModel;
 
 class ProfileController extends Controller
@@ -21,11 +20,15 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        // dd($request->all());
         $login_history = ProfileModel::getLoginHistory();
         $log_colors = ProfileModel::getLoginColorClasses();
+        
+        $response_handling = ResponseHandlingModel::responseHandling($request->all());
 
         return view('profile', [
             'nav_data' => GeneralModel::navData('profile'),
+            'response_handling' => $response_handling,
             'user' => $request->user(),
             'themes' => GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme')),
             'login_history' => $login_history,
@@ -76,7 +79,7 @@ class ProfileController extends Controller
         $nav_data = GeneralModel::navData($nav_highlight);
 
         $request = $request->all(); // turn request into an array
-        $response_handling = ResponseHandlingModel::responseHandling($request);
+        $response_handling = ResponseHandlingModel::responseHandling($request->all());
 
         $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));
 
@@ -108,6 +111,30 @@ class ProfileController extends Controller
                 }
             } else {
                 return redirect(GeneralModel::previousURL())->with('error', 'No file found');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    public static function reset2FA(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                '2fa_user_id' => 'integer|required',
+                'submit' => 'required',
+                '2fareset_submit' => 'required'
+            ]);
+            $data = $request->toArray();
+            $user = GeneralModel::getUser();
+            if ($data['2fa_user_id'] == $user['id']) {
+                if (ProfileModel::reset2FA($user['id']) == 1){
+                    return redirect(GeneralModel::previousURL())->with('success', 'Reset successfully');
+                } else {
+                    return redirect(GeneralModel::previousURL())->with('error', 'Unabled to reset');
+                }
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'User id missmtach');
             }
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');

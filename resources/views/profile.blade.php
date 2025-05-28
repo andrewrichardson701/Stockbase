@@ -24,6 +24,7 @@
             <!-- Page Content -->
             <main>
                 <div class="py-12">
+                    {!! $response_handling !!}
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                         <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
                             <div class="max-w-xl">
@@ -246,9 +247,70 @@
                                 </section>
                             </div>
                         </div>
+                        <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
+                            <div class="max-w-xl">
+                                <section>
+                                    <header>
+                                        <h2 class="text-lg font-medium">
+                                            {{ __('Two-Factor Authentication') }}
+                                        </h2>
+
+                                        <p class="mt-1 text-sm">
+                                            {{ __('Ensure your account is secure by enabling two-factor authentication.') }}
+                                        </p>
+                                    </header>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="block font-medium text-sm title" style="width:max-content"
+                                                for="enable_2fa_checkbox"
+                                                title="You will be required to input your 2FA code on login.">
+                                                {{ __('Enable 2FA') }}
+                                            </label>
+                                            <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                                <input type="checkbox" name="enable-2fa" id="enable_2fa_checkbox" @if ($head_data['config']['2fa_enforced'] == 1) checked disabled @elseif ($head_data['user']['2fa_enabled'] == 1) checked @endif >
+                                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col">
+                                            <label class="block font-medium text-sm title" style="width:max-content"
+                                                for="reset_2fa"
+                                                title="You will be prompted to reset your 2FA on next login.">
+                                                {{ __('Reset 2FA') }}
+                                            </label>
+                                            <button id="reset_2fa"
+                                                class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 btn-danger"
+                                                style="color:black !important;"
+                                                onclick="modalLoadReset2FA({{ $head_data['user']['id'] }})">
+                                                {{ __('Reset') }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>
+        </div>
+
+        <div id="modalDivReset2FA" class="modal" style="display: none;">
+            <span class="close" onclick="modalCloseReset2FA()">×</span>
+            <div class="container well-nopad theme-divBg" style="padding:25px">
+                <div style="margin:auto;text-align:center;margin-top:10px">
+                    <form action="{{ route('profile.reset2FA') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="2fareset_submit" value="set" />
+                        <input type="hidden" name="2fa_user_id" id="2fareset_user_id" value=""/>
+                        <p>Are you sure you want to reset your 2FA?<br>
+                        This will prompt a reset on your next login.</p>
+                        <span>
+                            <button class="btn btn-danger" type="submit" name="submit" value="1">Reset</button>
+                            <button class="btn btn-warning" type="button" onclick="modalCloseReset2FA()">Cancel</button>
+                        </span>
+                    </form>
+                </div>
+            </div>
         </div>
 
         <div id="modalDivLoginHistory" class="modal">

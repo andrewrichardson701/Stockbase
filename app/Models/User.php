@@ -66,6 +66,8 @@ class User extends Authenticatable
         'email',
         'password',
         'theme_id',
+        '2fa_enabled',
+        '2fa_secret',
     ];
 
     /**

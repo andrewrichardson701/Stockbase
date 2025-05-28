@@ -92,4 +92,14 @@ class ProfileModel extends Model
         return $login_history;
 
     }
+
+    static public function reset2FA($user_id) 
+    {
+        $data = ['2fa_secret' => null];
+        if (User::where('id', $user_id)->update($data)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }

@@ -104,6 +104,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/changelog.filter', [ChangelogController::class, 'filterChangelog'])->name('changelog.filter'); // filter the changelog
             // Theme-testing
             Route::post('/theme-testing.uploadTheme', [ProfileController::class, 'uploadTheme'])->name('theme-testing.uploadTheme'); // filter the changelog
+            // Profile
+            Route::post('/profile.reset2FA', [ProfileController::class, 'reset2FA'])->name('profile.reset2FA'); // reset 2FA secret
             //
 
             ////

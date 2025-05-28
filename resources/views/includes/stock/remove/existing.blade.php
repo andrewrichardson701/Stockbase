@@ -49,7 +49,7 @@
                     <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                         <div>
-                            <select name="manufacturer" id="manufacturer" class="form-control stock-inputSize" onchange="populateRemoveShelves(this)" required @if($stock_item_data['count'] == 0) disabled @endif>
+                            <select name="manufacturer" id="manufacturer" class="form-control stock-inputSize theme-dropdown" onchange="populateRemoveShelves(this)" required @if($stock_item_data['count'] == 0) disabled @endif>
                                 <option value="" selected disabled hidden>Select Manufacturer</option>
                                 @foreach ( $stock_inv_data['manufacturers'] as $manufacturer) 
                                     <option value={{ $manufacturer['id'] }}>{{ $manufacturer['name'] }}</option>
@@ -60,7 +60,7 @@
                     <div class="nav-row" id="shelf-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label></div>
                         <div>
-                            <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="populateContainers(this)" disabled>
+                            <select class="form-control stock-inputSize theme-dropdown" id="shelf" name="shelf" required onchange="populateContainers(this)" disabled>
                                 <option value="" selected disabled hidden>Select Location</option>
                             </select>
                         </div>
@@ -68,7 +68,7 @@
                     <div class="nav-row" id="container-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="container" id="container-label">Container</label></div>
                         <div>
-                            <select class="form-control stock-inputSize" id="container" name="container" required onchange="populateSerials(this)" disabled>
+                            <select class="form-control stock-inputSize theme-dropdown" id="container" name="container" required onchange="populateSerials(this)" disabled>
                                 <option value="" selected disabled hidden>Select Container</option>
                             </select>
                         </div>
@@ -79,7 +79,7 @@
                             <label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Location</label>
                         </div>
                         <div>
-                            <select class="form-control stock-inputSize" id="shelf" name="shelf" required onchange="getQuantityCable()" required @if($stock_item_data['count'] == 0) disabled @endif>
+                            <select class="form-control stock-inputSize theme-dropdown" id="shelf" name="shelf" required onchange="getQuantityCable()" required @if($stock_item_data['count'] == 0) disabled @endif>
                                 <option value="" selected disabled hidden>Select Location</option>
                                 @foreach ( $stock_inv_data['rows'] as $location) 
                                     <option value={{ $location['shelf_id'] }}>{{ $location['site_name'] }}, {{ $location['area_name'] }}, {{ $location['shelf_name'] }}</option>
@@ -91,7 +91,7 @@
                     <div class="nav-row" id="price-row" style="margin-top:25px">
                             <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price ({{ $head_data['config_compare']['currency'] }})</label></div>
                             <div>
-                                <input type="number" step=".01" name="price" placeholder="0" id="price" class="form-control nav-v-c stock-inputSize" value="0" value="{{ $params['request']['cost'] ?? null }}" required @if($stock_item_data['count'] == 0) disabled @endif></input>
+                                <input type="number" step=".01" name="price" placeholder="0" id="price" class="form-control nav-v-c stock-inputSize theme-input" value="0" value="{{ $params['request']['cost'] ?? null }}" required @if($stock_item_data['count'] == 0) disabled @endif></input>
                             </div>
                         </div>
                     </div>
@@ -99,13 +99,13 @@
                     <div class="nav-row" style="margin-bottom:0px">
                         <div class="nav-row" id="date-row" style="margin-top:10px">
                             <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="transaction_date" id="date-label">Transaction Date</label></div>
-                            <div><input type="date" value="{{ date('Y-m-d') }}" name="transaction_date" id="transaction_date" class="form-control" style="width:150px" required @if($stock_item_data['count'] == 0) disabled @endif/></div>
+                            <div><input type="date" value="{{ date('Y-m-d') }}" name="transaction_date" id="transaction_date" class="form-control theme-input" style="width:150px" required @if($stock_item_data['count'] == 0) disabled @endif/></div>
                         </div>
                     @if ($stock_data['is_cable'] == 0) 
                         <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                             <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Number to be tracked.">Serial Numbers</or></label></div>
                             <div>
-                                <select name="serial-number" id="serial-number" class="form-control stock-inputSize" value="{{ $params['request']['serial_number'] ?? null }}" disabled onchange="getQuantity()">
+                                <select name="serial-number" id="serial-number" class="form-control stock-inputSize theme-dropdown" value="{{ $params['request']['serial_number'] ?? null }}" disabled onchange="getQuantity()">
                                     <option value="" selected disabled hidden>Serial...</option>
                                 </select>
                             </div>
@@ -115,11 +115,11 @@
                             <div class="stock-inputLabelSize">
                                 <label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity</label>
                             </div>
-                            <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="{{ $params['request']['quantity'] ?? 1 }}" min="1" required @if($stock_item_data['count'] == 0) disabled @endif ></input></div>
+                            <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize theme-input" value="1" value="{{ $params['request']['quantity'] ?? 1 }}" min="1" required @if($stock_item_data['count'] == 0) disabled @endif ></input></div>
                         </div>
                         <div class="nav-row" id="reason-row" style="margin-top:25px">
                             <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason</label></div>
-                            <div><input type="text" name="reason" placeholder="Customer sale, ID: XXXXXX" id="reason" class="form-control nav-v-c stock-inputSize" value="{{ htmlspecialchars($params['request']['reason'] ?? '', ENT_QUOTES, 'UTF-8')  }}" required @if($stock_item_data['count'] == 0) disabled @endif ></input></div>
+                            <div><input type="text" name="reason" placeholder="Customer sale, ID: XXXXXX" id="reason" class="form-control nav-v-c stock-inputSize theme-input" value="{{ htmlspecialchars($params['request']['reason'] ?? '', ENT_QUOTES, 'UTF-8')  }}" required @if($stock_item_data['count'] == 0) disabled @endif ></input></div>
                         </div>
                         <div class="nav-row" id="reason-row" style="margin-top:25px">
                             <div class="stock-inputLabelSize"></div>

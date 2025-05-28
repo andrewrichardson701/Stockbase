@@ -39,12 +39,12 @@
                     @if ($stock_data['is_cable'] == 0)
                     <div class="nav-row" id="upc-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="upc" id="upc-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Universal Product Code for item">UPC</or></label></div>
-                        <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c stock-inputSize" value="{{ $params['request']['upc'] ?? null }}"></input></div>
+                        <div><input type="text" name="upc" placeholder="UPC - if available" id="upc" class="form-control nav-v-c stock-inputSize theme-input" value="{{ $params['request']['upc'] ?? null }}"></input></div>
                     </div>
                     <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                         <div  class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer <or class="red">*</or></label></div>
                         <div>
-                            <select name="manufacturer" id="manufacturer-select" class="form-control stock-inputSize" required>
+                            <select name="manufacturer" id="manufacturer-select" class="form-control stock-inputSize theme-dropdown" required>
                                 <option value="" selected disabled hidden>Select Manufacturer</option>
                             </select>
                         </div>
@@ -56,7 +56,7 @@
                     <div class="nav-row" id="site-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="site" id="site-label">Site <or class="red">*</or></label></div>
                         <div>
-                            <select class="form-control stock-inputSize" id="site" name="site" required>
+                            <select class="form-control stock-inputSize theme-dropdown" id="site" name="site" required>
                                 <option value="" selected disabled hidden>Select Site</option>
                             @if ($sites['count'] > 0)
                                 @foreach ($sites['rows'] as $site) 
@@ -76,7 +76,7 @@
                     <div class="nav-row" id="area-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area <or class="red">*</or></label></div>
                         <div>
-                            <select class="form-control stock-inputSize" id="area" name="area" disabled required>
+                            <select class="form-control stock-inputSize theme-dropdown" id="area" name="area" disabled required>
                                 <option value="" selected disabled hidden>Select Area</option>
                             </select>
                         </div>
@@ -87,7 +87,7 @@
                     <div class="nav-row" id="shelf-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="shelf" id="shelf-label">Shelf <or class="red">*</or></label></div>
                         <div>
-                            <select class="form-control stock-inputSize" id="shelf" name="shelf" disabled required>
+                            <select class="form-control stock-inputSize theme-dropdown" id="shelf" name="shelf" disabled required>
                                 <option value="" selected disabled hidden>Select Shelf</option>
                             </select>
                         </div>
@@ -99,14 +99,14 @@
                     <div class="nav-row" id="container-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="container" id="container-label">Container</div>
                         <div>
-                            <select class="form-control stock-inputSize" id="container" name="container" disabled>
+                            <select class="form-control stock-inputSize theme-dropdown" id="container" name="container" disabled>
                                 <option value="" selected disabled hidden>Select Container</option>
                             </select>
                         </div>
                     </div>
                     <div class="nav-row" id="cost-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost ({{ $head_data['config_compare']['currency'] }})</label></div>
-                        <div><input type="number" step=".01" name="cost" placeholder="0" id="cost" class="form-control nav-v-c stock-inputSize" value="0" value="'.$input_cost.'" required></input></div>
+                        <div><input type="number" step=".01" name="cost" placeholder="0" id="cost" class="form-control nav-v-c stock-inputSize theme-input" value="0" value="'.$input_cost.'" required></input></div>
                     </div>
                     @endif
                 </div>
@@ -114,17 +114,17 @@
                 <div class="nav-row" style="margin-bottom:25px">
                     <div class="nav-row" id="quantity-row" style="margin-top:10px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="quantity" id="quantity-label">Quantity <or class="red">*</or></label></div>
-                        <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize" value="1" value="{{ $params['request']['quantity'] ?? null}}" required></input></div>
+                        <div><input type="number" name="quantity" placeholder="Quantity" id="quantity" class="form-control nav-v-c stock-inputSize theme-input" value="1" value="{{ $params['request']['quantity'] ?? null}}" required></input></div>
                     </div>
                     @if ($stock_data['is_cable'] == 0)
                     <div class="nav-row" id="serial-number-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Numbers to be tracked. These should be seperated by commas. e.g. serial1, serial2, serial3...">Serial Numbers</or></label></div>
-                        <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c stock-inputSize" value="{{ $params['request']['serial_number'] ?? null}}"></input></div>
+                        <div><input type="text" name="serial-number" placeholder="Serial Numbers" id="serial-number" class="form-control nav-v-c stock-inputSize theme-input" value="{{ $params['request']['serial_number'] ?? null}}"></input></div>
                     </div>
                     @endif
                     <div class="nav-row" id="reason-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="reason" id="reason-label">Reason <or class="red">*</or></label></div>
-                        <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize" value="New Stock" value="{{ htmlspecialchars($params['request']['reason'] ?? '', ENT_QUOTES, 'UTF-8') }}"></input></div>
+                        <div><input type="text" name="reason" placeholder="New Stock" id="reason" class="form-control nav-v-c stock-inputSize theme-input" value="New Stock" value="{{ htmlspecialchars($params['request']['reason'] ?? '', ENT_QUOTES, 'UTF-8') }}"></input></div>
                     </div>
                     <div class="nav-row" id="submit-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"></div>

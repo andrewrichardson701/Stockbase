@@ -53,8 +53,8 @@
                                 <input type="hidden" id="site-{{ $site['id'] }}-type" name="type" value="site" />
                                 <input type="hidden" id="site-{{ $site['id'] }}-id" name="id" value="{{ $site['id'] }}" />
                                 <td class="stockTD" style="">{{ $site['id'] }}</td>
-                                <td class="stockTD" style=""><input id="site-{{ $site['id'] }}-name" class="form-control stockTD-input" name="name" type="text" value="{{ htmlspecialchars($site['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
-                                <td hidden><input id="site-{{ $site['id'] }}-description" class="form-control stockTD-input" type="text" name="description" value="{{ htmlspecialchars($site['description'], ENT_QUOTES, 'UTF-8') }}" /></td>
+                                <td class="stockTD" style=""><input id="site-{{ $site['id'] }}-name" class="form-control stockTD-input theme-input" name="name" type="text" value="{{ htmlspecialchars($site['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
+                                <td hidden><input id="site-{{ $site['id'] }}-description" class="form-control stockTD-input theme-input" type="text" name="description" value="{{ htmlspecialchars($site['description'], ENT_QUOTES, 'UTF-8') }}" /></td>
                                 <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td> <td hidden></td> <td hidden></td> 
                                 <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                 <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
@@ -97,8 +97,8 @@
                                         <input type="hidden" id="area-{{ $area['id'] }}-id" name="id" value="{{ $area['id'] }}" />
                                         <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td>
                                         <td class="stockTD" style="border-left:2px solid #454d55; ">{{ $area['id'] }}</td>
-                                        <td class="stockTD" style=""><input id="area-{{ $area['id'] }}-name" class="form-control stockTD-input" type="text" name="name" value="{{ htmlspecialchars($area['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
-                                        <td class="stockTD" hidden><input id="area-{{ $area['id'] }}-description" class="form-control stockTD-input" type="text" name="description" value="{{ htmlspecialchars($area['description'], ENT_QUOTES, 'UTF-8') }}" /></td>
+                                        <td class="stockTD" style=""><input id="area-{{ $area['id'] }}-name" class="form-control stockTD-input theme-input" type="text" name="name" value="{{ htmlspecialchars($area['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
+                                        <td class="stockTD" hidden><input id="area-{{ $area['id'] }}-description" class="form-control stockTD-input theme-input" type="text" name="description" value="{{ htmlspecialchars($area['description'], ENT_QUOTES, 'UTF-8') }}" /></td>
                                         <td class="stockTD" hidden><input id="area-{{ $area['id'] }}-parent" type="hidden" name="area-site-id" value="{{ $area['site_id'] }}" /></td>
                                         <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden></td>
                                         <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
@@ -144,7 +144,7 @@
                                                 <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden></td> 
                                                 <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden></td> <td hidden></td> <td hidden></td>
                                                 <td class="stockTD" style="border-left:2px solid #454d55; ">{{ $shelf['id'] }}</td>
-                                                <td class="stockTD" style=""><input id="shelf-{{ $shelf['id'] }}-name" class="form-control stockTD-input" type="text" name="name" value="{{ htmlspecialchars($shelf['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
+                                                <td class="stockTD" style=""><input id="shelf-{{ $shelf['id'] }}-name" class="form-control stockTD-input theme-input" type="text" name="name" value="{{ htmlspecialchars($shelf['name'], ENT_QUOTES, 'UTF-8') }}" style="width:150px"/></td>
                                                 <td class="stockTD" hidden><input id="shelf-{{ $shelf['id'] }}-parent" type="hidden" name="shelf-area-id" value="{{ $shelf['area_id']  }}" /></td>
                                                 <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                     <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">

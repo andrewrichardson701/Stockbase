@@ -33,7 +33,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <select name="site" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'site', this.value))">
+                                <select name="site" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'site', this.value))">
                                     <option value="0" @if ($params['site'] == 0) selected @endif >All</option>
                                 @if ($sites['count'] > 0)
                                     @foreach ($sites['rows'] as $site) 
@@ -45,7 +45,7 @@
                             <td>
                                 <form action="" method="GET" style="display:inline-block">
                                     <span style="">
-                                        <input type="text" id="search" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:100px;padding-right:0px" @if ($params['search'] !== null) value="{{ $params['search'] }}" @endif>
+                                        <input type="text" id="search" name="search" placeholder="Search" class="form-control theme-input-alt" style="display:inline !important; width:100px;padding-right:0px" @if ($params['search'] !== null) value="{{ $params['search'] }}" @endif>
                                         <button id="search-submit" class="btn btn-info" style="vertical-align:middle;margin-top: 0px !important;padding: 5px 6px 5px 6px !important;opacity:80%;color:black;" type="submit">
                                             <i class="fa fa-search" style="padding-top:4px"></i>
                                         </button>
@@ -83,7 +83,7 @@
             <div class="row centertable viewport-large" style="max-width:max-content">
                 <div class="col align-middle viewport-large" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Site:</label>
-                    <select name="site" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'site', this.value))">
+                    <select name="site" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'site', this.value))">
                         <option value="0" @if ($params['site'] == 0) selected @endif >All</option>
                     @if ($sites['count'] > 0)
                         @foreach ($sites['rows'] as $site) 
@@ -96,7 +96,7 @@
                     <form action="" method="GET" style="display:inline-block">
                         <label class="align-middle" style="padding-top:7px;padding-right:15px;">Search:</label>
                         <span style="">
-                            <input type="text" id="search" name="search" placeholder="Search" class="form-control" style="display:inline !important; width:200px;padding-right:0px" @if ($params['search'] !== null) value="{{ $params['search'] }}" @endif>
+                            <input type="text" id="search" name="search" placeholder="Search" class="form-control theme-input-alt" style="display:inline !important; width:200px;padding-right:0px" @if ($params['search'] !== null) value="{{ $params['search'] }}" @endif>
                             <button id="search-submit" class="btn btn-info" style="margin-top:-3px;vertical-align:middle;padding: 6px 6px 6px 6px;opacity:80%;color:black" type="submit">
                                 <i class="fa fa-search" style="padding-top:4px"></i>
                             </button>
@@ -131,7 +131,7 @@
             <div class="row centertable" style="max-width:max-content; margin-top:10px">
                 <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Type:</label>
-                    <select name="type" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'type', this.value))">
+                    <select name="type" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'type', this.value))">
                         <option value="0" @if ($params['optic_type'] == 0) selected @endif >All</option>
                     @if ($optic_types['count'] > 0)
                         @foreach ($optic_types['rows'] as $optic_type) 
@@ -142,7 +142,7 @@
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Speed:</label>
-                    <select name="speed" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'speed', this.value))">
+                    <select name="speed" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'speed', this.value))">
                         <option value="0" @if ($params['optic_speed'] == 0) selected @endif >All</option>
                     @if ($optic_speeds['count'] > 0)
                         @foreach ($optic_speeds['rows'] as $optic_speed) 
@@ -153,7 +153,7 @@
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Mode:</label>
-                    <select name="mode" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'mode', this.value))">
+                    <select name="mode" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'mode', this.value))">
                         <option value="0" @if ($params['optic_mode'] == 0) selected @endif >All</option>
                     @if ($optic_modes['count'] > 0)
                         @foreach ($optic_modes['rows'] as $optic_mode) 
@@ -164,7 +164,7 @@
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Connector:</label>
-                    <select name="connector" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'connector', this.value))">
+                    <select name="connector" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'connector', this.value))">
                         <option value="0" @if ($params['optic_connector'] == 0) selected @endif >All</option>
                     @if ($optic_connectors['count'] > 0)
                         @foreach ($optic_connectors['rows'] as $optic_connector) 
@@ -175,7 +175,7 @@
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Distance:</label>
-                    <select name="distance" class="form-control" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'distance', this.value))">
+                    <select name="distance" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'distance', this.value))">
                         <option value="0" @if ($params['optic_distance'] == 0) selected @endif >All</option>
                     @if ($optic_distances['count'] > 0)
                         @foreach ($optic_distances['rows'] as $optic_distance) 
@@ -201,12 +201,12 @@
                     <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
                             <div>Serial Number</div>
-                            <div><input class="form-control text-center" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" oninput="searchSerial(this.value)" required/></div>
+                            <div><input class="form-control text-center theme-input" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" oninput="searchSerial(this.value)" required/></div>
                         </div>
                         <div class="col">
                             <div>Model</div>
                             <div>
-                                <input class="form-control text-center" id="model" type="text" list="names" name="model" placeholder="Model" style="min-width:120px" @if($params['form_model'] !== null) value="{{ $params['form_model'] }}" @endif required/>
+                                <input class="form-control text-center theme-input" id="model" type="text" list="names" name="model" placeholder="Model" style="min-width:120px" @if($params['form_model'] !== null) value="{{ $params['form_model'] }}" @endif required/>
                                 <datalist id="names">
                                 @if ($optic_models['count'] > 0)
                                     @foreach ($optic_models['rows'] as $optic_model) 
@@ -218,12 +218,12 @@
                         </div>
                         <div class="col">
                             <div>Spectrum</div>
-                            <div><input class="form-control text-center" type="text" id="spectrum" name="spectrum" style="min-width:120px" placeholder="1310nm" @if($params['form_spectrum'] !== null) value="{{ $params['form_spectrum'] }}" @endif required/></div>
+                            <div><input class="form-control text-center theme-input" type="text" id="spectrum" name="spectrum" style="min-width:120px" placeholder="1310nm" @if($params['form_spectrum'] !== null) value="{{ $params['form_spectrum'] }}" @endif required/></div>
                         </div>
                         <div class="col">
                             <div>Vendor</div>
                             <div>
-                                <select id="vendor" name="vendor" class="form-control text-center" style="border-color:black;" required>
+                                <select id="vendor" name="vendor" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_vendors['count'] > 0)
                                     <option value="" @if ($params['form_vendor'] == 0) selected @endif >Select Vendor</option>
                                     @foreach ($optic_vendors['rows'] as $optic_vendor) 
@@ -241,7 +241,7 @@
                         <div class="col">
                             <div>Type</div>
                             <div>
-                                <select id="type" name="type" class="form-control text-center" style="border-color:black;" required>
+                                <select id="type" name="type" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_types['count'] > 0)
                                     <option value="" @if ($params['form_type'] == 0) selected @endif >Select Type</option>
                                     @foreach ($optic_types['rows'] as $optic_type) 
@@ -261,7 +261,7 @@
                         <div class="col">
                             <div>Speed</div>
                             <div>
-                                <select id="speed" name="speed" class="form-control text-center" style="border-color:black;" required>
+                                <select id="speed" name="speed" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_speeds['count'] > 0)
                                     <option value="" @if ($params['form_speed'] == 0) selected @endif >Select Speed</option>
                                     @foreach ($optic_speeds['rows'] as $optic_speed) 
@@ -279,7 +279,7 @@
                         <div class="col">
                             <div>Connector</div>
                             <div>
-                                <select id="connector" name="connector" class="form-control text-center" style="border-color:black;" required>
+                                <select id="connector" name="connector" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_connectors['count'] > 0)
                                     <option value="" @if ($params['form_connector'] == 0) selected @endif >Select Connector</option>
                                     @foreach ($optic_connectors['rows'] as $optic_connector) 
@@ -297,7 +297,7 @@
                         <div class="col">
                             <div>Distance</div>
                             <div>
-                                <select id="distance" name="distance" class="form-control text-center" style="border-color:black;" required>
+                                <select id="distance" name="distance" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_distances['count'] > 0)
                                     <option value="" @if ($params['form_distance'] == 0) selected @endif >Select Distance</option>
                                     @foreach ($optic_distances['rows'] as $optic_distance) 
@@ -315,7 +315,7 @@
                         <div class="col">
                             <div>Mode</div>
                             <div>
-                                <select id="mode" name="mode" class="form-control text-center" style="border-color:black;" required>
+                                <select id="mode" name="mode" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_modes['count'] > 0)
                                     <option value="" @if ($params['form_mode'] == 0) selected @endif >Select Mode</option>
                                     @foreach ($optic_modes['rows'] as $optic_mode) 
@@ -330,7 +330,7 @@
                         <div class="col">
                             <div>Site</div>
                             <div>
-                                <select id="type" name="type" class="form-control text-center" style="border-color:black;" required>
+                                <select id="type" name="type" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($sites['count'] > 0)
                                     <option value="" @if ($params['form_site'] == 0) selected @endif >Select Site</option>
                                     @foreach ($sites['rows'] as $site) 

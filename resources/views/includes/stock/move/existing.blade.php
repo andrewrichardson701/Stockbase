@@ -97,7 +97,7 @@
                                                     <label class="nav-v-c">To:</label>
                                                 </div>
                                                 <div class="col" style="max-width:max-content !important">
-                                                    <select class="form-control nav-v-c row-dropdown" id="{{ $key }}-n-site" name="site" style="min-width:50px; padding:2px 0px 2px 0px;  width:max-content !important" required onchange="populateAreas({{ $key }})">
+                                                    <select class="form-control nav-v-c row-dropdown theme-dropdown" id="{{ $key }}-n-site" name="site" style="min-width:50px; padding:2px 0px 2px 0px;  width:max-content !important" required onchange="populateAreas({{ $key }})">
                                                         <option value="" selected disabled hidden>Site</option>
                                                         @if ($sites['count'] > 0 && !empty($sites['rows']))
                                                             @foreach($sites['rows'] as $site)
@@ -109,12 +109,12 @@
                                                     </select>
                                                 </div>
                                                 <div class="col" style="max-width:max-content !important">
-                                                    <select class="form-control nav-v-c row-dropdown" id="{{ $key }}-n-area" name="area" style="min-width:50px; padding:2px 0px 2px 0px; max-width:max-content !important" disabled required onchange="populateShelves({{ $key }})">
+                                                    <select class="form-control nav-v-c row-dropdown theme-dropdown" id="{{ $key }}-n-area" name="area" style="min-width:50px; padding:2px 0px 2px 0px; max-width:max-content !important" disabled required onchange="populateShelves({{ $key }})">
                                                         <option value="" selected disabled hidden>Area</option>
                                                     </select>
                                                 </div>
                                                 <div class="col" style="max-width:max-content !important">
-                                                    <select class="form-control nav-v-c row-dropdown" id="{{ $key }}-n-shelf" name="shelf" style="min-width:50px; padding:2px 0px 2px 0px; max-width:max-content !important" disabled required>
+                                                    <select class="form-control nav-v-c row-dropdown theme-dropdown" id="{{ $key }}-n-shelf" name="shelf" style="min-width:50px; padding:2px 0px 2px 0px; max-width:max-content !important" disabled required>
                                                         <option value="" selected disabled hidden>Shelf</option>
                                                     </select>
                                                 </div>
@@ -122,11 +122,11 @@
                                                     <label class="nav-v-c" for="{{ $key }}-n-quantity">Quantity: </label>
                                                 </div>
                                                 <div class="col" style="max-width:max-content !important">
-                                                    <input type="number" class="form-control nav-v-c row-dropdown" id="{{ $key }}-n-quantity" name="quantity" style="min-width: 20px; padding: 2px 7px 2px 7px; max-width:50px;" placeholder="1" value="1" min="1" max="{{ $row['quantity'] }}" required />
+                                                    <input type="number" class="form-control nav-v-c row-dropdown theme-input" id="{{ $key }}-n-quantity" name="quantity" style="min-width: 20px; padding: 2px 7px 2px 7px; max-width:50px;" placeholder="1" value="1" min="1" max="{{ $row['quantity'] }}" required />
                                                 </div>
                                                 @if ($stock_data['is_cable'] == 0) 
                                                     <div class="col" style="max-width:max-content !important">
-                                                        <input type="number" class="form-control nav-v-c row-dropdown" id="{{ $key }}-n-serial" name="serial" style="min-width: 80px; padding: 2px 7px 2px 7px; width:max-content; max-width:90px" placeholder="@if (isset($row['serial_number']) && $row['serial_number'] !== '') {{ $row['serial_number'] }} @else No Serial Number @endif" value="{{ $row['serial_number'] }}" disabled /> 
+                                                        <input type="number" class="form-control nav-v-c row-dropdown theme-input" id="{{ $key }}-n-serial" name="serial" style="min-width: 80px; padding: 2px 7px 2px 7px; width:max-content; max-width:90px" placeholder="@if (isset($row['serial_number']) && $row['serial_number'] !== '') {{ $row['serial_number'] }} @else No Serial Number @endif" value="{{ $row['serial_number'] }}" disabled /> 
                                                     </div>
                                                 @endif
                                                 <div class="col" style="max-width:max-content !important">

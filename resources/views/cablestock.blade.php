@@ -30,7 +30,7 @@
 
                     <span id="search-input-site-span" style="margin-bottom:10px;" class="index-dropdown">
                         <label for="search-input-site">Site</label><br>
-                        <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
+                        <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown theme-dropdown-alt" oninput="getInventory(1)" >
                             <option value="0" @if ($q_data['site'] == 0) selected @endif >All</option>
                         @foreach ($sites['rows'] as $site) 
                             <option value="{{$site['id']}}" @if ($q_data['site'] == $site['id']) selected @endif >{{$site['name']}}</option>
@@ -39,11 +39,11 @@
                     </span>
                     <span id="search-input-name-span" style="margin-right:0.5em;margin-bottom:10px;">
                         <label for="search-input-name">Name</label><br>
-                        <input id="search-input-name" type="text" name="name" class="form-control" style="display:inline-block" placeholder="Search by Name" oninput="getInventory(1)" value="{{$q_data['name']}}" />
+                        <input id="search-input-name" type="text" name="name" class="form-control theme-input-alt" style="display:inline-block" placeholder="Search by Name" oninput="getInventory(1)" value="{{$q_data['name']}}" />
                     </span>
                     <span id="search-input-type-span" style="margin-right:0.5em;margin-bottom:10px;">
                         <label for="search-input-type">Type</label><br>
-                        <select id="search-input-type" name="type" class="form-control" style="display:inline-block" placeholder="Search by Type" onchange="getInventory(1)" >
+                        <select id="search-input-type" name="type" class="form-control theme-dropdown-alt" style="display:inline-block" placeholder="Search by Type" onchange="getInventory(1)" >
                             <option value="" @if ($q_data['type'] == 0) selected @endif >All</option>
                         @foreach ($cable_types['rows'] as $type) 
                             <option value="{{$type['id']}}" @if ($q_data['type'] == $type['id']) selected @endif >{{$type['name']}}</option>
@@ -133,7 +133,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <select id="site-dropdown-add" name="site" class="form-control" style="border-color:black;margin:0px" required>
+                                    <select id="site-dropdown-add" name="site" class="form-control theme-dropdown" style="border-color:black;margin:0px" required>
                                         <option value="0" @if ($q_data['site'] == 0) selected @endif >All</option>
                                     @foreach ($sites['rows'] as $site) 
                                         <option value="{{$site['id']}}" @if ($q_data['site'] == $site['id']) selected @endif >{{$site['name']}}</option>
@@ -142,13 +142,13 @@
                                     <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                 </td>
                                 <td>
-                                    <select id="area" name="area" class="form-control" style="border-color:black;margin:0px" disabled required>
+                                    <select id="area" name="area" class="form-control theme-dropdown" style="border-color:black;margin:0px" disabled required>
                                         <option value="" selected disabled hidden>Select Area</option>
                                     </select>
                                     <label style="margin-top:5px;font-size:14px">&nbsp;</label>
                                 </td>
                                 <td>
-                                    <select id="shelf" name="shelf" class="form-control" style="border-color:black;margin:0px" disabled required>
+                                    <select id="shelf" name="shelf" class="form-control theme-dropdown" style="border-color:black;margin:0px" disabled required>
                                         <option value="" selected disabled hidden>Select Shelf</option>
                                     </select>
                                     <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadProperties('shelf')">Add New</a>
@@ -163,7 +163,7 @@
                                         <div class="col">
                                             <div>Name</div>
                                             <div>
-                                                <input class="form-control" type="text" list="names" name="stock-name" placeholder="Cable Name" style="min-width:120px" required/>
+                                                <input class="form-control theme-input" type="text" list="names" name="stock-name" placeholder="Cable Name" style="min-width:120px" required/>
                                                 <datalist id="names">');
                                                 @foreach ($cables['rows'] as $cable) 
                                                     <option>{{$cable['name']}}</option>
@@ -172,11 +172,11 @@
                                                 </datalist>
                                             </div>
                                         </div>
-                                        <div class="col"><div>Description</div><div><input class="form-control" type="text" name="stock-description" style="min-width:120px" placeholder="Description"/></div></div>
+                                        <div class="col"><div>Description</div><div><input class="form-control theme-input" type="text" name="stock-description" style="min-width:120px" placeholder="Description"/></div></div>
                                         <div class="col">
                                             <div>Type</div>
                                             <div>
-                                                <select class="form-control" name="cable-type" style="min-width:100px" required>
+                                                <select class="form-control theme-dropdown" name="cable-type" style="min-width:100px" required>
                                                 <option selected disabled>Select Type</option>');
                                                 @if ($cable_types['count'] > 0)
                                                     @foreach ($cable_types['rows'] as $type) 
@@ -194,9 +194,9 @@
                                                 <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewType()">Add New</a>
                                             </div>
                                         </div>
-                                        <div class="col" style="max-width:max-content"><div>Min.Stock</div><div><input class="form-control" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:70px" value="10" required/></div></div>
-                                        <div class="col" style="max-width:max-content"><div>Quantity</div><div><input class="form-control" type="number" name="item-quantity" placeholder="Quantity" style="width:70px" value="1" required/></div></div>
-                                        <div class="col" style="max-width:max-content" @if ($head_data['config_compare']['cost_enable_cable'] == 0) hidden @endif ><div>Cost</div><div><input class="form-control" type="number" step=".01" name="item-cost" placeholder="Cost" style="width:70px" value="0" required/></div></div>
+                                        <div class="col" style="max-width:max-content"><div>Min.Stock</div><div><input class="form-control theme-input" type="number" name="stock-min-stock" placeholder="Minimum Stock Count" style="width:70px" value="10" required/></div></div>
+                                        <div class="col" style="max-width:max-content"><div>Quantity</div><div><input class="form-control theme-input" type="number" name="item-quantity" placeholder="Quantity" style="width:70px" value="1" required/></div></div>
+                                        <div class="col" style="max-width:max-content" @if ($head_data['config_compare']['cost_enable_cable'] == 0) hidden @endif ><div>Cost</div><div><input class="form-control theme-input" type="number" step=".01" name="item-cost" placeholder="Cost" style="width:70px" value="0" required/></div></div>
                                         <div class="col" style="max-width:max-content""><div>&nbsp;</div><div><button class="btn btn-success align-bottom" type="submit" name="add-cables-submit" style="margin-left:10px" value="1">Add</button></div></div>
                                     </div>
                                 </td>

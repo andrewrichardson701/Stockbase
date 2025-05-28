@@ -419,15 +419,43 @@ body {
     color: #bbbbbb !important; /* base text colour */
 }
 
+.theme-input {
+    background-color:#484848 !important;
+    border-color:black !important;
+    color: white;
+}
+
+.theme-input:focus {
+    color: rgb(218, 218, 218);
+}
+
+.theme-input-alt:focus {
+    color: rgb(218, 218, 218);
+}
+
 .theme-dropdown { /* themed dropdown select boxes */
 	background-color:#484848 !important;
 	border-color:black !important;
 	margin:0px;
-	color: white !important;
+	color: white;
+}
+
+.theme-dropdown:focus { 
+	color: rgb(218, 218, 218);
+}
+
+.theme-dropdown-alt { /* themed dropdown select boxes */
+	background-color:#484848 !important;
+	border-color:black !important;
+	color: white;
+}
+
+.theme-dropdown-alt:focus { 
+	color: rgb(218, 218, 218);
 }
 
 .theme-dropdown option { /* themed dropdown select box options */
-	color: white !important;
+	color: white;
 }
 
 .theme-textColor { /* specified text colour (used to be cw) */

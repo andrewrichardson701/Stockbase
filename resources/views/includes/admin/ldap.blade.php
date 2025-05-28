@@ -54,7 +54,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-username">Authentication Username:</p>
                         </td>
                         <td id="ldap-auth-username-input">
-                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-username" name="auth-username" value="{{ $response_data['auth-username'] ?? $head_data['config']['ldap_username'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="auth-username" name="auth-username" value="{{ $response_data['auth-username'] ?? $head_data['config']['ldap_username'] }}" required>
                         </td>
                         <td id="ldap-auth-username-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-username-default">{{ $head_data['default_config']['ldap_username'] }}</p>
@@ -65,7 +65,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-password">Authentication Password:</p>
                         </td>
                         <td id="ldap-auth-password-input">
-                            <input class="form-control nav-v-c" type="password" style="width: 250px" id="auth-password" name="auth-password" value="password" required>
+                            <input class="form-control nav-v-c theme-input" type="password" style="width: 250px" id="auth-password" name="auth-password" value="password" required>
                         </td>
                         <td id="ldap-auth-password-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-password-default" @if ($head_data['default_config']['ldap_password'] !== '') type="password" @endif>@if ($head_data['default_config']['ldap_password'] == '') Default missing... @else {{ $head_data['default_config']['ldap_password'] }} @endif</p>
@@ -76,7 +76,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-password-confirm">Confirm Password:</p>
                         </td>
                         <td id="ldap-auth-passowrd-confirm-input">
-                            <input class="form-control nav-v-c" type="password" style="width: 250px" id="auth-password-confirm" name="auth-password-confirm" value="password" required>
+                            <input class="form-control nav-v-c theme-input" type="password" style="width: 250px" id="auth-password-confirm" name="auth-password-confirm" value="password" required>
                         </td>
                         <td>
                         </td>
@@ -86,7 +86,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-domain">Domain:</p>
                         </td>
                         <td id="ldap-auth-domain-input">
-                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-domain" name="auth-domain" value="{{ $response_data['auth-domain'] ?? $head_data['config']['ldap_domain'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="auth-domain" name="auth-domain" value="{{ $response_data['auth-domain'] ?? $head_data['config']['ldap_domain'] }}" required>
                         </td>
                         <td id="ldap-auth-domain-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-domain-default">{{ $head_data['default_config']['ldap_domain'] }}</p>
@@ -97,7 +97,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-host">Host:</p>
                         </td>
                         <td id="ldap-auth-host-input">
-                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-host" name="auth-host" value="{{ $response_data['auth-host'] ?? $head_data['config']['ldap_host'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="auth-host" name="auth-host" value="{{ $response_data['auth-host'] ?? $head_data['config']['ldap_host'] }}" required>
                         </td>
                         <td id="ldap-auth-host-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-host-default">{{ $head_data['default_config']['ldap_host'] }}</p>
@@ -108,7 +108,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-host-secondary">Secondary Host:</p>
                         </td>
                         <td id="ldap-auth-host-secondary-input">
-                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-host-secondary" name="auth-host-secondary" value="{{ $response_data['auth-host-secondary'] ?? $head_data['config']['ldap_host_secondary'] }}">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="auth-host-secondary" name="auth-host-secondary" value="{{ $response_data['auth-host-secondary'] ?? $head_data['config']['ldap_host_secondary'] }}">
                         </td>
                         <td id="ldap-auth-host-secondary-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-host-secondary-default">{{ $head_data['default_config']['ldap_host_secondary'] }}</p>
@@ -119,7 +119,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-port">Port:</p>
                         </td>
                         <td id="ldap-auth-port-input">
-                            <input class="form-control nav-v-c" type="number" style="width: 250px" id="auth-port" name="auth-port" value="{{ $response_data['auth-port'] ?? $head_data['config']['ldap_port'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="number" style="width: 250px" id="auth-port" name="auth-port" value="{{ $response_data['auth-port'] ?? $head_data['config']['ldap_port'] }}" required>
                         </td>
                         <td id="ldap-auth-port-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-port-default">{{ $head_data['default_config']['ldap_port'] }}</p>
@@ -130,7 +130,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-basedn">Base DN:</p>
                         </td>
                         <td id="ldap-auth-basedn-input">
-                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-basedn" name="auth-basedn" value="{{ $response_data['auth-basedn'] ?? $head_data['config']['ldap_basedn'] }}">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="auth-basedn" name="auth-basedn" value="{{ $response_data['auth-basedn'] ?? $head_data['config']['ldap_basedn'] }}">
                         </td>
                         <td id="ldap-auth-basedn-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-basedn-default">{{ $head_data['default_config']['ldap_basedn'] }}</p>
@@ -141,7 +141,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-usergroup">User Group:</p>
                         </td>
                         <td id="ldap-auth-usergroup-input">
-                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-usergroup" name="auth-usergroup" value="{{ $response_data['auth-usergroup'] ?? $head_data['config']['ldap_usergroup'] }}">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="auth-usergroup" name="auth-usergroup" value="{{ $response_data['auth-usergroup'] ?? $head_data['config']['ldap_usergroup'] }}">
                         </td>
                         <td id="ldap-auth-usergroup-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-usergroup-default">{{ $head_data['default_config']['ldap_usergroup'] }}</p>
@@ -152,7 +152,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-userfilter">User Filter:</p>
                         </td>
                         <td id="ldap-auth-userfilter-input">
-                            <input class="form-control nav-v-c" type="text" style="width: 250px" id="auth-userfilter" name="auth-userfilter" value="{{ $response_data['auth-userfilter'] ?? $head_data['config']['ldap_userfilter'] }}">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="auth-userfilter" name="auth-userfilter" value="{{ $response_data['auth-userfilter'] ?? $head_data['config']['ldap_userfilter'] }}">
                         </td>
                         <td id="ldap-auth-userfilter-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="auth-userfilter-default">{{ $head_data['default_config']['ldap_userfilter'] }}</p>

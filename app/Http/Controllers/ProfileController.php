@@ -78,7 +78,6 @@ class ProfileController extends Controller
         $nav_highlight = 'changelog'; // for the nav highlighting
         $nav_data = GeneralModel::navData($nav_highlight);
 
-        $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request->all());
 
         $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));

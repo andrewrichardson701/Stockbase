@@ -110,7 +110,7 @@
                         <input id="query-oos" type="hidden" name="oos" value="{{$q_data['oos']}}" /> 
                         <span id="search-input-site-span" style="margin-bottom:10px; margin-right:10px" class="index-dropdown">
                             <label for="search-input-site">Site</label><br>
-                            <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
+                            <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown theme-dropdown-alt" oninput="getInventory(1)" >
                                 <option value="0" @if ($q_data['site'] == 0) selected @endif >All</option>
                             @foreach ($sites['rows'] as $site) 
                                 <option value="{{$site['id']}}" @if ($q_data['site'] == $site['id']) selected @endif >{{$site['name']}}</option>
@@ -119,7 +119,7 @@
                         </span>
                         <span id="search-input-area-span" style="margin-bottom:10px; margin-right:10px" class="index-dropdown">
                             <label for="area-dropdown">Area</label><br>
-                            <select id="area-dropdown" name="area" class="form-control nav-v-b theme-dropdown" oninput="getInventory(1)" >
+                            <select id="area-dropdown" name="area" class="form-control nav-v-b theme-dropdown theme-dropdown-alt" oninput="getInventory(1)" >
                                 <option value="0" @if ($q_data['area'] == 0) selected @endif >All</option>
                             @foreach ($areas['rows'] as $area) 
                                 <option value="{{$area['id']}}" @if ($q_data['area'] == $area['id']) selected @endif >{{$area['name']}}</option>
@@ -128,19 +128,19 @@
                         </span>
                         <span id="search-input-name-span" style="margin-right:0.5em;margin-bottom:10px;">
                             <label for="search-input-name">Name</label><br>
-                            <input id="search-input-name" type="text" name="name" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Name" oninput="getInventory(1)" value="{{$q_data['name']}}" />
+                            <input id="search-input-name" type="text" name="name" class="form-control theme-input-alt" style="width:160px;display:inline-block" placeholder="Search by Name" oninput="getInventory(1)" value="{{$q_data['name']}}" />
                         </span>
                         <span class="viewport-large-block" id="search-input-sku-span" style="margin-right:0.5em;margin-bottom:10px;">
                             <label for="search-input-sku">SKU</label><br>
-                            <input id="search-input-sku" type="text" name="sku" class="form-control" style="width:160px;display:inline-block" placeholder="Search by SKU" oninput="getInventory(1)" value="{{$q_data['sku']}}" />
+                            <input id="search-input-sku" type="text" name="sku" class="form-control theme-input-alt" style="width:160px;display:inline-block" placeholder="Search by SKU" oninput="getInventory(1)" value="{{$q_data['sku']}}" />
                         </span>
                         <span class="viewport-large-block" id="search-input-shelf-span" style="margin-right:0.5em;margin-bottom:10px;">
                             <label for="search-input-shelf">Shelf</label><br>
-                            <input id="search-input-shelf" type="text" name="shelf" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Shelf" oninput="getInventory(1)" value="{{$q_data['shelf']}}" />
+                            <input id="search-input-shelf" type="text" name="shelf" class="form-control theme-input-alt" style="width:160px;display:inline-block" placeholder="Search by Shelf" oninput="getInventory(1)" value="{{$q_data['shelf']}}" />
                         </span>
                         <span class="viewport-large-block" id="search-input-manufacturer-span" style="margin-right:0.5em;margin-bottom:10px;">
                             <label for="search-input-manufacturer">Manufacturer</label><br>
-                            <select id="search-input-manufacturer" name="manufacturer" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Manufacturer" onchange="getInventory(1)">
+                            <select id="search-input-manufacturer" name="manufacturer" class="form-control theme-dropdown theme-dropdown-alt" style="width:160px;display:inline-block" placeholder="Search by Manufacturer" onchange="getInventory(1)">
                                 <option value="" @if ($q_data['manufacturer'] == '' || !isset($q_data['manufacturer'])) selected @endif >All</option>
                             @foreach ($manufacturers['rows'] as $manufacturer) 
                                 <option value="{{$manufacturer['name']}}" @if ($q_data['manufacturer'] == $manufacturer['name']) selected @endif >{{$manufacturer['name']}}</option>
@@ -149,7 +149,7 @@
                         </span>
                         <span class="viewport-large-block" id="search-input-label-span" style="margin-right:1em;margin-bottom:10px;">
                             <label for="search-input-label">Tag</label><br>
-                            <select id="search-input-tag" name="tag" class="form-control" style="width:160px;display:inline-block" placeholder="Search by Tag" onchange="getInventory(1)">
+                            <select id="search-input-tag" name="tag" class="form-control theme-dropdown theme-dropdown-alt" style="width:160px;display:inline-block" placeholder="Search by Tag" onchange="getInventory(1)">
                                 <option value="" @if ($q_data['tag'] == '' || !isset($q_data['tag'])) selected @endif >All</option>
                             @foreach ($tags['rows'] as $tag) 
                                 <option value="{{$tag['name']}}" @if ($q_data['tag'] == $tag['name']) selected @endif >{{$tag['name']}}</option>

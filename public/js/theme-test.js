@@ -22,7 +22,7 @@ function changeTheme() {
     var select = document.getElementById('theme-select');
     var value = select.value;
     var css = document.getElementById('theme-css');
-    var profile_id = document.getElementById('profile-id').value;
+    // var profile_id = document.getElementById('profile-id').value;
     var theme = document.getElementById('theme-select-option-' + value).title;
     var theme_name = document.getElementById('theme-select-option-' + value).alt;
     // css.href = "./assets/css/theme-"+theme+".css";

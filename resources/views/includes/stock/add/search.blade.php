@@ -5,7 +5,7 @@
                 <tbody>
                     <tr>
                         <td style="padding-right:20px">Search for item</td>
-                        <td><input class="form-control stock-inputSize" type="text" id="search" name="search" oninput="getInventory(1)" placeholder="Search for item" value="{{ htmlspecialchars($params['request']['search'] ?? '', ENT_QUOTES, 'UTF-8') }}"/></td>
+                        <td><input class="form-control stock-inputSize theme-input" type="text" id="search" name="search" oninput="getInventory(1)" placeholder="Search for item" value="{{ htmlspecialchars($params['request']['search'] ?? '', ENT_QUOTES, 'UTF-8') }}"/></td>
                         <td class="text-right viewport-mid-large" style="padding-left:20px;padding-right:20px">or</td>
                         <td class="viewport-mid-large"><a class="link btn btn-success cw" onclick="navPage(`{{ url('stock') }}/0/add/new?name=`+document.getElementById('search').value)">Add New Stock</a></td>
                     </tr>

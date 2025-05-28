@@ -305,17 +305,17 @@ class CablestockModel extends Model
                                                             <label class="nav-v-c">To:</label>
                                                         </div>
                                                         <div class="col" style="max-width:max-content !important">
-                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2px 0px 2px 0px;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
+                                                            <select class="form-control nav-v-c row-dropdown theme-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2px 0px 2px 0px;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
                                                                 <option value="" selected="" disabled="" hidden="">Site</option><option value="1">CDC ME14</option><option value="2">CDC DA2</option><option value="4">TestSite</option>
                                                             </select>
                                                         </div>
                                                         <div class="col" style="max-width:max-content !important">
-                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2px 0px 2px 0px; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">
+                                                            <select class="form-control nav-v-c row-dropdown theme-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2px 0px 2px 0px; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">
                                                                 <option value="" selected="" disabled="" hidden="">Area</option>
                                                             </select>
                                                         </div>
                                                         <div class="col" style="max-width:max-content !important">
-                                                            <select class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-shelf" name="shelf" style="min-width:50px; padding: 2px 0px 2px 0px; max-width:max-content !important" disabled="" required>
+                                                            <select class="form-control nav-v-c row-dropdown theme-dropdown" id="'.$stock_id.'-n-shelf" name="shelf" style="min-width:50px; padding: 2px 0px 2px 0px; max-width:max-content !important" disabled="" required>
                                                                 <option value="" selected="" disabled="" hidden="">Shelf</option>
                                                             </select>
                                                         </div>
@@ -323,7 +323,7 @@ class CablestockModel extends Model
                                                             <label class="nav-v-c" for="0-n-quantity">Quantity: </label>
                                                         </div>
                                                         <div class="col" style="max-width:max-content !important">
-                                                            <input type="number" class="form-control nav-v-c row-dropdown" id="'.$stock_id.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2px 7px 2px 7px; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_quantity_total.'" required>
+                                                            <input type="number" class="form-control nav-v-c row-dropdown theme-input" id="'.$stock_id.'-n-quantity" name="quantity" style="min-width: 20px; padding: 2px 7px 2px 7px; max-width:50px;" placeholder="1" value="1" min="1" max="'.$stock_quantity_total.'" required>
                                                         </div>
                                                         <div class="col" style="max-width:max-content !important">
                                                             <input type="submit" class="btn btn-warning nav-v-c btn-move" id="'.$stock_id.'-n-submit" value="Move" style="opacity:80%;" name="submit" required="">

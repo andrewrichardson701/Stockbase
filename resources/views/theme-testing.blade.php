@@ -137,7 +137,12 @@
                                         .theme-tableOuter<br>
                                         .theme-textColor<br>
                                         .theme-dropdown<br>
+                                        .theme-dropdown:focus<br>
+                                        .theme-dropdown-alt<br>
+                                        .theme-dropdown-alt:focus<br>
                                         .theme-dropdown option<br>
+                                        .theme-input<br>
+                                        .theme-input-alt<br>
                                         .clickable<br>
                                         .highlight<br>
                                         .gold, a<br>
@@ -150,7 +155,7 @@
                                         <div class="nav-row" style="padding-left:75px;padding-bottom:10px">
                                             <span id="search-input-site-span" style="margin-right: 10px; padding-left:12px">
                                                 <label for="search-input-site">Site</label><br>
-                                                <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown">
+                                                <select id="site-dropdown" name="site" class="form-control nav-v-b theme-dropdown theme-dropdown-alt">
                                                     <option value="0" selected="">All</option>
                                                     <option value="1">Option 1</option>
                                                     <option value="2">Option 2</option>
@@ -159,13 +164,13 @@
             
                                             <span id="search-input-name-span" style="margin-right: 10px;margin-left:10px">
                                                 <label for="search-input-name">Name</label><br>
-                                                <input id="search-input-name" type="text" name="name" class="form-control"
+                                                <input id="search-input-name" type="text" name="name" class="form-control theme-input theme-input-alt"
                                                     style="width:160px;display:inline-block" placeholder="Search by Name" value="">
                                             </span>
                                             <span id="search-input-manufacturer-span" style="margin-right: 10px">
                                                 <label for="search-input-manufacturer">Manufacturer</label><br>
             
-                                                <select id="search-input-manufacturer" name="manufacturer" class="form-control"
+                                                <select id="search-input-manufacturer" name="manufacturer" class="form-control theme-dropdown theme-dropdown-alt"
                                                     style="width:160px;display:inline-block" placeholder="Search by Manufacturer">
                                                     <option value="" selected="">All</option>
                                                     <option value="Cisco">Cisco</option>
@@ -389,6 +394,7 @@
                                         .theme-tableOuter<br>
                                         .theme-table-blank<br>
                                         .clickable<br>
+                                        .theme-input<br>
                                     </p>
                                 </td>
                                 <td style="min-width:100px">
@@ -416,8 +422,8 @@
                                             <tbody>
                                                 <tr style="background-color:#6abad6 !important; color:black">
                                                         <td class="stockTD">1</td>
-                                                        <td class="stockTD"><input id="site-1-name" class="form-control stockTD-input" name="name" type="text" value="Site 1" style="width:150px"></td>
-                                                        <td hidden=""><input id="site-1-description" class="form-control stockTD-input" type="text" name="description" value="Custodian Data Centers, Maidstone"></td>
+                                                        <td class="stockTD"><input id="site-1-name" class="form-control stockTD-input theme-input" name="name" type="text" value="Site 1" style="width:150px"></td>
+                                                        <td hidden=""><input id="site-1-description" class="form-control stockTD-input theme-input" type="text" name="description" value="Custodian Data Centers, Maidstone"></td>
                                                         <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td> 
                                                         <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td>
                                                         <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
@@ -441,8 +447,8 @@
                                                 <tr style="background-color:#99d4ef !important; color:black">
                                                     <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">1</td>
-                                                    <td class="stockTD"><input id="area-1-name" class="form-control stockTD-input" type="text" name="name" value="Store room 1" style="width:150px"></td>
-                                                    <td class="stockTD" hidden=""><input id="area-1-description" class="form-control stockTD-input" type="text" name="description" value="Store Room 1"></td>
+                                                    <td class="stockTD"><input id="area-1-name" class="form-control stockTD-input theme-input" type="text" name="name" value="Store room 1" style="width:150px"></td>
+                                                    <td class="stockTD" hidden=""><input id="area-1-description" class="form-control stockTD-input theme-input" type="text" name="description" value="Store Room 1"></td>
                                                     <td class="stockTD" hidden=""><input id="area-1-parent" type="hidden" name="area-site-id" value="1"></td>
                                                     <td class="stockTD" hidden=""></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td>
@@ -469,7 +475,7 @@
                                                     <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td> 
                                                     <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">1</td>
-                                                    <td class="stockTD"><input id="shelf-1-name" class="form-control stockTD-input" type="text" name="name" value="Shelf 1" style="width:150px"></td>
+                                                    <td class="stockTD"><input id="shelf-1-name" class="form-control stockTD-input theme-input" type="text" name="name" value="Shelf 1" style="width:150px"></td>
                                                     <td class="stockTD" hidden=""><input id="shelf-1-parent" type="hidden" name="shelf-area-id" value="1"></td>
                                                     <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
@@ -500,8 +506,8 @@
                                                 <tr class="theme-tableOuter"><td colspan="9"></td></tr>
                                                 <tr style="background-color:#F4BB44 !important; color:black">
                                                     <td class="stockTD">2</td>
-                                                    <td class="stockTD"><input id="site-2-name" class="form-control stockTD-input" name="name" type="text" value="Site 2" style="width:150px"></td>
-                                                    <td hidden=""><input id="site-2-description" class="form-control stockTD-input" type="text" name="description" value="Custodian Data Centers, Dartford"></td>
+                                                    <td class="stockTD"><input id="site-2-name" class="form-control stockTD-input theme-input" name="name" type="text" value="Site 2" style="width:150px"></td>
+                                                    <td hidden=""><input id="site-2-description" class="form-control stockTD-input theme-input" type="text" name="description" value="Custodian Data Centers, Dartford"></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td> 
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td>
                                                     <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
@@ -525,8 +531,8 @@
                                                 <tr style="background-color:#ffe47a !important; color:black">
                                                     <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">4</td>
-                                                    <td class="stockTD"><input id="area-4-name" class="form-control stockTD-input" type="text" name="name" value="Store room A" style="width:150px"></td>
-                                                    <td class="stockTD" hidden=""><input id="area-4-description" class="form-control stockTD-input" type="text" name="description" value="Sote room A"></td>
+                                                    <td class="stockTD"><input id="area-4-name" class="form-control stockTD-input theme-input" type="text" name="name" value="Store room A" style="width:150px"></td>
+                                                    <td class="stockTD" hidden=""><input id="area-4-description" class="form-control stockTD-input theme-input" type="text" name="description" value="Sote room A"></td>
                                                     <td class="stockTD" hidden=""><input id="area-4-parent" type="hidden" name="area-site-id" value="2"></td>
                                                     <td class="stockTD" hidden=""></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; "></td> <td></td> <td hidden=""></td>
@@ -551,7 +557,7 @@
                                                     <td class="stockTD theme-table-blank"></td> <td class="theme-table-blank"></td> <td hidden=""></td> 
                                                     <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55;"></td> <td class="theme-table-blank"></td> <td hidden=""></td> <td hidden=""></td> <td hidden=""></td>
                                                     <td class="stockTD" style="border-left:2px solid #454d55; ">10</td>
-                                                    <td class="stockTD"><input id="shelf-10-name" class="form-control stockTD-input" type="text" name="name" value="Shelf A-1" style="width:150px"></td>
+                                                    <td class="stockTD"><input id="shelf-10-name" class="form-control stockTD-input theme-input" type="text" name="name" value="Shelf A-1" style="width:150px"></td>
                                                     <td class="stockTD" hidden=""><input id="shelf-10-parent" type="hidden" name="shelf-area-id" value="4"></td>
                                                     <td class="stockTD theme-table-blank" style="border-left:2px solid #454d55; ">
                                                         <button class="btn btn-success cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="stocklocation-submit" value="1" type="submit">
@@ -591,6 +597,7 @@
                                     .theme-divBg<br>
                                     .serial-bg<br>
                                     .gold, a<br>
+                                    .theme-dropdown-alt<br>
                                     </p>
                                 </td>
                                 <td style="min-width:100px">
@@ -631,7 +638,7 @@
                                                             <div class="nav-row" id="manufacturer-row" style="margin-top:25px">
                                                                 <div style="width:200px;margin-right:25px"><label class="nav-v-c text-right" style="width:100%" for="manufacturer" id="manufacturer-label">Manufacturer</label></div>
                                                                 <div>
-                                                                    <select name="manufacturer" id="manufacturer" class="form-control" style="width:300px" required="">
+                                                                    <select name="manufacturer" id="manufacturer" class="form-control theme-dropdown-alt" style="width:300px" required="">
                                                                         <option value="" selected="" disabled="" hidden="">Select Manufacturer</option><option value="1">Cisco</option><option value="2">Dell</option><option value="3">HP</option><option value="4">Cyberoam</option><option value="5">Watchguard</option><option value="6">Supermicro</option>
                                                                     </select>
                                                                 </div>
@@ -766,35 +773,87 @@
                             <tr><td colspan=2><div style="height:20px"></div></td></tr>
                             <tr id="template" class="text-center">
                                 <td class="uni" style="min-width:100px;padding-left:20px;padding-right:20px">
-                                    <p>.theme-profileTextColor</p>
+                                    <p>.theme-profileTextColor<br>
+                                        .theme-divBg<br>
+                                    </p>
                                 </td>
                                 <td style="min-width:100px">
                                     <div class="container well-nopad" style="background-color:transparent">
                                         <h4 style="margin-bottom:0px"><u>Profile</u></h4><hr style="border-color:white;margin-top:5px">
-                                        <table class="theme-profileTextColor">
-                                            <tbody>
-                                                <input id="profile-id" type="hidden" value="2" name="id">
-                                                <tr class="nav-row" id="username">
-                                                    <td id="username_header" style="width:200px">
-                                                        <!-- Custodian Colour: #72BE2A -->
-                                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Username:</p>
-                                                    </td>
-                                                    <td id="username_info">
-                                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">username</p>
-                                                    </td>
-                                                    <td>
-                                                    </td>
-                                                </tr>
-                                                <tr class="nav-row" style="margin-top:20px" id="firstname">
-                                                    <td id="firstname_header" style="width:200px">
-                                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">First Name:</p>
-                                                    </td>
-                                                    <td id="firstname_info">
-                                                        <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle">Name</p>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg text-left">
+                                            <div class="max-w-xl">
+                                                <section>
+                                                    <header>
+                                                        <h2 class="text-lg font-medium ">
+                                                            Profile Information
+                                                        </h2>
+
+                                                        <p class="mt-1 text-sm">
+                                                            Update your account's profile information and email address.
+                                                        </p>
+                                                    </header>
+
+                                                    <form class="mt-6 space-y-6">
+                                                        <input type="hidden" name="_token" value="NIN2wykN8PIitWU4FEQpVbiHBwazLHnjhtPBmHpy" autocomplete="off">                                                                        
+                                                        <div>
+                                                            <label class="block font-medium text-sm" for="name">Name</label>
+                                                            <input class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input" id="name" name="name" type="text" value="Root" required="required"autocomplete="name">
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="block font-medium text-sm" for="username">Username</label>
+                                                            <input disabled="" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input" style="cursor:not-allowed;" id="username" name="username" type="text" value="root"autocomplete="username">
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="block font-medium text-sm" for="email">Email</label>
+                                                            <input class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input" id="email" name="email" type="email" value="root@stockbase.local" required="required" autocomplete="email">                                           
+                                                        </div>
+
+                                                        <div>
+                                                            <label class="block font-medium text-sm" for="theme_id">Theme</label>
+                                                            <select id="theme_id" name="theme_id" class="mt-1 font-medium rounded-md text-gray-500 dark:text-gray-400  dark:bg-gray-900 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none theme-dropdown">
+                                                                <option value="1" selected>Dark</option>
+                                                                <option value="2">Light</option>
+                                                            </select>
+                                                            <a style="margin-left: 15px" class="link align-middle" href="https://laravel.ajrich.co.uk/theme-testing" target="_blank">Theme testing</a>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <p class="block font-medium">Role:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p name="role" value="1">User</p>
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <p class="block font-medium">Auth:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p name="auth" value="local">local</p>
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <p class="block font-medium">Verified:</p>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p name="theme" value="">Never</p>
+                                                            </div>
+                                                            
+                                                        </div>
+
+                                                        <p class="gold link"style="margin-top:20px">View login history</p>
+                                                        
+                                                        <div class="flex items-center gap-4">
+                                                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" style="color:black !important;">
+                                                                Save
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </section>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

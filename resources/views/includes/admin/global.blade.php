@@ -23,7 +23,7 @@
                                     <p style="min-height:max-content;margin:0px" class=" align-middle" for="system_name">System Name:</p>
                                 </td>
                                 <td id="system_name-set" style="width:250px;padding-bottom:20px">
-                                    <input class="form-control " type="text" style="width: 150px" id="system_name" name="system_name">
+                                    <input class="form-control theme-input-alt" type="text" style="width: 150px" id="system_name" name="system_name">
                                 </td>
                                 <td style="min-width:230px;margin-left:10px; padding-left:15px;padding-bottom:20px">
                                     <label class=""><span class="uni">{{ $head_data['config']['system_name'] }}</span></label>
@@ -39,7 +39,7 @@
                                 </td>
                                 <td id="banner-color-picker" style="width:250px;padding-bottom:20px">
                                     <label class="tag-color">
-                                        <input class="form-control input-color color" id="banner_color" name="banner_color" placeholder="#XXXXXX" data-value="#xxxxxx" value="{{ $head_data['config']['banner_color'] }}"/>
+                                        <input class="form-control input-color color theme-input-alt" id="banner_color" name="banner_color" placeholder="#XXXXXX" data-value="#xxxxxx" value="{{ $head_data['config']['banner_color'] }}"/>
                                     </label>
                                 </td>
                                 <td style="min-width:230px;padding-left:15px;padding-bottom:20px">
@@ -82,7 +82,7 @@
                                     <p style="min-height:max-content;margin:0px" class=" align-middle" for="currency_selection">Currency:</p>
                                 </td>
                                 <td id="currency-selector" style="width:250px;padding-bottom:20px">
-                                    <select id="currency_selection" name="currency_selection" placeholder="£" class="form-control" style="width:150px">
+                                    <select id="currency_selection" name="currency_selection" placeholder="£" class="form-control theme-dropdown-alt" style="width:150px">
                                         <option alt="Pounds Sterling" value="£" @if ($head_data['config']['currency'] == '£') selected @endif>£ (Pound)</option>
                                         <option alt="Dollar"          value="$" @if ($head_data['config']['currency'] == '$') selected @endif>$ (Dollar)</option>
                                         <option alt="Euro"            value="€" @if ($head_data['config']['currency'] == '€') selected @endif>€ (Euro)</option>
@@ -106,7 +106,7 @@
                                     <p style="min-height:max-content;margin:0px" class=" align-middle" for="sku_prefix"><or class="title" title="Prefix for SKU element on stock. e.g. ITEM-00001 or SKU-00001">SKU Prefix:</or></p>
                                 </td>
                                 <td id="sku-prefix-set" style="width:250px;padding-bottom:20px">
-                                    <input class="form-control " type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
+                                    <input class="form-control theme-input-alt" type="text" style="width: 150px" id="sku_prefix" name="sku_prefix">
                                 </td>
                                 <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
                                     <label class=""><span class="uni">{{ $head_data['config']['sku_prefix'] }}</span></label>
@@ -121,7 +121,7 @@
                                     <p style="min-height:max-content;margin:0px" class="align-middle" for="base_url"><or class="title" title="This only changes the URL for any links or emails, not the web connection url. This needs to be changed in the web config file.">Base URL:</or></p>
                                 </td>
                                 <td id="base-url-set" style="width:250px;padding-bottom:20px">
-                                    <input class="form-control " type="text" style="width: 150px" id="base_url" name="base_url">
+                                    <input class="form-control theme-input-alt" type="text" style="width: 150px" id="base_url" name="base_url">
                                 </td>
                                 <td style="min-width:230px;margin-left:25px; padding-left:15px;padding-bottom:20px">
                                     <label class=""><span class="uni">{{ $head_data['config']['base_url'] }}</span></label>
@@ -136,7 +136,7 @@
                                     <p style="min-height:max-content;margin:0px" class=" align-middle" for="default_theme">Default Theme:</p>
                                 </td>
                                 <td id="default-theme-set" style="width:250px;padding-bottom:20px">
-                                    <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control" style="width:150px">
+                                    <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control theme-dropdown-alt" style="width:150px">
                                     @if ($themes['count'] > 0)
                                         @foreach ($themes['rows'] as $theme) 
                                         <option value="{{ $theme['id'] }}" @if ($head_data['config']['default_theme_id'] == $theme['id']) selected @endif title="{{ $theme['file_name'] }}">{{ $theme['name'] }}</option>

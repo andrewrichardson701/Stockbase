@@ -51,7 +51,7 @@
                                         <div>
                                             <label class="block font-medium text-sm" 
                                                 for="name">{{ __('Name') }}</label>
-                                            <input class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full" 
+                                            <input class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input" 
                                                     id="name" name="name" type="text" value="{{ old('name', $user->name) }}" 
                                                     required="required" autofocus="autofocus" autocomplete="name">
                                             @if ($errors->get('name'))
@@ -65,7 +65,7 @@
                                             <label class="block font-medium text-sm" 
                                                 for="username">{{ __('Username') }}</label>
                                             <input disabled=""
-                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full  theme-input"
                                                 style="cursor:not-allowed;" id="username" name="username" type="text"
                                                 value="{{ old('username', $user->username) }}" autofocus="autofocus" autocomplete="username">
                                             @if ($errors->get('username'))
@@ -79,7 +79,7 @@
                                             <label class="block font-medium text-sm"
                                                 for="email">{{ __('Email') }}</label>
                                             <input
-                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input"
                                                 id="email" name="email" type="email" value="{{ old('email', $user->email) }}"
                                                 required="required" autocomplete="email">
                                             @if ($errors->get('email'))
@@ -111,7 +111,7 @@
                                             <label class="block font-medium text-sm"
                                                 for="theme_id">{{ __('Theme') }}</label>
                                             <select id="theme_id" name="theme_id"
-                                                class="mt-1 font-medium rounded-md text-gray-500 dark:text-gray-400  dark:bg-gray-900 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
+                                                class="mt-1 font-medium rounded-md text-gray-500 dark:text-gray-400  dark:bg-gray-900 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none theme-dropdown">
                                             @if ($themes['count'] > 0) 
                                                 @foreach ($themes['rows'] as $theme)
                                                     <option value="{{ $theme['id'] }}" @if ($head_data['user']['theme_id'] == $theme['id']) selected @endif>{{ $theme['name'] }}</option>
@@ -191,7 +191,7 @@
                                                 {{ __('Current Password') }}
                                             </label>
                                             <input
-                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input"
                                                 id="update_password_current_password" name="current_password"
                                                 type="password" autocomplete="current-password">
                                             @if ($errors->updatePassword->get('current_password'))
@@ -207,7 +207,7 @@
                                                 {{ __('New Password') }}
                                             </label>
                                             <input
-                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input"
                                                 id="update_password_password" name="password" type="password"
                                                 autocomplete="new-password">
                                             @if ($errors->updatePassword->get('password'))
@@ -223,7 +223,7 @@
                                                 {{ __('Confirm Password') }}
                                             </label>
                                             <input
-                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full"
+                                                class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full theme-input"
                                                 id="update_password_password_confirmation" name="password_confirmation"
                                                 type="password" autocomplete="new-password">
                                             @if ($errors->updatePassword->get('password_confirmation'))

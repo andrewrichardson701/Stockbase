@@ -41,7 +41,7 @@
                             <td id="user_{{ $user['id'] }}_last_name" style="vertical-align: middle;">{{ $user['last_name'] }}</td>
                             <td id="user_{{ $user['id'] }}_email" style="vertical-align: middle;">{{ $user['email'] }}</td>
                             <td id="user_{{ $user['id'] }}_role" style="vertical-align: middle;">
-                                <select class="form-control" id="user_{{ $user['id'] }}_role_select" style="min-width:max-content; padding-top:0px; padding-bottom:0px" onchange="userRoleChange('{{ $user['id'] }}')" @if ((int)$user['id'] == 0) disabled @endif >
+                                <select class="form-control theme-dropdown" id="user_{{ $user['id'] }}_role_select" style="min-width:max-content; padding-top:0px; padding-bottom:0px" onchange="userRoleChange('{{ $user['id'] }}')" @if ((int)$user['id'] == 0) disabled @endif >
                                 @foreach ($user_roles['rows'] as $role)
                                     <option value="{{ $role['id'] }}" title="{{ $role['description'] }}" @if ($user['role_id'] == $role['id']) selected @endif @if ((int)$role['id'] == 1) disabled @endif>{{ ucwords($role['name']) }}</option>
                                 @endforeach

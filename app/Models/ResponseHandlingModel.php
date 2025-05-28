@@ -124,18 +124,34 @@ class ResponseHandlingModel extends Model
         $successPprefix = '<p class="container green">';
         $successPsuffix = '</p>';
 
-        if (isset($request['error'])) {
-            $errorText = $defaultMessages['error'][$request['error']] ?? htmlspecialchars($request['error'] ?? '');
+        // Get values from query string
+        $errorKey = $request['error'] ?? null;
+        $sqlErrorKey = $request['sqlerror'] ?? null;
+        $successKey = $request['success'] ?? null;
+
+        // Check Laravel session (if available in global helpers)
+        if (session()->has('error')) {
+            $errorKey = session('error');
         }
-        if (isset($request['sqlerror'])) {
-            $sqlErrorText = $defaultMessages['sqlerror'][$request['sqlerror']] ?? htmlspecialchars($request['sqlerror'] ?? '');
+        if (session()->has('sqlerror')) {
+            $sqlErrorKey = session('sqlerror');
         }
-        if (isset($request['success'])) {
-            $successText = $defaultMessages['success'][$request['success']] ?? htmlspecialchars($request['success'] ?? '');
+        if (session()->has('success')) {
+            $successKey = session('success');
+        }
+
+        if ($errorKey) {
+            $errorText = $defaultMessages['error'][$errorKey] ?? e($errorKey);
+        }
+        if ($sqlErrorKey) {
+            $sqlErrorText = $defaultMessages['sqlerror'][$sqlErrorKey] ?? e($sqlErrorKey);
+        }
+        if ($successKey) {
+            $successText = $defaultMessages['success'][$successKey] ?? e($successKey);
         }
 
         if (isset($request['ajax']) && $request['ajax'] == 1) {
-            return $errorText ?: $sqlErrorText ?: $successText;
+            return $errorText ?? $sqlErrorText ?? $successText;
         }
 
         if (isset($errorText)) {

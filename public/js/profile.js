@@ -88,3 +88,27 @@ function changeTheme() {
         };
         xhr.send();
 }
+
+document.getElementById("enable_2fa_checkbox").addEventListener("change", function (event) {
+    // Check if the checkbox is being unchecked
+    const isUncheck = !this.checked;
+
+    // If the checkbox is being unchecked, display the confirmation popup
+    if (!isUncheck) {
+        const confirmed = confirm(
+            'You will be prompted to setup 2FA on next login, do you want to proceed?'
+        );
+
+        // If the user cancels, revert the checkbox back to its previous state
+        if (!confirmed) {
+            this.checked = true; // Revert the checkbox back to checked state
+            return;
+        }
+    }
+
+    // Update the initial state of the checkbox for the next change event
+    isSmtpCheckboxChecked = this.checked;
+
+    // If the checkbox is not being unchecked or the user confirmed, submit the form
+    document.getElementById("enable_2fa_form").submit();
+});

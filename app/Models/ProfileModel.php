@@ -96,8 +96,57 @@ class ProfileModel extends Model
     static public function reset2FA($user_id) 
     {
         $data = ['2fa_secret' => null];
-        if (User::where('id', $user_id)->update($data)) {
-            return 1;
+
+        $user = User::find($user_id);
+
+        if ($user) {
+            if (User::where('id', $user_id)->update($data)) {
+                // update changelog
+                $user = GeneralModel::getUser();
+                $info = [
+                    'user' => $user,
+                    'table' => 'users',
+                    'record_id' => $user_id,
+                    'field' => '2fa_secret',
+                    'new_value' => null,
+                    'action' => 'Update record',
+                    'previous_value' => '********',
+                ];
+                GeneralModel::updateChangelog($info);
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+        
+    }
+
+    static public function enable2FA($user_id, $state) 
+    {
+        $data = ['2fa_enabled' => $state];
+        // check if state change needed
+        $user = User::find($user_id);
+
+        if ($user && $user['2fa_enabled'] !== $state) {
+            if (User::where('id', $user_id)->update($data)) {
+                // update changelog
+                $user = GeneralModel::getUser();
+                $info = [
+                    'user' => $user,
+                    'table' => 'users',
+                    'record_id' => $user_id,
+                    'field' => '2fa_enabled',
+                    'new_value' => $state,
+                    'action' => 'Update record',
+                    'previous_value' => $user['2fa_enabled'],
+                ];
+                GeneralModel::updateChangelog($info);
+                return 1;
+            } else {
+                return 0;
+            }
         } else {
             return 0;
         }

@@ -140,4 +140,32 @@ class ProfileController extends Controller
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
+
+    public static function enable2FA(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+
+            $data = $request->toArray();
+            $user = GeneralModel::getUser();
+
+            if (isset($data['enable-2fa']) && $data['enable-2fa'] == 'on') {
+                $state = 1;
+            } else {
+                $state = 0;
+            }
+
+            if (ProfileModel::enable2FA($user['id'], $state) == 1) {
+                if ($state == 1) {
+                    $status = 'enabled';
+                } else {
+                    $status = 'disabled';
+                }
+                return redirect(GeneralModel::previousURL())->with('success', '2FA '.$status);
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Unable to change 2FA');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
 }

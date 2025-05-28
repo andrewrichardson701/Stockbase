@@ -267,10 +267,13 @@
                                                 title="You will be required to input your 2FA code on login.">
                                                 {{ __('Enable 2FA') }}
                                             </label>
-                                            <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
-                                                <input type="checkbox" name="enable-2fa" id="enable_2fa_checkbox" @if ($head_data['config']['2fa_enforced'] == 1) checked disabled @elseif ($head_data['user']['2fa_enabled'] == 1) checked @endif >
-                                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
-                                            </label>
+                                            <form id="enable_2fa_form" action="{{ route('profile.enable2FA') }}"  method="POST" enctype="multipart/form-data" style="margin:0px; padding:0px">
+                                                @csrf
+                                                <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                                    <input type="checkbox" name="enable-2fa" id="enable_2fa_checkbox" @if ($head_data['config']['2fa_enforced'] == 1) checked disabled @elseif ($head_data['user']['2fa_enabled'] == 1) checked @endif >
+                                                    <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                                                </label>
+                                            </form>
                                         </div>
                                         <div class="col">
                                             <label class="block font-medium text-sm title" style="width:max-content"

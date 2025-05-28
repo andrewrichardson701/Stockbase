@@ -105,6 +105,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             // Theme-testing
             Route::post('/theme-testing.uploadTheme', [ProfileController::class, 'uploadTheme'])->name('theme-testing.uploadTheme'); // filter the changelog
             // Profile
+            Route::post('/profile.enable2FA', [ProfileController::class, 'enable2FA'])->name('profile.enable2FA'); // enable 2FA
             Route::post('/profile.reset2FA', [ProfileController::class, 'reset2FA'])->name('profile.reset2FA'); // reset 2FA secret
             //
 

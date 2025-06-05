@@ -107,6 +107,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             // Profile
             Route::post('/profile.enable2FA', [ProfileController::class, 'enable2FA'])->name('profile.enable2FA'); // enable 2FA
             Route::post('/profile.reset2FA', [ProfileController::class, 'reset2FA'])->name('profile.reset2FA'); // reset 2FA secret
+            // Admin - Auth needed here
+            Route::post('/admin.globalSettings', [AdminController::class, 'globalSettings'])->name('admin.globalSettings'); // Adjust global settings
             //
 
             ////

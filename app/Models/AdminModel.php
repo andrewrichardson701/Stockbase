@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+use App\Models\GeneralModel;
 
 /**
  * 
@@ -145,6 +149,92 @@ class AdminModel extends Model
         }
 
         return $return;
+    }
+
+    static public function updateGlobalSettings($data)
+    {
+        $errors = [];
+        $unchanged = [];
+        $changed = [];
+
+        $user = GeneralModel::getUser();
+        $config_fields = Schema::getColumnListing('config');
+        $excluded_keys = ['_token', 'global-submit'];
+
+        unset($data['_token'], $data['global-submit']);
+
+        $current_data = DB::table('config')
+                            ->where('id', 1)
+                            ->first();
+
+        $changelog_info = [
+                'user' => GeneralModel::getUser(),
+                'table' => 'config',
+                'record_id' => 1,
+                'action' => 'Update record',
+            ];
+        
+        foreach($data as $field => $value) {
+            if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys
+                if (!in_array($field, $config_fields)) {
+                    return redirect(GeneralModel::previousURL())->with('error', 'Unknown table field: '.$field.'.');
+                }
+            }
+        }
+
+        foreach($data as $field => $value) {
+            
+            if (!in_array($field, ['favicon_image', 'logo_image'])) {
+                // not an image 
+                if (ctype_digit($value)) { // checks for numbers and NOT decimals
+                    $value = (int)$value;
+                }
+
+                if ($current_data->$field !== $value) {
+                    //update needed
+                    if (filled($value)) {
+
+                        $update = DB::table('config')->where('id', 1)->update([$field => $value]);
+                        
+                        if ($update) {
+                            // changelog needed
+                            $changelog_info['field'] = $field;
+                            $changelog_info['previous_value'] = $current_data->$field;
+                            $changelog_info['new_value'] = $value;
+
+                            $changed[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'updated'];;
+
+                            GeneralModel::updateChangelog($changelog_info);
+                        } else {
+                            // failed to update DB
+                            $errors[$field] = 'failed to update';
+                            $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'unable to push data to DB'];
+                        }
+                    } else {
+                        $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'null data'];
+                    }
+                } else {
+                    $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'matching data'];
+                }
+            } else {
+                // image field
+                // gotta do the upload and update the file name in the db
+            }
+
+            if (!empty($errors)) {
+                // error
+                return ['errors' => $errors, 'unchanged' => $unchanged, 'changed' => $changed, 'input_data' => $data];
+            } 
+
+            if (!empty($changed)) {
+                //success
+                $changed_fields = implode(',', array_keys($changed));
+                return redirect(GeneralModel::previousURL())->with('success', 'Updated fields: '.$changed_fields);
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'No changes made.');
+            }
+
+        }
     }
 
 }

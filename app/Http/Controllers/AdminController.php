@@ -40,7 +40,7 @@ class AdminController extends Controller
         
         $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));
         
-        $users = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_old')); //update this to the correct users table
+        $users = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users')); //update this to the correct users table
         $user_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_roles'));
         
         $active_sessions = GeneralModel::formatArrayOnIdAndCount(AdminModel::getActiveSessionLog());
@@ -115,5 +115,30 @@ class AdminController extends Controller
                                 'changelog' => $changelog,
                                 // 'q_data' => $q_data,
                             ]);
+    }
+
+    static public function globalSettings(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+
+            try {
+                $validated = $request->validate([
+                    'system_name' => 'string|nullable',
+                    'banner_color' => 'string|nullable',
+                    'currency' => ['nullable', 'regex:/^.{1}$/u'],
+                    'sku_prefix' => 'string|nullable',
+                    'base_url' => 'string|nullable',
+                    'default_theme_id' => 'integer|nullable',
+                    'logo_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'favicon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                dd($e->errors()); // show validation issues
+            }
+
+            return AdminModel::updateGlobalSettings($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
     }
 }

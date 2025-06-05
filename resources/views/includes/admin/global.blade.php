@@ -8,7 +8,7 @@
                 // }
                 ?>
                 {!! $response_handling !!}
-                <form id="globalForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                <form id="globalForm" enctype="multipart/form-data" action="{{ route('admin.globalSettings') }}" method="POST">
                     @csrf
                     <table id="globalTable">
                         <tbody>
@@ -82,7 +82,7 @@
                                     <p style="min-height:max-content;margin:0px" class=" align-middle" for="currency_selection">Currency:</p>
                                 </td>
                                 <td id="currency-selector" style="width:250px;padding-bottom:20px">
-                                    <select id="currency_selection" name="currency_selection" placeholder="£" class="form-control theme-dropdown-alt" style="width:150px">
+                                    <select id="currency_selection" name="currency" placeholder="£" class="form-control theme-dropdown-alt" style="width:150px">
                                         <option alt="Pounds Sterling" value="£" @if ($head_data['config']['currency'] == '£') selected @endif>£ (Pound)</option>
                                         <option alt="Dollar"          value="$" @if ($head_data['config']['currency'] == '$') selected @endif>$ (Dollar)</option>
                                         <option alt="Euro"            value="€" @if ($head_data['config']['currency'] == '€') selected @endif>€ (Euro)</option>
@@ -133,10 +133,10 @@
 
                             <tr class="" style="margin-top:20px">
                                 <td id="default-theme-label" style="width:250px;margin-left:25px;padding-bottom:20px">
-                                    <p style="min-height:max-content;margin:0px" class=" align-middle" for="default_theme">Default Theme:</p>
+                                    <p style="min-height:max-content;margin:0px" class=" align-middle" for="default_theme_id">Default Theme:</p>
                                 </td>
                                 <td id="default-theme-set" style="width:250px;padding-bottom:20px">
-                                    <select id="default_theme_selection" name="default_theme" placeholder="Dark" class="form-control theme-dropdown-alt" style="width:150px">
+                                    <select id="default_theme_selection" name="default_theme_id" placeholder="Dark" class="form-control theme-dropdown-alt" style="width:150px">
                                     @if ($themes['count'] > 0)
                                         @foreach ($themes['rows'] as $theme) 
                                         <option value="{{ $theme['id'] }}" @if ($head_data['config']['default_theme_id'] == $theme['id']) selected @endif title="{{ $theme['file_name'] }}">{{ $theme['name'] }}</option>

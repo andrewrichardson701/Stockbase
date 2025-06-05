@@ -15,9 +15,11 @@ use Illuminate\Database\Eloquent\Model;
 class ResponseHandlingModel extends Model
 {
     //
-    static public function responseHandling($request) 
+    static public function responseHandling($request, $section=null) 
     {
-        $return = null;
+        $return = [];
+        $return['response'] = '';
+        $return['section'] = $section;
 
         $defaultMessages = [
             'error' => [
@@ -155,13 +157,13 @@ class ResponseHandlingModel extends Model
         }
 
         if (isset($errorText)) {
-            $return .= $errorPprefix . $errorText . $errorPsuffix;
+            $return['response'] .= $errorPprefix . $errorText . $errorPsuffix;
         }
         if (isset($sqlErrorText)) {
-            $return .= $errorPprefix . $sqlErrorText . $errorPsuffix;
+            $return['response'] .= $errorPprefix . $sqlErrorText . $errorPsuffix;
         }
         if (isset($successText)) {
-            $return .= $successPprefix . $successText . $successPsuffix;
+            $return['response'] .= $successPprefix . $successText . $successPsuffix;
         }
 
         return $return;

@@ -9,7 +9,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'changelog'])
 
         <div class="content">
             @if ($changelog['count'] > 0)

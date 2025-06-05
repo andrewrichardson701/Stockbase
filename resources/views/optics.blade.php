@@ -366,7 +366,7 @@
                         Count: <or class="green">{{ $optics_data['total_count'] }}</or>
                     </div>
                     <div class="col">
-                        {!! $response_handling !!}
+                        @include('includes.response-handling')
                     </div>
                     <div class="col align-middle viewport-padding-0-lr" style="max-width:max-content;white-space: nowrap;padding-bottom:10px">
                         <table class="viewport-font viewport-table">

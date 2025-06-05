@@ -229,9 +229,9 @@ class AdminModel extends Model
             if (!empty($changed)) {
                 //success
                 $changed_fields = implode(',', array_keys($changed));
-                return redirect(GeneralModel::previousURL())->with('success', 'Updated fields: '.$changed_fields);
+                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('success', 'Updated fields: '.$changed_fields);
             } else {
-                return redirect(GeneralModel::previousURL())->with('error', 'No changes made.');
+                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('error', 'No changes made.');
             }
 
         }

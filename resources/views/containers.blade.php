@@ -18,7 +18,7 @@
                 </h2>
             </div>
         </header>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         <div id='container_data' hidden>@dump($container_data)</div>
         
 

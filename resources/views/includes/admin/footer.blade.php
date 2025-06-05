@@ -7,7 +7,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'footer-settings'])
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <p id="footer-output" class="last-edit-T" hidden></p>
             <table>

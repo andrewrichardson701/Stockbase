@@ -7,7 +7,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'imagemanagement-settings'])
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <p>Image Count: <or class="green">{{ $image_management_count }}</or></p>
             <table class="table table-dark theme-table" style="max-width:max-content">

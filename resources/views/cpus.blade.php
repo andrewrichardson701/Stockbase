@@ -19,7 +19,7 @@
                 </h2>
             </div>
         </header>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
 
         Page in progress...
     </div>

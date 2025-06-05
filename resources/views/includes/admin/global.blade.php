@@ -7,7 +7,7 @@
                 //     showResponse();
                 // }
                 ?>
-                {!! $response_handling !!}
+                @include('includes.response-handling', ['section' => 'global-settings'])
                 <form id="globalForm" enctype="multipart/form-data" action="{{ route('admin.globalSettings') }}" method="POST">
                     @csrf
                     <table id="globalTable">

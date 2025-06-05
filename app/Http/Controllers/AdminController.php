@@ -23,8 +23,9 @@ class AdminController extends Controller
         $nav_highlight = 'admin'; // for the nav highlighting
 
         $nav_data = GeneralModel::navData($nav_highlight);
+        $query_section = $request->query('section') ?? null;
         $request = $request->all(); // turn request into an array
-        $response_handling = ResponseHandlingModel::responseHandling($request);
+        $response_handling = ResponseHandlingModel::responseHandling($request, $query_section);
         
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site'));
         $site_links = AdminModel::attributeLinks('area', 'site_id', null, 1);

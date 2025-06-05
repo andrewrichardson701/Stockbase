@@ -8,7 +8,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'smtp-settings'])
         <form id="smtpToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
             @csrf
             <input type="hidden" name="smtp-toggle-submit" value="set" />

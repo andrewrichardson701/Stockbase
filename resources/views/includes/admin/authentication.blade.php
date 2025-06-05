@@ -7,7 +7,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         <p id="authentication-output" class="last-edit-T" hidden></p>
         <table>
             <tbody>

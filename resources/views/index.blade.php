@@ -18,7 +18,7 @@
                 </h2>
             </div>
         </header>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
 
         <!-- Get Inventory -->
         <input id="hidden-row-count" type="hidden" value="{{$q_data['rows']}}" />

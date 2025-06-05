@@ -7,7 +7,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'sessionmanagement-settings'])
         <table id="sessionsTable" class="table table-dark theme-table" style="max-width:max-content">
             <thead>
                 <tr id="sessions_table_info_tr" hidden>

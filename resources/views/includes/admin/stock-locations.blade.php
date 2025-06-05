@@ -8,7 +8,7 @@
                 //     showResponse();
                 // }
                 ?>
-                {!! $response_handling !!}
+                @include('includes.response-handling', ['section' => 'stocklocations-settings'])
                     
                 <table class="table table-dark theme-table text-center" style="max-width:max-content; vertical-align: middle;">
                     <thead>

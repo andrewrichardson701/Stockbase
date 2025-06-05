@@ -3,7 +3,7 @@
     <!-- Stock Management Settings -->
     <div style="padding-top: 20px" id="stockmanagement" hidden>
         <h4 style="margin-left:10px; margin-right:10px; margin-top:5px; font-size:20px; margin-bottom:10px">Cost Enablement</h4>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'stockmanagement-settings'])
         
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <p id="cost-output" class="last-edit-T" hidden></p>
@@ -41,7 +41,7 @@
         // }
         // cost/price toggles for both normal stock and cable stock
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <p class="margin-left:10px">Count: <or class="green">@if (!empty($deleted_stock['count'])) {{ $deleted_stock['count'] }} @else 0 @endif</or></p>

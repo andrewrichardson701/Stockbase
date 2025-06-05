@@ -7,6 +7,8 @@
         @endif
     @else
         {{-- show the data. no section marked --}}
-        {!! $response_handling['response'] !!}
+        @if ($response_handling['section'] == null)
+            {!! $response_handling['response'] !!}
+        @endif
     @endif
 @endif

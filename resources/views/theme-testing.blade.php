@@ -127,7 +127,7 @@
                                                         <input type="submit" id="upload-theme" class="btn btn-success" style="margin-top:10px" name="submit" value="Upload Theme" />
                                                     </td>
                                                 </tr>
-                                                {!! $response_handling !!}
+                                                @include('includes.response-handling')
                                             </tbody>
                                         </table>
                                     </form>

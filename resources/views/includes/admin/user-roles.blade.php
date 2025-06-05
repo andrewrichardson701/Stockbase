@@ -7,7 +7,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'usersroles-settings'])
         <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
             <thead>
                 <tr class="text-center theme-tableOuter">

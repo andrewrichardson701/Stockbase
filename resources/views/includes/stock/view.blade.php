@@ -8,7 +8,7 @@
         </button>
     </div>
     <div class="container stock-heading">
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         <div class='row ' style='margin-top:5px;margin-top:10px;'>
             <div class='col' style='margin-top:auto;margin-bottom:auto;'>
                 <h3 style='font-size:22px;margin-bottom:0px;' id='stock-name'>{{ $stock_data['name'] }} ({{ $stock_data['sku'] }})</h3>

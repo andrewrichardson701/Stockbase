@@ -8,7 +8,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'notification-settings'])
 
     
         @if ($head_data['config']['smtp_enabled'] == 1)

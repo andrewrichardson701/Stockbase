@@ -5,7 +5,7 @@
     //     showResponse();
     // }
     ?>
-    {!! $response_handling !!}
+    @include('includes.response-handling', ['section' => 'modals'])
     
     <div id="modalDivAdd" class="modal">
         <span class="close" onclick="modalCloseAdd()">×</span>

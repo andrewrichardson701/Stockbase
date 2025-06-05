@@ -7,7 +7,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'opticattributemanagement-settings'])
 
         <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Vendors</h4>
         <?php
@@ -17,7 +17,7 @@
         //     echo('</div>');
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <table class="table table-dark theme-table" style="max-width:max-content">
@@ -126,7 +126,7 @@
         // }
 
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <table class="table table-dark theme-table" style="max-width:max-content">
@@ -234,7 +234,7 @@
         //     echo('</div>');
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <table class="table table-dark theme-table" style="max-width:max-content">
@@ -342,7 +342,7 @@
         //     echo('</div>');
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <table class="table table-dark theme-table" style="max-width:max-content">
@@ -450,7 +450,7 @@
         //     echo('</div>');
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <table class="table table-dark theme-table" style="max-width:max-content">

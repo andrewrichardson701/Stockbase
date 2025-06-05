@@ -9,7 +9,7 @@
                 //     showResponse();
                 // }
                 ?>
-                {!! $response_handling !!}
+                @include('includes.response-handling', ['section' => 'users-settings'])
                 <table id="usersTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                     <thead>
                         <tr id="users_table_info_tr" hidden>

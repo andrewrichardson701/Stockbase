@@ -219,7 +219,7 @@
             <div id="caption" class="modal-caption"></div>
         </div>
         <!-- End of Modal Image Div -->
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         <!-- Table -->
         <div class="container">
             <pre id="hidden-sql" hidden></pre>

@@ -19,7 +19,7 @@
                 </h2>
             </div>
         </header>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         
         <div class="container" style="margin-top:20px">
             <div class="row ">

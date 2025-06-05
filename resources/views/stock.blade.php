@@ -53,7 +53,7 @@
                 @endif
             </div>
         </header>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
     
         @if(!is_numeric($params['stock_id']))
             @if(!empty($params['modify_type']))

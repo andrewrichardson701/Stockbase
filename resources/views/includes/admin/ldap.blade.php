@@ -8,7 +8,7 @@
         //     showResponse();
         // }
         ?>
-        {!! $response_handling !!}
+        @include('includes.response-handling', ['section' => 'ldap-settings'])
 
         <?php
 

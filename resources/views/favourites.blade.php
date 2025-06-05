@@ -18,7 +18,7 @@
                 </h2>
             </div>
         </header>
-        {!! $response_handling !!}
+        @include('includes.response-handling')
         <div style="padding-bottom:75px">
         @if ($favourites['count'] > 0 && !empty($favourites['rows']))
             <table class="table table-dark theme-table centertable" style="max-width:max-content;margin-bottom:0px;">

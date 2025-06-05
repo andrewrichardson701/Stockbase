@@ -222,7 +222,7 @@ class StockController extends Controller
             if ($request->hasFile('image')) {
                 $request->id = $request->stock_id;
                 // dd($request->toArray());
-                GeneralModel::imageUpload($request);
+                StockModel::imageUpload($request);
                 $redirect_array = ['stock_id'   => $request->stock_id,
                             'modify_type' => 'edit',
                             'success' => 'Image uploaded.'];

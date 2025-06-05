@@ -799,46 +799,6 @@ class GeneralModel extends Model
         return $fileNames;
     }
 
-    static public function imageUpload($request)
-    {
-        // $request->validate([
-        //     'file' => 'required|image|mimes:jpeg,png,jpg,gif,ico|max:10000',
-        //     'stock_id' => 'required|integer',
-        // ]);
-    
-        $file = $request->file('image');
-        $stock_id = $request->id;
-        $timestamp = now()->format('YmdHis');
-    
-        // Create a unique filename
-        $filename = "stock-{$stock_id}-img-{$timestamp}." . $file->getClientOriginalExtension();
-
-        // Move to public/img/stock
-        $destinationPath = public_path('img/stock');
-        $file->move($destinationPath, $filename);
-    
-        // Save to DB
-        $new_stock_img_id = DB::table('stock_img')->insertGetId([
-            'stock_id' => $stock_id,
-            'image' => $filename,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    
-        // update changelog
-        $user = GeneralModel::getUser();
-        $info = [
-            'user' => $user,
-            'table' => 'stock_img',
-            'record_id' => $new_stock_img_id,
-            'field' => 'image',
-            'new_value' => $filename,
-            'action' => 'New record',
-            'previous_value' => '',
-        ];
-        GeneralModel::updateChangelog($info);
-    }
-
     static public function validateDate($date, $format = 'Y-m-d')
     {
         $d = \DateTime::createFromFormat($format, $date);

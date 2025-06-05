@@ -18,8 +18,7 @@
                         <tr class="text-center theme-tableOuter">
                             <th>ID</th>
                             <th>Username</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
                             <th>Auth</th>
@@ -37,8 +36,7 @@
                         <tr class="text-center" style="vertical-align: middle;">
                             <td id="user_{{ $user['id'] }}_id" style="vertical-align: middle;">{{ $user['id'] }}</td>
                             <td id="user_{{ $user['id'] }}_username" style="vertical-align: middle;">{{ $user['username'] }}</td>
-                            <td id="user_{{ $user['id'] }}_first_name" style="vertical-align: middle;">{{ $user['first_name'] }}</td>
-                            <td id="user_{{ $user['id'] }}_last_name" style="vertical-align: middle;">{{ $user['last_name'] }}</td>
+                            <td id="user_{{ $user['id'] }}_name" style="vertical-align: middle;">{{ $user['name'] }}</td>
                             <td id="user_{{ $user['id'] }}_email" style="vertical-align: middle;">{{ $user['email'] }}</td>
                             <td id="user_{{ $user['id'] }}_role" style="vertical-align: middle;">
                                 <select class="form-control theme-dropdown" id="user_{{ $user['id'] }}_role_select" style="min-width:max-content; padding-top:0px; padding-bottom:0px" onchange="userRoleChange('{{ $user['id'] }}')" @if ((int)$user['id'] == 0) disabled @endif >

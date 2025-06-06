@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Str;
+
 use App\Models\GeneralModel;
 
 /**
@@ -151,6 +153,63 @@ class AdminModel extends Model
         return $return;
     }
 
+    static public function santizeFileName($file)
+    {
+        $original = $file->getClientOriginalName();
+        $safeBase = Str::slug(pathinfo($original, PATHINFO_FILENAME));
+        $extension = $file->getClientOriginalExtension();
+        $timestamp = now()->format('YmdHis');
+        $filename = $safeBase . '-' . $timestamp . '-' . uniqid() . '.' . $extension;
+        // test_file-20250606083312-6661e5c1b3a1e.png
+        // [name]-[timestamp]-[uniqid].[extension]
+
+        return $filename;
+    }
+
+    static public function imageUpload($request, $field)
+    {
+        // dd($request[$field]->getClientOriginalName());
+        $file = $request[$field];
+    
+        // Create a unique filename
+        $filename = AdminModel::santizeFileName($file);
+
+        // Move to public/img/stock
+        $destinationPath = public_path('img/config/custom');
+        // dd($destinationPath);
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true); // 0755 permissions and recursive creation
+        }
+        $moved = $file->move($destinationPath, $filename);
+    
+        if ($moved) {
+            // get current info to compare
+            $current_data = DB::table('config')
+                            ->where('id', 1)
+                            ->first();
+            // Save to DB
+            $updated = DB::table('config')->where('id', 1)->update([$field => 'custom/'.$filename, 'updated_at' => now()]);
+            if ($updated) {
+                $user = GeneralModel::getUser();
+                $info = [
+                    'user' => $user,
+                    'table' => 'config',
+                    'record_id' => 1,
+                    'field' => 'image',
+                    'new_value' => $filename,
+                    'action' => 'Update record',
+                    'previous_value' => $current_data->$field,
+                ];
+                GeneralModel::updateChangelog($info);
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
     static public function updateGlobalSettings($data)
     {
         $errors = [];
@@ -181,9 +240,8 @@ class AdminModel extends Model
                 }
             }
         }
-
+        
         foreach($data as $field => $value) {
-            
             if (!in_array($field, ['favicon_image', 'logo_image'])) {
                 // not an image 
                 if (ctype_digit($value)) { // checks for numbers and NOT decimals
@@ -194,7 +252,7 @@ class AdminModel extends Model
                     //update needed
                     if (filled($value)) {
 
-                        $update = DB::table('config')->where('id', 1)->update([$field => $value]);
+                        $update = DB::table('config')->where('id', 1)->update([$field => $value, 'updated_at' => now()]);
                         
                         if ($update) {
                             // changelog needed
@@ -202,7 +260,7 @@ class AdminModel extends Model
                             $changelog_info['previous_value'] = $current_data->$field;
                             $changelog_info['new_value'] = $value;
 
-                            $changed[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'updated'];;
+                            $changed[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'updated'];
 
                             GeneralModel::updateChangelog($changelog_info);
                         } else {
@@ -216,9 +274,24 @@ class AdminModel extends Model
                 } else {
                     $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'matching data'];
                 }
-            } else {
-                // image field
-                // gotta do the upload and update the file name in the db
+            }
+
+            if (isset($data['favicon_image'])) {
+                if (AdminModel::imageUpload($data, 'favicon_image') == 1) {
+                    $changed[$field] = ['current' => $current_data->favicon_image, 'new_data' => $data['favicon_image']->getClientOriginalName(), 'reason' => 'updated'];
+                } else {
+                    $errors[$field] = 'image upload failed';
+                    $unchanged[$field] = ['current' => $current_data->favicon_image, 'new_data' => $data['favicon_image']->getClientOriginalName(), 'reason' => 'unable to push data to DB'];
+                }
+            }
+
+            if (isset($data['logo_image'])) {
+                if (AdminModel::imageUpload($data, 'logo_image') == 1) {
+                    $changed[$field] = ['current' => $current_data->logo_image, 'new_data' => $data['logo_image']->getClientOriginalName(), 'reason' => 'updated'];
+                } else {
+                    $errors[$field] = 'image upload failed';
+                    $unchanged[$field] = ['current' => $current_data->logo_image, 'new_data' => $data['logo_image']->getClientOriginalName(), 'reason' => 'unable to push data to DB'];
+                }
             }
 
             if (!empty($errors)) {

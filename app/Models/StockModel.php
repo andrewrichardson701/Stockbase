@@ -1551,7 +1551,13 @@ class StockModel extends Model
             // add image
             
             if ($request->hasFile('image')) {
-                StockModel::imageUpload($request);
+                $uploaded = StockModel::imageUpload($request);
+                if ($uploaded == 0) {
+                    return redirect()->route('stock', ['stock_id' => 0,
+                                                    'modify_type' => 'add',
+                                                    'error' => 'Image upload failed.'])
+                                                    ->with('return', $return);
+                }
             }
 
             return redirect()->route('stock', ['stock_id' => 0,
@@ -1652,7 +1658,13 @@ class StockModel extends Model
 
         // image uploading
         if ($request->hasFile('image')) {
-            StockModel::imageUpload($request);
+            $uploaded = StockModel::imageUpload($request);
+                if ($uploaded == 0) {
+                    return redirect()->route('stock', ['stock_id' => $stock_id,
+                                                    'modify_type' => 'edit',
+                                                    'error' => 'Image upload failed.'])
+                                                    ->with('return', $return);
+                }
         }
 
         $stock_tags = isset($input['tags']) ? $input['tags'] : '';
@@ -1913,31 +1925,41 @@ class StockModel extends Model
         $timestamp = now()->format('YmdHis');
     
         // Create a unique filename
-        $filename = "stock-{$stock_id}-img-{$timestamp}." . $file->getClientOriginalExtension();
+        $filename = "stock-{$stock_id}-img-{$timestamp}-" . uniqid() . "." . $file->getClientOriginalExtension();
 
         // Move to public/img/stock
         $destinationPath = public_path('img/stock');
-        $file->move($destinationPath, $filename);
-    
-        // Save to DB
-        $new_stock_img_id = DB::table('stock_img')->insertGetId([
-            'stock_id' => $stock_id,
-            'image' => $filename,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-    
-        // update changelog
-        $user = GeneralModel::getUser();
-        $info = [
-            'user' => $user,
-            'table' => 'stock_img',
-            'record_id' => $new_stock_img_id,
-            'field' => 'image',
-            'new_value' => $filename,
-            'action' => 'New record',
-            'previous_value' => '',
-        ];
-        GeneralModel::updateChangelog($info);
+        $moved = $file->move($destinationPath, $filename);
+        
+        if ($moved) {
+            // Save to DB
+            $new_stock_img_id = DB::table('stock_img')->insertGetId([
+                'stock_id' => $stock_id,
+                'image' => $filename,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            
+            if (isset($new_stock_img_id)) {
+                // update changelog
+                $user = GeneralModel::getUser();
+                $info = [
+                    'user' => $user,
+                    'table' => 'stock_img',
+                    'record_id' => $new_stock_img_id,
+                    'field' => 'image',
+                    'new_value' => $filename,
+                    'action' => 'New record',
+                    'previous_value' => '',
+                ];
+                GeneralModel::updateChangelog($info);
+                return 1;
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+        
     }
 }

@@ -137,7 +137,7 @@ class AdminController extends Controller
                 dd($e->errors()); // show validation issues
             }
 
-            return AdminModel::updateGlobalSettings($request->input());
+            return AdminModel::updateGlobalSettings($request->all());
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }

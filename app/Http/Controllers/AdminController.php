@@ -142,4 +142,15 @@ class AdminController extends Controller
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
+
+    static public function toggleFooter(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'type' => 'integer|required',
+                    'value' => 'string|required',
+            ]);
+            AdminModel::toggleFooter($request->input());
+        }
+    }
 }

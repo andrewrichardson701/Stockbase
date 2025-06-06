@@ -241,7 +241,7 @@ class AdminModel extends Model
                         GeneralModel::updateChangelog($changelog_info);
                     }
                 }
-                
+
                 return 1;
             } 
         }
@@ -359,6 +359,82 @@ class AdminModel extends Model
             }
 
         }
+    }
+
+    public static function toggleFooter($request)
+    {
+        $results = [];
+
+        function msg($text, $type) {
+            if ($type == 'error') {
+                $class="red";
+            } else {
+                $class="green";
+            }
+            $head = '<or class="'.$class.'">';
+            $foot = '</or>';
+
+            return $head.$text.$foot;
+        }
+
+        if (isset($request['type'])) {
+            $type_num = htmlspecialchars($request['type']);
+            if ($type_num == 1) {
+                $type = 'footer_enable';
+            } elseif ($type_num == 2) {
+                $type = 'footer_left_enable';
+            } elseif ($type_num == 3) {
+                $type = 'footer_right_enable';
+            }
+
+            if (isset($request['value'])) {
+                $value = htmlspecialchars($request['value']);
+                if ((int)$value == 0 || (int)$value == 1) {
+                    
+                    $current_data = DB::table('config')
+                            ->select($type)
+                            ->where('id', 1)
+                            ->first();
+
+                    if ($current_data) {
+                        $previous_value = $current_data->$type;
+
+                        $state = $value == 1 ? 'enabled' : 'disabled';
+
+                        $update = DB::table('config')->where('id', 1)->update([$type => (int)$value, 'updated_at' => now()]);
+
+                        if ($update) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => GeneralModel::getUser(),
+                                'table' => 'config',
+                                'record_id' => 1,
+                                'action' => 'Update record',
+                                'field' => $type,
+                                'previous_value' => $previous_value,
+                                'new_value' => (int)$value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                            $results[] = msg("Footer $state! Please refresh.", 'success');
+                        } else {
+                            $results[] = msg("Unable to get update config.", 'error');
+                        }
+                    } else {
+                        $results[] = msg("Unable to get current config.", 'error');
+                    }
+                } else {
+                    $results[] = msg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = msg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = msg('No notification type specified.', 'error');
+        }
+
+        echo(json_encode($results));
     }
 
 }

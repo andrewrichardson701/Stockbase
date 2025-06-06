@@ -258,28 +258,54 @@ document.getElementById("smtp-enabled-toggle").addEventListener("change", functi
 // ##########
 
 // Footer toggle checkboxes
+// function toggleFooter(checkbox, id) {
+//     var outputBox = document.getElementById('footer-output');
+//     var type = id;
+//     if (checkbox.checked) {
+//         // enable the type
+//         var value = 1;
+//     } else {
+//         // disable the type
+//         var value = 0;
+//     }
+//     var xhr = new XMLHttpRequest();
+//     xhr.open("GET", "/admin.toggleFooter?footer-toggle=1&type="+type+"&value="+value + "&_=" + new Date().getTime(), true);
+//     xhr.onload = function() {
+//         if (xhr.status === 200) {
+//             var output = JSON.parse(xhr.responseText);
+//             outputBox.hidden = false;
+//             outputBox.classList="last-edit-T";
+//             outputBox.innerHTML = output[0];
+//         }
+//     };
+//     xhr.send();
+// } 
+
 function toggleFooter(checkbox, id) {
-    var outputBox = document.getElementById('footer-output');
     var type = id;
-    if (checkbox.checked) {
-        // enable the type
-        var value = 1;
-    } else {
-        // disable the type
-        var value = 0;
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/admin.inc.php?footer-toggle=1&type="+type+"&value="+value + "&_=" + new Date().getTime(), true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            var output = JSON.parse(xhr.responseText);
+    var value = checkbox.checked ? 1 : 0;
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    $.ajax({
+        type: "POST",
+        url: "/admin.toggleFooter",
+        data: {
+            _token: csrf,
+            "footer-toggle": 1,
+            type: type,
+            value: value
+        },
+        dataType: "json",
+        success: function(response) {
+            var outputBox = document.getElementById('footer-output');
             outputBox.hidden = false;
-            outputBox.classList="last-edit-T";
-            outputBox.innerHTML = output[0];
-        }
-    };
-    xhr.send();
-} 
+            outputBox.classList = "last-edit-T";
+            outputBox.innerHTML = response[0];
+        },
+        async: true
+    });
+}
+
 
 // Cost toggle checkboxes
 function toggleCost(checkbox, id) {

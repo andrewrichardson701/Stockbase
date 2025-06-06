@@ -257,30 +257,6 @@ document.getElementById("smtp-enabled-toggle").addEventListener("change", functi
 
 // ##########
 
-// Footer toggle checkboxes
-// function toggleFooter(checkbox, id) {
-//     var outputBox = document.getElementById('footer-output');
-//     var type = id;
-//     if (checkbox.checked) {
-//         // enable the type
-//         var value = 1;
-//     } else {
-//         // disable the type
-//         var value = 0;
-//     }
-//     var xhr = new XMLHttpRequest();
-//     xhr.open("GET", "/admin.toggleFooter?footer-toggle=1&type="+type+"&value="+value + "&_=" + new Date().getTime(), true);
-//     xhr.onload = function() {
-//         if (xhr.status === 200) {
-//             var output = JSON.parse(xhr.responseText);
-//             outputBox.hidden = false;
-//             outputBox.classList="last-edit-T";
-//             outputBox.innerHTML = output[0];
-//         }
-//     };
-//     xhr.send();
-// } 
-
 function toggleFooter(checkbox, id) {
     var type = id;
     var value = checkbox.checked ? 1 : 0;
@@ -358,6 +334,7 @@ function mailNotification(checkbox, id) {
 // auth setting checkboxes
 function authSettings(checkbox, id) {
     var outputBox = document.getElementById('authentication-output');
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
     if (checkbox.checked) {
         // enable the auth setting
         var value = 1;
@@ -367,8 +344,9 @@ function authSettings(checkbox, id) {
     }
     $.ajax({
         type: "POST",
-        url: "includes/admin.inc.php",
+        url: "/admin.toggleAuth",
         data: {
+            _token: csrf,
             auth_setting: 1,
             id: id,
             value: value

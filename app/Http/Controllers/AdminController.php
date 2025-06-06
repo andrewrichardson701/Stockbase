@@ -151,6 +151,21 @@ class AdminController extends Controller
                     'value' => 'string|required',
             ]);
             AdminModel::toggleFooter($request->input());
+        } else {
+            return 'error';
+        }
+    }
+
+    static public function toggleAuth(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'id' => 'string|required',
+                    'value' => 'integer|required',
+            ]);
+            AdminModel::toggleAuth($request->input());
+        } else {
+            return 'error';
         }
     }
 }

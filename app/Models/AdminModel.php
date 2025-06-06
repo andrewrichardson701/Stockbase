@@ -437,4 +437,61 @@ class AdminModel extends Model
         echo(json_encode($results));
     }
 
+    static public function toggleAuth($request) 
+    {
+        $return = [];
+        if (isset($_POST['id'])) {
+
+            if (isset($_POST['value'])) {
+                $value = htmlspecialchars($request['value']);
+                
+
+
+                if (($_POST['id'] == "2fa_enabled" || $_POST['id'] == "2fa_enforced" || $_POST['id'] == "signup_allowed") && ((int)$value == 1 || (int)$value == 0)) {
+                    $field = $_POST['id'];
+                
+                    $current_data = DB::table('config')
+                            ->select($field)
+                            ->where('id', 1)
+                            ->first();
+
+                    if ($current_data) {
+                        $previous_value = $current_data->$field;
+
+                        $update = DB::table('config')->where('id', 1)->update([$field => (int)$value, 'updated_at' => now()]);
+
+                        if ($update) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => GeneralModel::getUser(),
+                                'table' => 'config',
+                                'record_id' => 1,
+                                'action' => 'Update record',
+                                'field' => $field,
+                                'previous_value' => $previous_value,
+                                'new_value' => (int)$value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                            $return[0] = '<or class="green">Authentication udpated.</or>';
+                        } else {
+                            $return[0] = '<or class="red">No changes made. Unable to update config.</or>';
+                        }
+                    } else {
+                        $return[0] = '<or class="red">No changes made. Unable to get current config.</or>';
+                    }
+                } else {
+                    $return[0] = '<or class="red">Incorrect field.</or>';
+                }
+
+            } else {
+                $return[0] = '<or class="red">No Value Set</or>';
+            }
+        } else {
+            $return[0] = '<or class="red">No ID set</or>';
+        }
+        $return['status'] = 'true';
+        echo json_encode($return);
+    }
+
 }

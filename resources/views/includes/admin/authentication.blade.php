@@ -7,7 +7,7 @@
         //     showResponse();
         // }
         ?>
-        @include('includes.response-handling')
+        @include('includes.response-handling', ['section' => 'authentication-settings'])
         <p id="authentication-output" class="last-edit-T" hidden></p>
         <table>
             <tbody>

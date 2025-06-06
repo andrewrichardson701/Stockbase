@@ -210,6 +210,45 @@ class AdminModel extends Model
         }
     }
 
+    public static function resetConfig($fields) 
+    {
+        $current_data = DB::table('config')
+                            ->where('id', 1)
+                            ->first();
+
+        $default_data = DB::table('config_default')
+                            ->select($fields)
+                            ->where('id', 1)
+                            ->first();
+
+        if ($default_data) {
+            $update = DB::table('config')->where('id', 1)->update((array)$default_data);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => GeneralModel::getUser(),
+                    'table' => 'config',
+                    'record_id' => 1,
+                    'action' => 'Update record',
+                ];
+                foreach($default_data as $key => $data) {
+                    $changelog_info['field'] = $key;
+                    $changelog_info['previous_value'] = $current_data->$key;
+                    $changelog_info['new_value'] = $data;
+
+                    if ($current_data->$key != $data) {
+                        GeneralModel::updateChangelog($changelog_info);
+                    }
+                }
+                
+                return 1;
+            } 
+        }
+
+        return 0;
+    }
+
     static public function updateGlobalSettings($data)
     {
         $errors = [];
@@ -220,11 +259,21 @@ class AdminModel extends Model
         $config_fields = Schema::getColumnListing('config');
         $excluded_keys = ['_token', 'global-submit'];
 
-        unset($data['_token'], $data['global-submit']);
-
         $current_data = DB::table('config')
                             ->where('id', 1)
                             ->first();
+
+        if (isset($data['global-restore-defaults'])) {
+            $reset_array = ['system_name', 'banner_color', 'logo_image', 'favicon_image', 
+                            'currency', 'sku_prefix', 'base_url', 'default_theme_id'];
+            $reset = AdminModel::resetConfig($reset_array);
+
+            if ($reset == 1) {
+                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('success', 'Config Reset.');
+            } else {
+                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('error', 'Reset failed.');
+            }
+        } 
 
         $changelog_info = [
                 'user' => GeneralModel::getUser(),
@@ -232,7 +281,9 @@ class AdminModel extends Model
                 'record_id' => 1,
                 'action' => 'Update record',
             ];
-        
+
+        unset($data['_token'], $data['global-submit']); // remove these to stop them being queried
+
         foreach($data as $field => $value) {
             if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys
                 if (!in_array($field, $config_fields)) {

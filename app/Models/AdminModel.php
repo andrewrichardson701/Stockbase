@@ -494,4 +494,45 @@ class AdminModel extends Model
         echo json_encode($return);
     }
 
+    static public function userRoleChange($request)
+    {
+        $user_id = $request['user_id'];
+        if ($user_id == 1) {
+            return '<or class="red">Cannot update root user.</or>';
+        }
+
+        // get current user
+        $current_data = DB::table('users')
+                            ->where('id', $user_id)
+                            ->first();
+
+        if ($current_data) {
+            // user exists
+            $previous_value = $current_data->role_id;
+
+            $update = DB::table('users')->where('id', $user_id)->update(['role_id' => (int)$request['user_new_role'], 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => GeneralModel::getUser(),
+                    'table' => 'users',
+                    'record_id' => 1,
+                    'action' => 'Update record',
+                    'field' => 'role_id',
+                    'previous_value' => $previous_value,
+                    'new_value' => (int)$request['user_new_role']
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                return 'Role updated for user: '.$current_data->username.'.';
+            } else {
+                return 'No changes made. Unable to update role.';
+            }
+
+        } else {
+            return 'Error: Unable to get current data';
+        }
+    }
+
 }

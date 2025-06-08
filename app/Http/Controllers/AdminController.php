@@ -168,4 +168,26 @@ class AdminController extends Controller
             return 'error';
         }
     }
+
+    static public function userSettings(Request $request) 
+    {
+        if (isset($request['user_role_submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'user_id' => 'integer|required',
+                        'user_new_role' => 'integer|required',
+                ]);
+                return AdminModel::userRoleChange($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        } 
+        
+        if (isset($request->user_enable)) {
+
+        } 
+            
+        return 'Error: Unknown setting';
+        
+    }
 }

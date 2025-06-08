@@ -771,3 +771,68 @@ function loadAdminImages(currentPage, pageNum) {
         async: true // <- this turns it into synchronous
     });
 }
+
+function userRoleChange(id) {
+    var select = document.getElementById("user_"+id+"_role_select");
+    var selectedValue = select.value;
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    $.ajax({
+        type: "POST",
+        url: "/admin.userSettings",
+        data: {
+            user_id: id,
+            user_new_role: selectedValue,
+            user_role_submit: 'yes',
+            _token: csrf
+        },
+        dataType: "html",
+        success: function(response) {
+            var tr = document.getElementById('users_table_info_tr');
+            var td = document.getElementById('users_table_info_td');
+            tr.hidden = false;
+            var result = response;
+            if (result.startsWith("Error:")) {
+                td.classList.add("red");
+            } else {
+                td.classList.add("green");
+            }
+            td.textContent = result;
+        },
+        async: true
+    });
+}
+function usersEnabledChange(id) {
+    var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+    if (checkbox.checked == true) {
+        var checkboxValue = 1;
+    } else {
+        var checkboxValue = 0;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "./includes/admin.inc.php",
+        data: {
+            user_id: id,
+            user_new_enabled: checkboxValue,
+            user_enabled_submit: 'yes',
+            _token: csrf
+        },
+        dataType: "html",
+        success: function(response) {
+            var tr = document.getElementById('users_table_info_tr');
+            var td = document.getElementById('users_table_info_td');
+            tr.hidden = false;
+            var result = response;
+            if (result.startsWith("Error:")) {
+                td.classList.add("red");
+            } else {
+                td.classList.add("green");
+            }
+            td.textContent = result;
+        },
+        async: true
+    });
+}

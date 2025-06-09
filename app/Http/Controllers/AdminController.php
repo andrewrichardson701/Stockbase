@@ -235,6 +235,18 @@ class AdminController extends Controller
             }
         }
 
+        if (isset($request['attributemanagement-restore'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'id' => 'integer|required',
+                        'attribute-type' => 'string|required'
+                ]);
+                return AdminModel::attributeRestore($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
         return redirect()->to(route('admin', ['section' => 'attribute-settings']) . '#attribute-settings')->with('error', 'Unknown selection');
     }
 }

@@ -2,21 +2,11 @@
     <h3 class="clickable" style="margin-top:50px;font-size:22px" id="opticattributemanagement-settings" onclick="toggleSection(this, 'opticattributemanagement')">Optic Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
     <!-- Optic Attribute Management Settings -->
     <div style="padding-top: 20px" id="opticattributemanagement" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement')) {
-        //     showResponse();
-        // }
-        ?>
+
         @include('includes.response-handling', ['section' => 'opticattributemanagement-settings'])
 
         <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Vendors</h4>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_vendors')) {
-        //     echo('<div style="margin-right: 10px; margin-left: 10px">');
-        //     showResponse();
-        //     echo('</div>');
-        // }
-        ?>
+
         @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
@@ -52,7 +42,7 @@
                         @else 
                         <tr id="optic_vendor-row-{{ $optic_vendor['id'] }}" class="align-middle">
                         @endif
-                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="attribute-type" value="optic_vendor"/>
                             <input type="hidden" name="id" value="{{ $optic_vendor['id'] }}">
@@ -73,9 +63,9 @@
                                 @if ((int)$optic_vendor['deleted'] !== 1) 
                                     @if (array_key_exists($optic_vendor['id'], $optic_vendor_links) && ((int)$optic_vendor_links[$optic_vendor['id']]['count'] ?? 0) !== 0) 
                                         <button class="btn btn-warning" id="optic_vendor-{{ $optic_vendor['id'] }}-links" type="button" onclick="showLinks('optic_vendor', '{{ $optic_vendor['id'] }}')">Show Links</button>
-                                    @else 
-                                        <or class="green">Restore?</or>
                                     @endif
+                                @else 
+                                    <or class="green">Restore?</or>
                                 @endif
                             </td>
                         </form>
@@ -161,7 +151,7 @@
                         @else 
                         <tr id="optic_type-row-{{ $optic_type['id'] }}" class="align-middle">
                         @endif
-                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="attribute-type" value="optic_type"/>
                             <input type="hidden" name="id" value="{{ $optic_type['id'] }}">
@@ -182,9 +172,9 @@
                                 @if ((int)$optic_type['deleted'] !== 1) 
                                     @if (array_key_exists($optic_type['id'], $optic_type_links) && ((int)$optic_type_links[$optic_type['id']]['count'] ?? 0) !== 0) 
                                         <button class="btn btn-warning" id="optic_type-{{ $optic_type['id'] }}-links" type="button" onclick="showLinks('optic_type', '{{ $optic_type['id'] }}')">Show Links</button> 
-                                    @else 
-                                        <or class="green">Restore?</or>
                                     @endif
+                                @else 
+                                    <or class="green">Restore?</or>
                                 @endif
                             </td>
                         </form>
@@ -269,7 +259,7 @@
                         @else 
                         <tr id="optic_speed-row-{{ $optic_speed['id'] }}" class="align-middle">
                         @endif
-                        <form encspeed="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                        <form encspeed="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="attribute-speed" value="optic_speed"/>
                             <input type="hidden" name="id" value="{{ $optic_speed['id'] }}">
@@ -290,9 +280,9 @@
                                 @if ((int)$optic_speed['deleted'] !== 1) 
                                     @if (array_key_exists($optic_speed['id'], $optic_speed_links) && ((int)$optic_speed_links[$optic_speed['id']]['count'] ?? 0) !== 0) 
                                         <button class="btn btn-warning" id="optic_speed-{{ $optic_speed['id'] }}-links" type="button onclick="showLinks('optic_speed', '{{ $optic_speed['id'] }}')">Show Links</button> 
-                                    @else 
-                                        <or class="green">Restore?</or>
                                     @endif
+                                @else 
+                                    <or class="green">Restore?</or>
                                 @endif
                             </td>
                         </form>
@@ -377,7 +367,7 @@
                         @else 
                         <tr id="optic_connector-row-{{ $optic_connector['id'] }}" class="align-middle">
                         @endif
-                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="attribute-connector" value="optic_connector"/>
                             <input type="hidden" name="id" value="{{ $optic_connector['id'] }}">
@@ -398,9 +388,9 @@
                                 @if ((int)$optic_connector['deleted'] !== 1) 
                                     @if (array_key_exists($optic_connector['id'], $optic_connector_links) && ((int)$optic_connector_links[$optic_connector['id']]['count'] ?? 0) !== 0) 
                                         <button class="btn btn-warning" id="optic_connector-{{ $optic_connector['id'] }}-links" type="button" onclick="showLinks('optic_connector', '{{ $optic_connector['id'] }}')">Show Links</button> 
-                                    @else 
-                                        <or class="green">Restore?</or>
                                     @endif
+                                @else 
+                                    <or class="green">Restore?</or>
                                 @endif
                             </td>
                         </form>
@@ -485,7 +475,7 @@
                         @else 
                         <tr id="optic_distance-row-{{ $optic_distance['id'] }}" class="align-middle">
                         @endif
-                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="attribute-distance" value="optic_distance"/>
                             <input type="hidden" name="id" value="{{ $optic_distance['id'] }}">
@@ -506,9 +496,9 @@
                                 @if ((int)$optic_distance['deleted'] !== 1) 
                                     @if (array_key_exists($optic_distance['id'], $optic_distance_links) && ((int)$optic_distance_links[$optic_distance['id']]['count'] ?? 0) !== 0) 
                                         <button class="btn btn-warning" id="optic_distance-{{ $optic_distance['id'] }}-links" type="button" onclick="showLinks('optic_distance', '{{ $optic_distance['id'] }}')">Show Links</button> 
-                                    @else 
-                                        <or class="green">Restore?</or>
                                     @endif
+                                @else 
+                                    <or class="green">Restore?</or>
                                 @endif
                             </td>
                         </form>

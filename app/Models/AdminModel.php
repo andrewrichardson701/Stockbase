@@ -697,7 +697,7 @@ class AdminModel extends Model
         $attribute = $request['attribute-type'];
         $id = $request['id'];
         $allowed_types = ['tag', 'manufacturer'];
-        $allowed_optic_types = ['optics_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
+        $allowed_optic_types = ['optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
         
         if (in_array($attribute, $allowed_types)) {
             $anchor = "attributemanagement-settings";
@@ -756,16 +756,70 @@ class AdminModel extends Model
                     ];
 
                     GeneralModel::updateChangelog($changelog_info);
-                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', '2FA secret reset for user: '.$current_data->username);
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($attribute).' attribute deleted: '.$current_data->name);
                 } else {
-                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to reset 2FA secret');
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable to delete attribute');
                 }
             } else {
-                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Links still present.');
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Links still present.');
             }
             
         } else {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm attribute data.');
+        }
+    }
+
+    static public function attributeRestore($request)
+    {
+        $attribute = $request['attribute-type'];
+        $id = $request['id'];
+        $allowed_types = ['tag', 'manufacturer'];
+        $allowed_optic_types = ['optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
+        
+        if (in_array($attribute, $allowed_types)) {
+            $anchor = "attributemanagement-settings";
+        } elseif (in_array($attribute, $allowed_optic_types)) {
+            $anchor = "opticattributemanagement-settings";
+        } else {
+            return redirect()->to(route('admin'))->with('error', 'Unknown attribute field');
+        }
+
+        // check permissions
+        $user = GeneralModel::getUser();
+
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+        }
+
+        // get current data
+        $current_data = DB::table($attribute)
+                            ->where('id', $id)
+                            ->first();
+
+        if ($current_data) {
+            //update
+            $update = DB::table($attribute)->where('id', $id)->update(['deleted' => 0, 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => GeneralModel::getUser(),
+                    'table' => $attribute,
+                    'record_id' => $id,
+                    'action' => 'Delete record',
+                    'field' => 'deleted',
+                    'previous_value' => $current_data->deleted,
+                    'new_value' => 0
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($attribute).' attribute restored: '.$current_data->name);
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
+            }
+            
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm attreibute data.');
         }
     }
 }

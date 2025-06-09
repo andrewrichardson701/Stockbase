@@ -2,20 +2,9 @@
     <h3 class="clickable" style="margin-top:50px;font-size:22px" id="attributemanagement-settings" onclick="toggleSection(this, 'attributemanagement')">Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
     <!-- Attribute Management Settings -->
     <div style="padding-top: 20px" id="attributemanagement" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement')) {
-        //     showResponse();
-        // }
-        ?>
         @include('includes.response-handling', ['section' => 'attributemanagement-settings'])
-        <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags<a class="align-middle link" style="margin-left:30px;font-size:12px" href="tags.php">View all</a></h4>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'attributemanagement-tag')) {
-        //     echo('<div style="margin-right: 10px; margin-left: 10px">');
-        //     showResponse();
-        //     echo('</div>');
-        // }
-        ?>
+        <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags<a class="align-middle link" style="margin-left:30px;font-size:12px" href="{{ route('tags') }}">View all</a></h4>
+
         @include('includes.response-handling')
     
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
@@ -77,6 +66,8 @@
                                     @if (array_key_exists($tag['id'], $tag_links) && ((int)$tag_links[$tag['id']]['count'] ?? 0) !== 0)
                                         <button class="btn btn-warning" id="tag-{{ $tag['id'] }}-links" type="button" onclick="showLinks('tag', '{{ $tag['id'] }}')">Show Links</button> 
                                     @endif
+                                @else 
+                                    <or class="green">Restore?</or>
                                 @endif
                             </td>
                         </form>
@@ -156,7 +147,7 @@
                         <tr id="manufacturer-row-{{ $manufacturer['id'] }}" class="align-middle">
                         @endif
                     
-                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="attribute-type" value="manufacturer"/>
                             <input type="hidden" name="id" value="{{ $manufacturer['id'] }}">
@@ -182,6 +173,8 @@
                                     @if (array_key_exists($manufacturer['id'], $manufacturer_links) && ((int)$manufacturer_links[$manufacturer['id']]['count'] ?? 0) !== 0)
                                         <button class="btn btn-warning" id="manufacturer-{{ $manufacturer['id'] }}-links" type="button" onclick="showLinks('manufacturer', '{{ $manufacturer['id'] }}')">Show Links</button> 
                                     @endif
+                                @else 
+                                    <or class="green">Restore?</or>
                                 @endif
                             </td>
                         </form>

@@ -2,7 +2,7 @@
     <span class="close" onclick="modalCloseResetPW()">×</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div style="margin:auto;text-align:center;margin-top:10px">
-            <form action="/admin.userSettings" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.userSettings') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="admin_pwreset_submit" value="set" />
                 <input type="hidden" name="user_id" id="modal-user-id" value=""/>

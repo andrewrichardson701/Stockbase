@@ -206,6 +206,16 @@ class AdminController extends Controller
                 return 'Error: CSRF token missmatch.';
             }
         }  
+        if (isset($request['reset_2fa_submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'user_id' => 'integer|required',
+                ]);
+                return AdminModel::force2FAReset($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }  
 
         return 'Error: Unknown setting';
         

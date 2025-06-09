@@ -91,10 +91,10 @@
                 <span class="close" onclick="modalCloseReset2FA()">×</span>
                 <div class="container well-nopad theme-divBg" style="padding:25px">
                     <div style="margin:auto;text-align:center;margin-top:10px">
-                        <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.userSettings') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="2fareset_submit" value="admin" />
-                            <input type="hidden" name="2fa_user_id" id="2fareset_user_id" value=""/>
+                            <input type="hidden" name="reset_2fa_submit" value="admin" />
+                            <input type="hidden" name="user_id" id="2fareset_user_id" value=""/>
                             <p>Are you sure you want to reset the 2FA for <or class="green" id="2fareset_username"></or>?<br>
                             This will prompt a reset on the user's next login.</p>
                             <span>

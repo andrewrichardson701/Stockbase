@@ -446,8 +446,6 @@ class AdminModel extends Model
 
             if (isset($request['value'])) {
                 $value = htmlspecialchars($request['value']);
-                
-
 
                 if (($request['id'] == "2fa_enabled" || $request['id'] == "2fa_enforced" || $request['id'] == "signup_allowed") && ((int)$value == 1 || (int)$value == 0)) {
                     $field = $request['id'];
@@ -503,6 +501,12 @@ class AdminModel extends Model
             return 'Error: Cannot update root user.';
         }
 
+        $user = GeneralModel::getUser();
+
+        if (!in_array($user['role_id'], [1,3])) {
+            return 'Permission denied.';
+        }
+
         // get current user
         $current_data = DB::table('users')
                             ->where('id', $user_id)
@@ -546,6 +550,12 @@ class AdminModel extends Model
         $user_id = $request['user_id'];
         if ($user_id == 1) {
             return 'Error: Cannot update root user.';
+        }
+
+        $user = GeneralModel::getUser();
+
+        if (!in_array($user['role_id'], [1,3])) {
+            return 'Permission denied.';
         }
 
         // get current user
@@ -632,6 +642,50 @@ class AdminModel extends Model
                 return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', 'Password reset for user: '.$current_data->username);
             } else {
                 return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to update password');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');
+        }
+    }
+
+    static public function force2FAReset($request)
+    {
+
+        $user_id = $request['user_id'];
+        if ($user_id == 1) {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Cannot update root user.');
+        }
+
+        $user = GeneralModel::getUser();
+
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permission denied.');
+        }
+
+        // get current user
+        $current_data = DB::table('users')
+                            ->where('id', $user_id)
+                            ->first();
+
+        if ($current_data) {
+            $update = DB::table('users')->where('id', $user_id)->update(['2fa_secret' => NULL,'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => GeneralModel::getUser(),
+                    'table' => 'users',
+                    'record_id' => $user_id,
+                    'action' => 'Update record',
+                    'field' => '2fa_secret',
+                    'previous_value' => '********',
+                    'new_value' => ''
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', '2FA secret reset for user: '.$current_data->username);
+            } else {
+                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to reset 2FA secret');
             }
         } else {
             return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');

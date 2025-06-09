@@ -14,6 +14,7 @@ use App\Models\ResponseHandlingModel;
 use App\Models\CablestockModel;
 use App\Models\AdminModel;
 use App\Models\ChangelogModel;
+use App\Models\StockModel;
 
 class AdminController extends Controller
 {
@@ -248,5 +249,34 @@ class AdminController extends Controller
         }
 
         return redirect()->to(route('admin', ['section' => 'attribute-settings']) . '#attribute-settings')->with('error', 'Unknown selection');
+    }
+
+    static public function stockManagementSettings(Request $request)
+    {
+        if (isset($request['cost-toggle'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'type' => 'string|required',
+                        'value' => 'integer|required'
+                ]);
+                return AdminModel::toggleCost($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        if (isset($request['stockmanagement-restore'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'stockmanagement-type' => 'string|required',
+                        'id' => 'integer|required'
+                ]);
+                return StockModel::restoreStock($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        return redirect()->to(route('admin', ['section' => 'stockmanagement-settings']) . '#stockmanagement-settings')->with('error', 'Unknown selection');
     }
 }

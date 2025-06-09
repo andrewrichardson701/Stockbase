@@ -16,6 +16,7 @@ use App\Http\Controllers\FavouritesController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\OpticsController;
 use App\Http\Controllers\ChangelogController;
+use App\Http\Controllers\SmtpController;
 
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\AddHeadData;
@@ -113,6 +114,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/admin.toggleAuth', [AdminController::class, 'toggleAuth'])->name('admin.toggleAuth'); // Adjust toggle footer AJAX
             Route::post('/admin.userSettings', [AdminController::class, 'userSettings'])->name('admin.userSettings'); // Adjust user Settings
             Route::post('/admin.attributeSettings', [AdminController::class, 'attributeSettings'])->name('admin.attributeSettings'); // Adjust user Attribute Settings
+            Route::post('/admin.stockManagementSettings', [AdminController::class, 'stockManagementSettings'])->name('admin.stockManagementSettings'); // Adjust user Stock Management Settings
+            Route::get('/admin.smtpTemplate', [SmtpController::class, 'template'])->name('admin.smtpTemplate'); // view SMTP template
             //
 
             ////

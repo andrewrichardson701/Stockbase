@@ -3,11 +3,7 @@
 
     <!-- Notification Settings -->
     <div style="padding-top: 20px" id="notification" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'notification-settings')) {
-        //     showResponse();
-        // }
-        ?>
+
         @include('includes.response-handling', ['section' => 'notification-settings'])
 
     
@@ -49,7 +45,7 @@
             <input type="hidden" value="{{ urlencode('<p style=\'color:black !important\'>Cable stock added, for <strong><a class=\'link\' style=\'color: #0000EE !important;\' href=\''.url('stock').'/=1\'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>') }}" id="email-template-body" />
             <div id="email-template" style="margin-top:20px;margin-bottom:10px">
             </div>
-            <a style="margin-left:5px" href="includes/smtp.inc.php?template=echo&body={{ urlencode('<p style=\'color:black !important\'>Cable stock added, for <strong><a class=\'link\' style=\'color: #0000EE !important;\' href=\''.url('stock').'/1\'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>') }}" target="_blank">View in new tab</a>
+            <a style="margin-left:5px" href="{{ route('admin.smtpTemplate') }}?template=echo&body={{ urlencode('<p style=\'color:black !important\'>Cable stock added, for <strong><a class=\'link\' style=\'color: #0000EE !important;\' href=\''.url('stock').'/1\'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>') }}" target="_blank">View in new tab</a>
         </div>
     </div>
 </div>

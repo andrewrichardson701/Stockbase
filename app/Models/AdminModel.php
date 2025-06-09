@@ -5,12 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request as HttpRequest;
 
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Str;
 
 use App\Models\GeneralModel;
+use App\Models\FunctionsModel;
+use App\Models\TransactionModel;
 
 /**
  * 
@@ -367,18 +370,6 @@ class AdminModel extends Model
     {
         $results = [];
 
-        function msg($text, $type) {
-            if ($type == 'error') {
-                $class="red";
-            } else {
-                $class="green";
-            }
-            $head = '<or class="'.$class.'">';
-            $foot = '</or>';
-
-            return $head.$text.$foot;
-        }
-
         if (isset($request['type'])) {
             $type_num = htmlspecialchars($request['type']);
             if ($type_num == 1) {
@@ -418,22 +409,22 @@ class AdminModel extends Model
                             ];
 
                             GeneralModel::updateChangelog($changelog_info);
-                            $results[] = msg("Footer $state! Please refresh.", 'success');
+                            $results[] = FunctionsModel::ajaxMsg("Footer $state! Please refresh.", 'success');
                         } else {
-                            $results[] = msg("Unable to get update config.", 'error');
+                            $results[] = FunctionsModel::ajaxMsg("Unable to get update config.", 'error');
                         }
                     } else {
-                        $results[] = msg("Unable to get current config.", 'error');
+                        $results[] = FunctionsModel::ajaxMsg("Unable to get current config.", 'error');
                     }
                 } else {
-                    $results[] = msg('Invalid value specified.', 'error');
+                    $results[] = FunctionsModel::ajaxMsg('Invalid value specified.', 'error');
                 }
             } else {
-                $results[] = msg('No value specified.', 'error');
+                $results[] = FunctionsModel::ajaxMsg('No value specified.', 'error');
             }
 
         } else {
-            $results[] = msg('No notification type specified.', 'error');
+            $results[] = FunctionsModel::ajaxMsg('No notification type specified.', 'error');
         }
 
         echo(json_encode($results));
@@ -723,6 +714,7 @@ class AdminModel extends Model
         // get current data
         $current_data = DB::table($attribute)
                             ->where('id', $id)
+                            ->where('deleted', 0)
                             ->first();
 
         if ($current_data) {
@@ -794,6 +786,7 @@ class AdminModel extends Model
         // get current data
         $current_data = DB::table($attribute)
                             ->where('id', $id)
+                            ->where('deleted', 1)
                             ->first();
 
         if ($current_data) {
@@ -806,7 +799,7 @@ class AdminModel extends Model
                     'user' => GeneralModel::getUser(),
                     'table' => $attribute,
                     'record_id' => $id,
-                    'action' => 'Delete record',
+                    'action' => 'Restore record',
                     'field' => 'deleted',
                     'previous_value' => $current_data->deleted,
                     'new_value' => 0
@@ -819,7 +812,75 @@ class AdminModel extends Model
             }
             
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm attreibute data.');
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm attribute data.');
         }
     }
+
+    static public function toggleCost($request)
+    {
+        $results = [];
+
+        if (isset($request['type'])) {
+            $type_num = htmlspecialchars($request['type']);
+            if ($type_num == 1) {
+                $type = 'cost_enable_normal';
+                $reply_text = 'Stock cost';
+            } elseif ($type_num == 2) {
+                $type = 'cost_enable_cable';
+                $reply_text = 'Cable cost';
+            } else {
+                $results[] = FunctionsModel::ajaxMsg("Unknown type", 'error');
+                exit();
+            }
+            if (isset($request['value'])) {
+                $value = htmlspecialchars($request['value']);
+                if ((int)$value == 0 || (int)$value == 1) {
+                    
+                    $current_data = DB::table('config')
+                            ->select($type)
+                            ->where('id', 1)
+                            ->first();
+
+                    if ($current_data) {
+                        $previous_value = $current_data->$type;
+
+                        $state = $value == 1 ? 'enabled' : 'disabled';
+
+                        $update = DB::table('config')->where('id', 1)->update([$type => (int)$value, 'updated_at' => now()]);
+
+                        if ($update) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => GeneralModel::getUser(),
+                                'table' => 'config',
+                                'record_id' => 1,
+                                'action' => 'Update record',
+                                'field' => $type,
+                                'previous_value' => $previous_value,
+                                'new_value' => (int)$value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                            $results[] = FunctionsModel::ajaxMsg("$reply_text $state!", 'success');
+                        } else {
+                            $results[] = FunctionsModel::ajaxMsg("Unable to get update config.", 'error');
+                        }
+                    } else {
+                        $results[] = FunctionsModel::ajaxMsg("Unable to get current config.", 'error');
+                    }
+                } else {
+                    $results[] = FunctionsModel::ajaxMsg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = FunctionsModel::ajaxMsg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = FunctionsModel::ajaxMsg('No notification type specified.', 'error');
+        }
+
+        echo(json_encode($results));
+    }
+
+
 }

@@ -33,14 +33,7 @@
             </table>
         </div>
         <h4 style="margin-left:10px; margin-right:10px; margin-top:20px; font-size:20px; margin-bottom:10px">Deleted Stock</h4>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'stockmanagement')) {
-        //     echo('<div style="margin-right: 10px; margin-left: 10px">');
-        //     showResponse();
-        //     echo('</div>');
-        // }
-        // cost/price toggles for both normal stock and cable stock
-        ?>
+
         @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
@@ -60,12 +53,12 @@
             @if ($deleted_stock['count'] > 0)
                 @foreach ($deleted_stock['rows'] as $stock)
                     <tr id="deleted-stock-row-{{ $stock['id'] }}" class="align-middle">
-                        <form enctype="multipart/form-data" action="./includes/stock-modify.inc.php" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.stockManagementSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="stockmanagement-type" value="deleted"/>
                             <input type="hidden" name="id" value="{{ $stock['id'] }}">
                             <td class="align-middle text-center">{{ $stock['id'] }}</td>
-                            <td class="align-middle text-center"><a class="link" href="stock?stock_id={{ $stock['id'] }}">{{ $stock['name'] }}</a></td>
+                            <td class="align-middle text-center"><a class="link" href="{{ route('stock', ['stock_id' => $stock['id']]) }}">{{ $stock['name'] }}</a></td>
                             <td class="align-middle text-center">{{ $stock['sku'] }}</td>
                             <td class="align-middle text-center">
                                 @if (strlen($stock['description']) > 30) 

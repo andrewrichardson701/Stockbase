@@ -194,6 +194,7 @@ class TransactionModel extends Model
                     'remove' => 'transactionRemove',
                     'delete' => 'transactionDelete',
                     'move' => 'transactionMove',
+                    'restore' => 'transactionAdd',
                     );
         
         if (isset($type)) {
@@ -220,7 +221,7 @@ class TransactionModel extends Model
             'date' => 'string|required',
             'time' => 'string|required',
             'username' => 'required',
-            'shelf_id' => 'integer|required',
+            'shelf_id' => 'integer|nullable',
             'reason' => 'string|required'
         ]);
 

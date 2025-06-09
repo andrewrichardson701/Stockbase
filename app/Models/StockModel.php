@@ -680,6 +680,8 @@ class StockModel extends Model
     static public function getStockInvData($stock_id, $is_cable)
     {
         $stock_inv_data = [];
+        $stock_inv_data['rows'] = [];
+        $stock_inv_data['manufacturers'] = [];
 
         $instance = new self();
         $instance->setTable('stock AS s');
@@ -816,9 +818,9 @@ class StockModel extends Model
                                         ); 
         }
 
-        $stock_inv_data['count'] = count($stock_inv_data['rows']);
+        $stock_inv_data['count'] = count($stock_inv_data['rows']) ?? 0;
         $stock_inv_data['tags'] = $stock_tag_data ?? [];
-        $stock_inv_data['manufacturers'] = $stock_manufacturer_data;
+        $stock_inv_data['manufacturers'] = $stock_manufacturer_data ?? [];
 
         $total_quantity = 0;
         foreach ($stock_inv_data['rows'] as $row) {
@@ -1961,5 +1963,71 @@ class StockModel extends Model
             return 0;
         }
         
+    }
+
+    static public function restoreStock($request)
+    {
+        $attribute = $request['stockmanagement-type'];
+        $id = $request['id'];
+        $anchor = 'stockmanagement-settings';
+
+        if ($attribute !== 'deleted') {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Incorrect type.');
+        }
+
+        // check permissions
+        $user = GeneralModel::getUser();
+
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+        }
+
+        // get current data
+        $current_data = DB::table('stock')
+                            ->where('id', $id)
+                            ->where('deleted', 1)
+                            ->first();
+
+        if ($current_data) {
+            //update
+            $update = DB::table('stock')->where('id', $id)->update(['deleted' => 0, 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => GeneralModel::getUser(),
+                    'table' => 'stock',
+                    'record_id' => $id,
+                    'action' => 'Restore record',
+                    'field' => 'deleted',
+                    'previous_value' => $current_data->deleted,
+                    'new_value' => 0
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                // add Transaction
+                $transaction_data = new HttpRequest([
+                    'stock_id' => $id,
+                    'item_id' => 0,
+                    'type' => 'restore',
+                    'quantity' => 0,
+                    'price' => 0,
+                    'serial_number' => '',
+                    'date' => date('Y-m-d'),
+                    'time' => date('h:i:s'),
+                    'username' => $user['username'],
+                    'shelf_id' => NULL,
+                    'reason' => 'Stock restored by an admin.'
+                ]);
+
+                TransactionModel::addTransaction($transaction_data);
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Stock restored: '.$current_data->name);
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
+            }
+            
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm stock data.');
+        }
     }
 }

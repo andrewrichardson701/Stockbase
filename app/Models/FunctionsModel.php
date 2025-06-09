@@ -51,4 +51,16 @@ class FunctionsModel extends Model
         }
         return '#' . implode($hexCode);
     }
+
+    static public function ajaxMsg($text, $type) {
+            if ($type == 'error') {
+                $class="red";
+            } else {
+                $class="green";
+            }
+            $head = '<or class="'.$class.'">';
+            $foot = '</or>';
+
+            return $head.$text.$foot;
+        }
 }

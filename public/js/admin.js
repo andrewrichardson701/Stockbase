@@ -39,7 +39,7 @@ function testLDAP() {
 
     $.ajax({
         type: "POST",
-        url: "./includes/ldap-test.inc.php",
+        url: "/admin.ldapSettings",
         data: {ldap_username: ldap_username, 
             ldap_password: ldap_password, 
             ldap_password_confirm: ldap_password_confirm, 
@@ -285,27 +285,29 @@ function toggleFooter(checkbox, id) {
 
 // Cost toggle checkboxes
 function toggleCost(checkbox, id) {
-    var outputBox = document.getElementById('cost-output');
     var type = id;
-    if (checkbox.checked) {
-        // enable the type
-        var value = 1;
-    } else {
-        // disable the type
-        var value = 0;
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/admin.inc.php?cost-toggle=1&type="+type+"&value="+value + "&_=" + new Date().getTime(), true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            var output = JSON.parse(xhr.responseText);
+    var value = checkbox.checked ? 1 : 0;
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    $.ajax({
+        type: "POST",
+        url: "/admin.stockManagementSettings",
+        data: {
+            "cost-toggle": 1,
+            type: type,
+            value: value,
+            _token: csrf
+        },
+        dataType: "json",
+        success: function(response) {
+            var outputBox = document.getElementById('cost-output');
             outputBox.hidden = false;
-            outputBox.classList="last-edit-T";
-            outputBox.innerHTML = output[0];
-        }
-    };
-    xhr.send();
-} 
+            outputBox.classList = "last-edit-T";
+            outputBox.innerHTML = response[0];
+        },
+        async: true
+    });
+}
 
 // Mail notifications checkboxes
 function mailNotification(checkbox, id) {
@@ -704,7 +706,7 @@ function emailTemplate() {
 
     // Make an AJAX request to retrieve cotnent
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/smtp.inc.php?template=echo&body="+body + "&_=" + new Date().getTime());
+    xhr.open("GET", "/admin.smtpTemplate?template=echo&body="+body + "&_=" + new Date().getTime());
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the field

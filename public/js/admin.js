@@ -813,7 +813,7 @@ function usersEnabledChange(id) {
 
     $.ajax({
         type: "POST",
-        url: "./includes/admin.inc.php",
+        url: "/admin.userSettings",
         data: {
             user_id: id,
             user_new_enabled: checkboxValue,

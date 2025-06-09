@@ -46,12 +46,27 @@
                                 </select>
                             </td>
                             <td id="user_{{ $user['id'] }}_auth" style="vertical-align: middle;">{{ $user['auth'] }}</td>
-                            <td style="vertical-align: middle;"><input type="checkbox" id="user_{{ $user['id'] }}_enabled_checkbox" @if ($user['enabled'] == 1) checked @endif onchange="usersEnabledChange('{{ $user['id'] }}')"></td>
+                            <td style="vertical-align: middle;"><input type="checkbox" id="user_{{ $user['id'] }}_enabled_checkbox" @if ($user['enabled'] == 1) checked @endif onchange="usersEnabledChange('{{ $user['id'] }}')" @if((int)$user['id'] == 1 || ((int)$user['id'] == (int)$head_data['user']['id'])) title="Unable to disable this user" style="cursor:not-allowed" disabled @endif></td>
                             <td style="vertical-align: middle;">
-                                <button class="btn btn-warning" style="padding: 2px 6px 2px 6px" id="user_{{ $user['id'] }}_pwreset" onclick="resetPassword('{{ $user['id'] }}')" @if ($user['auth'] == 'ldap' || (int)$user['role_id'] == 1 || (int)$user['role_id'] == 3) disabled @endif >Reset</button>
+                                <button class="btn btn-warning" style="padding: 2px 6px 2px 6px" id="user_{{ $user['id'] }}_pwreset" onclick="resetPassword('{{ $user['id'] }}')" 
+                                    @if ($user['auth'] == 'ldap') 
+                                        {{-- user to show is an ldap user, cant reset  --}}
+                                        disabled
+                                    @elseif ((int)$user['role_id'] == 1 || (int)$user['role_id'] == 3)
+                                        {{-- role of user to show is 1 or 3 (root or admin) --}}
+                                        @if ((int)$user['id'] == 1)
+                                            {{-- user to show is root user --}}
+                                            disabled
+                                        @elseif ((int)$head_data['user']['role_id'] !== 1)
+                                            {{-- current user isnt root --}}
+                                            disabled
+                                            {{-- This means admin user passwords can only be reset by the root user --}}
+                                        @endif
+                                    @endif
+                                >Reset</button>
                             </td>
                             <td style="vertical-align: middle;">
-                            @if ($user['id'] !== 0)
+                            @if ($user['id'] !== 1)
                                 <button class="btn btn-primary" id="reset_2fa" style="padding: 2px 6px 2px 6px" onclick="modalLoadReset2FA({{ $user['id'] }})">Reset 2FA</button>
                             @endif
                             </td>

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Support\Str;
 
 use App\Models\GeneralModel;
@@ -25,7 +27,7 @@ class AdminModel extends Model
     {
         $instance = new self();
         $instance->setTable('session_log AS sl');
-
+                        
         return $instance->selectRaw('sl.id AS id, sl.user_id AS sl_user_id, 
                                     FROM_UNIXTIME(sl.login_time) AS sl_login_time, IFNULL(FROM_UNIXTIME(sl.logout_time), NULL) AS sl_logout_time, 
                                     COALESCE(INET_NTOA(sl.ipv4), INET6_NTOA(sl.ipv6)) AS sl_ip,
@@ -440,15 +442,15 @@ class AdminModel extends Model
     static public function toggleAuth($request) 
     {
         $return = [];
-        if (isset($_POST['id'])) {
+        if (isset($request['id'])) {
 
-            if (isset($_POST['value'])) {
+            if (isset($request['value'])) {
                 $value = htmlspecialchars($request['value']);
                 
 
 
-                if (($_POST['id'] == "2fa_enabled" || $_POST['id'] == "2fa_enforced" || $_POST['id'] == "signup_allowed") && ((int)$value == 1 || (int)$value == 0)) {
-                    $field = $_POST['id'];
+                if (($request['id'] == "2fa_enabled" || $request['id'] == "2fa_enforced" || $request['id'] == "signup_allowed") && ((int)$value == 1 || (int)$value == 0)) {
+                    $field = $request['id'];
                 
                     $current_data = DB::table('config')
                             ->select($field)
@@ -498,7 +500,7 @@ class AdminModel extends Model
     {
         $user_id = $request['user_id'];
         if ($user_id == 1) {
-            return '<or class="red">Cannot update root user.</or>';
+            return 'Error: Cannot update root user.';
         }
 
         // get current user
@@ -510,24 +512,28 @@ class AdminModel extends Model
             // user exists
             $previous_value = $current_data->role_id;
 
-            $update = DB::table('users')->where('id', $user_id)->update(['role_id' => (int)$request['user_new_role'], 'updated_at' => now()]);
+            if (in_array((int)$request['user_new_role'], [1,0])) {
+                $update = DB::table('users')->where('id', $user_id)->update(['role_id' => (int)$request['user_new_role'], 'updated_at' => now()]);
 
-            if ($update) {
-                // changelog
-                $changelog_info = [
-                    'user' => GeneralModel::getUser(),
-                    'table' => 'users',
-                    'record_id' => 1,
-                    'action' => 'Update record',
-                    'field' => 'role_id',
-                    'previous_value' => $previous_value,
-                    'new_value' => (int)$request['user_new_role']
-                ];
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => GeneralModel::getUser(),
+                        'table' => 'users',
+                        'record_id' => $user_id,
+                        'action' => 'Update record',
+                        'field' => 'role_id',
+                        'previous_value' => $previous_value,
+                        'new_value' => (int)$request['user_new_role']
+                    ];
 
-                GeneralModel::updateChangelog($changelog_info);
-                return 'Role updated for user: '.$current_data->username.'.';
+                    GeneralModel::updateChangelog($changelog_info);
+                    return 'Role updated for user: '.$current_data->username.'.';
+                } else {
+                    return 'Error: No changes made. Unable to update role.';
+                }
             } else {
-                return 'No changes made. Unable to update role.';
+                return 'Error: Non-boolean value present.';
             }
 
         } else {
@@ -535,4 +541,100 @@ class AdminModel extends Model
         }
     }
 
+    static public function userEnabled($request) 
+    {
+        $user_id = $request['user_id'];
+        if ($user_id == 1) {
+            return 'Error: Cannot update root user.';
+        }
+
+        // get current user
+        $current_data = DB::table('users')
+                            ->where('id', $user_id)
+                            ->first();
+
+        if ($current_data) {
+            // user exists
+            $previous_value = $current_data->enabled;
+
+            if (in_array((int)$request['user_new_enabled'], [1,0])) {
+                $update = DB::table('users')->where('id', $user_id)->update(['enabled' => (int)$request['user_new_enabled'], 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => GeneralModel::getUser(),
+                        'table' => 'users',
+                        'record_id' => $user_id,
+                        'action' => 'Update record',
+                        'field' => 'enabled',
+                        'previous_value' => $previous_value,
+                        'new_value' => (int)$request['user_new_enabled']
+                    ];
+
+                    if ((int)$request['user_new_enabled'] == 1) {
+                        $state = 'enabled';
+                    } else {
+                        $state = 'disabled';
+                    }
+
+                    GeneralModel::updateChangelog($changelog_info);
+                    return 'User: '.$current_data->username.' '.$state.'.';
+                } else {
+                    return 'No changes made. Unable to update state.';
+                }
+            } else {
+                return 'Error: Non-boolean value present.';
+            }
+
+        } else {
+            return 'Error: Unable to get current data';
+        }
+    }
+
+    static public function forcePasswordReset($request)
+    {
+
+        $user_id = $request['user_id'];
+        if ($user_id == 1) {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Cannot update root user.');
+        }
+
+        $user = GeneralModel::getUser();
+
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permission denied.');
+        }
+
+        $new_password = Hash::make($request['password']);
+
+        // get current user
+        $current_data = DB::table('users')
+                            ->where('id', $user_id)
+                            ->first();
+
+        if ($current_data) {
+            $update = DB::table('users')->where('id', $user_id)->update(['password' => $new_password, 'password_expired' => 1, 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => GeneralModel::getUser(),
+                    'table' => 'users',
+                    'record_id' => $user_id,
+                    'action' => 'Update record',
+                    'field' => 'password',
+                    'previous_value' => '********',
+                    'new_value' => '********'
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', 'Password reset for user: '.$current_data->username);
+            } else {
+                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to update password');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');
+        }
+    }
 }

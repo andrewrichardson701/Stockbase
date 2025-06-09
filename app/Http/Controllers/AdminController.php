@@ -183,10 +183,30 @@ class AdminController extends Controller
             }
         } 
         
-        if (isset($request->user_enable)) {
-
+        if (isset($request['user_enabled_submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'user_id' => 'integer|required',
+                        'user_new_enabled' => 'integer|required',
+                ]);
+                return AdminModel::userEnabled($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
         } 
-            
+
+        if (isset($request['admin_pwreset_submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'user_id' => 'integer|required',
+                        'password' => 'string|required',
+                ]);
+                return AdminModel::forcePasswordReset($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }  
+
         return 'Error: Unknown setting';
         
     }

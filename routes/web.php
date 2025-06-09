@@ -112,6 +112,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/admin.toggleFooter', [AdminController::class, 'toggleFooter'])->name('admin.toggleFooter'); // Adjust toggle footer AJAX
             Route::post('/admin.toggleAuth', [AdminController::class, 'toggleAuth'])->name('admin.toggleAuth'); // Adjust toggle footer AJAX
             Route::post('/admin.userSettings', [AdminController::class, 'userSettings'])->name('admin.userSettings'); // Adjust user Settings
+            Route::post('/admin.attributeSettings', [AdminController::class, 'attributeSettings'])->name('admin.attributeSettings'); // Adjust user Attribute Settings
             //
 
             ////

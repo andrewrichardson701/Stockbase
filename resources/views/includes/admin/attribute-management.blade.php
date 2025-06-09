@@ -51,7 +51,7 @@
                         <tr id="tag-row-{{ $tag['id'] }}" class="align-middle">
                         @endif
                     
-                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
                             <input type="hidden" name="attribute-type" value="tag"/>
                             <input type="hidden" name="id" value="{{ $tag['id'] }}">

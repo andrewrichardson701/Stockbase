@@ -11,7 +11,35 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('config', function (Blueprint $table) {
+        Schema::table('tag', function (Blueprint $table) {
+            //
+            $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
+        });
+        Schema::table('manufacturer', function (Blueprint $table) {
+            //
+            $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
+        });
+        Schema::table('optic_comment', function (Blueprint $table) {
+            //
+            $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
+        });
+        Schema::table('optic_vendor', function (Blueprint $table) {
+            //
+            $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
+        });
+        Schema::table('optic_speed', function (Blueprint $table) {
+            //
+            $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
+        });
+        Schema::table('optic_distance', function (Blueprint $table) {
+            //
+            $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
+        });
+        Schema::table('optic_connector', function (Blueprint $table) {
+            //
+            $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
+        });
+        Schema::table('optic_type', function (Blueprint $table) {
             //
             $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
         });

@@ -215,9 +215,26 @@ class AdminController extends Controller
             } else {
                 return 'Error: CSRF token missmatch.';
             }
-        }  
-
+        }
+    
         return 'Error: Unknown setting';
         
+    }
+
+    static public function attributeSettings(Request $request)
+    {
+        if (isset($request['attributemanagement-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'id' => 'integer|required',
+                        'attribute-type' => 'string|required'
+                ]);
+                return AdminModel::attributeDelete($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        return redirect()->to(route('admin', ['section' => 'attribute-settings']) . '#attribute-settings')->with('error', 'Unknown selection');
     }
 }

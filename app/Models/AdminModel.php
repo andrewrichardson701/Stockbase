@@ -473,7 +473,7 @@ class AdminModel extends Model
                             ];
 
                             GeneralModel::updateChangelog($changelog_info);
-                            $return[0] = '<or class="green">Authentication udpated.</or>';
+                            $return[0] = '<or class="green">Authentication updated.</or>';
                         } else {
                             $return[0] = '<or class="red">No changes made. Unable to update config.</or>';
                         }
@@ -687,6 +687,83 @@ class AdminModel extends Model
             } else {
                 return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to reset 2FA secret');
             }
+        } else {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');
+        }
+    }
+
+    static public function attributeDelete($request)
+    {
+        $attribute = $request['attribute-type'];
+        $id = $request['id'];
+        $allowed_types = ['tag', 'manufacturer'];
+        $allowed_optic_types = ['optics_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
+        
+        if (in_array($attribute, $allowed_types)) {
+            $anchor = "attributemanagement-settings";
+            $search_table = 'item';
+        } elseif (in_array($attribute, $allowed_optic_types)) {
+            $anchor = "opticattributemanagement-settings";
+            $search_table = 'optic_item';
+        } else {
+            return redirect()->to(route('admin'))->with('error', 'Unknown attribute field');
+        }
+
+        if ($attribute == 'tag') {
+            $search_table = 'stock_tag';
+        }
+
+        // check permissions
+        $user = GeneralModel::getUser();
+
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+        }
+
+        // get current data
+        $current_data = DB::table($attribute)
+                            ->where('id', $id)
+                            ->first();
+
+        if ($current_data) {
+            //remove the optic_ from the attribute
+            if (str_contains($attribute, 'optic_')) {
+                $clean_attribute = str_replace('optic_', '', $attribute);
+            } else {
+                $clean_attribute = $attribute;
+            }
+
+            // check for any links
+            $links = DB::table($search_table)
+                        ->where($clean_attribute.'_id', $id)
+                        ->get()
+                        ->toArray();
+
+            if (!$links || empty($links)) {
+                //update
+                $update = DB::table($attribute)->where('id', $id)->update(['deleted' => 1, 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => GeneralModel::getUser(),
+                        'table' => $attribute,
+                        'record_id' => $id,
+                        'action' => 'Delete record',
+                        'field' => 'deleted',
+                        'previous_value' => $current_data->deleted,
+                        'new_value' => 1
+                    ];
+
+                    GeneralModel::updateChangelog($changelog_info);
+                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', '2FA secret reset for user: '.$current_data->username);
+                } else {
+                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to reset 2FA secret');
+                }
+            } else {
+                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Links still present.');
+            }
+            
         } else {
             return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');
         }

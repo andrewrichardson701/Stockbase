@@ -2,11 +2,6 @@
     <h3 class="clickable" style="margin-top:50px;font-size:22px" id="usersroles-settings" onclick="toggleSection(this, 'usersroles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
     <!-- Users Roles -->
     <div style="padding-top: 20px" id="usersroles" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'users-roles')) {
-        //     showResponse();
-        // }
-        ?>
         @include('includes.response-handling', ['section' => 'usersroles-settings'])
         <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
             <thead>

@@ -254,7 +254,7 @@ class AdminModel extends Model
         return 0;
     }
 
-    static public function updateGlobalSettings($data)
+    static public function updateConfigSettings($data)
     {
         $errors = [];
         $unchanged = [];
@@ -262,7 +262,17 @@ class AdminModel extends Model
 
         $user = GeneralModel::getUser();
         $config_fields = Schema::getColumnListing('config');
-        $excluded_keys = ['_token', 'global-submit'];
+        $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit'];
+
+        if (isset($data['global-submit'])) {
+            $anchor = 'global-settings';
+        } elseif (isset($data['smtp-submit']) || isset($data['smtp-restore-defaults'])) {
+            $anchor = 'smtp-settings';
+        } elseif (isset($data['ldap-submit']) || isset($data['ldap-restore-defaults'])) {
+            $anchor = 'ldap-settings';
+        } else {
+            $anchor = '';
+        }
 
         $current_data = DB::table('config')
                             ->where('id', 1)
@@ -274,9 +284,35 @@ class AdminModel extends Model
             $reset = AdminModel::resetConfig($reset_array);
 
             if ($reset == 1) {
-                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('success', 'Config Reset.');
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
             } else {
-                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('error', 'Reset failed.');
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+            }
+        } 
+
+        if (isset($data['smtp-restore-defaults'])) {
+        
+            $reset_array = ['smtp_host', 'smtp_port', 'smtp_encryption', 'smtp_username',
+                            'smtp_password', 'smtp_from_email', 'smtp_from_name', 'smtp_to_email'];
+            $reset = AdminModel::resetConfig($reset_array);
+
+            if ($reset == 1) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+            }
+        } 
+
+        if (isset($data['ldap-restore-defaults'])) {
+        
+            $reset_array = ['ldap_username', 'ldap_password', 'ldap_domain', 'ldap_host', 'ldap_host_secondary', 
+                            'ldap_port', 'ldap_basedn', 'ldap_usergroup', 'ldap_userfilter'];
+            $reset = AdminModel::resetConfig($reset_array);
+
+            if ($reset == 1) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
             }
         } 
 
@@ -287,13 +323,15 @@ class AdminModel extends Model
                 'action' => 'Update record',
             ];
 
-        unset($data['_token'], $data['global-submit']); // remove these to stop them being queried
+        unset($data['_token'], $data['global-submit'], $data['smtp-submit'], $data['ldap-submit']); // remove these to stop them being queried
 
         foreach($data as $field => $value) {
             if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys
                 if (!in_array($field, $config_fields)) {
                     return redirect(GeneralModel::previousURL())->with('error', 'Unknown table field: '.$field.'.');
                 }
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Excluded field: '.$field.'.');
             }
         }
         
@@ -302,6 +340,15 @@ class AdminModel extends Model
                 // not an image 
                 if (ctype_digit($value)) { // checks for numbers and NOT decimals
                     $value = (int)$value;
+                }
+
+                if (str_contains($field, 'password')) {
+                    if ($value == 'password' || $value == '' || $value == null) {
+                        $current_data->$field;
+                    } else {
+                        $value = Hash::make($value);
+                    }
+                    
                 }
 
                 if ($current_data->$field !== $value) {
@@ -358,9 +405,9 @@ class AdminModel extends Model
             if (!empty($changed)) {
                 //success
                 $changed_fields = implode(',', array_keys($changed));
-                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('success', 'Updated fields: '.$changed_fields);
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
             } else {
-                return redirect()->to(route('admin', ['section' => 'global-settings']) . '#global-settings')->with('error', 'No changes made.');
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
             }
 
         }
@@ -424,7 +471,7 @@ class AdminModel extends Model
             }
 
         } else {
-            $results[] = FunctionsModel::ajaxMsg('No notification type specified.', 'error');
+            $results[] = FunctionsModel::ajaxMsg('No type specified.', 'error');
         }
 
         echo(json_encode($results));
@@ -876,7 +923,63 @@ class AdminModel extends Model
             }
 
         } else {
-            $results[] = FunctionsModel::ajaxMsg('No notification type specified.', 'error');
+            $results[] = FunctionsModel::ajaxMsg('No type specified.', 'error');
+        }
+
+        echo(json_encode($results));
+    }
+
+    public static function toggleNotification($request)
+    {
+        $results = [];
+
+        if (isset($request['id']) && is_numeric($request['id'])) {
+
+            if (isset($request['value'])) {
+                $value = htmlspecialchars($request['value']);
+                if ((int)$value == 0 || (int)$value == 1) {
+                    
+                    $current_data = DB::table('notifications')
+                            ->select(['enabled', 'title'])
+                            ->where('id', (int)$request['id'])
+                            ->first();
+
+                    if ($current_data) {
+                        $previous_value = $current_data->enabled;
+
+                        $state = $value == 1 ? 'enabled' : 'disabled';
+
+                        $update = DB::table('notifications')->where('id', (int)$request['id'])->update(['enabled' => (int)$value, 'updated_at' => now()]);
+
+                        if ($update) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => GeneralModel::getUser(),
+                                'table' => 'notifications',
+                                'record_id' => (int)$request['id'],
+                                'action' => 'Update record',
+                                'field' => 'enabled',
+                                'previous_value' => $previous_value,
+                                'new_value' => (int)$value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                            $results[] = FunctionsModel::ajaxMsg("Notification: '".$current_data->title."'   $state!", 'success');
+                        } else {
+                            $results[] = FunctionsModel::ajaxMsg("Unable to get update notifications.", 'error');
+                        }
+                    } else {
+                        $results[] = FunctionsModel::ajaxMsg("Unable to get current notifications.", 'error');
+                    }
+                } else {
+                    $results[] = FunctionsModel::ajaxMsg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = FunctionsModel::ajaxMsg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = FunctionsModel::ajaxMsg('No type specified.', 'error');
         }
 
         echo(json_encode($results));

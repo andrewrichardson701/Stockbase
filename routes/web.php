@@ -113,9 +113,12 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/admin.toggleFooter', [AdminController::class, 'toggleFooter'])->name('admin.toggleFooter'); // Adjust toggle footer AJAX
             Route::post('/admin.toggleAuth', [AdminController::class, 'toggleAuth'])->name('admin.toggleAuth'); // Adjust toggle footer AJAX
             Route::post('/admin.userSettings', [AdminController::class, 'userSettings'])->name('admin.userSettings'); // Adjust user Settings
-            Route::post('/admin.attributeSettings', [AdminController::class, 'attributeSettings'])->name('admin.attributeSettings'); // Adjust user Attribute Settings
-            Route::post('/admin.stockManagementSettings', [AdminController::class, 'stockManagementSettings'])->name('admin.stockManagementSettings'); // Adjust user Stock Management Settings
+            Route::post('/admin.attributeSettings', [AdminController::class, 'attributeSettings'])->name('admin.attributeSettings'); // Adjust Attribute Settings
+            Route::post('/admin.stockManagementSettings', [AdminController::class, 'stockManagementSettings'])->name('admin.stockManagementSettings'); // Adjust Stock Management Settings
+            Route::post('/admin.ldapSettings', [AdminController::class, 'ldapSettings'])->name('admin.ldapSettings'); // Adjust LDAP settings
+            Route::post('/admin.smtpSettings', [AdminController::class, 'smtpSettings'])->name('admin.smtpSettings'); // Adjust SMTP settings
             Route::get('/admin.smtpTemplate', [SmtpController::class, 'template'])->name('admin.smtpTemplate'); // view SMTP template
+            Route::post('/admin.toggleNotification', [AdminController::class, 'toggleNotification'])->name('admin.toggleNotification'); // Adjust Notification settings
             //
 
             ////

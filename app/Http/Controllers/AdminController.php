@@ -13,6 +13,8 @@ use App\Models\FunctionsModel;
 use App\Models\ResponseHandlingModel;
 use App\Models\CablestockModel;
 use App\Models\AdminModel;
+use App\Models\LdapModel;
+use App\Models\SmtpModel;
 use App\Models\ChangelogModel;
 use App\Models\StockModel;
 
@@ -119,7 +121,7 @@ class AdminController extends Controller
                             ]);
     }
 
-    static public function globalSettings(Request $request)
+    static public function updateConfigSettings(Request $request)
     {
         if ($request['_token'] == csrf_token()) {
 
@@ -278,5 +280,89 @@ class AdminController extends Controller
         }
 
         return redirect()->to(route('admin', ['section' => 'stockmanagement-settings']) . '#stockmanagement-settings')->with('error', 'Unknown selection');
+    }
+
+    static public function smtpSettings(Request $request)
+    {
+        if (isset($request['smtp-toggle-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                if (isset($request['smtp-enabled']) && in_array($request['smtp-enabled'], ['on', 'off'])) {
+                    $enabled = $request['smtp-enabled'];
+                } else {
+                    $enabled = 'off';
+                }
+                return SmtpModel::toggleSmtp($enabled);
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        if (isset($request['smtp-submit']) || isset($request['smtp-restore-defaults'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'smtp_host' => 'string|required',
+                        'smtp_port' => 'integer|required',
+                        'smtp_encryption' => 'string|required',
+                        'smtp_username' => 'string|nullable',
+                        'smtp_password' => 'string|nullable',
+                        'smtp_from_email' => 'string|required',
+                        'smtp_from_name' => 'string|required',
+                        'smtp_to_email' => 'string|required',
+                ]);
+                return AdminModel::updateConfigSettings($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+        return 'unknown request';
+    }
+
+    static public function ldapSettings(Request $request)
+    {
+        if (isset($request['ldap-toggle-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                if (isset($request['ldap-enabled']) && in_array($request['ldap-enabled'], ['on', 'off'])) {
+                    $enabled = $request['ldap-enabled'];
+                } else {
+                    $enabled = 'off';
+                }
+                return LdapModel::toggleLdap($enabled);
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        if (isset($request['ldap-submit']) || isset($request['ldap-restore-defaults'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'ldap_username' => 'string|required',
+                        'ldap_password' => 'string|required',
+                        'ldap_domain' => 'string|required',
+                        'ldap_host' => 'string|required',
+                        'ldap_host_secondary' => 'string|nullable',
+                        'ldap_port' => 'integer|required',
+                        'ldap_basedn' => 'string|nullable',
+                        'ldap_usergroup' => 'string|nullable',
+                        'ldap_userfilter' => 'string|nullable',
+                ]);
+                return AdminModel::updateConfigSettings($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+        return 'unknown request';
+    }
+
+    static public function toggleNotification(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'id' => 'integer|required',
+                    'value' => 'integer|required',
+            ]);
+            AdminModel::toggleNotification($request->input());
+        } else {
+            return 'error';
+        }
     }
 }

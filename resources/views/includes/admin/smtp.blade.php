@@ -3,13 +3,8 @@
 
     <!-- SMTP Settings -->
     <div style="padding-top: 20px" id="smtp" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'smtp-settings')) {
-        //     showResponse();
-        // }
-        ?>
         @include('includes.response-handling', ['section' => 'smtp-settings'])
-        <form id="smtpToggleForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+        <form id="smtpToggleForm" enctype="multipart/form-data" action="{{ route('admin.smtpSettings') }}" method="POST">
             @csrf
             <input type="hidden" name="smtp-toggle-submit" value="set" />
             <table id="smtpToggleTable">
@@ -28,7 +23,7 @@
                 </tbody>
             </table>
         </form>
-        <form id="smtpForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" @if ($head_data['config']['smtp_enabled'] == 0) hidden @endif >
+        <form id="smtpForm" enctype="multipart/form-data" action="{{ route('admin.smtpSettings') }}" method="POST" @if ($head_data['config']['smtp_enabled'] == 0) hidden @endif >
             @csrf
             <hr style="border-color:white; margin-left:10px">
             <table id="smtpTable">
@@ -43,7 +38,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-host">SMTP Host:</p>
                         </td>
                         <td id="smtp-host-input">
-                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-host" name="smtp-host" value="{{ $head_data['config']['smtp_host'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-host" name="smtp_host" value="{{ $head_data['config']['smtp_host'] }}" required>
                         </td>
                         <td id="smtp-host-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-host-default">{{ $head_data['default_config']['smtp_host'] }}</p>
@@ -54,7 +49,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-port">SMTP Port:</p>
                         </td>
                         <td id="smtp-port-input">
-                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-port" name="smtp-port" value="{{ $head_data['config']['smtp_port'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-port" name="smtp_port" value="{{ $head_data['config']['smtp_port'] }}" required>
                         </td>
                         <td id="smtp-port-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-port-default">{{ $head_data['default_config']['smtp_port'] }}</p>
@@ -65,7 +60,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-encryption">SMTP Encryption:</p>
                         </td>
                         <td id="smtp-encryption-input">
-                            <select id="smtp-encryption" name="smtp-encryption" style="width:250px" class="form-control nav-v-c theme-dropdown" required>
+                            <select id="smtp-encryption" name="smtp_encryption" style="width:250px" class="form-control nav-v-c theme-dropdown" required>
                                 <option value="none" @if ($head_data['config']['smtp_encryption'] == '' || $head_data['config']['smtp_encryption'] == null) selected @endif>None</option>
                                 <option value="starttls" @if ($head_data['config']['smtp_encryption'] == 'starttls') selected @endif>STARTTLS</option>
                                 <option value="tls" @if ($head_data['config']['smtp_encryption'] == 'tls') selected @endif>Transport Layer Security (TLS)</option>
@@ -104,7 +99,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-username">SMTP Username:</p>
                         </td>
                         <td id="smtp-username-input">
-                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-username" name="smtp-username" value="{{ $head_data['config']['smtp_username'] }}">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-username" name="smtp_username" value="{{ $head_data['config']['smtp_username'] }}">
                         </td>
                         <td id="smtp-username-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-username-default">{{ $head_data['default_config']['smtp_username']  }}</p>
@@ -115,10 +110,10 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-password">SMTP Password:</p>
                         </td>
                         <td id="smtp-password-input">
-                            <input class="form-control nav-v-c theme-input" type="password" style="width: 250px" id="smtp-password" name="smtp-password" value="password">
+                            <input class="form-control nav-v-c theme-input" type="password" style="width: 250px" id="smtp-password" name="smtp_password" value="password">
                         </td>
                         <td id="smtp-password-default-cell" style="margin-left:25px">
-                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-password-default"><or class="green">{{ $head_data['default_config']['smtp_password'] }}</or></p>
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-password-default">@if (isset($head_data['default_config']['smtp_password'])) <or class="green">Default exists</or> @else <or class="red">No default exists</or>@endif</p>
                         </td>
                     </tr>
                     <tr class="nav-row" id="smtp-from-email-row" style="margin-top:20px">
@@ -126,7 +121,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-from-email">SMTP From Email:</p>
                         </td>
                         <td id="smtp-from-email-input">
-                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-from-email" name="smtp-from-email" value="{{ $head_data['config']['smtp_from_email'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-from-email" name="smtp_from_email" value="{{ $head_data['config']['smtp_from_email'] }}" required>
                         </td>
                         <td id="smtp-from-email-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-from-email-default">{{ $head_data['default_config']['smtp_from_email'] }}</p>
@@ -137,7 +132,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-from-name">SMTP From Name:</p>
                         </td>
                         <td id="smtp-from-name-input">
-                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-from-name" name="smtp-from-name" value="{{ $head_data['config']['smtp_from_name'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-from-name" name="smtp_from_name" value="{{ $head_data['config']['smtp_from_name'] }}" required>
                         </td>
                         <td id="smtp-from-name-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-from-name-default">{{ $head_data['default_config']['smtp_from_name'] }}</p>
@@ -148,7 +143,7 @@
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-backup-to">SMTP To Email (Backup):</p>
                         </td>
                         <td id="smtp-backup-to-input">
-                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-backup-to" name="smtp-backup-to" value="{{ $head_data['config']['smtp_to_email'] }}" required>
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-backup-to" name="smtp_to_email" value="{{ $head_data['config']['smtp_to_email'] }}" required>
                         </td>
                         <td id="smtp-backup-to-default-cell" style="margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-backup-to-default">{{ $head_data['default_config']['smtp_to_email'] }}</p>

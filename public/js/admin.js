@@ -311,27 +311,29 @@ function toggleCost(checkbox, id) {
 
 // Mail notifications checkboxes
 function mailNotification(checkbox, id) {
-    var outputBox = document.getElementById('notification-output');
     var notification = id;
-    if (checkbox.checked) {
-        // enable the notification
-        var value = 1;
-    } else {
-        // disable the notification
-        var value = 0;
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/admin.inc.php?mail-notification=1&notification="+notification+"&value="+value + "&_=" + new Date().getTime(), true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            var output = JSON.parse(xhr.responseText);
+    var value = checkbox.checked ? 1 : 0;
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    $.ajax({
+        type: "POST",
+        url: "/admin.toggleNotification",
+        data: {
+            "mail-notification": 1,
+            id: notification,
+            value: value,
+            _token: csrf
+        },
+        dataType: "json",
+        success: function(response) {
+            var outputBox = document.getElementById('notification-output');
             outputBox.hidden = false;
-            outputBox.classList="last-edit-T";
-            outputBox.innerHTML = output[0];
-        }
-    };
-    xhr.send();
-} 
+            outputBox.classList = "last-edit-T";
+            outputBox.innerHTML = response[0];
+        },
+        async: true
+    });
+}
 
 // auth setting checkboxes
 function authSettings(checkbox, id) {

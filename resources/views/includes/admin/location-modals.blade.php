@@ -59,46 +59,46 @@
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                 <div style="display:block"> 
                     <h2 style="margin-bottom:20px">Edit Location</h2>
-                    <form id="editLocationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                    <form id="editLocationForm" enctype="multipart/form-data" action="{{ route('admin.stockLocationSettings') }}" method="POST">
                         @csrf
                         <table class="centertable">
                             <tbody>
                                 <tr class="align-middle">
                                     <th style="padding-right:15px">Type:</th>
                                     <td>
-                                        <input id="location-type-input" type="hidden" name="location-type" value="" />
+                                        <input id="location-type-input" type="hidden" name="type" value="" />
                                         <label style="margin-bottom:0px" id="location-type-text"></label>
                                     </td>
                                 </tr>
                                 <tr class="align-middle">
                                     <th style="padding-top:15px; padding-right:10px; padding-bottom:10px ">ID:</th>
                                     <td>
-                                        <input id="location-id-input" type="hidden" name="location-id" value="" />
+                                        <input id="location-id-input" type="hidden" name="id" value="" />
                                         <label style="margin-bottom:0px" id="location-id-text"></label>
                                     </td>
                                 </tr>
                                 <tr id="location-parent-site-tr" class="align-middle">
                                     <th id="location-parent-site-th" style="padding-right:15px">Site:</th>
                                     <td>
-                                        <select class="form-control" id="location-parent-site-input" name="location-parent-site"></select>
+                                        <select class="form-control" id="location-parent-site-input" name="site"></select>
                                     </td>
                                 </tr>
                                 <tr id="location-parent-area-tr" class="align-middle">
                                     <th id="location-parent-area-th" style="padding-right:15px">Area:</th>
                                     <td>
-                                        <select class="form-control" id="location-parent-area-input" name="location-parent-area"></select>
+                                        <select class="form-control" id="location-parent-area-input" name="area"></select>
                                     </td>
                                 </tr>
                                 <tr class="align-middle">
                                     <th style="padding-right:15px">Name:</th>
                                     <td>
-                                        <input type="text" class="form-control" id="location-name-input" name="location-name" value="" />
+                                        <input type="text" class="form-control" id="location-name-input" name="name" value="" />
                                     </td>
                                 </tr>
                                 <tr id="location-description-tr" class="align-middle">
                                     <th style="padding-right:15px">Description:</th>
                                     <td>
-                                        <input type="text" class="form-control" style="width:400px" id="location-description-input" name="location-description" value="" />
+                                        <input type="text" class="form-control" style="width:400px" id="location-description-input" name="description" value="" />
                                     </td>
                                 </tr>
                                 <tr>

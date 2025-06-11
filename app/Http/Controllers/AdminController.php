@@ -365,4 +365,23 @@ class AdminController extends Controller
             return 'error';
         }
     }
+
+    static public function stockLocationSettings(Request $request)
+    {
+        if (isset($request['location-edit-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'type' => 'string|required',
+                        'id' => 'integer|required',
+                        'name' => 'string|required',
+                        'description' => 'string|nullable',
+                        'site' => 'integer|nullable',
+                        'area' => 'integer|nullable',
+                ]);
+                return AdminModel::stockLocationSettings($request->input());
+            }
+        }
+        
+        return 'error';
+    }
 }

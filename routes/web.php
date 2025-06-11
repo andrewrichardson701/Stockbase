@@ -119,6 +119,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/admin.smtpSettings', [AdminController::class, 'smtpSettings'])->name('admin.smtpSettings'); // Adjust SMTP settings
             Route::get('/admin.smtpTemplate', [SmtpController::class, 'template'])->name('admin.smtpTemplate'); // view SMTP template
             Route::post('/admin.toggleNotification', [AdminController::class, 'toggleNotification'])->name('admin.toggleNotification'); // Adjust Notification settings
+            Route::post('/admin.stockLocationSettings', [AdminController::class, 'stockLocationSettings'])->name('admin.stockLocationSettings'); // Adjust Stock Location settings
             //
 
             ////

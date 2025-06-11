@@ -317,7 +317,7 @@ class AdminModel extends Model
         } 
 
         $changelog_info = [
-                'user' => GeneralModel::getUser(),
+                'user' => $user,
                 'table' => 'config',
                 'record_id' => 1,
                 'action' => 'Update record',
@@ -719,7 +719,7 @@ class AdminModel extends Model
                     'previous_value' => '********',
                     'new_value' => ''
                 ];
-
+                
                 GeneralModel::updateChangelog($changelog_info);
                 return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', '2FA secret reset for user: '.$current_data->username);
             } else {
@@ -983,6 +983,96 @@ class AdminModel extends Model
         }
 
         echo(json_encode($results));
+    }
+
+    static public function stockLocationSettings($request)
+    {
+        $anchor = 'stocklocations-settings';
+        $errors = [];
+        $unchanged = [];
+        $changed = [];
+
+        $id = $request['id'];
+        $type = $request['type'];
+        
+        // check permissions
+        $user = GeneralModel::getUser();
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+        }        
+
+        if (in_array($type, ['site','area','shelf'])) {        
+            $table_fields = Schema::getColumnListing($type);
+            $excluded_keys = ['id', '_token', 'location-edit-submit', 'type'];
+
+            $current_data = DB::table($type)
+                    ->where('id', (int)$id)
+                    ->first();
+            
+            foreach($excluded_keys as $key) {
+                unset($request[$key]);
+            }
+
+            foreach($request as $field => $value) {
+                if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys
+                    if (!in_array($field, $table_fields)) {
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown table field: '.$field.'.');
+                    }
+                } else {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Excluded field: '.$field.'.');
+                }
+            }
+
+            if ($current_data) {
+                
+                foreach($request as $field => $value) {
+                    $previous_value = $current_data->$field;
+                    
+                    if ($value !== $previous_value) {
+                        $update = DB::table($type)->where('id', (int)$id)->update([$field => $value, 'updated_at' => now()]);
+
+                        if ($update) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => GeneralModel::getUser(),
+                                'table' => $type,
+                                'record_id' => (int)$id,
+                                'action' => 'Update record',
+                                'field' => $field,
+                                'previous_value' => $previous_value,
+                                'new_value' => $value
+                            ];
+
+                            $changed[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'updated'];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                        } else {
+                            $errors[$field] = 'failed to update';
+                            $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'unable to push data to DB'];
+                        }
+                    } else {
+                        $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'no changes to be made'];
+                    }
+                }
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to get current data.');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+        }
+
+        if (!empty($errors)) {
+            // error
+            return ['errors' => $errors, 'unchanged' => $unchanged, 'changed' => $changed, 'input_data' => $request];
+        } 
+
+        if (!empty($changed)) {
+            //success
+            $changed_fields = implode(',', array_keys($changed));
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
+        }
     }
 
 

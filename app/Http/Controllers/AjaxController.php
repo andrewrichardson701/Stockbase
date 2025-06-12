@@ -81,8 +81,12 @@ class AjaxController extends Controller
         
         if (isset($request['getremoveshelves']) && isset($request['manufacturer']) && isset($request['stock'])) {
             $shelves = AjaxController::getSelectBoxShelvesByManufacturer($request['manufacturer'], $request['stock']);
-
             return $shelves;
+        }
+
+        if (isset($request['getsites'])) {
+            $sites = GeneralModel::getAllWhere('site', ['deleted' => 0], 'name');
+            return $sites;
         }
 
         

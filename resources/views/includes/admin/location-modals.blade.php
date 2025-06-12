@@ -80,13 +80,13 @@
                                 <tr id="location-parent-site-tr" class="align-middle">
                                     <th id="location-parent-site-th" style="padding-right:15px">Site:</th>
                                     <td>
-                                        <select class="form-control" id="location-parent-site-input" name="site"></select>
+                                        <select class="form-control" id="location-parent-site-input" name="site_id"></select>
                                     </td>
                                 </tr>
                                 <tr id="location-parent-area-tr" class="align-middle">
                                     <th id="location-parent-area-th" style="padding-right:15px">Area:</th>
                                     <td>
-                                        <select class="form-control" id="location-parent-area-input" name="area"></select>
+                                        <select class="form-control" id="location-parent-area-input" name="area_id"></select>
                                     </td>
                                 </tr>
                                 <tr class="align-middle">

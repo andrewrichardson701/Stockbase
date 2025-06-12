@@ -1005,6 +1005,11 @@ class AdminModel extends Model
             $table_fields = Schema::getColumnListing($type);
             $excluded_keys = ['id', '_token', 'location-edit-submit', 'type'];
 
+            if ($type == 'shelf') {
+                $excluded_keys[] = 'site_id';
+                $excluded_keys[] = 'description';
+            }
+
             $current_data = DB::table($type)
                     ->where('id', (int)$id)
                     ->first();

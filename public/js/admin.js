@@ -563,7 +563,7 @@ function populateSites(field, current_site) {
     // Make an AJAX request to retrieve the corresponding sites
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?getsites=1&_=" + new Date().getTime(), true);
+    xhr.open("GET", "/_ajax-selectBoxes?getsites=1&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
@@ -589,7 +589,7 @@ function populateAreas(field, current_site, current_area) {
     // Make an AJAX request to retrieve the corresponding areas
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + current_site + "&_=" + new Date().getTime(), true);
+    xhr.open("GET", "/_ajax-selectBoxes?site=" + current_site + "&_=" + new Date().getTime(), true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
@@ -618,7 +618,7 @@ function populateAreasUpdate() {
     if (type === "shelf") {
         // Make an AJAX request to retrieve the corresponding areas
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site + "&_=" + new Date().getTime(), true);
+        xhr.open("GET", "/_ajax-selectBoxes?site=" + site + "&_=" + new Date().getTime(), true);
         xhr.onload = function() {
             if (xhr.status === 200) {
                 // Parse the response and populate the area select box

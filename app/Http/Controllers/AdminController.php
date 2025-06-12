@@ -368,6 +368,7 @@ class AdminController extends Controller
 
     static public function stockLocationSettings(Request $request)
     {
+        // dd($request->input());
         if (isset($request['location-edit-submit'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([

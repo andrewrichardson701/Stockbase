@@ -13,7 +13,7 @@
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                 <div style="display:block"> 
                     <h2 style="margin-bottom:20px">Add new Site / Area / Shelf</h2>
-                    <form id="locationForm" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                    <form id="locationForm" enctype="multipart/form-data" action="{{ route('admin.stockLocationSettings') }}" method="POST">
                         @csrf
                         <input type="hidden" name="admin" value="1" />
                         <table class="centertable">

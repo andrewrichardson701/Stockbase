@@ -412,6 +412,20 @@ class AdminController extends Controller
                 return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
             }
         }
+
+        if (isset($request['location-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'type' => 'string|required',
+                        'name' => 'string|required',
+                        'description' => 'string|nullable',
+                        'parent' => 'integer|nullable',
+                ]);
+                return AdminModel::stockLocationAdd($request->input());
+            } else {
+                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
+            }
+        }
         
         return 'error';
     }

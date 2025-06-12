@@ -661,28 +661,37 @@ function showInput() {
 function populateParent() {
     // Get the selected type
     var type = document.getElementById("addLocation-type").value;
+    if (type == 'shelf') {
+        var search_type = 'area';
+    } else if (type == 'area') {
+        var search_type = 'site';
+    } else {
+        var search_type = null;
+    }
     
-    // Make an AJAX request to retrieve the corresponding parents
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?type=" + type + "&_=" + new Date().getTime(), true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            // Parse the response and populate the area select box
-            var select = document.getElementById("addLocation-parent");
-                select.options.length = 0;
-                select.options[0] = new Option("Select Parent", "");
-            if (xhr.responseText !== '') {
-                var parents = JSON.parse(xhr.responseText);
-                for (var i = 0; i < parents.length; i++) {
-                    select.options[select.options.length] = new Option(parents[i].name, parents[i].id);
-                }
-                
-            } 
-            select.disabled = (select.options.length === 1);
-        }
-        
-    };
-    xhr.send();
+    if (search_type !== null) {
+        // Make an AJAX request to retrieve the corresponding parents
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/_ajax-selectBoxes?location_type=" + search_type + "&_=" + new Date().getTime(), true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response and populate the area select box
+                var select = document.getElementById("addLocation-parent");
+                    select.options.length = 0;
+                    select.options[0] = new Option("Select Parent", "");
+                if (xhr.responseText !== '') {
+                    var parents = JSON.parse(xhr.responseText);
+                    for (var i = 0; i < parents.length; i++) {
+                        select.options[select.options.length] = new Option(parents[i].name, parents[i].id);
+                    }
+                    
+                } 
+                select.disabled = (select.options.length === 1);
+            }
+            
+        };
+        xhr.send();
+    }
 }
 document.getElementById("addLocation-type").addEventListener("change", populateParent);
 

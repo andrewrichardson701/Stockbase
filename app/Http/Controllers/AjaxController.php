@@ -89,6 +89,15 @@ class AjaxController extends Controller
             return $sites;
         }
 
+        if (isset($request['location_type'])) {
+            if (in_array($request['location_type'], ['site','area','shelf'])) {
+                $sites = GeneralModel::getAllWhere($request['location_type'], ['deleted' => 0], 'name');
+            } else {
+                $sites = 'error';
+            }
+            return $sites;
+        }
+
         
     }
 

@@ -1125,7 +1125,7 @@ class AdminModel extends Model
                 }
 
                 foreach($search_tables as $table) {
-                    $links = AdminModel::attributeLinks($table, 'site_id', null, 1, [$type.'_id' => $id]);
+                    $links = AdminModel::attributeLinks($table, $type.'_id', null, 1, [$type.'_id' => $id]);
                     if (array_key_exists($id, $links) && $links[$id]['count'] > 0) {
                         return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to delete: Links still present in '.$table.' table.');
                     }
@@ -1226,7 +1226,7 @@ class AdminModel extends Model
                     if ($update) {
                         // changelog
                         $changelog_info = [
-                            'user' => GeneralModel::getUser(),
+                            'user' => $user,
                             'table' => $type,
                             'record_id' => (int)$id,
                             'action' => 'Restore record',
@@ -1249,6 +1249,87 @@ class AdminModel extends Model
         } else {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
         }
+    }
+
+    static public function stockLocationAdd($request)
+    {
+        $authorized = 0;
+        $anchor = 'stocklocations-settings';
+        $type = $request['type'];
+        $parent_id = $request['parent'] ?? '';
+
+        // check permissions
+        $user = GeneralModel::getUser();
+        if (in_array($user['role_id'], [1,3])) {
+            $authorized = 1;
+        }  
+
+        if (in_array($type, ['site', 'area', 'shelf'])) {
+            // correct type
+            if ($type == 'site' && $authorized == 0) {
+                // unauthorized.
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid permissions.');
+            }
+
+            $values = ['name' => $request['name'], 'deleted' => 0, 'created_at' => now(), 'updated_at' => now()];
+
+            switch ($type) {
+                case 'site': 
+                    $parent_table = '';
+                    $values['description'] = $request['description'];
+                    break;
+                case 'area':
+                    $parent_table = 'site';
+                    $values['description'] = $request['description'];
+                    $values[$parent_table.'_id'] = $parent_id;
+                    break;
+                case 'shelf':
+                    $parent_table = 'area';
+                    $values[$parent_table.'_id'] = $parent_id;
+                    break;
+                default:
+                    $parent_table = '';
+            }
+
+            if (filled($parent_table)) {
+                // check if the parent exists and isnt deleted.
+                $parent = DB::table($parent_table)
+                                ->where('id', $parent_id)
+                                ->where('deleted', 0)
+                                ->first();
+                if (!$parent) {
+                    // parent doesnt exist or is deleted.
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid parent.');
+                }
+            }
+
+            // ADD
+            $insert = DB::table($type)->insertGetId($values);
+
+            if ($insert) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => $type,
+                    'record_id' => $insert,
+                    'action' => 'New record',
+                    'field' => 'name',
+                    'previous_value' => '',
+                    'new_value' => $request['name']
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.');
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+            }
+        
+        } else {
+            // incorrect type
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+        }
+
+
     }
 
 

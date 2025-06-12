@@ -115,7 +115,7 @@ class AdminModel extends Model
         return $return;
     }
 
-    static public function attributeLinks($search_table, $asset_field, $select=null, $deleted_count=null)
+    static public function attributeLinks($search_table, $asset_field, $select=null, $deleted_count=null, $where=[])
     {
         $return = [];
 
@@ -125,6 +125,11 @@ class AdminModel extends Model
         $results = $instance->when($select !== null, function ($query) use ($select) {
                                 $query->selectRaw($select);
                             })
+                        ->when(!empty($where), function ($query) use ($where) {
+                            foreach($where as $field => $value) {
+                                $query->where($field, $value);
+                            }
+                        })
                         ->get()
                         ->toarray();
 
@@ -985,7 +990,7 @@ class AdminModel extends Model
         echo(json_encode($results));
     }
 
-    static public function stockLocationSettings($request)
+    static public function stockLocationEdit($request)
     {
         $anchor = 'stocklocations-settings';
         $errors = [];
@@ -1077,6 +1082,172 @@ class AdminModel extends Model
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
         } else {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
+        }
+    }
+
+    static public function stockLocationDelete($request)
+    {
+        $anchor = 'stocklocations-settings';
+
+        $id = $request['id'];
+        $type = $request['type'];
+
+        // check permissions
+        $user = GeneralModel::getUser();
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+        }     
+
+        if (in_array($type, ['site', 'area', 'shelf'])) {
+            $current_data = DB::table($type)
+                    ->where('id', (int)$id)
+                    ->first();
+
+            if ($current_data) {
+                // check if shelf is already deleted
+                if ((int)$current_data->deleted == 1) {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Delete failed: '.ucwords($type).' already deleted.');
+                }
+
+                // check for any existing links
+                switch ($type) {
+                    case 'site': 
+                        $search_tables = ['area', 'optic_item'];
+                        break;
+                    case 'area':
+                        $search_tables = ['shelf'];
+                        break;
+                    case 'shelf':
+                        $search_tables = ['item', 'container'];
+                        break;
+                    default:
+                        $search_tables = [];
+                }
+
+                foreach($search_tables as $table) {
+                    $links = AdminModel::attributeLinks($table, 'site_id', null, 1, [$type.'_id' => $id]);
+                    if (array_key_exists($id, $links) && $links[$id]['count'] > 0) {
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to delete: Links still present in '.$table.' table.');
+                    }
+                }
+
+                $previous_value = $current_data->deleted;
+
+                if ($previous_value !== 1) {
+                    $update = DB::table($type)->where('id', (int)$id)->update(['deleted' => 1, 'updated_at' => now()]);
+
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => GeneralModel::getUser(),
+                            'table' => $type,
+                            'record_id' => (int)$id,
+                            'action' => 'Delete record',
+                            'field' => 'deleted',
+                            'previous_value' => 0,
+                            'new_value' => 1
+                        ];
+
+                        GeneralModel::updateChangelog($changelog_info);
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).': '.$current_data->name.' deleted.');
+                    } else {
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to update database entry.');
+                    }
+                } else {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to delete: '.ucwords($type).' already deleted.');
+                }
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to get current data.');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+        }
+    }
+
+    static public function stockLocationRestore($request)
+    {
+        $anchor = 'stocklocations-settings';
+
+        $id = $request['id'];
+        $type = $request['type'];
+
+        // check permissions
+        $user = GeneralModel::getUser();
+        if (!in_array($user['role_id'], [1,3])) {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+        }     
+
+        if (in_array($type, ['site', 'area', 'shelf'])) {
+            $current_data = DB::table($type)
+                    ->where('id', (int)$id)
+                    ->first();
+
+            if ($current_data) {
+                // check if shelf is already active
+                if ((int)$current_data->deleted == 0) {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Restore failed: '.ucwords($type).' already ative.');
+                }
+
+                // check for any existing links
+                switch ($type) {
+                    case 'site': 
+                        $search_tables = [];
+                        $q_field = '';
+                        break;
+                    case 'area':
+                        $search_tables = ['site'];
+                        $q_field = 'site_id';
+                        break;
+                    case 'shelf':
+                        $search_tables = ['area'];
+                        $q_field = 'area_id';
+                        break;
+                    default:
+                        $search_tables = [];
+                }
+
+                if (!empty($search_tables)) {
+                    foreach($search_tables as $table) {
+                        $data = DB::table($table)
+                                ->where('id', (int)$current_data->$q_field)
+                                ->where('deleted', 0)
+                                ->first();
+                        if (!$data) {
+                            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Restore failed: Parent is deleted.');
+                        }
+                    }
+                }
+
+                $previous_value = $current_data->deleted;
+
+                if ($previous_value !== 0) {
+                    $update = DB::table($type)->where('id', (int)$id)->update(['deleted' => 0, 'updated_at' => now()]);
+
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => GeneralModel::getUser(),
+                            'table' => $type,
+                            'record_id' => (int)$id,
+                            'action' => 'Restore record',
+                            'field' => 'deleted',
+                            'previous_value' => 1,
+                            'new_value' => 0
+                        ];
+
+                        GeneralModel::updateChangelog($changelog_info);
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).': '.$current_data->name.' restored.');
+                    } else {
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to update database entry.');
+                    }
+                } else {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to delete: '.ucwords($type).' already active.');
+                }
+            } else {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to get current data.');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
         }
     }
 

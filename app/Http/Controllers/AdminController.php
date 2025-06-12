@@ -32,10 +32,13 @@ class AdminController extends Controller
         
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site'));
         $site_links = AdminModel::attributeLinks('area', 'site_id', null, 1);
+        $site_links_optics = AdminModel::attributeLinks('optic_item', 'site_id', null, 1);
         $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area'));
         $area_links = AdminModel::attributeLinks('shelf', 'area_id', null, 1);
         $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf'));
         $shelf_links = AdminModel::attributeLinks('item', 'shelf_id', null, 1);
+        $shelf_links_containers = AdminModel::attributeLinks('container', 'shelf_id', null, 1);
+
         $location_colors = [
                             0 => ['site' => '#F4BB44', 'area' => '#FFE47A', 'shelf' => '#FFDEAD'],
                             1 => ['site' => '#6ABAD6', 'area' => '#99D4EF', 'shelf' => '#C1E9FC'],
@@ -80,10 +83,12 @@ class AdminController extends Controller
                                 'response_handling' => $response_handling,
                                 'sites' => $sites,
                                 'site_links' => $site_links,
+                                'site_links_optics' => $site_links_optics,
                                 'areas' => $areas,
                                 'area_links' => $area_links,
                                 'shelves' => $shelves,
                                 'shelf_links' => $shelf_links,
+                                'shelf_links_containers' => $shelf_links_containers,
                                 'themes' => $themes,
                                 
                                 'users' => $users,
@@ -368,7 +373,6 @@ class AdminController extends Controller
 
     static public function stockLocationSettings(Request $request)
     {
-        // dd($request->input());
         if (isset($request['location-edit-submit'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
@@ -379,7 +383,33 @@ class AdminController extends Controller
                         'site' => 'integer|nullable',
                         'area' => 'integer|nullable',
                 ]);
-                return AdminModel::stockLocationSettings($request->input());
+                return AdminModel::stockLocationEdit($request->input());
+            } else {
+                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
+            }
+        }
+
+        if (isset($request['location-delete-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'type' => 'string|required',
+                        'id' => 'integer|required',
+                ]);
+                return AdminModel::stockLocationDelete($request->input());
+            } else {
+                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
+            }
+        }
+
+        if (isset($request['location-restore-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'type' => 'string|required',
+                        'id' => 'integer|required',
+                ]);
+                return AdminModel::stockLocationRestore($request->input());
+            } else {
+                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
             }
         }
         

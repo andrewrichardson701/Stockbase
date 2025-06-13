@@ -90,7 +90,7 @@ class SmtpModel extends Model
     static public function toggleSmtp($enabled)
     {
         $user = GeneralModel::getUser();
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('error', 'Permission denied.');
         }
 

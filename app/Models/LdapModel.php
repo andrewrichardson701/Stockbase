@@ -16,7 +16,7 @@ class LdapModel extends Model
     static public function toggleLdap($enabled)
     {
         $user = GeneralModel::getUser();
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => 'ldap-settings']) . '#ldap-settings')->with('error', 'Permission denied.');
         }
 

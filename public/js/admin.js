@@ -787,36 +787,58 @@ function loadAdminImages(currentPage, pageNum) {
     });
 }
 
-function userRoleChange(id) {
-    var select = document.getElementById("user_"+id+"_role_select");
-    var selectedValue = select.value;
-    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+function toggleUserPermissions(id, state) {
+    var show_button = document.getElementById('user_'+id+'_permissions-show');
+    var hide_button = document.getElementById('user_'+id+'_permissions-hide');
+    var row = document.getElementById('user_'+id+'_row');
+    var permissions_row = document.getElementById('user_'+id+'_permissions_row');
 
-    $.ajax({
-        type: "POST",
-        url: "/admin.userSettings",
-        data: {
-            user_id: id,
-            user_new_role: selectedValue,
-            user_role_submit: 'yes',
-            _token: csrf
-        },
-        dataType: "html",
-        success: function(response) {
-            var tr = document.getElementById('users_table_info_tr');
-            var td = document.getElementById('users_table_info_td');
-            tr.hidden = false;
-            var result = response;
-            if (result.startsWith("Error:")) {
-                td.classList.add("red");
-            } else {
-                td.classList.add("green");
-            }
-            td.textContent = result;
-        },
-        async: true
-    });
+    if (state == 1) {
+        row.classList.add('theme-th-selected');
+        permissions_row.classList.add('theme-th-selected');
+        show_button.hidden = true;
+        hide_button.hidden = false;
+        permissions_row.hidden = false;
+    } else {
+        row.classList.remove('theme-th-selected');
+        permissions_row.classList.remove('theme-th-selected');
+        show_button.hidden = false;
+        hide_button.hidden = true;
+        permissions_row.hidden = true;
+    }
+
 }
+
+// function userRoleChange(id) {
+//     var select = document.getElementById("user_"+id+"_role_select");
+//     var selectedValue = select.value;
+//     var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+//     $.ajax({
+//         type: "POST",
+//         url: "/admin.userSettings",
+//         data: {
+//             user_id: id,
+//             user_new_role: selectedValue,
+//             user_role_submit: 'yes',
+//             _token: csrf
+//         },
+//         dataType: "html",
+//         success: function(response) {
+//             var tr = document.getElementById('users_table_info_tr');
+//             var td = document.getElementById('users_table_info_td');
+//             tr.hidden = false;
+//             var result = response;
+//             if (result.startsWith("Error:")) {
+//                 td.classList.add("red");
+//             } else {
+//                 td.classList.add("green");
+//             }
+//             td.textContent = result;
+//         },
+//         async: true
+//     });
+// }
 function usersEnabledChange(id) {
     var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
     var csrf = document.querySelector('meta[name="csrf-token"]').content;

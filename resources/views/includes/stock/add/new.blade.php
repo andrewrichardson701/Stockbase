@@ -121,7 +121,7 @@
                             @endif
                             </select>
                         </div>
-                        @if (in_array($head_data['user']['role_id'], [1,3]))
+                        @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permission']['admin == 1'])
                         <div>
                             <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('site')">Add New (admin only)</label>
                         </div>

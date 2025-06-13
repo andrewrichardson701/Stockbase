@@ -410,7 +410,7 @@ class AdminModel extends Model
 
             if (!empty($changed)) {
                 //success
-                $changed_fields = implode(',', array_keys($changed));
+                $changed_fields = implode(', ', array_keys($changed));
                 return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
             } else {
                 return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
@@ -538,55 +538,119 @@ class AdminModel extends Model
         echo json_encode($return);
     }
 
-    static public function userRoleChange($request)
+    static public function userPermissionsChange($request)
     {
         $user_id = $request['user_id'];
+        $anchor = 'users-settings';
+        $errors = [];
+        $unchanged = [];
+        $changed = [];
+
         if ($user_id == 1) {
             return 'Error: Cannot update root user.';
         }
 
         $user = GeneralModel::getUser();
 
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return 'Permission denied.';
-        }
+        } 
+
+        $permissions_fields = Schema::getColumnListing('users_permissions');
 
         // get current user
-        $current_data = DB::table('users')
+        $user_data = DB::table('users')
                             ->where('id', $user_id)
                             ->first();
 
-        if ($current_data) {
+        if ($user_data) {
             // user exists
-            $previous_value = $current_data->role_id;
+            // get permissions 
+            $current_permissions = DB::table('users_permissions')
+                            ->where('id', $user_id)
+                            ->first();
 
-            if (in_array((int)$request['user_new_role'], [1,0])) {
-                $update = DB::table('users')->where('id', $user_id)->update(['role_id' => (int)$request['user_new_role'], 'updated_at' => now()]);
+            if ($current_permissions) {
+                // permissions exist
+                $missing_keys = array_diff($permissions_fields, array_keys($request));
 
-                if ($update) {
-                    // changelog
-                    $changelog_info = [
-                        'user' => GeneralModel::getUser(),
-                        'table' => 'users',
-                        'record_id' => $user_id,
-                        'action' => 'Update record',
-                        'field' => 'role_id',
-                        'previous_value' => $previous_value,
-                        'new_value' => (int)$request['user_new_role']
-                    ];
-
-                    GeneralModel::updateChangelog($changelog_info);
-                    return 'Role updated for user: '.$current_data->username.'.';
-                } else {
-                    return 'Error: No changes made. Unable to update role.';
+                foreach ($missing_keys as $key) {
+                    $request[$key] = 0;
                 }
+
+                unset($request['id'], $request['user_id'], $request['_token'], $request['updated_at'], $request['created_at'], $request['user-permissions-submit'], $request['root']);
+                // dd($request, $permissions_fields);
+                foreach($request as $key => $value) {
+                    if (!in_array($key, $permissions_fields)) {
+                        // throw an error
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified.');
+                    }
+                }
+
+                foreach($request as $key => $value) {
+                    $previous_value = $current_permissions->$key;
+                    if ($value == 'on') {
+                        $value = 1;
+                    } elseif ($value == 'off') {
+                        $value = 0;
+                    }
+                    if ((int)$value !== (int)$previous_value) {
+                        if (in_array((int)$value, [1,0])) {
+                            
+
+                            $update = DB::table('users_permissions')->where('id', $user_id)->update([$key => (int)$value, 'updated_at' => now()]);
+
+                            if ($update) {
+                                // changelog
+                                $changelog_info = [
+                                    'user' => GeneralModel::getUser(),
+                                    'table' => 'users_permissions',
+                                    'record_id' => $user_id,
+                                    'action' => 'Update record',
+                                    'field' => $key,
+                                    'previous_value' => $previous_value,
+                                    'new_value' => (int)$value
+                                ];
+
+                                GeneralModel::updateChangelog($changelog_info);
+                                // add to update array
+                                $changed[$key] = ['current' => $current_permissions->$key, 'new_data' => $value, 'reason' => 'updated'];
+                            } else {
+                                $errors[$key] = 'failed to update';
+                                $unchanged[$key] = ['current' => $current_permissions->$key, 'new_data' => $value, 'reason' => 'failed to update'];
+                            }
+                        } else {
+                            // throw error - wrong integer value
+                            $errors[$key] = 'incorrect value';
+                            $unchanged[$key] = ['current' => $current_permissions->$key, 'new_data' => $value, 'reason' => 'wrong integer value'];
+                        }
+                    } else {
+                        $unchanged[$key] = ['current' => $current_permissions->$key, 'new_data' => $value, 'reason' => 'no change'];
+                    }
+                }
+
             } else {
-                return 'Error: Non-boolean value present.';
+                // error - no permissions found
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'User\'s permissions not found in DB.');
             }
+            
 
         } else {
-            return 'Error: Unable to get current data';
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'User not found in DB.');
         }
+
+        if (!empty($errors)) {
+                // error
+                return ['errors' => $errors, 'unchanged' => $unchanged, 'changed' => $changed, 'input_data' => $request];
+            } 
+
+            if (!empty($changed)) {
+                //success
+                $changed_fields = implode(', ', array_keys($changed));
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
+            }
     }
 
     static public function userEnabled($request) 
@@ -598,7 +662,7 @@ class AdminModel extends Model
 
         $user = GeneralModel::getUser();
 
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return 'Permission denied.';
         }
 
@@ -656,7 +720,7 @@ class AdminModel extends Model
 
         $user = GeneralModel::getUser();
 
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permission denied.');
         }
 
@@ -702,7 +766,7 @@ class AdminModel extends Model
 
         $user = GeneralModel::getUser();
 
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permission denied.');
         }
 
@@ -760,7 +824,7 @@ class AdminModel extends Model
         // check permissions
         $user = GeneralModel::getUser();
 
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
         }
 
@@ -832,7 +896,7 @@ class AdminModel extends Model
         // check permissions
         $user = GeneralModel::getUser();
 
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
         }
 
@@ -1003,7 +1067,7 @@ class AdminModel extends Model
         
         // check permissions
         $user = GeneralModel::getUser();
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
         }        
 
@@ -1079,7 +1143,7 @@ class AdminModel extends Model
 
         if (!empty($changed)) {
             //success
-            $changed_fields = implode(',', array_keys($changed));
+            $changed_fields = implode(', ', array_keys($changed));
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
         } else {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
@@ -1095,7 +1159,7 @@ class AdminModel extends Model
 
         // check permissions
         $user = GeneralModel::getUser();
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
         }     
 
@@ -1174,7 +1238,7 @@ class AdminModel extends Model
 
         // check permissions
         $user = GeneralModel::getUser();
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
         }     
 
@@ -1261,7 +1325,7 @@ class AdminModel extends Model
 
         // check permissions
         $user = GeneralModel::getUser();
-        if (in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             $authorized = 1;
         }  
 

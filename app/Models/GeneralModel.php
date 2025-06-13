@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * 
@@ -97,6 +98,8 @@ class GeneralModel extends Model
     {
         $instance = new self();
         $instance->setTable($table);
+
+        $fields = Schema::getColumnListing($table);
 
         $query = $instance->newQuery(); // ✅ Start a new query builder
 
@@ -237,6 +240,52 @@ class GeneralModel extends Model
         return $formatted;
     }
 
+    static public function formatArrayOnField($array, $field) 
+    {
+        $formatted = [];
+        $formatted['rows'] = [];
+        $i = 0;
+        foreach ($array as $entry) { // format the data
+            if(isset($entry[$field])){
+                $formatted['rows'][$entry[$field]] = $entry;
+            } else {
+                $formatted['rows'][$i] = $entry;
+            }
+            $i++;
+        }
+        return $formatted;
+    }
+
+    static public function formatArrayOnFieldAndCount($array, $field='id') 
+    {
+        $formatted = [];
+        $formatted['rows'] = [];
+        
+        $count = count($array) ?? 0;
+        $formatted['count'] = $count;
+
+        $i = 0;
+
+        foreach ($array as $entry) { // format the data
+            if (isset($entry['deleted'])) {
+                if (!isset($formatted['deleted_count'])) {
+                    $formatted['deleted_count'] = 0;
+                }
+                if ($entry['deleted'] == 1) {
+                    $formatted['deleted_count']++;
+                }
+            }
+            if (isset($entry[$field])) {
+                $formatted['rows'][$entry[$field]] = $entry;
+            } else {
+                $formatted['rows'][$i] = $entry;
+            }
+            $i++;
+        }
+        
+        return $formatted;
+    }
+
     static public function versionNumber()
     {
         return "1.3.0L";
@@ -313,8 +362,6 @@ class GeneralModel extends Model
         $head_data['previous_url'] = GeneralModel::previousURL();
 
         $head_data['update_data'] = GeneralModel::updateChecker($head_data['version_number']);
-
-        // $head_data['active_user'] = GeneralModel::temp_activeUserData();
         
         $head_data['user'] = GeneralModel::getUser();
 
@@ -463,7 +510,7 @@ class GeneralModel extends Model
         }
 
         $user_data = $user->toArray();
-        $user_data['role_data'] = GeneralModel::getAllWhere('users_roles', ['id' => $user_data['role_id'] ?? 1])[0] ?? [];
+        $user_data['permissions'] = GeneralModel::getAllWhere('users_permissions', ['id' => $user_data['id']], 'id')[0] ?? [];
         $user_data['theme_data'] = GeneralModel::getAllWhere('theme', ['id' => $user_data['theme_id'] ?? 1])[0] ?? [];
 
         return $user_data;
@@ -472,46 +519,6 @@ class GeneralModel extends Model
     static public function sessionData() 
     {
         
-    }
-    
-    static public function temp_activeUserData() 
-    {
-        $user_id = 0; // make this different
-
-        $instance = new self();
-        $instance->setTable('users_old AS users');
-
-        $result = $instance->selectRaw('users.id AS user_id, users.username, users.first_name, 
-                                        users.last_name, users.email, users.auth, users.role_id, 
-                                        users.enabled, users.password_expired, users.theme_id, users.2fa_enabled,
-                                        COALESCE(NULLIF(users.theme_id, 0), config.default_theme_id) AS final_theme_id,
-                                        theme.name AS theme_name, theme.file_name AS theme_file_name,
-                                        users_roles.name AS users_roles_name, users_roles.is_optic AS users_roles_is_optic,
-                                        users_roles.is_admin AS users_roles_is_admin, users_roles.is_root AS users_roles_is_root')
-                            ->where('users.id', '=', $user_id)
-                            ->crossJoin('config') // Ensures `config.default_theme_id` is part of the query first
-                            ->leftJoin('theme', \DB::raw('theme.id'), '=', \DB::raw('COALESCE(NULLIF(users.theme_id, 0), config.default_theme_id)'))
-                            ->join('users_roles', 'users.role_id', '=', 'users_roles.id')
-                            ->get()
-                            ->toArray()[0];
-
-        $user_data = [
-                'id' => $result['user_id'],
-                'username' => $result['username'],
-                'first_name' => $result['first_name'],
-                'last_name' => $result['last_name'],
-                'email' => $result['email'],
-                'auth' => $result['auth'],
-                'role_id' => $result['role_id'],
-                'role' => $result['users_roles_name'],
-                'enabled' => $result['enabled'],
-                'password_exipred' => $result['password_expired'],
-                'theme_id' => $result['final_theme_id'],
-                'theme_file_name' => $result['theme_file_name'],
-                '2fa_enabled' => $result['2fa_enabled']
-        ];
-
-        return $user_data;
     }
 
     static public function updateChecker($versionNumber) 

@@ -183,13 +183,25 @@ class AdminController extends Controller
 
     static public function userSettings(Request $request) 
     {
-        if (isset($request['user_role_submit'])) {
+        if (isset($request['user-permissions-submit'])) {
+            // dd ($request->toArray());
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
                         'user_id' => 'integer|required',
-                        'user_new_role' => 'integer|required',
+                        'admin' => 'string|nullable',
+                        'locations' => 'string|nullable',
+                        'stock' => 'string|nullable',
+                        'cables' => 'string|nullable',
+                        'optics' => 'string|nullable',
+                        'cpus' => 'string|nullable',
+                        'memory' => 'string|nullable',
+                        'disks' => 'string|nullable',
+                        'fans' => 'string|nullable',
+                        'psus' => 'string|nullable',
+                        'containers' => 'string|nullable',
+                        'changelog' => 'string|nullable',
                 ]);
-                return AdminModel::userRoleChange($request->input());
+                return AdminModel::userPermissionsChange($request->input());
             } else {
                 return 'Error: CSRF token missmatch.';
             }

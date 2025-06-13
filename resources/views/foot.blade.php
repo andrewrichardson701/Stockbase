@@ -52,7 +52,7 @@
         <a href="about" style="font-size:12px" id="version-about">@if (isset($head_data['update_data']['update_available']) && $head_data['update_data']['update_available'] ==1) <i class="fa-solid fa-circle-exclamation" style="color: #ff3000; margin-right:7px"></i> @endif {{$head_data['version_number']}}</a>
     </div>
 </div>
-    @if (isset($head_data['user']['id']) && ($head_data['user']['role_id'] == 1 || $head_data['user']['role_id'] == 3))
+    @if (isset($head_data['user']['id']) && ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1))
     <span id="version-check" class="popupBox well-nopad text-center theme-divBg">
         @if (isset($head_data['update_data']['update_text']))
             {!! $head_data['update_data']['update_text'] !!}

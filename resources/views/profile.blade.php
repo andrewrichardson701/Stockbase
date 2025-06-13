@@ -133,7 +133,7 @@
                                                 <p class="block font-medium">Role:</p>
                                             </div>
                                             <div class="col">
-                                                <p name="role" value="{{ $user->role_id }}">{{ $head_data['user']['role_data']['name'] }}</p>
+                                                <p name="permissions" value="{{ $user->permissions }}">{{ $user->permissions }}</p>
                                             </div>
 
                                             <div class="col">

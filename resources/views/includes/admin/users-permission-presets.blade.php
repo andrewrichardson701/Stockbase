@@ -1,10 +1,10 @@
 <div style="padding-bottom:0px">
     <div class="container">
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="usersroles-settings" onclick="toggleSection(this, 'usersroles')">User Roles <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="userspermissionspresets-settings" onclick="toggleSection(this, 'userspermissionspresets')">User Permission Presets <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
         <!-- Users Roles -->
     </div>
-    <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="usersroles" hidden>
-        @include('includes.response-handling', ['section' => 'usersroles-settings'])
+    <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="userspermissionspresets" hidden>
+        @include('includes.response-handling', ['section' => 'userspermissionspresets-settings'])
         <div class="content" style="padding-top:0px; padding-bottom:0px">
             <table id="permissionRolesTable" class="table table-dark theme-table centertable" style="max-width:max-content;white-space:nowrap">
                 <thead>

@@ -1978,7 +1978,7 @@ class StockModel extends Model
         // check permissions
         $user = GeneralModel::getUser();
 
-        if (!in_array($user['role_id'], [1,3])) {
+        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
         }
 

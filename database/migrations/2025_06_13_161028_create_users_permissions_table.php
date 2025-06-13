@@ -9,7 +9,7 @@ class CreateUsersPermissionsTable extends Migration
     public function up()
     {
         Schema::create('users_permissions', function (Blueprint $table) {
-            $table->id(); // Auto-incrementing primary key
+            $table->integer('id')->primary()->nullable(false); // Regular int, not auto-increment
 
             // Boolean permission columns, defaulting to false (0)
             $table->boolean('root')->default(false);

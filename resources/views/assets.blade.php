@@ -23,7 +23,7 @@
         
         <div class="container" style="margin-top:20px">
             <div class="row ">
-                <div class="col text-center well-nopad theme-divBg @if (in_array($head_data['user']['role_id'], [1, 3]))  clickable" onclick="navPage(`{{ route('optics') }}`)" @else  no-perms" title="Not permitted" @endif
+                <div class="col text-center well-nopad theme-divBg @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1)  clickable" onclick="navPage(`{{ route('optics') }}`)" @else  no-perms" title="Not permitted" @endif
                 style="margin:5px">
                     <h4>Optics</h4>
                     <img style="max-width:100px;overflow:hidden;" src="/img/assets/SFP.png">

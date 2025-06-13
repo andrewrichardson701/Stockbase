@@ -4,14 +4,10 @@
     </div>
     <!-- Changelog -->
     <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="changelog" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'changelog')) {
-        //     showResponse();
-        // }
-        ?>
+
         @include('includes.response-handling', ['section' => 'changelog'])
 
-        <div class="content">
+        <div class="content" style="padding-top:0px; padding-bottom:0px">
             @if ($changelog['count'] > 0)
             <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                 <thead>

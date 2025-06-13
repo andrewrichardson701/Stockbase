@@ -48,6 +48,8 @@ class AdminController extends Controller
         $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));
         
         $users = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users')); //update this to the correct users table
+        $users_permissions = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_permissions'));
+        $users_permissions_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_permissions_roles'));
         $user_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_roles'));
         
         $active_sessions = GeneralModel::formatArrayOnIdAndCount(AdminModel::getActiveSessionLog());
@@ -92,6 +94,8 @@ class AdminController extends Controller
                                 'themes' => $themes,
                                 
                                 'users' => $users,
+                                'users_permissions' => $users_permissions,
+                                'users_permissions_roles' => $users_permissions_roles,
                                 'user_roles' => $user_roles,
                                 
                                 'active_sessions' => $active_sessions,

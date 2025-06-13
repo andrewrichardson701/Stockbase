@@ -20,7 +20,7 @@
                             <th>Username</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Role</th>
+                            <th>Permissions</th>
                             <th>Auth</th>
                             <th>Enabled</th>
                             <th>Password</th>

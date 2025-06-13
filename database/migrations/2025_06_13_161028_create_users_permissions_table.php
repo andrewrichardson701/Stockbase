@@ -12,6 +12,7 @@ class CreateUsersPermissionsTable extends Migration
             $table->id(); // Auto-incrementing primary key
 
             // Boolean permission columns, defaulting to false (0)
+            $table->boolean('root')->default(false);
             $table->boolean('admin')->default(false);
             $table->boolean('locations')->default(false);
             $table->boolean('stock')->default(false);

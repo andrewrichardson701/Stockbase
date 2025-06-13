@@ -13,6 +13,7 @@ class CreateUsersPermissionsRolesTable extends Migration
 
             // Boolean permission columns, defaulting to false (0)
             $table->string('name')->nullable(false);
+            $table->boolean('root')->default(false);
             $table->boolean('admin')->default(false);
             $table->boolean('locations')->default(false);
             $table->boolean('stock')->default(false);

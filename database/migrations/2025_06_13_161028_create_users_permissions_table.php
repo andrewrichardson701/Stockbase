@@ -15,7 +15,7 @@ class CreateUsersPermissionsTable extends Migration
             $table->boolean('root')->default(false);
             $table->boolean('admin')->default(false);
             $table->boolean('locations')->default(false);
-            $table->boolean('stock')->default(false);
+            $table->boolean('stock')->default(true);
             $table->boolean('cables')->default(false);
             $table->boolean('optics')->default(false);
             $table->boolean('cpus')->default(false);

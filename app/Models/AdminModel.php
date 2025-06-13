@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request as HttpRequest;
-
+use Illuminate\Support\Facades\File; 
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Str;
@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use App\Models\GeneralModel;
 use App\Models\FunctionsModel;
 use App\Models\TransactionModel;
+
 
 /**
  * 
@@ -1328,9 +1329,160 @@ class AdminModel extends Model
             // incorrect type
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
         }
-
-
     }
 
+    static public function imageManagementLoad($request)
+    {
+        $path = 'img/stock';
+        $limit = 20; // how many to load each refresh
+        $page = $request['page'];
+        $current_page = $request['current_page'];
+
+        $files = GeneralModel::getFilesInDirectory($path);
+
+        $table_rows = []; 
+
+        if ($page == -1) {
+            // load ALL
+            $start = 0;
+            $end = count($files);
+        } else {
+            // load the $limit
+            if ($page == 0) {
+                $page = 1;
+            }
+            $start = ($page*$limit)-$limit;
+            $end = $start+$limit;
+            if ($end > count($files)) {
+                $end = count($files);
+            }
+        }
+
+        if (count($files) > $end) {
+            $nextPage = $page+1;
+        } else {
+            $nextPage = -1;
+        }
+
+        for ($f=$start; $f<$end; $f++) {
+            $filename = $files[$f];
+
+            // get attribute links
+            $links = AdminModel::attributeLinks('stock_img', 'image', 'id, stock_id, image', 0, ['image' => $filename]);
+
+            if ($links && !empty($links[$filename]['rows'])) {
+                $link_count = $links[$filename]['count'];
+                $disabled = 'disabled title="Image still linked to stock. Remove these links before deleting."';
+                $links_button = '<button class="btn btn-warning" id="image-'.$f.'-links" type="button" onclick="showLinks(\'image\', \''.$f.'\')">Show Links</button>';
+            } else {
+                $link_count = 0;
+                $disabled = $links_button = '';
+            }
+        
+
+            $table_rows[] = '<tr id="image-row-'.$f.'" class="align-middle">
+                                <form enctype="multipart/form-data" id="image-row-'.$f.'-form" action="'.route('admin.imageManagementSettings').'" method="POST">
+                                    <input type="hidden" name="_token" form="image-row-'.$f.'-form" value="'.csrf_token().'" />
+                                    <input type="hidden" name="file-name" form="image-row-'.$f.'-form" value="'.$filename.'" />
+                                    <input type="hidden" name="file-links" form="image-row-'.$f.'-form" value="'.$link_count.'" />
+                                    <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$path.'/'.$filename.'" onclick="modalLoad(this)"></td>
+                                    <td id="image-'.$f.'-name" class="text-center align-middle">'.$path.'/'.$filename.'</td>
+                                    <td class="text-center align-middle">'.$link_count.'</td>
+                                    <td class="text-center align-middle"><button class="btn btn-danger" type="submit" form="image-row-'.$f.'-form" name="imagemanagement-delete-submit" '.$disabled.'><i class="fa fa-trash"></i></button></td>
+                                    <td class="text-center align-middle">'.$links_button.'</td>
+                                </form>
+                            </tr>
+                        ';
+        
+            if ($links && !empty($links[$filename]['rows'])) {
+                $sub_rows = '';
+
+                foreach($links[$filename]['rows'] as $row) {
+                    $stock_data = DB::table('stock')
+                            ->where('id', $row['stock_id'])
+                            ->first();
+                    if ($stock_data) {
+                        $sub_rows .= '<tr class="clickable" onclick=navPage("'.route('stock', ['stock_id' => $row['stock_id']]).'")>
+                                        <td>'.$row['id'].'</td>
+                                        <td><a href="'.route('stock', ['stock_id' => $row['stock_id']]).'">'.$row['stock_id'].'</a></td>
+                                        <td><a href="'.route('stock', ['stock_id' => $row['stock_id']]).'">'.$stock_data->name.'</a></td>
+                                        <td>'.$row['image'].'</td>
+                                    </tr>';
+                    } else {
+                        $sub_rows .= '<tr class="clickable" onclick=navPage("stock.php?stock_id='.$row['stock_id'].'")>
+                                        <td colspan=100%>Unable to get stock data for id: '.$row['stock_id'].'</td>
+                                    </tr>';
+                    }
+                    
+                }
+                $table_rows[] = '<tr id="image-row-'.$f.'-links" class="align-middle" hidden>
+                                    <td colspan=100%>
+                                        <div>
+                                            <table class="table table-dark theme-table">
+                                                <thead>
+                                                    <tr class="theme-tableOuter">
+                                                        <th>ID</th>
+                                                        <th>Stock ID</th>
+                                                        <th>Stock Name</th>
+                                                        <th>Image</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                '.$sub_rows.'
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>';
+            }
+        }
+
+        if (empty($table_rows)) {
+            $table_rows[0] = "ERROR";
+        } else {
+            if ($nextPage !== -1) {
+                $table_rows[] = '<tr id="loader-tr">
+                                    <td id="loader-td" colspan=100% class="algin-middle text-center">
+                                        <div id="loader-outerdiv">
+                                            <button class="btn btn-info" id="show-images" onclick="loadAdminImages('.$current_page.', '.$nextPage.')">Load More Images</button>
+                                            <div class="loader" id="loaderDiv" style="margin-top:10px;width:130px;display:none">
+                                                <div class="loaderBar"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>';
+            }
+        }
+        print_r(json_encode($table_rows));
+    }
+
+    static public function imageManagementDelete($request)
+    {
+        $filename = $request['file-name'];
+        $file_links = $request['file-links'];
+        $path_name = public_path('img/stock').'/'.$filename;
+
+        // get the stock_img entry
+        $db_entries = DB::table('stock_img')
+                            ->where('image', $filename)
+                            ->first();
+
+        if ((!$db_entries || empty($db_entries)) && $file_links == 0) {
+            // check if the image exists in the folder
+            if (file_exists($path_name)) {
+                // file exists
+                if (File::delete($path_name)) {
+                    return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('success', 'File deleted: '.$filename.'.');
+                } else {
+                    return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'Failed to delete file: '.$path_name.'.');
+                }
+            } else {
+                // file doesnt exists
+                return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'File doesnt exist.');
+            }
+        } else {
+             return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'Image not delete. Links exist.');
+        }
+    }
 
 }

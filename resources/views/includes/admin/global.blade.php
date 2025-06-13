@@ -2,11 +2,6 @@
             <h3 class="clickable" style="font-size:22px" id="global-settings" onclick="toggleSection(this, 'global')">Global Settings <i class="fa-solid fa-chevron-up fa-2xs" style="margin-left:10px"></i></h3>
             <!-- Global Settings -->
             <div style="padding-top: 20px" id="global" hidden>
-                <?php
-                // if ((isset($_GET['section']) && $_GET['section'] == 'global-settings')) {
-                //     showResponse();
-                // }
-                ?>
                 @include('includes.response-handling', ['section' => 'global-settings'])
                 <form id="globalForm" enctype="multipart/form-data" action="{{ route('admin.globalSettings') }}" method="POST">
                     @csrf

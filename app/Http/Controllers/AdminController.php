@@ -367,8 +367,10 @@ class AdminController extends Controller
             ]);
             AdminModel::toggleNotification($request->input());
         } else {
-            return 'error';
+            return 'Error: CSRF token missmatch.';
         }
+
+        return 'error';
     }
 
     static public function stockLocationSettings(Request $request)
@@ -429,4 +431,35 @@ class AdminController extends Controller
         
         return 'error';
     }
+
+    static public function imageManagementSettings(Request $request)
+    {
+        if (isset($request['request_stock_images'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'current_page' => 'integer|required',
+                        'page' => 'integer|required',
+                ]);
+                return AdminModel::imageManagementLoad($request->input());
+            } else {
+                return 'Error: CSRF Missmatch';
+            }
+        }
+
+        if (isset($request['imagemanagement-delete-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'file-name' => 'string|required',
+                        'file-links' => 'integer|required',
+                ]);
+                return AdminModel::imageManagementDelete($request->input());
+            } else {
+                return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'CSRF missmatch');
+            }
+        }
+        
+        return 'error';
+    }
+
+
 }

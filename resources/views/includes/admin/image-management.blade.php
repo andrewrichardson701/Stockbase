@@ -2,11 +2,7 @@
     <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings" onclick="toggleSection(this, 'imagemanagement')">Image Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
     <!-- Image Management Settings -->
     <div style="padding-top: 20px" id="imagemanagement" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'imagemanagement')) {
-        //     showResponse();
-        // }
-        ?>
+
         @include('includes.response-handling', ['section' => 'imagemanagement-settings'])
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <p>Image Count: <or class="green">{{ $image_management_count }}</or></p>

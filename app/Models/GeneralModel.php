@@ -790,7 +790,7 @@ class GeneralModel extends Model
 
     static public function getFilesInDirectory($directory)
     {
-        $path = public_path('img/stock'); // Get full path to the folder
+        $path = public_path($directory); // Get full path to the folder
         $files = File::files($path); // Get all files in the directory
 
         // Extract filenames without full paths

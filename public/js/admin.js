@@ -745,13 +745,15 @@ function loadAdminImages(currentPage, pageNum) {
     var tbody = document.getElementById('image-management-tbody');
     var data = 1;
     var loaderRow = document.getElementById('loader-tr');
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
 
     viewLoaderDiv('block');
     
     $.ajax({
         type: "POST",
-        url: "./includes/admin.inc.php",
+        url: "/admin.imageManagementSettings",
         data: {
+            _token: csrf,
             request_stock_images: data,
             current_page: currentPage,
             page: pageNum

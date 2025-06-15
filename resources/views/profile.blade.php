@@ -127,15 +127,38 @@
                                             @endif
                                             <a style="margin-left: 15px" class="link align-middle" href="{{ url('theme-testing') }}" target="_blank">Theme testing</a>
                                         </div>
+                                        <div>
+                                            <p class="block font-medium">Permissions:</p>
+                                            @php $visibleCount = 0; @endphp
+
+                                            @foreach ($head_data['user']['permissions'] as $permission => $value)
+                                                @if ($value == 1 && $permission !== 'assets')
+                                                    @php $visibleCount++; @endphp
+
+                                                    @if ($visibleCount % 4 === 1)
+                                                        <div class="row">
+                                                    @endif
+
+                                                    <div class="col">
+                                                        <p id="permission-{{ $permission }}">
+                                                            {{ ucwords($permission) }}: 
+                                                            <i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i>
+                                                        </p>
+                                                    </div>
+
+                                                    @if ($visibleCount % 4 === 0)
+                                                        </div>
+                                                    @endif
+                                                @endif
+                                            @endforeach
+
+                                            {{-- Close unclosed row if visibleCount isn't divisible by 4 --}}
+                                            @if ($visibleCount % 4 !== 0)
+                                                </div>
+                                            @endif
+                                        </div>
 
                                         <div class="row">
-                                            <div class="col">
-                                                <p class="block font-medium">Role:</p>
-                                            </div>
-                                            <div class="col">
-                                                <p name="permissions" value="{{ $user->permissions }}">{{ $user->permissions }}</p>
-                                            </div>
-
                                             <div class="col">
                                                 <p class="block font-medium">Auth:</p>
                                             </div>
@@ -149,7 +172,6 @@
                                             <div class="col">
                                                 <p name="theme" value="{{ $user->email_verified_at }}">{{ $user->email_verified_at ?? 'Never' }}</p>
                                             </div>
-                                            
                                         </div>
 
                                         <p class="gold link" onclick="modalLoadLoginHistory()" style="margin-top:20px">View login history</p>

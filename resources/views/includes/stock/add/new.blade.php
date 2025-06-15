@@ -121,11 +121,11 @@
                             @endif
                             </select>
                         </div>
-                        @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permission']['admin == 1'])
                         <div>
-                            <label class="text-right orangebrown clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('site')">Add New (admin only)</label>
+                            @if ($head_data['user']['permissions']['locations'] == 1)
+                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('site')">Add New</label>
+                            @endif
                         </div>
-                        @endif
                     </div>
                     <div class="nav-row" id="area-row" style="margin-top:25px">
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="area" id="area-label">Area <or class="red">*</or></label></div>
@@ -135,7 +135,9 @@
                             </select>
                         </div>
                         <div>
-                        <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('area')">Add New</label>
+                            @if ($head_data['user']['permissions']['locations'] == 1)
+                            <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('area')">Add New</label>
+                            @endif
                         </div>
                     </div>
                     <div class="nav-row" id="shelf-row" style="margin-top:25px">
@@ -146,7 +148,9 @@
                             </select>
                         </div>
                         <div>
+                            @if ($head_data['user']['permissions']['locations'] == 1)
                             <label class="text-right gold clickable" style="margin-left: 25px;margin-top:5px;font-size:14px" onclick="modalLoadProperties('shelf')">Add New</label>
+                            @endif
                         </div>
                     </div>
                     <div class="nav-row" id="container-row" style="margin-top:25px">

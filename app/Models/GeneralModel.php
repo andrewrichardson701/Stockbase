@@ -21,6 +21,11 @@ use Illuminate\Support\Facades\Schema;
 class GeneralModel extends Model
 {
     //
+    static public function versionNumber()
+    {
+        return "1.3.0L";
+    }
+
     static public function config() {
         // get the current config for the system from the config table
         $instance = new self();
@@ -286,11 +291,6 @@ class GeneralModel extends Model
         return $formatted;
     }
 
-    static public function versionNumber()
-    {
-        return "1.3.0L";
-    }
-
     static public function getThemeFileName($theme_id)
     {
         
@@ -512,7 +512,15 @@ class GeneralModel extends Model
         $user_data = $user->toArray();
         $user_data['permissions'] = GeneralModel::getAllWhere('users_permissions', ['id' => $user_data['id']], 'id')[0] ?? [];
         $user_data['theme_data'] = GeneralModel::getAllWhere('theme', ['id' => $user_data['theme_id'] ?? 1])[0] ?? [];
-
+        
+        $assets_permissions = ['optics', 'cpus', 'memory', 'disks', 'psus', 'fans'];
+        $user_data['permissions']['assets'] = 0;
+        foreach ($assets_permissions as $permission) {
+            if ($user_data['permissions'][$permission] == 1) {
+                $user_data['permissions']['assets'] = 1;
+            }
+        }
+        
         return $user_data;
     }
 
@@ -871,4 +879,18 @@ class GeneralModel extends Model
     
         return true;
     }
+
+    static public function checkUserPermissions($permissions)
+    {
+        $user = GeneralModel::getUser();
+
+        foreach ($permissions as $permission) {
+            if ($user['permissions'][$permission]) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
 }

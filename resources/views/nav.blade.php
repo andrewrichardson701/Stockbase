@@ -30,17 +30,17 @@
         </div>
     @if (isset($head_data['user']['username'])) 
         <div id="add-div" class="nav-div" style="margin-right:5px">
-            <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @else style="opacity:90%" @endif onclick="navPage('{{ url('stock') }}/0/add')">
+            <button id="add-stock" class="btn btn-success cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @else style="opacity:90%" @endif onclick="navPage('{{ url('stock') }}/0/add')" @if ($head_data['user']['permissions']['stock'] == 0) hidden disabled title="No stock permissions." @endif>
                 <i class="fa fa-plus"></i> Add 
             </button>
         </div> 
         <div id="remove-div" class="nav-div" style="margin-left:5px;margin-right:5px">
-            <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @endif onclick="navPage('{{ url('stock') }}/0/remove')">
+            <button id="remove-stock" class="btn btn-danger cw nav-v-c btn-nav" @if ($nav_data['button_dimming'] == 1) style="opacity:60%" @endif onclick="navPage('{{ url('stock') }}/0/remove')" @if ($head_data['user']['permissions']['stock'] == 0) hidden disabled title="No stock permissions." @endif>
                 <i class="fa fa-minus"></i> Remove 
             </button>
         </div>
         <div id="transfer-div" class="nav-div" style="margin-left:5px;margin-right:0px">
-            <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav"  @if ($nav_data['button_dimming'] == 1) style="color:black;opacity:60%" @else style="color:black" @endif onclick="navPage('{{ url('stock') }}/0/move')">
+            <button id="transfer-stock" class="btn btn-warning nav-v-c btn-nav"  @if ($nav_data['button_dimming'] == 1) style="color:black;opacity:60%" @else style="color:black" @endif onclick="navPage('{{ url('stock') }}/0/move')" @if ($head_data['user']['permissions']['stock'] == 0) hidden disabled title="No stock permissions." @endif>
                 <i class="fa fa-arrows-h"></i> Move 
             </button>
         </div>
@@ -60,16 +60,22 @@
     @if (isset($head_data['user']['id']))
         <div id="stock-div" class="nav-right nav-div">
             <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 1) text-decoration: underline !important; @endif" href="{{ route('index') }}">Stock</a>
-        </div> 
+        </div>
+        @if ($head_data['user']['permissions']['cables'] == 1)
         <div id="cables-div" class="nav-div">
             <a id="cables" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 2) text-decoration: underline !important; @endif" href="{{ route('cablestock') }}">Cables</a>
         </div> 
+        @endif
+        @if ($head_data['user']['permissions']['assets'] == 1)
         <div id="assets-div" class="nav-div">
             <a id="assets" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 3) text-decoration: underline !important; @endif" href="{{ route('assets') }}">Assets</a>
         </div> 
+        @endif
+        @if ($head_data['user']['permissions']['containers'] == 1)
         <div id="stock-div" class="nav-div">
             <a id="stock" class="nav-v-c nav-trans" style="padding-left:6px;padding-right:6px;align-items:center;display:flex;height:100%;color:{{$head_data['extras']['banner_text_color']}} !important; @if ($nav_data['highlight_num'] == 4) text-decoration: underline !important; @endif" href="{{ route('containers') }}">Containers</a>
         </div>
+        @endif
         
         @if (isset($head_data['user']['name']))
         <div id="menu-div" class="nav-menu theme-burger nav-div" style="cursor:pointer; color:{{$head_data['extras']['banner_text_color']}} !important">
@@ -78,11 +84,15 @@
         <div style="width:100%">
             <div class="nav-div float-right nav-float" style="width:120px;">
                 <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">
-                     @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1) 
+                    @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1 || $head_data['user']['permissions']['changelog'] == 1) 
+                        @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1) 
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('admin') }}" @if ($nav_data['highlight_num'] == 5) style="text-decoration: underline !important" @endif>Admin</a></li>
+                        @endif
+                        @if ($head_data['user']['permissions']['changelog'] == 1) 
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-list-ul"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('changelog') }}" @if ($nav_data['highlight_num'] == 8) style="text-decoration: underline !important" @endif>Changelog</a></li>
+                        @endif
                         <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp;</li>
-                     @endif
+                    @endif
                     <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-user"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('profile.edit') }}" @if ($nav_data['highlight_num'] == 7) style="text-decoration: underline !important" @endif>Profile</a></li>
                     <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-star"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('favourites') }}" @if ($nav_data['highlight_num'] == 6) style="text-decoration: underline !important" @endif>Favourites</a></li>
                     <li>

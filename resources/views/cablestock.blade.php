@@ -151,7 +151,9 @@
                                     <select id="shelf" name="shelf" class="form-control theme-dropdown" style="border-color:black;margin:0px" disabled required>
                                         <option value="" selected disabled hidden>Select Shelf</option>
                                     </select>
+                                    @if ($head_data['user']['permissions']['locations'] == 1)
                                     <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadProperties('shelf')">Add New</a>
+                                    @endif
                                 </td>
                             </tr>
                         </tbody>

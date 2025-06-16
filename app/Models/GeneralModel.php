@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\FunctionsModel;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -348,7 +349,7 @@ class GeneralModel extends Model
         return $url;
     }
 
-    static public function headData() 
+    static public function headData($request) 
     {
         
         $head_data = [];
@@ -364,6 +365,18 @@ class GeneralModel extends Model
         $head_data['update_data'] = GeneralModel::updateChecker($head_data['version_number']);
         
         $head_data['user'] = GeneralModel::getUser();
+
+        // Impersonations
+        $head_data['impersonation'] = [];
+        if ($request->session()->has('impersonate_id')) {
+            //impersonation is active
+            $head_data['impersonation']['active'] = 1;
+            $head_data['impersonation']['impersonate_id'] = $request->session()->get('impersonate_id');
+            $head_data['impersonation']['impersonator_id'] = $request->session()->get('impersonator_id') ?? 0;
+        } else {
+            $head_data['impersonation']['active'] = 0;
+        }
+        
 
         $head_data['extras'] = [];
         $head_data['extras']['nav_secondary_color'] = FunctionsModel::adjustBrightness($head_data['config_compare']['banner_color'], -0.2);
@@ -522,6 +535,12 @@ class GeneralModel extends Model
         }
         
         return $user_data;
+    }
+
+    static public function getUserData($impersonator_id)
+    {
+        $user = User::find($impersonator_id);
+        return $user;
     }
 
     static public function sessionData() 

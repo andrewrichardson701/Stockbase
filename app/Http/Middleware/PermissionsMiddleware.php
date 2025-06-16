@@ -18,34 +18,34 @@ class PermissionsMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next, $permissions)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    if (!$user) {
-        abort(Response::HTTP_FORBIDDEN, 'Unauthorized');
+        if (!$user) {
+            abort(Response::HTTP_FORBIDDEN, 'Unauthorized');
+        }
+
+        // Get the user's permissions from the users_permissions table
+        $user_permissions = DB::table('users_permissions')
+            ->where('id', $user->id)
+            ->first();
+
+        if (!$user_permissions) {
+            abort(Response::HTTP_FORBIDDEN, 'No permissions found.');
+        }
+
+        // Convert comma-separated string to array
+        $permissionsArray = explode(',', $permissions);
+
+        // Check if user has at least one of the requested permissions
+        $hasAnyPermission = collect($permissionsArray)->some(function ($perm) use ($user_permissions) {
+            return $user_permissions->{$perm} ?? false;
+        });
+
+        if (!$hasAnyPermission) {
+            abort(Response::HTTP_FORBIDDEN, 'Permission Denied.');
+        }
+
+        return $next($request);
     }
-
-    // Get the user's permissions from the users_permissions table
-    $user_permissions = DB::table('users_permissions')
-        ->where('id', $user->id)
-        ->first();
-
-    if (!$user_permissions) {
-        abort(Response::HTTP_FORBIDDEN, 'No permissions found.');
-    }
-
-    // Convert comma-separated string to array
-    $permissionsArray = explode(',', $permissions);
-
-    // Check if user has at least one of the requested permissions
-    $hasAnyPermission = collect($permissionsArray)->some(function ($perm) use ($user_permissions) {
-        return $user_permissions->{$perm} ?? false;
-    });
-
-    if (!$hasAnyPermission) {
-        abort(Response::HTTP_FORBIDDEN, 'Permission Denied.');
-    }
-
-    return $next($request);
-}
 }

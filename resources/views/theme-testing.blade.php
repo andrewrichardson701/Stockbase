@@ -969,5 +969,7 @@
             </main>
         </div>
     </body>
+    <!-- Add the JS for the file -->
     <script src="{{ asset('js/theme-test.js') }}"></script>
+    @include('foot')
 </html>

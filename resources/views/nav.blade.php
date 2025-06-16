@@ -47,11 +47,10 @@
     @endif
 
     @if (isset($head_data['impersonation']['active']) && $head_data['impersonation']['active'] == 1) 
-        <div id="impersonate-div" class="'); if ($nav_right_set == 0) { echo('nav-right'); $nav_right_set = 1; } echo(' nav-div">
-            <form enctype="multipart/form-data" class="nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0px;padding:0px">
+        <div id="impersonate-div" class="nav-div">
+            <form enctype="multipart/form-data" class="nav-trans" action="{{ route('leave-impersonate') }}" method="POST" style="margin:0px;padding:0px">
                 <!-- Include CSRF token in the form -->
                 @csrf
-                <input type="hidden" name="user-stop-impersonate" value="1"/>
                 <button type="submit" id="impersonate" style="border-radius: 8px;padding-left:10px;padding-right:10px;margin-top:2.5%;height:80%;color:{{$head_data['extras']['invert_banner_text_color']}};background-color:{{$head_data['extras']['invert_banner_color']}} !important;margin-bottom:10%">Stop Impersonating</button>
             </form>
         </div> 

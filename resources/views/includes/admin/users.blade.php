@@ -69,7 +69,7 @@
                     </td>
                     @if ((int)$head_data['user']['permissions']['root'] == 1)
                     <td style="vertical-align: middle;">   
-                        <form enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST" style="padding:0px;margin:0px">
+                        <form enctype="multipart/form-data" action="{{ route('impersonate', ['id' => $user['id']]) }}" method="POST" style="padding:0px;margin:0px">
                             @csrf
                             <button type="submit" style="padding:2px 8px 2px 8px" class="btn btn-info" id="user_{{ $user['id'] }}_impersonate" title="Impersonate" @if ((int)$user['id'] == (int)$head_data['user']['id']) disabled @endif ><i class="fa fa-user-secret" style="color:black" aria-hidden="true"></i></button>
                             <input type="hidden" name="user-impersonate" value="impersonate"/>

@@ -157,3 +157,7 @@ body {
 .transactionDelete {
     color: brown;
 }
+.theme-footer {
+    background-color: rgb(66 0 0);
+    color: white;
+}

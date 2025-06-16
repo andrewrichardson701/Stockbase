@@ -11,7 +11,7 @@ class AddHeadData
     public function handle(Request $request, Closure $next)
     {
         // Fetch the data using your GeneralModel's headData() method
-        $head_data = GeneralModel::headData();
+        $head_data = GeneralModel::headData($request);
 
         // Share the data with all views
         view()->share('head_data', $head_data);

@@ -19,6 +19,7 @@ use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\SmtpController;
 
 use App\Http\Middleware\SecurityMiddleware;
+use App\Http\Middleware\ImpersonationMiddleware;
 use App\Http\Middleware\PermissionsMiddleware;
 use App\Http\Middleware\AddHeadData;
 
@@ -33,6 +34,36 @@ Route::middleware([AddHeadData::class])->group(function () {
 
     Route::middleware([SecurityMiddleware::class])->group(function () {
         Route::middleware('auth')->group(function () {
+
+            //// Impersonation 
+            Route::middleware(['auth', 'check.permission:root'])->group(function () { // Impersonation can only be done by the root user
+                // Impersonation
+                Route::post('/impersonate/{id}', function ($id) {
+                    Session::put('impersonator_id', Auth::id()); // Save original user
+                    Session::put('impersonate_id', $id);         // Impersonated user ID
+                    // impersonation starts
+                    Auth::onceUsingId($id);
+                    return redirect('/');                        // Redirect to dashboard
+                })->middleware(['auth'])
+                    ->where('id', '[0-9\-]+')
+                    ->name('impersonate');
+
+                // Missing impersonation ID
+                Route::get('/impersonate', function () {
+                    return redirect('/')->with('error', 'No user ID provided for impersonation.');
+                })->name('impersonate.missing');
+            });
+
+            // Leave imperonsation
+            // This needs to be usable by ALL users otherwise the root user cant leave the impersonation
+            Route::post('/leave-impersonation', function () {
+                $originalUserId = Session::get('impersonator_id');
+                Session::forget('impersonate_id');
+                Session::forget('impersonator_id');
+                Auth::onceUsingId(Session::get('impersonator_id'));
+                $url = route('admin').'#users-settings';
+                return redirect($url);
+            })->name('leave-impersonate');
 
             //// Normal Routes
 

@@ -102,6 +102,7 @@
                                         <th>PSUs</th>
                                         <th>Containers</th>
                                         <th>Changelog</th>
+                                        <th>Preset</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -127,6 +128,17 @@
                                             </td>
                                         @endif
                                     @endforeach
+                                        <td>
+                                            <select name="permission-preset_{{ $user['id'] }}" id="permission-preset_{{ $user['id'] }}" class="form-control theme-dropdown" onchange="permissionsPreset({{ $user['id'] }})"
+                                                    @if ($users_permissions['rows'][$user['id']]['root'] == 1)
+                                                    title="Cannot modify this user." style="cursor:not-allowed" disabled
+                                                    @endif>
+                                                <option value="" selected disabled>Select Preset</option>
+                                                @foreach($users_permissions_roles['rows'] as $role)
+                                                <option value="{{ $role['id'] }}" @if($role['id'] == 1) title="Cannot assign this role." style="cursor:not-allowed; color:red" disabled @endif>{{ $role['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
                                         <td>
                                             <button class="btn btn-success" style="padding: 2px 6px 2px 6px" name="user-permissions-submit" value="1" type="submit">Save</button>
                                         </td>

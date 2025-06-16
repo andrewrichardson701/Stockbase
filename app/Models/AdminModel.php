@@ -1549,4 +1549,26 @@ class AdminModel extends Model
         }
     }
 
+    static public function getPermissionPreset($id)
+    {
+        $preset = DB::table('users_permissions_roles')->where('id', $id)->first();
+        if ($preset) {
+            $array = (array)$preset;
+
+            // Remove unwanted keys
+            unset($array['id'], $array['name'], $array['created_at'], $array['updated_at']);
+
+            // Convert to an array of key/value pairs
+            $result = [];
+            foreach ($array as $key => $value) {
+                $result[] = ['key' => $key, 'value' => $value];
+            }
+
+            return $result;
+            
+        }
+
+        return [];
+    }
+
 }

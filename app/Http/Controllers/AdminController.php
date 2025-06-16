@@ -50,7 +50,7 @@ class AdminController extends Controller
         $users = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users')); //update this to the correct users table
         $users_permissions = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_permissions'));
         $users_permissions_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_permissions_roles'));
-        $user_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_roles'));
+        // $user_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_roles'));
         
         $active_sessions = GeneralModel::formatArrayOnIdAndCount(AdminModel::getActiveSessionLog());
         
@@ -96,7 +96,6 @@ class AdminController extends Controller
                                 'users' => $users,
                                 'users_permissions' => $users_permissions,
                                 'users_permissions_roles' => $users_permissions_roles,
-                                'user_roles' => $user_roles,
                                 
                                 'active_sessions' => $active_sessions,
                                 
@@ -216,6 +215,17 @@ class AdminController extends Controller
                 return AdminModel::userEnabled($request->input());
             } else {
                 return 'Error: CSRF token missmatch.';
+            }
+        } 
+
+        if (isset($request['user_permissions_preset_ajax'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'id' => 'integer|required',
+                ]);
+                return response()->json(AdminModel::getPermissionPreset($request->input('id')));
+            } else {
+                echo 'Error: CSRF token missmatch.';
             }
         } 
 

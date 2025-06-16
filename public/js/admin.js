@@ -809,36 +809,45 @@ function toggleUserPermissions(id, state) {
 
 }
 
-// function userRoleChange(id) {
-//     var select = document.getElementById("user_"+id+"_role_select");
-//     var selectedValue = select.value;
-//     var csrf = document.querySelector('meta[name="csrf-token"]').content;
+function permissionsPreset(id) {
+    var select = document.getElementById('permission-preset_'+id);
+    var preset_id = select.value;
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-//     $.ajax({
-//         type: "POST",
-//         url: "/admin.userSettings",
-//         data: {
-//             user_id: id,
-//             user_new_role: selectedValue,
-//             user_role_submit: 'yes',
-//             _token: csrf
-//         },
-//         dataType: "html",
-//         success: function(response) {
-//             var tr = document.getElementById('users_table_info_tr');
-//             var td = document.getElementById('users_table_info_td');
-//             tr.hidden = false;
-//             var result = response;
-//             if (result.startsWith("Error:")) {
-//                 td.classList.add("red");
-//             } else {
-//                 td.classList.add("green");
-//             }
-//             td.textContent = result;
-//         },
-//         async: true
-//     });
-// }
+    // get the ajax of the permissions
+
+    // foreach loop the results - removing id and timestamps from the keys
+    // update the checkboxes with those values
+
+    $.ajax({
+        type: "POST",
+        url: "/admin.userSettings",
+        data: {
+            id: preset_id,
+            user_permissions_preset_ajax: 1,
+            _token: csrf
+        },
+        dataType: "json",
+        success: function(response) {
+            if (Array.isArray(response)) {
+                response.forEach(function(item) {
+                    var key = item.key;
+                    var value = item.value;
+
+                    var checkbox = document.getElementById('users_permissions-' + id + '-' + key + '-checkbox');
+                    if (checkbox) {
+                        checkbox.checked = value == 1;
+                    }
+                });
+            } else {
+                console.log("Unexpected response format:", response);
+            }
+        },
+        async: true
+    });
+
+}
+
 function usersEnabledChange(id) {
     var checkbox = document.getElementById("user_"+id+"_enabled_checkbox");
     var csrf = document.querySelector('meta[name="csrf-token"]').content;

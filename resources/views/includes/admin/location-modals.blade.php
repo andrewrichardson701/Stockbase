@@ -1,10 +1,4 @@
 <div class="container" style="padding-bottom:0px">
-    <?php
-    
-    // if (!isset($_GET['section']) || (isset($_GET['section']) && $_GET['section'] == 'none')) {
-    //     showResponse();
-    // }
-    ?>
     @include('includes.response-handling', ['section' => 'modals'])
     
     <div id="modalDivAdd" class="modal">
@@ -103,6 +97,64 @@
                                 </tr>
                                 <tr>
                                     <td colspan="100%" style="padding-top:10px" class="text-center"><button class="btn btn-success align-bottom" type="submit" name="location-edit-submit" style="margin-left:10px;margin-top:20px" value="1">Save</button></td>
+                                </tr>
+                            </tbody>
+                        </table>        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAddPermPreset" class="modal">
+        <span class="close" onclick="modalCloseAddPermPreset()">×</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+                <div style="display:block"> 
+                    <h2 style="margin-bottom:20px">Add Permisions Preset</h2>
+                    <form id="addPermPresetForm" enctype="multipart/form-data" action="{{ route('admin.userSettings') }}" method="POST">
+                        @csrf
+                        <table class="" style="margin-bottom:10px">
+                            <tbody>
+                                <tr class="align-middle">
+                                    <th style="padding-right:15px">Preset Name:</th>
+                                    <td>
+                                        <input type="text" class="form-control" id="preset-name-input" name="name" value="" />
+                                    </td>
+                                </tr>
+                            <tbody>
+                        </table>
+                        <table class="table table-dark theme-table centertable" style="min-width:100%">
+                            <tbody>
+                                @if ($users_permissions_roles['count'] > 0)
+                                    <tr class="align-middle text-center">
+                                        @foreach(array_keys($users_permissions_roles['rows'][1]) as $key)
+                                            @if (in_array($key, ['id', 'name']))
+
+                                            @elseif (in_array($key, ['created_at', 'updated_at']))
+                                            
+                                            @else
+                                                <th>{{ $key }}</th>
+                                            @endif
+                                        @endforeach
+                                    </tr class="align-middle text-center">
+                                        @foreach(array_keys($users_permissions_roles['rows'][1]) as $key)
+                                            @if (in_array($key, ['id', 'name']))
+
+                                            @elseif (in_array($key, ['created_at', 'updated_at']))
+                                            
+                                            @else
+                                                <th id="permissions_preset_add-{{ $key }}" style="vertical-align: middle;">
+                                                    <input type="checkbox" name="{{ $key }}" @if($key == 'root') disabled title="Cannot assign this role." style="cursor:not-allowed" @endif/>
+                                                </th>
+                                            @endif
+                                        @endforeach
+                                                
+                                @else 
+                                    <tr class="align-middle" colspan=100%><td colspan=6>No roles found.</td></tr>
+                                @endif
+                                <tr>
+                                    <td colspan="100%" class="text-center"><button class="btn btn-success align-bottom" type="submit" name="user_permissions_preset_add" style="margin-left:10px;margin-top:20px" value="1">Add</button></td>
                                 </tr>
                             </tbody>
                         </table>        

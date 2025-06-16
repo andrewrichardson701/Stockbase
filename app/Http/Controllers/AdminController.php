@@ -229,6 +229,18 @@ class AdminController extends Controller
             }
         } 
 
+
+        if (isset($request['user_permissions_preset_add'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'name' => 'string|required',
+                ]);
+                return AdminModel::addPermissionPreset($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        } 
+
         if (isset($request['admin_pwreset_submit'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([

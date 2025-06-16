@@ -46,6 +46,11 @@
                 @else 
                     <tr><td colspan=6>No roles found.</td></tr>
                 @endif
+                <tr class="theme-tableOuter">
+                    <td colspan=100%>
+                        <button class="btn btn-success" onclick="modalLoadAddPermPreset()"><i class="fa fa-plus"></i> Add</button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

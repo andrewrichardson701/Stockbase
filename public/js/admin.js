@@ -494,6 +494,18 @@ modalCloseEdit = function() {
     input_description.value = '';
 }
 
+function modalLoadAddPermPreset() {
+    //get the modal div with the property
+    var modal = document.getElementById("modalAddPermPreset");
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseAddPermPreset = function() { 
+    var modal = document.getElementById("modalAddPermPreset");
+    modal.style.display = "none";
+}
+
 // Get the modal
 function resetPassword(user_id) {
     var modal = document.getElementById("modalDivResetPW");

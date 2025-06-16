@@ -1552,6 +1552,8 @@ class AdminModel extends Model
     static public function getPermissionPreset($id)
     {
         $preset = DB::table('users_permissions_roles')->where('id', $id)->first();
+        $user = Generalmodel::getUser();
+
         if ($preset) {
             $array = (array)$preset;
 
@@ -1569,6 +1571,69 @@ class AdminModel extends Model
         }
 
         return [];
+    }
+
+    static public function addPermissionPreset($request)
+    {
+       
+        $anchor = 'userspermissionspresets-settings';
+
+        $user = GeneralModel::getUser();
+
+        $permissions_fields = (array)Schema::getColumnListing('users_permissions_roles');
+
+        unset($request['user_permissions_preset_add'], $request['_token']);
+        unset($permissions_fields['updated_at'], $permissions_fields['created_at'], $permissions_fields['id'], $permissions_fields['name']);
+
+        $values = ['created_at' => now(), 'updated_at' => now()];
+
+        foreach($request as $key => $value) {
+            if (!in_array($key, $permissions_fields)) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified.');
+            }
+
+            if ($value == 'on') {
+                $values[$key] = 1;
+            } elseif ($value == 'off') {
+                $values[$key] = 0;
+            } else {
+                $values[$key] = $value;
+            }
+        }
+
+        foreach ($permissions_fields as $field) {
+            if (!array_key_exists($field, $values)) {
+                $values[$field] = 0;
+            }
+        }
+
+
+        $find = DB::table('users_permissions_roles')->where('name', $request['name'])->first();
+
+        if (!$find) {
+            // ADD
+            $insert = DB::table('users_permissions_roles')->insertGetId($values);
+
+            if ($insert) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'users_permissions_roles',
+                    'record_id' => $insert,
+                    'action' => 'New record',
+                    'field' => 'name',
+                    'previous_value' => '',
+                    'new_value' => $values['name']
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Preset added: '.$request['name'].' with id: '.$insert.'.');
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Name in use.');
+        }
     }
 
 }

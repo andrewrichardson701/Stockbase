@@ -814,11 +814,6 @@ function permissionsPreset(id) {
     var preset_id = select.value;
     var csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-    // get the ajax of the permissions
-
-    // foreach loop the results - removing id and timestamps from the keys
-    // update the checkboxes with those values
-
     $.ajax({
         type: "POST",
         url: "/admin.userSettings",

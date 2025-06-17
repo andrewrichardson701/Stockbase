@@ -13,7 +13,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-type-add" value="Add Type" class="btn btn-success" onclick="addOpticProperty('optic_type')">Add Type</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-type-add" value="Add Type" class="btn btn-success" onclick="addOpticProperty('type')">Add Type</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -36,7 +36,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-vendor-add" value="Add Vendor" class="btn btn-success" onclick="addOpticProperty('optic_vendor')">Add Vendor</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-vendor-add" value="Add Vendor" class="btn btn-success" onclick="addOpticProperty('vendor')">Add Vendor</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -59,7 +59,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-speed-add" value="Add Speed" class="btn btn-success"  onclick="addOpticProperty('optic_speed')">Add Speed</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-speed-add" value="Add Speed" class="btn btn-success"  onclick="addOpticProperty('speed')">Add Speed</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -81,7 +81,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-connector-add" value="Add Connector" class="btn btn-success" onclick="addOpticProperty('optic_connector')">Add Connector</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-connector-add" value="Add Connector" class="btn btn-success" onclick="addOpticProperty('connector')">Add Connector</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -103,7 +103,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-distance-add" value="Add Distance" class="btn btn-success" onclick="addOpticProperty('optic_distance')">Add Distance</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-distance-add" value="Add Distance" class="btn btn-success" onclick="addOpticProperty('distance')">Add Distance</button></td>
                     </tr>
                 </tbody>
             </table>

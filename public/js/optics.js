@@ -184,6 +184,7 @@ modalCloseNewDistance = function() {
 
 function addOpticProperty(property) {
     if (property !== '') {
+        var optic_property = 'optic_'+property;
         var csrf = document.querySelector('meta[name="csrf-token"]').content;
         var name = document.getElementById(property+'_name') !== null ? document.getElementById(property+'_name').value : '';
         
@@ -192,7 +193,7 @@ function addOpticProperty(property) {
             url: "/_ajax-addProperty",
             data: {
                 _token: csrf,
-                type: property,
+                type: optic_property,
                 property_name: name,
                 submit: '1'
             },
@@ -218,7 +219,8 @@ function addOpticProperty(property) {
 }
 
 function loadOpticProperty(property) {
-    var select = document.getElementById(property+'-select');
+    var optic_property = 'optic_'+property;
+    var select = document.getElementById(optic_property+'-select');
     var upperProperty = property[0].toUpperCase() + property.substring(1);
     var csrf = document.querySelector('meta[name="csrf-token"]').content;
     $.ajax({
@@ -226,7 +228,7 @@ function loadOpticProperty(property) {
         url: "/_ajax-loadProperty",
         data: {
             load_property: '1',
-            type: property,
+            type: optic_property,
             submit: '1',
             _token: csrf
         },

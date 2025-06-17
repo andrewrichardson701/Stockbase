@@ -47,7 +47,7 @@ class GeneralModel extends Model
                         ->toarray()[0];
     }
 
-    static public function allDistinct($table, $deleted=null) 
+    static public function allDistinct($table, $deleted=null, $orderby=null) 
     {
         // get the current config for the system from the config table
         $instance = new self();
@@ -57,6 +57,7 @@ class GeneralModel extends Model
                         ->when($deleted !== null, function ($query) use ($deleted) {
                             $query->where('deleted', '=', $deleted);
                         })
+                        ->orderBy($orderby ?? 'id')
                         ->get()
                         ->toarray();
     }

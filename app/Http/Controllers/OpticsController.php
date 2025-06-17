@@ -81,11 +81,11 @@ class OpticsController extends Controller
         $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
         $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
 
-        $optic_types = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_type', 0));
-        $optic_speeds = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_speed', 0));
-        $optic_connectors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_connector', 0));
-        $optic_distances = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_distance', 0));
-        $optic_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_vendor', 0));
+        $optic_types = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_type', 0, 'name'));
+        $optic_speeds = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_speed', 0, 'name'));
+        $optic_connectors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_connector', 0, 'name'));
+        $optic_distances = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_distance', 0, 'name'));
+        $optic_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_vendor', 0, 'name'));
         $optic_modes = ['rows' => ['MM' => ['id' => 'MM', 'name' => 'MM', 'full_name' => 'Multi Mode'],
                                     'SM' => ['id' => 'SM', 'name' => 'SM', 'full_name' => 'Single Mode'],
                                     'Copper' => ['id' => 'Copper', 'name' => 'Copper', 'full_name' => 'Copper'],

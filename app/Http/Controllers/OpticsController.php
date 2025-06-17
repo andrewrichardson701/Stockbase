@@ -111,4 +111,67 @@ class OpticsController extends Controller
                                 'optics_data' => $optics_data,
                                 ]);
     }
+
+    static public function comments(Request $request)
+    {
+
+        if (isset($request['optic-comment-add'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required', //optic id
+                    'comment' => 'string|required',
+                ]);
+                return OpticsModel::addComment($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+
+        if (isset($request['optic-comment-delete'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required', //comment id
+                    'optic_id' => 'integer|required' // optic id
+                ]);
+                return OpticsModel::deleteComment($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request.');
+    }
+
+    static public function add(Request $request)
+    {
+        if (isset($request['add-optic-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'serial' => 'string|required',
+                    'model' => 'string|required',
+                    'spectrum' => 'string|required',
+                    'vendor' => 'integer|required',
+                    'type' => 'integer|required', 
+                    'speed' => 'integer|required', 
+                    'connector' => 'integer|required', 
+                    'distance' => 'integer|required', 
+                    'mode' => 'string|required', 
+                    'site' => 'integer|required'
+                ]);
+                return OpticsModel::add($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        if (isset($request['optic-restore-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                ]);
+                return OpticsModel::restore($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+    }
 }

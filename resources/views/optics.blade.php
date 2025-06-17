@@ -330,7 +330,7 @@
                         <div class="col">
                             <div>Site</div>
                             <div>
-                                <select id="type" name="type" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="site-add_optic" name="site" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($sites['count'] > 0)
                                     <option value="" @if ($params['form_site'] == 0) selected @endif >Select Site</option>
                                     @foreach ($sites['rows'] as $site) 
@@ -484,7 +484,7 @@
                         <tr id="item-{{ $row['id'] }}-add-comments" class="row-add-hide align-middle text-center" hidden>
                             <td colspan="100%">
                                 <div class="container">
-                                    <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                                    <form action="{{ route('optics.comments') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                                         <!-- Include CSRF token in the form -->
                                         @csrf
                                         <div class="row centertable" style="max-width:max-content">
@@ -520,10 +520,11 @@
                                         <tbody>
                                         @foreach($row['comment_data']['rows'] as $comment)
                                             <tr id="comment-{{ $comment['id'] }}" class="row-show align-middle text-center">
-                                                <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                                                <form action="{{ route('optics.comments') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                                                     <!-- Include CSRF token in the form -->
                                                     @csrf
                                                     <input type="hidden" value="{{ $comment['id'] }}" name="id"/>
+                                                    <input type="hidden" value="{{ $row['id'] }}" name="optic_id"/>
                                                     <td class="align-middle" hidden>{{ $comment['id'] }}</td>
                                                     <td class="align-middle">{{ $comment['username'] }}</td>
                                                     <td class="align-middle">{{ $comment['comment'] }}</td>

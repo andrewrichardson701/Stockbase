@@ -19,9 +19,6 @@ class OpticsModel extends Model
     //
     static public function generateOpticWhereArray($array) 
     {
-        // type, speed, mode, connector, distance, site
-
-        // search
         
         $return = [];
         $optic_keys = ['type', 'speed', 'mode', 'connector', 'distance'];
@@ -127,13 +124,13 @@ class OpticsModel extends Model
         $instance = new self();
         $instance->setTable('optic_comment');
 
-        $data = $instance->select('optic_comment.id AS id',
+        $data = $instance->select(['optic_comment.id AS id',
                                     'optic_comment.item_id AS item_id',
                                     'optic_comment.comment AS comment',
                                     'optic_comment.user_id AS user_id',
                                     'optic_comment.timestamp AS timestamp',
                                     'optic_comment.deleted AS deleted',
-                                    'users.username AS username')
+                                    'users.username AS username'])
                             ->join('users', 'users.id', '=', 'optic_comment.user_id')
                             ->where('optic_comment.item_id', '=', $optic_id)
                             ->where('optic_comment.deleted', '=', 0)
@@ -150,7 +147,7 @@ class OpticsModel extends Model
         $instance->setTable('optic_item');
 
         $query = $instance->select(
-                        'optic_item.id AS id',
+                        ['optic_item.id AS id',
                         'optic_item.model AS model',
                         'optic_item.serial_number AS serial_number',
                         'optic_item.mode AS mode',
@@ -168,7 +165,7 @@ class OpticsModel extends Model
                         'optic_speed.id AS speed_id',
                         'optic_speed.name AS speed_name',
                         'site.id AS site_id',
-                        'site.name AS site_name')
+                        'site.name AS site_name'])
                     ->join('optic_vendor', 'optic_item.vendor_id', '=', 'optic_vendor.id')
                     ->join('optic_type', 'optic_item.type_id', '=', 'optic_type.id')
                     ->join('optic_connector', 'optic_item.connector_id', '=', 'optic_connector.id')
@@ -198,5 +195,272 @@ class OpticsModel extends Model
 
         return $rows;
 
+    }
+
+    static public function addComment($request)
+    {
+        $optic_id = $request['id'];
+        $comment = $request['comment'];
+        $user = GeneralModel::getUser();
+
+        // check optic exists 
+        $find = DB::table('optic_item')->where('id', $optic_id)->first();
+
+        if ($find) {
+            // add comment
+            $values = ['item_id' => $optic_id, 'comment' => $comment, 'user_id' => $user['id'], 'timestamp' => now(), 'created_at' => now(), 'updated_at' => now()];
+            $insert = DB::table('optic_comment')->insertGetId($values);
+
+            if ($insert) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'optic_comment',
+                    'record_id' => $insert,
+                    'action' => 'New record',
+                    'field' => 'comment',
+                    'previous_value' => '',
+                    'new_value' => $comment
+                ];
+                
+                GeneralModel::updateChangelog($changelog_info);
+                $transaction = [
+                    'table_name' => 'optic_comment',
+                    'item_id' => $insert,
+                    'type' => 'add',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'site_id' => 0,
+                    'reason' => 'Comment Added',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addCableTransaction($transaction);
+                return redirect()->to(route('optics'))->with('success', 'Comment added: "'.$comment.'" with id: '.$insert.' for optic id: '.$optic_id.'.');
+            } else {
+                return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+            }
+        } else {
+            return redirect()->to(route('optics', ['error' => 'Optic not found for id: '.$optic_id]));
+        }
+    }
+
+    static public function deleteComment($request)
+    {
+        $comment_id = $request['id'];
+        $optic_id = $request['optic_id'];
+
+        $user = GeneralModel::getUser();
+
+        // check optic exists 
+        $find = DB::table('optic_comment')->where('id', $comment_id)->first();
+
+        if ($find) {
+            // delete comment
+            $update = DB::table('optic_comment')->where('id', $comment_id)->update(['deleted' => 1, 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'optic_comment',
+                    'record_id' => $comment_id,
+                    'action' => 'Comment Deleted',
+                    'field' => 'deleted',
+                    'previous_value' => $find->deleted,
+                    'new_value' => 1
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                $transaction = [
+                    'table_name' => 'optic_comment',
+                    'item_id' => $comment_id,
+                    'type' => 'delete',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'site_id' => 0,
+                    'reason' => 'Delete comment',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addCableTransaction($transaction);
+                return redirect()->to(route('optics'))->with('success', 'Comment deleted with id: '.$comment_id.' for optic id: '.$optic_id.'.');
+            } else {
+                return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+            }
+        } else {
+            return redirect()->to(route('optics', ['error' => 'Comment not found for id: '.$comment_id]));
+        }
+    }
+
+    static public function add($request)
+    {
+        $user = GeneralModel::getUser();
+
+        // see if optic serial exists
+        $find = DB::table('optic_item')->where('serial_number', $request['serial'])->first();
+        
+        // check for ids of each field
+        foreach (['vendor', 'type', 'distance', 'speed', 'connector'] as $param) {
+           $find_params = DB::table('optic_'.$param)->where('id', $request[$param])->where('deleted', 0)->first();
+           if (!$find_params) {
+                return redirect()->to(route('optics', ['error' => 'Optic '.$param.' not found for id: '.$request[$param]]));
+            } 
+        }
+
+        // make sure site exists
+        $find_site = DB::table('site')->where('id', $request['site'])->where('deleted', 0)->first();
+        if (!$find_site) {
+            return redirect()->to(route('optics', ['error' => 'Site not found for id: '.$request['site']]));
+        } 
+        $values = ['model' => $request['model'],
+                        'vendor_id' => $request['vendor'],
+                        'serial_number_id' => $request['serial'],
+                        'type_id' => $request['type'],
+                        'connector_id' => $request['connector'],
+                        'mode' => $request['mode'],
+                        'spectrum' => $request['spectrum'],
+                        'speed_id' => $request['speed'],
+                        'distance_id' => $request['distance'],
+                        'site_id' => $request['site'],
+                        'quantity' => 1,
+                        'created_at' => now(), 
+                        'updated_at' => now()];
+        
+        if (!$find) {
+            // add optic
+
+            $insert = DB::table('optic_item')->insertGetId($values);
+
+            if ($insert) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'optic_item',
+                    'record_id' => $insert,
+                    'action' => 'New record',
+                    'field' => 'serial_number',
+                    'previous_value' => '',
+                    'new_value' => $request['serial']
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                $transaction = [
+                    'table_name' => 'optic_item',
+                    'item_id' => $insert,
+                    'type' => 'add',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'site_id' => 0,
+                    'reason' => 'Item Added',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addCableTransaction($transaction);
+                return redirect()->to(route('optics'))->with('success', 'Optic added: "'.$request['serial'].'" with id: '.$insert.'.');
+            } else {
+                if ($find->deleted == 1) {
+                    // remove delete, and update any changes.
+                    // update 
+                    unset($values['serial_number']);
+
+                    foreach (array_keys((array)$find) as $key) {
+                        if (!in_array($key, ['id', 'serial_number', 'updated_at', 'creared_at'])) {
+                            if ($values[$key] !== $find->$key) {
+                                // update
+                                $update = DB::table('optic_item')->where('id', $find->id)->update([$key => $values[$key]]);
+
+                                if ($update) {
+                                    // changelog
+                                    $changelog_info = [
+                                        'user' => $user,
+                                        'table' => 'optic_comment',
+                                        'record_id' => $find->id,
+                                        'action' => 'Update record',
+                                        'field' => $key,
+                                        'previous_value' => $find->$key,
+                                        'new_value' => $values[$key]
+                                    ];
+
+                                    GeneralModel::updateChangelog($changelog_info);
+                                    $transaction = [
+                                        'table_name' => 'optic_item',
+                                        'item_id' => $find->id,
+                                        'type' => 'restore',
+                                        'date' => date('Y-m-d'),
+                                        'time' => date('H:i:s'),
+                                        'username' => $user['username'],
+                                        'site_id' => 0,
+                                        'reason' => 'Item Restored',
+                                        'created_at' => now(),
+                                        'updated_at' => now()
+                                    ];
+                                    TransactionModel::addCableTransaction($transaction);
+                                } else {
+                                    return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+                                }
+                            }
+                        }
+                    }   
+                    $data = ['id' => $find->id];
+                    return OpticsModel::restore($data);
+ 
+                } else {
+                    return redirect()->to(route('optics'))->with('error', 'Optic already exists.');
+                }  
+            }
+        } else {
+            return redirect()->to(route('optics', ['error' => 'Optic already exists for serial number: '.$request['serial']]));
+        }
+    }
+
+    static public function restore($request)
+    {
+        $optic_id = $request['id'];
+        $user = GeneralModel::getUser();
+
+        $find = DB::table('optic_item')->where('id', $optic_id)->where('deleted', 1)->first();
+
+        if ($find) {
+            $update = DB::table('optic_item')->where('id', $find->id)->update(['deleted' => 0]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'optic_item',
+                    'record_id' => $optic_id,
+                    'action' => 'Restore record',
+                    'field' => 'deleted',
+                    'previous_value' => $find->deleted,
+                    'new_value' => 0
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+
+                $transaction = [
+                    'table_name' => 'optic_item',
+                    'item_id' => $optic_id,
+                    'type' => 'restore',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'site_id' => 0,
+                    'reason' => 'Item Restored',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addCableTransaction($transaction);
+                return redirect()->to(route('optics'))->with('success', 'Optic restored, with id: '.$optic_id.'.');
+            } else {
+                return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+            }
+        } else {
+            // optic doesnt exist
+            return redirect()->to(route('optics'))->with('error', 'Optic not found with id: '.$optic_id.'.');
+        }
     }
 }

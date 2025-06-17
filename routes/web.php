@@ -97,7 +97,11 @@ Route::middleware([AddHeadData::class])->group(function () {
                     //      optics: x | admin: x | cpus:   | memory: x | etc
                     // admin will default to have all of them, and will auto tick all boxes
                 Route::middleware(['auth', 'check.permission:optics'])->group(function () { // Optics pages - locked behind optics permission
-                        Route::get('/assets/optics', [OpticsController::class, 'index'])->name('optics'); // assets > optics page
+                    Route::get('/assets/optics', [OpticsController::class, 'index'])->name('optics'); // assets > optics page
+
+                    // POST REQUESTS
+                    Route::post('/assets/optics.add', [OpticsController::class, 'add'])->name('optics.add'); // adding optics
+                    Route::post('/assets/optics.comments', [OpticsController::class, 'comments'])->name('optics.comments'); // comment forms - adding/deleting
                 });
                 Route::middleware(['auth', 'check.permission:cpus'])->group(function () { // Cpus pages - locked behind cpus permission
                     Route::get('/assets/cpus', [AssetsController::class, 'cpus'])->name('cpus'); // assets > cpus page

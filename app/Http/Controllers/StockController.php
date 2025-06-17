@@ -247,7 +247,7 @@ class StockController extends Controller
             $redirect_array = ['stock_id'   => $request->stock_id,
                             'modify_type' => 'edit',
                             'success' => 'Image unlinked.'];
-                return redirect()->route('stock', $redirect_array);
+            return redirect()->route('stock', $redirect_array);
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }

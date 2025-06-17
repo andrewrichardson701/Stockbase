@@ -4,26 +4,19 @@
     <span class="close" onclick="modalCloseNewType()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form id="add-optic-type-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                <!-- Include CSRF token in the form -->
-                @csrf
-                @foreach ($params['request'] as $key => $req)
-                    <input type="hidden" name="QUERY['{{ $key }}']" value="{{ $req }}"/>
-                @endforeach
-                <table class="centertable">
-                    <tbody>
-                        <tr class="nav-row">
-                            <td style="width: 150px"><label for="type_name" class="nav-v-c align-middle">Type Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="type_name" name="type_name" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="nav-row">
-                            <td style="width:150px"></td>
-                            <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-type-add" value="Add Type" class="btn btn-success">Add Type</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
+            <table class="centertable">
+                <tbody>
+                    <tr class="nav-row">
+                        <td style="width: 150px"><label for="type_name" class="nav-v-c align-middle">Type Name:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="type_name" name="type_name" /></td>
+                        <td></td>
+                    </tr>
+                    <tr class="nav-row">
+                        <td style="width:150px"></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-type-add" value="Add Type" class="btn btn-success" onclick="addOpticProperty('optic_type')">Add Type</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div> 
 </div>
@@ -34,26 +27,19 @@
     <span class="close" onclick="modalCloseNewVendor()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form id="add-optic-vendor-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                <!-- Include CSRF token in the form -->
-                @csrf
-                @foreach ($params['request'] as $key => $req)
-                    <input type="hidden" name="QUERY['{{ $key }}']" value="{{ $req }}"/>
-                @endforeach
-                <table class="centertable">
-                    <tbody>
-                        <tr class="nav-row">
-                            <td style="width: 150px"><label for="vendor_name" class="nav-v-c align-middle">Vendor Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="vendor_name" name="vendor_name" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="nav-row">
-                            <td style="width:150px"></td>
-                            <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-vendor-add" value="Add Vendor" class="btn btn-success">Add Vendor</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
+            <table class="centertable">
+                <tbody>
+                    <tr class="nav-row">
+                        <td style="width: 150px"><label for="vendor_name" class="nav-v-c align-middle">Vendor Name:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="vendor_name" name="vendor_name" /></td>
+                        <td></td>
+                    </tr>
+                    <tr class="nav-row">
+                        <td style="width:150px"></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-vendor-add" value="Add Vendor" class="btn btn-success" onclick="addOpticProperty('optic_vendor')">Add Vendor</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div> 
 </div>
@@ -64,26 +50,19 @@
     <span class="close" onclick="modalCloseNewSpeed()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form id="add-optic-speed-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                <!-- Include CSRF token in the form -->
-                @csrf
-                @foreach ($params['request'] as $key => $req)
-                    <input type="hidden" name="QUERY['{{ $key }}']" value="{{ $req }}"/>
-                @endforeach
-                <table class="centertable">
-                    <tbody>
-                        <tr class="nav-row">
-                            <td style="width: 150px"><label for="speed_name" class="nav-v-c align-middle">Speed:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="speed_name" name="speed_name" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="nav-row">
-                            <td style="width:150px"></td>
-                            <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-speed-add" value="Add Speed" class="btn btn-success">Add Speed</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
+            <table class="centertable">
+                <tbody>
+                    <tr class="nav-row">
+                        <td style="width: 150px"><label for="speed_name" class="nav-v-c align-middle">Speed:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="speed_name" name="speed_name" /></td>
+                        <td></td>
+                    </tr>
+                    <tr class="nav-row">
+                        <td style="width:150px"></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-speed-add" value="Add Speed" class="btn btn-success"  onclick="addOpticProperty('optic_speed')">Add Speed</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div> 
 </div>
@@ -93,26 +72,19 @@
     <span class="close" onclick="modalCloseNewConnector()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form id="add-optic-connector-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                <!-- Include CSRF token in the form -->
-                @csrf
-                @foreach ($params['request'] as $key => $req)
-                    <input type="hidden" name="QUERY['{{ $key }}']" value="{{ $req }}"/>
-                @endforeach
-                <table class="centertable">
-                    <tbody>
-                        <tr class="nav-row">
-                            <td style="width: 150px"><label for="connector_name" class="nav-v-c align-middle">Connector Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="connector_name" name="connector_name" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="nav-row">
-                            <td style="width:150px"></td>
-                            <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-connector-add" value="Add Connector" class="btn btn-success">Add Connector</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
+            <table class="centertable">
+                <tbody>
+                    <tr class="nav-row">
+                        <td style="width: 150px"><label for="connector_name" class="nav-v-c align-middle">Connector Name:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="connector_name" name="connector_name" /></td>
+                        <td></td>
+                    </tr>
+                    <tr class="nav-row">
+                        <td style="width:150px"></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-connector-add" value="Add Connector" class="btn btn-success" onclick="addOpticProperty('optic_connector')">Add Connector</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div> 
 </div>
@@ -122,26 +94,19 @@
     <span class="close" onclick="modalCloseNewDistance()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form id="add-optic-distance-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
-                <!-- Include CSRF token in the form -->
-                @csrf
-                @foreach ($params['request'] as $key => $req)
-                    <input type="hidden" name="QUERY['{{ $key }}']" value="{{ $req }}"/>
-                @endforeach
-                <table class="centertable">
-                    <tbody>
-                        <tr class="nav-row">
-                            <td style="width: 150px"><label for="distance_name" class="nav-v-c align-middle">Distance Name:</label></td>
-                            <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="distance_name" name="distance_name" /></td>
-                            <td></td>
-                        </tr>
-                        <tr class="nav-row">
-                            <td style="width:150px"></td>
-                            <td style="margin-top:10px;margin-left:10px"><button type="submit" name="optic-distance-add" value="Add Distance" class="btn btn-success">Add Distance</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
+            <table class="centertable">
+                <tbody>
+                    <tr class="nav-row">
+                        <td style="width: 150px"><label for="distance_name" class="nav-v-c align-middle">Distance Name:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="distance_name" name="distance_name" /></td>
+                        <td></td>
+                    </tr>
+                    <tr class="nav-row">
+                        <td style="width:150px"></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-distance-add" value="Add Distance" class="btn btn-success" onclick="addOpticProperty('optic_distance')">Add Distance</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div> 
 </div>

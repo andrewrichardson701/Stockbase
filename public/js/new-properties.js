@@ -24,6 +24,7 @@ modalCloseProperties = function() {
 
 function addProperty(property) {
     if (property !== '') {
+        var csrf = document.querySelector('meta[name="csrf-token"]').content;
         var name = document.getElementById(property+'_name') !== null ? document.getElementById(property+'_name').value : '';
         var description = document.getElementById(property+'_description') !== null ? document.getElementById(property+'_description').value : '';
         var site_id = document.getElementById(property+'_site_id') !== null ? document.getElementById(property+'_site_id').value : '';
@@ -36,6 +37,7 @@ function addProperty(property) {
             type: "POST",
             url: "/_ajax-addProperty",
             data: {
+                _token: csrf,
                 type: property,
                 property_name: name,
                 description: description,
@@ -45,7 +47,6 @@ function addProperty(property) {
             },
             dataType: "html",
             success: function(response) {
-                console.log('added');
                 console.log(response);
                 modalCloseProperties();
                 if (property == 'area') {

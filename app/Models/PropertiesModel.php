@@ -22,10 +22,10 @@ class PropertiesModel extends Model
     //
     static public function addProperty($request)
     {
-        $valid_types = ['tag', 'manufacturer', 'site', 'area', 'shelf'];
+        $valid_types = ['tag', 'manufacturer', 'site', 'area', 'shelf', 'optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
         
-        if (isset($request['type']) && in_array($request['type'], $valid_types)) {
-            $table = isset($request['type']);
+        if (in_array($request['type'], $valid_types)) {
+            $table = $request['type'];
         } else {
             return 'Error: invalid property.';
         }

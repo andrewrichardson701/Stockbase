@@ -223,7 +223,7 @@
                         <div class="col">
                             <div>Vendor</div>
                             <div>
-                                <select id="vendor" name="vendor" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="vendor-select" name="vendor" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_vendors['count'] > 0)
                                     <option value="" @if ($params['form_vendor'] == 0) selected @endif >Select Vendor</option>
                                     @foreach ($optic_vendors['rows'] as $optic_vendor) 
@@ -241,7 +241,7 @@
                         <div class="col">
                             <div>Type</div>
                             <div>
-                                <select id="type" name="type" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="type-select" name="type" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_types['count'] > 0)
                                     <option value="" @if ($params['form_type'] == 0) selected @endif >Select Type</option>
                                     @foreach ($optic_types['rows'] as $optic_type) 
@@ -261,7 +261,7 @@
                         <div class="col">
                             <div>Speed</div>
                             <div>
-                                <select id="speed" name="speed" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="speed-select" name="speed" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_speeds['count'] > 0)
                                     <option value="" @if ($params['form_speed'] == 0) selected @endif >Select Speed</option>
                                     @foreach ($optic_speeds['rows'] as $optic_speed) 
@@ -279,7 +279,7 @@
                         <div class="col">
                             <div>Connector</div>
                             <div>
-                                <select id="connector" name="connector" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="connector-select" name="connector" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_connectors['count'] > 0)
                                     <option value="" @if ($params['form_connector'] == 0) selected @endif >Select Connector</option>
                                     @foreach ($optic_connectors['rows'] as $optic_connector) 
@@ -297,7 +297,7 @@
                         <div class="col">
                             <div>Distance</div>
                             <div>
-                                <select id="distance" name="distance" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="distance-select" name="distance" class="form-control text-center theme-dropdown" style="border-color:black;" required>
                                 @if ($optic_distances['count'] > 0)
                                     <option value="" @if ($params['form_distance'] == 0) selected @endif >Select Distance</option>
                                     @foreach ($optic_distances['rows'] as $optic_distance) 

@@ -249,18 +249,18 @@ class AjaxController extends Controller
 
     static public function addProperty(Request $request) 
     {
+
         $previous_url = GeneralModel::previousURL();
         // get all to check for a match
         if ($request['_token'] == csrf_token()) {
             $request->validate([
                 'type' => 'required',
-                'description' => 'string',
+                'description' => 'string|nullable',
                 'property_name' => 'required',
-                'area_id' => 'integer',
-                'site_id' => 'integer'
+                'area_id' => 'integer|nullable',
+                'site_id' => 'integer|nullable'
             ]);
-
-            return PropertiesModel::addProperty($request->input());
+            echo(PropertiesModel::addProperty($request->input()));
         } else {
             $redirect = GeneralModel::redirectURL($previous_url, ['error' => 'csrfMissmatch']);
             return redirect()->$redirect;

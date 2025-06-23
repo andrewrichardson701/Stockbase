@@ -158,20 +158,58 @@ class OpticsController extends Controller
                     'mode' => 'string|required', 
                     'site' => 'integer|required'
                 ]);
-                return OpticsModel::add($request->input());
+                return OpticsModel::addOptic($request->input());
             } else {
                 return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
             }
         }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function restore(Request $request) 
+    {
         if (isset($request['optic-restore-submit'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
                     'id' => 'integer|required',
                 ]);
-                return OpticsModel::restore($request->input());
+                return OpticsModel::restoreOptic($request->input());
             } else {
                 return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
             }
         }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function move(Request $request) 
+    {
+        if (isset($request['optic-move-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                    'site' => 'integer|required'
+                ]);
+                return OpticsModel::moveOptic($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function delete(Request $request)
+    {
+        if (isset($request['optic-delete-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                    'reason' => 'string|required'
+                ]);
+                return OpticsModel::deleteOptic($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
     }
 }

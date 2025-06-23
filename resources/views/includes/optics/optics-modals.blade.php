@@ -116,7 +116,7 @@
     <span class="close" onclick="modalCloseDeleteOptic()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('optics.delete') }}" method="POST" enctype="multipart/form-data">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <table class="centertable" style="border:none">
@@ -148,7 +148,7 @@
     <span class="close" onclick="modalCloseMoveOptic()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form action="includes/optics.inc.php" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('optics.move') }}" method="POST" enctype="multipart/form-data">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <table class="centertable" style="border:none">
@@ -162,7 +162,7 @@
                         </tr>
                         <tr>
                             <td class="align-middle text-center" style="border:none; padding-right:0px;">
-                                <select name="move-site" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">');
+                                <select name="site" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">
                                 @if ($sites['count'] > 0)
                                     @foreach ($sites['rows'] as $site) 
                                     <option value="{{ $site['id'] }}">{{ $site['name'] }}</option>

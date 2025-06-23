@@ -195,7 +195,7 @@
                 <h3 style="font-size:22px">Add new optic</h3>
                 <hr style="border-color:#9f9d9d; margin-left:10px">
                 <p id="optic-add-response" hidden></p>
-                <form id="add-optic-form" action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                <form id="add-optic-form" action="{{ route('optics.add') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                     <!-- Include CSRF token in the form -->
                     @csrf
                     <div class="row" style="margin-right:25px;margin-top:5px">
@@ -436,7 +436,7 @@
                     @else
                         @foreach($optics_data['rows'] as $row)
                         <tr id="item-{{ $row['id'] }}" class="row-show align-middle text-center @if($row['deleted'] == 1) red @endif">
-                            <form id="opticForm-{{ $row['id'] }}"action="includes/optics.inc.php" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                            <form id="opticForm-{{ $row['id'] }}"action="{{ route('optics.restore') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                                 <!-- Include CSRF token in the form -->
                                 @csrf
                                 <input type="hidden" form="opticForm-{{ $row['id'] }}" value="{{ $row['id'] }}" name="id"/>

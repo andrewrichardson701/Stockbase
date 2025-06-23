@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\AboutController;
@@ -101,6 +102,9 @@ Route::middleware([AddHeadData::class])->group(function () {
 
                     // POST REQUESTS
                     Route::post('/assets/optics.add', [OpticsController::class, 'add'])->name('optics.add'); // adding optics
+                    Route::post('/assets/optics.move', [OpticsController::class, 'move'])->name('optics.move'); // move optics
+                    Route::post('/assets/optics.restore', [OpticsController::class, 'restore'])->name('optics.restore'); // restore optics
+                    Route::post('/assets/optics.delete', [OpticsController::class, 'delete'])->name('optics.delete'); // deleting optics
                     Route::post('/assets/optics.comments', [OpticsController::class, 'comments'])->name('optics.comments'); // comment forms - adding/deleting
                 });
                 Route::middleware(['auth', 'check.permission:cpus'])->group(function () { // Cpus pages - locked behind cpus permission

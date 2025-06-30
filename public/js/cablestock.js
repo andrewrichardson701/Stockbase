@@ -61,7 +61,7 @@ modalCloseNewType = function() {
 // for the select boxes
 function populateAreas() {
     // Get the selected site
-    var site = document.getElementById("site-dropdown").value;
+    var site = document.getElementById("site-dropdown-add").value;
 
     // Make an AJAX request to retrieve the corresponding areas
     var xhr = new XMLHttpRequest();
@@ -70,7 +70,7 @@ function populateAreas() {
         if (xhr.status === 200) {
         // Parse the response and populate the area select box
         var areas = JSON.parse(xhr.responseText);
-        var select = document.getElementById("area-dropdown");
+        var select = document.getElementById("area");
         select.options.length = 0;
         select.options[0] = new Option("Select Area", "");
         for (var i = 0; i < areas.length; i++) {
@@ -83,7 +83,7 @@ function populateAreas() {
 }
 function populateShelves() {
     // Get the selected area
-    var area = document.getElementById("area-dropdown").value;
+    var area = document.getElementById("area").value;
 
     // Make an AJAX request to retrieve the corresponding shelves
     var xhr = new XMLHttpRequest();
@@ -103,8 +103,8 @@ function populateShelves() {
     };
     xhr.send();
 }
-document.getElementById("site-dropdown").addEventListener("change", populateAreas);
-// document.getElementById("area-dropdown").addEventListener("change", populateShelves);
+document.getElementById("site-dropdown-add").addEventListener("change", populateAreas);
+document.getElementById("area").addEventListener("change", populateShelves);
 
 function toggleHidden(id) {
     var Row = document.getElementById(id);

@@ -285,7 +285,7 @@ class CablestockModel extends Model
                     </tr>
                     <tr class="vertical-align align-middle'.$last_edited.' move-hide" id="'.$cable_item_id.'-move-hidden" hidden>
                         <td colspan=100%>
-                            <form class="centertable" action="'.route('stock.move.cable').'" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+                            <form class="centertable" action="'.route('cablestock.moveStock').'" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
                                 <!-- Include CSRF token in the form -->
                                 ' . csrf_field() . '
                                 <table class="centertable" style="border: 1px solid #454d55; width:100%"> 
@@ -540,6 +540,163 @@ class CablestockModel extends Model
         }
 
         return $return;
+    }
+
+    static public function moveStockCable($request) 
+    {
+        $user = GeneralModel::getUser();
+        $find = DB::table('cable_item')
+                ->where('deleted', 0)
+                ->where('cost', $request['current_cost'])
+                ->where('shelf_id', $request['current_shelf'])
+                ->where('stock_id', $request['current_stock'])
+                ->first();
+        
+        if ($find) {
+            $cable_id = $find->id;
+
+            if ($request['shelf'] == $find->shelf_id) {
+                // same shelf, do not continue
+                $error = 'No move necessary. Same shelf selected.';
+                return redirect(GeneralModel::previousURL())->with('error', $error);
+            }
+            $find_quantity = $find->quantity;
+            if ($request['quantity'] <= $find_quantity) {
+                // enough quantity, continue
+
+                // get the new shelf
+                $find_new = DB::table('cable_item')
+                            ->where('deleted', 0)
+                            ->where('cost', $request['current_cost'])
+                            ->where('shelf_id', $request['shelf'])
+                            ->where('stock_id', $request['current_stock'])
+                            ->first();
+
+                if (!$find_new) {
+                    // create the row
+                    $insert = DB::table('cable_ite')->insertGetId([
+                                                                'stock_id' => $find->stock_id,
+                                                                'quantity' => 0,
+                                                                'cost' => $find->cost,
+                                                                'shelf_id' => $request['shelf'],
+                                                                'type_id' => $find->type_id,
+                                                                'deleted' => 0,
+                                                                'updated_at' => now(),
+                                                                'created_at' => now()
+                                                            ]);
+                    if ($insert) {
+                        $find_new = DB::table('cable_item')
+                            ->where('id', $insert)
+                            ->first();
+                    } else {
+                        $error = 'Failed to create new cable_item entry.';
+                        return redirect(GeneralModel::previousURL())->with('error', $error);
+                    }
+                } 
+
+                if ($find_new) {
+                    $new_quantity = ($find->quantity)-$request['quantity'];
+                    $update = DB::table('cable_item')->where('id', $cable_id)->update(['quantity' => $new_quantity, 'updated_at' => now()]);
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'cable_item',
+                            'record_id' => $cable_id,
+                            'action' => 'Update record',
+                            'field' => 'quantity',
+                            'previous_value' => $find->quantity,
+                            'new_value' => $new_quantity
+                        ];
+
+                        GeneralModel::updateChangelog($changelog_info);
+
+                        // add Transaction
+                        $transaction_data_remove = [
+                            'stock_id' => $find->stock_id,
+                            'item_id' => $cable_id,
+                            'type' => 'Remove quantity',
+                            'quantity' => ($request['quantity'])*-1,
+                            'date' => date('Y-m-d'),
+                            'time' => date('H:i:s'),
+                            'username' => $user['username'],
+                            'shelf_id' => $find->shelf_id,
+                            'reason' => 'Move stock',
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ];
+                        $transaction_remove = TransactionModel::addCableTransaction($transaction_data_remove);
+
+                        if (!array_key_exists('error', $transaction_remove)) {
+                            // add Transactio
+                            // update the new row
+                            $new_quantity = ($find_new->quantity)+$request['quantity'];
+                            $update = DB::table('cable_item')->where('id', $find_new->id)->update(['quantity' => $new_quantity, 'updated_at' => now()]);
+                            if ($update) {
+                                // changelog
+                                $changelog_info = [
+                                    'user' => $user,
+                                    'table' => 'cable_item',
+                                    'record_id' => $find_new->id,
+                                    'action' => 'Update record',
+                                    'field' => 'quantity',
+                                    'previous_value' => $find_new->quantity,
+                                    'new_value' => $new_quantity
+                                ];
+
+                                GeneralModel::updateChangelog($changelog_info);
+
+                                // add Transaction
+                                $transaction_data_add = [
+                                    'stock_id' => $find_new->stock_id,
+                                    'item_id' => $find_new->id,
+                                    'type' => 'Add quantity',
+                                    'quantity' => $request['quantity'],
+                                    'date' => date('Y-m-d'),
+                                    'time' => date('H:i:s'),
+                                    'username' => $user['username'],
+                                    'shelf_id' => $request['shelf'],
+                                    'reason' => 'Move stock',
+                                    'created_at' => now(),
+                                    'updated_at' => now()
+                                ];
+                                $transaction_add = TransactionModel::addCableTransaction($transaction_data_add);
+
+                                if (!array_key_exists('error', $transaction_add)) {
+                                    // return with success
+                                    $success = 'Quantity moved.';
+                                    return redirect(GeneralModel::previousURL())->with('success', $success);
+                                } else {
+                                    $errors[] = 'transaction not added for id: '.$cable_id.', type = move, quantity = 1.';
+                                }
+                                
+                            } else {
+                                $errors[] = $error = 'unable to move id: '.$cable_id;
+                                return redirect(GeneralModel::previousURL())->with('error', $error);
+                            }
+                        } else {
+                            $errors[] = 'transaction not added for id: '.$cable_id.', type = move, quantity = -1.';
+                        }
+                    } else {
+                        $errors[] = $error = 'unable to move id: '.$cable_id;
+                        return redirect(GeneralModel::previousURL())->with('error', $error);
+                    }
+                } else {
+                    $error = 'No new row found.';
+                    return redirect(GeneralModel::previousURL())->with('error', $error);
+                }
+
+            } else {
+                // not enough quantity, error out
+                $error = 'Not enough quantity to remove.';
+                return redirect(GeneralModel::previousURL())->with('error', $error);
+            }
+        } else {
+            // no match found
+            $error = 'No matching item found.';
+            return redirect(GeneralModel::previousURL())->with('error', $error);
+        }
+
     }
 }
 

@@ -302,7 +302,7 @@
         <!-- <div id="modalDivProperties" style="display: block;"> -->
         <span class="close" onclick="modalCloseNewType()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
-            <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
                 <form action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
                     <!-- Include CSRF token in the form -->
                     @csrf

@@ -14,6 +14,7 @@ use App\Models\GeneralModel;
 use App\Models\StockModel;
 use App\Models\ResponseHandlingModel;
 use App\Models\TransactionModel;
+use App\Models\CablestockModel;
 
 class StockController extends Controller
 {
@@ -273,7 +274,7 @@ class StockController extends Controller
                 'quantity' => 'integer|required',
             ]);
 
-            return StockModel::moveStockCable($request);
+            return CablestockModel::moveStockCable($request);
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }

@@ -193,8 +193,8 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::get('/cablestock', [CablestockController::class, 'index'])->name('cablestock'); // cablestock page
 
                 // POST REQUESTS
-                Route::post('/cablestock.modifyStock', [CableStockController::class, 'modifyCableStock'])->name('cablestock.modifyStock'); // modify cable stock 
-                Route::post('/cablestock.moveStock', [CableStockController::class, 'moveCableStock'])->name('cablestock.moveStock'); // move cable stock 
+                Route::post('/cablestock.modifyStock', [CablestockController::class, 'modifyCableStock'])->name('cablestock.modifyStock'); // modify cable stock 
+                Route::post('/cablestock.moveStock', [CablestockController::class, 'moveStockCable'])->name('cablestock.moveStock'); // move cable stock 
             });
 
             ////

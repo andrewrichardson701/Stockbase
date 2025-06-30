@@ -153,6 +153,9 @@ Route::middleware([AddHeadData::class])->group(function () {
                 // POST REQUESTS
                 Route::post('/stock.add.existing', [StockController::class, 'addExistingStock'])->name('stock.add.existing'); // add existing stock quantity
                 Route::post('/stock.add.new', [StockController::class, 'addNewStock'])->name('stock.add.new'); // add new stock 
+                Route::post('/stock.move', [StockController::class, 'moveStock'])->name('stock.move'); // move stock quantity
+                Route::post('/stock.move.container', [StockController::class, 'moveStockContainer'])->name('stock.move.container'); // move stock quantity when item is a container
+                Route::post('/stock.move.cable', [StockController::class, 'moveStockCable'])->name('stock.move.cable'); // move cable stock quantity
                 Route::post('/stock.edit', [StockController::class, 'editStock'])->name('stock.edit'); // edit stock
                 Route::post('/stock.edit.imageupload', [StockController::class, 'uploadStockImage'])->name('stock.edit.imageupload'); // add stock image in edit stock
                 Route::post('/stock.edit.imagelink', [StockController::class, 'linkStockImage'])->name('stock.edit.imagelink'); // link stock image

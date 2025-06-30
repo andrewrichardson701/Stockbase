@@ -378,7 +378,7 @@ class ContainersModel extends Model
                 'field' => 'item_id',
                 'new_value' => null,
                 'action' => 'Delete record',
-                'previous_value' => null,
+                'previous_value' => $request['item_id'],
             ];
             GeneralModel::updateChangelog($info);
 
@@ -427,7 +427,8 @@ class ContainersModel extends Model
         $instance->setTable('item');
 
         $query = $instance->newQuery()
-                            ->join('item_container', 'item_container.item_id', '=', 'item.id');
+                            ->join('item_container', 'item_container.item_id', '=', 'item.id')
+                            ->where('item_container.container_id', $container_id);
 
         if (!empty($params)) {
             foreach (array_keys($params) as $key) {

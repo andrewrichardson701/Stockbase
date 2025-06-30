@@ -195,6 +195,9 @@ class TransactionModel extends Model
                     'delete' => 'transactionDelete',
                     'move' => 'transactionMove',
                     'restore' => 'transactionAdd',
+                    'Add quantity' => 'transactionAdd',
+                    'Remove quantity' => 'transactionRemove',
+                    'Move stock' => 'transactionMove',
                     );
         
         if (isset($type)) {
@@ -226,12 +229,16 @@ class TransactionModel extends Model
         ]);
 
         $insert = TransactionModel::create($request->toArray());
-        $id = $insert->id;
+        if ($insert) {
+            $id = $insert->id;
 
-        if (is_numeric($id)) {
-            return ['success' => $id];
+            if (is_numeric($id)) {
+                return ['success' => $id];
+            } else {
+                return ['error' => 'non-numeric id'];
+            }
         } else {
-            return ['error' => 'non-numeric id'];
+            return ['error' => 'unable to insert'];
         }
 
     }

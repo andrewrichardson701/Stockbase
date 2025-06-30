@@ -9,6 +9,13 @@ function modalLoadContainerMoveConfirmation(i, itemID) {
     var containerMoveItemID = document.getElementById('containerMoveItemID');
     var containerMoveShelf = document.getElementById('containerMoveShelf');
     var containerMoveQuantity = document.getElementById('containerMoveQuantity');
+    var containerMoveCurrentStock = document.getElementById('containerMoveCurrentStock');
+    var containerMoveCurrentShelf = document.getElementById('containerMoveCurrentShelf');
+    var containerMoveCurrentSerial = document.getElementById('containerMoveCurrentSerial');
+    var containerMoveCurrentManufacturer = document.getElementById('containerMoveCurrentManufacturer');
+    var containerMoveCurrentComments = document.getElementById('containerMoveCurrentComments');
+    var containerMoveCurrentCost = document.getElementById('containerMoveCurrentCost');
+    var containerMoveCurrentUPC = document.getElementById('containerMoveCurrentUPC');
 
     var shelfSelect = document.getElementById(i+'-n-shelf');
     var quantityInput = document.getElementById(i+'-n-quantity');
@@ -22,7 +29,13 @@ function modalLoadContainerMoveConfirmation(i, itemID) {
 
     moveContainerItemID.innerHTML = itemID;
     moveContainerItemName.innerHTML = document.getElementById('stock_name').innerHTML;
-
+    containerMoveCurrentStock.value = document.getElementById(i+'-c-stock').value;
+    containerMoveCurrentShelf.value = document.getElementById(i+'-c-shelf').value;
+    containerMoveCurrentSerial.value = document.getElementById(i+'-c-serial').value;
+    containerMoveCurrentManufacturer.value = document.getElementById(i+'-c-manufacturer').value;
+    containerMoveCurrentComments.value = document.getElementById(i+'-c-comments').value;
+    containerMoveCurrentCost.value = document.getElementById(i+'-c-cost').value;
+    containerMoveCurrentUPC.value = document.getElementById(i+'-c-upc').value;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "includes/stockajax.php?request-container-children=1&container_id="+itemID+"&container_is_item=1", true);
     xhr.onload = function() {
@@ -73,7 +86,7 @@ function populateAreas(id) {
 
     // Make an AJAX request to retrieve the corresponding areas
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?site=" + site, true);
+    xhr.open("GET", "/_ajax-selectBoxes?site=" + site, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the area select box
@@ -96,7 +109,7 @@ function populateShelves(id) {
 
     // Make an AJAX request to retrieve the corresponding shelves
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?area=" + area, true);
+    xhr.open("GET", "/_ajax-selectBoxes?area=" + area, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box

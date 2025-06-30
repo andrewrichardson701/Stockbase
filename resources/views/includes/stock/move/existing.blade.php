@@ -8,7 +8,7 @@
         </div>
     </div>
 </div>
-
+{{-- {{ dd($stock_move_data) }} --}}
 <div style="width:100%">
     <table class="table table-dark theme-table centertable" style="max-width:max-content">
         <thead>
@@ -32,6 +32,7 @@
             </tr>
         </thead>
         <tbody> 
+
         @if ($stock_move_data['count'] > 0 && !empty($stock_move_data['rows']))
             @foreach($stock_move_data['rows'] as $key => $row)
             <tr id="item-{{ $key }}" class="row-show clickable @if (isset($params['edited']) && $params['edited'] == $key) last-edit @endif" onclick="toggleHidden({{ $key }})">
@@ -62,10 +63,9 @@
                 <td colspan=100%>
                     <div class="container">                                                       
                         <table class="centertable" style="border: 1px solid #454d55;">
-                            <form class="" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
+                            <form class="" action="@if($stock_data['is_cable'] == 0 ){{ route('stock.move') }}@else{{ route('stock.move.cable') }}@endif" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0">
                                 <!-- Include CSRF token in the form -->
                                 @csrf
-                                <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                 @if ($stock_data['is_cable'] == 0) 
                                     <input type="hidden" name="stock-move" value="1" />
                                 @else
@@ -126,12 +126,12 @@
                                                 </div>
                                                 @if ($stock_data['is_cable'] == 0) 
                                                     <div class="col" style="max-width:max-content !important">
-                                                        <input type="number" class="form-control nav-v-c row-dropdown theme-input" id="{{ $key }}-n-serial" name="serial" style="min-width: 80px; padding: 2px 7px 2px 7px; width:max-content; max-width:90px" placeholder="@if (isset($row['serial_number']) && $row['serial_number'] !== '') {{ $row['serial_number'] }} @else No Serial Number @endif" value="{{ $row['serial_number'] }}" disabled /> 
+                                                        <input type="text" class="form-control nav-v-c row-dropdown theme-input" id="{{ $key }}-n-serial" name="serial" style="min-width: 80px; padding: 2px 7px 2px 7px; width:max-content; max-width:90px" placeholder="@if (isset($row['serial_number']) && $row['serial_number'] !== '') {{ $row['serial_number'] }} @else No Serial Number @endif" value="{{ $row['serial_number'] }}" disabled /> 
                                                     </div>
                                                 @endif
                                                 <div class="col" style="max-width:max-content !important">
-                                                @if (isset($row['container_id']) && $row['container_id'] !== null) 
-                                                    <input type="button" class="btn btn-warning nav-v-c btn-move" id="{{ $key }}-n-submit" value="Move" style="opacity:80%;" name="submit" required onclick="modalLoadContainerMoveConfirmation({{ $key }}, {{ $row['container_id'] }})" />
+                                                @if (isset($row['is_container']) && $row['is_container'] == 1) 
+                                                    <input type="button" class="btn btn-warning nav-v-c btn-move" id="{{ $key }}-n-submit" value="Move" style="opacity:80%;" name="submit" required onclick="modalLoadContainerMoveConfirmation({{ $key }}, {{ $row['container_item_data']['id'] }})" />
                                                 @else
                                                     <input type="submit" class="btn btn-warning nav-v-c btn-move" id="{{ $key }}-n-submit" value="Move" style="opacity:80%;" name="submit" required />
                                                 @endif
@@ -168,4 +168,63 @@
         </tbody>
     </table>
 </div>
+<!-- Container Move item Modal -->
+<div id="modalDivContainerMoveConfirmation" class="modal">
+    <span class="close" onclick="modalCloseContainerMoveConfirmation()">&times;</span>
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <form class="padding:0px;margin:0px" id="containerMoveForm" action="{{ route('stock.move.container') }}" method="POST" enctype="multipart/form-data">
+            <!-- Include CSRF token in the form -->
+            @csrf
+            <input type="hidden" name="submit" value="1" />
+            <input type="hidden" name="container-move" value="1" />
+            <input type="hidden" id="containerMoveItemID" name="item_id" />
+            <input type="hidden" id="containerMoveShelf" name="shelf_id" />
+            <input type="hidden" id="containerMoveQuantity" name="quantity" />
+            <input type="hidden" id="containerMoveCurrentStock" name="current_stock" value="{{ $stock_data['id'] }}"/>
+            <input type="hidden" id="containerMoveCurrentShelf" name="current_shelf" />
+            <input type="hidden" id="containerMoveCurrentSerial" name="current_serial" />
+            <input type="hidden" id="containerMoveCurrentManufacturer" name="current_manufacturer" />
+            <input type="hidden" id="containerMoveCurrentComments" name="current_comments" />
+            <input type="hidden" id="containerMoveCurrentCost" name="current_cost" />
+            <input type="hidden" id="containerMoveCurrentUPC" name="current_upc" />
+        </form>
+        <div class="well-nopad theme-divBg" style="overflow-y:auto; overflow-x: auto; height:600px; " id="property-container" >
+            <h4 class="text-center align-middle" style="width:100%;margin-top:10px">Move Container Item</h4>
+            <table class="centertable"><tbody><tr><th style="padding-right:5px">Item ID:</th><td style="padding-right:20px" id="moveContainerItemID"></td><th style="padding-right:5px">Name:</th><td id="moveContainerItemName"></td></tr></tbody></table>
+            <table class="centertable" style="margin-top:10px">
+                <tbody style="border: none">
+                    <tr class="text-center align-middle" style="border: none">
+                        <td class="text-center align-middle" style="padding-right:5px;border: none"><or class="title" title="This will KEEP all child objects attached and move them with the current item. All child objects will be moved to the new location.">Move container and contents</or></td>
+                        <td style="border: none"><input type="submit" form="containerMoveForm" class="btn btn-danger" name="container-move-all" value="Move All" /></td>
+                    </tr>
+                    <tr class="text-center align-middle" style="border: none">
+                        <td class="text-center align-middle" style="padding-right:5px;border: none"><or class="title" title="This will UNLINK all child objects and ONLY move the selected item. All child objects will remain in the same location.">Move container only</or></td>
+                        <td style="border: none"><input type="submit" form="containerMoveForm" class="btn btn-warning" name="container-move-single" value="Move Single Item" style="margin-top:5px;margin-bottom:5px"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="well-nopad theme-divBg" style="margin: 20px 10px 20px 10px; padding:20px">
+                <p><strong>Contents</strong> - Items: <strong id="moveContainerChildCount" class="green"></strong></p>
+                <table id="containerMoveContentsTable" class="table table-dark theme-table centertable" style="margin-bottom:0px; white-space:nowrap;">
+                    <thead>
+                        <tr>
+                            <th><!-- Image --></th>
+                            <th class="text-center align-middle">ID</th>
+                            <th class="text-center align-middle">Name</th>
+                            <th class="text-center align-middle">Description</th>
+                            <th><!-- Unlink --></th>
+                        </tr>
+                    </thead>
+                    <tbody id="containerMoveContentsTableBody">
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
+            <button class="btn btn-warning" type="button" style="margin:10px 10px 0px 10px" onclick="modalCloseContainerMoveConfirmation()">Cancel</button>
+        </span>
+    </div>
+</div>
+<!-- End of Move Container Modal-->
 @include('includes.stock.transactions')

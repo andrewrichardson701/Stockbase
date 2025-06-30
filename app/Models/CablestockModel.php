@@ -65,6 +65,8 @@ class CablestockModel extends Model
             $results_per_page = 10;
         }
 
+        $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site', 0));
+
         $instance = new self();
         $instance->setTable('cable_item');
 
@@ -283,7 +285,7 @@ class CablestockModel extends Model
                     </tr>
                     <tr class="vertical-align align-middle'.$last_edited.' move-hide" id="'.$cable_item_id.'-move-hidden" hidden>
                         <td colspan=100%>
-                            <form class="centertable" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+                            <form class="centertable" action="'.route('stock.move.cable').'" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
                                 <!-- Include CSRF token in the form -->
                                 ' . csrf_field() . '
                                 <table class="centertable" style="border: 1px solid #454d55; width:100%"> 
@@ -306,8 +308,16 @@ class CablestockModel extends Model
                                                         </div>
                                                         <div class="col" style="max-width:max-content !important">
                                                             <select class="form-control nav-v-c row-dropdown theme-dropdown" id="'.$stock_id.'-n-site" name="site" style="min-width:50px; padding:2px 0px 2px 0px;  width:max-content !important" required onchange="populateAreasMove(\''.$stock_id.'\')">
-                                                                <option value="" selected="" disabled="" hidden="">Site</option><option value="1">CDC ME14</option><option value="2">CDC DA2</option><option value="4">TestSite</option>
-                                                            </select>
+                                                                <option value="" selected disabled hidden>Site</option>
+                                                                ';
+                                                                if ($sites['count'] > 0 && !empty($sites['rows'])) {
+                                                                    foreach($sites['rows'] as $site) {
+                                                                        $result .= '<option value="'.$site['id'].'">'.$site['name'].'</option>';
+                                                                    }
+                                                                } else {
+                                                                    $result .= '<option value="" selected disabled>No sites found.</option>';
+                                                                }
+                                                        $result .= '</select>
                                                         </div>
                                                         <div class="col" style="max-width:max-content !important">
                                                             <select class="form-control nav-v-c row-dropdown theme-dropdown" id="'.$stock_id.'-n-area" name="area" style="min-width:50px; padding: 2px 0px 2px 0px; max-width:max-content !important" disabled="" required onchange="populateShelvesMove(\''.$stock_id.'\')">

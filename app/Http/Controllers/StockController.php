@@ -103,7 +103,11 @@ class StockController extends Controller
                 $untagged = GeneralModel::formatArrayOnIdAndCount(GeneralModel::getAllWhereNotIn('tag', ['id' => array_keys($tagged) ?? []]));
                 $tag_data = ['tagged' => $tagged, 'untagged' => $untagged];
                 if (isset($modify_type) && $modify_type == 'move') {
-                    $stock_move_data = GeneralModel::formatArrayOnIdAndCount(StockModel::getMoveStockData($stock_id));
+                    if ($stock_data['is_cable'] == 0) {
+                        $stock_move_data = GeneralModel::formatArrayOnIdAndCount(StockModel::getMoveStockData($stock_id));
+                    } else {
+                        $stock_move_data = GeneralModel::formatArrayOnIdAndCount(StockModel::getMoveStockCableData($stock_id));
+                    }
                 }
             } else {
                 // if the item doesnt have any entry in the stocm table, default back to adding a new item.
@@ -183,14 +187,93 @@ class StockController extends Controller
                 'site' => 'integer|required',
                 'area' => 'integer|required',
                 'shelf' => 'integer|required',
-                'contianer' => 'integer|nullable',
+                'container' => 'integer|nullable',
                 'cost' => 'numeric',
                 'quantity' => 'integer|required',
                 'serial-number' => 'string|nullable',
                 'reason' => 'string|required'
             ]);
-// dd($request->toArray());
+        // dd($request->toArray());
             return StockModel::addNewStock($request, 0);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function moveStock(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'current_i' => 'integer|nullable', // row in the table on the move page
+                'current_stock' => 'required|integer',
+                'current_shelf' => 'required|integer',
+                'current_manufacturer' => 'integer|required',
+                'current_upc' => 'string|nullable',
+                'current_serial' => 'string|nullable',
+                'current_comments' => 'string|nullable',
+                'current_cost' => 'numeric|nullable',
+
+                'site' => 'integer|required',
+                'area' => 'integer|required',
+                'shelf' => 'integer|required',
+                'quantity' => 'integer|required',
+            ]);
+        // dd($request->toArray());
+            return StockModel::moveStock($request, 0, 0);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function moveStockContainer(Request $request)
+    {
+        dd($request->toArray());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'current_stock' => 'required|integer',
+                'current_shelf' => 'required|integer',
+                'current_manufacturer' => 'integer|required',
+                'current_upc' => 'string|nullable',
+                'current_serial' => 'string|nullable',
+                'current_comments' => 'string|nullable',
+                'current_cost' => 'numeric|nullable',
+
+                'item_id' => 'integer|required',
+                'shelf_id' => 'integer|required',
+                'quantity' => 'integer|required',
+            ]);
+            
+            if (isset($request['container-move-single'])) {
+                return StockModel::moveStock($request, 1, 0);
+
+            } elseif (isset($request['container-move-all'])) {
+                return StockModel::moveStock($request, 1, 1);
+
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Move status missing.');
+            }
+            
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function moveStockCable(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'current_i' => 'integer|nullable', // row in the table on the move page
+                'current_stock' => 'required|integer',
+                'current_shelf' => 'required|integer',
+                'current_cost' => 'numeric|nullable',
+
+                'site' => 'integer|required',
+                'area' => 'integer|required',
+                'shelf' => 'integer|required',
+                'quantity' => 'integer|required',
+            ]);
+
+            return StockModel::moveStockCable($request);
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }

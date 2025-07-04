@@ -124,6 +124,7 @@ class ContainersModel extends Model
     static public function getContainersByShelf($shelf_id) 
     {        
         $return = [];
+        $count = 0;
 
         $containers = GeneralModel::getAllWhere('container', ['shelf_id' => $shelf_id], 'name') ?? [];
         $container_items = GeneralModel::getAllWhere('item', ['deleted' => 0, 'is_container' => 1, 'shelf_id' => $shelf_id], 'id') ?? [];
@@ -132,8 +133,14 @@ class ContainersModel extends Model
             $container_items[$key]['name'] = $stock_info[0]['name'] ?? null;
             $container_items[$key]['description'] = $stock_info[0]['description'] ?? null;
         }
+        
+        $count = count($containers)+count($container_items);
+
+        $return['count'] = $count;
         $return['containers'] = $containers ?? [];
+        $return['containers']['count'] = count($containers);
         $return['container_items'] = $container_items ?? [];
+        $return['container_items']['count'] = count($container_items);
 
         return $return;
     }
@@ -383,9 +390,9 @@ class ContainersModel extends Model
             GeneralModel::updateChangelog($info);
 
             DB::table('item_container')->where('id', $deleted_id)->delete();
-            return redirect()->route('containers', ['success' => 'unlinked']);
+            return redirect(GeneralModel::previousURL())->with('success', 'unlinked');
         } else {
-            return redirect()->route('containers', ['error' => 'noRows']);
+            return redirect(GeneralModel::previousURL())->with('error', 'noRows');
         }
     }
 
@@ -414,7 +421,7 @@ class ContainersModel extends Model
         if ($redirect !== null) {
             return ['success' => 'linked', 'id' => $insert ?? null];
         } else {
-            return redirect()->route('containers', ['success' => 'linked']);
+            return redirect(GeneralModel::previousURL())->with(['success' => 'linked', 'id' => $insert ?? null]);
         }
         
     }

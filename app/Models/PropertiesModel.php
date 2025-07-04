@@ -22,7 +22,7 @@ class PropertiesModel extends Model
     //
     static public function addProperty($request)
     {
-        $valid_types = ['tag', 'manufacturer', 'site', 'area', 'shelf', 'optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
+        $valid_types = ['tag', 'manufacturer', 'site', 'area', 'shelf', 'optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance', 'cable_types'];
         
         if (in_array($request['type'], $valid_types)) {
             $table = $request['type'];
@@ -30,6 +30,7 @@ class PropertiesModel extends Model
             return 'Error: invalid property.';
         }
         $name = isset($_POST['property_name']) ? $_POST['property_name'] : NULL;
+        
         if ($name == NULL) { // all
             return 'Error: Name field empty.';
         } 
@@ -41,6 +42,9 @@ class PropertiesModel extends Model
         $params['name'] = $name;
         if ($type == 'shelf') {
             $params['area_id'] = $area_id;
+        }
+        if ($type == 'cable_types') {
+            $params['parent'] = $request['type-parent'];
         }
         $matches = GeneralModel::getAllWhere($table, $params);
 
@@ -64,6 +68,9 @@ class PropertiesModel extends Model
                 case 'shelf':
                     $insert_data['area_id'] = $area_id;
                     break;
+                case 'cable_types':
+                    $insert_data['description'] = $description;
+                    $insert_data['parent'] = $request['parent'];
                 default:
 
             }

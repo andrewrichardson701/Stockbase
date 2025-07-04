@@ -228,7 +228,7 @@ class StockController extends Controller
 
     static public function moveStockContainer(Request $request)
     {
-        dd($request->toArray());
+        // dd($request->toArray());
         if ($request['_token'] == csrf_token()) {
             $request->validate([
                 'current_stock' => 'required|integer',

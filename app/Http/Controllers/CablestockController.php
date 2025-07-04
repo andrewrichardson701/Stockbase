@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\File;
 
 use Illuminate\View\View;
 
-// use App\Models\IndexModel;
 use App\Models\GeneralModel;
 use App\Models\FunctionsModel;
 use App\Models\CablestockModel;
 use App\Models\ResponseHandlingModel;
+use App\Models\PropertiesModel;
 
 class CablestockController extends Controller
 {
@@ -73,15 +73,65 @@ class CablestockController extends Controller
 
     static public function moveCableStock(Request $request)
     {
-        dd ($request->toArray());
         if ($request['_token'] == csrf_token()) {
             $request->validate([
-                'stock-id' => 'integer|required',
-                'cable-item-id' => 'integer|required',
-                'action' => 'string|required'
+                'current_i' => 'integer|nullable', // row in the table on the move page
+                'current_stock' => 'required|integer',
+                'current_shelf' => 'required|integer',
+                'current_cost' => 'numeric|nullable',
+
+                'site' => 'integer|required',
+                'area' => 'integer|required',
+                'shelf' => 'integer|required',
+                'quantity' => 'integer|required',
             ]);
 
+            return CablestockModel::moveStockCable($request);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
 
+    static public function addCableStock(Request $request) 
+    {
+        // dd($request->file());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'site' => 'integer|required',
+                'area' => 'integer|required',
+                'shelf' => 'integer|required',
+                'stock-name' => 'string|required',
+                'stock-description' => 'string|nullable',
+                'cable-type' => 'integer|required',
+                'stock-min-stock' => 'integer|required',
+                'item-quantity' => 'integer|required',
+                'item-cost' => 'numeric|required',
+            ]);
+
+            return CablestockModel::addCableStock($request);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function addCableType(Request $request) 
+    {
+        // dd($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'type' => 'string|required', // the table field to update in the db
+                'property_name' => 'string|required', // the name to go in the db
+                'description' => 'string|required', // description to go in the db
+                'parent' => 'string|required', // parent to go in the db 
+            ]);
+
+            $return = PropertiesModel::addProperty($request);
+            if (!str_contains($return, 'Error')) {
+                $key = 'success';
+            } else {
+                $key = 'error';
+            }
+            return redirect(GeneralModel::previousURL())->with($key, $return);
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }

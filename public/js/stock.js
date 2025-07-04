@@ -203,53 +203,76 @@ function modalCloseAddChildren(itemID) {
 // Container Link
 function modalLoadLinkToContainer(itemID) {
     var modal = document.getElementById("modalDivLinkToContainer");
-    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
     modal.style.display = "block";
 
-    var table = document.getElementById('containerSelectTable');
     var tableBody = document.getElementById('containerSelectTableBody');
     var IDbox = document.getElementById('linkToContainerItemID');
     var NAMEbox = document.getElementById('linkToContainerItemName');
-    var formItemID = document.getElementById('linkToContainerTableItemID')
+    var formItemID = document.getElementById('linkToContainerTableItemID');
     var stockName = document.getElementById('stock-name').innerHTML;
+
     NAMEbox.innerHTML = stockName;
     IDbox.innerHTML = itemID;
     formItemID.value = itemID;
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stockajax.php?request-nearby-containers=1&item_id="+itemID, true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            // Parse the response and populate the shelf select box
-            var data = JSON.parse(xhr.responseText);
-            // console.log(inventory);
-            var bodyExtras = '';
-            var totalCount = data['count'];
-            var containerCount = data['container']['count'];
-            var item_containerCount = data['item_container']['count'];
+
+    $.ajax({
+        type: "POST",
+        url: "/_ajax-nearbyContainers",
+        data: {
+            "request-nearby-containers": 1,
+            "item_id": itemID,
+            "_token": csrf
+        },
+        dataType: "json",
+        success: function(data) {
+            // console.log(data);
             var trs = '';
-            var tr = '';
+
+            var containerCount = data['containers']['count'];
+            var item_containerCount = data['container_items']['count'];
+
             if (containerCount > 0) {
-                for (let i=0; i<containerCount; i++) {
-                    if (data['container'][i]) {
-                        tr = "<tr class='clickable linkTableRow' onclick='linkToContainerTableClick(this, "+data['container'][i]['id']+", 0)'><td class='text-center align-middle'>"+data['container'][i]['id']+"</td><td class='text-center align-middle'>"+data['container'][i]['name']+"</td><td class='text-center align-middle'>"+data['container'][i]['description']+"</td></tr>";
-                        trs = trs+tr;
+                for (let i = 0; i < containerCount; i++) {
+                    var row = data['containers'][i];
+                    if (row) {
+                        trs += "<tr class='clickable linkTableRow' onclick='linkToContainerTableClick(this, " + row['id'] + ", 0)'> \
+                                    <td class='text-center align-middle'>" + row['id'] + "</td> \
+                                    <td class='text-center align-middle'>" + row['name'] + "</td> \
+                                    <td class='text-center align-middle'>" + row['description'] + "</td> \
+                                    <td class='text-center algin-middle red'>No</td>\
+                                </tr>";
                     }
                 }
             }
-            if (item_containerCount > 0) { 
-                for (let i=0; i<item_containerCount; i++) {
-                    if (data['item_container'][i]) {
-                        tr = "<tr class='clickable linkTableRow' onclick='linkToContainerTableClick(this, "+data['item_container'][i]['id']+", 1)'><td class='text-center align-middle'>"+data['item_container'][i]['id']+"</td><td class='text-center align-middle'>"+data['item_container'][i]['name']+"</td><td class='text-center align-middle'>"+data['item_container'][i]['description']+"</td></tr>";
-                        trs = trs+tr;
+
+            if (item_containerCount > 0) {
+                for (let i = 0; i < item_containerCount; i++) {
+                    var row = data['container_items'][i];
+                    if (row) {
+                        trs += "<tr class='clickable linkTableRow' onclick='linkToContainerTableClick(this, " + row['id'] + ", 1)'> \
+                                    <td class='text-center align-middle'>" + row['id'] + "</td> \
+                                    <td class='text-center align-middle'>" + row['name'] + "</td> \
+                                    <td class='text-center align-middle'>" + row['description'] + "</td> \
+                                    <td class='text-center algin-middle green'>Yes</td>\
+                                </tr>";
                     }
                 }
             }
-            tableBody.innerHTML=trs;
+
+            if (data['count'] == 0) {
+                trs += "<tr class='red'> \
+                            <td colspan=100%>No containers found on this shelf.</td>\
+                        </tr>";
+            }
             // console.log(trs);
-        }
-    };
-    xhr.send();
+            tableBody.innerHTML = trs;
+        },
+        async: true
+    });
 }
+
 
 // Container Link Table function
 function linkToContainerTableClick(clicked, id, item) {

@@ -621,7 +621,7 @@ class CablestockModel extends Model
                             'time' => date('H:i:s'),
                             'username' => $user['username'],
                             'shelf_id' => $find->shelf_id,
-                            'reason' => 'Move stock',
+                            'reason' => 'Move quantity',
                             'created_at' => now(),
                             'updated_at' => now()
                         ];
@@ -656,7 +656,7 @@ class CablestockModel extends Model
                                     'time' => date('H:i:s'),
                                     'username' => $user['username'],
                                     'shelf_id' => $request['shelf'],
-                                    'reason' => 'Move stock',
+                                    'reason' => 'Move quantity',
                                     'created_at' => now(),
                                     'updated_at' => now()
                                 ];
@@ -697,6 +697,149 @@ class CablestockModel extends Model
             return redirect(GeneralModel::previousURL())->with('error', $error);
         }
 
+    }
+
+    static public function addCableStock($request)
+    {
+        // check for matching cable name
+        // make sure the site area and shelf are all valid together
+        // make sure the cable-type is valid
+
+        // add the cable stock
+            // get the newest SKU CABLE-xxxxxx
+
+        // add the item with quantity
+
+        // changelog for each event
+        // transaction for quantity adding
+
+        $user = GeneralModel::getUser();
+        $find = DB::table('stock')
+                ->where('deleted', 0)
+                ->where('name', $request['stock-name'])
+                ->first();
+
+        if ($find) {
+            // already exists, error back
+            return redirect(GeneralModel::previousURL())->with('error', 'Cable already exists with that name.');
+        }
+
+        // check the site/area/shelf are a match
+
+        $location_check = DB::table('shelf')
+                            ->join('area', 'shelf.area_id' ,'=', 'area.id')
+                            ->join('site', 'area.site_id' ,'=', 'site.id')
+                            ->where('shelf.deleted', 0)
+                            ->where('shelf.id', $request['shelf'])
+                            ->where('area.id', $request['area'])
+                            ->where('site.id', $request['site'])
+                            ->first();
+
+        if (!$location_check) {
+            // location doesnt match, error back
+            return redirect(GeneralModel::previousURL())->with('error', 'Location does match.');
+        }
+
+        $cable_type_check = DB::table('cable_types')
+                                    ->where('id', $request['cable-type'])
+                                    ->first();
+
+        if (!$cable_type_check) {
+            // cable type does exist
+            return redirect(GeneralModel::previousURL())->with('error', 'Cable type not found.');
+        }
+
+        // get the next SKU value 
+        $next_sku = StockModel::getNextSKU('CABLE-');
+
+        if ($next_sku) {
+            // insert the stock
+            $insert_stock = DB::table('stock')->insertGetId([
+                        'name' => $request['stock-name'],
+                        'description' => $request['stock-description'],
+                        'sku' => $next_sku,
+                        'min_stock' => $request['stock-min-stock'],
+                        'is_cable' => 1,
+                        'deleted' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+            if ($insert_stock) {
+                $stock_id = $insert_stock;
+
+                // changelog and transactions
+                $info = [
+                    'user' => $user,
+                    'table' => 'stock',
+                    'record_id' => $stock_id,
+                    'field' => 'name',
+                    'new_value' => $request['stock-name'],
+                    'action' => 'New record',
+                    'previous_value' => '',
+                ];
+                GeneralModel::updateChangelog($info);
+
+
+                // created the item
+                $insert_item = DB::table('cable_item')->insertGetId([
+                        'stock_id' => $insert_stock,
+                        'quantity' => $request['item-quantity'],
+                        'cost' => $request['item-cost'],
+                        'shelf_id' => $request['shelf'],
+                        'type_id' => $request['cable-type'],
+                        'deleted' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                        ]);
+
+                if ($insert_item) {
+                    // item added, do transactions
+                    $transaction_data_add = [
+                        'stock_id' => $stock_id,
+                        'item_id' => $insert_item,
+                        'type' => 'Add quantity',
+                        'quantity' => $request['item-quantity'],
+                        'date' => date('Y-m-d'),
+                        'time' => date('H:i:s'),
+                        'username' => $user['username'],
+                        'shelf_id' => $request['shelf'],
+                        'reason' => 'Add quantity',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                    $transaction_add = TransactionModel::addCableTransaction($transaction_data_add);
+
+                    if ($transaction_add) {
+                        // added, continue
+
+                        // add image
+                        if ($request->hasFile('image')) {
+                            $request['id'] = $stock_id;
+                            $uploaded = StockModel::imageUpload($request);
+                            if ($uploaded == 0) {
+                                return redirect(GeneralModel::previousURL())->with('error', 'Image link failed.');
+                            }
+                        }
+
+                        return redirect(GeneralModel::previousURL())->with('success', 'Cable: "'.$request['name'].'" added successfully with id: "'.$stock_id.'".');
+                    } else {
+                        return redirect(GeneralModel::previousURL())->with('error', 'Transaction not added.');
+                    }
+
+                } else {
+                    return redirect(GeneralModel::previousURL())->with('error', 'Unable to create item in the database.');
+                }
+
+
+                
+
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Unable to created stock entry.');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'Unable to get SKU.');
+        }
+    
     }
 }
 

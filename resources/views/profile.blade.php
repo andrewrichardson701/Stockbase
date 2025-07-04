@@ -130,32 +130,33 @@
                                         <div>
                                             <p class="block font-medium">Permissions:</p>
                                             @php $visibleCount = 0; @endphp
+                                            <table>
+                                                <tbody>
 
+                                                
                                             @foreach ($head_data['user']['permissions'] as $permission => $value)
-                                                @if ($value == 1 && $permission !== 'assets')
+                                                @if ($value == 1 && $permission !== 'assets' && $permission !=='id')
                                                     @php $visibleCount++; @endphp
 
                                                     @if ($visibleCount % 4 === 1)
-                                                        <div class="row">
+                                                        <tr>
                                                     @endif
 
-                                                    <div class="col">
-                                                        <p id="permission-{{ $permission }}">
-                                                            {{ ucwords($permission) }}: 
-                                                            <i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i>
-                                                        </p>
-                                                    </div>
+                                                    <th style="padding-right:10px" id="permission-{{ $permission }}">{{ ucwords($permission) }}:</th>
+                                                    <td style="padding-right:50px"><i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i></td>
 
                                                     @if ($visibleCount % 4 === 0)
-                                                        </div>
+                                                        </tr>
                                                     @endif
                                                 @endif
                                             @endforeach
 
                                             {{-- Close unclosed row if visibleCount isn't divisible by 4 --}}
                                             @if ($visibleCount % 4 !== 0)
-                                                </div>
+                                                 </tr>
                                             @endif
+                                                </tbody>
+                                            </table>
                                         </div>
 
                                         <div class="row">

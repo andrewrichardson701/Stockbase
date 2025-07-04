@@ -121,7 +121,7 @@
             <div class="well-nopad theme-divBg text-center">
                 <h3 style="font-size:22px">Add new cables</h3>
                 <hr style="border-color:#9f9d9d; margin-left:10px">
-                <form id="add-cables-form" action="cablestock.addCables" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                <form id="add-cables-form" action="{{ route('cablestock.addStock') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                     <!-- Include CSRF token in the form -->
                     @csrf
                     <table class="centertable">
@@ -205,7 +205,7 @@
                             </tr>
                             <tr>
                                 <td colspan=100% class="text-center">
-                                    <input type="file" style="width: 250px;margin-top:10px" id="stock-img" name="stock-img">
+                                    <input type="file" style="width: 250px;margin-top:10px" id="stock-img" name="image">
                                 </td>
                             </tr>
                         </tbody>
@@ -303,7 +303,7 @@
         <span class="close" onclick="modalCloseNewType()">&times;</span>
         <div class="container well-nopad theme-divBg" style="padding:25px">
             <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-                <form action="includes/cablestock.inc.php" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('cablestock.addType') }}" method="POST" enctype="multipart/form-data">
                     <!-- Include CSRF token in the form -->
                     @csrf
                     <table class="centertable">
@@ -311,7 +311,7 @@
                         <tr class="align-middle">
                                 <td style="width:150px">Parent:</td>
                                 <td>
-                                    <select class="form-control theme-dropdown" name="type-parent" style="min-width:150px;max-width:300px" required>
+                                    <select class="form-control theme-dropdown" name="parent" style="min-width:150px;max-width:300px" required>
                                             <option value="" selected disabled hidden>Select Parent</option>
                                             <option value="Copper">Copper</option>
                                             <option value="Fibre">Fibre</option>
@@ -321,21 +321,21 @@
                                 </td>
                             </tr>
                             <tr class="align-middle">
-                                <td style="width:150px">New Type:</td>
+                                <td style="width:150px">Type Name:</td>
                                 <td>
-                                    <input class="form-control theme-input" type="text" style="min-width:150px;max-width:300px" placeholder="New Type" name="type-name" required/>
+                                    <input class="form-control theme-input" type="text" style="min-width:150px;max-width:300px" placeholder="Type Name" name="property_name" required/>
                                 </td>
                             </tr>
                             <tr class="align-middle">
                                 <td style="width:150px">Description:</td>
                                 <td>
-                                    <input class="form-control theme-input" type="text" style="min-width:150px;max-width:300px" placeholder="Description" name="type-description" required/>
+                                    <input class="form-control theme-input" type="text" style="min-width:150px;max-width:300px" placeholder="Description" name="description" required/>
                                 </td>
                             </tr>
                             <tr class="align-middle">
                                 <td style="width:150px"></td>     
                                 <td><input type="submit" name="submit" value="Add Type" class="btn btn-success"></td>
-                                <td hidden=""><input type="hidden" name="new-type" value="1"></td>
+                                <td hidden=""><input type="hidden" name="type" value="cable_types"></td>
                             </tr>
                         </tbody>
                     </table>

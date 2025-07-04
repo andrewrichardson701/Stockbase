@@ -92,7 +92,6 @@ class ContainersController extends Controller
         if ($request['_token'] == csrf_token()) {
             $request->validate([
                 'is_item' => 'integer|required',
-                'stock_id' => 'integer|required',
                 'container_id' => 'integer|required',
                 'item_id' => 'integer|required'
             ]);

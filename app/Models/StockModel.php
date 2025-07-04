@@ -1521,6 +1521,7 @@ class StockModel extends Model
     {
         $return = [];
         $input = $request->toArray();
+        $user = GeneralModel::getUser();
 
         if (GeneralModel::checkShelfAreaMatch($input['shelf'], $input['area']) && GeneralModel::checkAreaSiteMatch($input['area'], $input['site'])) {
             $next_sku = StockModel::getNextSKU();
@@ -1534,13 +1535,24 @@ class StockModel extends Model
                 ];
             $insert = StockModel::create($data);
 
+            $info = [
+                'user' => $user,
+                'table' => 'stock',
+                'record_id' => $insert->id,
+                'field' => 'name',
+                'new_value' => $input['name'],
+                'action' => 'New record',
+                'previous_value' => '',
+            ];
+            GeneralModel::updateChangelog($info);
+
             $stock_id = $insert->id;
             $input['id'] = $request['id'] = $stock_id;
             
             // add the tag links
             if (array_key_exists('tags', $input) && is_array($input['tags'])) {
                foreach ($input['tags'] as $tag_id) {
-                    TagModel::addTagToStock($tag_id, $stock_id);
+                    $tag_id = TagModel::addTagToStock($tag_id, $stock_id);                    
                 } 
             }
             
@@ -1574,9 +1586,11 @@ class StockModel extends Model
         }
     }
 
-    public static function getNextSKU() 
+    public static function getNextSKU($sku_prefix=null) 
     {
-        $sku_prefix = GeneralModel::config()['sku_prefix'] ?? GeneralModel::configDefault()['sku_prefix'];
+        if ($sku_prefix == null) {
+            $sku_prefix = GeneralModel::config()['sku_prefix'] ?? GeneralModel::configDefault()['sku_prefix'];
+        }
 
         $max_number = DB::table('stock')
                         ->select(DB::raw("MAX(CAST(SUBSTRING(sku, LENGTH('$sku_prefix') + 1) AS UNSIGNED)) as max_number"))
@@ -1609,7 +1623,7 @@ class StockModel extends Model
 
         $input = $request->toArray();
 
-        dd($input);
+        // dd($input);
 
         $data = [
             'name' => $input['name'], 
@@ -2246,7 +2260,12 @@ class StockModel extends Model
         // ]);
     
         $file = $request->file('image');
-        $stock_id = $request->id;
+        
+        if (isset($request->id)) {
+            $stock_id = $request->id;
+        } elseif (isset($request['id'])) {
+            $stock_id = $request['id'];
+        }
         $timestamp = now()->format('YmdHis');
     
         // Create a unique filename

@@ -332,4 +332,24 @@ class AjaxController extends Controller
               
     }
 
+    public function getNearbyContainersAjax(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'item_id' => 'integer|required',
+            ]);
+            $request = $request->all(); // turn request into an array
+            $item_id = $request['item_id'];
+            $item = GeneralModel::getFirstwhere('item', ['id' => $item_id]);
+            $shelf_id = $item['shelf_id'];
+
+            $containers = ContainersModel::getContainersByShelf($shelf_id);
+            // Return data as JSON
+
+            return response()->json($containers);
+        } else {
+            return response()->json('error: CSRF token missmatch');
+        }
+    }
+
 }

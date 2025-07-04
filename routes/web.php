@@ -193,8 +193,10 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::get('/cablestock', [CablestockController::class, 'index'])->name('cablestock'); // cablestock page
 
                 // POST REQUESTS
+                Route::post('/cablestock.addStock', [CablestockController::class, 'addCableStock'])->name('cablestock.addStock'); // modify cable stock 
                 Route::post('/cablestock.modifyStock', [CablestockController::class, 'modifyCableStock'])->name('cablestock.modifyStock'); // modify cable stock 
-                Route::post('/cablestock.moveStock', [CablestockController::class, 'moveStockCable'])->name('cablestock.moveStock'); // move cable stock 
+                Route::post('/cablestock.moveStock', [CablestockController::class, 'moveCableStock'])->name('cablestock.moveStock'); // move cable stock 
+                Route::post('/cablestock.addType', [CablestockController::class, 'addCableType'])->name('cablestock.addType'); // add cable type
             });
 
             ////
@@ -209,7 +211,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/_ajax-loadProperty', [AjaxController::class, 'loadProperty'])->name('_ajax-loadProperty'); // for the new-properties blade page to get a list of properties (tag/manu./etc)
             //
             Route::post('/_ajax-favouriteStock', [AjaxController::class, 'favouriteStock'])->name('_ajax-favouriteStock'); // for adding/removing favourites in the stock page
-
+            //
+            Route::post('/_ajax-nearbyContainers', [AjaxController::class, 'getNearbyContainersAjax'])->name('_ajax-nearbyContainers'); // get a list of nearby containers
             ////
         });
 

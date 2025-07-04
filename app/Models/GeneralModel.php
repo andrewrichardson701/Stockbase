@@ -121,6 +121,24 @@ class GeneralModel extends Model
                     ->toArray();
     }
 
+    public static function getFirstWhere($table, $params=[])
+    {
+        $instance = new self();
+        $instance->setTable($table);
+
+        $query = $instance->newQuery();
+
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $query->where($key, $value);
+            }
+        }
+
+        $result = $query->first();
+
+        return $result ? $result->toArray() : null;
+    }
+
     static public function getAllWhereNotIn($table, $params, $orderby=null)
     {
         $instance = new self();
@@ -816,11 +834,6 @@ class GeneralModel extends Model
         ]);
 
         return 1;
-    }
-
-    static public function newProperty($request) 
-    {
-
     }
 
     static public function getFilesInDirectory($directory)

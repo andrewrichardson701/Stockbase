@@ -3,7 +3,7 @@
     <span class="close" onclick="modalCloseUnlinkContainer()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-container">
-            <form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('containers.unlinkFromContainer') }}" method="POST" enctype="multipart/form-data">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <input type="hidden" id="form-unlink-container-item-id" name="item_id" value=""  />
@@ -108,6 +108,7 @@
                             <th class="text-center align-middle">ID</th>
                             <th class="text-center align-middle">Name</th>
                             <th class="text-center align-middle">Description</th>
+                            <th class="text-center align-middle">Container is item</th>
                         </tr>
                     </thead>
                     <tbody id="containerSelectTableBody">
@@ -116,14 +117,14 @@
                 </table>
             </div>
         </div>
-        <form class="padding:0px;margin:0px" action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data">
+        <form class="padding:0px;margin:0px" action="{{ route('containers.linkToContainer') }}" method="POST" enctype="multipart/form-data">
             <!-- Include CSRF token in the form -->
             @csrf
             <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
                 <input type="hidden" name="container-link" value="1" />
                 <input type="hidden" id="linkToContainerTableItemID" name="item_id" />
                 <input type="hidden" id="linkToContainerTableID" name="container_id" />
-                <input type="hidden" id="linkToContainerTableItem" name="item" />
+                <input type="hidden" id="linkToContainerTableItem" name="is_item" />
                 <input type="submit" id="containerLink-submit-button" name="submit" class="btn btn-success" style="margin:10px 10px 0px 10px" value="Link" disabled>
                 <button class="btn btn-warning" type="button" style="margin:10px 10px 0px 10px" onclick="modalCloseLinkToContainer()">Cancel</button>
             </span>

@@ -12,7 +12,7 @@
         <div class='row ' style='margin-top:5px;margin-top:10px;'>
             <div class='col' style='margin-top:auto;margin-bottom:auto;'>
                 <h3 style='font-size:22px;margin-bottom:0px;' id='stock-name'>{{ $stock_data['name'] }} ({{ $stock_data['sku'] }})</h3>
-                <input type='hidden' id='hiddenStockName' value='".$stock_name."'>
+                <input type='hidden' id='hiddenStockName' value='{{ $stock_data['name'] }}'>
             </div>
             
         </div>

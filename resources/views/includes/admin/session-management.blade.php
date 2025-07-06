@@ -28,7 +28,7 @@
             @if ($active_sessions['count'] > 0) 
                 @foreach ($active_sessions['rows'] as $session)
                 <tr class="text-center" style="vertical-align: middle;">
-                    <form action="includes/admin.inc.php" method="POST">
+                    <form action="{{ route('admin.killUserSession') }}" method="POST">
                         @csrf
                         <input type="hidden" name="session_id" value="{{ $session['id'] }}" />
                         <td id="sessions_{{ $session['id'] }}_id" style="vertical-align: middle;">{{ $session['id'] }}</td>

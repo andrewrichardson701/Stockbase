@@ -34,24 +34,35 @@ class SessionModel extends Model
         return $insert;
     }
 
-    static public function updateSessionLog($status)
+    static public function updateSessionLog($status, $session_id = null)
     {
-        $session_id = Session::getId();
-        $find_session = GeneralModel::getFirstWhere('sessions', ['id' => $session_id]);
-        if ($find_session) {
-            $find_session_log = GeneralModel::getFirstWhere('session_log', ['sessions_id' => $session_id]);
+        if ($session_id == null) {
+            $session_id = Session::getId();
+        }
 
-            if ($find_session_log) {
-                if ($status == 'inactive' || $status == 'expired' || $status == 'killed') {
-                    DB::table('session_log')->where('sessions_id', $session_id)->update(['logout_time' => time(), 'status' => $status, 'last_activity' => now(), 'updated_at' => now()]);
-                } else {
-                    DB::table('session_log')->where('sessions_id', $session_id)->update(['status' => $status, 'last_activity' => now(), 'updated_at' => now()]);
+
+        $find_session_log = GeneralModel::getFirstWhere('session_log', ['sessions_id' => $session_id]);
+
+        if ($find_session_log) {
+            if ($status !== 'active') {
+                DB::table('session_log')->where('sessions_id', $session_id)->update(['logout_time' => time(), 'status' => $status, 'last_activity' => now(), 'updated_at' => now()]);
+                //check if sessions entry exists
+                $find_session = DB::table('sessions')->where('id' ,$session_id)->first();
+                if ($find_session) {
+                    // delete sessions table entry
+                    $find_session->delete();
                 }
-                
+                return 1;
             } else {
-                SessionModel::createSessionLog($session_id);
+                DB::table('session_log')->where('sessions_id', $session_id)->update(['status' => $status, 'last_activity' => now(), 'updated_at' => now()]);
+                return 1;
             }
-        } 
+            
+        } else {
+            SessionModel::createSessionLog($session_id);
+            return 1;
+        }
+
 
     }
 
@@ -120,6 +131,23 @@ class SessionModel extends Model
         if (GeneralModel::getUser()) {
             SessionModel::updateSessionLog('active');
         }
+    }
+
+    static public function killSession($session_id)
+    {
+        $current_session = Session::getId();
+
+        if ($session_id == $current_session) {
+            return redirect(GeneralModel::previousURL())->with('error', 'Cannot kill current sessions.');
+        }
+
+        // kill the session
+        $killed = SessionModel::updateSessionLog('killed', $session_id);
+
+        if ($killed) {
+            return redirect(GeneralModel::previousURL())->with('success', 'Session');
+        }
+
     }
 
 }

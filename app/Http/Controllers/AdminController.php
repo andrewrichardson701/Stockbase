@@ -499,5 +499,19 @@ class AdminController extends Controller
         return 'error';
     }
 
+    static public function killUserSession(Request $request) 
+    {
+        dd ($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'session_id' => 'integer|required',
+            ]);
+            return SessionModel::killSession($request->session_id);
+        } else {
+            return 'Error: CSRF Missmatch';
+        }
+        
+    }
+
 
 }

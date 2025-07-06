@@ -180,6 +180,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.toggleNotification', [AdminController::class, 'toggleNotification'])->name('admin.toggleNotification'); // Adjust Notification settings
                 Route::post('/admin.stockLocationSettings', [AdminController::class, 'stockLocationSettings'])->name('admin.stockLocationSettings'); // Adjust Stock Location settings
                 Route::post('/admin.imageManagementSettings', [AdminController::class, 'imageManagementSettings'])->name('admin.imageManagementSettings'); // Adjust Image Management settings
+                Route::post('/admin.killUserSession', [AdminController::class, 'killUserSession'])->name('admin.killUserSession'); // kill a user session
             });
 
             // Changelog pages

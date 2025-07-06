@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Schema;
  */
 class GeneralModel extends Model
 {
-    // protected $keyType = 'string'; // Tell Laravel the PK type is string
+    protected $keyType = 'string'; // Tell Laravel the PK type is string
     //
     static public function versionNumber()
     {

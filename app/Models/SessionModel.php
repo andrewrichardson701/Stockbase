@@ -47,11 +47,7 @@ class SessionModel extends Model
             if ($status !== 'active') {
                 DB::table('session_log')->where('sessions_id', $session_id)->update(['logout_time' => time(), 'status' => $status, 'last_activity' => now(), 'updated_at' => now()]);
                 //check if sessions entry exists
-                $find_session = DB::table('sessions')->where('id' ,$session_id)->first();
-                if ($find_session) {
-                    // delete sessions table entry
-                    $find_session->delete();
-                }
+                DB::table('sessions')->where('id', $session_id)->delete();
                 return 1;
             } else {
                 DB::table('session_log')->where('sessions_id', $session_id)->update(['status' => $status, 'last_activity' => now(), 'updated_at' => now()]);
@@ -146,6 +142,8 @@ class SessionModel extends Model
 
         if ($killed) {
             return redirect(GeneralModel::previousURL())->with('success', 'Session');
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'Failed to kill session.');
         }
 
     }

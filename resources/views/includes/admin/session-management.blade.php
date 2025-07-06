@@ -30,7 +30,7 @@
                 <tr class="text-center" style="vertical-align: middle;">
                     <form action="{{ route('admin.killUserSession') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="session_id" value="{{ $session['id'] }}" />
+                        <input type="hidden" name="session_id" value="{{ $session['sl_sessions_id']}}" />
                         <td id="sessions_{{ $session['id'] }}_id" style="vertical-align: middle;">{{ $session['id'] }}</td>
                         <td id="sessions_{{ $session['id'] }}_id" style="vertical-align: middle;">{{ $session['sl_sessions_id'] }}</td>
                         <td id="sessions_{{ $session['id'] }}_user_id" style="vertical-align: middle;">{{ $session['sl_user_id'] }}</td>
@@ -42,7 +42,7 @@
                         <td id="sessions_{{ $session['id'] }}_browser" style="vertical-align: middle;">{{ $session['sl_browser'] }}</td>
                         <td id="sessions_{{ $session['id'] }}_os" style="vertical-align: middle;">{{ $session['sl_os'] }}</td>
                         <td id="sessions_{{ $session['id'] }}_status" style="vertical-align: middle;">{{ $session['sl_status'] }}</td>
-                        <td id="sessions_{{ $session['id'] }}_kill" style="vertical-align: middle;"><input type="submit" class="btn btn-danger" name="session-kill-submit" value="Kill" @if ((int)$head_data['session']['id'] == (int)$session['sl_sessions_id']) title="Current Session" disabled @endif></td>
+                        <td id="sessions_{{ $session['id'] }}_kill" style="vertical-align: middle;"><input type="submit" class="btn btn-danger" name="session-kill-submit" value="Kill" @if ($head_data['session']['id'] == $session['sl_sessions_id']) title="Current Session" disabled @endif></td>
                     </form>
                 </tr>
                 @endforeach  

@@ -17,6 +17,7 @@ use App\Models\LdapModel;
 use App\Models\SmtpModel;
 use App\Models\ChangelogModel;
 use App\Models\StockModel;
+use App\Models\SessionModel;
 
 class AdminController extends Controller
 {
@@ -501,10 +502,10 @@ class AdminController extends Controller
 
     static public function killUserSession(Request $request) 
     {
-        dd ($request->input());
+        // dd ($request->input());
         if ($request['_token'] == csrf_token()) {
             $request->validate([
-                    'session_id' => 'integer|required',
+                    'session_id' => 'string|required',
             ]);
             return SessionModel::killSession($request->session_id);
         } else {

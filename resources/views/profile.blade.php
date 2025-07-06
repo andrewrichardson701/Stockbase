@@ -350,8 +350,7 @@
                             <th class="text-center align-middle">type</th>
                             <th class="text-center align-middle">username</th>
                             <th class="text-center align-middle">user_id</th>
-                            <th class="text-center align-middle">ipv4</th>
-                            <th class="text-center align-middle">ipv6</th>
+                            <th class="text-center align-middle">ip_address</th>
                             <th class="text-center align-middle">timestamp</th>
                             <th class="text-center align-middle">auth</th>
                         </thead>
@@ -362,10 +361,9 @@
                                         <tr class="text-center align-middle {{ $log_colors[$log['type']] }}">
                                             <td class="text-center align-middle">{{ $log['id'] }}</td>
                                             <td class="text-center align-middle">{{ $log['type'] }}</td>
-                                            <td class="text-center align-middle">{{ $log['username'] }}</td>
+                                            <td class="text-center align-middle">{{ $log['email'] }}</td>
                                             <td class="text-center align-middle">{{ $log['user_id'] }}</td>
-                                            <td class="text-center align-middle">{{ long2ip($log['ipv4']) }}</td>
-                                            <td class="text-center align-middle">{{ $log['ipv6'] }}</td>
+                                            <td class="text-center align-middle">{{ $log['ip_address'] }}</td>
                                             <td class="text-center align-middle">{{ $log['timestamp'] }}</td>
                                             <td class="text-center align-middle">{{ $log['auth'] }}</td>
                                         </tr>

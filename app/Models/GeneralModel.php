@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\FunctionsModel;
+use App\Models\SessionModel;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
@@ -21,6 +23,7 @@ use Illuminate\Support\Facades\Schema;
  */
 class GeneralModel extends Model
 {
+    // protected $keyType = 'string'; // Tell Laravel the PK type is string
     //
     static public function versionNumber()
     {
@@ -101,7 +104,7 @@ class GeneralModel extends Model
                         ->toarray();
     }
 
-    static public function getAllWhere($table, $params, $orderby = null)
+    static public function getAllWhere($table, $params, $orderby = null, $orderdir = 'asc')
     {
         $instance = new self();
         $instance->setTable($table);
@@ -116,7 +119,7 @@ class GeneralModel extends Model
             }
         }
 
-        return $query->orderBy($orderby ?? 'id') // ✅ Correctly chaining `orderBy()`
+        return $query->orderBy($orderby ?? 'id', $orderdir) // ✅ Correctly chaining `orderBy()`
                     ->get()
                     ->toArray();
     }
@@ -370,8 +373,13 @@ class GeneralModel extends Model
 
     static public function headData($request) 
     {
+        // update all session activity
+        SessionModel::activityUpdates();
         
         $head_data = [];
+
+        $head_data['session'] = GeneralModel::getFirstwhere('sessions', ['id' => Session::getId()]);
+
         $head_data['default_config'] = GeneralModel::configDefault();
         $head_data['config'] = GeneralModel::config();
         $head_data['config_compare'] = GeneralModel::configCompare();

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\LoginLogModel;
+use App\Models\SessionModel;
 
 class LoginRequest extends FormRequest
 {
@@ -43,6 +45,11 @@ class LoginRequest extends FormRequest
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
+
+            // add login_log failure
+            LoginLogModel::updateLoginLog('failed', 'local', $this->input('email'), null);
+
+            SessionModel::expireOldSessions(); // expire any old sessions
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),

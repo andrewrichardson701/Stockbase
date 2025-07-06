@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use App\Models\GeneralModel;
+use App\Models\LoginLogModel;
+use App\Models\SessionModel;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -29,7 +31,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = GeneralModel::getuser();
+        // update login_log with successful login
+        LoginLogModel::updateLoginLog('login', $user['auth'], $user['email'], $user['id']);
+
+        SessionModel::expireOldSessions(); // expire any old sessions
+
+        return redirect()->intended(route('index', absolute: false));
     }
 
     /**
@@ -37,11 +45,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = GeneralModel::getuser();
+        // update the login_log with logout
+        LoginLogModel::updateLoginLog('logout', $user['auth'], $user['email'], $user['id']);
+
+        SessionModel::expireOldSessions(); // expire any old sessions
+        
+        
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+
+        
 
         return redirect('/');
     }

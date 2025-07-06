@@ -32,9 +32,9 @@ class AdminModel extends Model
         $instance = new self();
         $instance->setTable('session_log AS sl');
                         
-        return $instance->selectRaw('sl.id AS id, sl.user_id AS sl_user_id, 
+        return $instance->selectRaw('sl.id AS id, sl.sessions_id as sl_sessions_id, sl.user_id AS sl_user_id, 
                                     FROM_UNIXTIME(sl.login_time) AS sl_login_time, IFNULL(FROM_UNIXTIME(sl.logout_time), NULL) AS sl_logout_time, 
-                                    COALESCE(INET_NTOA(sl.ipv4), INET6_NTOA(sl.ipv6)) AS sl_ip,
+                                    sl.ip_address AS sl_ip,
                                     sl.browser AS sl_browser, sl.os AS sl_os, sl.status AS sl_status,
                                     FROM_UNIXTIME(sl.last_activity) AS sl_last_activity,
                                     u.username AS u_username')

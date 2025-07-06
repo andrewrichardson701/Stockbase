@@ -86,9 +86,9 @@ class ProfileModel extends Model
     {
         $user = GeneralModel::getUser();
 
-        $username = $user['username'];
+        $email = $user['email'];
 
-        $login_history = GeneralModel::getAllWhere('login_log', ['username' => $username]);
+        $login_history = GeneralModel::getAllWhere('login_log', ['email' => $email], 'id', 'desc');
         return $login_history;
 
     }

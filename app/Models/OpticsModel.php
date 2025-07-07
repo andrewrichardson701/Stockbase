@@ -29,15 +29,16 @@ class OpticsModel extends Model
                     $return[] = ['where' => "site.id = ?", 'value' => $array[$key]];
                 } elseif ($key == "search") {
                     $value = $array[$key];
-                    $return[] = ['where' => "(optic_item.serial_number LIKE '%$value%' 
-                                                OR optic_item.model LIKE '%$value%' 
-                                                OR optic_item.spectrum LIKE '%$value%' 
-                                                OR optic_vendor.name LIKE '%$value%' 
-                                                OR optic_type.name LIKE '%$value%' 
-                                                OR optic_connector.name LIKE '%$value%'
-                                                OR optic_distance.name LIKE '%$value%'
-                                                OR optic_item.mode LIKE '%$value%' 
-                                                OR optic_speed.name LIKE '%?%')", 'value' => $value];
+                    $return[] = ['where' => "(optic_item.serial_number LIKE ? 
+                                                OR optic_item.model LIKE ? 
+                                                OR optic_item.spectrum LIKE ?
+                                                OR optic_vendor.name LIKE ?
+                                                OR optic_type.name LIKE ? 
+                                                OR optic_connector.name LIKE ?
+                                                OR optic_distance.name LIKE ?
+                                                OR optic_item.mode LIKE ? 
+                                                OR optic_speed.name LIKE ?)", 
+                                                'value' => ["%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%",]];
                 } elseif (in_array($key, $optic_keys)) {
                     if ($key == "mode") {
                         $return[] = ['where' => "optic_item.mode = ?", 'value' => $array[$key]];
@@ -565,4 +566,22 @@ class OpticsModel extends Model
             return redirect()->to(route('optics', ['error' => 'Optic not found for id: '.$optic_id.'.']));
         }
     }
+
+    static public function serialMatchChecker($request)
+    {
+        // search for the matching item
+        $find = DB::table('optic_item')->where('serial_number', $request['serial'])->first();
+        
+        if ($find) {
+            if ($find->deleted == 0) {
+                $results['error'] = "Optic already exists.";
+            } else {
+                $results['error'] = "Found a matching deleted optic. Please restore this optic instead of adding.";
+            }
+        } else {
+            $results['skip'] = 1;
+        }
+
+        return $results;
+    }   
 }

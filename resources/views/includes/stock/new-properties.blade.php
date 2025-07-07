@@ -5,7 +5,7 @@
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <!-- Tag -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-tag" hidden>
-            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
+
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row">
@@ -29,7 +29,7 @@
         </div>
         <!-- Manufacturer -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-manufacturer" hidden>
-            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
+            
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row">
@@ -45,7 +45,7 @@
         </div>
         <!-- Site -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-site" hidden>
-            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
+            
                 <table class="centertable" style="border-collapse: collapse;table-layout:fixed;">
                     <tbody>
                         <tr class="nav-row">
@@ -65,7 +65,7 @@
         </div>
         <!-- Area -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-area" hidden>
-            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
+            
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row">
@@ -101,7 +101,7 @@
         </div>
         <!-- Shelf -->
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;" id="property-shelf" hidden>
-            <!-- <form action="includes/stock-new-properties.inc.php" method="POST" enctype="multipart/form-data"> -->
+            
                 <table class="centertable">
                     <tbody>
                         <tr class="nav-row" >

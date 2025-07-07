@@ -106,6 +106,8 @@ Route::middleware([AddHeadData::class])->group(function () {
                     Route::post('/assets/optics.restore', [OpticsController::class, 'restore'])->name('optics.restore'); // restore optics
                     Route::post('/assets/optics.delete', [OpticsController::class, 'delete'])->name('optics.delete'); // deleting optics
                     Route::post('/assets/optics.comments', [OpticsController::class, 'comments'])->name('optics.comments'); // comment forms - adding/deleting
+                    Route::post('/assets/optics.serialSearch', [OpticsController::class, 'serialSearch'])->name('optics.serialSearch'); // Search for matching serials
+                    
                 });
                 Route::middleware(['auth', 'check.permission:cpus'])->group(function () { // Cpus pages - locked behind cpus permission
                     Route::get('/assets/cpus', [AssetsController::class, 'cpus'])->name('cpus'); // assets > cpus page
@@ -198,6 +200,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/cablestock.modifyStock', [CablestockController::class, 'modifyCableStock'])->name('cablestock.modifyStock'); // modify cable stock 
                 Route::post('/cablestock.moveStock', [CablestockController::class, 'moveCableStock'])->name('cablestock.moveStock'); // move cable stock 
                 Route::post('/cablestock.addType', [CablestockController::class, 'addCableType'])->name('cablestock.addType'); // add cable type
+                Route::post('/cablestock.checkCableQuantity', [CablestockController::class, 'checkCableQuantity'])->name('cablestock.checkCableQuantity'); // check cable quantity on the remove page
             });
 
             ////

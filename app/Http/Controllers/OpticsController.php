@@ -212,4 +212,17 @@ class OpticsController extends Controller
         }
         return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
     }
+
+    static public function serialSearch(Request $request)
+    {
+        // search for matching serial numbers
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'serial' => 'string|required',
+            ]);
+            return response()->json(OpticsModel::serialMatchChecker($request->input()));
+        } else {
+            return response()->json(['error' => 'CSRF token missmatch.']);
+        }
+    }
 }

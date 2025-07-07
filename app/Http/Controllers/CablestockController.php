@@ -136,4 +136,17 @@ class CablestockController extends Controller
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
+
+    static public function checkCableQuantity(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock_id' => 'integer|required', 
+                'shelf_id' => 'integer|required'
+            ]);
+            return response()->json(CablestockModel::checkCableQuantity($request->input()));
+        } else {
+            return response()->json('Error: CSRF missmatch');
+        }
+    }
 }

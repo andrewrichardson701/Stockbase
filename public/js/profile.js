@@ -65,29 +65,29 @@ function modalCloseLoginHistory() {
 
 //#################
 
-function changeTheme() {
-    var select = document.getElementById('theme-select');
-    var value = select.value;
-    var css = document.getElementById('theme-css');
-    var profile_id = document.getElementById('profile-id').value;
-    var theme = document.getElementById('theme-select-option-'+value).title;
-    var theme_name = document.getElementById('theme-select-option-'+value).alt;
-    // css.href = "./assets/css/theme-"+theme+".css";
+// function changeTheme() {
+//     var select = document.getElementById('theme-select');
+//     var value = select.value;
+//     var css = document.getElementById('theme-css');
+//     var profile_id = document.getElementById('profile-id').value;
+//     var theme = document.getElementById('theme-select-option-'+value).title;
+//     var theme_name = document.getElementById('theme-select-option-'+value).alt;
+//     // css.href = "./assets/css/theme-"+theme+".css";
 
 
-    var xhr = new XMLHttpRequest();
-        xhr.open("GET", "includes/change-theme.inc.php?change=1&theme_file_name="+theme+"&value="+value+"&theme_name="+theme_name+"&user-id="+profile_id, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                // Parse the response and populate the shelf select box
-                var re = JSON.parse(xhr.responseText);
-                if (re == 'success') {
-                    css.href = './assets/css/'+theme;
-                } 
-            }
-        };
-        xhr.send();
-}
+//     var xhr = new XMLHttpRequest();
+//         xhr.open("GET", "includes/change-theme.inc.php?change=1&theme_file_name="+theme+"&value="+value+"&theme_name="+theme_name+"&user-id="+profile_id, true);
+//         xhr.onload = function() {
+//             if (xhr.status === 200) {
+//                 // Parse the response and populate the shelf select box
+//                 var re = JSON.parse(xhr.responseText);
+//                 if (re == 'success') {
+//                     css.href = './assets/css/'+theme;
+//                 } 
+//             }
+//         };
+//         xhr.send();
+// }
 
 document.getElementById("enable_2fa_checkbox").addEventListener("change", function (event) {
     // Check if the checkbox is being unchecked

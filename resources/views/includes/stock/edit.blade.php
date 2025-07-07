@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-sm-7 text-left" id="stock-info-left">
             <form id="edit-form" action="{{ route('stock.edit') }}" method="POST" enctype="multipart/form-data">
-                <!-- below input is used for the stock-modify.inc.php page -->
+                
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <input type="hidden" id="inv-action-type" name="inv-action-type" value="edit" />

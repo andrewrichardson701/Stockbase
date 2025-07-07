@@ -252,70 +252,42 @@ function loadOpticProperty(property) {
 }
 
 function searchSerial(search) {
-    // Make an AJAX request to retrieve the corresponding sites
-    var serialBox = document.getElementById('serial');
-    var modelBox = document.getElementById('model');
-    var vendorBox = document.getElementById('vendor');
-    var typeBox = document.getElementById('type');
-    var speedBox = document.getElementById('speed');
-    var connectorBox = document.getElementById('connector');
-    var distanceBox = document.getElementById('distance');
-    var modeBox = document.getElementById('mode');
-    var siteBox = document.getElementById('site');
+
     var responseBox = document.getElementById('optic-add-response');
     var btnAddSingle = document.getElementById('optic-add-single');
-    var btnAddMultiple = document.getElementById('optic-add-multiple');
-    
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
     responseBox.hidden = true;
     btnAddSingle.disabled = false;
-    btnAddMultiple.disabled = false;
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/optics.inc.php?request-optic=1&serial="+search, true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            // Parse the response and populate the shelf select box
-            var data = JSON.parse(xhr.responseText);
-            console.log(data);
-            if (data["skip"] === undefined) {
-                // console.log('noskip');
-                if (data["error"] === undefined) {
-                    // console.log('noerror');
-                    if (data["success"] !== undefined) {
-                        // console.log('success');
-                        serialBox.value = data['serial_number'];
-                        modelBox.value = data['model'];
-                        vendorBox.value = data['vendor_id'];
-                        typeBox.value = data['type_id'];
-                        speedBox.value = data['speed_id'];
-                        connectorBox.value = data['connector_id'];
-                        distanceBox.value = data['distance_id'];
-                        modeBox.value = data['mode'];
-                        siteBox.value = data['site_id'];
+    if (search !== null && search !== '') {
+        $.ajax({
+            type: "POST",
+            url: "/assets/optics.serialSearch",
+            data: {
+                "request-optic": 1,
+                "serial": search,
+                _token: csrf
+            },
+            dataType: "json",
+            success: function(data) {
+                // console.log(data);
+                if (data["skip"] === undefined) {
+                    if (data["error"] === undefined) {
+                        if (data["success"] !== undefined) {
+                            responseBox.hidden = false;
+                            responseBox.innerHTML = "<or class='green'>" + data['success'] + "</or>";
+                            btnAddSingle.disabled = false;
+                        }
+                    } else {
                         responseBox.hidden = false;
-                        responseBox.innerHTML = "<or class='green'>"+data['success']+"</or>";
-                        btnAddSingle.disabled = false;
-                        btnAddMultiple.disabled = false;
+                        responseBox.innerHTML = "<or class='red'>" + data['error'] + "</or>";
+                        btnAddSingle.disabled = true;
                     }
-                } else {
-                    // console.log("error");
-                    responseBox.hidden = false;
-                    responseBox.innerHTML = "<or class='red'>"+data['error']+"</or>";
-                    serialBox.value = data['serial_number'];
-                    modelBox.value = data['model'];
-                    vendorBox.value = data['vendor_id'];
-                    typeBox.value = data['type_id'];
-                    speedBox.value = data['speed_id'];
-                    connectorBox.value = data['connector_id'];
-                    distanceBox.value = data['distance_id'];
-                    modeBox.value = data['mode'];
-                    siteBox.value = data['site_id'];
-                    btnAddSingle.disabled = true;
-                    btnAddMultiple.disabled = true;
-                    
                 }
-            }
-        }
-    };
-    xhr.send();
+            },
+            async: true
+        });
+    }
 }
+

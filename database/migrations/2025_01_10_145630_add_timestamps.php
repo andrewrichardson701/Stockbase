@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('login_log', function (Blueprint $table) {
+        Schema::table('session_log', function (Blueprint $table) {
             //
             $table->dropColumn(['created_at', 'updated_at']);
         });

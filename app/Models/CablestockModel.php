@@ -289,7 +289,6 @@ class CablestockModel extends Model
                                 <!-- Include CSRF token in the form -->
                                 ' . csrf_field() . '
                                 <table class="centertable" style="border: 1px solid #454d55; width:100%"> 
-                                    <!-- below input used for the stock-modify.inc.php page to determine the type of change -->
                                     <input type="hidden" name="cablestock-move" value="1">
                                     <input type="hidden" id="'.$stock_id.'-c-stock" name="current_cable_item" value="'.$cable_item_id.'">
                                     <input type="hidden" id="'.$stock_id.'-c-stock" name="current_stock" value="'.$stock_id.'">
@@ -840,6 +839,27 @@ class CablestockModel extends Model
             return redirect(GeneralModel::previousURL())->with('error', 'Unable to get SKU.');
         }
     
+    }
+
+    static public function checkCableQuantity($request)
+    {
+        // find the row we need
+        $find = DB::table('stock')
+                ->join('cable_item', 'stock.id', '=', 'cable_item.stock_id')
+                ->where('cable_item.deleted', 0)
+                ->where('stock.deleted', 0)
+                ->where('cable_item.shelf_id', $request['shelf_id'])
+                ->where('stock.id', $request['stock_id'])
+                ->first();
+        
+        if ($find) {
+            // row found
+            $quantity = $find->quantity;
+        } else {
+            $quantity = 0;
+        }
+
+        return $quantity;
     }
 }
 

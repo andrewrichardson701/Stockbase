@@ -158,8 +158,6 @@ async function populateContainers(elem) {
     var shelf_id = elem.value;
     var manu_id = document.getElementById('manufacturer').value;
     var xhr = new XMLHttpRequest();
-    // console.log("_ajax-selectBoxes?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id);
-    // console.log("includes/stock-selectboxes.inc.php?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id);
     xhr.open("GET", "/_ajax-selectBoxes?getcontainers=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
@@ -271,27 +269,46 @@ function getQuantity() {
 function getQuantityCable() {
     var stock = document.getElementById('stock-id').value;
     var shelf = document.getElementById('shelf').value;
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stock-selectboxes.inc.php?getquantitycable=1&stock="+stock+"&shelf="+shelf, true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            // Parse the response and populate the shelf select box
-            var quantityArr = JSON.parse(xhr.responseText);
-            var quantity = document.getElementById('quantity');
-            quantity.value = 1;
-            quantity.max = quantityArr[0]['quantity'];
-            // console.log(quantity.max[0]);
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-            if (quantity.min === quantity.max) {
-                quantity.disabled = true;
+    $.ajax({
+        type: "POST",
+        url: "/cablestock.checkCableQuantity",
+        data: {
+            getquantitycable: 1,
+            stock_id: stock,
+            shelf_id: shelf,
+            _token: csrf
+        },
+        dataType: "text",
+        success: function(max_quantity) {
+            var quantity = document.getElementById('quantity');
+            if (!isNaN(max_quantity)) { // if is a number
+                if (max_quantity < 1) {
+                    quantity.value = 0;
+                    quantity.min = 0;
+                } else {
+                    quantity.value = 1;
+                    quantity.min = 1;
+                }
+
+                quantity.max = max_quantity;
+
+                if (parseInt(quantity.min) === parseInt(quantity.max)) {
+                    quantity.disabled = true;
+                } else {
+                    quantity.disabled = false;
+                }
             } else {
-                quantity.disabled = false;
+                console.log('error in getQuantityCable() output: "'+max_quantity+'".');
             }
-        }
-    };
-    xhr.send();
+
+            
+        },
+        async: true
+    });
 }
+
 
 // Script to populare the remove fields from clicking the remove button in the stock table.
 document.onload=populateFields();

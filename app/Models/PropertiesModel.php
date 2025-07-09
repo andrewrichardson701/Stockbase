@@ -120,4 +120,95 @@ class PropertiesModel extends Model
                 ->get()
                 ->toArray();
     }
+
+    static public function addFirstLocations($request)
+    {
+        $user = GeneralModel::getUser();
+
+        // make sure the shelf count, area count and site count are all 0
+        $find_site = DB::table('site')->first();
+        $find_area = DB::table('area')->first();
+        $find_shelf = DB::table('shelf')->first();
+
+        if (!$find_site || !$find_area || !$find_shelf) {
+            // there is no matching site area and shelf
+
+            // add the site first
+            $add_site = DB::table('site')->insertGetId(['name' => $request['site_name'], 
+                                                        'description' => $request['site_description'], 
+                                                        'updated_at' => now(), 
+                                                        'created_at' => now()
+                                                        ]);
+            if ($add_site) {
+                // site added - do the changelog
+
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'site',
+                    'record_id' => $add_site,
+                    'action' => 'New record',
+                    'field' => 'name',
+                    'previous_value' => '',
+                    'new_value' => $request['site_name']
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                
+                // add the area with $add_site as site_id
+                $add_area = DB::table('area')->insertGetId(['name' => $request['area_name'], 
+                                                        'description' => $request['area_description'], 
+                                                        'site_id' => $add_site,
+                                                        'updated_at' => now(), 
+                                                        'created_at' => now()
+                                                        ]);
+
+                if ($add_area) {
+                    // area added - do the changelog
+
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'area',
+                        'record_id' => $add_area,
+                        'action' => 'New record',
+                        'field' => 'name',
+                        'previous_value' => '',
+                        'new_value' => $request['area_name']
+                    ];
+
+                    GeneralModel::updateChangelog($changelog_info);
+                    
+                    // add the shelf with $add_area as area_id
+                    $add_shelf = DB::table('shelf')->insertGetId(['name' => $request['shelf_name'], 
+                                                            'area_id' => $add_area,
+                                                            'updated_at' => now(), 
+                                                            'created_at' => now()
+                                                            ]);
+                    if ($add_shelf) {
+                        // area added - do the changelog
+
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'shelf',
+                            'record_id' => $add_shelf,
+                            'action' => 'New record',
+                            'field' => 'name',
+                            'previous_value' => '',
+                            'new_value' => $request['shelf_name']
+                        ];
+
+                        GeneralModel::updateChangelog($changelog_info);
+                        return redirect(GeneralModel::previousURL())->with('success', 'Initial locations added!'); 
+                    } else {
+                        return redirect(GeneralModel::previousURL())->with('error', 'Unable to add shelf to database.'); 
+                    }
+                } else {
+                    return redirect(GeneralModel::previousURL())->with('error', 'Unable to add area to database.'); 
+                }
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Unable to add site to database.'); 
+            }
+        } else {
+           return redirect(GeneralModel::previousURL())->with('error', 'Cannot add locations. There are already locations in the DB.'); 
+        }
+    }
 }

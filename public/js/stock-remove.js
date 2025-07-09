@@ -76,10 +76,11 @@ function modalCloseContainerRemoveConfirmation() {
     // containerRemoveContentsTableBody
 }
 
-function confirmAction(stock_name, stock_sku, url) {
+function confirmAction(stock_name, stock_sku) {
     var confirmed = confirm('Are you sure you want to proceed? \nThis will remove ALL entries for '+stock_name+' ('+stock_sku+').');
+    var form = document.getElementById('stock-delete-form');
     if (confirmed) {
-        window.location.href = url;
+        form.submit();
     }
 }
 
@@ -205,6 +206,9 @@ async function populateSerials(elem) {
     var shelf_id = document.getElementById('shelf').value;
     var manu_id = document.getElementById('manufacturer').value;
     var xhr = new XMLHttpRequest();
+    if (container == 0) {
+        container= '';
+    }
     xhr.open("GET", "/_ajax-selectBoxes?getserials=1&stock="+stock+"&shelf="+shelf_id+"&manufacturer="+manu_id+"&container="+container, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
@@ -236,8 +240,8 @@ function getQuantity() {
     var shelf = document.getElementById('shelf').value;
     var serial = document.getElementById('serial-number').value;
     var container = document.getElementById('container').value;
-    if (container == '') {
-        container = 0;
+    if (container == 0) {
+        container = '';
         
     }
     
@@ -255,7 +259,7 @@ function getQuantity() {
             } else {
                 quantity.value = 0;
             }
-            // console.log(quantity.max[0]);
+            console.log(quantityArr);
 
             if (quantity.min === quantity.max) {
                 quantity.disabled = true;

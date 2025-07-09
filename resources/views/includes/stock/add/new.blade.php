@@ -1,6 +1,4 @@
 <form action="{{ route('stock.add.new') }}" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
-    <!-- this is for the stock-modify.inc.php page -->
-    <!-- Include CSRF token in the form -->
     @csrf
     <input type="hidden" name="stock-add" value="1" /> 
     <div class="container well-nopad theme-divBg" style="margin-bottom:5px">

@@ -77,13 +77,14 @@
                 </div>
             </div>
         </div>
-        <form enctype="multipart/form-data" action="./includes/stock-modify.inc.php" method="POST" style="padding: 0px; margin:0px">
+        <form enctype="multipart/form-data" action="{{ route('containers.linkToContainer') }}" method="POST" style="padding: 0px; margin:0px">
             <!-- Include CSRF token in the form -->
             @csrf
             <input type="hidden" name="container-link-fromstock" value="1" />
             <input type="hidden" id="addChildrenContID" name="container_id" value="" />
             <input type="hidden" id="addChildrenStockID" name="stock_id" value="" />
             <input type="hidden" id="addChildrenItemID" name="item_id" value="" />
+            <input type="hidden" id="addChildrenIsItem" name="is_item" value="1" />
             <span class="align-middle text-center" style="display:block; white-space:nowrap;width:100%">
                 <input id="submit-button-addChildren" type="submit" name="submit" value="Link" class="btn btn-success" style="margin:10px 10px 0px 10px" disabled></input>
                 <button class="btn btn-warning" type="button" style="margin:10px 10px 0px 10px" onclick="modalCloseAddChildren()">Cancel</button>

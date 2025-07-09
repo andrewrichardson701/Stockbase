@@ -82,6 +82,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             
             // index page
             Route::get('/', [IndexController::class, 'index'])->name('index'); // home page
+            Route::post('/index.addFirstLocations', [IndexController::class, 'addFirstLocations'])->name('index.addFirstLocations'); // add inital locations on the index page
 
             ////
 
@@ -132,10 +133,11 @@ Route::middleware([AddHeadData::class])->group(function () {
 
                 // POST REQUESTS
                 Route::post('/containers.addContainer', [ContainersController::class, 'addContainer'])->name('containers.addContainer'); // add new container
-                Route::post('/containers.deleteContainer', [ContainersController::class, 'deleteContainer'])->name('containers.deleteContainer'); // add new container
-                Route::post('/containers.editContainer', [ContainersController::class, 'editContainer'])->name('containers.editContainer'); // add new container
-                Route::post('/containers.unlinkFromContainer', [ContainersController::class, 'unlinkFromContainer'])->name('containers.unlinkFromContainer'); // add new container
-                Route::post('/containers.linkToContainer', [ContainersController::class, 'linkToContainer'])->name('containers.linkToContainer'); // add new container
+                Route::post('/containers.deleteContainer', [ContainersController::class, 'deleteContainer'])->name('containers.deleteContainer'); // delete container
+                Route::post('/containers.deleteItemContainer', [ContainersController::class, 'deleteItemContainer'])->name('containers.deleteItemContainer'); // delete item contianer
+                Route::post('/containers.editContainer', [ContainersController::class, 'editContainer'])->name('containers.editContainer'); // edut container
+                Route::post('/containers.unlinkFromContainer', [ContainersController::class, 'unlinkFromContainer'])->name('containers.unlinkFromContainer'); // unlink from container
+                Route::post('/containers.linkToContainer', [ContainersController::class, 'linkToContainer'])->name('containers.linkToContainer'); // link to container
             });
 
             // Stock pages
@@ -150,11 +152,13 @@ Route::middleware([AddHeadData::class])->group(function () {
                     ->name('transactions');
                     
                 Route::get('/favourites', [FavouritesController::class, 'index'])->name('favourites'); // favourites page
-                Route::get('/tags', [TagController::class, 'index'])->name('tags'); // favourites page
+                Route::get('/tags', [TagController::class, 'index'])->name('tags'); // tags page
+                Route::post('/tags.editTag', [TagController::class, 'editTag'])->name('tags.editTag'); // edit tags
 
                 // POST REQUESTS
                 Route::post('/stock.add.existing', [StockController::class, 'addExistingStock'])->name('stock.add.existing'); // add existing stock quantity
                 Route::post('/stock.add.new', [StockController::class, 'addNewStock'])->name('stock.add.new'); // add new stock 
+                Route::post('/stock.remove.existing', [StockController::class, 'removeExistingStock'])->name('stock.remove.existing'); // remove existing stock
                 Route::post('/stock.move', [StockController::class, 'moveStock'])->name('stock.move'); // move stock quantity
                 Route::post('/stock.move.container', [StockController::class, 'moveStockContainer'])->name('stock.move.container'); // move stock quantity when item is a container
                 Route::post('/stock.move.cable', [StockController::class, 'moveStockCable'])->name('stock.move.cable'); // move cable stock quantity
@@ -162,6 +166,8 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/stock.edit.imageupload', [StockController::class, 'uploadStockImage'])->name('stock.edit.imageupload'); // add stock image in edit stock
                 Route::post('/stock.edit.imagelink', [StockController::class, 'linkStockImage'])->name('stock.edit.imagelink'); // link stock image
                 Route::post('/stock.edit.imageunlink', [StockController::class, 'unlinkStockImage'])->name('stock.edit.imageunlink'); // unlink stock image
+                Route::post('/stock.edit.item', [StockController::class, 'editItem'])->name('stock.edit.item'); // edit item info
+                Route::post('/stock.delete.existing', [StockController::class, 'deleteStock'])->name('stock.delete.existing'); // delete unused stock
             });
             
             // Admin pages

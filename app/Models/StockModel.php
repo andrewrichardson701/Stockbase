@@ -696,7 +696,7 @@ class StockModel extends Model
 
                     (SELECT SUM(i.quantity) 
                     FROM item AS i 
-                    WHERE i.stock_id = s.id AND i.shelf_id = sh.id
+                    WHERE i.stock_id = s.id AND i.shelf_id = sh.id ANd i.deleted=0
                     ) AS item_quantity,
 
                     (SELECT GROUP_CONCAT(DISTINCT m.name ORDER BY m.name SEPARATOR ', ') 
@@ -731,6 +731,7 @@ class StockModel extends Model
                 ->leftJoin('site AS si', 'a.site_id', '=', 'si.id')
                 ->where('s.id', '=', $stock_id)
                 ->where('quantity', '>', 0)
+                ->where('i.deleted', '=', 0)
                 ->groupBy(
                     's.id', 's.name', 's.description', 's.sku', 's.min_stock', 
                     'si.id', 'si.name', 'si.description', 
@@ -2254,10 +2255,7 @@ class StockModel extends Model
 
     static public function imageUpload($request)
     {
-        // $request->validate([
-        //     'file' => 'required|image|mimes:jpeg,png,jpg,gif,ico|max:10000',
-        //     'stock_id' => 'required|integer',
-        // ]);
+
     
         $file = $request->file('image');
         
@@ -2372,4 +2370,220 @@ class StockModel extends Model
             return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm stock data.');
         }
     }
+
+    static public function getStockNotInContainer($stock_id, $params, $orderby = 'item.id')
+    {
+        $instance = new self();
+        $instance->setTable('item');
+
+        $query = $instance->newQuery()
+                        ->where('item.stock_id', '=', $stock_id)
+                        ->where('item.deleted', '=', 0)
+                        ->whereNotIn('item.id', function($subquery) {
+                            $subquery->select('item_id')
+                                    ->from('item_container');
+                        });
+
+        if (!empty($params)) {
+            foreach ($params as $key => $value) {
+                $query->where($key, '=', $value);
+            }
+        }
+
+        $data = $query->orderBy($orderby ?? 'item.id')
+                    ->get()
+                    ->toArray();
+
+        return $data;
+    }
+
+    static public function removeExistingStock($request)
+    {
+        $user = GeneralModel::getUser();
+        // find a matching item
+        $where = ['stock_id' => $request['stock_id'],
+                    'manufacturer_id' => $request['manufacturer'],
+                    'shelf_id' => $request['shelf'],
+                    'serial_number' => $request['serial-number'] ?? '',
+                    'deleted' => 0,
+                    'is_container' => 0,
+                ];
+        if (!isset($request['container']) || $request['container'] == 0 || $request['container'] == '' || $request['container'] == null) {
+            // container not present on this item.
+            $find = DB::table('item')
+                    ->where($where)
+                    ->whereNotIn('id', function ($subquery) {
+                        $subquery->select('item_id')->from('item_container');
+                    })
+                    ->get()
+                    ->toArray();
+        } else {
+            $container_id = $request['container'];
+            $container_is_item = 0;
+
+            if ($container_id < 0) {
+                $container_id = $container_id * -1;
+                $container_is_item = 1;
+            }
+
+            $find = DB::table('item')
+                ->where($where)
+                ->whereIn('id', function ($subquery) use ($container_id, $container_is_item) {
+                    $subquery->select('item_id')
+                            ->from('item_container')
+                            ->where('container_id', $container_id)
+                            ->where('container_is_item', $container_is_item);
+                })
+                ->get()
+                ->toArray();
+        }
+                    
+        if ($find && $request['quantity'] > 0) {
+            // found them
+            if (count($find) >= $request['quantity']) {
+                // enough quantity
+                $errors = 0;
+                $count = 0;
+                for ($r = 0; $r < $request['quantity']; $r++) {
+                    $rem_id = $find[$r]->id;
+
+                    $update = DB::table('item')->where('id', $rem_id)->update(['deleted' => 1, 'updated_at' => now()]);
+
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'item',
+                            'record_id' => $rem_id,
+                            'action' => 'Update record',
+                            'field' => 'deleted',
+                            'previous_value' => 0,
+                            'new_value' => 1
+                        ];
+
+                        $changelog = GeneralModel::updateChangelog($changelog_info);
+
+                        if (!$changelog) {
+                            $errors++;
+                        }
+
+                        // add Transaction
+                        $remove_transaction_data = new HttpRequest([
+                            'stock_id' => $find[0]->stock_id,
+                            'item_id' => $rem_id,
+                            'type' => 'remove',
+                            'quantity' => -1,
+                            'price' => $request['price'],
+                            'serial_number' => $request['serial-number'] ?? '',
+                            'date' => $request['transaction_date'] ?? date('Y-m-d'),
+                            'time' => date('h:i:s'),
+                            'username' => $user['username'],
+                            'shelf_id' => $request['shelf'],
+                            'reason' => 'Remove Stock'
+                        ]);
+
+                        $transaction = TransactionModel::addTransaction($remove_transaction_data);
+
+                        if (!$transaction) {
+                            $errors++;
+                        }
+
+                        // remove from item_container too
+                        $item_container_find = DB::table('item_container')
+                                                ->where('item_id', '=', $rem_id)
+                                                ->first();
+                        
+                        if ($item_container_find) {
+                            $item_container_delete = DB::table('item_container')
+                                                ->where('item_id', '=', $rem_id)
+                                                ->delete();
+                            if ($item_container_delete) {
+                                // changelog
+                                $changelog_info = [
+                                    'user' => $user,
+                                    'table' => 'item_contianer',
+                                    'record_id' => $item_container_find->id,
+                                    'action' => 'Delete record',
+                                    'field' => 'item_id',
+                                    'previous_value' => $rem_id,
+                                    'new_value' => ''
+                                ];
+
+                                $changelog = GeneralModel::updateChangelog($changelog_info);
+                                if (!$changelog) {
+                                    $errors++;
+                                }
+                            } else {
+                                $errors++;
+                            }
+                            
+                        }
+                            
+                        $count ++;
+                    } else {
+                        return redirect(GeneralModel::previousURL())->with('error', 'Failed to mark deleted item id: '.$rem_id.'.');
+                    }
+                }
+
+                if ($errors == 0) {
+                    return redirect(GeneralModel::previousURL())->with('success', 'Item(s) removed: '.$count.'.'); 
+                } else {
+                    return redirect(GeneralModel::previousURL())->with( 'error', 'Errors Found'); 
+                }
+
+            } else {
+                // not enough to remove
+                return redirect(GeneralModel::previousURL())->with('error', 'Not enough item quantity to remove.');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'Item(s) not found.');
+        }
+    }
+
+    static public function deleteStock($request)
+    {
+        $user = GeneralModel::getUser();
+
+        // check for matching items
+        $find = DB::table('item')
+                    ->where('deleted', '=', 0)
+                    ->where('stock_id', '=', $request['stock_id'])
+                    ->first();
+
+        if (!$find) {
+            // no dependencies found - delete!
+            $update = DB::table('stock')
+                        ->where('id', '=', $request['stock_id'])
+                        ->update(['deleted' => 1, 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                                'user' => $user,
+                                'table' => 'stock',
+                                'record_id' => $request['stock_id'],
+                                'action' => 'Delete record',
+                                'field' => 'deleted',
+                                'previous_value' => 0,
+                                'new_value' => 1
+                            ];
+
+                $changelog = GeneralModel::updateChangelog($changelog_info);
+                if (!$changelog) {
+                    // error!
+                    return redirect(GeneralModel::previousURL())->with('error', 'Unable to update changelog. Stock deleted.');
+                } else {
+                    return redirect(GeneralModel::previousURL())->with('success', 'Stock deleted.');
+                }
+
+            } else {
+                // no update - error
+                return redirect(GeneralModel::previousURL())->with('error', 'Failed to delete stock id: '.$request['stock_id'].'.');
+            }
+        } else {
+            // dependancies found - no delete
+            return redirect(GeneralModel::previousURL())->with('error', 'Dependencies found, could not delete.');
+        }
+    }
+
 }

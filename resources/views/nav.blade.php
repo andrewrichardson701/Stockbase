@@ -122,7 +122,7 @@
         
         @if (isset($head_data['impersonation']['active']) && $head_data['impersonation']['active'] == 1) 
         <div id="impersonate-div" class="nav-div" style="margin-right:0px">
-            <form enctype="multipart/form-data" class="nav-v-c nav-trans" action="./includes/admin.inc.php" method="POST" style="margin:0px;padding:0px">
+            <form enctype="multipart/form-data" class="nav-v-c nav-trans" action="{{ route('leave-impersonate') }}" method="POST" style="margin:0px;padding:0px">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <input type="hidden" name="user-stop-impersonate" value="1"/>

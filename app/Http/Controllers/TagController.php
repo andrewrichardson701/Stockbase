@@ -42,4 +42,18 @@ class TagController extends Controller
                             'shelves' => $shelves ?? null,
                             ]);
     }
+
+    static public function editTag(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'tag_id' => 'integer|required',
+                'tag_name' => 'string|required',
+                'tag_description' => 'string|required',
+            ]);
+            return TagModel::editTag($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
 }

@@ -97,7 +97,7 @@ function modalLoadAddChildren(itemID) {
     var tableBody = document.getElementById('addChildrenTableBody');
     // do the ajax to fill the table
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "includes/stockajax.php?request-nearby-stock=1&item_id="+itemID+"&is_item=1", true);
+    xhr.open("GET", "/_ajax-nearbystock?request-nearby-stock=1&item_id="+itemID+"&is_item=1", true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box

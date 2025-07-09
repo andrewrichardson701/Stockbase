@@ -1,4 +1,4 @@
-<form action="includes/stock-modify.inc.php" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
+<form action="{{ route('stock.remove.existing') }}" method="POST" enctype="multipart/form-data" style="max-width:max-content;margin-bottom:0px">
     <!-- Include CSRF token in the form -->
     @csrf
     @if ($stock_data['is_cable'] == 0) 
@@ -128,8 +128,8 @@
                                 <input type="submit" id="removeButton" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" />
                                 <button type="button" id="removeContButton" name="submit" value="Remove Stock" class="nav-v-c btn btn-danger"onclick="modalLoadContainerRemoveConfirmation()"  hidden disabled>Remove Stock</button>
                             @else
-                                <input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />');
-                                <a href="#" onclick="confirmAction('{{ addslashes(htmlspecialchars($stock_data['name'])) }} ', '{{ $stock_data['sku'] }}', 'includes/stock-modify.inc.php?stock_id={{ $stock_data['id'] }}&type=delete')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>
+                                <input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />
+                                <a href="#" onclick="confirmAction('{{ addslashes(htmlspecialchars($stock_data['name'])) }} ', '{{ $stock_data['sku'] }}')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>
                             @endif
                             </div>
                         </div>
@@ -138,4 +138,7 @@
             </div>
         </div>
     </div>
+</form>
+<form id="stock-delete-form" action="{{ route('stock.delete.existing') }}" method="POST" enctype="multipart/form-data" hidden>
+    <input type="hidden" name="stock_id" value="{{ $stock_data['id'] }}" />
 </form>

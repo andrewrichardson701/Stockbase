@@ -9,16 +9,11 @@ use Illuminate\View\View;
 
 use App\Models\IndexModel;
 use App\Models\GeneralModel;
-use App\Models\FunctionsModel;
-use App\Models\ProfileModel;
 use App\Models\ResponseHandlingModel;
 
 
 use App\Models\StockModel;
-use App\Models\FavouritesModel;
-use App\Models\TagModel;
-use App\Models\ContainersModel;
-use App\Models\ChangelogModel;
+use App\Models\PropertiesModel;
 
 class IndexController extends Controller
 {
@@ -55,9 +50,28 @@ class IndexController extends Controller
         return view('error');
     }
 
+    static public function addFirstLocations(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'site-name' => 'string|required',
+                'site-description' => 'string|required',
+                'area-name' => 'string|required',
+                'area-description' => 'string|required',
+                'shelf-name' => 'string|required',                
+            ]);
+            return PropertiesModel::addFirstLocations($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
     static public function test(Request $request)
     {
-        dd(ProfileModel::getLoginHistory());
+        // dd(ProfileModel::getLoginHistory());
+
+        $data = StockModel::getStockNotInContainer(1, ['item.manufacturer_id' => 1, 'item.shelf_id' => 1, 'item.serial_number' => '']);
+        dd($data);
     }
 }
 

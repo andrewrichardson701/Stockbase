@@ -127,11 +127,10 @@
                         <td class="text-center align-middle">{{ $container['location'] }}</td>
                         <td class="text-center align-middle @if ($container['count'] < 1) red @endif">{{ $container['count'] }}</td>
                         <td class="text-center align-middle green">Yes</td>
-                        <td class="text-center align-middle"><button class="btn btn-info" name="submit" title="Edit" onclick="toggleEditcontainer('{{ $container['id'] }}')"><i class="fa fa-pencil"></i></button></td>
+                        <td class="text-center align-middle"><button class="btn btn-info" name="submit" title="Edit" onclick="navPage('{{ route('stock', ['stock_id' => $container['stock_id'], 'modify_type' => 'edit']) }}')"><i class="fa fa-pencil"></i></button></td>
                         <td class="text-center align-middle" style="padding-left:0px;padding-right:0px">
                         @if ($container['count'] == 0) 
-                            <form action="includes/containers.inc.php" method="POST" id="form-container-{{$container['id']}}-delete" enctype="multipart/form-data" hidden>
-                                <!-- Include CSRF token in the form -->
+                            <form action="{{ route('containers.deleteItemContainer') }}" method="POST" id="form-container-{{$container['id']}}-delete" enctype="multipart/form-data" hidden>
                                 @csrf
                                 <input type="hidden" name="container_delete_submit" form="form-container-{{$container['id']}}-delete" value="1" />
                                 <input type="hidden" name="container_id" form="form-container-{{$container['id']}}-delete" value="{{$container['id']}}" />
@@ -140,24 +139,6 @@
                         @endif
                         </td>
                         <th class="text-center align-middle @if (!empty($container['object']) && count($container['object']) > 0) clickable @endif" style="width:50px" id="container-{{$container['id']}}-toggle" @if (!empty($container['object']) && count($container['object']) > 0) onclick="toggleHiddencontainer('{{$container['id']}}')">+@else ><button style="padding: 0px 3px 0px 3px; color:black" class="btn btn-success" onclick="modalLoadAddChildren('{{$container['id']}}', 1)">+ <i class="fa fa-link" style="color:black"></i></button> @endif </th>
-                    </tr>
-                    <tr id="container-{{ $container['id'] }}-edit" hidden>
-                        <form action="includes/containers.inc.php" method="POST" id="form-container-{{ $container['id'] }}-edit" enctype="multipart/form-data">
-                            <!-- Include CSRF token in the form -->
-                            @csrf
-                            <input type="hidden" name="container_edit_submit" form="form-container-{{ $container['id'] }}-edit" value="1" />
-                            <input type="hidden" name="container_id" form="form-container-{{ $container['id'] }}-edit" value="{{ $container['id'] }}" />
-                            <td class="text-center align-middle">@if($container['img_id'] !== '' && $container['img_id'] !== null) <img id="image-{{ $container['img_id'] }}" class="inv-img-main thumb" style="cursor:default !important" src="img/stock/{{ $container['img_image'] }}">@endif</td>
-                            <td class="text-center align-middle">{{ $container['id'] }}</td>
-                            <td class="text-center align-middle" style="width:300px"><input type="text" class="form-control text-center theme-input" style="max-width:100%" name="container_name" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['name'], ENT_QUOTES, 'UTF-8') }}"></td>
-                            <td class="text-center align-middle"><input type="text" class="form-control text-center theme-input" style="max-width:100%" name="container_description" form="form-container-{{ $container['id'] }}-edit" value="{{ htmlspecialchars($container['description'], ENT_QUOTES, 'UTF-8') }}"></td>
-                            <td class="text-center align-middle">{{$container['location']}}</th>
-                            <td class="text-center align-middle @if ($container['count'] < 1) red @endif">{{$container['count']}}</td>
-                            <td class="text-center align-middle red">No</td>
-                            <td class="text-center align-middle" style=""><span style="white-space: nowrap"><button class="btn btn-success" type="submit" form="form-container-{{$container['id']}}-edit" title="Save" style="margin-right:10px"><i class="fa fa-save"></i></button><button type="button" class="btn btn-warning" name="submit" style="padding:3px 12px 3px 12px" onclick="toggleEditcontainer('{{$container['id']}}')">Cancel</button></span></td>
-                            <td></td>
-                            <th class="text-center align-middle @if (!empty($container['object']) && count($container['object']) > 0) clickable @endif" style="width:50px" id="container-'{{$container['id']}}'-toggle" @if (!empty($container['object']) && count($container['object']) > 0) onclick="toggleHiddencontainer('{{$container['id']}}')">+ @else ><button style="padding: 0px 3px 0px 3px; color:black" class="btn btn-success" onclick="modalLoadAddChildren('{{$container['id']}}', 1)">+ <i class="fa fa-link" style="color:black"></i></button>@endif</th>
-                        </form>
                     </tr>
                 @if (!empty($container['object']) && count($container['object']) > 0)
                     <tr id="container-{{$container['id']}}-objects" hidden>
@@ -349,7 +330,7 @@
                     </div>
                 </div>
             </div>
-            <form enctype="multipart/form-data" action="/containers.linkToContainer" method="POST" style="padding: 0px; margin:0px">
+            <form enctype="multipart/form-data" action="{{ route('containers.linkToContainer') }}" method="POST" style="padding: 0px; margin:0px">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <input type="hidden" name="container-link-fromcontainers" value="1" />

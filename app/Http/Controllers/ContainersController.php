@@ -48,7 +48,7 @@ class ContainersController extends Controller
 
             return ContainersModel::addContainer($request->input());
         } else {
-            return null;
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     
     }
@@ -61,7 +61,19 @@ class ContainersController extends Controller
             ]);
             return ContainersModel::deleteContainer($request->input());
         } else {
-            return null;
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function deleteItemContainer(Request $request)
+    {   
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'container_id' => 'integer|required'
+            ]);
+            return ContainersModel::deleteItemContainer($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
 
@@ -75,7 +87,7 @@ class ContainersController extends Controller
             ]);
             return ContainersModel::editContainer($request->input());
         } else {
-            return null;
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
 
@@ -97,7 +109,7 @@ class ContainersController extends Controller
             ]);
             return ContainersModel::linkToContainer($request->input());
         } else {
-            return null;
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
 }

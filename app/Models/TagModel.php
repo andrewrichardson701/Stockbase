@@ -128,5 +128,56 @@ class TagModel extends Model
         return $return;
     }
 
+    static public function editTag($request)
+    {
+        // get the tag in question
+
+        $find = DB::table('tag')
+                ->where('id', $request['tag_id'])
+                ->first();
+
+        if ($find) {
+            $user = GeneralModel::getUser();
+
+            $update = DB::table('tag')->where('id', $request['tag_id'])->update(['name' => $request['tag_name'], 'description' => $request['tag_description'], 'updated_at' => now()]);
+            if ($update) {
+                // changelog
+                if ($find->name !== $request['tag_name']) {
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'tag',
+                        'record_id' => $find->id,
+                        'action' => 'Update record',
+                        'field' => 'name',
+                        'previous_value' => $find->name,
+                        'new_value' => $request['tag_name']
+                    ];
+
+                    GeneralModel::updateChangelog($changelog_info);
+                }
+
+                if ($find->description !== $request['tag_description']) {
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'tag',
+                        'record_id' => $find->id,
+                        'action' => 'Update record',
+                        'field' => 'description',
+                        'previous_value' => $find->description,
+                        'new_value' => $request['tag_description']
+                    ];
+
+                    GeneralModel::updateChangelog($changelog_info);
+                }
+                
+                return redirect(GeneralModel::previousURL())->with('success', 'Tag id: '.$find->id.' updated.');
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Tag update failed for id: '.$request['tag_id'].'.');
+            }
+
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'Tag not found');
+        }
+    }
 
 }

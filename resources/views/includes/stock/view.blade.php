@@ -295,7 +295,7 @@
                                         @php $matchCount++; @endphp
                                         
                                         <tr class="align-middle">
-                                            <form action="includes/stock-modify.inc.php" method="POST" id="form-item-{{ $item['item_id'] }}" enctype="multipart/form-data">
+                                            <form action="{{ route('stock.edit.item') }}" method="POST" id="form-item-{{ $item['item_id'] }}" enctype="multipart/form-data">
                                             <!-- Include CSRF token in the form -->
                                                 @csrf
                                             </form>
@@ -308,7 +308,7 @@
                                                 <select class="form-control manufacturer-select" form="form-item-{{ $item['item_id'] }}" name="manufacturer_id" style="max-width:max-content">
                                                 @if (!empty($manufacturers['rows']))
                                                     @foreach ($manufacturers['rows'] as $manufacturer) 
-                                                    <option value="{{ $manufacturer['name'] }}" @if ($item['manufacturer_id'] == $manufacturer['id']) selected @endif >{{ $manufacturer['name'] }}</option>
+                                                    <option value="{{ $manufacturer['id'] }}" @if ($item['manufacturer_id'] == $manufacturer['id']) selected @endif >{{ $manufacturer['name'] }}</option>
                                                     @endforeach
                                                 @else
                                                     <option disabled>No Manufacturers Found</option>
@@ -319,7 +319,9 @@
                                             <td class="align-middle text-center"><input type="text" form="form-item-{{ $item['item_id'] }}" class="form-control" style="" value="{{ $item['serial_number'] }}" name="serial_number" /></td>
                                             <td class="align-middle text-center" @if ($head_data['config_compare']['cost_enable_normal'] == 0) hidden @endif ><input type="number" step=".01" form="form-item-{{ $item['item_id'] }}" class="form-control" style="width:75px" value="{{ $item['cost'] }}" name="cost" min=0 /></td>
                                             <td class="align-middle text-center"><input type="text" form="form-item-{{ $item['item_id'] }}" class="form-control" style="" value="{{ $item['comments'] }}" name="comments" /></td>
-                                            @if (isset($container_data['rows'][$item['container_id']]) && !empty($container_data['rows'][$item['container_id']]))
+                                            {{-- {{ dd($container_data['rows']) }} --}}
+                                            @if (isset($container_data['rows'][$item['item_id']]) && !empty($container_data['rows'][$item['item_id']]['rows']))
+                                            {{-- This section is for the container items with children --}}
                                                 <td class="align-middle text-center" style="padding-right:2px" @if ($item['is_container'] == 1) colspan=2 @endif>
                                                 @if ($item['is_container'] == 1 && isset($matchCount) && $matchCount > 0) 
                                                     <input type="checkbox" form="form-item-{{ $item['item_id'] }}" name="container-toggle" checked hidden>
@@ -350,6 +352,13 @@
                                                             </button>
                                                     </td>
                                                 @endif
+                                            @elseif($item['is_container'] == 1)
+                                                <td class="align-middle text-center" style="padding-right:2px" @if ($item['is_container'] == 1) colspan=2 @endif>
+                                                    <label class="switch align-middle" style="margin-bottom:0px;margin-top:0px" >
+                                                        <input type="checkbox" form="form-item-D" checked name="container-toggle">
+                                                        <span class="slider round align-middle" style="transform: scale(0.8, 0.8);"></span>
+                                                    </label>
+                                                </td>
                                             @elseif ($item['container_id'] == null && $item['is_container'] == 0)
                                                 <td class="align-middle text-center" style="padding-right:2px">
                                                     <label class="switch align-middle" style="margin-bottom:0px;margin-top:0px">
@@ -367,22 +376,18 @@
                                                     <a class="link" id="modalUnlinkContainerItemName-{{ $item['item_id'] }}" href="{{ url('containers') }}?container_id={{ $item['container_id'] }}&con_is_item={{ $item['container_is_item'] }}">@if($item['container_is_item'] == 1) {{ $item['container_item_name'] }} @else {{ $item['container_name'] }} @endif</a>
                                                 </td>
                                                 <td class="align-middle text-center" style="padding-left:2px">
-                                                    <form action="includes/stock-modify.inc.php" method="POST" id="form-item-{{ $item['item_id'] }}-container-unlink" enctype="multipart/form-data">
-                                                        <!-- Include CSRF token in the form -->
-                                                        @csrf
-                                                        <input type="hidden" name="item_id" value="{{ $item['item_id'] }}" form="form-item-{{ $item['item_id'] }}-container-unlink" />
-                                                        <input type="hidden" name="container-unlink" value="1" form="form-item-{{ $item['item_id'] }}-container-unlink" />
-                                                        <button class="btn btn-danger" type="button" name="submit" onclick='modalLoadUnlinkContainer("{{ $item['item_id'] }}", "{{ $item['container_id'] }}", 1)' form="form-item-{{ $item['item_id'] }}-container-unlink" style="color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px" title="Unlink from container">
-                                                            <i class="fa fa-unlink"></i>
-                                                        </button>
-                                                    </form>
+                                                    <input type="hidden" name="item_id" value="{{ $item['item_id'] }}" form="form-item-{{ $item['item_id'] }}-container-unlink" />
+                                                    <input type="hidden" name="container-unlink" value="1" form="form-item-{{ $item['item_id'] }}-container-unlink" />
+                                                    <button class="btn btn-danger" type="button" name="submit" onclick='modalLoadUnlinkContainer("{{ $item['item_id'] }}", "{{ $item['container_id'] }}", 1)' form="form-item-{{ $item['item_id'] }}-container-unlink" style="color:black !important; opacity: 0.85; margin-left:5px; padding: 0px 3px 0px 3px" title="Unlink from container">
+                                                        <i class="fa fa-unlink"></i>
+                                                    </button>
                                                 </td>
                                             @endif
                                             <td class="align-middle text-center">{{ (int)$item['quantity'] }}</td>
                                             <td style="padding-right:3px"><input type="submit" form="form-item-{{ $item['item_id'] }}" class="btn btn-success" name="stock-row-submit" value="Update" /></td>
                                             <td style="padding-left:3px"><button class="btn btn-danger" onclick="navPage(updateQueryParameter('stock/{{ $stock_data['id'] }}?manufacturer={{ $item['manufacturer_id'] }}&shelf={{ $item['shelf_id'] }}&serial={{ $item['serial_number'] }}', 'modify', 'remove'))" @if ($item['is_container'] == 1 && isset($matchCount) && $matchCount > 0) disabled @endif><i class="fa fa-trash"></i></button></td>
                                         </tr>
-                                        @if ($item['is_container'] == 1 && (int)$container_data['rows'][$item['item_id']]['count'] > 0)
+                                        @if ($item['is_container'] == 1 )
                                             <tr class="theme-th-selected">
                                                 <td colspan="100%">
                                                     <div style="max-height:50vh;overflow-x: hidden;overflow-y: auto;">

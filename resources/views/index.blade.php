@@ -29,7 +29,7 @@
         @if ($sites['count'] == 0 || $areas['count'] == 0 || $shelves['count'] == 0)
             <div class="container" style="margin-top:20px">
                 <h2 style="padding-bottom:20px;padding-top:20px">Add First Locations</h2>
-                <form id="addLocations" enctype="multipart/form-data" action="./includes/admin.inc.php" method="POST">
+                <form id="addLocations" enctype="multipart/form-data" action="{{ route('index.addFirstLocations') }}" method="POST">
                     <!-- Include CSRF token in the form -->
                     @csrf
                     <input type="hidden" name="index" value="1"/>

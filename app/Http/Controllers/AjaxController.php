@@ -183,8 +183,17 @@ class AjaxController extends Controller
                         $is_item = 0;
                     }
 
+                    if ($serial_number == null) {
+                        $serial_number = '';
+                    }
+
                     if ($container_id !== 0) {
                         $data = ContainersModel::getContainerChildrenInfo($container_id, ['item.manufacturer_id' => $manufacturer_id, 'item.shelf_id' => $shelf_id, 'item.stock_id' => $stock_id, 'item_container.container_is_item' => $is_item, 'item.serial_number' => $serial_number]);
+                        $return[0]['quantity'] = count($data);
+                        $return[0]['data'] = $data;
+                    } else {
+                        // get a quantity
+                        $data = StockModel::getStockNotInContainer($stock_id, ['item.manufacturer_id' => $manufacturer_id, 'item.shelf_id' => $shelf_id, 'item.serial_number' => $serial_number]);
                         $return[0]['quantity'] = count($data);
                         $return[0]['data'] = $data;
                     }

@@ -312,10 +312,43 @@ class ContainersModel extends Model
         GeneralModel::updateChangelog($info);
 
         $container->update([
-            'deleted' => 1
+            'deleted' => 1, 'updated_at' => now()
         ]);
         
         return redirect()->route('containers', ['success' => 'deleted']);
+    }
+
+    static public function deleteItemContainer($request) 
+    {   
+        $id = $request['container_id'];
+        $container = DB::table('item')->where('id', '=', $id);
+
+        if (!$container) {
+            return redirect(GeneralModel::previousURL())->with('error', 'Container item not found.');
+        }
+
+        $update = DB::table('item')->where('id', '=', $id)->update([
+            'is_container' => 0, 'updated_at' => now()
+        ]);
+        
+        if ($update) {
+                $info = [
+                'user' => GeneralModel::getUser(),
+                'table' => 'item',
+                'record_id' => $id,
+                'field' => 'is_container',
+                'new_value' => 0,
+                'action' => 'Update record',
+                'previous_value' => 1,
+            ];
+
+            GeneralModel::updateChangelog($info);
+            
+            return redirect(GeneralModel::previousURL())->with('success', 'Item no longer a container.');
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'Unable to change item.');
+        }
+
     }
 
     static public function editContainer($request) 

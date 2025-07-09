@@ -49,7 +49,7 @@
                         @endif
                     </tr>
                     <tr id="tag-{{ $tag['id'] }}-edit" hidden>
-                        <form action="includes/admin.inc.php" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('tags.editTag') }}" method="POST" enctype="multipart/form-data">
                             <!-- Include CSRF token in the form -->
                             @csrf
                             <input type="hidden" name="tag_edit_submit" value="1" />

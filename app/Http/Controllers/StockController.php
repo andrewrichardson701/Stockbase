@@ -15,6 +15,7 @@ use App\Models\StockModel;
 use App\Models\ResponseHandlingModel;
 use App\Models\TransactionModel;
 use App\Models\CablestockModel;
+use App\Models\ItemModel;
 
 class StockController extends Controller
 {
@@ -89,7 +90,7 @@ class StockController extends Controller
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
         $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type, 'page' => $page, 'add_new' => $add_new, 'search' => $search, 'request' => $request];
-
+        
         if ($stock_id > 0 && is_numeric($stock_id)) {
             $stock_data = StockModel::getStockData($stock_id);
             if (isset($stock_data['id'])) {
@@ -360,4 +361,57 @@ class StockController extends Controller
         }
         
     }  
+
+    static public function editItem(Request $request)
+    {
+        // dd($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'item-id' => 'integer|required',
+                'manufacturer_id' => 'integer|required',
+                'upc' => 'string|nullable',
+                'serial_number' => 'string|nullable',
+                'cost' => 'numeric|nullable',
+                'comments' => 'string|nullable',
+                'container-toggle' => 'nullable'
+            ]);
+            return ItemModel::editItem($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+    
+    static public function removeExistingStock(Request $request)
+    {
+        // dd($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock_id' => 'integer|required',
+                'manufacturer' => 'integer|required',
+                'shelf' => 'integer|required',
+                'container' => 'integer|nullable',
+                'price' => 'numeric|nullable',
+                'serial-number' => 'string|nullable',
+                'transaction_date' => 'string|required',
+                'quantity' => 'integer|required',
+                'reason' => 'string|required',
+            ]);
+            return StockModel::removeExistingStock($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function deleteStock(Request $request)
+    {
+        // dd($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'stock_id' => 'integer|required',
+            ]);
+            return StockModel::deleteStock($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
 }

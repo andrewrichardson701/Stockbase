@@ -8,6 +8,14 @@ use App\Models\FunctionsModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LdapModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LdapModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|LdapModel query()
+ * @mixin \Eloquent
+ */
 class LdapModel extends Model
 
 {

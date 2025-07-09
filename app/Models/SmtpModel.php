@@ -9,6 +9,14 @@ use App\Models\FunctionsModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpModel query()
+ * @mixin \Eloquent
+ */
 class SmtpModel extends Model
 {
     //

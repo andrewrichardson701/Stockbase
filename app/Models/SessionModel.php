@@ -8,6 +8,14 @@ use Illuminate\Support\Facades\Session;
 use App\Models\GeneralModel;
 use Illuminate\Support\Facades\Request;
 
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SessionModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SessionModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SessionModel query()
+ * @mixin \Eloquent
+ */
 class SessionModel extends Model
 {
     //

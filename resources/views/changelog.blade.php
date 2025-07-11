@@ -93,7 +93,7 @@
                         </div>
 
                         <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
-                            <p class="container" style="margin-top:40px">Entry count: <or class="green">{{ $changelog['total_count'] }}</or></p>
+                            <p class="container">Entry count: <or class="green">{{ $changelog['total_count'] }}</or></p>
                             <table id="changelogTable" class="table table-dark theme-table centertable" style="max-width:max-content">
                                 <thead>
                                     <tr class="theme-tableOuter align-middle text-center">

@@ -1348,3 +1348,7 @@ meter::-webkit-meter-even-less-good-value { background: red; }
     padding-bottom: 20px; /* Makes room for the footer */
     box-sizing: border-box;
 }
+
+select.form-control {
+    padding-right:2.5rem;
+}

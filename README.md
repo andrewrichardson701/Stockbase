@@ -72,10 +72,12 @@ The design aims to make managing and tracking devices, parts, cables, fibre opti
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
+* [![Laravel][Laravel.com]][Laravel-url]
 * [![PHP][PHP.net]][PHP-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
- * [![JavaScript][JavaScript.com]][JavaScript-url]
+* [![JavaScript][JavaScript.com]][JavaScript-url]
 * [![JQuery][JQuery.com]][JQuery-url]
+* [![Composer][GetComposer.org]][Composer-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -2686,10 +2688,12 @@ Project Link: [https://gitlab.com/andrewrichardson701/stockbase](https://gitlab.
 [linkedin-url]: https://linkedin.com/in/andrewrichardson701
 [product-screenshot]: public/img/index-screenshot.png
 [PHP.net]: https://img.shields.io/badge/PHP-4F5B93?style=for-the-badge&logo=php&logoColor=white
+[Laravel-url]: https://laravel.com/
 [PHP-url]: https://www.php.net/
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+[Composer-url]: https://getcomposer.org/
 [JavaScript.com]: https://img.shields.io/badge/JS-70DB4F?style=for-the-badge&logo=javascript&logoColor=white
 [JavaScript-url]: https://www.javascript.com/

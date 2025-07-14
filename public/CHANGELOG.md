@@ -1,4 +1,11 @@
 <h2>Changelog</h2>
+<h3>1.3.0L - Laravel conversion</h3>
+<ul>
+    <li>Converted the main system to Laravel</li>
+    <li>Moved all page navigation to routes</li>
+    <li>Adjusted the permissions to allow more customizability</li>
+    <li>Sorted the permissions per page with middleware</li>
+</ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>
     <li>Added an assets page. This shows all asset types that are stored (Optic, CPUs, RAM, PSUs, Fans, HDDs)</li>

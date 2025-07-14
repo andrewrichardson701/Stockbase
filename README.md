@@ -95,9 +95,9 @@ If this is not a fresh install (e.g. a new VM or you have no existing database o
 
 - Apache2 / Nginx (user choice, or whichever is installed)
 
-- PHP 8.3 (v8.3.8)
+- PHP 8.4 (v8.4.7)
 
-- php8.3, php-8.3-cli php8.3-common, php8.3-curl, php8.3-fpm, php8.3-gd, php8.3-igbinary, php8.3-imagick, php8.3-imap, php8.3-intl, php8.3-ldap, php8.3-mbstring, php8.3-mysql, php8.3-readline, php8.3-redis, php8.3-soap, php8.3-xml, php8.3-xsl, php8.3-zip
+- php8.4, php8.4-cli php8.4-common, php8.4-curl, php8.4-fpm, php8.4-gd, php8.4-igbinary, php8.4-imagick, php8.4-imap, php8.4-intl, php8.4-ldap, php8.4-mbstring, php8.4-mysql, php8.4-readline, php8.4-redis, php8.4-soap, php8.4-xml, php8.4-xsl, php8.4-zip
 
 - MySQL Server (v8.0.34) (or similar DB using mysql syntax)
 
@@ -171,7 +171,7 @@ Clone the repo first, and the follow the below steps.
 
   
 
-2. Install PHP 8.3 and all dependencies required
+2. Install PHP 8.4 and all dependencies required
 
   
 
@@ -199,7 +199,7 @@ b. Install the package and dependencies
 
 ```
 
-sudo apt install -y php8.3 php8.3-cli php8.3-common php8.3-curl php8.3-fpm php8.3-gd php8.3-igbinary php8.3-imagick php8.3-imap php8.3-intl php8.3-ldap php8.3-mbstring php8.3-mysql php8.3-readline php8.3-redis php8.3-soap php8.3-xml php8.3-xsl php8.3-zip
+sudo apt install -y php8.4 php8.4-cli php8.4-common php8.4-curl php8.4-fpm php8.4-gd php8.4-igbinary php8.4-imagick php8.4-imap php8.4-intl php8.4-ldap php8.4-mbstring php8.4-mysql php8.4-readline php8.4-redis php8.4-soap php8.4-xml php8.4-xsl php8.4-zip
 
 ```
 
@@ -699,7 +699,7 @@ location ~ \.php$ {
 
 include fastcgi_params;
 
-fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
 
 fastcgi_index index.php;
 
@@ -907,7 +907,7 @@ location ~ \.php$ {
 
 include fastcgi_params;
 
-fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
 
 fastcgi_index index.php;
 
@@ -973,7 +973,7 @@ error_page 404 /index.php;
 
 location ~ \.php$ {
 
-fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
 
 fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
 
@@ -1058,6 +1058,10 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 
 ### In Progress
 
+- [ ] Find a compatible SMTP package to handle email notifiactions and password resets (converting to Laravel)
+- [ ] Find a good LDAP package to handle Windows crednetial login (converting to Laravel)
+- [ ] Find a good SSO package to handle single sign on
+- [ ] Create a migration to migrate old systes to the new Laravel system
 - [ ] Add an API to GET information
 - [ ] Add an API log to record request types
 - [ ] Add a CPU storage page
@@ -1071,6 +1075,7 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 
 ### Completed
 
+- [x] Migrate system to Laravel, with the essentials working
 - [x] Add API key storage to the database
 
 See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) for a full list of proposed features (and known issues).

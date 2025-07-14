@@ -6,7 +6,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
-
+        <link rel="icon" type="image/png" href="{{ asset('img/config/'. $head_data['config_compare']['favicon_image']) }}"
+        
         <!-- Fonts -->
         <link rel="stylesheet" href="css/bootstrap-basic-footer.css">
         <link rel="stylesheet" href="css/inv.css">

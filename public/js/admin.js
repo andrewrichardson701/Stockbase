@@ -723,28 +723,28 @@ function showLinks(type, num) {
 }
 
 // script to load the template email into page 
-function emailTemplate() {
-    var body = document.getElementById('email-template-body').value;
-    var emailDiv = document.getElementById('email-template');
+// function emailTemplate() {
+//     var body = document.getElementById('email-template-body').value;
+//     var emailDiv = document.getElementById('email-template');
 
-    // Make an AJAX request to retrieve cotnent
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/admin.smtpTemplate?template=echo&body="+body + "&_=" + new Date().getTime());
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            // Parse the response and populate the field
-            if (xhr.responseText !== '') {
-                var email = xhr.responseText;
-                emailDiv.innerHTML = email;
-            } else {
-                emailDiv.innerHTML = '<or class="red">AJAX Results Empty...</or>';
-            }
-        } else {
-            emailDiv.innerHTML = '<or class="red">XMLHttpRequest Status = '+xhr.status+'. Expected: 200</or>';
-        }
-    };
-    xhr.send();
-}
+//     // Make an AJAX request to retrieve cotnent
+//     var xhr = new XMLHttpRequest();
+//     xhr.open("GET", "/admin.smtpTemplate?template=echo&body="+body + "&_=" + new Date().getTime());
+//     xhr.onload = function() {
+//         if (xhr.status === 200) {
+//             // Parse the response and populate the field
+//             if (xhr.responseText !== '') {
+//                 var email = xhr.responseText;
+//                 emailDiv.innerHTML = email;
+//             } else {
+//                 emailDiv.innerHTML = '<or class="red">AJAX Results Empty...</or>';
+//             }
+//         } else {
+//             emailDiv.innerHTML = '<or class="red">XMLHttpRequest Status = '+xhr.status+'. Expected: 200</or>';
+//         }
+//     };
+//     xhr.send();
+// }
 
 document.onload = emailTemplate();
 

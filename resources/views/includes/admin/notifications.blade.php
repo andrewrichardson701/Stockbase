@@ -42,9 +42,8 @@
         @endif
         <div class="well-nopad theme-divBg" style="margin-top:20px">
             <h4>Email example</h4>
+            <iframe frameborder="0" style="display:block;overflow:hidden;min-height:400px;width:100%" height="100%" width="100%" src="{{ route('admin.smtpTemplate') }}?template=echo&body={{ urlencode('<p style=\'color:black !important\'>Cable stock added, for <strong><a class=\'link\' style=\'color: #0000EE !important;\' href=\''.url('stock').'/1\'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>') }}"></iframe>
             <input type="hidden" value="{{ urlencode('<p style=\'color:black !important\'>Cable stock added, for <strong><a class=\'link\' style=\'color: #0000EE !important;\' href=\''.url('stock').'/=1\'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>') }}" id="email-template-body" />
-            <div id="email-template" style="margin-top:20px;margin-bottom:10px">
-            </div>
             <a style="margin-left:5px" href="{{ route('admin.smtpTemplate') }}?template=echo&body={{ urlencode('<p style=\'color:black !important\'>Cable stock added, for <strong><a class=\'link\' style=\'color: #0000EE !important;\' href=\''.url('stock').'/1\'>Stock Name</a></strong> in <strong>Site 1</strong>, <strong>Store 1</strong>, <strong>Shelf 1</strong>!<br>New stock count: <strong>12</strong>.</p>') }}" target="_blank">View in new tab</a>
         </div>
     </div>

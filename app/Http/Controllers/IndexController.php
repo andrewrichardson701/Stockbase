@@ -15,6 +15,9 @@ use App\Models\ResponseHandlingModel;
 use App\Models\StockModel;
 use App\Models\PropertiesModel;
 
+use App\Models\SmtpModel;
+use App\Services\EmailService;
+
 class IndexController extends Controller
 {
     //
@@ -66,12 +69,42 @@ class IndexController extends Controller
         }
     }
 
-    static public function test(Request $request)
-    {
-        // dd(ProfileModel::getLoginHistory());
+    // static public function test(Request $request)
+    // {
+    //     // dd(ProfileModel::getLoginHistory());
 
-        $data = StockModel::getStockNotInContainer(1, ['item.manufacturer_id' => 1, 'item.shelf_id' => 1, 'item.serial_number' => '']);
-        dd($data);
+    //     $data = StockModel::getStockNotInContainer(1, ['item.manufacturer_id' => 1, 'item.shelf_id' => 1, 'item.serial_number' => '']);
+    //     dd($data);
+    // }
+
+    public function test(Request $request, EmailService $mailer)
+    {
+        $config = GeneralModel::configCompare();
+        $user = GeneralModel::getUser();
+        $template_info = SmtpModel::getTemplateInfo(1);
+
+        if ($template_info !== false) {
+            $array = [
+                'to' => $user['email'],
+                'toName' => $user['name'],
+                'fromName' => 'use-default',
+                'subject' => SmtpModel::convertVariables($template_info->subject),
+                'body' => SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
+                'notif_id' => $request['email_notification_id'] // notif_id
+            ];
+            echo($array['body']);
+            dd($array);
+            // $mailer->sendEmail(
+            //     $user['email'],
+            //     $user['name'],
+            //     'use-default',
+            //     SmtpModel::convertVariables($template_info->subject),
+            //     SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
+            //     $request['email_notification_id'] // notif_id
+            // );  
+        } else {
+            return 'Unable to find template';
+        }
     }
 }
 

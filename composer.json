@@ -9,7 +9,11 @@
         "php": "^8.2",
         "laravel/fortify": "^1.25",
         "laravel/framework": "^11.31",
-        "laravel/tinker": "^2.9"
+        "laravel/tinker": "^2.9",
+        "league/oauth2-client": "^2.8",
+        "league/oauth2-google": "^4.0",
+        "phpmailer/phpmailer": "^6.10",
+        "stevenmaguire/oauth2-microsoft": "^2.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5",

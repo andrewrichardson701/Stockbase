@@ -85,16 +85,6 @@ class SmtpModel extends Model
         return $foot;
     }
 
-    static public function templateTest($body)
-    {
-        $head = SmtpModel::emailHead(1);
-        $bodyTop = SmtpModel::emailBodyTop(1);
-        $bodyBottom = SmtpModel::emailBodyBottom(1);
-        $footer = SmtpModel::emailFooter(1);
-
-        return $head . $bodyTop . $body . $bodyBottom . $footer;
-    }
-
     static public function toggleSmtp($enabled)
     {
         $user = GeneralModel::getUser();
@@ -149,6 +139,73 @@ class SmtpModel extends Model
         } else {
             return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('error', 'Invalid value.');
         }
+    }
+
+    static public function buildEmail($body, $test=null)
+    {
+        $head = SmtpModel::emailHead($test);
+        $bodyTop = SmtpModel::emailBodyTop($test);
+        $bodyBottom = SmtpModel::emailBodyBottom($test);
+        $footer = SmtpModel::emailFooter($test);
+
+        return $head . $bodyTop . $body . $bodyBottom . $footer;
+    }
+
+    static public function getTemplateInfo($template_id)
+    {
+        $template = DB::table('email_templates')->where('id', '=', $template_id)->first();
+
+        if ($template) {
+            return $template;
+        } else {
+            return false;
+        }
+    }
+
+    static public function convertVariables($input, $params=[])
+    {
+        $config = GeneralModel::configCompare();
+        $user = GeneralModel::getUser();
+
+        // Build a single array of variables
+        $variables = [
+            '##BASE_URL##'          => $config['base_url'],
+            '##SYSTEM_NAME##'       => $config['system_name'],
+            '##SYSTEM_LINK##'       => '<a href="'.$config['base_url'].'">'.$config['system_name'].'</a>',
+            '##BANNER_COLOR##'      => $config['banner_color'],
+            '##BANNER_TEXT_COLOR##' => FunctionsModel::getWorB($config['banner_color']),
+            '##BANNER_URL_COLOR##'  => FunctionsModel::getComplement($config['banner_color']),
+            '##STOCK_NAME##'        => $params['stock_name'] ?? '',
+            '##STOCK_ID##'          => $params['stock_id'] ?? '',
+            '##SITE_NAME##'         => $params['site_name'] ?? '',
+            '##SITE_ID##'           => $params['site_id'] ?? '',
+            '##AREA_NAME##'         => $params['area_name'] ?? '',
+            '##AREA_ID##'           => $params['area_id'] ?? '',
+            '##SHELF_NAME##'        => $params['shelf_name'] ?? '',
+            '##SHELF_ID##'          => $params['shelf_id'] ?? '',
+            '##SITE_NAME_OLD##'     => $params['site_name_old'] ?? '',
+            '##SITE_ID_OLD##'       => $params['site_id_old'] ?? '',
+            '##AREA_NAME_OLD##'     => $params['area_name_old'] ?? '',
+            '##AREA_ID_OLD##'       => $params['area_id_old'] ?? '',
+            '##SHELF_NAME_OLD##'    => $params['shelf_name_old'] ?? '',
+            '##SHELF_ID_OLD##'      => $params['shelf_id_old'] ?? '',
+            '##SITE_NAME_NEW##'     => $params['site_name_new'] ?? '',
+            '##SITE_ID_NEW##'       => $params['site_id_new'] ?? '',
+            '##AREA_NAME_NEW##'     => $params['area_name_new'] ?? '',
+            '##AREA_ID_NEW##'       => $params['area_id_new'] ?? '',
+            '##SHELF_NAME_NEW##'    => $params['shelf_name_new'] ?? '',
+            '##SHELF_ID_NEW##'      => $params['shelf_id_new'] ?? '',
+            '##OLD_QUANTITY##'      => $params['old_quantity'] ?? '',
+            '##NEW_QUANTITY##'      => $params['new_quantity'] ?? '',
+            '##IMG_FILE_NAME##'     => $params['img_file_name'] ?? '',
+            '##MIN_STOCK##'         => $params['min_stock'] ?? '',
+            '##USER_NAME##'         => $user['name'] ?? '',
+            '##USER_EMAIL##'        => $user['email'] ?? '',
+        ];
+
+        // Replace all variables in one go
+        $output = str_replace(array_keys($variables), array_values($variables), $input);
+        return $output;
     }
 
 }

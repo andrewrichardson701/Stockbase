@@ -5,6 +5,8 @@
     <li>Moved all page navigation to routes</li>
     <li>Adjusted the permissions to allow more customizability</li>
     <li>Sorted the permissions per page with middleware</li>
+    <li>Moved the changelog to where it needs to be and updated the readme to reflect changes to structure</li>
+    <li>New theme added for the Laravel default dark mode colour scheme</li>
 </ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>
@@ -94,6 +96,10 @@
     <li>Secret now removed from the form on the 2FA input and moved to the SESSION array.</li>
     <li>2FA functions now more secure and no hidden info left on the page.</li>
     <li>Fixed the login error output not showing correctly by adding some ajax to query the responsehandling inc page.</li>
+    <li>Added an 'email_templates' and 'email_template_default' table for storing email templates.</li>
+    <li>Added more SMTP config fields in config and config_default tables.</li>
+    <li>Adjusted the email buildier in the SMTP Model.</li>
+    <li>Function created to replace the variables in the email templates.</li>
 </ul>
 
 <h3>1.1.0 - 2FA Integration</h3>

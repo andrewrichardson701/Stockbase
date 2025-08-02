@@ -335,9 +335,9 @@ class SmtpModel extends Model
                 }
             }
 
-            // echo '<p>Dump SMTP connection</p><pre>';
-            // var_dump($connection);
-            // echo '</pre>';
+            echo '<p>Dump SMTP connection</p><pre>';
+            var_dump($connection);
+            echo '</pre>';
 
             fclose($connection);
             echo '<p>Execution time: ' . (microtime(true) - $mTime) . '</p>';

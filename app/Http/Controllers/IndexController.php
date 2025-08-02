@@ -83,28 +83,29 @@ class IndexController extends Controller
         $user = GeneralModel::getUser();
         $template_info = SmtpModel::getTemplateInfo(1);
 
-        if ($template_info !== false) {
-            $array = [
-                'to' => $user['email'],
-                'toName' => $user['name'],
-                'fromName' => 'use-default',
-                'subject' => SmtpModel::convertVariables($template_info->subject),
-                'body' => SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
-                'notif_id' => $request['email_notification_id'] // notif_id
-            ];
-            echo($array['body']);
-            dd($array);
-            // $mailer->sendEmail(
-            //     $user['email'],
-            //     $user['name'],
-            //     'use-default',
-            //     SmtpModel::convertVariables($template_info->subject),
-            //     SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
-            //     $request['email_notification_id'] // notif_id
-            // );  
-        } else {
-            return 'Unable to find template';
-        }
+        // if ($template_info !== false) {
+        //     $array = [
+        //         'to' => $user['email'],
+        //         'toName' => $user['name'],
+        //         'fromName' => 'use-default',
+        //         'subject' => SmtpModel::convertVariables($template_info->subject),
+        //         'body' => SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
+        //         'notif_id' => $request['email_notification_id'] // notif_id
+        //     ];
+        //     // echo($array['body']);
+        //     // dd($array);
+        //     $mail = $mailer->sendEmail(
+        //         "admin@ajrich.co.uk",
+        //         $user['name'],
+        //         'use-default',
+        //         SmtpModel::convertVariables($template_info->subject),
+        //         SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
+        //         1 // notif_id
+        //     );  
+        //     echo $mail;    
+        // } else {
+        //     return 'Unable to find template';
+        // }
     }
 }
 

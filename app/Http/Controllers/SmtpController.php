@@ -30,16 +30,13 @@ class SmtpController extends Controller
         
     }
 
-    public function testEmail(EmailService $mailer)
+    public function smtpTest(Request $request, EmailService $mailer)
     {
-        $mailer->sendEmail(
-            'recipient@example.com',
-            'Recipient Name',
-            'use-default',
-            'Test Subject',
-            '<p>This is a test email</p>',
-            1 // notif_id
-        );
+        // https://laravel.ajrich.co.uk/admin.smtpTest?smtp_to_email=admin@ajrich.co.uk&smtp_to_name=Admin&smtp_from_name=Test&smtp_from_email=admin@ajrich.co.uk&smtp_password=DropsBuildsSkill12!!&smtp_username=admin@ajrich.co.uk&smtp_encryption=starttls&smtp_port=587&smtp_host=mail.ajrich.co.uk&debug=1&debug=1&notif_id=1
+        
+        // echo('test');
+        SmtpModel::smtpTest($request->input(), $mailer);
+
     }
 
     public function notificationEmail(Request $request, EmailService $mailer)

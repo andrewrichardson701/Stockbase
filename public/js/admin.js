@@ -39,7 +39,7 @@ function testLDAP() {
 
     $.ajax({
         type: "POST",
-        url: "/admin.ldapSettings",
+        url: "admin.ldapSettings",
         data: {ldap_username: ldap_username, 
             ldap_password: ldap_password, 
             ldap_password_confirm: ldap_password_confirm, 
@@ -71,6 +71,8 @@ function testLDAP() {
 }
 
 function testSMTP() {
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
     var smtpLoading = document.getElementById("smtp-loading-icon");
     var smtpSuccess = document.getElementById("smtp-success-icon");
     var smtpFail = document.getElementById("smtp-fail-icon");
@@ -100,8 +102,9 @@ function testSMTP() {
 
     $.ajax({
         type: "POST",
-        url: "./includes/smtp-test.inc.php",
+        url: "admin.smtpTest",
         data: {
+            _token: csrf,
             smtp_host: smtp_host,
             smtp_port: smtp_port,
             smtp_encryption: smtp_encryption,
@@ -109,7 +112,10 @@ function testSMTP() {
             smtp_password: smtp_password,
             smtp_from_email: smtp_from_email,
             smtp_from_name: smtp_from_name,
-            smtp_to_email: smtp_to_email
+            smtp_to_email: smtp_to_email,
+            smtp_to_name: smtp_to_email,
+            notif_id: 1,
+            debug: 1
         },
         dataType: "html",
         success: function(response) {
@@ -120,6 +126,24 @@ function testSMTP() {
 
             // Continue with the rest of the code once the AJAX request is complete
             processLastLine();
+            newOutputPre.scrollIntoView();
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error", status, error); // Logs "error", "Internal Server Error", etc.
+            console.log("Status Code:", xhr.status);    // Logs 500
+            console.log("Response Text:", xhr.responseText); // Laravel's error response
+
+            var div = document.getElementById('smtpTestOutput');
+            div.textContent += `Error (${xhr.status}): ${xhr.statusText}\n`;
+
+            // Optional: show Laravel error message (usually HTML or JSON)
+            if (xhr.responseText) {
+                div.textContent += xhr.responseText + "\n";
+            }
+
+            smtpLoading.style.display = "none";
+            smtpSuccess.style.display = "none";
+            smtpFail.style.display = "inline";
             newOutputPre.scrollIntoView();
         },
         async: true

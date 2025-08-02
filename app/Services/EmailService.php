@@ -12,8 +12,15 @@ use Illuminate\Support\Facades\Log;
 
 class EmailService
 {
-    public function sendEmail($to, $toName, $fromName, $subject, $body, $notif_id)
+    public function sendEmail($to, $toName, $fromName, $subject, $body, $notif_id, $overrides=[])
     {
+        $notif_id = $overrides['notif_id']       ?? $notif_id;
+        $to       = $overrides['smtp_to_email']  ?? $to;
+        $toName   = $overrides['smtp_to_name']   ?? $toName;
+        $fromName = $overrides['smtp_from_name'] ?? $fromName;
+        $subject  = $overrides['subject']        ?? $subject;
+        $body     = $overrides['body']           ?? $body;
+
         try {
             // 1. Check if notification is enabled
             $notification = DB::table('notifications')->find($notif_id);
@@ -43,12 +50,13 @@ class EmailService
             // 4. Setup PHPMailer
             $mail = new PHPMailer(true);
             $mail->isSMTP();
-            $mail->SMTPDebug = 0;
-            $mail->Host = $config->smtp_host;
-            $mail->Port = $config->smtp_port;
+            $mail->SMTPDebug = $overrides['debug'] ?? 0;
+            $mail->Host = $overrides['smtp_host'] ?? $config->smtp_host;
+            $mail->Port = $overrides['smtp_port'] ?? $config->smtp_port;
 
             // Encryption handling
-            switch ($config->smtp_encryption) {
+            $encryption = $overrides['smtp_encryption'] ?? $config->smtp_encryption;
+            switch ($encryption) {
                 case 'none':
                     $mail->SMTPSecure = false;
                     $mail->SMTPAutoTLS = false;
@@ -66,44 +74,63 @@ class EmailService
             }
 
             // 5. Authentication (OAuth2 or Basic)
-            if ($config->smtp_auth_type === 'oauth2') {
+            $auth_type = $overrides['smtp_auth_type'] ?? $config->smtp_auth_type;
+            if ($auth_type === 'oauth2') {
                 $mail->AuthType = 'XOAUTH2';
-                $provider = match ($config->smtp_oauth_provider) {
+                $oauth_provider = $overrides['smtp_oauth_provider'] ?? $config->smtp_oauth_provider;
+                $provider = match ($oauth_provider) {
                     'google'    => new Google([
-                        'clientId'     => $config->smtp_client_id,
-                        'clientSecret' => $config->smtp_client_secret,
+                        'clientId'     => $overrides['smtp_client_id'] ?? $config->smtp_client_id,
+                        'clientSecret' => $overrides['smtp_client_secret'] ?? $config->smtp_client_secret,
                     ]),
                     'microsoft' => new Microsoft([
-                        'clientId'     => $config->smtp_client_id,
-                        'clientSecret' => $config->smtp_client_secret,
+                        'clientId'     => $overrides['smtp_client_id'] ?? $config->smtp_client_id,
+                        'clientSecret' => $overrides['smtp_client_secret'] ?? $config->smtp_client_secret,
                     ]),
                     default      => throw new \Exception('Invalid OAuth2 provider')
                 };
 
                 $mail->setOAuth(new OAuth([
-                    'provider'     => $provider,
-                    'clientId'     => $config->smtp_client_id,
-                    'clientSecret' => $config->smtp_client_secret,
-                    'refreshToken' => $config->smtp_refresh_token,
-                    'userName'     => $config->smtp_from_email,
+                    'provider'     => $oauth_provider,
+                    'clientId'     => $overrides['smtp_client_id']     ?? $config->smtp_client_id,
+                    'clientSecret' => $overrides['smtp_client_secret'] ?? $config->smtp_client_secret,
+                    'refreshToken' => $overrides['smtp_refresh_token'] ?? $config->smtp_refresh_token,
+                    'userName'     => $overrides['smtp_from_email']    ?? $config->smtp_from_email,
                 ]));
             } else {
                 $mail->SMTPAuth = true;
-                $mail->Username = $config->smtp_username;
-                $mail->Password = base64_decode($config->smtp_password);
+                $mail->Username = $overrides['smtp_username'] ?? $config->smtp_username;
+                $mail->Password = $overrides['smtp_password'] ?? base64_decode($config->smtp_password);
             }
 
             // 6. Send Email
-            $mail->setFrom($config->smtp_from_email, $fromName);
+            $mail->setFrom($overrides['smtp_from_email'] ?? $config->smtp_from_email, $fromName);
             $mail->addAddress($to, $toName);
             $mail->isHTML(true);
             $mail->Subject = $subject;
             $mail->Body = $body;
 
-            return $mail->send();
+            
+            $send = $mail->send();
+            if ($send) {
+                if (isset($overrides['debug']) && $overrides['debug'] == 1) {
+                    echo "\n221 - Test email sent successfully to $to!";
+                }
+                return $send;
+            } else {
+                if (isset($overrides['debug']) && $overrides['debug'] == 1) {
+                    echo "\nTest email could not be sent. Error: " . $mail->ErrorInfo;
+                }
+                return $send;
+            }
+            
         } catch (Exception $e) {
+            if (isset($overrides['debug']) && $overrides['debug'] == 1) {
+                echo "\nTest email could not be sent. Error: " . $e->getMessage();
+            }
             Log::error("Email sending failed: " . $e->getMessage());
             return false;
         }
     }
+
 }

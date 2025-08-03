@@ -23,9 +23,9 @@
                             <p style="min-height:max-content;margin:0px" class="align-middle title" title="{{ $notification['description'] }}">{{ $notification['title'] }}:</p>
                         </td>
                         <td class="align-middle" style="padding-left:5px;padding-right:20px" id="notif-{{ $notification['id'] }}-toggle">
-                            <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
-                                <input type="checkbox" name="{{ $notification['name'] }}" onchange="mailNotification(this, {{ $notification['id'] }})" @if ($notification['enabled'] == 1) checked @endif>
-                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                            <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                <input type="checkbox" name="{{ $notification['name'] }}" onchange="mailNotification(this, {{ $notification['id'] }})" @if ($notification['enabled'] == 1) checked @endif @if($notification['id'] == 1) disabled @endif>
+                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)  @if($notification['id'] == 1) ;background-color:grey; cursor: not-allowed @endif"></span>
                             </label>
                         </td>
                     @if ($loop->last)

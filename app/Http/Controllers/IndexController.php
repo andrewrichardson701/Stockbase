@@ -13,6 +13,7 @@ use App\Models\ResponseHandlingModel;
 
 
 use App\Models\StockModel;
+use App\Models\TagModel;
 use App\Models\PropertiesModel;
 
 use App\Models\SmtpModel;
@@ -82,7 +83,8 @@ class IndexController extends Controller
         $config = GeneralModel::configCompare();
         $user = GeneralModel::getUser();
         $template_info = SmtpModel::getTemplateInfo(1);
-
+        $temp = $new_tags_array = TagModel::getTagsForStock(1) ?? [];
+        dd ($temp);
         // if ($template_info !== false) {
         //     $array = [
         //         'to' => $user['email'],

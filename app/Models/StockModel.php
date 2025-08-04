@@ -1492,18 +1492,13 @@ class StockModel extends Model
                     }
                 }
                 
-
-                $stock_data = StockModel::getStockData($request['id']);
-                $site_name  = GeneralModel::getFirstWhere('site', ['id' => $request['site']])['name'];
-                $area_name  = GeneralModel::getFirstWhere('area', ['id' => $request['area']])['name'];
-                $shelf_name = GeneralModel::getFirstWhere('shelf', ['id' => $request['shelf']])['name'];
                 $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+
                 $mail_data = [
                     'stock_id' => $request['id'],
-                    'stock_name' => $stock_data['name'],
-                    'site_name' => $site_name,
-                    'area_name' => $area_name, 
-                    'shelf_name' => $shelf_name,
+                    'site_id' => $request['site'],
+                    'area_id' => $request['area'], 
+                    'shelf_id' => $request['shelf'],
                     'quantity' => $request['quantity'],
                     'new_quantity' => $stock_count,
                 ];
@@ -1545,10 +1540,11 @@ class StockModel extends Model
 
         if (GeneralModel::checkShelfAreaMatch($input['shelf'], $input['area']) && GeneralModel::checkAreaSiteMatch($input['area'], $input['site'])) {
             $next_sku = StockModel::getNextSKU();
-            
+            $sku = $input['sku'] ?? $next_sku;
+
             $data = [
                 'name' => $input['name'], 
-                'sku' => $input['sku'] ?? $next_sku, // use pre-defined or use the next available
+                'sku' => $sku, // use pre-defined or use the next available
                 'description' => $input['description'] ?? '',
                 'min_stock' => $input['min-stock'] ?? 0,
                 'is_cable' => $is_cable
@@ -1576,6 +1572,11 @@ class StockModel extends Model
                 } 
             }
             
+            // email
+            $mail_data = [
+                'stock_id' => $input['id'],
+            ];
+            SmtpModel::notificationEmail(3, 3, $mail_data);
             
             // add inventory items
             if ($input['quantity'] > 0) {
@@ -1729,12 +1730,13 @@ class StockModel extends Model
         // $tags is the array of selected tags on page
         $tags = array_unique(array_merge($tags_selected_temp_array, $tags_temp_array), SORT_REGULAR);
         
-        $current_tags = [];
+        $current_tags = $current_tag_names = [];
 
         $current_tags_array = TagModel::getTagsForStock($stock_id) ?? [];
         if ($current_tags_array['count'] > 0) {
             foreach ($current_tags_array['rows'] as $tag) {
                 $current_tags[] = $tag['tag_id'];
+                $current_tag_names[] = $tag['tag_name'];
             }
         }
         
@@ -1770,6 +1772,29 @@ class StockModel extends Model
         }
         
         if (empty($errors)) {
+            //email
+            $new_tags_array = TagModel::getTagsForStock($stock_id) ?? [];
+            $new_tag_names = [];
+            if ($new_tags_array['count'] > 0) {
+                foreach ($new_tags_array['rows'] as $tag) {
+                    $new_tag_names[] = $tag['tag_name'];
+                }
+            }
+            $mail_data = [
+                'stock_id' => $stock_id,
+                'stock_name_old' => $current['name'],
+                'stock_sku_old' => $current['sku'],
+                'stock_description_old' => $current['description'],
+                'stock_min_stock_old' => $current['min_stock'],
+                'stock_tags_old' => implode(', ', $current_tag_names),
+                'stock_name_new' => $current['name'],
+                'stock_sku_new' => $current['sku'],
+                'stock_description_new' => $current['description'],
+                'stock_min_stock_new' => $current['min_stock'],
+                'stock_tags_new' => implode(', ', $new_tag_names),
+            ];
+            SmtpModel::notificationEmail(6, 6, $mail_data);
+
             $redirect_array = ['stock_id'   => $request['id'],
                             'modify_type' => 'edit',
                             'success' => 'Updated Successfully'];
@@ -2025,6 +2050,26 @@ class StockModel extends Model
                 return redirect()->route('stock', $redirect_array)->with('error', $error);
             }
             if (empty($errors)) {
+                // email
+                $location_data_old = GeneralModel::getSiteAreaShelfData($request['current_shelf']);
+                $location_data_new = GeneralModel::getSiteAreaShelfData($request['shelf']);
+                $mail_data = [
+                    'stock_id' => $request['current_stock'] ?? '',
+                    'site_name_old' => $location_data_old['site_data']['name'] ?? '',
+                    'area_name_old' => $location_data_old['area_data']['name'] ?? '', 
+                    'shelf_name_old' => $location_data_old['shelf_data']['name'] ?? '',
+                    'site_name_new' => $location_data_new['site_data']['name'] ?? '',
+                    'area_name_new' => $location_data_new['area_data']['name'] ?? '', 
+                    'shelf_name_new' => $location_data_new['shelf_data']['name'] ?? '',
+                    'site_id_old' => $location_data_old['site_data']['id'] ?? '',
+                    'area_id_old' => $location_data_old['area_data']['id'] ?? '', 
+                    'shelf_id_old' => $location_data_old['shelf_data']['id'] ?? '',
+                    'site_id_new' => $location_data_new['site_data']['id'] ?? '',
+                    'area_id_new' => $location_data_new['area_data']['id'] ?? '', 
+                    'shelf_id_new' => $location_data_new['shelf_data']['id'] ?? '',
+                    'quantity' => $quantity ?? '',
+                ];
+                SmtpModel::notificationEmail(5, 5, $mail_data);
                 $redirect_array = ['stock_id' => $request['current_stock'],
                                     'modify_type' => 'move',
                                     'success' => 'Successfully moved '.$moved_count.' of requested '.$quantity.'.'];
@@ -2545,6 +2590,17 @@ class StockModel extends Model
                 }
 
                 if ($errors == 0) {
+                    $location_data = GeneralModel::getSiteAreaShelfData($request['shelf']);
+                    $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+                    $mail_data = [
+                        'stock_id' => $request['id'],
+                        'site_id' => $location_data['site_data']['id'] ?? '',
+                        'area_id' => $location_data['area_data']['id'] ?? '', 
+                        'shelf_id' => $location_data['shelf_data']['id'] ?? '',
+                        'quantity' => $request['quantity'],
+                        'new_quantity' => $stock_count,
+                    ];
+                    SmtpModel::notificationEmail(4, 4, $mail_data);
                     return redirect(GeneralModel::previousURL())->with('success', 'Item(s) removed: '.$count.'.'); 
                 } else {
                     return redirect(GeneralModel::previousURL())->with( 'error', 'Errors Found'); 

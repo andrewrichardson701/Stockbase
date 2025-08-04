@@ -934,4 +934,26 @@ class GeneralModel extends Model
         return 0;
     }
 
+    static public function getSiteAreaShelfData($shelf_id)
+    {
+        $shelf_data_obj = DB::table('shelf')->where('id', $shelf_id)->first();
+        $shelf_data = $shelf_data_obj ? (array) $shelf_data_obj : [];
+
+        if (!empty($shelf_data['area_id'])) {
+            $area_data_obj = DB::table('area')->where('id', $shelf_data['area_id'])->first();
+            $area_data = $area_data_obj ? (array) $area_data_obj : [];
+
+            $site_data_obj = !empty($area_data['site_id']) ? DB::table('site')->where('id', $area_data['site_id'])->first() : null;
+            $site_data = $site_data_obj ? (array) $site_data_obj : [];
+        } else {
+            $area_data = [];
+            $site_data = [];
+        }
+
+        return [
+            'shelf_data' => $shelf_data,
+            'area_data'  => $area_data,
+            'site_data'  => $site_data,
+        ];
+    }
 }

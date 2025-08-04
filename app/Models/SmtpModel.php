@@ -177,42 +177,87 @@ class SmtpModel extends Model
         $config = GeneralModel::configCompare();
         $user = GeneralModel::getUser();
 
+        if (isset($params['stock_id'])) {
+            $stock_data = GeneralModel::getFirstWhere('stock', ['id'=>$params['stock_id']]);
+        } else {
+            $stock_data = [];
+        }
+
+        if (isset($params['site_id'])) {
+            $site_data = GeneralModel::getFirstWhere('site', ['id'=>$params['site_id']]);
+        } else {
+            $site_data = [];
+        }
+
+        if (isset($params['area_id'])) {
+            $area_data = GeneralModel::getFirstWhere('area', ['id'=>$params['area_id']]);
+        } else {
+            $area_data = [];
+        }
+        
+        if (isset($params['shelf_id'])) {
+            $shelf_data = GeneralModel::getFirstWhere('shelf', ['id'=>$params['shelf_id']]);
+        } else {
+            $shelf_data = [];
+        }
+
         // Build a single array of variables
         $variables = [
-            '##BASE_URL##'          => $config['base_url'],
-            '##SYSTEM_NAME##'       => $config['system_name'],
-            '##SYSTEM_LINK##'       => '<a href="'.$config['base_url'].'">'.$config['system_name'].'</a>',
-            '##BANNER_COLOR##'      => $config['banner_color'],
-            '##BANNER_TEXT_COLOR##' => FunctionsModel::getWorB($config['banner_color']),
-            '##BANNER_URL_COLOR##'  => FunctionsModel::getComplement($config['banner_color']),
-            '##STOCK_NAME##'        => $params['stock_name'] ?? '',
-            '##STOCK_ID##'          => $params['stock_id'] ?? '',
-            '##STOCK_URL##'         => (isset($params['stock_id'], $params['stock_name']) ? '<a href="'.route('stock', ['stock_id' => $params['stock_id']]).'">'.$params['stock_name'].'</a>' : ''),
-            '##SITE_NAME##'         => $params['site_name'] ?? '',
-            '##SITE_ID##'           => $params['site_id'] ?? '',
-            '##AREA_NAME##'         => $params['area_name'] ?? '',
-            '##AREA_ID##'           => $params['area_id'] ?? '',
-            '##SHELF_NAME##'        => $params['shelf_name'] ?? '',
-            '##SHELF_ID##'          => $params['shelf_id'] ?? '',
-            '##SITE_NAME_OLD##'     => $params['site_name_old'] ?? '',
-            '##SITE_ID_OLD##'       => $params['site_id_old'] ?? '',
-            '##AREA_NAME_OLD##'     => $params['area_name_old'] ?? '',
-            '##AREA_ID_OLD##'       => $params['area_id_old'] ?? '',
-            '##SHELF_NAME_OLD##'    => $params['shelf_name_old'] ?? '',
-            '##SHELF_ID_OLD##'      => $params['shelf_id_old'] ?? '',
-            '##SITE_NAME_NEW##'     => $params['site_name_new'] ?? '',
-            '##SITE_ID_NEW##'       => $params['site_id_new'] ?? '',
-            '##AREA_NAME_NEW##'     => $params['area_name_new'] ?? '',
-            '##AREA_ID_NEW##'       => $params['area_id_new'] ?? '',
-            '##SHELF_NAME_NEW##'    => $params['shelf_name_new'] ?? '',
-            '##SHELF_ID_NEW##'      => $params['shelf_id_new'] ?? '',
-            '##QUANTITY##'          => $params['quantity'] ?? '',
-            '##OLD_QUANTITY##'      => $params['old_quantity'] ?? '',
-            '##NEW_QUANTITY##'      => $params['new_quantity'] ?? '',
-            '##IMG_FILE_NAME##'     => $params['img_file_name'] ?? '',
-            '##MIN_STOCK##'         => $params['min_stock'] ?? '',
-            '##USER_NAME##'         => $user['name'] ?? '',
-            '##USER_EMAIL##'        => $user['email'] ?? '',
+            '##BASE_URL##'                => $config['base_url'],
+            '##SYSTEM_NAME##'             => $config['system_name'],
+            '##SYSTEM_LINK##'             => '<a href="'.$config['base_url'].'">'.$config['system_name'].'</a>',
+            '##BANNER_COLOR##'            => $config['banner_color'],
+            '##BANNER_TEXT_COLOR##'       => FunctionsModel::getWorB($config['banner_color']),
+            '##BANNER_URL_COLOR##'        => FunctionsModel::getComplement($config['banner_color']),
+      
+            '##STOCK_NAME##'              => $stock_data['name'] ?? '',
+            '##STOCK_ID##'                => $stock_data['id'] ?? '',
+            '##STOCK_DESCRIPTION##'       => $stock_data['description'] ?? '',
+            '##STOCK_SKU##'               => $stock_data['sku'] ?? '',
+            '##STOCK_MIN_STOCK##'         => $stock_data['min_stock'] ?? '',
+            '##STOCK_URL##'               => $stock_data['id'] ? '<a href="'.route('stock', ['stock_id' => $params['stock_id']]).'">'.$stock_data['name'].'</a>' : '',
+
+            '##STOCK_NAME_OLD##'          => $params['stock_name_old'] ?? '',
+            '##STOCK_DESCRIPTION_OLD##'   => $params['stock_description_old'] ?? '',
+            '##STOCK_SKU_OLD##'           => $params['stock_sku_old'] ?? '',
+            '##STOCK_MIN_STOCK_OLD##'     => $params['stock_min_stock_old'] ?? '',
+            '##STOCK_TAGS_OLD##'          => $params['stock_tags_old'] ?? '',
+            '##STOCK_NAME_NEW##'          => $params['stock_name_new'] ?? '',
+            '##STOCK_DESCRIPTION_NEW##'   => $params['stock_description_new'] ?? '',
+            '##STOCK_SKU_NEW##'           => $params['stock_sku_new'] ?? '',
+            '##STOCK_MIN_STOCK_NEW##'     => $params['stock_min_stock_new'] ?? '',
+            '##STOCK_TAGS_NEW##'          => $params['stock_tags_new'] ?? '',
+      
+            '##SITE_NAME##'               => $site_data['name'] ?? '',
+            '##SITE_ID##'                 => $site_data['id'] ?? '',
+      
+            '##AREA_NAME##'               => $area_data['name'] ?? '',
+            '##AREA_ID##'                 => $area_data['id'] ?? '',
+      
+            '##SHELF_NAME##'              => $shelf_data['name'] ?? '',
+            '##SHELF_ID##'                => $shelf_data['id'] ?? '',
+      
+            '##SITE_NAME_OLD##'           => $params['site_name_old'] ?? '',
+            '##SITE_ID_OLD##'             => $params['site_id_old'] ?? '',
+            '##AREA_NAME_OLD##'           => $params['area_name_old'] ?? '',
+            '##AREA_ID_OLD##'             => $params['area_id_old'] ?? '',
+            '##SHELF_NAME_OLD##'          => $params['shelf_name_old'] ?? '',
+            '##SHELF_ID_OLD##'            => $params['shelf_id_old'] ?? '',
+            '##SITE_NAME_NEW##'           => $params['site_name_new'] ?? '',
+            '##SITE_ID_NEW##'             => $params['site_id_new'] ?? '',
+            '##AREA_NAME_NEW##'           => $params['area_name_new'] ?? '',
+            '##AREA_ID_NEW##'             => $params['area_id_new'] ?? '',
+            '##SHELF_NAME_NEW##'          => $params['shelf_name_new'] ?? '',
+            '##SHELF_ID_NEW##'            => $params['shelf_id_new'] ?? '',
+      
+            '##QUANTITY##'                => $params['quantity'] ?? '',
+            '##OLD_QUANTITY##'            => $params['old_quantity'] ?? '',
+            '##NEW_QUANTITY##'            => $params['new_quantity'] ?? '',
+      
+            '##IMG_FILE_NAME##'           => $params['img_file_name'] ?? '',
+      
+            '##USER_NAME##'               => $user['name'] ?? '',
+            '##USER_EMAIL##'              => $user['email'] ?? '',
         ];
 
         // Replace all variables in one go

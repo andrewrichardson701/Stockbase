@@ -9,6 +9,7 @@ use App\Models\FavouritesModel;
 use App\Models\ItemModel;
 use App\Models\TagModel;
 use Illuminate\Support\Facades\DB;
+use App\Models\SmtpModel;
 
 /**
  * 
@@ -1492,14 +1493,32 @@ class StockModel extends Model
                 }
                 
 
+                $stock_data = StockModel::getStockData($request['id']);
+                $site_name  = GeneralModel::getFirstWhere('site', ['id' => $request['site']])['name'];
+                $area_name  = GeneralModel::getFirstWhere('area', ['id' => $request['area']])['name'];
+                $shelf_name = GeneralModel::getFirstWhere('shelf', ['id' => $request['shelf']])['name'];
+                $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+                $mail_data = [
+                    'stock_id' => $request['id'],
+                    'stock_name' => $stock_data['name'],
+                    'site_name' => $site_name,
+                    'area_name' => $area_name, 
+                    'shelf_name' => $shelf_name,
+                    'quantity' => $request['quantity'],
+                    'new_quantity' => $stock_count,
+                ];
+
                 if ($counter == (int)$request['quantity']) {
                     $redirect_array = ['stock_id'   => $request['id'],
                                         'modify_type' => 'add',
                                         'success' => 'added'];
+
+                    SmtpModel::notificationEmail(2, 2, $mail_data);
                 } else {
                     $redirect_array = ['stock_id'   => $request['id'],
                                             'modify_type' => 'add',
                                             'error' => 'partially_added'];
+                    SmtpModel::notificationEmail(2, 2, $mail_data);
                 }
                 
             } else {

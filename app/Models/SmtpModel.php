@@ -17,6 +17,7 @@ use PHPMailer\PHPMailer\OAuth;
 use League\OAuth2\Client\Provider\Google;
 use Stevenmaguire\OAuth2\Client\Provider\Microsoft;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
 
 /**
  * 
@@ -186,6 +187,7 @@ class SmtpModel extends Model
             '##BANNER_URL_COLOR##'  => FunctionsModel::getComplement($config['banner_color']),
             '##STOCK_NAME##'        => $params['stock_name'] ?? '',
             '##STOCK_ID##'          => $params['stock_id'] ?? '',
+            '##STOCK_URL##'         => (isset($params['stock_id'], $params['stock_name']) ? '<a href="'.route('stock', ['stock_id' => $params['stock_id']]).'">'.$params['stock_name'].'</a>' : ''),
             '##SITE_NAME##'         => $params['site_name'] ?? '',
             '##SITE_ID##'           => $params['site_id'] ?? '',
             '##AREA_NAME##'         => $params['area_name'] ?? '',
@@ -204,6 +206,7 @@ class SmtpModel extends Model
             '##AREA_ID_NEW##'       => $params['area_id_new'] ?? '',
             '##SHELF_NAME_NEW##'    => $params['shelf_name_new'] ?? '',
             '##SHELF_ID_NEW##'      => $params['shelf_id_new'] ?? '',
+            '##QUANTITY##'          => $params['quantity'] ?? '',
             '##OLD_QUANTITY##'      => $params['old_quantity'] ?? '',
             '##NEW_QUANTITY##'      => $params['new_quantity'] ?? '',
             '##IMG_FILE_NAME##'     => $params['img_file_name'] ?? '',
@@ -217,8 +220,9 @@ class SmtpModel extends Model
         return $output;
     }
 
-    static public function smtpTest($request, EmailService $mailer)
+    static public function smtpTest($request)
     {
+        $mailer = App::make(EmailService::class);
         $smtpConnectionOk = false;
 
         if ($request['smtp_encryption'] == 'starttls') {
@@ -260,7 +264,7 @@ class SmtpModel extends Model
             }
             
             $cmd = "EHLO ".$_SERVER['HTTP_HOST'];
-            echo $cmd;
+            echo $cmd."\r\n";
             put($smtp,$cmd);
             echo get($smtp); // 250
             
@@ -361,6 +365,39 @@ class SmtpModel extends Model
         } else {
             echo('<p>SMTP connection failed.</p>');
         }
+    }
+
+    public static function notificationEmail($notification_id, $template_id, $data)
+    {
+        $config = GeneralModel::configCompare();
+        $user = GeneralModel::getUser();
+
+        if ($config['smtp_enabled'] == 1) {
+            $notification_data = DB::table('notifications')->find($notification_id);
+
+            if ($template_id == 0) {
+                $template_id = $notification_data->template_id;
+            }
+
+            $template_info = SmtpModel::getTemplateInfo($template_id);
+
+            if ($template_info !== false) {
+                $mailer = App::make(EmailService::class);
+                $mailer->sendEmail(
+                    $user['email'],
+                    $user['name'],
+                    'use-default',
+                    SmtpModel::convertVariables($template_info->subject, $data),
+                    SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body, $data)),
+                    $notification_id // notif_id
+                );  
+            } else {
+                return 'Unable to find template';
+            }
+        } else {
+            return 'disabled';
+        }
+        
     }
 
 }

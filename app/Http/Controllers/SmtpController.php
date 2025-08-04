@@ -30,32 +30,13 @@ class SmtpController extends Controller
         
     }
 
-    public function smtpTest(Request $request, EmailService $mailer)
+    public function smtpTest(Request $request)
     {
         // https://laravel.ajrich.co.uk/admin.smtpTest?smtp_to_email=admin@ajrich.co.uk&smtp_to_name=Admin&smtp_from_name=Test&smtp_from_email=admin@ajrich.co.uk&smtp_password=DropsBuildsSkill12!!&smtp_username=admin@ajrich.co.uk&smtp_encryption=starttls&smtp_port=587&smtp_host=mail.ajrich.co.uk&debug=1&debug=1&notif_id=1
         
         // echo('test');
-        SmtpModel::smtpTest($request->input(), $mailer);
+        SmtpModel::smtpTest($request->input());
 
     }
 
-    public function notificationEmail(Request $request, EmailService $mailer)
-    {
-        $config = GeneralModel::configCompare();
-        $user = GeneralModel::getUser();
-        $template_info = SmtpModel::getTemplateInfo($request['template_id']);
-
-        if ($template_info !== false) {
-            $mailer->sendEmail(
-                $user['email'],
-                $user['name'],
-                'use-default',
-                SmtpModel::convertVariables($template_info->subject),
-                SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
-                $request['email_notification_id'] // notif_id
-            );  
-        } else {
-            return 'Unable to find template';
-        }
-    }
 }

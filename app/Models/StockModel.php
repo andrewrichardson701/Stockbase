@@ -2648,6 +2648,12 @@ class StockModel extends Model
                     // error!
                     return redirect(GeneralModel::previousURL())->with('error', 'Unable to update changelog. Stock deleted.');
                 } else {
+                    // mail bits
+                    $mail_data = [
+                        'stock_id' => $request['stock_id'],
+                    ];
+                    SmtpModel::notificationEmail(7, 7, $mail_data);
+                    
                     return redirect(GeneralModel::previousURL())->with('success', 'Stock deleted.');
                 }
 

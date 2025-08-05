@@ -14,8 +14,8 @@
     <li>SMTP function is now working.</li>
     <li>SMTP tester is now working.</li>
     <li>Mail notifications now send successfully.</li>
-    <li>Mail templates created: welcome_email, add_stock, add_stock_new, stock_remove, stock_move </li>
-    <li>Mail notifications now in place and working: add_stock, add_stock_new, stock_remove, stock_move </li>
+    <li>Mail templates created: welcome_email, add_stock, add_stock_new, stock_remove, stock_move, stock_deleted, </li>
+    <li>Mail notifications now in place and working: add_stock, add_stock_new, stock_remove, stock_move, stock_deleted, </li>
 </ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>

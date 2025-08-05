@@ -385,6 +385,7 @@ class GeneralModel extends Model
         $head_data['config_compare'] = GeneralModel::configCompare();
         $head_data['version_number'] = GeneralModel::versionNumber();
         $head_data['default_theme'] = isset($head_data['config']['default_theme_id']) ? GeneralModel::getThemeFileName($head_data['config']['default_theme_id']) : GeneralModel::getThemeFileName($head_data['default_config']['default_theme_id']);
+        $head_data['default_theme_default'] = GeneralModel::getThemeFileName($head_data['default_config']['default_theme_id']);
         $head_data['requested_info'] = GeneralModel::requestedInfo();
 
         $head_data['previous_url'] = GeneralModel::previousURL();

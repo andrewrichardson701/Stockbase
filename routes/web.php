@@ -190,6 +190,9 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.stockLocationSettings', [AdminController::class, 'stockLocationSettings'])->name('admin.stockLocationSettings'); // Adjust Stock Location settings
                 Route::post('/admin.imageManagementSettings', [AdminController::class, 'imageManagementSettings'])->name('admin.imageManagementSettings'); // Adjust Image Management settings
                 Route::post('/admin.killUserSession', [AdminController::class, 'killUserSession'])->name('admin.killUserSession'); // kill a user session
+                Route::post('/admin.emailTemplate', [AdminController::class, 'emailTemplate'])->name('admin.emailTemplate'); // change an email template
+                Route::get('/admin.emailTemplatePreview', [SmtpController::class, 'emailTemplatePreview'])->name('admin.emailTemplatePreview'); // preview the email template
+                Route::get('/admin.getEmailTemplateUrl', [SmtpController::class, 'getEmailTemplateUrl'])->name('admin.getEmailTemplateUrl'); // preview the email template
             });
 
             // Changelog pages

@@ -68,6 +68,9 @@
             <!-- notifications -->
             @include('includes.admin.notifications')
 
+            <!-- email templates -->
+            @include('includes.admin.email-templates')
+
             <!-- changelog --> 
             @include('includes.admin.changelog')
             

@@ -172,7 +172,7 @@ class SmtpModel extends Model
         }
     }
 
-    static public function convertVariables($input, $params=[])
+    static public function convertVariables($input, $params=[], $test=0)
     {
         $config = GeneralModel::configCompare();
         $user = GeneralModel::getUser();
@@ -215,7 +215,7 @@ class SmtpModel extends Model
             '##STOCK_DESCRIPTION##'       => $stock_data['description'] ?? '',
             '##STOCK_SKU##'               => $stock_data['sku'] ?? '',
             '##STOCK_MIN_STOCK##'         => $stock_data['min_stock'] ?? '',
-            '##STOCK_URL##'               => $stock_data['id'] ? '<a href="'.route('stock', ['stock_id' => $params['stock_id']]).'">'.$stock_data['name'].'</a>' : '',
+            '##STOCK_URL##'               => isset($stock_data['id']) ? '<a href="'.route('stock', ['stock_id' => $params['stock_id']]).'">'.($stock_data['name'] ?? '').'</a>' : '',
 
             '##STOCK_NAME_OLD##'          => $params['stock_name_old'] ?? '',
             '##STOCK_DESCRIPTION_OLD##'   => $params['stock_description_old'] ?? '',
@@ -263,7 +263,12 @@ class SmtpModel extends Model
         ];
 
         // Replace all variables in one go
-        $output = str_replace(array_keys($variables), array_values($variables), $input);
+        if ($test == 0) {
+            $output = str_replace(array_keys($variables), array_values($variables), $input);
+        } else {
+            $output = $input;
+        }
+        
         return $output;
     }
 
@@ -446,5 +451,14 @@ class SmtpModel extends Model
         }
         
     }
+
+    static public function emailTemplatePreview($template_id)
+    {
+        $template_info = SmtpModel::getTemplateInfo($template_id);
+        $data = [];
+        $body = SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body, $data, 1), 1);
+
+        echo $body;
+    }   
 
 }

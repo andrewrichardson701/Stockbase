@@ -30,13 +30,28 @@ class SmtpController extends Controller
         
     }
 
-    public function smtpTest(Request $request)
+    public static function smtpTest(Request $request)
     {
         // https://laravel.ajrich.co.uk/admin.smtpTest?smtp_to_email=admin@ajrich.co.uk&smtp_to_name=Admin&smtp_from_name=Test&smtp_from_email=admin@ajrich.co.uk&smtp_password=DropsBuildsSkill12!!&smtp_username=admin@ajrich.co.uk&smtp_encryption=starttls&smtp_port=587&smtp_host=mail.ajrich.co.uk&debug=1&debug=1&notif_id=1
         
         // echo('test');
         SmtpModel::smtpTest($request->input());
 
+    }
+
+    public static function emailTemplatePreview(Request $request)
+    {
+        $template_id = $request['template_id'];
+        return SmtpModel::emailTemplatePreview($template_id);
+    }
+
+    public static function getEmailTemplateUrl(Request $request)
+    {
+        $template_id = $request->template_id;
+
+        $url = route('admin.emailTemplatePreview').'?template_id='.$template_id;
+
+        echo $url;
     }
 
 }

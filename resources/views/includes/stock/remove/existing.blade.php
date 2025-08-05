@@ -129,7 +129,7 @@
                                 <button type="button" id="removeContButton" name="submit" value="Remove Stock" class="nav-v-c btn btn-danger"onclick="modalLoadContainerRemoveConfirmation()"  hidden disabled>Remove Stock</button>
                             @else
                                 <input type="submit" value="Remove Stock" name="submit" class="nav-v-c btn btn-danger" disabled />
-                                <a href="#" onclick="confirmAction('{{ addslashes(htmlspecialchars($stock_data['name'])) }} ', '{{ $stock_data['sku'] }}')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></a>
+                                <p onclick="confirmAction('{{ addslashes(htmlspecialchars($stock_data['name'])) }} ', '{{ $stock_data['sku'] }}')" class="nav-v-c btn btn-danger cw" style="margin-left:300px"><strong><u>Delete Stock</u></strong></p>
                             @endif
                             </div>
                         </div>
@@ -138,7 +138,8 @@
             </div>
         </div>
     </div>
-</form>
+</form> 
 <form id="stock-delete-form" action="{{ route('stock.delete.existing') }}" method="POST" enctype="multipart/form-data" hidden>
+    @csrf
     <input type="hidden" name="stock_id" value="{{ $stock_data['id'] }}" />
 </form>

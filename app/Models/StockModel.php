@@ -2405,7 +2405,6 @@ class StockModel extends Model
                             ->where('id', $id)
                             ->where('deleted', 1)
                             ->first();
-
         if ($current_data) {
             //update
             $update = DB::table('stock')->where('id', $id)->update(['deleted' => 0, 'updated_at' => now()]);
@@ -2441,7 +2440,7 @@ class StockModel extends Model
                 TransactionModel::addTransaction($transaction_data);
                 // mail bits
                 $mail_data = [
-                    'stock_id' => $request['stock_id'],
+                    'stock_id' => $id,
                 ];
                 SmtpModel::notificationEmail(8, 8, $mail_data);
                 return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Stock restored: '.$current_data->name);

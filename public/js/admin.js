@@ -769,8 +769,8 @@ function showLinks(type, num) {
 //     };
 //     xhr.send();
 // }
-
-document.onload = emailTemplate();
+//
+// document.onload = emailTemplate();
 
 
 function viewLoaderDiv(type) {
@@ -912,4 +912,40 @@ function usersEnabledChange(id) {
         },
         async: true
     });
+}
+
+function changeTemplate(slug, element) {
+    var row = document.getElementById('template-'+slug+'-div');
+    var headings = document.getElementsByClassName('templateHeading');
+    var rows = document.getElementsByClassName('templateDiv');
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].hidden=true;
+    } 
+    for (var j = 0; j < headings.length; j++) {
+        headings[j].classList.remove('th-selected');
+    }
+    row.hidden=false;
+    element.classList.add('th-selected')
+}
+
+function modalLoadViewTemplate(template_id) {
+    //get the modal div with the property
+    var iframe = document.getElementById('emailTemplateView');
+    var modal = document.getElementById("modalDivViewTemplate");
+    $.ajax({
+        type: "GET",
+        url: "admin.getEmailTemplateUrl?template_id="+template_id,
+        dataType: "html",
+        success: function(response){
+            iframe.src=response;
+        },
+        async: false // <- this turns it into synchronous
+    });
+    
+    modal.style.display = "block";    
+}
+
+modalCloseViewTemplate = function() { 
+    var modal = document.getElementById("modalDivViewTemplate");
+    modal.style.display = "none";
 }

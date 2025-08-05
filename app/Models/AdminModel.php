@@ -1636,4 +1636,129 @@ class AdminModel extends Model
         }
     }
 
+    public static function updateEmailTemplate($request)
+    {
+        $user = GeneralModel::getUser();
+        $template_data = GeneralModel::getFirstWhere('email_templates', ['id' => $request['template_id'], 'slug' => $request['slug']]);
+
+        if ($template_data){
+            // template exists
+            // update the content
+            $update_count = 0;
+            if ($template_data['subject'] !== $request['subject']) {
+                // update
+                $update = DB::table('email_templates')->where('id', $request['template_id'])->update(['subject' => $request['subject'], 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'email_templates',
+                        'record_id' => $request['template_id'],
+                        'action' => 'Modify record',
+                        'field' => 'subject',
+                        'previous_value' => $template_data['subject'],
+                        'new_value' => $request['subject']
+                    ];
+                    GeneralModel::updateChangelog($changelog_info);
+                    $update_count++;
+                }
+            }
+
+            if ($template_data['body'] !== $request['body']) {
+                // update
+                $update = DB::table('email_templates')->where('id', $request['template_id'])->update(['body' => $request['body'], 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'email_templates',
+                        'record_id' => $request['template_id'],
+                        'action' => 'Modify record',
+                        'field' => 'body',
+                        'previous_value' => $template_data['body'],
+                        'new_value' => $request['body']
+                    ];
+                    GeneralModel::updateChangelog($changelog_info);
+                    $update_count++;
+                }
+            }
+
+            if ($update_count > 0) {
+                return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('success', 'Template updated.');
+            } else {
+                return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Nothing to update.');
+            }
+
+        } else {
+            return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Unable to find current template data.');
+        }
+    }
+
+    public static function restoreEmailTemplate($request)
+    {
+        $user = GeneralModel::getUser();
+        $template_data = GeneralModel::getFirstWhere('email_templates', ['id' => $request['template_id'], 'slug' => $request['slug']]);
+        $default_template_data = GeneralModel::getFirstWhere('email_templates_default', ['id' => $request['template_id'], 'slug' => $request['slug']]);
+
+        if ($template_data){
+            // template exists
+            if ($default_template_data) {
+                // update the content
+                $update_count = 0;
+                if ($template_data['subject'] !== $default_template_data['subject']) {
+                    // update
+                    $update = DB::table('email_templates')->where('id', $request['template_id'])->update(['subject' => $default_template_data['subject'], 'updated_at' => now()]);
+
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'email_templates',
+                            'record_id' => $request['template_id'],
+                            'action' => 'Restore record',
+                            'field' => 'subject',
+                            'previous_value' => $template_data['subject'],
+                            'new_value' => $default_template_data['subject']
+                        ];
+                        GeneralModel::updateChangelog($changelog_info);
+                        $update_count++;
+                    }
+                }
+
+                if ($template_data['body'] !== $default_template_data['body']) {
+                    // update
+                    $update = DB::table('email_templates')->where('id', $request['template_id'])->update(['body' => $default_template_data['body'], 'updated_at' => now()]);
+
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'email_templates',
+                            'record_id' => $request['template_id'],
+                            'action' => 'Restore record',
+                            'field' => 'body',
+                            'previous_value' => $template_data['body'],
+                            'new_value' => $default_template_data['body']
+                        ];
+                        GeneralModel::updateChangelog($changelog_info);
+                        $update_count++;
+                    }
+                }
+
+                if ($update_count > 0) {
+                    return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('success', 'Template restored to default.');
+                } else {
+                    return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Template is already the default.');
+                }
+
+            } else {
+                return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Unable to find default template data.');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Unable to find current template data.');
+        }
+    }
+
 }

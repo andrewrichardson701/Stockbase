@@ -404,7 +404,6 @@ class StockController extends Controller
 
     static public function deleteStock(Request $request)
     {
-        // dd($request->input());
         if ($request['_token'] == csrf_token()) {
             $request->validate([
                 'stock_id' => 'integer|required',

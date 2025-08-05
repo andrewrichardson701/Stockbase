@@ -2142,6 +2142,13 @@ class StockModel extends Model
                 'previous_value' => $data['stock_id'],
             ];
             GeneralModel::updateChangelog($info);
+            //email for image linking
+            $mail_data = [
+                'stock_id' => $data['stock_id'],
+                'image_name' => $record->image ?? '',
+                'image_id' => $record->id ?? '',
+            ];
+            SmtpModel::notificationEmail(10, 11, $mail_data);
             return $record->id;
         } else {
             return 0;
@@ -2169,6 +2176,13 @@ class StockModel extends Model
                 'previous_value' => '',
             ];
             GeneralModel::updateChangelog($info);
+            //email for image linking
+            $mail_data = [
+                'stock_id' => $data['stock_id'],
+                'image_name' => $data['img-file-name'],
+                'image_id' => $insert ?? '',
+            ];
+            SmtpModel::notificationEmail(10, 10, $mail_data);
             return $insert;
         } else {
             return 0;
@@ -2425,6 +2439,11 @@ class StockModel extends Model
                 ]);
 
                 TransactionModel::addTransaction($transaction_data);
+                // mail bits
+                $mail_data = [
+                    'stock_id' => $request['stock_id'],
+                ];
+                SmtpModel::notificationEmail(8, 8, $mail_data);
                 return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Stock restored: '.$current_data->name);
             } else {
                 return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
@@ -2590,8 +2609,10 @@ class StockModel extends Model
                 }
 
                 if ($errors == 0) {
+                    $stock_data = StockModel::getStockData($request['id']);
                     $location_data = GeneralModel::getSiteAreaShelfData($request['shelf']);
                     $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+                    //remove stock email
                     $mail_data = [
                         'stock_id' => $request['id'],
                         'site_id' => $location_data['site_data']['id'] ?? '',
@@ -2601,6 +2622,17 @@ class StockModel extends Model
                         'new_quantity' => $stock_count,
                     ];
                     SmtpModel::notificationEmail(4, 4, $mail_data);
+                    // minimum stock email
+                    if ($stock_count < $stock_data['min_stock']) {    
+                        $mail_data = [
+                            'stock_id' => $request['id'],
+                            'site_id' => $location_data['site_data']['id'] ?? '',
+                            'area_id' => $location_data['area_data']['id'] ?? '', 
+                            'shelf_id' => $location_data['shelf_data']['id'] ?? '',
+                            'quantity' => $stock_count,
+                        ];
+                        SmtpModel::notificationEmail(9, 9, $mail_data);
+                    }
                     return redirect(GeneralModel::previousURL())->with('success', 'Item(s) removed: '.$count.'.'); 
                 } else {
                     return redirect(GeneralModel::previousURL())->with( 'error', 'Errors Found'); 

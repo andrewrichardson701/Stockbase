@@ -493,6 +493,19 @@ class CablestockModel extends Model
                         TransactionModel::addCableTransaction($transaction);
                         $return['success'] = 'Added';
                         $return['id'] = $current_data['id'];
+
+                        //send email
+                        $location_data = GeneralModel::getSiteAreaShelfData($current_data['shelf_id']);
+                        $stock_count = CablestockModel::checkCableQuantity(['stock_id' => $stock_id, 'shelf_id' => $location_data['shelf_data']['id']]);
+                        $mail_data = [
+                            'stock_id' => $stock_id,
+                            'site_id' => $location_data['site_data']['id'],
+                            'area_id' => $location_data['area_data']['id'], 
+                            'shelf_id' => $location_data['shelf_data']['id'],
+                            'quantity' => 1,
+                            'new_quantity' => $stock_count,
+                        ];
+                        SmtpModel::notificationEmail(11, 12, $mail_data);
                     } elseif ($action == 'remove') {
                         if ($current_data['quantity'] >= $quantity) {
                             // removal quantity is valid
@@ -521,6 +534,19 @@ class CablestockModel extends Model
                             TransactionModel::addCableTransaction($transaction);
                             $return['success'] = 'Removed';
                             $return['id'] = $current_data['id'];
+
+                            //send email
+                            $location_data = GeneralModel::getSiteAreaShelfData($current_data['shelf_id']);
+                            $stock_count = CablestockModel::checkCableQuantity(['stock_id' => $stock_id, 'shelf_id' => $location_data['shelf_data']['id']]);
+                            $mail_data = [
+                                'stock_id' => $stock_id,
+                                'site_id' => $location_data['site_data']['id'],
+                                'area_id' => $location_data['area_data']['id'], 
+                                'shelf_id' => $location_data['shelf_data']['id'],
+                                'quantity' => 1,
+                                'new_quantity' => $stock_count,
+                            ];
+                            SmtpModel::notificationEmail(12, 13, $mail_data);
                         } else {
                             $return ['errors'][] = 'Not enough quantity to remove';
                         }
@@ -819,6 +845,12 @@ class CablestockModel extends Model
                                 return redirect(GeneralModel::previousURL())->with('error', 'Image link failed.');
                             }
                         }
+
+                        //send email
+                        $mail_data = [
+                            'stock_id' => $stock_id,
+                        ];
+                        SmtpModel::notificationEmail(3, 3, $mail_data);
 
                         return redirect(GeneralModel::previousURL())->with('success', 'Cable: "'.$request['name'].'" added successfully with id: "'.$stock_id.'".');
                     } else {

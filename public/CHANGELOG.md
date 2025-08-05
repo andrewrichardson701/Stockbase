@@ -15,7 +15,9 @@
     <li>SMTP tester is now working.</li>
     <li>Mail notifications now send successfully.</li>
     <li>Mail templates created: welcome_email, add_stock, add_stock_new, stock_remove, stock_move, stock_deleted, minimum_stock, image_linked, image_unlinked, cablestock_added, cablestock_removed</li>
-    <li>Mail notifications now in place and working: add_stock, add_stock_new, stock_remove, stock_move, stock_deleted, minimum_stock, image_linked, image_unlinked, cablestock_added, cablestock_removed </li>
+    <li>Mail notifications now in place and working: add_stock, add_stock_new, stock_remove, stock_move, stock_deleted, minimum_stock, image_linked, image_unlinked, cablestock_added, cablestock_removed</li>
+    <li>Email template management added to admin page.</li>
+    <li>Email template routes added</li>
 </ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>

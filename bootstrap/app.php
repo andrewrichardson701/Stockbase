@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\ImpersonationMiddleware;
 use App\Http\Middleware\TrustProxies;
+use App\Providers\LdapDynamicConfigProvider;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -26,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         
     })
+    ->withProviders([
+        LdapDynamicConfigProvider::class, // ldap login stuff
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

@@ -13,11 +13,13 @@ use App\Models\ResponseHandlingModel;
 
 
 use App\Models\StockModel;
-use App\Models\TagModel;
+use App\Models\LdapModel;
 use App\Models\PropertiesModel;
 
 use App\Models\SmtpModel;
 use App\Services\EmailService;
+
+use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
@@ -83,8 +85,40 @@ class IndexController extends Controller
         $config = GeneralModel::configCompare();
         $user = GeneralModel::getUser();
         $template_info = SmtpModel::getTemplateInfo(1);
-        $temp = $new_tags_array = TagModel::getTagsForStock(1) ?? [];
-        dd ($temp);
+        
+        // dd(base64_decode(DB::table('config')->where('id', 1)->first()->ldap_password));
+        $results = [];
+
+        $results[] = LdapModel::ldapTest(
+            "1. Connection test on host: 192.168.11.1",
+            'ldapauth',
+            "DropsBuildsSkill12!!",
+            "DropsBuildsSkill12!!",
+            'ajrich.co.uk',
+            "192.168.11.1",
+            '389',
+            'DC=ajrich,DC=co,DC=uk',
+            'cn=Users',
+            '(objectClass=User)'
+        );
+
+        $results[] = LdapModel::ldapTest(
+            "1. Connection test on host: 192.168.11.2",
+            'ldapauth',
+            "DropsBuildsSkill12!!",
+            "DropsBuildsSkill12!!",
+            'ajrich.co.uk',
+            "192.168.11.1",
+            '389',
+            'DC=ajrich,DC=co,DC=uk',
+            'cn=Users',
+            '(objectClass=User)',
+        );
+
+        // Flatten and return
+        return json_encode($results, JSON_PRETTY_PRINT);
+
+
         // if ($template_info !== false) {
         //     $array = [
         //         'to' => $user['email'],

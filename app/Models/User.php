@@ -75,6 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'theme_id',
         '2fa_enabled',
         '2fa_secret',
+        'auth'
     ];
 
     /**
@@ -98,5 +99,41 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Required by LdapRecord to store LDAP GUID.
+     */
+    public function getLdapGuidColumn(): string
+    {
+        return 'ldap_guid';
+    }
+
+    /**
+     * Required by LdapRecord to match users by email/username.
+     */
+    public function getLdapDomainColumn(): string
+    {
+        return 'email';
+    }
+
+    public function setLdapGuid($guid): void
+    {
+        $this->attributes[$this->getLdapGuidColumn()] = $guid;
+    }
+
+    public function setLdapDomain($domain): void
+    {
+        $this->attributes[$this->getLdapDomainColumn()] = $domain;
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            // Only set 'auth' to 'ldap' if being created via LDAP sync
+            if (auth()->guard('ldap')->check()) {
+                $user->auth = 'ldap';
+            }
+        });
     }
 }

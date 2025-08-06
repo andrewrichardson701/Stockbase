@@ -15,6 +15,7 @@ function toggleSection(element, section) {
 
 
 function testLDAP() {
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
     var ldap_username = $('#auth-username').val();
     var ldap_password = $('#auth-password').val();
     var ldap_password_confirm = $('#auth-password-confirm').val();
@@ -39,8 +40,10 @@ function testLDAP() {
 
     $.ajax({
         type: "POST",
-        url: "admin.ldapSettings",
-        data: {ldap_username: ldap_username, 
+        url: "admin.ldapTest",
+        data: {
+            _token: csrf,
+            ldap_username: ldap_username, 
             ldap_password: ldap_password, 
             ldap_password_confirm: ldap_password_confirm, 
             ldap_domain: ldap_domain,
@@ -53,6 +56,7 @@ function testLDAP() {
         },
         dataType: "json",
         success: function(response){
+            console.log(response);
             var userlist = response;
             var div = document.getElementById('ldapTestOutput');
             // console.log(response);

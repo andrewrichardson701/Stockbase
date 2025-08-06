@@ -1085,7 +1085,11 @@ See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) f
 <!-- Changelog -->
 ## Changelog
 
-All changes are listed in the Changelog file: [CHANGELOG.md](public/CHANGELOG.md)
+All changes are listed in the Changelog file: [CHANGELOG.md](publi
+
+
+
+c/CHANGELOG.md)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

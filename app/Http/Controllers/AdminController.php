@@ -367,8 +367,8 @@ class AdminController extends Controller
     {
         if (isset($request['ldap-toggle-submit'])) {
             if ($request['_token'] == csrf_token()) {
-                if (isset($request['ldap-enabled']) && in_array($request['ldap-enabled'], ['on', 'off'])) {
-                    $enabled = $request['ldap-enabled'];
+                if (isset($request['ldap_enabled']) && in_array($request['ldap_enabled'], ['on', 'off'])) {
+                    $enabled = $request['ldap_enabled'];
                 } else {
                     $enabled = 'off';
                 }

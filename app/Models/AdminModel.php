@@ -352,7 +352,11 @@ class AdminModel extends Model
                     if ($value == 'password' || $value == '' || $value == null) {
                         $current_data->$field;
                     } else {
-                        $value = Hash::make($value);
+                        if (str_contains($field, 'smtp') || str_contains($field, 'ldap')) {
+                            $value = base64_encode($value);
+                        } else {
+                            $value = Hash::make($value);
+                        }
                     }
                     
                 }

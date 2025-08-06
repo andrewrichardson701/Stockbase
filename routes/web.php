@@ -18,6 +18,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\OpticsController;
 use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\SmtpController;
+use App\Http\Controllers\LdapController;
 
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\ImpersonationMiddleware;
@@ -27,6 +28,9 @@ use App\Http\Middleware\AddHeadData;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+use LdapRecord\Models\ActiveDirectory\User;
+use Illuminate\Support\Facades\Log;
 
 Route::middleware([AddHeadData::class])->group(function () {
     Route::get('/dashboard', function () {  // auth default
@@ -183,6 +187,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.attributeSettings', [AdminController::class, 'attributeSettings'])->name('admin.attributeSettings'); // Adjust Attribute Settings
                 Route::post('/admin.stockManagementSettings', [AdminController::class, 'stockManagementSettings'])->name('admin.stockManagementSettings'); // Adjust Stock Management Settings
                 Route::post('/admin.ldapSettings', [AdminController::class, 'ldapSettings'])->name('admin.ldapSettings'); // Adjust LDAP settings
+                Route::post('/admin.ldapTest', [LdapController::class, 'testLdap'])->name('admin.ldapTest'); // test LDAP
                 Route::post('/admin.smtpSettings', [AdminController::class, 'smtpSettings'])->name('admin.smtpSettings'); // Adjust SMTP settings
                 Route::get('/admin.smtpTemplate', [SmtpController::class, 'template'])->name('admin.smtpTemplate'); // view SMTP template
                 Route::post('/admin.smtpTest', [SmtpController::class, 'smtpTest'])->name('admin.smtpTest'); // SMTP test

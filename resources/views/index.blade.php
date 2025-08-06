@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     @include('head')
-    <title>{{$head_data['config_compare']['system_name']}}</title>
+    <title>{{ $head_data['config_compare']['system_name'] }}</title>
 </head>
 <body onload="getInventory(0)">
     <!-- Header and Nav -->

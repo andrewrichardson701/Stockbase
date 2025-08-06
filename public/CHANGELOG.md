@@ -17,7 +17,11 @@
     <li>Mail templates created: welcome_email, add_stock, add_stock_new, stock_remove, stock_move, stock_deleted, minimum_stock, image_linked, image_unlinked, cablestock_added, cablestock_removed</li>
     <li>Mail notifications now in place and working: add_stock, add_stock_new, stock_remove, stock_move, stock_deleted, minimum_stock, image_linked, image_unlinked, cablestock_added, cablestock_removed</li>
     <li>Email template management added to admin page.</li>
-    <li>Email template routes added</li>
+    <li>Email template routes added.</li>
+    <li>LDAP integration in place using LdapRecord.</li>
+    <li>Logging in now works with LDAP.</li>
+    <li>LDAP test on the admin page now works properly.</li>
+    <li>Login page now asks if the user is Local.</li>
 </ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>

@@ -82,7 +82,7 @@
         </div>
         <div style="width:100%">
             <div class="nav-div float-right nav-float" style="width:120px;">
-                <ul class="nav-links align-middle" style="max-width:max-content; padding-left: 30px; padding-right:30px">
+                <ul class="nav-links align-middle theme-divBg shadow" style="max-width:max-content; padding-left: 30px; padding-right:30px">
                     @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1 || $head_data['user']['permissions']['changelog'] == 1) 
                         @if ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1) 
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-wrench"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('admin') }}" @if ($nav_data['highlight_num'] == 5) style="text-decoration: underline !important" @endif>Admin</a></li>

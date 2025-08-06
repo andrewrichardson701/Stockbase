@@ -8,6 +8,14 @@ use App\Models\FunctionsModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+use LdapRecord\Connection;
+use LdapRecord\Container;
+use LdapRecord\Auth\BindException;
+use Illuminate\Support\Facades\Log;
+use LdapRecord\Models\ActiveDirectory\User;
+use LdapRecord\Query\Model\Builder;
+
+
 /**
  * 
  *
@@ -77,5 +85,75 @@ class LdapModel extends Model
         }
     }
 
-}
+    protected Connection $ldapConnection;
 
+    static public function ldapTest(string $check, string $ldap_username, string $ldap_password, string $ldap_domain, string $ldap_host, int $ldap_port, string $ldap_basedn, string $ldap_usergroup, string $ldap_userfilter): array 
+    {
+        $ldap_userlist = [];
+        $errors = [];
+
+        // Add check title and empty line
+        $ldap_userlist[] = $check;
+        $ldap_userlist[] = '';
+
+        // Setup connection config
+        $config = [
+            'hosts'    => [$ldap_host],
+            'port'     => $ldap_port,
+            'base_dn'  => $ldap_basedn,
+            'username' => $ldap_username,
+            'password' => $ldap_password,
+            'use_ssl'  => false,
+            'use_tls'  => false,
+        ];
+
+        try {
+            $connection = new Connection($config);
+
+            // Add connection to container
+            $container = Container::getInstance();
+            $container->addConnection($connection, 'default');
+
+            // Bind connection
+            $connection->auth()->bind();
+
+            $searchDn = $ldap_usergroup . ',' . $ldap_basedn;
+
+            // dd($ldap_userfilter);
+            // Perform LDAP query with raw filter
+            $query = $connection->query()
+                ->setDn($searchDn)
+                ->rawFilter((string)$ldap_userfilter);
+
+            $ldap_info = $query->get(['dn']);
+            // dd(vars: $ldap_info);
+            if (empty($ldap_info)) {
+                $errors[] = "Error: Could not get entries from LDAP server: $ldap_host.";
+            } else {
+                foreach ($ldap_info as $entry) {
+                    if (isset($entry['dn'])) {
+                        $ldap_userlist[] = $entry['dn'];
+                    }
+                }
+
+                $ldap_userlist[] = '';
+                $ldap_userlist[] = "Count: " . count($ldap_info);
+                $ldap_userlist[] = "======================================================";
+                $ldap_userlist[] = '';
+            }
+        } catch (\Exception $e) {
+            $errors[] = "Error: LDAP query failed on host $ldap_host: " . $e->getMessage();
+        }
+        
+
+        // Append errors if any
+        if (!empty($errors)) {
+            foreach ($errors as $error) {
+                $ldap_userlist[] = $error;
+            }
+        }
+
+        return $ldap_userlist;
+    }
+
+}

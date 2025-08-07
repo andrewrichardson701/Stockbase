@@ -72,7 +72,8 @@ class AuthenticatedSessionController extends Controller
                 ])) {
                     /** @var LdapUser $ldapUser */
                     $ldapUser = Auth::guard('ldap')->user();
-  
+                    
+                    /** @var User $localUser */
                     // Optionally sync to local users table
                     $localUser = User::firstOrCreate(
                         ['email' => strtolower($credentials['email'])],

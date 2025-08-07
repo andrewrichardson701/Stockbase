@@ -72,76 +72,11 @@ class IndexController extends Controller
         }
     }
 
-    // static public function test(Request $request)
-    // {
-    //     // dd(ProfileModel::getLoginHistory());
-
-    //     $data = StockModel::getStockNotInContainer(1, ['item.manufacturer_id' => 1, 'item.shelf_id' => 1, 'item.serial_number' => '']);
-    //     dd($data);
-    // }
-
     public function test(Request $request, EmailService $mailer)
     {
         $config = GeneralModel::configCompare();
         $user = GeneralModel::getUser();
         $template_info = SmtpModel::getTemplateInfo(1);
-        
-        // dd(base64_decode(DB::table('config')->where('id', 1)->first()->ldap_password));
-        $results = [];
-
-        $results[] = LdapModel::ldapTest(
-            "1. Connection test on host: 192.168.11.1",
-            'ldapauth',
-            "DropsBuildsSkill12!!",
-            "DropsBuildsSkill12!!",
-            'ajrich.co.uk',
-            "192.168.11.1",
-            '389',
-            'DC=ajrich,DC=co,DC=uk',
-            'cn=Users',
-            '(objectClass=User)'
-        );
-
-        $results[] = LdapModel::ldapTest(
-            "1. Connection test on host: 192.168.11.2",
-            'ldapauth',
-            "DropsBuildsSkill12!!",
-            "DropsBuildsSkill12!!",
-            'ajrich.co.uk',
-            "192.168.11.1",
-            '389',
-            'DC=ajrich,DC=co,DC=uk',
-            'cn=Users',
-            '(objectClass=User)',
-        );
-
-        // Flatten and return
-        return json_encode($results, JSON_PRETTY_PRINT);
-
-
-        // if ($template_info !== false) {
-        //     $array = [
-        //         'to' => $user['email'],
-        //         'toName' => $user['name'],
-        //         'fromName' => 'use-default',
-        //         'subject' => SmtpModel::convertVariables($template_info->subject),
-        //         'body' => SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
-        //         'notif_id' => $request['email_notification_id'] // notif_id
-        //     ];
-        //     // echo($array['body']);
-        //     // dd($array);
-        //     $mail = $mailer->sendEmail(
-        //         "admin@ajrich.co.uk",
-        //         $user['name'],
-        //         'use-default',
-        //         SmtpModel::convertVariables($template_info->subject),
-        //         SmtpModel::buildEmail(SmtpModel::convertVariables($template_info->body)),
-        //         1 // notif_id
-        //     );  
-        //     echo $mail;    
-        // } else {
-        //     return 'Unable to find template';
-        // }
     }
 }
 

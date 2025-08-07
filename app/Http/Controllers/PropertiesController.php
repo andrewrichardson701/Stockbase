@@ -32,7 +32,7 @@ class PropertiesController extends Controller
 
             return PropertiesModel::addProperty($request->input());
         } else {
-            return redirect()->GeneralModel::redirectURL($previous_url, ['error' => 'csrfMissmatch']);
+            return redirect()->url(GeneralModel::redirectURL($previous_url, ['error' => 'csrfMissmatch']));
         }
     }
 }

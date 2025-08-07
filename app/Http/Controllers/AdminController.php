@@ -509,7 +509,8 @@ class AdminController extends Controller
             $request->validate([
                     'session_id' => 'string|required',
             ]);
-            return SessionModel::killSession($request->session_id);
+
+            return SessionModel::killSession($request['seesion_id']);
         } else {
             return 'Error: CSRF Missmatch';
         }
@@ -527,9 +528,9 @@ class AdminController extends Controller
                     'body' => 'string|required',
                     'submit' => 'string|required',
             ]);
-            if ($request->submit == 'update') {
+            if ($request['submit'] == 'update') {
                 return AdminModel::updateEmailTemplate($request->input());
-            } elseif ($request->submit == 'restore') {
+            } elseif ($request['submit'] == 'restore') {
                 return AdminModel::restoreEmailTemplate($request->input());
             } else {
                 return 'Error: Unknown submission type.';

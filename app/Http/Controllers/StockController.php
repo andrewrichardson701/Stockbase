@@ -305,10 +305,10 @@ class StockController extends Controller
                 'image' => 'required',
             ]);
             if ($request->hasFile('image')) {
-                $request->id = $request->stock_id;
+                $request->id = $request['stock_id'];
                 // dd($request->toArray());
                 StockModel::imageUpload($request);
-                $redirect_array = ['stock_id'   => $request->stock_id,
+                $redirect_array = ['stock_id'   => $request['stock_id'],
                             'modify_type' => 'edit',
                             'success' => 'Image uploaded.'];
                 return redirect()->route('stock', $redirect_array);
@@ -329,7 +329,7 @@ class StockController extends Controller
             ]);
 
             StockModel::imageUnlink($request);
-            $redirect_array = ['stock_id'   => $request->stock_id,
+            $redirect_array = ['stock_id'   => $request['stock_id'],
                             'modify_type' => 'edit',
                             'success' => 'Image unlinked.'];
             return redirect()->route('stock', $redirect_array);
@@ -348,7 +348,7 @@ class StockController extends Controller
             ]);
 
             if (StockModel::imageLink($request) > 0) {
-                 $redirect_array = ['stock_id'   => $request->stock_id,
+                 $redirect_array = ['stock_id'   => $request['stock_id'],
                             'modify_type' => 'edit',
                             'success' => 'Image Linked.'];
                 return redirect()->route('stock', $redirect_array);

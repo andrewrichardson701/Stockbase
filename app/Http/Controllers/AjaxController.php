@@ -325,7 +325,7 @@ class AjaxController extends Controller
             ]);
 
 
-            $stock_id = $request->stock_id;
+            $stock_id = $request['stock_id'];
             $user = GeneralModel::getUser();
 
             $favourited = StockModel::checkFavourited($stock_id);

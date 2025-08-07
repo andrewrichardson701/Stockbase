@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 use LdapRecord\Models\ActiveDirectory\User as LdapUser;
 
-use LdapRecord\Laravel\Auth\BindException;
+use LdapRecord\Auth\BindException;
 use LdapRecord\Models\Model;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;

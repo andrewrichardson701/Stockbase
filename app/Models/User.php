@@ -22,8 +22,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
  * @property string|null $auth
  * @property int $role_id
  * @property int $theme_id
- * @property string|null $2fa_secret
- * @property int $2fa_enabled
+//  * @property string|null $2fa_secret
+//  * @property int $2fa_enabled
  * @property int $enabled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

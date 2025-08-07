@@ -76,6 +76,7 @@ class FavouritesModel extends Model
         $return['type'] = 'add';
 
         $request = ['user_id' => $user_id, 'stock_id' => $stock_id];
+        /** @var FavouritesModel $insert */
         $insert = FavouritesModel::create($request);
 
         $id = $insert->id;

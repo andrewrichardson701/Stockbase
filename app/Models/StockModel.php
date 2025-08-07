@@ -1431,7 +1431,7 @@ class StockModel extends Model
                             'shelf_id' => $request['shelf'],
                             'is_container' => 0
                             ];
-
+                    /** @var ItemModel $insert */
                     $insert = ItemModel::create($data);
                     $id = $insert->id;
                     
@@ -1547,6 +1547,8 @@ class StockModel extends Model
                 'min_stock' => $input['min-stock'] ?? 0,
                 'is_cable' => $is_cable
                 ];
+            
+            /** @var StockModel $insert */
             $insert = StockModel::create($data);
 
             $info = [

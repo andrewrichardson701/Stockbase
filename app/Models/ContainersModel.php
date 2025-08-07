@@ -269,6 +269,7 @@ class ContainersModel extends Model
                     'shelf_id' => $request['shelf']
                     ];
 
+            /** @var ContainersModel $insert */
             $insert = ContainersModel::create($data);
 
             $id = $insert->id;

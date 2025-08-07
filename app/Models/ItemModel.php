@@ -8,8 +8,6 @@ use App\Models\FavouritesModel;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
- *
  * @property int $id
  * @property int $stock_id
  * @property string|null $upc

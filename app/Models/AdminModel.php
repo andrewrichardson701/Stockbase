@@ -17,8 +17,6 @@ use App\Models\TransactionModel;
 
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminModel query()

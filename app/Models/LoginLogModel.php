@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Session;
 
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LoginLogModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LoginLogModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LoginLogModel query()

@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CablestockModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CablestockModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CablestockModel query()

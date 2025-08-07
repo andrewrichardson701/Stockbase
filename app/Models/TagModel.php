@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TagModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TagModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TagModel query()

@@ -20,8 +20,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\App;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpModel query()

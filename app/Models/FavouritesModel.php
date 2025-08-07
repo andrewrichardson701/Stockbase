@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\StockModel;
 
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property int $stock_id

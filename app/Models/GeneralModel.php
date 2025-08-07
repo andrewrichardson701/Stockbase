@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralModel query()

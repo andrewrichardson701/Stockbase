@@ -7,8 +7,6 @@ use App\Models\GeneralModel;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
- *
  * @property int $id
  * @property int $stock_id
  * @property int $item_id

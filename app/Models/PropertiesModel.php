@@ -10,8 +10,6 @@ use App\Models\GeneralModel;
 
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PropertiesModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PropertiesModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PropertiesModel query()

@@ -7,8 +7,6 @@ use App\Models\GeneralModel;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OpticsModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OpticsModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OpticsModel query()

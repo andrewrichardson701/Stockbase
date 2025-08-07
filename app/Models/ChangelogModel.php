@@ -8,8 +8,6 @@ use App\Models\GeneralModel;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ChangelogModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ChangelogModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ChangelogModel query()

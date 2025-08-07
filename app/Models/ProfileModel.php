@@ -8,8 +8,6 @@ use App\Models\GeneralModel;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProfileModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProfileModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProfileModel query()

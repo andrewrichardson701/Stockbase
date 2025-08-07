@@ -17,8 +17,6 @@ use LdapRecord\Query\Model\Builder;
 
 
 /**
- * 
- *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LdapModel newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LdapModel newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LdapModel query()

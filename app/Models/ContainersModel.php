@@ -10,8 +10,6 @@ use App\Models\GeneralModel;
 
 
 /**
- * 
- *
  * @property int $id
  * @property string $name
  * @property string|null $description

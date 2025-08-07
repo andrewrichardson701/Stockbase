@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\SmtpModel;
 
 /**
- * 
- *
  * @property int $id
  * @property string $name
  * @property string|null $description

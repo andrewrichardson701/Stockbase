@@ -198,6 +198,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.emailTemplate', [AdminController::class, 'emailTemplate'])->name('admin.emailTemplate'); // change an email template
                 Route::get('/admin.emailTemplatePreview', [SmtpController::class, 'emailTemplatePreview'])->name('admin.emailTemplatePreview'); // preview the email template
                 Route::get('/admin.getEmailTemplateUrl', [SmtpController::class, 'getEmailTemplateUrl'])->name('admin.getEmailTemplateUrl'); // preview the email template
+                Route::post('/admin.addLocalUser', [AdminController::class, 'addLocalUser'])->name('admin.addLocalUser'); // add Local User
             });
 
             // Changelog pages

@@ -953,3 +953,16 @@ modalCloseViewTemplate = function() {
     var modal = document.getElementById("modalDivViewTemplate");
     modal.style.display = "none";
 }
+
+
+function modalLoadAddUser() {
+    //get the modal div with the property
+    var modal = document.getElementById("modalDivAddUser");
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseAddUser = function() { 
+    var modal = document.getElementById("modalDivAddUser");
+    modal.style.display = "none";
+}

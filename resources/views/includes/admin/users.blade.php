@@ -153,9 +153,94 @@
                 </tr>
                 @endforeach
             @endif
-                <tr class="theme-tableOuter"><td></td><td colspan="100%"><button class="btn btn-success" type="button" onclick="navPage('addlocaluser');"><i class="fa fa-plus"></i> Add</button></td></tr>
+                <tr class="theme-tableOuter"><td></td><td colspan="100%"><button class="btn btn-success" type="button" onclick="modalLoadAddUser()"><i class="fa fa-plus"></i> Add</button></td></tr>
             </tbody>
         </table>
+    </div>
+    <div id="modalDivAddUser" class="modal" style="display: none;">
+        <span class="close" onclick="modalCloseAddUser()">×</span>
+        <div class="container well-nopad theme-divBg" style="padding:25px">
+            <div style="margin:auto;text-align:center;margin-top:10px">
+                <form action="{{ route('admin.addLocalUser') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <h2>Add Local User</h2>
+                    <p>Please fill in the below form to add a local user.</p>
+                    <table class="centertable" style="margin-bottom:20px">
+                        <tbody class="align-middle">
+                            <tr>
+                                <th style="text-align:right; padding-right:20px">Name:</th>
+                                <td><input type="text" class="form-control theme-input" style="max-width: 300px" name="name" placeholder="John Doe"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:right; padding-right:20px">Username:</th>
+                                <td><input type="text" class="form-control theme-input" style="max-width: 300px" name="username" placeholder="Username"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:right; padding-right:20px">Email:</th>
+                                <td><input type="email" class="form-control theme-input" style="max-width: 300px" name="email" placeholder="email@domain.local"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:right; padding-right:20px">Password:</th>
+                                <td><input type="password" class="form-control theme-input" style="max-width: 300px" name="password" placeholder="Password"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:right; padding-right:20px">Confirm Password:</th>
+                                <td><input type="password" class="form-control theme-input" style="max-width: 300px" name="password_confirm" placeholder="Password"></td>
+                            </tr>
+                            <tr>
+                                <th colspan=100% style="padding-top:20px">
+                                    Permissions
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan=100%>
+                                    <table class="table table-dark theme-table centertable" style="max-width:max-content;white-space:nowrap">
+                                        <thead>
+                                            <tr class="text-center theme-tableOuter">
+                                                <th>Root</th>
+                                                <th>Admin</th>
+                                                <th>Locations</th>
+                                                <th>Stock</th>
+                                                <th>Cables</th>
+                                                <th>Optics</th>
+                                                <th>CPUs</th>
+                                                <th>Memory</th>
+                                                <th>Disks</th>
+                                                <th>Fans</th>
+                                                <th>PSUs</th>
+                                                <th>Containers</th>
+                                                <th>Changelog</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-center">
+                                                <td><input type="checkbox" name="permission_root" disabled style="cursor:not-allowed" title="Cannot assign this permission."></td>
+                                                <td><input type="checkbox" name="permission_admin"></td>
+                                                <td><input type="checkbox" name="permission_locations"></td>
+                                                <td><input type="checkbox" name="permission_stock"></td>
+                                                <td><input type="checkbox" name="permission_cables"></td>
+                                                <td><input type="checkbox" name="permission_optics"></td>
+                                                <td><input type="checkbox" name="permission_cpus"></td>
+                                                <td><input type="checkbox" name="permission_memory"></td>
+                                                <td><input type="checkbox" name="permission_disks"></td>
+                                                <td><input type="checkbox" name="permission_fans"></td>
+                                                <td><input type="checkbox" name="permission_psus"></td>
+                                                <td><input type="checkbox" name="permission_containers"></td>
+                                                <td><input type="checkbox" name="permission_changelog"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <span>
+                        <button class="btn btn-success" type="submit" name="submit" value="1">Add User</button>
+                        <button class="btn btn-warning" type="button" onclick="modalCloseAddUser()">Cancel</button>
+                    </span>
+                </form>
+            </div>
+        </div>
     </div>
     <div id="modalDivReset2FA" class="modal" style="display: none;">
         <span class="close" onclick="modalCloseReset2FA()">×</span>

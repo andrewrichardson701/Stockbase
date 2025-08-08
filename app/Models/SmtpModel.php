@@ -422,7 +422,7 @@ class SmtpModel extends Model
         $config = GeneralModel::configCompare();
         $user = GeneralModel::getUser();
 
-        if ($config['smtp_enabled'] == 1) {
+        if ($config['smtp_enabled'] == 1 && $user['id'] !== 1) { // make sure smtp is enabled and the user isnt root. root email wont work.
             $notification_data = DB::table('notifications')->find($notification_id);
 
             if ($template_id == 0) {

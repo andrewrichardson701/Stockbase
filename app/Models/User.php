@@ -20,7 +20,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
  * @property string|null $two_factor_confirmed_at
  * @property string|null $remember_token
  * @property string|null $auth
- * @property int $role_id
  * @property int $theme_id
 //  * @property string|null $2fa_secret
 //  * @property int $2fa_enabled
@@ -75,7 +74,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'theme_id',
         '2fa_enabled',
         '2fa_secret',
-        'auth'
+        'auth',
+        'email_verified_at',
+        'ldap_guid'
+        'password_expired',
+        
     ];
 
     /**

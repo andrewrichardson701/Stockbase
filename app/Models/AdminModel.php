@@ -1763,4 +1763,86 @@ class AdminModel extends Model
         }
     }
 
+    static public function addLocalUser($user_data=[], $permissions_data=[])
+    {
+        $user_data['email_verified_at'] = now();
+        $user_data['password_expired'] = 1;
+
+        /** @var User $new_user */
+        $new_user = User::create($user_data);
+
+        if ($new_user) {
+            // send welcome email:
+            SmtpModel::notificationEmail(1, 1, []);
+
+            $user_id = $new_user->id; 
+
+            // add a changelog for the user being added
+            $user = GeneralModel::getUser();
+            $info = [
+                'user' => $user,
+                'table' => 'users',
+                'record_id' => $user_id,
+                'field' => 'username',
+                'new_value' => $new_user->username,
+                'action' => 'Add user',
+                'previous_value' => '',
+            ];
+            GeneralModel::updateChangelog($info);
+            
+            // add permissions to table
+
+            //convert to boolean
+            $permissions_data_bool = ['id' => $user_id];
+
+            foreach($permissions_data as $key => $value) {
+                if ($value == 'on') {
+                    $permissions_data_bool[$key] = 1;
+                } elseif ($value == 'off') {
+                    $permissions_data_bool[$key] = 0;
+                }
+            }
+
+            $insert = DB::table('users_permissions')->insertGetId($permissions_data_bool);
+
+            if ($insert) {
+                // inserted ok
+
+                if ($insert == $user_id) {
+                    // correct id
+
+                    // changelog
+                    unset($permissions_data_bool['id']);
+                    foreach($permissions_data_bool as $key => $value) {
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'users_permissions',
+                            'record_id' => $user_id,
+                            'action' => 'New record',
+                            'field' => $key,
+                            'previous_value' => 'off',
+                            'new_value' => (int)$value
+                        ];
+
+                        GeneralModel::updateChangelog($changelog_info);
+                    }
+
+                    // redirect
+                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', 'User added.');
+                } else {
+                    // incorrect id
+                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'User id ('.$user_id.') and permissions id ('.$insert.') do not match.');
+
+                }
+
+            } else {
+                // didnt insert
+                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permissions failed to add for user.');
+            }
+        } else {
+            // user wasnt added. error return
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to add user.');
+        }
+    }
+
 }

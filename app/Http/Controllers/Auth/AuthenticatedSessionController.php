@@ -84,6 +84,10 @@ class AuthenticatedSessionController extends Controller
                         DB::table('users')->where('id', $localUser->id)->update(['auth' => 'ldap']);
                     }
 
+                    if ($localUser->email_verified_at == NULL) {
+                        DB::table('users')->where('id', $localUser->id)->update(['email_verified_at' => now()]);
+                    }
+
                     // check for user permissions
                     $permissions = GeneralModel::getFirstWhere('users_permissions', ['id' => $localUser->id]);
 

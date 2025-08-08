@@ -541,5 +541,50 @@ class AdminController extends Controller
         }
     }
 
+    static public function addLocalUser(Request $request)
+    {
+        // dd($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'name' => 'string|required',
+                    'username' => 'string|required',
+                    'email' => 'email|required',
+                    'password' => 'string|required',
+                    'password_confirm' => 'string|required',
+            ]);
+
+            if ($request['password'] !== $request['password_confirm']) {
+                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Password and password_confirm did not match.');
+            }
+            
+            $user_data = [
+                'name' => $request['name'],
+                'username' => $request['username'],
+                'email' => $request['email'],
+                'password' => $request['password'],
+            ];
+
+            $permissions_data = [
+                'root' => 'off',
+                'admin' => $request['permission_admin'] ?? 'off',
+                'locations' => $request['permission_locations'] ?? 'off',
+                'stock' => $request['permission_stock'] ?? 'off',
+                'cables' => $request['permissions_cables'] ?? 'off',
+                'optics' => $request['permissions_optics'] ?? 'off',
+                'cpus' => $request['permissions_cpus'] ?? 'off',
+                'memory' => $request['permissions_memory'] ?? 'off',
+                'disks' => $request['permissions_disks'] ?? 'off',
+                'fans' => $request['permissions_fans'] ?? 'off',
+                'psus' => $request['permissions_psus'] ?? 'off',
+                'containers' => $request['permissions_containers'] ?? 'off',
+                'changelog' => $request['permissions_changelog'] ?? 'off'
+            ];
+            
+            return AdminModel::addLocalUser($user_data, $permissions_data);
+            
+        } else {
+            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'CSRF missmatch');
+        }
+    }
 
 }

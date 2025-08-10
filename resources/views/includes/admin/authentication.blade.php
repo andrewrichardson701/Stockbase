@@ -26,7 +26,7 @@
                     </td>
                     <td class="align-middle" style="padding-left:5px;padding-right:50px" id="enable_2fa_toggle">
                         <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
-                            <input type="checkbox" name="enable_2fa" onchange="authSettings(this, '2fa_enabled')" @if ((int)$head_data['config']['2fa_enabled'] == 1) checked @endif>
+                            <input type="checkbox" name="enable_2fa" onchange="authSettings(this, 'two_factor_enabled')" @if ((int)$head_data['config']['two_factor_enabled'] == 1) checked @endif>
                             <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
                         </label>
                     </td>
@@ -35,7 +35,7 @@
                     </td>
                     <td class="align-middle" style="padding-left:5px;padding-right:50px" id="enforce_2fa_toggle">
                         <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >
-                            <input type="checkbox" name="enforce_2fa" onchange="authSettings(this, '2fa_enforced')" @if ((int)$head_data['config']['2fa_enforced'] == 1) checked @endif>
+                            <input type="checkbox" name="enforce_2fa" onchange="authSettings(this, 'two_factor_enforced')" @if ((int)$head_data['config']['two_factor_enforced'] == 1) checked @endif>
                             <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
                         </label>
                     </td>

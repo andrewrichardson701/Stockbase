@@ -19,11 +19,13 @@ use App\Http\Controllers\OpticsController;
 use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\LdapController;
+use App\Http\Controllers\TwoFactorController;
 
 use App\Http\Middleware\SecurityMiddleware;
 use App\Http\Middleware\ImpersonationMiddleware;
 use App\Http\Middleware\PermissionsMiddleware;
 use App\Http\Middleware\AddHeadData;
+use \App\Http\Middleware\TwoFactorRedirectMiddleware;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -37,7 +39,7 @@ Route::middleware([AddHeadData::class])->group(function () {
         return view('dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
-    Route::middleware([SecurityMiddleware::class])->group(function () {
+    Route::middleware([TwoFactorRedirectMiddleware::class, SecurityMiddleware::class])->group(function () {
         Route::middleware('auth')->group(function () {
 
             //// Impersonation 
@@ -234,6 +236,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             //
             Route::post('/_ajax-nearbyContainers', [AjaxController::class, 'getNearbyContainersAjax'])->name('_ajax-nearbyContainers'); // get a list of nearby containers
             ////
+
         });
 
         // no auth needed

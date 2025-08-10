@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AddHeadData;
 
@@ -38,6 +39,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             ->name('password.store');
     });
 
+    // Route::middleware('auth', 'twofactor.redirect')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('verify-email', EmailVerificationPromptController::class)
             ->name('verification.notice');
@@ -59,5 +61,22 @@ Route::middleware([AddHeadData::class])->group(function () {
 
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
             ->name('logout');
+
+        // 2fa
+        Route::get('/user/two-factor-setup', [TwoFactorController::class, 'show'])
+            ->middleware(['auth'])
+            ->name('two-factor.setup');
+
+        Route::post('/user/two-factor-save', [TwoFactorController::class, 'enable'])
+            ->middleware(['auth'])
+            ->name('two-factor.enable');
+
+        Route::get('/user/two-factor-challenge', [TwoFactorController::class, 'challenge'])
+            ->middleware(['auth'])
+            ->name('two-factor.challenge');
+
+        Route::post('/user/two-factor-challenge', [TwoFactorController::class, 'challengeCheck'])
+            ->middleware(['auth'])
+            ->name('two-factor.verify');
     });
 });

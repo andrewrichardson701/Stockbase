@@ -6,6 +6,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\ImpersonationMiddleware;
 use App\Http\Middleware\TrustProxies;
 use App\Providers\LdapDynamicConfigProvider;
+use \App\Http\Middleware\TwoFactorRedirectMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web([
             TrustProxies::class,
             ImpersonationMiddleware::class, // <== This runs on every web request
+            // TwoFactorRedirectMiddleware::class, 
         ]);
         
     })

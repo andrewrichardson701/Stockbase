@@ -155,6 +155,7 @@ return [
             // 'window' => 0,
         ]),
         Features::emailVerification(),
+        Laravel\Fortify\Features::twoFactorAuthentication(),
     ],
 
 ];

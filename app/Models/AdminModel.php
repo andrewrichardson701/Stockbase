@@ -493,7 +493,7 @@ class AdminModel extends Model
             if (isset($request['value'])) {
                 $value = htmlspecialchars($request['value']);
 
-                if (($request['id'] == "2fa_enabled" || $request['id'] == "2fa_enforced" || $request['id'] == "signup_allowed") && ((int)$value == 1 || (int)$value == 0)) {
+                if (($request['id'] == "two_factor_enabled" || $request['id'] == "two_factor_enforced" || $request['id'] == "signup_allowed") && ((int)$value == 1 || (int)$value == 0)) {
                     $field = $request['id'];
                 
                     $current_data = DB::table('config')
@@ -778,7 +778,7 @@ class AdminModel extends Model
                             ->first();
 
         if ($current_data) {
-            $update = DB::table('users')->where('id', $user_id)->update(['2fa_secret' => NULL,'updated_at' => now()]);
+            $update = DB::table('users')->where('id', $user_id)->update(['two_factor_secret' => NULL,'updated_at' => now()]);
 
             if ($update) {
                 // changelog
@@ -787,7 +787,7 @@ class AdminModel extends Model
                     'table' => 'users',
                     'record_id' => $user_id,
                     'action' => 'Update record',
-                    'field' => '2fa_secret',
+                    'field' => 'twa_factor_secret',
                     'previous_value' => '********',
                     'new_value' => ''
                 ];

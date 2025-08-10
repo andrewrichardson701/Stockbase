@@ -21,6 +21,10 @@ use LdapRecord\Auth\BindException;
 use LdapRecord\Models\Model;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+
+
+use Illuminate\Support\Facades\Session;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -37,15 +41,61 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request_input = $request->input();
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $request_input = $request->input();
+
         if (isset($request_input['local']) && $request_input['local'] == 'on') {
-            // local auth
+           
+            
+
+            // // Determine if 2FA is required
+            // $twoFactorRequired = false;
+            // if ($settings && $settings->two_factor_enabled == 1) {
+            //     $twoFactorRequired = (
+            //         $settings->two_factor_enforced == 1
+            //         || $user->two_factor_enabled == 1
+            //     );
+            // }
+
+            // if ($twoFactorRequired) {
+            //     // Store "pending login" data in session for the 2FA challenge
+            //     session([
+            //         'login.id' => $user->id,
+            //         'login.remember' => $request->boolean('remember'),
+            //     ]);
+
+            //     // Redirect to Fortify's built-in two-factor challenge route
+            //     return redirect()->route('two-factor.login');
+            // }
+
+            // No 2fa
+
             $request->authenticate();
 
             $request->session()->regenerate();
 
             $user = GeneralModel::getuser();
+
+            // check for 2fa
+            $two_factor_status = User::twoFactorCheck($user['email']);
+
+            if ($two_factor_status) {
+                Session::put('two_factor_request', $two_factor_status); //either: skip, prompt, or setup
+            }
+
             // update login_log with successful login
             LoginLogModel::updateLoginLog('login', $user['auth'], $user['email'], $user['id']);
 
@@ -97,6 +147,13 @@ class AuthenticatedSessionController extends Controller
 
                     Auth::login($localUser);
 
+                    // check for 2fa
+                    $two_factor_status = User::twoFactorCheck($localUser->email);
+
+                    if ($two_factor_status) {
+                        Session::put('two_factor_request', $two_factor_status); //either: skip, prompt, or setup
+                    }
+
                     return redirect()->intended(route('index', absolute: false));
                 } else {
                     return back()->withErrors([
@@ -109,7 +166,7 @@ class AuthenticatedSessionController extends Controller
 
             // Attempt local DB login
             if (Auth::attempt($credentials)) {
-                return redirect()->intended('dashboard');
+                return redirect()->intended('index');
             }
 
             return back()->withErrors([
@@ -140,11 +197,6 @@ class AuthenticatedSessionController extends Controller
         
 
         return redirect('/');
-    }
-
-    static public function ldapLogin($credentials) 
-    {
-        
     }
 
 }

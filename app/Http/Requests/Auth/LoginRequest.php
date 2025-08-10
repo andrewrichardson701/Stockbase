@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use App\Models\LoginLogModel;
 use App\Models\SessionModel;
+use App\Models\User;
 
 class LoginRequest extends FormRequest
 {
@@ -54,9 +55,20 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
+
         }
 
         RateLimiter::clear($this->throttleKey());
+
+    }
+
+    public function auth_check()
+    {
+        if (Auth::attempt($this->only('email', 'password'))) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

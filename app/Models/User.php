@@ -8,6 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\GeneralModel;
+use Illuminate\Support\Facades\Session;
+
+
 /**
  * @property int $id
  * @property string $name
@@ -21,8 +27,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
  * @property string|null $remember_token
  * @property string|null $auth
  * @property int $theme_id
-//  * @property string|null $2fa_secret
-//  * @property int $2fa_enabled
+ * @property int $two_factor_enabled
  * @property int $enabled
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -72,13 +77,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'theme_id',
-        '2fa_enabled',
-        '2fa_secret',
+        'two_factor_enabled',
+        'two_factor_secret',
         'auth',
         'email_verified_at',
-        'ldap_guid'
+        'ldap_guid',
         'password_expired',
-        
+
     ];
 
     /**
@@ -138,5 +143,45 @@ class User extends Authenticatable implements MustVerifyEmail
                 $user->auth = 'ldap';
             }
         });
+    }
+
+    static public function twoFactorCheck($email)
+    {
+        // Fetch your config values from DB
+        $config = GeneralModel::config();
+
+        $user_data = User::where('email', $email)->first();
+
+        $twoFactorEnabledGlobally = (int) $config['two_factor_enabled'] ?? 0;
+        $twoFactorEnforcedGlobally = (int) $config['two_factor_enforced'] ?? 0;
+        $userTwoFactorEnabled = (int) $user_data->two_factor_enabled;
+
+        $shouldRequire2FA = false;
+        if ($twoFactorEnabledGlobally == 1) {
+            if ($twoFactorEnforcedGlobally == 1) {
+                $shouldRequire2FA = true;
+            } elseif ($userTwoFactorEnabled == 1) {
+                $shouldRequire2FA = true;
+            }
+        }
+
+        if ($shouldRequire2FA) {
+            if (!$user_data->two_factor_secret) {
+                // User needs to setup 2FA first - deny login or redirect to setup page
+                Session::put('login.id', $user_data->id);
+                // return redirect()->route('two-factor.setup');
+                return 'setup';
+            }
+
+            
+            // Store user ID in session to be retrieved on 2FA challenge
+            Session::put('login.id', $user_data->id);
+
+            // Do NOT log user in yet, redirect to Fortify 2FA challenge route
+            // return redirect()->route('two-factor.challenge');
+            return 'challenge';
+        }
+
+        return 'skip';
     }
 }

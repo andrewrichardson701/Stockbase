@@ -93,7 +93,7 @@ class ProfileModel extends Model
 
     static public function reset2FA($user_id) 
     {
-        $data = ['2fa_secret' => null];
+        $data = ['two_factor_secret' => null];
 
         $user = User::find($user_id);
 
@@ -105,7 +105,7 @@ class ProfileModel extends Model
                     'user' => $user,
                     'table' => 'users',
                     'record_id' => $user_id,
-                    'field' => '2fa_secret',
+                    'field' => 'two_factor_secret',
                     'new_value' => null,
                     'action' => 'Update record',
                     'previous_value' => '********',
@@ -123,11 +123,11 @@ class ProfileModel extends Model
 
     static public function enable2FA($user_id, $state) 
     {
-        $data = ['2fa_enabled' => $state];
+        $data = ['two_factor_enabled' => $state];
         // check if state change needed
         $user = User::find($user_id);
 
-        if ($user && $user['2fa_enabled'] !== $state) {
+        if ($user && $user['two_factor_enabled'] !== $state) {
             if (User::where('id', $user_id)->update($data)) {
                 // update changelog
                 $user = GeneralModel::getUser();
@@ -135,10 +135,10 @@ class ProfileModel extends Model
                     'user' => $user,
                     'table' => 'users',
                     'record_id' => $user_id,
-                    'field' => '2fa_enabled',
+                    'field' => 'two_factor_enabled',
                     'new_value' => $state,
                     'action' => 'Update record',
-                    'previous_value' => $user['2fa_enabled'],
+                    'previous_value' => $user['two_factor_enabled'],
                 ];
                 GeneralModel::updateChangelog($info);
                 return 1;

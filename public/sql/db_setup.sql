@@ -24,25 +24,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `laravel_stockbase` /*!40100 DEFAULT CH
 USE `laravel_stockbase`;
 
 --
--- Table structure for table `api_keys`
---
-
-DROP TABLE IF EXISTS `api_keys`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `api_keys` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `secret` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `expiry` timestamp NOT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `area`
 --
 
@@ -214,7 +195,7 @@ CREATE TABLE `changelog` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2860 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2866 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,8 +244,8 @@ CREATE TABLE `config` (
   `footer_enable` tinyint(1) NOT NULL DEFAULT '1',
   `footer_left_enable` tinyint(1) NOT NULL DEFAULT '1',
   `footer_right_enable` tinyint(1) NOT NULL DEFAULT '1',
-  `2fa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `2fa_enforced` tinyint(1) NOT NULL DEFAULT '0',
+  `two_factor_enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `two_factor_enforced` tinyint(1) NOT NULL DEFAULT '0',
   `signup_allowed` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -318,8 +299,8 @@ CREATE TABLE `config_default` (
   `footer_enable` tinyint(1) NOT NULL DEFAULT '1',
   `footer_left_enable` tinyint(1) NOT NULL DEFAULT '1',
   `footer_right_enable` tinyint(1) NOT NULL DEFAULT '1',
-  `2fa_enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `2fa_enforced` tinyint(1) NOT NULL DEFAULT '0',
+  `two_factor_enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `two_factor_enforced` tinyint(1) NOT NULL DEFAULT '0',
   `signup_allowed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
@@ -424,7 +405,7 @@ CREATE TABLE `favourites` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -513,25 +494,6 @@ CREATE TABLE `jobs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `login_failure`
---
-
-DROP TABLE IF EXISTS `login_failure`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `login_failure` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `username` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `auth` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `ipv4` bigint DEFAULT NULL,
-  `ipv6` varbinary(16) DEFAULT NULL,
-  `last_timestamp` timestamp NOT NULL COMMENT 'Last failed attempet',
-  `count` int NOT NULL COMMENT 'Count of failures',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `login_log`
 --
 
@@ -549,7 +511,7 @@ CREATE TABLE `login_log` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=186 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=306 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -760,23 +722,6 @@ CREATE TABLE `optic_vendor` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `password_reset`
---
-
-DROP TABLE IF EXISTS `password_reset`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `password_reset` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `reset_user_id` int NOT NULL,
-  `reset_selector` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `reset_token` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  `reset_expires` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `password_reset_tokens`
 --
 
@@ -813,7 +758,7 @@ CREATE TABLE `session_log` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=219 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=293 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1027,10 +972,8 @@ CREATE TABLE `users` (
   `two_factor_confirmed_at` timestamp NULL DEFAULT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `auth` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'local',
-  `role_id` int NOT NULL DEFAULT '2',
   `theme_id` int NOT NULL DEFAULT '0',
-  `2fa_secret` text COLLATE utf8mb4_unicode_ci,
-  `2fa_enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `two_factor_enabled` tinyint(1) NOT NULL DEFAULT '0',
   `enabled` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1040,34 +983,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `users_email_unique` (`email`),
   UNIQUE KEY `users_username_unique` (`username`),
   UNIQUE KEY `users_ldap_guid_unique` (`ldap_guid`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `users_old`
---
-
-DROP TABLE IF EXISTS `users_old`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users_old` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `username` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `first_name` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `last_name` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `email` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `auth` tinytext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `password` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `role_id` int DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `password_expired` tinyint(1) NOT NULL DEFAULT '0',
-  `theme_id` int DEFAULT '0',
-  `card_primary` int DEFAULT NULL,
-  `card_secondary` int DEFAULT NULL,
-  `2fa_secret` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `2fa_enabled` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1126,24 +1042,6 @@ CREATE TABLE `users_permissions_roles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `users_roles`
---
-
-DROP TABLE IF EXISTS `users_roles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users_roles` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `is_optic` tinyint(1) NOT NULL DEFAULT '0',
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0',
-  `is_root` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1154,4 +1052,4 @@ CREATE TABLE `users_roles` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-07 20:16:15
+-- Dump completed on 2025-08-11 21:58:45

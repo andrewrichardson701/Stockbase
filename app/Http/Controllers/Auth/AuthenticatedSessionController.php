@@ -41,47 +41,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
         $request_input = $request->input();
 
         if (isset($request_input['local']) && $request_input['local'] == 'on') {
-           
-            
-
-            // // Determine if 2FA is required
-            // $twoFactorRequired = false;
-            // if ($settings && $settings->two_factor_enabled == 1) {
-            //     $twoFactorRequired = (
-            //         $settings->two_factor_enforced == 1
-            //         || $user->two_factor_enabled == 1
-            //     );
-            // }
-
-            // if ($twoFactorRequired) {
-            //     // Store "pending login" data in session for the 2FA challenge
-            //     session([
-            //         'login.id' => $user->id,
-            //         'login.remember' => $request->boolean('remember'),
-            //     ]);
-
-            //     // Redirect to Fortify's built-in two-factor challenge route
-            //     return redirect()->route('two-factor.login');
-            // }
-
-            // No 2fa
 
             $request->authenticate();
 
@@ -146,6 +108,7 @@ class AuthenticatedSessionController extends Controller
                     }
 
                     Auth::login($localUser);
+                    $request->session()->regenerate();
 
                     // check for 2fa
                     $two_factor_status = User::twoFactorCheck($localUser->email);

@@ -6,6 +6,12 @@ use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneralModel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+
+use App\Services\EmailService;
+use Illuminate\Support\Facades\App;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProfileModel newModelQuery()
@@ -147,6 +153,54 @@ class ProfileModel extends Model
             }
         } else {
             return 0;
+        }
+    }
+
+    static public function generatePasswordResetToken(string $email): string
+    {
+        $token = Str::random(64);
+
+        // Delete any existing tokens for this email
+        DB::table('password_reset_tokens')->where('email', $email)->delete();
+
+        DB::table('password_reset_tokens')->insert([
+            'email' => $email,
+            'token' => Hash::make($token), // hashed for security
+            'created_at' => Carbon::now(),
+        ]);
+
+        return $token; // return the raw token to include in email
+    }
+
+    static public function sendPasswordResetEmail($email)
+    {
+        $user = DB::table('users')->where('email', $email)->first();
+        
+        if ($user) {
+            $config = GeneralModel::config();
+
+            if ($config['smtp_enabled'] == 0) {
+                return ['type' => 'error', 'value' => 'SMTP disabled globally. No email can be sent.'];
+            }
+
+            if ($user->auth == 'ldap') {
+                return ['type' => 'error', 'value' => 'Cannot reset passwords for LDAP users. Please contact your IT administrator.'];
+            }
+
+            $reset_email = route('password.reset', ['token' => ProfileModel::generatePasswordResetToken($email)]) . '?email=' . urlencode($email);
+
+            $mailer = App::make(EmailService::class);
+            $mailer->sendEmail(
+                $user->email,
+                $user->name,
+                'use-default',
+                $config['system_name'].' - Password Reset',
+                '<p>A password reset has been requested.<br>Please use the following link to reset your password: <a href="'.$reset_email.'">'.$reset_email.'</a>.</a></p>',
+                1 // notif_id
+            );
+            return ['type' => 'status', 'value' => 'Please check your inbox for the reset email.'];
+        } else {
+            return ['type' => 'error', 'value' => 'No user found. Please double check the email and try again.'];
         }
     }
 }

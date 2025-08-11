@@ -181,4 +181,31 @@ class ProfileController extends Controller
             'user' => $request->user(),
         ]);
     }
+
+    static public function sendPasswordResetEmail(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'email' => 'string|required',
+            ]);
+
+            $reset = ProfileModel::sendPasswordResetEmail($request['email']);
+            if ($reset) {
+                if ($reset['type'] == 'status') {
+                    return back()->with('status', __($reset['value']));
+                } else {
+                    return back()->withInput($request->only('email'))
+                            ->withErrors(['email' => __($reset['value'])]);
+                }
+            } else {
+                return back()->withInput($request->only('email'))
+                            ->withErrors(['email' => __('Unknown error occured.')]);
+            }
+            // return back()->with('status', __('Please check your inbox for the reset email, providing an account exists with this email.'));
+            // return redirect(GeneralModel::previousURL())->with('success', 'Please check your inbox for the reset email, providing an account exists with this email.');
+            
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
 }

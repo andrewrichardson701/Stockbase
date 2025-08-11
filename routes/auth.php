@@ -30,7 +30,7 @@ Route::middleware([AddHeadData::class])->group(function () {
         Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
             ->name('password.request');
 
-        Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+        Route::post('forgot-password', [ProfileController::class, 'sendPasswordResetEmail'])
             ->name('password.email');
 
         Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
@@ -66,6 +66,9 @@ Route::middleware([AddHeadData::class])->group(function () {
 
         
         Route::get('password-expired', [ProfileController::class, 'resetPasswordView'])
+            ->name('password.expired');
+
+        Route::post('password-expired', [ProfileController::class, 'sendPasswordResetEmail'])
             ->name('password.expired');
 
 

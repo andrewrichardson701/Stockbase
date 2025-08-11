@@ -167,4 +167,18 @@ class ProfileController extends Controller
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
+
+    static public function resetPasswordView(Request $request)
+    {
+        $response_handling = ResponseHandlingModel::responseHandling($request->all());
+        $user = $request->user();
+        if ($user->password_expired !== 1) {
+            return redirect()->route('index');
+        }
+
+        return view('auth.password-expired', [
+            'response_handling' => $response_handling,
+            'user' => $request->user(),
+        ]);
+    }
 }

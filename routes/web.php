@@ -26,6 +26,7 @@ use App\Http\Middleware\ImpersonationMiddleware;
 use App\Http\Middleware\PermissionsMiddleware;
 use App\Http\Middleware\AddHeadData;
 use \App\Http\Middleware\TwoFactorRedirectMiddleware;
+use \App\Http\Middleware\PasswordExpiredMiddleware;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -39,7 +40,7 @@ Route::middleware([AddHeadData::class])->group(function () {
         return view('dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
 
-    Route::middleware([TwoFactorRedirectMiddleware::class, SecurityMiddleware::class])->group(function () {
+    Route::middleware([PasswordExpiredMiddleware::class, TwoFactorRedirectMiddleware::class, SecurityMiddleware::class])->group(function () {
         Route::middleware('auth')->group(function () {
 
             //// Impersonation 

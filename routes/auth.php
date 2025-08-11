@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AddHeadData;
+use App\Http\Controllers\ProfileController;
 
 \URL::forceScheme('https');
 Route::middleware([AddHeadData::class])->group(function () {
@@ -37,6 +38,7 @@ Route::middleware([AddHeadData::class])->group(function () {
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
             ->name('password.store');
+
     });
 
     // Route::middleware('auth', 'twofactor.redirect')->group(function () {
@@ -61,6 +63,11 @@ Route::middleware([AddHeadData::class])->group(function () {
 
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
             ->name('logout');
+
+        
+        Route::get('password-expired', [ProfileController::class, 'resetPasswordView'])
+            ->name('password.expired');
+
 
         // 2fa
         Route::get('/user/two-factor-setup', [TwoFactorController::class, 'show'])

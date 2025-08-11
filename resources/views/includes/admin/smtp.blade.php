@@ -94,6 +94,68 @@
                             </p>
                         </td>
                     </tr>
+                    <tr class="nav-row" id="smtp-auth-type-row" style="margin-top:20px">
+                        <td id="smtp-auth-type-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-auth-type">SMTP Auth Type:</p>
+                        </td>
+                        <td id="smtp-auth-type-input">
+                            <select id="smtp-auth-type" name="smtp_auth_type" style="width:250px" class="form-control nav-v-c theme-dropdown" onchange="smtpOauth2Fields(this)" required>
+                                <option value="basic" @if ($head_data['config']['smtp_auth_type'] == '' || $head_data['config']['smtp_auth_type'] == null || $head_data['config']['smtp_auth_type'] == 'basic') selected @endif>Basic</option>
+                                <option value="oauth2" @if ($head_data['config']['smtp_auth_type'] == 'oauth2') selected @endif>OAuth2</option>
+                            </select>
+                        </td>
+                        <td id="smtp-auth-type-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-auth-type-default">{{ $head_data['default_config']['smtp_auth_type']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-oauth-provider-row" style="margin-top:20px" @if ($head_data['config']['smtp_oauth_provider'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-oauth-provider-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-oauth-provider">SMTP OAuth Provider:</p>
+                        </td>
+                        <td id="smtp-oauth-provider-input">
+                            <select id="smtp-oauth-provider" name="smtp_oauth_provider" style="width:250px" class="form-control nav-v-c theme-dropdown">
+                                <option value="" @if ($head_data['config']['smtp_oauth_provider'] == '' || $head_data['config']['smtp_oauth_provider'] == null) selected @endif>None</option>
+                                <option value="google" @if ($head_data['config']['smtp_oauth_provider'] == 'google') selected @endif>Google</option>
+                                <option value="microsoft" @if ($head_data['config']['smtp_oauth_provider'] == 'microsoft') selected @endif>Microsoft</option>
+                            </select>
+                        </td>
+                        <td id="smtp-oauth-provider-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-oauth-provider-default">{{ $head_data['default_config']['smtp_oauth_provider']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-client-id-row" style="margin-top:20px" @if ($head_data['config']['smtp_auth_type'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-client-id-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-client-id">SMTP OAuth2 Client ID:</p>
+                        </td>
+                        <td id="smtp-client-id-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-client-id" name="smtp_client_id" value="{{ $head_data['config']['smtp_client_id'] }}">
+                        </td>
+                        <td id="smtp-client-id-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-client-id-default">{{ $head_data['default_config']['smtp_client_id']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-client-secret-row" style="margin-top:20px" @if ($head_data['config']['smtp_auth_type'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-client-secret-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-client-secret">SMTP OAuth2 Secret:</p>
+                        </td>
+                        <td id="smtp-client-secret-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-client-secret" name="smtp_client_secret" value="{{ $head_data['config']['smtp_client_secret'] }}">
+                        </td>
+                        <td id="smtp-client-secret-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-client-secret-default">{{ $head_data['default_config']['smtp_client_secret']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-refresh-token-row" style="margin-top:20px" @if ($head_data['config']['smtp_auth_type'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-refresh-token-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-refresh-token">SMTP OAuth2 Refresh Token:</p>
+                        </td>
+                        <td id="smtp-refresh-token-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-refresh-token" name="smtp_refresh_token" value="{{ $head_data['config']['smtp_refresh_token'] }}">
+                        </td>
+                        <td id="smtp-refresh-token-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-refresh-token-default">{{ $head_data['default_config']['smtp_refresh_token']  }}</p>
+                        </td>
+                    </tr>
                     <tr class="nav-row" id="smtp-username-row" style="margin-top:20px">
                         <td id="smtp-username-label" style="width:250px;margin-left:25px">
                             <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-username">SMTP Username:</p>

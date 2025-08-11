@@ -297,7 +297,8 @@ class AdminModel extends Model
         if (isset($data['smtp-restore-defaults'])) {
         
             $reset_array = ['smtp_host', 'smtp_port', 'smtp_encryption', 'smtp_username',
-                            'smtp_password', 'smtp_from_email', 'smtp_from_name', 'smtp_to_email'];
+                            'smtp_password', 'smtp_from_email', 'smtp_from_name', 'smtp_to_email', 'smtp_auth_type', 
+                            'smtp_client_id', 'smtp_client_secret', 'smtp_refresh_token', 'smtp_oauth_provider'];
             $reset = AdminModel::resetConfig($reset_array);
 
             if ($reset == 1) {

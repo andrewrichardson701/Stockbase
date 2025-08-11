@@ -966,3 +966,22 @@ modalCloseAddUser = function() {
     var modal = document.getElementById("modalDivAddUser");
     modal.style.display = "none";
 }
+
+
+
+function smtpOauth2Fields(select) {
+    var rows = document.getElementsByClassName('smtpOAUTH2');
+    var rowsArray = Array.from(rows);
+
+    if (select.value == 'oauth2') {
+        // do the unhide
+        rowsArray.forEach(element => {
+            element.hidden = false;
+        });
+    } else {
+        //hide
+        rowsArray.forEach(element => {
+            element.hidden = true;
+        });
+    }
+}

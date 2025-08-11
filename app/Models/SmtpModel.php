@@ -45,11 +45,14 @@ class SmtpModel extends Model
         return $head;
     }
 
-    static public function emailBodyTop($test=null)
+    static public function emailBodyTop($test=null, $user=null)
     {
         $config = GeneralModel::configCompare();
         $comp_url_color = FunctionsModel::getComplement($config['banner_color']);
-        $user = GeneralModel::getUser();
+        
+        if ($user == null) {
+            $user = GeneralModel::getUser();
+        }
 
         $bodyTop = '
             <!-- inset block -->

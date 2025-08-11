@@ -350,7 +350,7 @@
                             <button id="optic-add-single" class="btn btn-success align-bottom" type="submit" name="add-optic-submit" style="" value="1">Add</button>
                         </div>
                         <div class="col-sm text-right" style="margin-top:10px">
-                            <a href="optic-import.php" class="link" style="font-size:12px; padding-bottom:10px">Import from CSV</a>
+                            <a href="optic-import.php" class="link" style="font-size:12px; padding-bottom:10px" hidden>Import from CSV</a>
                         </div>
                     </div>  
                 </form>

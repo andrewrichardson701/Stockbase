@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
+use App\Models\SmtpModel;
+
 use App\Services\EmailService;
 use Illuminate\Support\Facades\App;
 
@@ -174,7 +176,7 @@ class ProfileModel extends Model
 
     static public function sendPasswordResetEmail($email)
     {
-        $user = DB::table('users')->where('email', $email)->first();
+        $user = GeneralModel::getFirstWhere('users', ['email' => $email]);
         
         if ($user) {
             $config = GeneralModel::config();
@@ -183,19 +185,26 @@ class ProfileModel extends Model
                 return ['type' => 'error', 'value' => 'SMTP disabled globally. No email can be sent.'];
             }
 
-            if ($user->auth == 'ldap') {
+            if ($user['auth'] == 'ldap') {
                 return ['type' => 'error', 'value' => 'Cannot reset passwords for LDAP users. Please contact your IT administrator.'];
             }
 
             $reset_email = route('password.reset', ['token' => ProfileModel::generatePasswordResetToken($email)]) . '?email=' . urlencode($email);
 
+            $head = SmtpModel::emailHead();
+            $bodyTop = SmtpModel::emailBodyTop(null, $user);
+            $bodyBottom = SmtpModel::emailBodyBottom();
+            $footer = SmtpModel::emailFooter();
+            $body = '<p>A password reset has been requested.<br>Please use the following link to reset your password: <a href="'.$reset_email.'">'.$reset_email.'</a>.</a></p>';
+            $mail_body =  $head . $bodyTop . $body . $bodyBottom . $footer;
+
             $mailer = App::make(EmailService::class);
             $mailer->sendEmail(
-                $user->email,
-                $user->name,
+                $user['email'],
+                $user['name'],
                 'use-default',
                 $config['system_name'].' - Password Reset',
-                '<p>A password reset has been requested.<br>Please use the following link to reset your password: <a href="'.$reset_email.'">'.$reset_email.'</a>.</a></p>',
+                $mail_body,
                 1 // notif_id
             );
             return ['type' => 'status', 'value' => 'Please check your inbox for the reset email.'];

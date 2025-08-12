@@ -13,7 +13,7 @@ class PasswordExpiredMiddleware
     {
         $user = Auth::user();
 
-        if ($user->password_expired == 1) {
+        if ($user && $user->password_expired == 1) {
             Session::put('password_expired', true);
             return Redirect::route('password.expired');
         }

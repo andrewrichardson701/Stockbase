@@ -406,19 +406,19 @@ class AdminModel extends Model
                 }
             }
 
-            if (!empty($errors)) {
-                // error
-                return ['errors' => $errors, 'unchanged' => $unchanged, 'changed' => $changed, 'input_data' => $data];
-            } 
+        }
 
-            if (!empty($changed)) {
-                //success
-                $changed_fields = implode(', ', array_keys($changed));
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
-            } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
-            }
+        if (!empty($errors)) {
+            // error
+            return ['errors' => $errors, 'unchanged' => $unchanged, 'changed' => $changed, 'input_data' => $data];
+        } 
 
+        if (!empty($changed)) {
+            //success
+            $changed_fields = implode(', ', array_keys($changed));
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
+        } else {
+            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
         }
     }
 

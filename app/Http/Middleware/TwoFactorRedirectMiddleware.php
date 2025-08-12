@@ -13,7 +13,7 @@ class TwoFactorRedirectMiddleware
         $status = Session::get('two_factor_request');
 
         // Allow through if 2FA is already skipped or completed
-        if ($status === 'skip' || $status === 'complete') {
+        if (!$status || $status === 'skip' || $status === 'complete') {
             return $next($request);
         }
 

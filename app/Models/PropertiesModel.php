@@ -94,6 +94,7 @@ class PropertiesModel extends Model
         }
     }
 
+    // currently unused
     static public function loadProperty($request)
     {
         $valid_types = ['tag', 'manufacturer', 'site', 'area', 'shelf'];

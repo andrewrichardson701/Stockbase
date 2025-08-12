@@ -71,6 +71,7 @@ class AdminModel extends Model
         return $return;
     }
 
+    // currently unused
     static public function taggedStockByStockId() 
     {
         $return = [];
@@ -93,6 +94,7 @@ class AdminModel extends Model
         return $return;
     }
 
+    // currently unused
     static public function taggedStockById() 
     {
         $return = [];

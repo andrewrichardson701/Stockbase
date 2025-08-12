@@ -44,12 +44,6 @@ class ItemModel extends Model
     //
     protected $table = 'item'; // Specify your table name
     protected $fillable = ['stock_id', 'upc', 'quantity', 'cost', 'serial_number', 'comments', 'manufacturer_id', 'shelf_id', 'is_container', 'deleted'];
-
-    public static function index()
-    {
-
-    }
-
     public static function editItem($request) 
     {
         $user = GeneralModel::getUser();

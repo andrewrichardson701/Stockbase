@@ -134,7 +134,7 @@ class AdminController extends Controller
     static public function updateConfigSettings(Request $request)
     {
         if ($request['_token'] == csrf_token()) {
-
+            
             try {
                 $validated = $request->validate([
                     'system_name' => 'string|nullable',

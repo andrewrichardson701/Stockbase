@@ -220,6 +220,7 @@ class GeneralModel extends Model
                         ->toArray();
     }
 
+    // currently unused
     static public function formatArrayOnId($array) 
     {
         $formatted = [];
@@ -266,6 +267,7 @@ class GeneralModel extends Model
         return $formatted;
     }
 
+    // currently unused
     static public function formatArrayOnField($array, $field) 
     {
         $formatted = [];
@@ -282,6 +284,7 @@ class GeneralModel extends Model
         return $formatted;
     }
 
+    // currently unused
     static public function formatArrayOnFieldAndCount($array, $field='id') 
     {
         $formatted = [];
@@ -563,15 +566,11 @@ class GeneralModel extends Model
         return $user_data;
     }
 
+    // currently unused - this was to be used in the changelog for impersonation overrides
     static public function getUserData($impersonator_id)
     {
         $user = User::find($impersonator_id);
         return $user;
-    }
-
-    static public function sessionData() 
-    {
-        
     }
 
     static public function updateChecker($versionNumber) 
@@ -810,39 +809,6 @@ class GeneralModel extends Model
         return 1;
     }
 
-    static public function updateTransactions($info)
-    {
-        $stock_id = $info['stock_id'];
-        $shelf_id = $info['shelf_id'];
-        $item_id = $info['item_id'];
-        $type = $info['type'];
-        $quantity = $info['quantity'];
-        $price = $info['price'];
-        $serial_number = $info['serial_number'];
-        $reason = $info['reason'];
-        $comments = $info['comments'];
-        $username = $info['user']['username'];
-
-        DB::table('changelog')->insert([
-            'stock_id' => $stock_id,
-            'item_id' => $item_id,
-            'type' => $type,
-            'quantity' => $quantity,
-            'price' => $price,
-            'serial_number' => $serial_number,
-            'reason' => $reason,
-            'comments' => $comments,
-            'date' => date("Y-m-d"),
-            'time' => date("H:i:s"),
-            'username' => $username,
-            'shelf_id' => $shelf_id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return 1;
-    }
-
     static public function getFilesInDirectory($directory)
     {
         $path = public_path($directory); // Get full path to the folder
@@ -918,19 +884,6 @@ class GeneralModel extends Model
         }
     
         return true;
-    }
-
-    static public function checkUserPermissions($permissions)
-    {
-        $user = GeneralModel::getUser();
-
-        foreach ($permissions as $permission) {
-            if ($user['permissions'][$permission]) {
-                return 1;
-            }
-        }
-
-        return 0;
     }
 
     static public function getSiteAreaShelfData($shelf_id)

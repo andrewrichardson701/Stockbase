@@ -879,6 +879,7 @@ class StockModel extends Model
         return $return;
     }
 
+    // currently unused
     static public function getContainerData($container_id, $is_item=0) 
     {
         $return = [];
@@ -2094,6 +2095,7 @@ class StockModel extends Model
         }
     }
 
+    // currently unused - this seems to be integrated into "moveStock"
     static public function moveStockContainer($request, $move_all) // moving stock quantity that is a container
     {
         // get the info
@@ -2329,7 +2331,6 @@ class StockModel extends Model
         
         return $data;
     }
-
 
     static public function imageUpload($request)
     {

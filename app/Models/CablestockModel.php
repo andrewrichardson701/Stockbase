@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\DB;
 class CablestockModel extends Model
 {
     //
-    static public function index()
-    {
-
-    }
-
     static public function getCableTypesByParent() 
     {
         $instance = new self();

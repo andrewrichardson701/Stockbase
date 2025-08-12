@@ -13,11 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 class IndexModel extends Model
 {
     //
-    static public function index() 
-    {
-
-    }
-
     static public function queryData($request)
     {
         $q_oos = isset($request['oos']) ? (int)$request['oos'] : 0;

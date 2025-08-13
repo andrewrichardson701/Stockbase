@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://gitlab.com/andrewrichardson701/stockbase">
-    <img src="assets/img/config/default/default-logo.png" alt="Logo" width="80" height="80">
+    <img src="public/img/config/default/default-logo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Stockbase</h3>
@@ -72,9 +72,10 @@ The design aims to make managing and tracking devices, parts, cables, fibre opti
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
+* [![Laravel][Laravel.com]][Laravel-url]
 * [![PHP][PHP.net]][PHP-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
- * [![JavaScript][JavaScript.com]][JavaScript-url]
+* [![JavaScript][JavaScript.com]][JavaScript-url]
 * [![JQuery][JQuery.com]][JQuery-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -94,15 +95,29 @@ If this is not a fresh install (e.g. a new VM or you have no existing database o
 
 - Apache2 / Nginx (user choice, or whichever is installed)
 
-- PHP 8.3 (v8.3.8)
+- PHP 8.4 (v8.4.7)
 
-- php8.3, php-8.3-cli php8.3-common, php8.3-curl, php8.3-fpm, php8.3-gd, php8.3-igbinary, php8.3-imagick, php8.3-imap, php8.3-intl, php8.3-ldap, php8.3-mbstring, php8.3-mysql, php8.3-readline, php8.3-redis, php8.3-soap, php8.3-xml, php8.3-xsl, php8.3-zip
+- php8.4, php8.4-cli php8.4-common, php8.4-curl, php8.4-fpm, php8.4-gd, php8.4-igbinary, php8.4-imagick, php8.4-imap, php8.4-intl, php8.4-ldap, php8.4-mbstring, php8.4-mysql, php8.4-readline, php8.4-redis, php8.4-soap, php8.4-xml, php8.4-xsl, php8.4-zip
 
-- MySQL Server (v8.0.34) (or similar DB using mysql syntax)
+- MySQL Server (v8.0.42) (or similar DB using mysql syntax)
 
-- PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
+- Laravel Framework (v11.45.1) (Packaged at vendor/larvel/framework, included in composer.json) [GitHub](https://github.com/laravel/framework.git)
 
-- Google Authenticator (v1.0.0) (Packaged at includes/GoogleAuthenticator)
+- Laravel Tinker (v2.10.1) (Packaged at vendor/larvel/tinker, included in composer.json) [GitHub](https://github.com/laravel/tinker.git)
+
+- Laravel Fortify (v1.27.0) (Packaged at vendor/larvel/fortify, included in composer.json) [GitHub](https://github.com/laravel/fortify.git)
+
+- League OAuth2 Client (v2.8.1) (Packaged at league/oauth2-client, included in composer.json) [GitHub](https://github.com/thephpleague/oauth2-client.git)
+
+- League OAuth2 Google (v4.0.1) (Packaged at league/oauth2-google, included in composer.json) [GitHub](https://github.com/thephpleague/oauth2-google.git)
+
+- Steven Maguire's OAuth2 Microsoft (v2.2.0) (Packaged at vendor/stevenmaguire/oauth2-microsoft, included in composer.json) [GitHub](https://github.com/stevenmaguire/oauth2-microsoft.git)
+
+- PHPMailer (v6.10.0) (Packaged at vendor/phpmailer/phpmailer, included in composer.json) [Github](https://github.com/PHPMailer/PHPMailer.git)
+
+- Google Authenticator (v8.0.3) (Packaged at vendor/pragmarx/google2fa, included in composer.json) [Github](https://github.com/antonioribeiro/google2fa.git)
+
+- Ldaprecord-laravel (v3.4.2) (Pacakaged at vendor/directorytree/ldaprecord, included in composer.json) [GitHub](https://github.com/DirectoryTree/LdapRecord-Laravel.git)
 
 - Bootstrap (v4.5.2) (included in headers)
 
@@ -114,7 +129,7 @@ If this is not a fresh install (e.g. a new VM or you have no existing database o
 
   
 
-*These packages are all installed as part of the install script at*  `assets/scripts/install.bash`*.*
+*These packages are all installed as part of*  `composer.json`*.*
 
 
 ### Installation
@@ -130,7 +145,7 @@ For automated deployment, run the below command to clone the repository and run 
 
   
 
-`git clone https://gitlab.com/andrewrichardson701/stockbase.git && /bin/bash stockbase/assets/scripts/install.bash`
+`git clone https://gitlab.com/andrewrichardson701/stockbase.git && /bin/bash stockbase/public/scripts/install.bash`
 
   
 
@@ -170,7 +185,7 @@ Clone the repo first, and the follow the below steps.
 
   
 
-2. Install PHP 8.3 and all dependencies required
+2. Install PHP 8.4 and all dependencies required
 
   
 
@@ -198,7 +213,7 @@ b. Install the package and dependencies
 
 ```
 
-sudo apt install -y php8.3 php8.3-cli php8.3-common php8.3-curl php8.3-fpm php8.3-gd php8.3-igbinary php8.3-imagick php8.3-imap php8.3-intl php8.3-ldap php8.3-mbstring php8.3-mysql php8.3-readline php8.3-redis php8.3-soap php8.3-xml php8.3-xsl php8.3-zip
+sudo apt install -y php8.4 php8.4-cli php8.4-common php8.4-curl php8.4-fpm php8.4-gd php8.4-igbinary php8.4-imagick php8.4-imap php8.4-intl php8.4-ldap php8.4-mbstring php8.4-mysql php8.4-readline php8.4-redis php8.4-soap php8.4-xml php8.4-xsl php8.4-zip
 
 ```
 
@@ -286,7 +301,7 @@ cd stockbase
 
   
 
-mysql -u root -p < assets/sql/db_setup.sql
+mysql -u root -p < public/sql/db_setup.sql
 
 ```
 
@@ -302,7 +317,7 @@ mysql -u root -p < assets/sql/db_setup.sql
 
 ```
 
-mysql -u root -p < assets/sql/db_extras.sql
+mysql -u root -p < public/sql/db_extras.sql
 
 ```
 
@@ -698,7 +713,7 @@ location ~ \.php$ {
 
 include fastcgi_params;
 
-fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
 
 fastcgi_index index.php;
 
@@ -906,7 +921,7 @@ location ~ \.php$ {
 
 include fastcgi_params;
 
-fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
 
 fastcgi_index index.php;
 
@@ -972,7 +987,7 @@ error_page 404 /index.php;
 
 location ~ \.php$ {
 
-fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
 
 fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
 
@@ -1053,16 +1068,20 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 <!-- ROADMAP -->
 ## Roadmap
 
-[Restyaboard Roadmap](https://todo.ajrich.co.uk)
+[Restyaboard Roadmap](https://todo.ajrich.co.uk/#/board/16)
 
 ### In Progress
 
+- [ ] Update the file breakdown section of the README with up to date information.
+- [ ] Create migration to create the database from scratch - this should include initial information, such as root user and default password.
+- [ ] Create a migration to migrate old systes to the new Laravel system
 - [ ] Add an API to GET information
-- [ ] Add API key storage to the database
+- [ ] Add an API log to record request types
 - [ ] Add a CPU storage page
 
 ### Planned Changes
 
+- [ ] Find a good SSO package to handle single sign on
 - [ ] Add a drive storage page
 - [ ] Add a RAM / Memory storage page
 - [ ] Add option to link optics to site / area / shelf, not only the site
@@ -1070,20 +1089,10 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 
 ### Completed
 
-- [x] Favourites list
-- [x] Make the Optics search do a broader search, including spectrum
-- [x] Add a "show password" button on the login screen
-- [x] Add an optional 'sign up' page that can be enabled in the admin page
-- [x] Enable the addition of more optic speeds.
-- [x] Allow the editing of all optic attributes in the admin section.
-- [x] Make a way of importing a spreadsheet, including a template sheet (csv) for optics and normal stock.
-- [x] Format the output of the spreadsheet import for optics.
-- [x] Add a version checker, prompting when out of date and by how many releases
-- [x] Put the changelog on the about page
-- [x] Add an Assets page, for links to other asset management pages (e.g. optics, drives)
-- [x] Change the optics link to be assets instead on the nav
-- [x] Add pagination to the changelog.php page
-- [x] Add pagination to the transactions.php page
+- [x] Find a good LDAP package to handle Windows crednetial login (converting to Laravel) - *used ldaprecord-laravel*
+- [x] Find a compatible SMTP package to handle email notifiactions and password resets (converting to Laravel) - *used PHPMailer*
+- [x] Migrate system to Laravel, with the essentials working
+- [x] Add API key storage to the database
 
 See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) for a full list of proposed features (and known issues).
 
@@ -1092,7 +1101,7 @@ See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) f
 <!-- Changelog -->
 ## Changelog
 
-All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
+All changes are listed in the Changelog file: [CHANGELOG.md](public/CHANGELOG.md)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -1101,7 +1110,7 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 <details>
 
-<summary><h3>assets/</h3></summary>
+<summary><h3>public/</h3></summary>
 
   
 
@@ -2537,6 +2546,8 @@ All changes are listed in the Changelog file: [CHANGELOG.md](CHANGELOG.md)
 
 </details>
 
+<details>
+
 <summary><h3>signup.php</h3></summary>
 
   
@@ -2697,8 +2708,10 @@ Project Link: [https://gitlab.com/andrewrichardson701/stockbase](https://gitlab.
 [license-url]: https://gitlab.com/andrewrichardson701/stockbase/blob/master/COPYING.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/andrewrichardson701
-[product-screenshot]: assets/img/index-screenshot.png
+[product-screenshot]: public/img/index-screenshot.png
+[Laravel.com]: https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white
 [PHP.net]: https://img.shields.io/badge/PHP-4F5B93?style=for-the-badge&logo=php&logoColor=white
+[Laravel-url]: https://laravel.com/
 [PHP-url]: https://www.php.net/
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com

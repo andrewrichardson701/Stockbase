@@ -1,0 +1,232 @@
+<div class="container" style="padding-bottom:0px">   
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="smtp-settings" onclick="toggleSection(this, 'smtp')">SMTP Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+
+    <!-- SMTP Settings -->
+    <div style="padding-top: 20px" id="smtp" hidden>
+        @include('includes.response-handling', ['section' => 'smtp-settings'])
+        <form id="smtpToggleForm" enctype="multipart/form-data" action="{{ route('admin.smtpSettings') }}" method="POST">
+            @csrf
+            <input type="hidden" name="smtp-toggle-submit" value="set" />
+            <table id="smtpToggleTable">
+                <tbody>
+                    <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">
+                        <td style="width:150px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="auth-username">Enable SMTP</p>
+                            </td>
+                        <td class="align-middle">
+                            <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                <input type="checkbox" name="smtp-enabled" id="smtp-enabled-toggle" @if ($head_data['config']['smtp_enabled'] == 1) checked @endif >
+                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)"></span>
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        <form id="smtpForm" enctype="multipart/form-data" action="{{ route('admin.smtpSettings') }}" method="POST" @if ($head_data['config']['smtp_enabled'] == 0) hidden @endif >
+            @csrf
+            <hr style="border-color:white; margin-left:10px">
+            <table id="smtpTable">
+                <tbody>
+                    <tr class="nav-row" id="smtp-headings" style="margin-bottom:10px">
+                        <th style="width:250px;margin-left:25px"></th>
+                        <th style="width: 250px">Custom</th>
+                        <th style="margin-left:25px">Default</th>
+                    </tr>
+                    <tr class="nav-row" id="smtp-host-row">
+                        <td id="smtp-host-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-host">SMTP Host:</p>
+                        </td>
+                        <td id="smtp-host-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-host" name="smtp_host" value="{{ $head_data['config']['smtp_host'] }}" required>
+                        </td>
+                        <td id="smtp-host-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-host-default">{{ $head_data['default_config']['smtp_host'] }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-port-row" style="margin-top:20px">
+                        <td id="smtp-port-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-port">SMTP Port:</p>
+                        </td>
+                        <td id="smtp-port-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-port" name="smtp_port" value="{{ $head_data['config']['smtp_port'] }}" required>
+                        </td>
+                        <td id="smtp-port-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-port-default">{{ $head_data['default_config']['smtp_port'] }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-encryption-row" style="margin-top:20px">
+                        <td id="smtp-encryption-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-encryption">SMTP Encryption:</p>
+                        </td>
+                        <td id="smtp-encryption-input">
+                            <select id="smtp-encryption" name="smtp_encryption" style="width:250px" class="form-control nav-v-c theme-dropdown" required>
+                                <option value="none" @if ($head_data['config']['smtp_encryption'] == '' || $head_data['config']['smtp_encryption'] == null) selected @endif>None</option>
+                                <option value="starttls" @if ($head_data['config']['smtp_encryption'] == 'starttls') selected @endif>STARTTLS</option>
+                                <option value="tls" @if ($head_data['config']['smtp_encryption'] == 'tls') selected @endif>Transport Layer Security (TLS)</option>
+                                <option value="ssl" @if ($head_data['config']['smtp_encryption'] == 'ssl') selected @endif>Secure Sockets Layer (SSL)</option>
+                            </select>
+                        </td>
+                        <td id="smtp-encryption-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-encryption-default">
+                                @switch($head_data['default_config']['smtp_encryption'])
+                                    @case('none')
+                                    @case('')
+                                    @case(null)
+                                        None
+                                        @break
+
+                                    @case('starttls')
+                                        STARTTLS
+                                        @break
+
+                                    @case('tls')
+                                        Transport Layer Security (TLS)
+                                        @break
+
+                                    @case('ssl')
+                                        Secure Sockets Layer (SSL)
+                                        @break
+
+                                    @default
+                                        None
+                                @endswitch
+                            </p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-auth-type-row" style="margin-top:20px">
+                        <td id="smtp-auth-type-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-auth-type">SMTP Auth Type:</p>
+                        </td>
+                        <td id="smtp-auth-type-input">
+                            <select id="smtp-auth-type" name="smtp_auth_type" style="width:250px" class="form-control nav-v-c theme-dropdown" onchange="smtpOauth2Fields(this)" required>
+                                <option value="basic" @if ($head_data['config']['smtp_auth_type'] == '' || $head_data['config']['smtp_auth_type'] == null || $head_data['config']['smtp_auth_type'] == 'basic') selected @endif>Basic</option>
+                                <option value="oauth2" @if ($head_data['config']['smtp_auth_type'] == 'oauth2') selected @endif>OAuth2</option>
+                            </select>
+                        </td>
+                        <td id="smtp-auth-type-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-auth-type-default">{{ $head_data['default_config']['smtp_auth_type']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-oauth-provider-row" style="margin-top:20px" @if ($head_data['config']['smtp_oauth_provider'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-oauth-provider-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-oauth-provider">SMTP OAuth Provider:</p>
+                        </td>
+                        <td id="smtp-oauth-provider-input">
+                            <select id="smtp-oauth-provider" name="smtp_oauth_provider" style="width:250px" class="form-control nav-v-c theme-dropdown">
+                                <option value="" @if ($head_data['config']['smtp_oauth_provider'] == '' || $head_data['config']['smtp_oauth_provider'] == null) selected @endif>None</option>
+                                <option value="google" @if ($head_data['config']['smtp_oauth_provider'] == 'google') selected @endif>Google</option>
+                                <option value="microsoft" @if ($head_data['config']['smtp_oauth_provider'] == 'microsoft') selected @endif>Microsoft</option>
+                            </select>
+                        </td>
+                        <td id="smtp-oauth-provider-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-oauth-provider-default">{{ $head_data['default_config']['smtp_oauth_provider']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-client-id-row" style="margin-top:20px" @if ($head_data['config']['smtp_auth_type'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-client-id-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-client-id">SMTP OAuth2 Client ID:</p>
+                        </td>
+                        <td id="smtp-client-id-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-client-id" name="smtp_client_id" value="{{ $head_data['config']['smtp_client_id'] }}">
+                        </td>
+                        <td id="smtp-client-id-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-client-id-default">{{ $head_data['default_config']['smtp_client_id']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-client-secret-row" style="margin-top:20px" @if ($head_data['config']['smtp_auth_type'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-client-secret-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-client-secret">SMTP OAuth2 Secret:</p>
+                        </td>
+                        <td id="smtp-client-secret-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-client-secret" name="smtp_client_secret" value="{{ $head_data['config']['smtp_client_secret'] }}">
+                        </td>
+                        <td id="smtp-client-secret-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-client-secret-default">{{ $head_data['default_config']['smtp_client_secret']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row smtpOAUTH2" id="smtp-refresh-token-row" style="margin-top:20px" @if ($head_data['config']['smtp_auth_type'] !== 'oauth2') hidden @endif>
+                        <td id="smtp-refresh-token-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-refresh-token">SMTP OAuth2 Refresh Token:</p>
+                        </td>
+                        <td id="smtp-refresh-token-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-refresh-token" name="smtp_refresh_token" value="{{ $head_data['config']['smtp_refresh_token'] }}">
+                        </td>
+                        <td id="smtp-refresh-token-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-refresh-token-default">{{ $head_data['default_config']['smtp_refresh_token']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-username-row" style="margin-top:20px">
+                        <td id="smtp-username-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-username">SMTP Username:</p>
+                        </td>
+                        <td id="smtp-username-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-username" name="smtp_username" value="{{ $head_data['config']['smtp_username'] }}">
+                        </td>
+                        <td id="smtp-username-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-username-default">{{ $head_data['default_config']['smtp_username']  }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-password-row" style="margin-top:20px">
+                        <td id="smtp-password-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-password">SMTP Password:</p>
+                        </td>
+                        <td id="smtp-password-input">
+                            <input class="form-control nav-v-c theme-input" type="password" style="width: 250px" id="smtp-password" name="smtp_password" value="password">
+                        </td>
+                        <td id="smtp-password-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-password-default">@if (isset($head_data['default_config']['smtp_password'])) <or class="green">Default exists</or> @else <or class="red">No default exists</or>@endif</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-from-email-row" style="margin-top:20px">
+                        <td id="smtp-from-email-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-from-email">SMTP From Email:</p>
+                        </td>
+                        <td id="smtp-from-email-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-from-email" name="smtp_from_email" value="{{ $head_data['config']['smtp_from_email'] }}" required>
+                        </td>
+                        <td id="smtp-from-email-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-from-email-default">{{ $head_data['default_config']['smtp_from_email'] }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-from-name-row" style="margin-top:20px">
+                        <td id="smtp-from-name-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-from-name">SMTP From Name:</p>
+                        </td>
+                        <td id="smtp-from-name-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-from-name" name="smtp_from_name" value="{{ $head_data['config']['smtp_from_name'] }}" required>
+                        </td>
+                        <td id="smtp-from-name-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-from-name-default">{{ $head_data['default_config']['smtp_from_name'] }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" id="smtp-backup-to-row" style="margin-top:20px">
+                        <td id="smtp-backup-to-label" style="width:250px;margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="smtp-backup-to">SMTP To Email (Backup):</p>
+                        </td>
+                        <td id="smtp-backup-to-input">
+                            <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="smtp-backup-to" name="smtp_to_email" value="{{ $head_data['config']['smtp_to_email'] }}" required>
+                        </td>
+                        <td id="smtp-backup-to-default-cell" style="margin-left:25px">
+                            <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="smtp-backup-to-default">{{ $head_data['default_config']['smtp_to_email'] }}</p>
+                        </td>
+                    </tr>
+                    <tr class="nav-row" style="margin-top:20px">
+                        <td style="width:250px">
+                            <input id="smtp-submit" type="submit" name="smtp-submit" class="btn btn-success" style="margin-left:25px" value="Save" />
+                        </td>
+                        <td style="width:250px">
+                            <a id="test-config" name="test-config" class="btn btn-info" style="margin-left:25px;color:white !important" onclick="testSMTP()">Test config</a>
+                            <i id="smtp-success-icon" class="fa-solid fa-check fa-lg" style="color: lime; margin-left:10px; display: none;" ></i>
+                            <i id="smtp-fail-icon" class="fa-solid fa-xmark fa-lg" style="color: red; margin-left:10px; display: none;" ></i>
+                            <i id="smtp-loading-icon" class="fa-solid fa-spinner fa-spin fa-lg" style="color: cyan; margin-left:10px; display: none;" ></i>
+                        </td>
+                        <td style="margin-left:25px">
+                            <input id="smtp-restore-defaults" type="submit" name="smtp-restore-defaults" class="btn btn-danger" style="margin-left:25px" value="Restore Default" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>

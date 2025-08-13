@@ -1,0 +1,90 @@
+// swipe card reader bit - should now be unused
+$(document).ready(function() {
+    $(document).keypress(function(event) {
+        var swipeModal = document.getElementById('modalDivSwipe');
+            if (swipeModal.display === 'block') {
+            // Assuming the card input triggers a keypress event
+            var cardData = String.fromCharCode(event.which);
+            var cardData_input = document.getElementById('cardData');
+            var cardModifyForm = document.getElementById('cardModifyForm');
+            cardData_input.value = cardData;
+            cardModifyForm.submit();
+        }
+    });
+});
+
+// #############
+
+// modals
+function modalLoadReset2FA(id) {
+    var modal = document.getElementById("modalDivReset2FA");
+    modal.style.display = "block";
+    var user_id_element = document.getElementById('2fareset_user_id');
+    user_id_element.value = id;
+}
+function modalCloseReset2FA() { 
+    var modal = document.getElementById("modalDivReset2FA");
+    modal.style.display = "none";
+    var user_id_element = document.getElementById('2fareset_user_id');
+    user_id_element.value = '';
+}
+function modalLoadSwipe(type, card) {
+    var modal = document.getElementById("modalDivSwipe");
+    var cardTypeInput = document.getElementById('cardType');
+    var cardCardInput = document.getElementById('cardCard');
+    var cardHead = document.getElementById('cardHead');
+    modal.style.display = "block";
+    cardTypeInput.value = type;
+    cardCardInput.value = card;
+    if (type == 'assign') {
+        cardHead.innerText = 'Assign Swipe Card '+card;
+    } else {
+        cardHead.innerText = 'Re-assign Swipe Card '+card;
+    }
+}
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseSwipe = function() { 
+    var modal = document.getElementById("modalDivSwipe");
+    var cardTypeInput = document.getElementById('cardType');
+    var cardCardInput = document.getElementById('cardCard');
+    var cardHead = document.getElementById('cardHead');
+    modal.style.display = "none";
+    cardTypeInput.value = '';
+    cardCardInput.value = '';
+    cardHead.innerText = '';
+}
+function modalLoadLoginHistory() {
+    var modal = document.getElementById("modalDivLoginHistory");
+    modal.style.display = "block";
+}
+// When the user clicks on <span> (x), close the modal or if they click the image.
+function modalCloseLoginHistory() { 
+    var modal = document.getElementById("modalDivLoginHistory");
+    modal.style.display = "none";
+}
+
+//#################
+
+document.getElementById("enable_2fa_checkbox").addEventListener("change", function (event) {
+    // Check if the checkbox is being unchecked
+    const isUncheck = !this.checked;
+
+    // If the checkbox is being unchecked, display the confirmation popup
+    if (!isUncheck) {
+        const confirmed = confirm(
+            'You will be prompted to setup 2FA on next login, do you want to proceed?'
+        );
+
+        // If the user cancels, revert the checkbox back to its previous state
+        if (!confirmed) {
+            this.checked = true; // Revert the checkbox back to checked state
+            return;
+        }
+    }
+
+    // Update the initial state of the checkbox for the next change event
+    isSmtpCheckboxChecked = this.checked;
+
+    // If the checkbox is not being unchecked or the user confirmed, submit the form
+    document.getElementById("enable_2fa_form").submit();
+});

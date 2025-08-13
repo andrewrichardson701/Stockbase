@@ -1,4 +1,8 @@
 <h2>Changelog</h2>
+<h3>1.4.0 - TBC</h3>
+<ul>
+    <li>Bullet points added to the Changelog on the about page</li>
+</ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>
     <li>Converted the main system to Laravel</li>

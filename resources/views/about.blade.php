@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="col-1"></div>
-                <div class="col-4" id="version-changelog" style="max-height:60vh;overflow-x: hidden;overflow-y: auto; ">
+                <div class="col-4 changelog" id="version-changelog" style="max-height:60vh;overflow-x: hidden;overflow-y: auto; ">
                     {!! file_get_contents(public_path('CHANGELOG.md')) !!}
                 </div>
             </div>

@@ -99,11 +99,25 @@ If this is not a fresh install (e.g. a new VM or you have no existing database o
 
 - php8.4, php8.4-cli php8.4-common, php8.4-curl, php8.4-fpm, php8.4-gd, php8.4-igbinary, php8.4-imagick, php8.4-imap, php8.4-intl, php8.4-ldap, php8.4-mbstring, php8.4-mysql, php8.4-readline, php8.4-redis, php8.4-soap, php8.4-xml, php8.4-xsl, php8.4-zip
 
-- MySQL Server (v8.0.34) (or similar DB using mysql syntax)
+- MySQL Server (v8.0.42) (or similar DB using mysql syntax)
 
-- PHPMailer (v6.8.0) (Packaged at includes/PHPMailer)
+- Laravel Framework (v11.45.1) (Packaged at vendor/larvel/framework, included in composer.json) [GitHub](https://github.com/laravel/framework.git)
 
-- Google Authenticator (v1.0.0) (Packaged at includes/GoogleAuthenticator)
+- Laravel Tinker (v2.10.1) (Packaged at vendor/larvel/tinker, included in composer.json) [GitHub](https://github.com/laravel/tinker.git)
+
+- Laravel Fortify (v1.27.0) (Packaged at vendor/larvel/fortify, included in composer.json) [GitHub](https://github.com/laravel/fortify.git)
+
+- League OAuth2 Client (v2.8.1) (Packaged at league/oauth2-client, included in composer.json) [GitHub](https://github.com/thephpleague/oauth2-client.git)
+
+- League OAuth2 Google (v4.0.1) (Packaged at league/oauth2-google, included in composer.json) [GitHub](https://github.com/thephpleague/oauth2-google.git)
+
+- Steven Maguire's OAuth2 Microsoft (v2.2.0) (Packaged at vendor/stevenmaguire/oauth2-microsoft, included in composer.json) [GitHub](https://github.com/stevenmaguire/oauth2-microsoft.git)
+
+- PHPMailer (v6.10.0) (Packaged at vendor/phpmailer/phpmailer, included in composer.json) [Github](https://github.com/PHPMailer/PHPMailer.git)
+
+- Google Authenticator (v8.0.3) (Packaged at vendor/pragmarx/google2fa, included in composer.json) [Github](https://github.com/antonioribeiro/google2fa.git)
+
+- Ldaprecord-laravel (v3.4.2) (Pacakaged at vendor/directorytree/ldaprecord, included in composer.json) [GitHub](https://github.com/DirectoryTree/LdapRecord-Laravel.git)
 
 - Bootstrap (v4.5.2) (included in headers)
 
@@ -115,7 +129,7 @@ If this is not a fresh install (e.g. a new VM or you have no existing database o
 
   
 
-*These packages are all installed as part of the install script at*  `public/scripts/install.bash`*.*
+*These packages are all installed as part of*  `composer.json`*.*
 
 
 ### Installation
@@ -1054,13 +1068,12 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 <!-- ROADMAP -->
 ## Roadmap
 
-[Restyaboard Roadmap](https://todo.ajrich.co.uk)
+[Restyaboard Roadmap](https://todo.ajrich.co.uk/#/board/16)
 
 ### In Progress
 
-- [ ] Find a compatible SMTP package to handle email notifiactions and password resets (converting to Laravel)
-- [ ] Find a good LDAP package to handle Windows crednetial login (converting to Laravel)
-- [ ] Find a good SSO package to handle single sign on
+- [ ] Update the file breakdown section of the README with up to date information.
+- [ ] Create migration to create the database from scratch - this should include initial information, such as root user and default password.
 - [ ] Create a migration to migrate old systes to the new Laravel system
 - [ ] Add an API to GET information
 - [ ] Add an API log to record request types
@@ -1068,6 +1081,7 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 
 ### Planned Changes
 
+- [ ] Find a good SSO package to handle single sign on
 - [ ] Add a drive storage page
 - [ ] Add a RAM / Memory storage page
 - [ ] Add option to link optics to site / area / shelf, not only the site
@@ -1075,6 +1089,8 @@ Head to the 'Admin' page from the navigation bar and configure your setup.
 
 ### Completed
 
+- [x] Find a good LDAP package to handle Windows crednetial login (converting to Laravel) - *used ldaprecord-laravel*
+- [x] Find a compatible SMTP package to handle email notifiactions and password resets (converting to Laravel) - *used PHPMailer*
 - [x] Migrate system to Laravel, with the essentials working
 - [x] Add API key storage to the database
 
@@ -1085,11 +1101,7 @@ See the [open issues](https://gitlab.com/andrewrichardson701/stockbase/issues) f
 <!-- Changelog -->
 ## Changelog
 
-All changes are listed in the Changelog file: [CHANGELOG.md](publi
-
-
-
-c/CHANGELOG.md)
+All changes are listed in the Changelog file: [CHANGELOG.md](public/CHANGELOG.md)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -2533,6 +2545,8 @@ c/CHANGELOG.md)
   
 
 </details>
+
+<details>
 
 <summary><h3>signup.php</h3></summary>
 

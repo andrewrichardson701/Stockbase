@@ -22,6 +22,10 @@
     <li>Logging in now works with LDAP.</li>
     <li>LDAP test on the admin page now works properly.</li>
     <li>Login page now asks if the user is Local.</li>
+    <li>Password reset emails now working.</li>
+    <li>2FA now integrated using Google Authenticator. Tested and working.</li>
+    <li>Middleware in place to prevent 2FA bypassing.</li>
+    <li>Middleware in place to force a user password reset when their password expires.</li>
 </ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>

@@ -602,7 +602,7 @@ class GeneralModel extends Model
         // Store current version in session
         Session::put('version_current', $version);
         $currentVersion = ltrim($version, 'v');
-        $versionCheckTime = $time;
+
         // Check if we need to fetch remote version (every 15 minutes)
         if ($versionCheckTime < $time - (60*15) || $versionCheckTime === $time) {
             $remoteHeadContent = @file_get_contents($remoteHeadFileUrl);

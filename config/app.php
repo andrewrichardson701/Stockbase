@@ -1,6 +1,11 @@
 <?php
+$app_version = '1.4.0';
 
 return [
+
+    // Custom app version
+
+    'version' => env('APP_VERSION', $app_version),
 
     /*
     |--------------------------------------------------------------------------

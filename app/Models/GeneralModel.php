@@ -587,7 +587,7 @@ class GeneralModel extends Model
             $return = [];
             $version_file_path = 'version.json';
             // master gitlab branch head file
-            $remoteHeadFileUrl =  'https://gitlab.com/andrewrichardson701/stockbase/-/raw/master/head.php';
+            $remoteHeadFileUrl =  'https://gitlab.com/andrewrichardson701/stockbase/-/raw/master/resources/views/head.blade.php';
 
             // check if version file exists, if not create a blank one
             if (!file_exists($version_file_path)) {

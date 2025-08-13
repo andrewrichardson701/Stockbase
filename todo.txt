@@ -1,0 +1,49 @@
+- Cable stock page
+    - Change the sql stock loading to be an ajax request like the index page
+Done    - CableStockModel::queryData($request)
+        - Need to convert the page to do an ajax request rather than loading it into the page on refresh
+Done        - Get the inventory with ajax
+            - Adding and new cables
+            - Adding and removing quantity
+            - Moving quantity
+Done    - Get sites info and cable_types into the view
+
+>>>> - Admin page
+        - Need a way to redirect if the user is not an admin, using middleware
+Done    - all refactored, just need to slowly check each section to make it all work
+Done    - Split the sections up into include files in /admin/<section-name>.blade.php
+        - Need to get the POST requests working on the new Model/Controller. This still all points to admin.inc.php
+
+
+- Stock page
+Done    - Figure out how to do the includes pages, perhaps like: stock/{stock_id}/{modify_type} - e.g. /stock/1/add
+Done    - Rewrite it all
+        - Figure out the Edit / Add / Delete / Move includes and rewrite them
+        - Figure out the backend bits for the form submission etc 
+        - all references to includes/stock-modify.inc.php need to be changed and fixed
+
+
+- Transactions include
+Done    - Create a function to get the transactions based on the requested id - not sure how this works with the stock/{stock_id}/{modify_type} stuff
+        - The information has been retrieved. The includes for the stock pages work filtering
+        - Need to figure out the Transactions page for purely transactions.
+        - ^ this currently loads all 100 in, but is needing some work
+
+
+- Favourites Page
+        - Needed:
+                - Stock info -> StockModel::getStockData($stock_id); this will be used to customise. Do the same as the img_data with areas and tags.
+                - Areas list ^
+                - Tags list ^
+                - SKU ^
+                - Name ^
+                - ID ^
+                - main image ^ img_data['rows'][0]
+
+
+- SMTP / Email stuff
+    - create the email function
+    - find a way to do SMTP in laravel easily
+
+- Ongoing
+    - Changelog needed on every change

@@ -62,7 +62,13 @@ done
 
 
 ### Update system ###
+echo "Updating System..."
+echo ""
 apt-get update -y
+echo ""
+echo "Compelte!"
+
+sleep 1
 
 ### Step 1. Web server ###
 if ! command -v apache2 >/dev/null && ! command -v nginx >/dev/null; then
@@ -126,7 +132,11 @@ read -p "Install directory [$DEFAULT_INSTALL_DIR]: " INSTALL_DIR
 INSTALL_DIR=${INSTALL_DIR:-$DEFAULT_INSTALL_DIR}
 
 mkdir -p "$INSTALL_DIR"
-rsync -a --remove-source-files ../.. "$INSTALL_DIR/"
+
+# Copy repo contents instead of moving
+echo "Copying project files to $INSTALL_DIR..."
+rsync -a ./ "$INSTALL_DIR/" --exclude "vendor" --exclude ".git"
+
 cd "$INSTALL_DIR"
 
 ### Step 6. Laravel setup ###
@@ -260,6 +270,17 @@ chown -R www-data:www-data "$INSTALL_DIR"
 ROOT_PASS=$(openssl rand -base64 12)
 HASHED=$(php -r "echo password_hash('$ROOT_PASS', PASSWORD_BCRYPT);")
 mysql -u$DB_USER -p$DB_PASS $DB_NAME -e "UPDATE users SET password='$HASHED', password_expired=1 WHERE id=1;"
+
+
+# Clean up original repo (optional)
+echo ""
+echo "Setup complete!"
+read -p "Delete original repository files? (y/n): " CLEANUP
+if [[ "$CLEANUP" == "y" ]]; then
+    echo "Cleaning up source files..."
+    rm -rf "$(dirname "$0")/../.."/*
+fi
+
 
 echo ""
 echo "✅ Installation complete!"

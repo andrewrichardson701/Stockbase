@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('session_log', function (Blueprint $table) {
+        Schema::table('config_default', function (Blueprint $table) {
             //
             $table->timestamps(); // Adds 'created_at' and 'updated_at' columns
         });
@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('session_log', function (Blueprint $table) {
+        Schema::table('config_default', function (Blueprint $table) {
             //
             $table->dropColumn(['created_at', 'updated_at']);
         });

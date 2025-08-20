@@ -11,7 +11,7 @@
 USE stockbase;
 
 -- Add config_default to the table 
-INSERT INTO `config_default` VALUES (1,'#E1B12C','default/default-logo.png','default/default-favicon.png',0,'ldapusername','SUPERSECRETPASSWORD','domain.com','127.0.0.1','127.0.0.1',389,'DC=domain,DC=com','cn=Users','(objectClass=User)','ITEM-','£','mail.domain.com',587,'starttls','stockbase@domain.com','SUPERSECRETPASSWORD','stockbase@domain.com','StockBase','stockbase@domain.com',NULL,NULL,NULL,'basic',NULL,0,'StockBase','stockbase.local',1,0,0,1,1,1,0,0,0);
+INSERT INTO `config_default` VALUES (1,'#E1B12C','default/default-logo.png','default/default-favicon.png',0,'ldapusername','SUPERSECRETPASSWORD','domain.com','127.0.0.1','127.0.0.1',389,'DC=domain,DC=com','cn=Users','(objectClass=User)','ITEM-','£','mail.domain.com',587,'starttls','stockbase@domain.com','SUPERSECRETPASSWORD','stockbase@domain.com','StockBase','stockbase@domain.com',NULL,NULL,NULL,'basic',NULL,0,'StockBase','stockbase.local',1,0,0,1,1,1,0,0,0,NULL,'2025-08-12 05:35:10');
 
 -- Duplicaye the config_default table to config table
 INSERT INTO config SELECT * FROM config_default;
@@ -57,8 +57,7 @@ INSERT INTO `users_permissions_roles` VALUES
     (9,'No Permissions',0,0,0,0,0,0,0,0,0,0,0,0,0,'2025-01-08 21:39:57','2025-01-08 21:39:57'),
     (10,'Only Changelog',0,0,0,0,0,0,0,0,0,0,0,0,1,'2025-06-16 18:23:30','2025-06-16 18:23:30');
 
-INSERT INTO cable_types (id, name, description, parent)
-VALUES
+INSERT INTO `cable_types` VALUES
     (1, 'Copper', 'Generic Copper Cable', 'Copper','2025-01-08 21:39:57','2025-01-08 21:39:57'),
     (2, 'Cat5e', 'Cat5e Copper Cable', 'Copper','2025-01-08 21:39:57','2025-01-08 21:39:57'),
     (3, 'Cat6', 'Cat6 Copper Cable', 'Copper','2025-01-08 21:39:57','2025-01-08 21:39:57'),

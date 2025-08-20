@@ -112,6 +112,8 @@ if ! command -v composer >/dev/null; then
     rm composer-setup.php
 fi
 
+apt install npm
+
 ### Step 4. Database server ###
 if ! command -v mysql >/dev/null; then
     echo "Installing MySQL..."

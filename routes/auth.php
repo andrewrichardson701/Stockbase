@@ -13,8 +13,12 @@ use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AddHeadData;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Request;
 
-\URL::forceScheme('https');
+// \URL::forceScheme('https');
+if (Request::secure()) {
+    \URL::forceScheme('https');
+}
 Route::middleware([AddHeadData::class])->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])

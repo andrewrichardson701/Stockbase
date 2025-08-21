@@ -588,7 +588,7 @@ class GeneralModel extends Model
         $latestVersion = null;
 
         // Remote GitLab file
-        $remoteHeadFileUrl = 'https://gitlab.com/andrewrichardson701/stockbase/-/raw/master/config/app.php';
+        $remoteHeadFileUrl = 'https://github.com/andrewrichardson701/Stockbase/blob/master/config/app.php';
 
         // Get session version check time
         $versionCheckTime = Session::get('version_check_time');

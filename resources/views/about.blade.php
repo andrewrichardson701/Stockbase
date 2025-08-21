@@ -22,7 +22,7 @@
                     <div style="padding-top: 20px;">
                         <p>StockBase, an inventory and stock system, with less of the <i>bloat</i>. </p>
                         <p style="margin-top:30px">{{$head_data['config_compare']['system_name']}} is powered by StockBase, an open source, minimalist stock management system.<br>
-                        Learn more at the <a href="https://gitlab.com/andrewrichardson701/stockbase">GitLab page</a>.</p>
+                        Learn more at the <a href="https://github.com/andrewrichardson701/stockbase">GitHub page</a>.</p>
                         <p>StockBase is licenced under the <a href="https://www.gnu.org/licenses/gpl-3.0.txt">GNU GPL licence</a>.</p>
                         <p>StockBase Copyright © {{ now()->year }} Andrew Richardson. All rights reserved.</p>
                     </div>

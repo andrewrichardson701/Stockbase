@@ -159,7 +159,7 @@ class AuthenticatedSessionController extends Controller
 
         
 
-        return redirect('/');
+        return redirect()->route('login')->with('status', 'You are logged out.');
     }
 
 }

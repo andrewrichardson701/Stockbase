@@ -35,7 +35,7 @@
         <div class="row">
             <div class="col text-center viewport-large-empty">
             @if ($head_data['config_compare']['footer_left_enable'] == 1)
-                <a href="https://gitlab.com/andrewrichardson701/stockbase" class="link" style="font-size:12px" target="_blank">GitLab</a>
+                <a href="https://github.com/andrewrichardson701/stockbase" class="link" style="font-size:12px" target="_blank">GitHub</a>
             @endif
             </div>                
             <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="window.location.href='{{ url('about') }}'">
@@ -43,7 +43,7 @@
             </div>
             <div class="col text-center viewport-large-empty">
             @if ($head_data['config_compare']['footer_right_enable'] == 1)
-                    <a href="https://gitlab.com/andrewrichardson701/stockbase#roadmap" class="link" style="font-size:12px" target="_blank">Road Map</a>
+                    <a href="https://github.com/andrewrichardson701/stockbase#roadmap" class="link" style="font-size:12px" target="_blank">Road Map</a>
             @endif
             </div>
         </div>

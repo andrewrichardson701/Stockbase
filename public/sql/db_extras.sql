@@ -13,8 +13,8 @@ USE stockbase;
 -- Add config_default to the table 
 INSERT INTO `config_default` VALUES (1,'#E1B12C','default/default-logo.png','default/default-favicon.png',0,'ldapusername','SUPERSECRETPASSWORD','domain.com','127.0.0.1','127.0.0.1',389,'DC=domain,DC=com','cn=Users','(objectClass=User)','ITEM-','£','mail.domain.com',587,'starttls','stockbase@domain.com','SUPERSECRETPASSWORD','stockbase@domain.com','StockBase','stockbase@domain.com',NULL,NULL,NULL,'basic',NULL,0,'StockBase','stockbase.local',1,0,0,1,1,1,0,0,0,NULL,'2025-08-12 05:35:10');
 
--- Duplicaye the config_default table to config table
-INSERT INTO config SELECT * FROM config_default;
+-- Add config_default to the config table 
+INSERT INTO `config` VALUES (1,'#E1B12C','default/default-logo.png','default/default-favicon.png',0,'ldapusername','SUPERSECRETPASSWORD','domain.com','127.0.0.1','127.0.0.1',389,'DC=domain,DC=com','cn=Users','(objectClass=User)','ITEM-','£','mail.domain.com',587,'starttls','stockbase@domain.com','SUPERSECRETPASSWORD','stockbase@domain.com','StockBase','stockbase@domain.com',NULL,NULL,NULL,'basic',NULL,0,'StockBase','stockbase.local',1,0,0,1,1,1,0,0,0,NULL,'2025-08-12 05:35:10');
 
 
 -- Add default email_templates_default

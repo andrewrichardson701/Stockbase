@@ -19,7 +19,7 @@ hidden/manualreviewlines.csv
 hidden/downloads
 hidden/canvusimport.php
 includes/smtp_tester.log
-public/img/stock/*
+public/img/stock/stock-*
 _ide_helper.php
 
 # Laravel Defaults:

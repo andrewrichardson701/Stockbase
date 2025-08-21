@@ -30,7 +30,7 @@ class SecurityMiddleware
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
-        $response->headers->set('X-Frame-Options', 'DENY');
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         return $response;
     }
     

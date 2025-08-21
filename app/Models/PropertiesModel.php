@@ -133,8 +133,8 @@ class PropertiesModel extends Model
             // there is no matching site area and shelf
 
             // add the site first
-            $add_site = DB::table('site')->insertGetId(['name' => $request['site_name'], 
-                                                        'description' => $request['site_description'], 
+            $add_site = DB::table('site')->insertGetId(['name' => $request['site-name'], 
+                                                        'description' => $request['site-description'], 
                                                         'updated_at' => now(), 
                                                         'created_at' => now()
                                                         ]);
@@ -148,14 +148,14 @@ class PropertiesModel extends Model
                     'action' => 'New record',
                     'field' => 'name',
                     'previous_value' => '',
-                    'new_value' => $request['site_name']
+                    'new_value' => $request['site-name']
                 ];
 
                 GeneralModel::updateChangelog($changelog_info);
                 
                 // add the area with $add_site as site_id
-                $add_area = DB::table('area')->insertGetId(['name' => $request['area_name'], 
-                                                        'description' => $request['area_description'], 
+                $add_area = DB::table('area')->insertGetId(['name' => $request['area-name'], 
+                                                        'description' => $request['area-description'], 
                                                         'site_id' => $add_site,
                                                         'updated_at' => now(), 
                                                         'created_at' => now()
@@ -171,13 +171,13 @@ class PropertiesModel extends Model
                         'action' => 'New record',
                         'field' => 'name',
                         'previous_value' => '',
-                        'new_value' => $request['area_name']
+                        'new_value' => $request['area-name']
                     ];
 
                     GeneralModel::updateChangelog($changelog_info);
                     
                     // add the shelf with $add_area as area_id
-                    $add_shelf = DB::table('shelf')->insertGetId(['name' => $request['shelf_name'], 
+                    $add_shelf = DB::table('shelf')->insertGetId(['name' => $request['shelf-name'], 
                                                             'area_id' => $add_area,
                                                             'updated_at' => now(), 
                                                             'created_at' => now()
@@ -192,7 +192,7 @@ class PropertiesModel extends Model
                             'action' => 'New record',
                             'field' => 'name',
                             'previous_value' => '',
-                            'new_value' => $request['shelf_name']
+                            'new_value' => $request['shelf-name']
                         ];
 
                         GeneralModel::updateChangelog($changelog_info);

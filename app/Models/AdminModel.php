@@ -588,7 +588,7 @@ class AdminModel extends Model
                 foreach($request as $key => $value) {
                     if (!in_array($key, $permissions_fields)) {
                         // throw an error
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified.');
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified: '.$key.'.');
                     }
                 }
 

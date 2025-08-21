@@ -6,6 +6,7 @@
     <li>Changed the gitlab url in the update checker to the github url.</li>
     <li>Updated the about page to show the GitHub url not the GitLab</li>
     <li>Updated the footer to show GitHub not GitLab</li>
+    <li>Allowed sameorigin iframes in security middleware.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

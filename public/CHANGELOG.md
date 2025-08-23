@@ -8,6 +8,7 @@
     <li>Updated the footer to show GitHub not GitLab.</li>
     <li>Allowed sameorigin iframes in security middleware.</li>
     <li>Added the system name to the login page, using the guest layout.</li>
+    <li>Citrus theme added.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

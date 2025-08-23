@@ -92,7 +92,8 @@ INSERT INTO `theme` VALUES
     (3,'Light','theme-light.css',NULL,NULL),
     (4,'Light Blue','theme-light-blue.css',NULL,NULL),
     (5,'Dark Red','theme-dark-red.css',NULL,NULL),
-    (6,'Dark Black','theme-dark-black.css',NULL,NULL);
+    (6,'Dark Black','theme-dark-black.css',NULL,NULL),
+    (7,'Citrus','theme-citrus.css',NULL,NULL);
 
 INSERT INTO `optic_type` VALUES 
     (1,'SFP',0,NULL,NULL),

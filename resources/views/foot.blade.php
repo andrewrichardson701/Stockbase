@@ -61,11 +61,7 @@
         @endif
     </span>
     @endif
-@endif  
-
-<?php
-
-?>
+@endif
 
 <!-- Add the JS for the file -->
 <script src="{{ asset('js/foot.js') }}"></script>

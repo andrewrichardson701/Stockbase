@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ $head_data['config_compare']['system_name'] }} - Profile</title>
+        <title>{{ $head_data['config_compare']['system_name'] }}</title>
         <link rel="icon" type="image/png" href="{{ asset('img/config/'. $head_data['config_compare']['favicon_image']) }}">
 
         <!-- Fonts -->

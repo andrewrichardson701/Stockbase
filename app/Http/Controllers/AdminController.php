@@ -514,7 +514,7 @@ class AdminController extends Controller
                     'session_id' => 'string|required',
             ]);
 
-            return SessionModel::killSession($request['seesion_id']);
+            return SessionModel::killSession($request['session_id']);
         } else {
             return 'Error: CSRF Missmatch';
         }

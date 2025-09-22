@@ -316,7 +316,7 @@ class OpticsModel extends Model
         } 
         $values = ['model' => $request['model'],
                         'vendor_id' => $request['vendor'],
-                        'serial_number_id' => $request['serial'],
+                        'serial_number' => $request['serial'],
                         'type_id' => $request['type'],
                         'connector_id' => $request['connector'],
                         'mode' => $request['mode'],

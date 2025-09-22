@@ -11,6 +11,7 @@
     <li>Citrus theme added.</li>
     <li>Favourites page no longer crashes if there are no tags present in the database.</li>
     <li>Previously required root permissions to add locations in the admin section, now only need admin.</li>
+    <li>Quantity is now correct when removing an item that is not in a container.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

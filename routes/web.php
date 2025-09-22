@@ -178,7 +178,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             });
             
             // Admin pages
-            Route::middleware(['auth', 'check.permission:admin,root'])->group(function () { // Admin pages - locked behind the admin or root permission
+            Route::middleware(['auth', 'check.permission:admin'])->group(function () { // Admin pages - locked behind the admin or root permission
             // admin routes
                 Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // admin page
 

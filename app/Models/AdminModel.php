@@ -1330,7 +1330,7 @@ class AdminModel extends Model
 
         // check permissions
         $user = GeneralModel::getUser();
-        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
+        if ($user['permissions']['root'] == 1 || $user['permissions']['admin'] == 1) {
             $authorized = 1;
         }  
 

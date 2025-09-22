@@ -9,6 +9,8 @@
     <li>Allowed sameorigin iframes in security middleware.</li>
     <li>Added the system name to the login page, using the guest layout.</li>
     <li>Citrus theme added.</li>
+    <li>Favourites page no longer crashes if there are no tags present in the database.</li>
+    <li>Previously required root permissions to add locations in the admin section, now only need admin.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

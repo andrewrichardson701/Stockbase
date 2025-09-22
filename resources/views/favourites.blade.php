@@ -53,11 +53,13 @@
                         @endif
                         </td>
                         <td class="text-center align-middle">
-                        @if ($row['tag_data']['count'] > 0 && !empty($row['tag_data']['rows']))
-                            @foreach($row['tag_data']['rows'] as $tag)
-                            <or id="stock-{{ $row['stock_data']['id'] }}-tag-{{ $tag['id'] }}" class="gold link" onclick="navPage(updateQueryParameter(`{{ url('/') }}`, 'tag', `{{ $tag['name'] }}`))">{{ $tag['name'] }}</or>@if(!$loop->last), @endif
-                            @endforeach
-                        @endif
+                        @isset($row['tag_data']['count'])
+                            @if ($row['tag_data']['count'] > 0 && !empty($row['tag_data']['rows']))
+                                @foreach($row['tag_data']['rows'] as $tag)
+                                <or id="stock-{{ $row['stock_data']['id'] }}-tag-{{ $tag['id'] }}" class="gold link" onclick="navPage(updateQueryParameter(`{{ url('/') }}`, 'tag', `{{ $tag['name'] }}`))">{{ $tag['name'] }}</or>@if(!$loop->last), @endif
+                                @endforeach
+                            @endif
+                        @endisset
                         </td>
                         <td class="text-center align-middle">
                             <button onclick="favouriteStockReload({{ $row['stock_data']['id'] }})" class="btn btn-danger" style="padding:3px 6px 3px 6px; color:black" title="Remove Favourite">

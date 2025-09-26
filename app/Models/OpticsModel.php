@@ -296,6 +296,21 @@ class OpticsModel extends Model
 
     static public function addOptic($request)
     {
+        $previous = GeneralModel::previousURL();
+        $query = http_build_query(
+            ['form_serial' => $request['serial'] ?? '', 
+                    'form_model' => $request['model'] ?? '', 
+                    'form_sepctrum' => $request['spectrum'] ?? '',
+                    'form_type' => $request['type'] ?? '', 
+                    'form_speed' => $request['speed'] ?? '', 
+                    'form_connector' => $request['connector'] ?? '',
+                    'form_distance' => $request['distance'] ?? '', 
+                    'form_mode' => $request['mode'] ?? '', 
+                    'form_site' => $request['site'] ?? ''
+                ]
+            );
+        $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
+          
         $user = GeneralModel::getUser();
 
         // see if optic serial exists
@@ -359,7 +374,7 @@ class OpticsModel extends Model
                     'updated_at' => now()
                 ];
                 TransactionModel::addOpticTransaction($transaction);
-                return redirect()->to(GeneralModel::previousURL())->with('success', 'Optic added: "'.$request['serial'].'" with id: '.$insert.'.');
+                return redirect()->to($url)->with('success', 'Optic added: "'.$request['serial'].'" with id: '.$insert.'.');
             } else {
                 if ($find->deleted == 1) {
                     // remove delete, and update any changes.
@@ -399,7 +414,7 @@ class OpticsModel extends Model
                                     ];
                                     TransactionModel::addOpticTransaction($transaction);
                                 } else {
-                                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to insert database entry.');
+                                    return redirect()->to($url)->with('error', 'Unable to insert database entry.');
                                 }
                             }
                         }
@@ -408,7 +423,7 @@ class OpticsModel extends Model
                     return OpticsModel::restore($data);
  
                 } else {
-                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Optic already exists.');
+                    return redirect()->to($url)->with('error', 'Optic already exists.');
                 }  
             }
         } else {

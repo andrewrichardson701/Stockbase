@@ -65,8 +65,8 @@
             <!-- smtp -->
             @include('includes.admin.smtp')
             
-            <!-- notifications -->
-            @include('includes.admin.notifications')
+            <!-- email notifications -->
+            @include('includes.admin.email-notifications')
 
             <!-- email templates -->
             @include('includes.admin.email-templates')

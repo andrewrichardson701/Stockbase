@@ -71,6 +71,9 @@
             <!-- email templates -->
             @include('includes.admin.email-templates')
 
+            <!-- webhook notifications -->
+            @include('includes.admin.webhook-notifications')
+
             <!-- changelog --> 
             @include('includes.admin.changelog')
             

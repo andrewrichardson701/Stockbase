@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('config_default', function (Blueprint $table) {
             //
-            $table->string('webhook_type')->nullable;
-            $table->string('webhook_friendly_name')->nullable;
+            $table->string('webhook_type')->nullable();
+            $table->string('webhook_friendly_name')->nullable();
             $table->string('webhook_url')->nullable();
             $table->string('webhook_display_name')-> nullable();
             $table->string('webhook_prefix_message')->nullable();

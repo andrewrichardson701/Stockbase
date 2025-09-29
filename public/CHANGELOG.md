@@ -16,7 +16,9 @@
     <li>Optic management no longer shows the old php semicolons</li>
     <li>Change some Optics redirects and corrected the optic delete page to redirect.<li>
     <li>Optics add page now redirects with the previous info back in the form.</li>
-    <li>Nottifications admin include renamed to email-notifications.blade.</li>
+    <li>Nottifications admin include renamed to email-notifications.blade.</li>#
+    <li>Webhooks section added to the admin page.</li>
+    <li>Webhooks info added to the database using migrations.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

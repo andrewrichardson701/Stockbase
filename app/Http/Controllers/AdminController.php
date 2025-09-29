@@ -78,6 +78,9 @@ class AdminController extends Controller
         
         $notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('notifications'));
         $email_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_templates'));
+        
+        $webhook_data = ['type' => 'discord', 'friendly_name' => 'disord_test', 'url' => 'https://test.com/', 'display_name' => 'bot', 'prefix_message' => 'PREFIX'];
+        $webhook_templates = $email_templates;
 
         $changelog = GeneralModel::formatArrayOnIdAndCount(ChangelogModel::getChangelog(10));
         // $q_data = IndexModel::queryData($request); // query string data
@@ -125,6 +128,9 @@ class AdminController extends Controller
 
                                 'notifications' => $notifications,
                                 'email_templates' => $email_templates,
+
+                                'webhook_data' => $webhook_data,
+                                'webhook_templates' => $webhook_templates,
 
                                 'changelog' => $changelog,
                                 // 'q_data' => $q_data,

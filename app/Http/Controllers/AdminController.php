@@ -18,6 +18,7 @@ use App\Models\SmtpModel;
 use App\Models\ChangelogModel;
 use App\Models\StockModel;
 use App\Models\SessionModel;
+use App\Models\WebhookModel;
 
 class AdminController extends Controller
 {
@@ -79,8 +80,7 @@ class AdminController extends Controller
         $notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('notifications'));
         $email_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_templates'));
         
-        $webhook_data = ['type' => 'discord', 'friendly_name' => 'disord_test', 'url' => 'https://test.com/', 'display_name' => 'bot', 'prefix_message' => 'PREFIX'];
-        $webhook_templates = $email_templates;
+        $webhook_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_templates'));
 
         $changelog = GeneralModel::formatArrayOnIdAndCount(ChangelogModel::getChangelog(10));
         // $q_data = IndexModel::queryData($request); // query string data
@@ -129,7 +129,6 @@ class AdminController extends Controller
                                 'notifications' => $notifications,
                                 'email_templates' => $email_templates,
 
-                                'webhook_data' => $webhook_data,
                                 'webhook_templates' => $webhook_templates,
 
                                 'changelog' => $changelog,
@@ -364,6 +363,39 @@ class AdminController extends Controller
                         'smtp_from_email' => 'string|required',
                         'smtp_from_name' => 'string|required',
                         'smtp_to_email' => 'string|required',
+                ]);
+                return AdminModel::updateConfigSettings($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+        return 'unknown request';
+    }
+
+    static public function webhookSettings(Request $request)
+    {
+        if (isset($request['webhook-toggle-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                if (isset($request['webhook_enabled']) && in_array($request['webhook_enabled'], ['on', 'off'])) {
+                    $enabled = $request['webhook_enabled'];
+                } else {
+                    $enabled = 'off';
+                }
+                return WebhookModel::toggleWebhook($enabled);
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        if (isset($request['webhook-submit']) || isset($request['webhook-restore-defaults'])) {
+            dd($request);  
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'webhook_type' => 'string|required',
+                        'webhook_friendly_name' => 'string|required',
+                        'webhook_url' => 'string|required',
+                        'webhook_display_name' => 'string|required',
+                        'webhook_prefix_message' => 'string|required',
                 ]);
                 return AdminModel::updateConfigSettings($request->input());
             } else {

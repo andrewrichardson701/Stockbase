@@ -306,7 +306,8 @@ class OpticsModel extends Model
                     'form_connector' => $request['connector'] ?? '',
                     'form_distance' => $request['distance'] ?? '', 
                     'form_mode' => $request['mode'] ?? '', 
-                    'form_site' => $request['site'] ?? ''
+                    'form_site' => $request['site'] ?? '',
+                    'form_vendor' => $request['vendor'] ?? '',
                 ]
             );
         $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;

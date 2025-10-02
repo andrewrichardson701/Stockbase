@@ -985,3 +985,90 @@ function smtpOauth2Fields(select) {
         });
     }
 }
+
+function testWebhook() {
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    var webhookLoading = document.getElementById("smtp-loading-icon");
+    var webhookSuccess = document.getElementById("smtp-success-icon");
+    var webhookFail = document.getElementById("smtp-fail-icon");
+    webhookLoading.style.display = "inline-block";
+    webhookSuccess.style.display = "none";
+    webhookFail.style.display = "none";
+
+    var webhook_type = $('#webhook-type').val();
+    var webhook_friendly_name = $('#webhook-friendly-name').val();
+    var webhook_url = $('#webhook-url').val();
+    var webhook_avatar_url = $('#webhook-avatar-url').val();
+    var webhook_display_name = $('#webhook-display-name').val();
+    var webhook_prefix_message = $('#webhook-prefix-message').val();
+    
+    // console.log(webhook_type +' '+ webhook_friendly_name + ' ' + webhook_url + ' ' + webhook_avatar_url + ' ' + webhook_display_name + ' ' + webhook_prefix_message);
+    
+    var webhookForm = document.getElementById("webhookForm");
+    var outputPre = document.getElementById("webhookTestOutput");
+    if (outputPre !== null) {
+        outputPre.parentNode.removeChild(outputPre)
+    }
+    var newOutputPre = document.createElement("pre");
+    newOutputPre.setAttribute("class", "well-nopad theme-divBg");
+    newOutputPre.setAttribute("id", "webhookTestOutput");
+    newOutputPre.setAttribute("style", "color:white;margin-bottom:50px");
+    webhookForm.parentNode.insertBefore(newOutputPre, webhookForm.nextSibling);
+
+    $.ajax({
+        type: "POST",
+        url: "admin.webhookTest",
+        data: {
+            _token: csrf,
+            webhook_type: webhook_type,
+            webhook_friendly_name: webhook_friendly_name,
+            webhook_url: webhook_url,
+            webhook_avatar_url: webhook_avatar_url,
+            webhook_display_name: webhook_display_name,
+            webhook_prefix_message: webhook_prefix_message,
+        },
+        dataType: "json",
+        success: function(response) {
+            var result = response;
+            var div = document.getElementById('webhookTestOutput');
+
+            div.textContent += "Success (200) \n" + result + "\n";
+
+            // Continue with the rest of the code once the AJAX request is complete
+            processLastLine();
+            newOutputPre.scrollIntoView();
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error", status, error); // Logs "error", "Internal Server Error", etc.
+            console.log("Status Code:", xhr.status);    // Logs 500
+            console.log("Response Text:", xhr.responseText); // Laravel's error response
+
+            var div = document.getElementById('webhookTestOutput');
+            div.textContent += `Error (${xhr.status}): ${xhr.statusText}\n`;
+
+            // Optional: show Laravel error message (usually HTML or JSON)
+            if (xhr.responseText) {
+                div.textContent += xhr.responseText + "\n";
+            }
+
+            webhookLoading.style.display = "none";
+            webhookSuccess.style.display = "none";
+            webhookFail.style.display = "inline";
+            newOutputPre.scrollIntoView();
+        },
+        async: true
+    });
+
+    function processLastLine() {
+        var div = document.getElementById('webhookTestOutput');
+
+        // Get the content of the <pre> element
+        var divContent = div.textContent || div.innerText;
+        // Split the content into an array of lines
+        var lines = divContent.trim().split('\n');
+        // Get the last line
+        var lastLine = lines[lines.length - 1];
+
+    }
+}

@@ -19,6 +19,7 @@ use App\Http\Controllers\OpticsController;
 use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\LdapController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\TwoFactorController;
 
 use App\Http\Middleware\SecurityMiddleware;
@@ -203,6 +204,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::get('/admin.getEmailTemplateUrl', [SmtpController::class, 'getEmailTemplateUrl'])->name('admin.getEmailTemplateUrl'); // preview the email template
                 Route::post('/admin.addLocalUser', [AdminController::class, 'addLocalUser'])->name('admin.addLocalUser'); // add Local User
                 Route::post('/admin.webhookSettings', [AdminController::class, 'webhookSettings'])->name('admin.webhookSettings'); // Adjust Webhook settings
+                Route::post('/admin.webhookTest', [WebhookController::class, 'webhookTest'])->name('admin.webhookTest'); // Webook test
             });
 
             // Changelog pages

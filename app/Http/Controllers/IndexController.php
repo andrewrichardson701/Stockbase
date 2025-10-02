@@ -13,7 +13,7 @@ use App\Models\ResponseHandlingModel;
 
 
 use App\Models\StockModel;
-use App\Models\LdapModel;
+use App\Models\WebhookModel;
 use App\Models\PropertiesModel;
 
 use App\Models\SmtpModel;
@@ -74,9 +74,16 @@ class IndexController extends Controller
 
     public function test(Request $request, EmailService $mailer)
     {
-        $config = GeneralModel::configCompare();
-        $user = GeneralModel::getUser();
-        $template_info = SmtpModel::getTemplateInfo(1);
+        $data = [
+            'webhook_url' => 'https://discord.com/api/webhooks/1422960973060505620/PE8EBB-JrDvZ_ysJQWsWn1icz2DkzbYD2LGF3b5I1VTxf6nWb19Xjx0Xw6L0SNsx-DOd',
+            'webhook_type' => 'discord',
+            'webhook_avatar_url' => 'https://file.aiquickdraw.com/imgcompressed/img/compressed_49bedc1de0b48f386727d6bece5b7e53.webp',
+            'webhook_friendly_name' => 'TEST',
+            'webhook_display_name' => 'TEST',
+            'webhook_prefix_message' => 'prefix'
+        ];
+        WebhookModel::sendWebhook('test');
+
     }
 }
 

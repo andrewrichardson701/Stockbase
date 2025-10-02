@@ -268,7 +268,7 @@ class AdminModel extends Model
 
         $user = GeneralModel::getUser();
         $config_fields = Schema::getColumnListing('config');
-        $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit'];
+        $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit', 'webhook-submit'];
 
         if (isset($data['global-submit'])) {
             $anchor = 'global-settings';
@@ -276,6 +276,8 @@ class AdminModel extends Model
             $anchor = 'smtp-settings';
         } elseif (isset($data['ldap-submit']) || isset($data['ldap-restore-defaults'])) {
             $anchor = 'ldap-settings';
+        } elseif (isset($data['webhook-submit']) || isset($data['webhook-restore-defaults'])) {
+            $anchor = 'webhook-settings';
         } else {
             $anchor = '';
         }
@@ -323,6 +325,18 @@ class AdminModel extends Model
             }
         } 
 
+        if (isset($data['webhook-restore-defaults'])) {
+        
+            $reset_array = ['webhook_type', 'webhook_friendly_name', 'webhook_url', 'webhook_display_name', 'webhook_prefix_message'];
+            $reset = AdminModel::resetConfig($reset_array);
+
+            if ($reset == 1) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+            }
+        } 
+
         $changelog_info = [
                 'user' => $user,
                 'table' => 'config',
@@ -330,7 +344,7 @@ class AdminModel extends Model
                 'action' => 'Update record',
             ];
 
-        unset($data['_token'], $data['global-submit'], $data['smtp-submit'], $data['ldap-submit']); // remove these to stop them being queried
+        unset($data['_token'], $data['global-submit'], $data['smtp-submit'], $data['ldap-submit'], $data['webhook-submit']); // remove these to stop them being queried
 
         foreach($data as $field => $value) {
             if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys

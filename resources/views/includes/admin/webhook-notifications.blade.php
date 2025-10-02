@@ -81,45 +81,56 @@
                                 </p>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="webhook-friendly-name">
+                        <tr class="nav-row" style="margin-top:20px" id="webhook-friendly-name-tr">
                             <td id="webhook-friendly-name-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="friendly-name">Friendly Name:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="webhook-friendly-name">Friendly Name:</p>
                             </td>
                             <td id="webhook-friendly-name-input">
-                                <input class="form-control nav-v-c theme-input" style="width: 250px" id="friendly-name" name="webhook_friendly_name" value="{{ $head_data['config']['webhook_friendly_name'] }}" required>
+                                <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="webhook-friendly-name" name="webhook_friendly_name" value="{{ $head_data['config']['webhook_friendly_name'] }}" required>
                             </td>
                             <td id="webhook-friendly-name-default-cell" style="margin-left:25px">
-                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="friendly-name-default" >{{ $head_data['default_config']['webhook_friendly_name'] }}</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="webhook-friendly-name-default" >{{ $head_data['default_config']['webhook_friendly_name'] }}</p>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="webhook-url">
+                        <tr class="nav-row" style="margin-top:20px" id="webhook-url-tr">
                             <td id="webhook-url-label" style="width:250px;margin-left:25px">
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="url">Webhook URL:</p>
                             </td>
                             <td id="webhook-url-input">
-                                <input class="form-control nav-v-c theme-input" style="width: 250px" id="url" name="webhook_url" value="{{ $head_data['config']['webhook_url'] }}" required>
+                                <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="webhook-url" name="webhook_url" value="{{ $head_data['config']['webhook_url'] }}" required>
                             </td>
                             <td id="webhook-url-default-cell" style="margin-left:25px">
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="url-default" >{{ $head_data['default_config']['webhook_url'] }}</p>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="webhook-display-name">
+                        <tr class="nav-row" style="margin-top:20px" id="webhook-avatar_url-tr">
+                            <td id="webhook-avatar_url-label" style="width:250px;margin-left:25px">
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="webhook-avatar-url">Avatar URL:</p>
+                            </td>
+                            <td id="webhook-avatar_url-input">
+                                <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="webhook-avatar-url" name="webhook_avatar_url" value="{{ $head_data['config']['webhook_avatar_url'] }}" required>
+                            </td>
+                            <td id="webhook-avatar_url-default-cell" style="margin-left:25px">
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="avatar-url-default" >{{ $head_data['default_config']['webhook_avatar_url'] }}</p>
+                            </td>
+                        </tr>
+                        <tr class="nav-row" style="margin-top:20px" id="webhook-display-name-tr">
                             <td id="webhook-display-name-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="display-name">Display Name:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="webhook-display-name">Display Name:</p>
                             </td>
                             <td id="webhook-display-name-input">
-                                <input class="form-control nav-v-c theme-input" style="width: 250px" id="display-name" name="webhook_display_name" value="{{ $head_data['config']['webhook_display_name'] }}" required>
+                                <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="webhook-display-name" name="webhook_display_name" value="{{ $head_data['config']['webhook_display_name'] }}" required>
                             </td>
                             <td id="webhook-display-name-default-cell" style="margin-left:25px">
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="display-name-default" >{{ $head_data['default_config']['webhook_display_name'] }}</p>
                             </td>
                         </tr>
-                        <tr class="nav-row" style="margin-top:20px" id="webhook-prefix-message">
+                        <tr class="nav-row" style="margin-top:20px" id="webhook-prefix-message-tr">
                             <td id="webhook-prefix-message-label" style="width:250px;margin-left:25px">
-                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="prefix-message">Prefix Message:</p>
+                                <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" for="webhook-prefix-message">Prefix Message:</p>
                             </td>
                             <td id="webhook-prefix-message-input">
-                                <input class="form-control nav-v-c theme-input" style="width: 250px" id="prefix-message" name="webhook_prefix_message" value="{{ $head_data['config']['webhook_prefix_message'] }}" required>
+                                <input class="form-control nav-v-c theme-input" type="text" style="width: 250px" id="webhook-prefix-message" name="webhook_prefix_message" value="{{ $head_data['config']['webhook_prefix_message'] }}">
                             </td>
                             <td id="webhook-prefix-message-default-cell" style="margin-left:25px">
                                 <p style="min-height:max-content;margin:0px" class="nav-v-c align-middle" id="prefix-message-default" >{{ $head_data['default_config']['webhook_prefix_message'] }}</p>

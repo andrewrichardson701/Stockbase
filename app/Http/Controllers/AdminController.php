@@ -387,16 +387,17 @@ class AdminController extends Controller
             }
         }
 
-        if (isset($request['webhook-submit']) || isset($request['webhook-restore-defaults'])) {
-            dd($request);  
-            if ($request['_token'] == csrf_token()) {
+        if (isset($request['webhook-submit']) || isset($request['webhook-restore-defaults'])) { 
+           if ($request['_token'] == csrf_token()) {
                 $request->validate([
                         'webhook_type' => 'string|required',
                         'webhook_friendly_name' => 'string|required',
                         'webhook_url' => 'string|required',
+                        'webhook_avatar_url' => 'string|required',
                         'webhook_display_name' => 'string|required',
-                        'webhook_prefix_message' => 'string|required',
+                        'webhook_prefix_message' => 'string|nullable',
                 ]);
+                
                 return AdminModel::updateConfigSettings($request->input());
             } else {
                 return 'Error: CSRF token missmatch.';

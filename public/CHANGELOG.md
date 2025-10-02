@@ -1,5 +1,5 @@
 <h2>Changelog</h2>
-<h3>1.4.0 - TBC</h3>
+<h3>1.4.0 - Webhooks</h3>
 <ul>
     <li>Bullet points added to the Changelog on the about page</li>
     <li>Corrected the function to add initial locations.</li>
@@ -14,11 +14,12 @@
     <li>Quantity is now correct when removing an item that is not in a container.</li>
     <li>Killing sessions now works again.</li>
     <li>Optic management no longer shows the old php semicolons</li>
-    <li>Change some Optics redirects and corrected the optic delete page to redirect.<li>
+    <li>Change some Optics redirects and corrected the optic delete page to redirect.</li>
     <li>Optics add page now redirects with the previous info back in the form.</li>
-    <li>Nottifications admin include renamed to email-notifications.blade.</li>#
+    <li>Nottifications admin include renamed to email-notifications.blade.</li>
     <li>Webhooks section added to the admin page.</li>
     <li>Webhooks info added to the database using migrations.</li>
+    <li>Webhook settings can now be saved and the test works successfully.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

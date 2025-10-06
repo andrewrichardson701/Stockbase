@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('webhook_notifications', function (Blueprint $table) {
             //
-            $table->integer('webhook_template_id')->nullable();
+            $table->integer('webhook_template_id')->nullable()->after('description');
             $table->timestamps();
         });
     }

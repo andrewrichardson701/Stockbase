@@ -20,6 +20,9 @@
     <li>Webhooks section added to the admin page.</li>
     <li>Webhooks info added to the database using migrations.</li>
     <li>Webhook settings can now be saved and the test works successfully.</li>
+    <li>Changed the notifications table to email_notifications to allow for webhook_notifications.</li>
+    <li>Corrected all references for notifications to be email_notifications.</li>
+    <li>Corrected the field names in the webhook_templates and webhook_templates_default tables.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

@@ -217,6 +217,7 @@ class SmtpModel extends Model
             '##STOCK_SKU##'               => $stock_data['sku'] ?? '',
             '##STOCK_MIN_STOCK##'         => $stock_data['min_stock'] ?? '',
             '##STOCK_URL##'               => isset($stock_data['id']) ? '<a href="'.route('stock', ['stock_id' => $params['stock_id']]).'">'.($stock_data['name'] ?? '').'</a>' : '',
+            '##STOCK_URL_TEXT##'          => isset($stock_data['id']) ? route('stock', ['stock_id' => $params['stock_id']]) : '',
 
             '##STOCK_NAME_OLD##'          => $params['stock_name_old'] ?? '',
             '##STOCK_DESCRIPTION_OLD##'   => $params['stock_description_old'] ?? '',
@@ -261,6 +262,7 @@ class SmtpModel extends Model
       
             '##USER_NAME##'               => $user['name'] ?? '',
             '##USER_EMAIL##'              => $user['email'] ?? '',
+            '##USER_USERNAME##'           => $user['username'] ?? '',
         ];
 
         // Replace all variables in one go
@@ -426,7 +428,7 @@ class SmtpModel extends Model
         $user = GeneralModel::getUser();
 
         if ($config['smtp_enabled'] == 1 && $user['id'] !== 1) { // make sure smtp is enabled and the user isnt root. root email wont work.
-            $notification_data = DB::table('notifications')->find($notification_id);
+            $notification_data = DB::table('email_notifications')->find($notification_id);
 
             if ($template_id == 0) {
                 $template_id = $notification_data->template_id;

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\GeneralModel;
+use App\Models\SmtpModel;
 use Illuminate\Support\Facades\DB;
 
 class WebhookModel extends Model
@@ -65,6 +66,17 @@ class WebhookModel extends Model
         }
     }
 
+    static public function getTemplateInfo($template_id)
+    {
+        $template = DB::table('webhook_templates')->where('id', '=', $template_id)->first();
+
+        if ($template) {
+            return $template;
+        } else {
+            return false;
+        }
+    }
+
     public static function sendWebhook($message = null, $embeds = []) 
     {
         // Base payload
@@ -87,11 +99,12 @@ class WebhookModel extends Model
             }
 
             if (!empty($embeds)) {
+                $embeds[0]['timestamp'] = date('c');
                 $payload["embeds"] = $embeds; // embed objects
             }
-
+            
             $jsonData = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-
+            $jsonData = str_replace('##CURRENT_TIMESTAMP_ISO8601##', date('c'), $jsonData);
             // Initialize cURL
             $ch = \curl_init($config['webhook_url']);
 
@@ -113,8 +126,30 @@ class WebhookModel extends Model
 
             \curl_close($ch);
             return $response ?: "Message sent!";
-
+            
+        } else {
+            return "No webhook url.";
         }
+    }
+
+    static public function convertJsonEmbeds($json)
+    {
+        $decoded = json_decode($json, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            die("Invalid JSON: " . json_last_error_msg());
+        }
+        return $decoded;
+    }
+
+    static public function sanitizeEmbedString(string $input): string 
+    {
+        // Replace multiple spaces/newlines with a single space
+        $input = preg_replace("/\s+/", " ", $input);
+
+        // remove \n 
+        $input = str_replace('\n', '', $input);
+
+        return trim($input);
     }
 
     static public function buildWebhookEmbeds($title = null, $description = null, $color = null, $fields = [], $footer = [])
@@ -177,7 +212,40 @@ class WebhookModel extends Model
             return $response ?: "Message sent!";
 
         } else {
-            return null;
+            return 'No webhook url specified.';
+        }
+    }
+
+    public static function notificationWebhook($notification_id, $template_id, $data)
+    {
+        $config = GeneralModel::configCompare();
+        $user = GeneralModel::getUser();
+
+        if ($config['webhook_enabled'] == 1) { // make sure webhook is enabled
+            $notification_data = DB::table('webhook_notifications')->find($notification_id);
+
+            if ($template_id == 0) {
+                $template_id = $notification_data->template_id;
+            }
+
+            $template_info = WebhookModel::getTemplateInfo($template_id);
+
+            if ($template_info !== false) {
+                // get the embeds
+                $embeds_raw = $template_info->body;
+                // covnert variables
+                $converted_embeds = SmtpModel::convertVariables($embeds_raw, $data);
+                // sanitize the embeds
+                $sanitized_embeds = WebhookModel::sanitizeEmbedString($converted_embeds);
+                // json the embeds
+                $embeds = WebhookModel::convertJsonEmbeds($sanitized_embeds);
+                // send the webhook
+                WebhookModel::sendWebhook(SmtpModel::convertVariables($template_info->subject, $data), $embeds);
+            } else {
+                return 'Unable to find template';
+            }
+        } else {
+            return 'disabled';
         }
     }
 }

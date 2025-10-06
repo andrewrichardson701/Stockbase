@@ -74,6 +74,9 @@
             <!-- webhook notifications -->
             @include('includes.admin.webhook-notifications')
 
+            <!-- webhook templates -->
+            @include('includes.admin.webhook-templates')
+
             <!-- changelog --> 
             @include('includes.admin.changelog')
             

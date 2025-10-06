@@ -77,7 +77,7 @@ class AdminController extends Controller
         
         $deleted_stock = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('stock', 1));
         
-        $notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('notifications'));
+        $email_notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_notifications'));
         $email_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_templates'));
         
         $webhook_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_templates'));
@@ -126,7 +126,7 @@ class AdminController extends Controller
                                 'deleted_stock' => $deleted_stock,
                                 'location_colors' => $location_colors,
 
-                                'notifications' => $notifications,
+                                'email_notifications' => $email_notifications,
                                 'email_templates' => $email_templates,
 
                                 'webhook_templates' => $webhook_templates,
@@ -449,7 +449,7 @@ class AdminController extends Controller
                     'id' => 'integer|required',
                     'value' => 'integer|required',
             ]);
-            AdminModel::toggleNotification($request->input());
+            AdminModel::toggleEmailNotification($request->input());
         } else {
             return 'Error: CSRF token missmatch.';
         }
@@ -575,6 +575,30 @@ class AdminController extends Controller
                 return AdminModel::updateEmailTemplate($request->input());
             } elseif ($request['submit'] == 'restore') {
                 return AdminModel::restoreEmailTemplate($request->input());
+            } else {
+                return 'Error: Unknown submission type.';
+            }
+            
+        } else {
+            return 'Error: CSRF Missmatch';
+        }
+    }
+
+    static public function webhookTemplate(Request $request)
+    {
+        // dd($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'template_id' => 'integer|required',
+                    'slug' => 'string|required',
+                    'subject' => 'string|required',
+                    'body' => 'string|required',
+                    'submit' => 'string|required',
+            ]);
+            if ($request['submit'] == 'update') {
+                return AdminModel::updateWebhookTemplate($request->input());
+            } elseif ($request['submit'] == 'restore') {
+                return AdminModel::restoreWebhookTemplate($request->input());
             } else {
                 return 'Error: Unknown submission type.';
             }

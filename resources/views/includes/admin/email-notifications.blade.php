@@ -8,11 +8,11 @@
 
     
         @if ($head_data['config']['smtp_enabled'] == 1)
-            @if ($notifications['count'] > 0)
+            @if ($email_notifications['count'] > 0)
             <p id="notification-output" class="last-edit-T" hidden></p>
             <table>
                 <tbody>
-                @foreach ($notifications['rows'] as $notification)
+                @foreach ($email_notifications['rows'] as $notification)
                     @if ($loop->first)
                     <tr>
                     @endif

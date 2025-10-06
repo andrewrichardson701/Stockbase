@@ -205,6 +205,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.addLocalUser', [AdminController::class, 'addLocalUser'])->name('admin.addLocalUser'); // add Local User
                 Route::post('/admin.webhookSettings', [AdminController::class, 'webhookSettings'])->name('admin.webhookSettings'); // Adjust Webhook settings
                 Route::post('/admin.webhookTest', [WebhookController::class, 'webhookTest'])->name('admin.webhookTest'); // Webook test
+                Route::post('/admin.webhookTemplate', [AdminController::class, 'webhookTemplate'])->name('admin.webhookTemplate'); // change an webhook template
             });
 
             // Changelog pages

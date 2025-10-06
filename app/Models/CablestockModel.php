@@ -499,6 +499,7 @@ class CablestockModel extends Model
                             'new_quantity' => $stock_count,
                         ];
                         SmtpModel::notificationEmail(11, 12, $mail_data);
+                        WebhookModel::notificationWebhook(11, 12, $mail_data);
                     } elseif ($action == 'remove') {
                         if ($current_data['quantity'] >= $quantity) {
                             // removal quantity is valid

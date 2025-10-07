@@ -231,6 +231,7 @@ class SmtpModel extends Model
             '##STOCK_TAGS_NEW##'          => $params['stock_tags_new'] ?? '',
 
             '##STOCK_RESTORE_URL##'       => '<a href="'.route('admin').'#stockmanegement-settings">Stock Management</a>',
+            '##STOCK_RESTORE_URL_TEXT##'       => route('admin').'#stockmanegement-settings',
       
             '##SITE_NAME##'               => $site_data['name'] ?? '',
             '##SITE_ID##'                 => $site_data['id'] ?? '',

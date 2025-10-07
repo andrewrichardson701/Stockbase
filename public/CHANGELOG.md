@@ -27,6 +27,7 @@
     <li>The webhook toggles now work.</li>
     <li>Webhook enabling is now working.</li>
     <li>Email notification routes updated and some function names to distinguish the notification types.</li>
+    <li>Some more variables added to the convertVariables() function in SmtpModel.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

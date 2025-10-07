@@ -285,6 +285,38 @@ document.getElementById("smtp-enabled-toggle").addEventListener("change", functi
 
 // ##########
 
+// Webhook TOGGLE ENABLE STUFF
+
+// Get the initial state of the SMTP enable toggle checkbox
+let isWebhookCheckboxChecked = document.getElementById("webhook-enabled-toggle").checked;
+
+// Add an event listener to the checkbox
+document.getElementById("webhook-enabled-toggle").addEventListener("change", function (event) {
+    // Check if the checkbox is being unchecked
+    const isUncheck = !this.checked;
+
+    // If the checkbox is being unchecked, display the confirmation popup
+    if (isUncheck) {
+        const confirmed = confirm(
+            'Disabling Webhoks will stop ALL webhook notifications to Slack / Discord / Teams.\nAre you sure you want to do this?'
+        );
+
+        // If the user cancels, revert the checkbox back to its previous state
+        if (!confirmed) {
+            this.checked = true; // Revert the checkbox back to checked state
+            return;
+        }
+    }
+
+    // Update the initial state of the checkbox for the next change event
+    isWebhookCheckboxChecked = this.checked;
+
+    // If the checkbox is not being unchecked or the user confirmed, submit the form
+    document.getElementById("webhookToggleForm").submit();
+});
+
+// ##########
+
 function toggleFooter(checkbox, id) {
     var type = id;
     var value = checkbox.checked ? 1 : 0;
@@ -345,7 +377,7 @@ function mailNotification(checkbox, id) {
 
     $.ajax({
         type: "POST",
-        url: "/admin.toggleNotification",
+        url: "/admin.toggleEmailNotification",
         data: {
             "mail-notification": 1,
             id: notification,
@@ -355,6 +387,32 @@ function mailNotification(checkbox, id) {
         dataType: "json",
         success: function(response) {
             var outputBox = document.getElementById('notification-output');
+            outputBox.hidden = false;
+            outputBox.classList = "last-edit-T";
+            outputBox.innerHTML = response[0];
+        },
+        async: true
+    });
+}
+
+// Webhook notifications checkboxes
+function webhookNotification(checkbox, id) {
+    var notification = id;
+    var value = checkbox.checked ? 1 : 0;
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    $.ajax({
+        type: "POST",
+        url: "/admin.toggleWebhookNotification",
+        data: {
+            "webhook-notification": 1,
+            id: notification,
+            value: value,
+            _token: csrf
+        },
+        dataType: "json",
+        success: function(response) {
+            var outputBox = document.getElementById('webhooknotification-output');
             outputBox.hidden = false;
             outputBox.classList = "last-edit-T";
             outputBox.innerHTML = response[0];
@@ -922,6 +980,20 @@ function changeTemplate(slug, element) {
     var row = document.getElementById('template-'+slug+'-div');
     var headings = document.getElementsByClassName('templateHeading');
     var rows = document.getElementsByClassName('templateDiv');
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].hidden=true;
+    } 
+    for (var j = 0; j < headings.length; j++) {
+        headings[j].classList.remove('th-selected');
+    }
+    row.hidden=false;
+    element.classList.add('th-selected')
+}
+
+function changeWebhookTemplate(slug, element) {
+    var row = document.getElementById('webhooktemplate-'+slug+'-div');
+    var headings = document.getElementsByClassName('webhooktemplateHeading');
+    var rows = document.getElementsByClassName('webhooktemplateDiv');
     for (var i = 0; i < rows.length; i++) {
         rows[i].hidden=true;
     } 

@@ -23,6 +23,10 @@
     <li>Changed the notifications table to email_notifications to allow for webhook_notifications.</li>
     <li>Corrected all references for notifications to be email_notifications.</li>
     <li>Corrected the field names in the webhook_templates and webhook_templates_default tables.</li>
+    <li>Fixed the webhook templates not loading in properly.</li>
+    <li>The webhook toggles now work.</li>
+    <li>Webhook enabling is now working.</li>
+    <li>Email notification routes updated and some function names to distinguish the notification types.</li>
 </ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>

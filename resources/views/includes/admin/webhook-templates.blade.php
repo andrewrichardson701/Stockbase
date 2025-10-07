@@ -12,7 +12,7 @@
             <thead class="theme-tableOuter" style="text-align: center; white-space: nowrap; border-width:1px; border-color: #565758; border-style:solid">
                 <tr style="border:0px !important">
                 @foreach($webhook_templates['rows'] as $template)
-                    <th class="clickable th-noBorder templateHeading @if($loop->first) th-selected @endif" id="template-{{ $template['slug'] }}-heading" onclick="changeTemplate('{{ $template['slug'] }}', this)">{{ $template['name'] }}</th>
+                    <th class="clickable th-noBorder webhooktemplateHeading @if($loop->first) th-selected @endif" id="webhooktemplate-{{ $template['slug'] }}-heading" onclick="changeWebhookTemplate('{{ $template['slug'] }}', this)">{{ $template['name'] }}</th>
                 @endforeach                    
                 </tr>
             </thead>
@@ -20,13 +20,13 @@
                 <tr>
                     <td colspan=100% class="theme-th-selected">
                     @foreach($webhook_templates['rows'] as $template)
-                        <div class="theme-table templateDiv" style="width:100%" id="template-{{ $template['slug'] }}-div" @if(!$loop->first) hidden @endif>
-                            <form id="template-{{ $template['slug'] }}-form" enctype="multipart/form-data" action="{{ route('admin.webhookTemplate') }}" method="POST">
+                        <div class="theme-table webhooktemplateDiv" style="width:100%" id="webhooktemplate-{{ $template['slug'] }}-div" @if(!$loop->first) hidden @endif>
+                            <form id="webhooktemplate-{{ $template['slug'] }}-form" enctype="multipart/form-data" action="{{ route('admin.webhookTemplate') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="template_id" value="{{ $template['id'] }}">
                                 <input type="hidden" name="slug" value="{{ $template['slug'] }}">
                                 <div class="container theme-table">
-                                    <table class="table table-dark theme-table centertable" id="template-{{ $template['slug'] }}-table" style="padding-bottom:0px;margin-bottom:0px;border: none;">
+                                    <table class="table table-dark theme-table centertable" id="webhooktemplate-{{ $template['slug'] }}-table" style="padding-bottom:0px;margin-bottom:0px;border: none;">
                                         <tr class="vertical-align align-middle" style="border: none;white-space: nowrap;">
                                             <td class="blue align-middle" style="border: none;"" colspan=100%>{{ $template['description'] }}</td>
                                         </tr>

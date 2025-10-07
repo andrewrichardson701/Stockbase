@@ -27,7 +27,7 @@
                     </tbody>
                 </table>
             </form>
-
+        @if ($head_data['config']['webhook_enabled'] == 1)
             <form id="webhookForm" enctype="multipart/form-data" action="{{ route('admin.webhookSettings') }}" method="POST" @if ($head_data['config']['webhook_enabled'] == 0) hidden @endif >
                 @csrf
                 <hr style="border-color:white; margin-left:10px">
@@ -143,6 +143,41 @@
                     </tbody>
                 </table>
             </form>
+
+            <hr style="border-color:white; margin-left:10px; margin-bottom:20px">
+
+            @if ($webhook_notifications['count'] > 0)
+            <p id="webhooknotification-output" class="last-edit-T" hidden></p>
+            <table>
+                <tbody>
+                @foreach ($webhook_notifications['rows'] as $notification)
+                    @if ($loop->first)
+                    <tr>
+                    @endif
+                    @if (($loop->iteration -1) %4 == 0)
+                    </tr><tr>
+                    @endif
+                        <td class="align-middle" style="margin-left:25px;margin-right:10px" id="webhookwebhooknotif-{{ $notification['id'] }}">
+                            <p style="min-height:max-content;margin:0px" class="align-middle title" title="{{ $notification['description'] }}">{{ $notification['title'] }}:</p>
+                        </td>
+                        <td class="align-middle" style="padding-left:5px;padding-right:20px" id="webhooknotif-{{ $notification['id'] }}-toggle">
+                            <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px">
+                                <input type="checkbox" name="{{ $notification['name'] }}" onchange="webhookNotification(this, {{ $notification['id'] }})" @if ($notification['enabled'] == 1) checked @endif @if($notification['id'] == 1) disabled @endif>
+                                <span class="sliderBlue round align-middle" style="transform: scale(0.8, 0.8)  @if($notification['id'] == 1) ;background-color:grey; cursor: not-allowed @endif"></span>
+                            </label>
+                        </td>
+                    @if ($loop->last)
+                    </tr>
+                    @endif
+                @endforeach
+                </tbody>
+            </table>
+            @else
+            <p id="webhooknotification-output"><or class="red">No notifications settings found in table...</or></p>
+            @endif
+        @else
+        <p class="blue">Webhooks are disabled. All webhook notifications have been disabled.</p>
+        @endif
         </div>
     </div>
 </div>

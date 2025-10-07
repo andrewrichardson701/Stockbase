@@ -195,7 +195,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.smtpSettings', [AdminController::class, 'smtpSettings'])->name('admin.smtpSettings'); // Adjust SMTP settings
                 Route::get('/admin.smtpTemplate', [SmtpController::class, 'template'])->name('admin.smtpTemplate'); // view SMTP template
                 Route::post('/admin.smtpTest', [SmtpController::class, 'smtpTest'])->name('admin.smtpTest'); // SMTP test
-                Route::post('/admin.toggleNotification', [AdminController::class, 'toggleNotification'])->name('admin.toggleNotification'); // Adjust Notification settings
+                Route::post('/admin.toggleEmailNotification', [AdminController::class, 'toggleEmailNotification'])->name('admin.toggleEmailNotification'); // Adjust Notification settings
                 Route::post('/admin.stockLocationSettings', [AdminController::class, 'stockLocationSettings'])->name('admin.stockLocationSettings'); // Adjust Stock Location settings
                 Route::post('/admin.imageManagementSettings', [AdminController::class, 'imageManagementSettings'])->name('admin.imageManagementSettings'); // Adjust Image Management settings
                 Route::post('/admin.killUserSession', [AdminController::class, 'killUserSession'])->name('admin.killUserSession'); // kill a user session
@@ -205,6 +205,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.addLocalUser', [AdminController::class, 'addLocalUser'])->name('admin.addLocalUser'); // add Local User
                 Route::post('/admin.webhookSettings', [AdminController::class, 'webhookSettings'])->name('admin.webhookSettings'); // Adjust Webhook settings
                 Route::post('/admin.webhookTest', [WebhookController::class, 'webhookTest'])->name('admin.webhookTest'); // Webook test
+                Route::post('/admin.toggleWebhookNotification', [AdminController::class, 'toggleWebhookNotification'])->name('admin.toggleWebhookNotification'); // Adjust Notification settings
                 Route::post('/admin.webhookTemplate', [AdminController::class, 'webhookTemplate'])->name('admin.webhookTemplate'); // change an webhook template
             });
 

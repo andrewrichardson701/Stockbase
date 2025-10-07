@@ -231,7 +231,7 @@ class SmtpModel extends Model
             '##STOCK_TAGS_NEW##'          => $params['stock_tags_new'] ?? '',
 
             '##STOCK_RESTORE_URL##'       => '<a href="'.route('admin').'#stockmanegement-settings">Stock Management</a>',
-            '##STOCK_RESTORE_URL_TEXT##'       => route('admin').'#stockmanegement-settings',
+            '##STOCK_RESTORE_URL_TEXT##'  => route('admin').'#stockmanegement-settings',
       
             '##SITE_NAME##'               => $site_data['name'] ?? '',
             '##SITE_ID##'                 => $site_data['id'] ?? '',
@@ -259,7 +259,10 @@ class SmtpModel extends Model
             '##OLD_QUANTITY##'            => $params['old_quantity'] ?? '',
             '##NEW_QUANTITY##'            => $params['new_quantity'] ?? '',
       
-            '##IMG_FILE_NAME##'           => $params['img_file_name'] ?? '',
+            '##IMAGE_NAME##'              => $params['img_name'] ?? '',
+            '##IMAGE_ID##'                => $params['img_id'] ?? '',
+            '##IMAGE_URL##'               => '<a href="'.asset('img/stock/'.$params['img_name']).'">'.$params['img_name'].'</a>' ?? '',
+            '##IMAGE_URL_TEXT##'          => asset('img/stock/'.$params['img_name']) ?? '',
       
             '##USER_NAME##'               => $user['name'] ?? '',
             '##USER_EMAIL##'              => $user['email'] ?? '',

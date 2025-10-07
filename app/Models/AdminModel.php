@@ -1055,7 +1055,63 @@ class AdminModel extends Model
                             GeneralModel::updateChangelog($changelog_info);
                             $results[] = FunctionsModel::ajaxMsg("Notification: '".$current_data->title."'   $state!", 'success');
                         } else {
-                            $results[] = FunctionsModel::ajaxMsg("Unable to get update notifications.", 'error');
+                            $results[] = FunctionsModel::ajaxMsg("Unable to update notifications.", 'error');
+                        }
+                    } else {
+                        $results[] = FunctionsModel::ajaxMsg("Unable to get current notifications.", 'error');
+                    }
+                } else {
+                    $results[] = FunctionsModel::ajaxMsg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = FunctionsModel::ajaxMsg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = FunctionsModel::ajaxMsg('No type specified.', 'error');
+        }
+
+        echo(json_encode($results));
+    }
+
+    public static function toggleWebhookNotification($request)
+    {
+        $results = [];
+
+        if (isset($request['id']) && is_numeric($request['id'])) {
+
+            if (isset($request['value'])) {
+                $value = htmlspecialchars($request['value']);
+                if ((int)$value == 0 || (int)$value == 1) {
+                    
+                    $current_data = DB::table('webhook_notifications')
+                            ->select(['enabled', 'title'])
+                            ->where('id', (int)$request['id'])
+                            ->first();
+
+                    if ($current_data) {
+                        $previous_value = $current_data->enabled;
+
+                        $state = $value == 1 ? 'enabled' : 'disabled';
+
+                        $update = DB::table('webhook_notifications')->where('id', (int)$request['id'])->update(['enabled' => (int)$value, 'updated_at' => now()]);
+
+                        if ($update) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => GeneralModel::getUser(),
+                                'table' => 'webhook_notifications',
+                                'record_id' => (int)$request['id'],
+                                'action' => 'Update record',
+                                'field' => 'enabled',
+                                'previous_value' => $previous_value,
+                                'new_value' => (int)$value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                            $results[] = FunctionsModel::ajaxMsg("Notification: '".$current_data->title."'   $state!", 'success');
+                        } else {
+                            $results[] = FunctionsModel::ajaxMsg("Unable to update notifications.", 'error');
                         }
                     } else {
                         $results[] = FunctionsModel::ajaxMsg("Unable to get current notifications.", 'error');

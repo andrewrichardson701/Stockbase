@@ -80,6 +80,7 @@ class AdminController extends Controller
         $email_notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_notifications'));
         $email_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_templates'));
         
+        $webhook_notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_notifications'));
         $webhook_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_templates'));
 
         $changelog = GeneralModel::formatArrayOnIdAndCount(ChangelogModel::getChangelog(10));
@@ -129,6 +130,7 @@ class AdminController extends Controller
                                 'email_notifications' => $email_notifications,
                                 'email_templates' => $email_templates,
 
+                                'webhook_notifications' => $webhook_notifications,
                                 'webhook_templates' => $webhook_templates,
 
                                 'changelog' => $changelog,
@@ -376,8 +378,8 @@ class AdminController extends Controller
     {
         if (isset($request['webhook-toggle-submit'])) {
             if ($request['_token'] == csrf_token()) {
-                if (isset($request['webhook_enabled']) && in_array($request['webhook_enabled'], ['on', 'off'])) {
-                    $enabled = $request['webhook_enabled'];
+                if (isset($request['webhook-enabled']) && in_array($request['webhook-enabled'], ['on', 'off'])) {
+                    $enabled = $request['webhook-enabled'];
                 } else {
                     $enabled = 'off';
                 }
@@ -442,7 +444,7 @@ class AdminController extends Controller
         return 'unknown request';
     }
 
-    static public function toggleNotification(Request $request)
+    static public function toggleEmailNotification(Request $request)
     {
         if ($request['_token'] == csrf_token()) {
             $request->validate([
@@ -450,6 +452,21 @@ class AdminController extends Controller
                     'value' => 'integer|required',
             ]);
             AdminModel::toggleEmailNotification($request->input());
+        } else {
+            return 'Error: CSRF token missmatch.';
+        }
+
+        return 'error';
+    }
+
+    static public function toggleWebhookNotification(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'id' => 'integer|required',
+                    'value' => 'integer|required',
+            ]);
+            AdminModel::toggleWebhookNotification($request->input());
         } else {
             return 'Error: CSRF token missmatch.';
         }

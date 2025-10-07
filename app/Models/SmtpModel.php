@@ -205,6 +205,7 @@ class SmtpModel extends Model
         // Build a single array of variables
         $variables = [
             '##BASE_URL##'                => $config['base_url'],
+            '##BASE_URL_TEXT'             => route('index'),
             '##SYSTEM_NAME##'             => $config['system_name'],
             '##SYSTEM_LINK##'             => '<a href="'.$config['base_url'].'">'.$config['system_name'].'</a>',
             '##BANNER_COLOR##'            => $config['banner_color'],

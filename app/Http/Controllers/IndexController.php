@@ -115,21 +115,21 @@ class IndexController extends Controller
             'img_name' => 'image.jpeg',
             'img_id' => 69,
         ];
-        dd(
-            WebhookModel::notificationWebhook(1, 1, $data), 
-            // WebhookModel::notificationWebhook(1, 2, $data),     
-            // WebhookModel::notificationWebhook(1, 3, $data), 
-            // WebhookModel::notificationWebhook(1, 4, $data), 
-            // WebhookModel::notificationWebhook(1, 5, $data), 
-            // WebhookModel::notificationWebhook(1, 6, $data), 
-            // WebhookModel::notificationWebhook(1, 7, $data), 
-            // WebhookModel::notificationWebhook(1, 8, $data), 
-            // WebhookModel::notificationWebhook(1, 9, $data), 
-            // WebhookModel::notificationWebhook(1, 10, $data), 
-            // WebhookModel::notificationWebhook(1, 11, $data), 
-            // WebhookModel::notificationWebhook(1, 12, $data), 
-            // WebhookModel::notificationWebhook(1, 13, $data), 
-        );
+        // dd(
+        //     WebhookModel::notificationWebhook(1, 1, $data), 
+        //     WebhookModel::notificationWebhook(1, 2, $data),     
+        //     WebhookModel::notificationWebhook(1, 3, $data), 
+        //     WebhookModel::notificationWebhook(1, 4, $data), 
+        //     WebhookModel::notificationWebhook(1, 5, $data), 
+        //     WebhookModel::notificationWebhook(1, 6, $data), 
+        //     WebhookModel::notificationWebhook(1, 7, $data), 
+        //     WebhookModel::notificationWebhook(1, 8, $data), 
+        //     WebhookModel::notificationWebhook(1, 9, $data), 
+        //     WebhookModel::notificationWebhook(1, 10, $data), 
+        //     WebhookModel::notificationWebhook(1, 11, $data), 
+        //     WebhookModel::notificationWebhook(1, 12, $data), 
+        //     WebhookModel::notificationWebhook(1, 13, $data), 
+        // );
 
 
     }

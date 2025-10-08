@@ -13,7 +13,7 @@ use App\Models\ResponseHandlingModel;
 
 
 use App\Models\StockModel;
-use App\Models\LdapModel;
+use App\Models\WebhookModel;
 use App\Models\PropertiesModel;
 
 use App\Models\SmtpModel;
@@ -72,11 +72,66 @@ class IndexController extends Controller
         }
     }
 
-    public function test(Request $request, EmailService $mailer)
+    public function test(Request $request)
     {
-        $config = GeneralModel::configCompare();
-        $user = GeneralModel::getUser();
-        $template_info = SmtpModel::getTemplateInfo(1);
+        // [##USER_USERNAME##, ##USER_NAME##, ##BASE_URL##, ##SYSTEM_NAME##, ##STOCK_URL_TEXT##, 
+        // ##SITE_NAME##, ##AREA_NAME##, ##SHELF_NAME##, ##QUANTITY##, ##NEW_QUANTITY##, ##STOCK_ID##, 
+        // ##STOCK_NAME##, ##STOCK_DESCRIPTION##, ##STOCK_SKU##, ##STOCK_MIN_STOCK##, ##SITE_NAME_OLD##, 
+        // ##AREA_NAME_OLD##, ##SHELF_NAME_OLD##, ##SITE_NAME_NEW##, ##AREA_NAME_NEW##, ##SHELF_NAME_NEW##, 
+        // ##STOCK_NAME_OLD##, ##STOCK_DESCRIPTION_OLD##, ##STOCK_SKU_OLDU##, ##STOCK_TAGS_OLD##, ##STOCK_MIN_STOCK_NEW##,
+        // ##STOCK_NAME_NEW##, ##STOCK_DESCRIPTION_NEW##, ##STOCK_SKU_NEW##, ##STOCK_TAGS_NEW##, ##STOCK_RESTORE_URL_TEXT##, 
+        // ##IMAGE_ID##, ##IMAGE_NAME##, ##IMAGE_URL_TEXT##]
+
+        $data = [
+            'stock_id' => 1,
+            'site_id' => 1,
+            'area_id' => 1,
+            'shelf_id' => 1,
+            'quantity' => 100,
+            'new_quantity' => 999,
+            'old_quantity' => 50,
+            'site_id_old' => 1,
+            'area_id_old' => 1,
+            'shelf_id_old' => 1,
+            'site_id_new' => 1,
+            'area_id_new' => 1,
+            'shelf_id_new' => 1,
+            'site_name_old' => 'old',
+            'area_name_old' => 'old',
+            'shelf_name_old' => 'old',
+            'site_name_new' => 'new',
+            'area_name_new' => 'new',
+            'shelf_name_new' => 'new',
+            'stock_name_old' => 'old',
+            'stock_description_old' => 'old',
+            'stock_sku_old' => 'old',
+            'stock_min_stock_old' => 'old',
+            'stock_tags_old' => 'old',
+            'stock_name_new' => 'new',
+            'stock_description_new' => 'new',
+            'stock_sku_new' => 'new',
+            'stock_min_stock_new' => 'new',
+            'stock_tags_new' => 'new',
+            'img_name' => 'image.jpeg',
+            'img_id' => 69,
+        ];
+        // dd(
+        //     WebhookModel::notificationWebhook(1, 1, $data), 
+        //     WebhookModel::notificationWebhook(1, 2, $data),     
+        //     WebhookModel::notificationWebhook(1, 3, $data), 
+        //     WebhookModel::notificationWebhook(1, 4, $data), 
+        //     WebhookModel::notificationWebhook(1, 5, $data), 
+        //     WebhookModel::notificationWebhook(1, 6, $data), 
+        //     WebhookModel::notificationWebhook(1, 7, $data), 
+        //     WebhookModel::notificationWebhook(1, 8, $data), 
+        //     WebhookModel::notificationWebhook(1, 9, $data), 
+        //     WebhookModel::notificationWebhook(1, 10, $data), 
+        //     WebhookModel::notificationWebhook(1, 11, $data), 
+        //     WebhookModel::notificationWebhook(1, 12, $data), 
+        //     WebhookModel::notificationWebhook(1, 13, $data), 
+        // );
+
+
     }
 }
 

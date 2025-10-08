@@ -144,6 +144,22 @@ class OpticsController extends Controller
 
     static public function add(Request $request)
     {
+        $previous = GeneralModel::previousURL();
+        $query = http_build_query(
+            ['form_serial' => $request['serial'] ?? '', 
+                    'form_model' => $request['model'] ?? '', 
+                    'form_sepctrum' => $request['spectrum'] ?? '',
+                    'form_type' => $request['type'] ?? '', 
+                    'form_speed' => $request['speed'] ?? '', 
+                    'form_connector' => $request['connector'] ?? '',
+                    'form_distance' => $request['distance'] ?? '', 
+                    'form_mode' => $request['mode'] ?? '', 
+                    'form_site' => $request['site'] ?? '',
+                    'form_vendor' => $request['vendor'] ?? ''
+                ]
+            );
+        $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
+                                    
         if (isset($request['add-optic-submit'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
@@ -160,10 +176,10 @@ class OpticsController extends Controller
                 ]);
                 return OpticsModel::addOptic($request->input());
             } else {
-                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+                return redirect($url)->with('error', 'CSRF missmatch');
             }
         }
-        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+        return redirect($url)->with('error', 'Unknown request');
     }
 
     static public function restore(Request $request) 

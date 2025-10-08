@@ -127,56 +127,6 @@
                                             @endif
                                             <a style="margin-left: 15px" class="link align-middle" href="{{ url('theme-testing') }}" target="_blank">Theme testing</a>
                                         </div>
-                                        <div>
-                                            <p class="block font-medium">Permissions:</p>
-                                            @php $visibleCount = 0; @endphp
-                                            <table>
-                                                <tbody>
-
-                                                
-                                            @foreach ($head_data['user']['permissions'] as $permission => $value)
-                                                @if ($value == 1 && $permission !== 'assets' && $permission !=='id')
-                                                    @php $visibleCount++; @endphp
-
-                                                    @if ($visibleCount % 4 === 1)
-                                                        <tr>
-                                                    @endif
-
-                                                    <th style="padding-right:10px" id="permission-{{ $permission }}">{{ ucwords($permission) }}:</th>
-                                                    <td style="padding-right:50px"><i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i></td>
-
-                                                    @if ($visibleCount % 4 === 0)
-                                                        </tr>
-                                                    @endif
-                                                @endif
-                                            @endforeach
-
-                                            {{-- Close unclosed row if visibleCount isn't divisible by 4 --}}
-                                            @if ($visibleCount % 4 !== 0)
-                                                 </tr>
-                                            @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <p class="block font-medium">Auth:</p>
-                                            </div>
-                                            <div class="col">
-                                                <p name="auth" value="{{ $user->auth }}">{{ $user->auth }}</p>
-                                            </div>
-
-                                            <div class="col">
-                                                <p class="block font-medium">Verified:</p>
-                                            </div>
-                                            <div class="col">
-                                                <p name="theme" value="{{ $user->email_verified_at }}">{{ $user->email_verified_at ?? 'Never' }}</p>
-                                            </div>
-                                        </div>
-
-                                        <p class="gold link" onclick="modalLoadLoginHistory()" style="margin-top:20px">View login history</p>
-                                        
                                         <div class="flex items-center gap-4">
                                             <button type="submit"
                                                 class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150"
@@ -187,7 +137,68 @@
                                                 <p class="text-sm">{{ __('Saved.') }}</p>
                                             @endif
                                         </div>
+                                        
+                                        <p class="gold link" onclick="modalLoadLoginHistory()" style="margin-top:20px">View login history</p>
+                                
                                     </form>
+                                </section>
+                            </div>
+                        </div>
+
+                        <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
+                            <div class="max-w-xl">
+                                <section>
+                                    <header>
+                                        <h2 class="text-lg font-medium ">
+                                            {{ __('Permissions') }}
+                                        </h2>
+                                    </header>
+                                    <div style="margin-top:20px">
+                                        @php $visibleCount = 0; @endphp
+                                        <table>
+                                            <tbody>
+
+                                            
+                                        @foreach ($head_data['user']['permissions'] as $permission => $value)
+                                            @if ($value == 1 && $permission !== 'assets' && $permission !=='id')
+                                                @php $visibleCount++; @endphp
+
+                                                @if ($visibleCount % 4 === 1)
+                                                    <tr>
+                                                @endif
+
+                                                <th style="padding-right:10px" id="permission-{{ $permission }}">{{ ucwords($permission) }}:</th>
+                                                <td style="padding-right:50px"><i class="fa-solid fa-square-check fa-lg" style="color: #3881ff;"></i></td>
+
+                                                @if ($visibleCount % 4 === 0)
+                                                    </tr>
+                                                @endif
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Close unclosed row if visibleCount isn't divisible by 4 --}}
+                                        @if ($visibleCount % 4 !== 0)
+                                                </tr>
+                                        @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="row" style="margin-top:20px">
+                                        <div class="col">
+                                            <p class="block font-medium" style="margin-bottom:0px">Auth:</p>
+                                        </div>
+                                        <div class="col">
+                                            <p name="auth" style="margin-bottom:0px" value="{{ $user->auth }}">{{ $user->auth }}</p>
+                                        </div>
+
+                                        <div class="col">
+                                            <p class="block font-medium" style="margin-bottom:0px">Verified:</p>
+                                        </div>
+                                        <div class="col">
+                                            <p name="verified" style="margin-bottom:0px" value="{{ $user->email_verified_at }}">{{ $user->email_verified_at ?? 'Never' }}</p>
+                                        </div>
+                                    </div>
                                 </section>
                             </div>
                         </div>

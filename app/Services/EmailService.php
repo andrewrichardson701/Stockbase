@@ -23,7 +23,7 @@ class EmailService
 
         try {
             // 1. Check if notification is enabled
-            $notification = DB::table('notifications')->find($notif_id);
+            $notification = DB::table('email_notifications')->find($notif_id);
             if (!$notification || !$notification->enabled) {
                 Log::warning("Notification $notif_id disabled or not found.");
                 return false;

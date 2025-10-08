@@ -1,4 +1,34 @@
 <h2>Changelog</h2>
+<h3>1.4.0 - Webhooks</h3>
+<ul>
+    <li>Bullet points added to the Changelog on the about page</li>
+    <li>Corrected the function to add initial locations.</li>
+    <li>Changed the gitlab url in the update checker to the github url.</li>
+    <li>Updated the about page to show the GitHub url not the GitLab.</li>
+    <li>Updated the footer to show GitHub not GitLab.</li>
+    <li>Allowed sameorigin iframes in security middleware.</li>
+    <li>Added the system name to the login page, using the guest layout.</li>
+    <li>Citrus theme added.</li>
+    <li>Favourites page no longer crashes if there are no tags present in the database.</li>
+    <li>Previously required root permissions to add locations in the admin section, now only need admin.</li>
+    <li>Quantity is now correct when removing an item that is not in a container.</li>
+    <li>Killing sessions now works again.</li>
+    <li>Optic management no longer shows the old php semicolons</li>
+    <li>Change some Optics redirects and corrected the optic delete page to redirect.</li>
+    <li>Optics add page now redirects with the previous info back in the form.</li>
+    <li>Nottifications admin include renamed to email-notifications.blade.</li>
+    <li>Webhooks section added to the admin page.</li>
+    <li>Webhooks info added to the database using migrations.</li>
+    <li>Webhook settings can now be saved and the test works successfully.</li>
+    <li>Changed the notifications table to email_notifications to allow for webhook_notifications.</li>
+    <li>Corrected all references for notifications to be email_notifications.</li>
+    <li>Corrected the field names in the webhook_templates and webhook_templates_default tables.</li>
+    <li>Fixed the webhook templates not loading in properly.</li>
+    <li>The webhook toggles now work.</li>
+    <li>Webhook enabling is now working.</li>
+    <li>Email notification routes updated and some function names to distinguish the notification types.</li>
+    <li>Some more variables added to the convertVariables() function in SmtpModel.</li>
+</ul>
 <h3>1.3.0L - Laravel conversion</h3>
 <ul>
     <li>Converted the main system to Laravel</li>
@@ -26,6 +56,8 @@
     <li>2FA now integrated using Google Authenticator. Tested and working.</li>
     <li>Middleware in place to prevent 2FA bypassing.</li>
     <li>Middleware in place to force a user password reset when their password expires.</li>
+    <li>Fixed the session expiry. The wrong session ID was being pulled.</li>
+    <li>Register page is now accessible from the login page and can be toggled on/off in the admin page with the new middleware.</li>
 </ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>

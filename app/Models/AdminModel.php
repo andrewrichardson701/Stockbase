@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 use App\Models\GeneralModel;
 use App\Models\FunctionsModel;
 use App\Models\TransactionModel;
-
+use App\Models\WebhookModel;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdminModel newModelQuery()
@@ -268,7 +268,7 @@ class AdminModel extends Model
 
         $user = GeneralModel::getUser();
         $config_fields = Schema::getColumnListing('config');
-        $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit'];
+        $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit', 'webhook-submit'];
 
         if (isset($data['global-submit'])) {
             $anchor = 'global-settings';
@@ -276,6 +276,8 @@ class AdminModel extends Model
             $anchor = 'smtp-settings';
         } elseif (isset($data['ldap-submit']) || isset($data['ldap-restore-defaults'])) {
             $anchor = 'ldap-settings';
+        } elseif (isset($data['webhook-submit']) || isset($data['webhook-restore-defaults'])) {
+            $anchor = 'webhook-settings';
         } else {
             $anchor = '';
         }
@@ -323,6 +325,18 @@ class AdminModel extends Model
             }
         } 
 
+        if (isset($data['webhook-restore-defaults'])) {
+        
+            $reset_array = ['webhook_type', 'webhook_friendly_name', 'webhook_url', 'webhook_display_name', 'webhook_prefix_message'];
+            $reset = AdminModel::resetConfig($reset_array);
+
+            if ($reset == 1) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+            }
+        } 
+
         $changelog_info = [
                 'user' => $user,
                 'table' => 'config',
@@ -330,7 +344,7 @@ class AdminModel extends Model
                 'action' => 'Update record',
             ];
 
-        unset($data['_token'], $data['global-submit'], $data['smtp-submit'], $data['ldap-submit']); // remove these to stop them being queried
+        unset($data['_token'], $data['global-submit'], $data['smtp-submit'], $data['ldap-submit'], $data['webhook-submit']); // remove these to stop them being queried
 
         foreach($data as $field => $value) {
             if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys
@@ -588,7 +602,7 @@ class AdminModel extends Model
                 foreach($request as $key => $value) {
                     if (!in_array($key, $permissions_fields)) {
                         // throw an error
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified.');
+                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified: '.$key.'.');
                     }
                 }
 
@@ -1004,7 +1018,7 @@ class AdminModel extends Model
         echo(json_encode($results));
     }
 
-    public static function toggleNotification($request)
+    public static function toggleEmailNotification($request)
     {
         $results = [];
 
@@ -1014,7 +1028,7 @@ class AdminModel extends Model
                 $value = htmlspecialchars($request['value']);
                 if ((int)$value == 0 || (int)$value == 1) {
                     
-                    $current_data = DB::table('notifications')
+                    $current_data = DB::table('email_notifications')
                             ->select(['enabled', 'title'])
                             ->where('id', (int)$request['id'])
                             ->first();
@@ -1024,13 +1038,13 @@ class AdminModel extends Model
 
                         $state = $value == 1 ? 'enabled' : 'disabled';
 
-                        $update = DB::table('notifications')->where('id', (int)$request['id'])->update(['enabled' => (int)$value, 'updated_at' => now()]);
+                        $update = DB::table('email_notifications')->where('id', (int)$request['id'])->update(['enabled' => (int)$value, 'updated_at' => now()]);
 
                         if ($update) {
                             // changelog
                             $changelog_info = [
                                 'user' => GeneralModel::getUser(),
-                                'table' => 'notifications',
+                                'table' => 'email_notifications',
                                 'record_id' => (int)$request['id'],
                                 'action' => 'Update record',
                                 'field' => 'enabled',
@@ -1041,7 +1055,63 @@ class AdminModel extends Model
                             GeneralModel::updateChangelog($changelog_info);
                             $results[] = FunctionsModel::ajaxMsg("Notification: '".$current_data->title."'   $state!", 'success');
                         } else {
-                            $results[] = FunctionsModel::ajaxMsg("Unable to get update notifications.", 'error');
+                            $results[] = FunctionsModel::ajaxMsg("Unable to update notifications.", 'error');
+                        }
+                    } else {
+                        $results[] = FunctionsModel::ajaxMsg("Unable to get current notifications.", 'error');
+                    }
+                } else {
+                    $results[] = FunctionsModel::ajaxMsg('Invalid value specified.', 'error');
+                }
+            } else {
+                $results[] = FunctionsModel::ajaxMsg('No value specified.', 'error');
+            }
+
+        } else {
+            $results[] = FunctionsModel::ajaxMsg('No type specified.', 'error');
+        }
+
+        echo(json_encode($results));
+    }
+
+    public static function toggleWebhookNotification($request)
+    {
+        $results = [];
+
+        if (isset($request['id']) && is_numeric($request['id'])) {
+
+            if (isset($request['value'])) {
+                $value = htmlspecialchars($request['value']);
+                if ((int)$value == 0 || (int)$value == 1) {
+                    
+                    $current_data = DB::table('webhook_notifications')
+                            ->select(['enabled', 'title'])
+                            ->where('id', (int)$request['id'])
+                            ->first();
+
+                    if ($current_data) {
+                        $previous_value = $current_data->enabled;
+
+                        $state = $value == 1 ? 'enabled' : 'disabled';
+
+                        $update = DB::table('webhook_notifications')->where('id', (int)$request['id'])->update(['enabled' => (int)$value, 'updated_at' => now()]);
+
+                        if ($update) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => GeneralModel::getUser(),
+                                'table' => 'webhook_notifications',
+                                'record_id' => (int)$request['id'],
+                                'action' => 'Update record',
+                                'field' => 'enabled',
+                                'previous_value' => $previous_value,
+                                'new_value' => (int)$value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                            $results[] = FunctionsModel::ajaxMsg("Notification: '".$current_data->title."'   $state!", 'success');
+                        } else {
+                            $results[] = FunctionsModel::ajaxMsg("Unable to update notifications.", 'error');
                         }
                     } else {
                         $results[] = FunctionsModel::ajaxMsg("Unable to get current notifications.", 'error');
@@ -1330,7 +1400,7 @@ class AdminModel extends Model
 
         // check permissions
         $user = GeneralModel::getUser();
-        if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
+        if ($user['permissions']['root'] == 1 || $user['permissions']['admin'] == 1) {
             $authorized = 1;
         }  
 
@@ -1766,6 +1836,131 @@ class AdminModel extends Model
         }
     }
 
+    public static function updateWebhookTemplate($request)
+    {
+        $user = GeneralModel::getUser();
+        $template_data = GeneralModel::getFirstWhere('webhook_templates', ['id' => $request['template_id'], 'slug' => $request['slug']]);
+
+        if ($template_data){
+            // template exists
+            // update the content
+            $update_count = 0;
+            if ($template_data['subject'] !== $request['subject']) {
+                // update
+                $update = DB::table('webhook_templates')->where('id', $request['template_id'])->update(['subject' => $request['subject'], 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'webhook_templates',
+                        'record_id' => $request['template_id'],
+                        'action' => 'Modify record',
+                        'field' => 'subject',
+                        'previous_value' => $template_data['subject'],
+                        'new_value' => $request['subject']
+                    ];
+                    GeneralModel::updateChangelog($changelog_info);
+                    $update_count++;
+                }
+            }
+
+            if ($template_data['body'] !== $request['body']) {
+                // update
+                $update = DB::table('webhook_templates')->where('id', $request['template_id'])->update(['body' => $request['body'], 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'webhook_templates',
+                        'record_id' => $request['template_id'],
+                        'action' => 'Modify record',
+                        'field' => 'body',
+                        'previous_value' => $template_data['body'],
+                        'new_value' => $request['body']
+                    ];
+                    GeneralModel::updateChangelog($changelog_info);
+                    $update_count++;
+                }
+            }
+
+            if ($update_count > 0) {
+                return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('success', 'Template updated.');
+            } else {
+                return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Nothing to update.');
+            }
+
+        } else {
+            return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Unable to find current template data.');
+        }
+    }
+
+    public static function restoreWebhookTemplate($request)
+    {
+        $user = GeneralModel::getUser();
+        $template_data = GeneralModel::getFirstWhere('webhook_templates', ['id' => $request['template_id'], 'slug' => $request['slug']]);
+        $default_template_data = GeneralModel::getFirstWhere('webhook_templates_default', ['id' => $request['template_id'], 'slug' => $request['slug']]);
+
+        if ($template_data){
+            // template exists
+            if ($default_template_data) {
+                // update the content
+                $update_count = 0;
+                if ($template_data['subject'] !== $default_template_data['subject']) {
+                    // update
+                    $update = DB::table('webhook_templates')->where('id', $request['template_id'])->update(['subject' => $default_template_data['subject'], 'updated_at' => now()]);
+
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'webhook_templates',
+                            'record_id' => $request['template_id'],
+                            'action' => 'Restore record',
+                            'field' => 'subject',
+                            'previous_value' => $template_data['subject'],
+                            'new_value' => $default_template_data['subject']
+                        ];
+                        GeneralModel::updateChangelog($changelog_info);
+                        $update_count++;
+                    }
+                }
+
+                if ($template_data['body'] !== $default_template_data['body']) {
+                    // update
+                    $update = DB::table('webhook_templates')->where('id', $request['template_id'])->update(['body' => $default_template_data['body'], 'updated_at' => now()]);
+
+                    if ($update) {
+                        // changelog
+                        $changelog_info = [
+                            'user' => $user,
+                            'table' => 'webhook_templates',
+                            'record_id' => $request['template_id'],
+                            'action' => 'Restore record',
+                            'field' => 'body',
+                            'previous_value' => $template_data['body'],
+                            'new_value' => $default_template_data['body']
+                        ];
+                        GeneralModel::updateChangelog($changelog_info);
+                        $update_count++;
+                    }
+                }
+
+                if ($update_count > 0) {
+                    return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('success', 'Template restored to default.');
+                } else {
+                    return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Template is already the default.');
+                }
+
+            } else {
+                return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Unable to find default template data.');
+            }
+        } else {
+            return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Unable to find current template data.');
+        }
+    }
+
     static public function addLocalUser($user_data=[], $permissions_data=[])
     {
         $user_data['email_verified_at'] = now();
@@ -1777,6 +1972,7 @@ class AdminModel extends Model
         if ($new_user) {
             // send welcome email:
             SmtpModel::notificationEmail(1, 1, []);
+            // WebhookModel::notificationWebhook(1, 1, []);
 
             $user_id = $new_user->id; 
 

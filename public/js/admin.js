@@ -285,6 +285,38 @@ document.getElementById("smtp-enabled-toggle").addEventListener("change", functi
 
 // ##########
 
+// Webhook TOGGLE ENABLE STUFF
+
+// Get the initial state of the SMTP enable toggle checkbox
+let isWebhookCheckboxChecked = document.getElementById("webhook-enabled-toggle").checked;
+
+// Add an event listener to the checkbox
+document.getElementById("webhook-enabled-toggle").addEventListener("change", function (event) {
+    // Check if the checkbox is being unchecked
+    const isUncheck = !this.checked;
+
+    // If the checkbox is being unchecked, display the confirmation popup
+    if (isUncheck) {
+        const confirmed = confirm(
+            'Disabling Webhoks will stop ALL webhook notifications to Slack / Discord / Teams.\nAre you sure you want to do this?'
+        );
+
+        // If the user cancels, revert the checkbox back to its previous state
+        if (!confirmed) {
+            this.checked = true; // Revert the checkbox back to checked state
+            return;
+        }
+    }
+
+    // Update the initial state of the checkbox for the next change event
+    isWebhookCheckboxChecked = this.checked;
+
+    // If the checkbox is not being unchecked or the user confirmed, submit the form
+    document.getElementById("webhookToggleForm").submit();
+});
+
+// ##########
+
 function toggleFooter(checkbox, id) {
     var type = id;
     var value = checkbox.checked ? 1 : 0;
@@ -345,7 +377,7 @@ function mailNotification(checkbox, id) {
 
     $.ajax({
         type: "POST",
-        url: "/admin.toggleNotification",
+        url: "/admin.toggleEmailNotification",
         data: {
             "mail-notification": 1,
             id: notification,
@@ -355,6 +387,32 @@ function mailNotification(checkbox, id) {
         dataType: "json",
         success: function(response) {
             var outputBox = document.getElementById('notification-output');
+            outputBox.hidden = false;
+            outputBox.classList = "last-edit-T";
+            outputBox.innerHTML = response[0];
+        },
+        async: true
+    });
+}
+
+// Webhook notifications checkboxes
+function webhookNotification(checkbox, id) {
+    var notification = id;
+    var value = checkbox.checked ? 1 : 0;
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    $.ajax({
+        type: "POST",
+        url: "/admin.toggleWebhookNotification",
+        data: {
+            "webhook-notification": 1,
+            id: notification,
+            value: value,
+            _token: csrf
+        },
+        dataType: "json",
+        success: function(response) {
+            var outputBox = document.getElementById('webhooknotification-output');
             outputBox.hidden = false;
             outputBox.classList = "last-edit-T";
             outputBox.innerHTML = response[0];
@@ -932,6 +990,20 @@ function changeTemplate(slug, element) {
     element.classList.add('th-selected')
 }
 
+function changeWebhookTemplate(slug, element) {
+    var row = document.getElementById('webhooktemplate-'+slug+'-div');
+    var headings = document.getElementsByClassName('webhooktemplateHeading');
+    var rows = document.getElementsByClassName('webhooktemplateDiv');
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].hidden=true;
+    } 
+    for (var j = 0; j < headings.length; j++) {
+        headings[j].classList.remove('th-selected');
+    }
+    row.hidden=false;
+    element.classList.add('th-selected')
+}
+
 function modalLoadViewTemplate(template_id) {
     //get the modal div with the property
     var iframe = document.getElementById('emailTemplateView');
@@ -983,5 +1055,92 @@ function smtpOauth2Fields(select) {
         rowsArray.forEach(element => {
             element.hidden = true;
         });
+    }
+}
+
+function testWebhook() {
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    var webhookLoading = document.getElementById("smtp-loading-icon");
+    var webhookSuccess = document.getElementById("smtp-success-icon");
+    var webhookFail = document.getElementById("smtp-fail-icon");
+    webhookLoading.style.display = "inline-block";
+    webhookSuccess.style.display = "none";
+    webhookFail.style.display = "none";
+
+    var webhook_type = $('#webhook-type').val();
+    var webhook_friendly_name = $('#webhook-friendly-name').val();
+    var webhook_url = $('#webhook-url').val();
+    var webhook_avatar_url = $('#webhook-avatar-url').val();
+    var webhook_display_name = $('#webhook-display-name').val();
+    var webhook_prefix_message = $('#webhook-prefix-message').val();
+    
+    // console.log(webhook_type +' '+ webhook_friendly_name + ' ' + webhook_url + ' ' + webhook_avatar_url + ' ' + webhook_display_name + ' ' + webhook_prefix_message);
+    
+    var webhookForm = document.getElementById("webhookForm");
+    var outputPre = document.getElementById("webhookTestOutput");
+    if (outputPre !== null) {
+        outputPre.parentNode.removeChild(outputPre)
+    }
+    var newOutputPre = document.createElement("pre");
+    newOutputPre.setAttribute("class", "well-nopad theme-divBg");
+    newOutputPre.setAttribute("id", "webhookTestOutput");
+    newOutputPre.setAttribute("style", "color:white;margin-bottom:50px");
+    webhookForm.parentNode.insertBefore(newOutputPre, webhookForm.nextSibling);
+
+    $.ajax({
+        type: "POST",
+        url: "admin.webhookTest",
+        data: {
+            _token: csrf,
+            webhook_type: webhook_type,
+            webhook_friendly_name: webhook_friendly_name,
+            webhook_url: webhook_url,
+            webhook_avatar_url: webhook_avatar_url,
+            webhook_display_name: webhook_display_name,
+            webhook_prefix_message: webhook_prefix_message,
+        },
+        dataType: "json",
+        success: function(response) {
+            var result = response;
+            var div = document.getElementById('webhookTestOutput');
+
+            div.textContent += "Success (200) \n" + result + "\n";
+
+            // Continue with the rest of the code once the AJAX request is complete
+            processLastLine();
+            newOutputPre.scrollIntoView();
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error", status, error); // Logs "error", "Internal Server Error", etc.
+            console.log("Status Code:", xhr.status);    // Logs 500
+            console.log("Response Text:", xhr.responseText); // Laravel's error response
+
+            var div = document.getElementById('webhookTestOutput');
+            div.textContent += `Error (${xhr.status}): ${xhr.statusText}\n`;
+
+            // Optional: show Laravel error message (usually HTML or JSON)
+            if (xhr.responseText) {
+                div.textContent += xhr.responseText + "\n";
+            }
+
+            webhookLoading.style.display = "none";
+            webhookSuccess.style.display = "none";
+            webhookFail.style.display = "inline";
+            newOutputPre.scrollIntoView();
+        },
+        async: true
+    });
+
+    function processLastLine() {
+        var div = document.getElementById('webhookTestOutput');
+
+        // Get the content of the <pre> element
+        var divContent = div.textContent || div.innerText;
+        // Split the content into an array of lines
+        var lines = divContent.trim().split('\n');
+        // Get the last line
+        var lastLine = lines[lines.length - 1];
+
     }
 }

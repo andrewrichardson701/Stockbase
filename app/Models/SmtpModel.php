@@ -205,6 +205,7 @@ class SmtpModel extends Model
         // Build a single array of variables
         $variables = [
             '##BASE_URL##'                => $config['base_url'],
+            '##BASE_URL_TEXT'             => route('index'),
             '##SYSTEM_NAME##'             => $config['system_name'],
             '##SYSTEM_LINK##'             => '<a href="'.$config['base_url'].'">'.$config['system_name'].'</a>',
             '##BANNER_COLOR##'            => $config['banner_color'],
@@ -217,6 +218,7 @@ class SmtpModel extends Model
             '##STOCK_SKU##'               => $stock_data['sku'] ?? '',
             '##STOCK_MIN_STOCK##'         => $stock_data['min_stock'] ?? '',
             '##STOCK_URL##'               => isset($stock_data['id']) ? '<a href="'.route('stock', ['stock_id' => $params['stock_id']]).'">'.($stock_data['name'] ?? '').'</a>' : '',
+            '##STOCK_URL_TEXT##'          => isset($stock_data['id']) ? route('stock', ['stock_id' => $params['stock_id']]) : '',
 
             '##STOCK_NAME_OLD##'          => $params['stock_name_old'] ?? '',
             '##STOCK_DESCRIPTION_OLD##'   => $params['stock_description_old'] ?? '',
@@ -230,6 +232,7 @@ class SmtpModel extends Model
             '##STOCK_TAGS_NEW##'          => $params['stock_tags_new'] ?? '',
 
             '##STOCK_RESTORE_URL##'       => '<a href="'.route('admin').'#stockmanegement-settings">Stock Management</a>',
+            '##STOCK_RESTORE_URL_TEXT##'  => route('admin').'#stockmanegement-settings',
       
             '##SITE_NAME##'               => $site_data['name'] ?? '',
             '##SITE_ID##'                 => $site_data['id'] ?? '',
@@ -257,10 +260,14 @@ class SmtpModel extends Model
             '##OLD_QUANTITY##'            => $params['old_quantity'] ?? '',
             '##NEW_QUANTITY##'            => $params['new_quantity'] ?? '',
       
-            '##IMG_FILE_NAME##'           => $params['img_file_name'] ?? '',
+            '##IMAGE_NAME##'              => $params['img_name'] ?? '',
+            '##IMAGE_ID##'                => $params['img_id'] ?? '',
+            '##IMAGE_URL##'               => '<a href="'.asset('img/stock/'.$params['img_name']).'">'.$params['img_name'].'</a>' ?? '',
+            '##IMAGE_URL_TEXT##'          => asset('img/stock/'.$params['img_name']) ?? '',
       
             '##USER_NAME##'               => $user['name'] ?? '',
             '##USER_EMAIL##'              => $user['email'] ?? '',
+            '##USER_USERNAME##'           => $user['username'] ?? '',
         ];
 
         // Replace all variables in one go
@@ -426,7 +433,7 @@ class SmtpModel extends Model
         $user = GeneralModel::getUser();
 
         if ($config['smtp_enabled'] == 1 && $user['id'] !== 1) { // make sure smtp is enabled and the user isnt root. root email wont work.
-            $notification_data = DB::table('notifications')->find($notification_id);
+            $notification_data = DB::table('email_notifications')->find($notification_id);
 
             if ($template_id == 0) {
                 $template_id = $notification_data->template_id;

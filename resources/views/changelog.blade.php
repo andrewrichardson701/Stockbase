@@ -198,7 +198,7 @@
                                     @endif
                         
                                     @if ($params['page'] < $params['pages'])
-                                        <or class="gold clickable" style="padding-left:2px" onclick="navPage('{{ route('changelog', ['start_date' => $params['start_date'], 'end_date' => $params['end_date'], 'table' => $params['table'], 'user' => $params['user'],'page' => $params['page']-1]) }}' + '')">></or>
+                                        <or class="gold clickable" style="padding-left:2px" onclick="navPage('{{ route('changelog', ['start_date' => $params['start_date'], 'end_date' => $params['end_date'], 'table' => $params['table'], 'user' => $params['user'],'page' => $params['page']+1]) }}' + '')">></or>
                                     @endif
                                 @else 
                                     <form action="{{ route('changelog.filter') }}" method="POST" style="margin-bottom:0px">

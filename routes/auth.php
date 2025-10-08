@@ -15,6 +15,7 @@ use App\Http\Middleware\AddHeadData;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Request;
 use \App\Http\Middleware\CheckSessionMiddleware;
+use \App\Http\Middleware\SignupAllowedMiddleware;
 
 // \URL::forceScheme('https');
 if (Request::secure()) {
@@ -22,10 +23,12 @@ if (Request::secure()) {
 }
 Route::middleware([AddHeadData::class])->group(function () {
     Route::middleware('guest')->group(function () {
-        Route::get('register', [RegisteredUserController::class, 'create'])
-            ->name('register');
-
-        Route::post('register', [RegisteredUserController::class, 'store']);
+        Route::middleware([SignupAllowedMiddleware::class])->group(function () {
+            Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
+    
+            Route::post('register', [RegisteredUserController::class, 'store']);
+        });
 
         Route::get('login', [AuthenticatedSessionController::class, 'create'])
             ->name('login');

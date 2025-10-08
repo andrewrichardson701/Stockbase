@@ -154,6 +154,11 @@ class AjaxController extends Controller
                         foreach($data as $sn) {
                             $return[] = ['id' => $sn['id'], 'serial_number' => $sn['serial_number']];
                         }
+                    } else {
+                        $data = StockModel::getStockNotInContainer($stock_id, ['item.manufacturer_id' => $manufacturer_id, 'item.shelf_id' => $shelf_id], 'item.serial_number');
+                        foreach($data as $sn) {
+                            $return[] = ['id' => $sn['id'], 'serial_number' => $sn['serial_number']];
+                        }
                     }
 
                 }

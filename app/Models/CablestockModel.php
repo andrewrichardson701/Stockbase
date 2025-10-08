@@ -499,6 +499,7 @@ class CablestockModel extends Model
                             'new_quantity' => $stock_count,
                         ];
                         SmtpModel::notificationEmail(11, 12, $mail_data);
+                        WebhookModel::notificationWebhook(11, 12, $mail_data);
                     } elseif ($action == 'remove') {
                         if ($current_data['quantity'] >= $quantity) {
                             // removal quantity is valid
@@ -540,6 +541,7 @@ class CablestockModel extends Model
                                 'new_quantity' => $stock_count,
                             ];
                             SmtpModel::notificationEmail(12, 13, $mail_data);
+                            WebhookModel::notificationWebhook(12, 13, $mail_data);
                         } else {
                             $return ['errors'][] = 'Not enough quantity to remove';
                         }
@@ -844,6 +846,7 @@ class CablestockModel extends Model
                             'stock_id' => $stock_id,
                         ];
                         SmtpModel::notificationEmail(3, 3, $mail_data);
+                        WebhookModel::notificationWebhook(3, 3, $mail_data);
 
                         return redirect(GeneralModel::previousURL())->with('success', 'Cable: "'.$request['name'].'" added successfully with id: "'.$stock_id.'".');
                     } else {

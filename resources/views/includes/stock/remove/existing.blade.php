@@ -103,7 +103,7 @@
                         </div>
                     @if ($stock_data['is_cable'] == 0) 
                         <div class="nav-row" id="serial-number-row" style="margin-top:25px">
-                            <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Any Serial Number to be tracked.">Serial Numbers</or></label></div>
+                            <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="serial-number" id="serial-number-label"><or style="text-decoration:underline; text-decoration-style:dotted" title="Serial number of the item.">Serial Number</or></label></div>
                             <div>
                                 <select name="serial-number" id="serial-number" class="form-control stock-inputSize theme-dropdown" value="{{ $params['request']['serial_number'] ?? null }}" disabled onchange="getQuantity()">
                                     <option value="" selected disabled hidden>Serial...</option>

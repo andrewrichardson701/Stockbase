@@ -13,7 +13,7 @@
             <tbody>
                 <tr>
                     <td class="align-middle" style="margin-left:25px;margin-right:10px">
-                        <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enable the signup.php self sign up page for locally authenticated users">Self sign up allowed:</p>
+                        <p style="min-height:max-content;margin:0px" class="align-middle title" title="Enable the 'register' self sign up page for locally authenticated users at '{{ route('register') }}'.">Self sign up allowed:</p>
                     </td>
                     <td class="align-middle" style="padding-left:5px;padding-right:50px" id="signup_allowed_toggle">
                         <label class="switch align-middle" style="margin-bottom:0px;margin-top:3px" >

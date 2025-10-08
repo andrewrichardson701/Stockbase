@@ -53,7 +53,7 @@
                                 </form>
                             </td>
                             <td>
-                                <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(`{{ url('optics') }}`)">
+                                <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(`{{ route('optics') }}`)">
                                     <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
                                 </button>
                             </td>
@@ -104,7 +104,7 @@
                     </form>
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
-                    <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(`{{ url('optics') }}`)">
+                    <button id="clear-filters" class="btn btn-warning nav-v-b" style="opacity:80%;color:black" onclick="navPage(`{{ route('optics') }}`)">
                         <i class="fa fa-ban fa-rotate-90" style="padding-top:4px"></i>
                     </button>
                 </div>

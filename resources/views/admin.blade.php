@@ -65,11 +65,17 @@
             <!-- smtp -->
             @include('includes.admin.smtp')
             
-            <!-- notifications -->
-            @include('includes.admin.notifications')
+            <!-- email notifications -->
+            @include('includes.admin.email-notifications')
 
             <!-- email templates -->
             @include('includes.admin.email-templates')
+
+            <!-- webhook notifications -->
+            @include('includes.admin.webhook-notifications')
+
+            <!-- webhook templates -->
+            @include('includes.admin.webhook-templates')
 
             <!-- changelog --> 
             @include('includes.admin.changelog')

@@ -35,21 +35,21 @@
         <div class="row">
             <div class="col text-center viewport-large-empty">
             @if ($head_data['config_compare']['footer_left_enable'] == 1)
-                <a href="https://gitlab.com/andrewrichardson701/stockbase" class="link" style="font-size:12px" target="_blank">GitLab</a>
+                <a href="https://github.com/andrewrichardson701/stockbase" class="link" style="font-size:12px" target="_blank">GitHub</a>
             @endif
             </div>                
-            <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="window.location.href='{{ url('about') }}'">
+            <div class="col-6 text-center viewport-large-block" style="font-size:12px;cursor:pointer;" onclick="window.location.href='{{ route('about') }}'">
                 Copyright &copy; {{ now()->year }} StockBase. All rights reserved.
             </div>
             <div class="col text-center viewport-large-empty">
             @if ($head_data['config_compare']['footer_right_enable'] == 1)
-                    <a href="https://gitlab.com/andrewrichardson701/stockbase#roadmap" class="link" style="font-size:12px" target="_blank">Road Map</a>
+                    <a href="https://github.com/andrewrichardson701/stockbase#roadmap" class="link" style="font-size:12px" target="_blank">Road Map</a>
             @endif
             </div>
         </div>
     </div> 
     <div class="align-right popupBox-owner" style="display: block;position: absolute;bottom: 4px;right: 20px;z-index: 99;font-size: 18px;border: none;outline: none;cursor: pointer;overflow: hidden;">
-        <a href="about" style="font-size:12px" id="version-about">@if (isset($head_data['update_data']['update_available']) && $head_data['update_data']['update_available'] ==1) <i class="fa-solid fa-circle-exclamation" style="color: #ff3000; margin-right:7px"></i> @endif {{$head_data['version_number']}}</a>
+        <a href="{{ route('about') }}" style="font-size:12px" id="version-about">@if (isset($head_data['update_data']['update_available']) && $head_data['update_data']['update_available'] ==1) <i class="fa-solid fa-circle-exclamation" style="color: #ff3000; margin-right:7px"></i> @endif {{$head_data['version_number']}}</a>
     </div>
 </div>
     @if (isset($head_data['user']['id']) && ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1))
@@ -61,11 +61,7 @@
         @endif
     </span>
     @endif
-@endif  
-
-<?php
-
-?>
+@endif
 
 <!-- Add the JS for the file -->
 <script src="{{ asset('js/foot.js') }}"></script>

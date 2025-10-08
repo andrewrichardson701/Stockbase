@@ -1,0 +1,164 @@
+body {
+    /* base background colour */
+    background-color: #ffa371 !important;
+    /* base text colour */ 
+    color: #121212 !important; 
+}
+
+.theme-input {
+    background-color:#e5a12b !important;
+    border-color:#6b7280 !important;
+    color: black;
+}
+
+.theme-input:focus {
+    color: black;
+}
+
+.theme-input-alt:focus {
+    color: black;
+}
+
+.theme-input-alt {
+    background-color:#e5a12b !important;
+    border-color:#091d23 !important;
+	color: black;
+}
+
+/* themed dropdown select boxes */
+.theme-dropdown { 
+	background-color: #e5a12b !important;
+	border-color:#6b7280 !important;
+	margin:0px;
+	color: #000000;
+}
+
+.theme-dropdown:focus { 
+	color: rgb(185, 185, 185 / var(--tw-text-opacity, 1));
+}
+
+.theme-dropdown-alt { 
+	background-color:#e5a12b !important;
+	border-color:#091d23 !important;
+	color: black;
+}
+
+.theme-dropdown-alt:focus { 
+	color: rgb(218, 218, 218);
+}
+
+/* themed dropdown select box options */
+.theme-dropdown option { 
+	color: rgb(209 213 219 / var(--tw-text-opacity, 1));
+}
+
+/* specified text colour (used to be .cw) */
+.theme-textColor { 
+	color: white !important;
+}
+
+/* inverse textColor */
+.theme-inv-textColor { 
+	color: black !important;
+}
+
+/* Profile page text colour */
+.theme-profileTextColor { 
+	color: #bbbbbb !important;
+}
+
+/* Table colouring */
+.theme-table { 
+	color: #000000;
+    background-color: rgb(133 199 97);
+}
+
+/* Table header and footer colours */
+.theme-tableOuter { 
+	background-color: rgb(193 45 68);
+}
+
+/* Table blank cell for the stock locations */
+.theme-table-blank { 
+    background-color: rgb(36 68 47);
+}
+
+/* Table selected th cells */
+.theme-th-selected { 
+    background-color: rgb(231 36 101);
+    border: 0px !important;
+}
+
+/* Was gold, now changes based on theme - same as url links */
+.gold, a { 
+	color: #fffa82 !important; 
+}
+
+/* clickable items */
+.clickable { 
+    cursor: pointer !important;
+}
+/* clickable items colours */
+.clickable:hover { 
+    background-color: #006c0f !important;
+}
+
+/* highlight items */
+.highlight:hover { 
+    background-color: #006c0f !important;
+}
+
+.footer, .show {
+    background-color: #343a40;
+    border-top: 1px solid #091d23;
+    color: white;
+}
+
+/* selected page colour for paginatation */
+.pageSelected { 
+    color: #7404a1 !important;
+}
+
+/* div background colours */
+.theme-divBg { 
+    background-color: #9A2947 !important;
+}
+
+/* div background colours (darker) */
+.theme-divBg-m { 
+    background-color: #a33955 !important;
+}
+
+/* special button look */
+.theme-btn { 
+    background-color: #04b807 !important;
+}
+
+/* special serial button background look */
+.serial-bg { 
+    background-color: #1ceb20 !important;
+    color: #cfcfcf !important;
+}
+
+/*special colour - currently used for the view all in transactions and the min stock count */
+.specialColor { 
+    color: #8aa3bd !important;
+}
+
+/* transaction table text colours */
+.transactionAdd {
+    color: #00fd00;
+}
+.transactionMove {
+    color: #ffb939;
+}
+.transactionRemove {
+    color: #d91616;
+}
+.transactionDelete {
+    color: brown;
+}
+.theme-footer {
+    background-color: #89213d;
+    color: white;
+}

@@ -108,14 +108,7 @@
         <hr style="border-color:white; margin-left:10px"> 
 
         <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Types</h4>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_types')) {
-        //     echo('<div style="margin-right: 10px; margin-left: 10px">');
-        //     showResponse();
-        //     echo('</div>');
-        // }
 
-        ?>
         @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
@@ -191,7 +184,7 @@
                                                 <th>Optic Serial</th>
                                             </tr>
                                         </thead>
-                                        <tbody>');
+                                        <tbody>
                                         @foreach ($optic_type_links[$optic_type['id']]['rows'] as $link)
                                                 <tr class="clickable" onclick=navPage("optics?search={{ $link['serial_number'] }}")>
                                                     <td class="text-center">{{ $link['id'] }}</td>
@@ -217,13 +210,7 @@
         <hr style="border-color:white; margin-left:10px"> 
 
         <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Speeds</h4>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_speeds')) {
-        //     echo('<div style="margin-right: 10px; margin-left: 10px">');
-        //     showResponse();
-        //     echo('</div>');
-        // }
-        ?>
+   
         @include('includes.response-handling')
 
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
@@ -299,7 +286,7 @@
                                                 <th>Optic Serial</th>
                                             </tr>
                                         </thead>
-                                        <tbody>');
+                                        <tbody>
                                         @foreach ($optic_speed_links[$optic_speed['id']]['rows'] as $link)
                                                 <tr class="clickable" onclick=navPage("optics?search={{ $link['serial_number'] }}")>
                                                     <td class="text-center">{{ $link['id'] }}</td>
@@ -325,13 +312,7 @@
         <hr style="border-color:white; margin-left:10px"> 
 
         <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Connectors</h4>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_connectors')) {
-        //     echo('<div style="margin-right: 10px; margin-left: 10px">');
-        //     showResponse();
-        //     echo('</div>');
-        // }
-        ?>
+
         @include('includes.response-handling')
         
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
@@ -407,7 +388,7 @@
                                                 <th>Optic Serial</th>
                                             </tr>
                                         </thead>
-                                        <tbody>');
+                                        <tbody>
                                         @foreach ($optic_connector_links[$optic_connector['id']]['rows'] as $link)
                                                 <tr class="clickable" onclick=navPage("optics?search={{ $link['serial_number'] }}")>
                                                     <td class="text-center">{{ $link['id'] }}</td>
@@ -433,13 +414,7 @@
         <hr style="border-color:white; margin-left:10px"> 
 
         <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Distances</h4>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'opticattributemanagement-optic_distances')) {
-        //     echo('<div style="margin-right: 10px; margin-left: 10px">');
-        //     showResponse();
-        //     echo('</div>');
-        // }
-        ?>
+
         @include('includes.response-handling')
         
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
@@ -515,7 +490,7 @@
                                                 <th>Optic Serial</th>
                                             </tr>
                                         </thead>
-                                        <tbody>');
+                                        <tbody>
                                         @foreach ($optic_distance_links[$optic_distance['id']]['rows'] as $link)
                                                 <tr class="clickable" onclick=navPage("optics?search={{ $link['serial_number'] }}")>
                                                     <td class="text-center">{{ $link['id'] }}</td>

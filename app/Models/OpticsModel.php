@@ -236,9 +236,9 @@ class OpticsModel extends Model
                     'updated_at' => now()
                 ];
                 TransactionModel::addOpticTransaction($transaction);
-                return redirect()->to(route('optics'))->with('success', 'Comment added: "'.$comment.'" with id: '.$insert.' for optic id: '.$optic_id.'.');
+                return redirect()->to(GeneralModel::previousURL())->with('success', 'Comment added: "'.$comment.'" with id: '.$insert.' for optic id: '.$optic_id.'.');
             } else {
-                return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to insert database entry.');
             }
         } else {
             return redirect()->to(route('optics', ['error' => 'Optic not found for id: '.$optic_id]));
@@ -285,9 +285,9 @@ class OpticsModel extends Model
                     'updated_at' => now()
                 ];
                 TransactionModel::addOpticTransaction($transaction);
-                return redirect()->to(route('optics'))->with('success', 'Comment deleted with id: '.$comment_id.' for optic id: '.$optic_id.'.');
+                return redirect()->to(GeneralModel::previousURL())->with('success', 'Comment deleted with id: '.$comment_id.' for optic id: '.$optic_id.'.');
             } else {
-                return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to insert database entry.');
             }
         } else {
             return redirect()->to(route('optics', ['error' => 'Comment not found for id: '.$comment_id]));
@@ -296,6 +296,22 @@ class OpticsModel extends Model
 
     static public function addOptic($request)
     {
+        $previous = GeneralModel::previousURL();
+        $query = http_build_query(
+            ['form_serial' => $request['serial'] ?? '', 
+                    'form_model' => $request['model'] ?? '', 
+                    'form_spectrum' => $request['spectrum'] ?? '',
+                    'form_type' => $request['type'] ?? '', 
+                    'form_speed' => $request['speed'] ?? '', 
+                    'form_connector' => $request['connector'] ?? '',
+                    'form_distance' => $request['distance'] ?? '', 
+                    'form_mode' => $request['mode'] ?? '', 
+                    'form_site' => $request['site'] ?? '',
+                    'form_vendor' => $request['vendor'] ?? '',
+                ]
+            );
+        $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
+          
         $user = GeneralModel::getUser();
 
         // see if optic serial exists
@@ -316,7 +332,7 @@ class OpticsModel extends Model
         } 
         $values = ['model' => $request['model'],
                         'vendor_id' => $request['vendor'],
-                        'serial_number_id' => $request['serial'],
+                        'serial_number' => $request['serial'],
                         'type_id' => $request['type'],
                         'connector_id' => $request['connector'],
                         'mode' => $request['mode'],
@@ -359,7 +375,7 @@ class OpticsModel extends Model
                     'updated_at' => now()
                 ];
                 TransactionModel::addOpticTransaction($transaction);
-                return redirect()->to(route('optics'))->with('success', 'Optic added: "'.$request['serial'].'" with id: '.$insert.'.');
+                return redirect()->to($url)->with('success', 'Optic added: "'.$request['serial'].'" with id: '.$insert.'.');
             } else {
                 if ($find->deleted == 1) {
                     // remove delete, and update any changes.
@@ -399,7 +415,7 @@ class OpticsModel extends Model
                                     ];
                                     TransactionModel::addOpticTransaction($transaction);
                                 } else {
-                                    return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+                                    return redirect()->to($url)->with('error', 'Unable to insert database entry.');
                                 }
                             }
                         }
@@ -408,7 +424,7 @@ class OpticsModel extends Model
                     return OpticsModel::restore($data);
  
                 } else {
-                    return redirect()->to(route('optics'))->with('error', 'Optic already exists.');
+                    return redirect()->to($url)->with('error', 'Optic already exists.');
                 }  
             }
         } else {
@@ -453,13 +469,13 @@ class OpticsModel extends Model
                     'updated_at' => now()
                 ];
                 TransactionModel::addOpticTransaction($transaction);
-                return redirect()->to(route('optics'))->with('success', 'Optic restored, with id: '.$optic_id.'.');
+                return redirect()->to(GeneralModel::previousURL())->with('success', 'Optic restored, with id: '.$optic_id.'.');
             } else {
-                return redirect()->to(route('optics'))->with('error', 'Unable to insert database entry.');
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to insert database entry.');
             }
         } else {
             // optic doesnt exist
-            return redirect()->to(route('optics'))->with('error', 'Optic not found with id: '.$optic_id.'.');
+            return redirect()->to(GeneralModel::previousURL())->with('error', 'Optic not found with id: '.$optic_id.'.');
         }
     }
 
@@ -501,8 +517,9 @@ class OpticsModel extends Model
                     'updated_at' => now()
                 ];
                 TransactionModel::addOpticTransaction($transaction);
+                return redirect(GeneralModel::previousURL())->with('success', 'Optic with serial number: '.$find->serial_number.' and id: '.$optic_id.' delete.');
             } else {
-                return redirect()->to(route('optics'))->with('error', 'Unable to delete optic with id: '.$optic_id.'.');
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to delete optic with id: '.$optic_id.'.');
             }
         } elseif ($find && $find->deleted == 1) {
             return redirect()->to(route('optics', ['error' => 'Optic already deleted for id: '.$optic_id]));
@@ -553,9 +570,9 @@ class OpticsModel extends Model
                         'updated_at' => now()
                     ];
                     TransactionModel::addOpticTransaction($transaction);
-                    return redirect()->to(route('optics'))->with('success', 'Optic for id: '.$optic_id.' moved.');
+                    return redirect()->to(GeneralModel::previousURL())->with('success', 'Optic for id: '.$optic_id.' moved.');
                 } else {
-                    return redirect()->to(route('optics'))->with('error', 'Unable to move optic with id: '.$optic_id.'.');
+                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to move optic with id: '.$optic_id.'.');
                 }
             } else {
                 return redirect()->to(route('optics', ['error' => 'Site not found for id: '.$site_id.'.']));

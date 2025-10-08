@@ -18,6 +18,7 @@ use App\Models\SmtpModel;
 use App\Models\ChangelogModel;
 use App\Models\StockModel;
 use App\Models\SessionModel;
+use App\Models\WebhookModel;
 
 class AdminController extends Controller
 {
@@ -76,8 +77,11 @@ class AdminController extends Controller
         
         $deleted_stock = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('stock', 1));
         
-        $notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('notifications'));
+        $email_notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_notifications'));
         $email_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_templates'));
+        
+        $webhook_notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_notifications'));
+        $webhook_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_templates'));
 
         $changelog = GeneralModel::formatArrayOnIdAndCount(ChangelogModel::getChangelog(10));
         // $q_data = IndexModel::queryData($request); // query string data
@@ -123,8 +127,11 @@ class AdminController extends Controller
                                 'deleted_stock' => $deleted_stock,
                                 'location_colors' => $location_colors,
 
-                                'notifications' => $notifications,
+                                'email_notifications' => $email_notifications,
                                 'email_templates' => $email_templates,
+
+                                'webhook_notifications' => $webhook_notifications,
+                                'webhook_templates' => $webhook_templates,
 
                                 'changelog' => $changelog,
                                 // 'q_data' => $q_data,
@@ -367,6 +374,40 @@ class AdminController extends Controller
         return 'unknown request';
     }
 
+    static public function webhookSettings(Request $request)
+    {
+        if (isset($request['webhook-toggle-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                if (isset($request['webhook-enabled']) && in_array($request['webhook-enabled'], ['on', 'off'])) {
+                    $enabled = $request['webhook-enabled'];
+                } else {
+                    $enabled = 'off';
+                }
+                return WebhookModel::toggleWebhook($enabled);
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        if (isset($request['webhook-submit']) || isset($request['webhook-restore-defaults'])) { 
+           if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'webhook_type' => 'string|required',
+                        'webhook_friendly_name' => 'string|required',
+                        'webhook_url' => 'string|required',
+                        'webhook_avatar_url' => 'string|required',
+                        'webhook_display_name' => 'string|required',
+                        'webhook_prefix_message' => 'string|nullable',
+                ]);
+                
+                return AdminModel::updateConfigSettings($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+        return 'unknown request';
+    }
+
     static public function ldapSettings(Request $request)
     {
         if (isset($request['ldap-toggle-submit'])) {
@@ -403,14 +444,29 @@ class AdminController extends Controller
         return 'unknown request';
     }
 
-    static public function toggleNotification(Request $request)
+    static public function toggleEmailNotification(Request $request)
     {
         if ($request['_token'] == csrf_token()) {
             $request->validate([
                     'id' => 'integer|required',
                     'value' => 'integer|required',
             ]);
-            AdminModel::toggleNotification($request->input());
+            AdminModel::toggleEmailNotification($request->input());
+        } else {
+            return 'Error: CSRF token missmatch.';
+        }
+
+        return 'error';
+    }
+
+    static public function toggleWebhookNotification(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'id' => 'integer|required',
+                    'value' => 'integer|required',
+            ]);
+            AdminModel::toggleWebhookNotification($request->input());
         } else {
             return 'Error: CSRF token missmatch.';
         }
@@ -514,7 +570,7 @@ class AdminController extends Controller
                     'session_id' => 'string|required',
             ]);
 
-            return SessionModel::killSession($request['seesion_id']);
+            return SessionModel::killSession($request['session_id']);
         } else {
             return 'Error: CSRF Missmatch';
         }
@@ -536,6 +592,30 @@ class AdminController extends Controller
                 return AdminModel::updateEmailTemplate($request->input());
             } elseif ($request['submit'] == 'restore') {
                 return AdminModel::restoreEmailTemplate($request->input());
+            } else {
+                return 'Error: Unknown submission type.';
+            }
+            
+        } else {
+            return 'Error: CSRF Missmatch';
+        }
+    }
+
+    static public function webhookTemplate(Request $request)
+    {
+        // dd($request->input());
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                    'template_id' => 'integer|required',
+                    'slug' => 'string|required',
+                    'subject' => 'string|required',
+                    'body' => 'string|required',
+                    'submit' => 'string|required',
+            ]);
+            if ($request['submit'] == 'update') {
+                return AdminModel::updateWebhookTemplate($request->input());
+            } elseif ($request['submit'] == 'restore') {
+                return AdminModel::restoreWebhookTemplate($request->input());
             } else {
                 return 'Error: Unknown submission type.';
             }

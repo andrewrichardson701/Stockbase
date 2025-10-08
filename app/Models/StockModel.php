@@ -1508,11 +1508,13 @@ class StockModel extends Model
                                         'success' => 'added'];
 
                     SmtpModel::notificationEmail(2, 2, $mail_data);
+                    WebhookModel::notificationWebhook(2, 2, $mail_data);
                 } else {
                     $redirect_array = ['stock_id'   => $request['id'],
                                             'modify_type' => 'add',
                                             'error' => 'partially_added'];
                     SmtpModel::notificationEmail(2, 2, $mail_data);
+                    WebhookModel::notificationWebhook(2, 2, $mail_data);
                 }
                 
             } else {
@@ -1578,6 +1580,7 @@ class StockModel extends Model
                 'stock_id' => $input['id'],
             ];
             SmtpModel::notificationEmail(3, 3, $mail_data);
+            WebhookModel::notificationWebhook(3, 3, $mail_data);
             
             // add inventory items
             if ($input['quantity'] > 0) {
@@ -1795,6 +1798,7 @@ class StockModel extends Model
                 'stock_tags_new' => implode(', ', $new_tag_names),
             ];
             SmtpModel::notificationEmail(6, 6, $mail_data);
+            WebhookModel::notificationWebhook(6, 6, $mail_data);
 
             $redirect_array = ['stock_id'   => $request['id'],
                             'modify_type' => 'edit',
@@ -2071,6 +2075,7 @@ class StockModel extends Model
                     'quantity' => $quantity ?? '',
                 ];
                 SmtpModel::notificationEmail(5, 5, $mail_data);
+                WebhookModel::notificationWebhook(5, 5, $mail_data);
                 $redirect_array = ['stock_id' => $request['current_stock'],
                                     'modify_type' => 'move',
                                     'success' => 'Successfully moved '.$moved_count.' of requested '.$quantity.'.'];
@@ -2151,6 +2156,7 @@ class StockModel extends Model
                 'image_id' => $record->id ?? '',
             ];
             SmtpModel::notificationEmail(10, 11, $mail_data);
+            WebhookModel::notificationWebhook(10, 11, $mail_data);
             return $record->id;
         } else {
             return 0;
@@ -2185,6 +2191,7 @@ class StockModel extends Model
                 'image_id' => $insert ?? '',
             ];
             SmtpModel::notificationEmail(10, 10, $mail_data);
+            WebhookModel::notificationWebhook(10, 10, $mail_data);
             return $insert;
         } else {
             return 0;
@@ -2444,6 +2451,7 @@ class StockModel extends Model
                     'stock_id' => $id,
                 ];
                 SmtpModel::notificationEmail(8, 8, $mail_data);
+                WebhookModel::notificationWebhook(8, 8, $mail_data);
                 return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Stock restored: '.$current_data->name);
             } else {
                 return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
@@ -2622,6 +2630,7 @@ class StockModel extends Model
                         'new_quantity' => $stock_count,
                     ];
                     SmtpModel::notificationEmail(4, 4, $mail_data);
+                    WebhookModel::notificationWebhook(4, 4, $mail_data);
                     // minimum stock email
                     if ($stock_count < $stock_data['min_stock']) {    
                         $mail_data = [
@@ -2632,6 +2641,7 @@ class StockModel extends Model
                             'quantity' => $stock_count,
                         ];
                         SmtpModel::notificationEmail(9, 9, $mail_data);
+                        WebhookModel::notificationWebhook(9, 9, $mail_data);
                     }
                     return redirect(GeneralModel::previousURL())->with('success', 'Item(s) removed: '.$count.'.'); 
                 } else {
@@ -2685,6 +2695,7 @@ class StockModel extends Model
                         'stock_id' => $request['stock_id'],
                     ];
                     SmtpModel::notificationEmail(7, 7, $mail_data);
+                    WebhookModel::notificationWebhook(7, 7, $mail_data);
                     
                     return redirect(GeneralModel::previousURL())->with('success', 'Stock deleted.');
                 }

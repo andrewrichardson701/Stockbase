@@ -19,6 +19,7 @@ use App\Http\Controllers\OpticsController;
 use App\Http\Controllers\ChangelogController;
 use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\LdapController;
+use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\TwoFactorController;
 
 use App\Http\Middleware\SecurityMiddleware;
@@ -27,6 +28,7 @@ use App\Http\Middleware\PermissionsMiddleware;
 use App\Http\Middleware\AddHeadData;
 use \App\Http\Middleware\TwoFactorRedirectMiddleware;
 use \App\Http\Middleware\PasswordExpiredMiddleware;
+use \App\Http\Middleware\CheckSessionMiddleware;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -41,7 +43,7 @@ Route::middleware([AddHeadData::class])->group(function () {
     })->middleware(['auth', 'verified'])->name('dashboard');
 
     Route::middleware([PasswordExpiredMiddleware::class, TwoFactorRedirectMiddleware::class, SecurityMiddleware::class])->group(function () {
-        Route::middleware('auth')->group(function () {
+        Route::middleware([CheckSessionMiddleware::class, 'auth'])->group(function () {
 
             //// Impersonation 
             Route::middleware(['auth', 'check.permission:root'])->group(function () { // Impersonation can only be done by the root user
@@ -178,7 +180,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             });
             
             // Admin pages
-            Route::middleware(['auth', 'check.permission:admin,root'])->group(function () { // Admin pages - locked behind the admin or root permission
+            Route::middleware(['auth', 'check.permission:admin'])->group(function () { // Admin pages - locked behind the admin or root permission
             // admin routes
                 Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // admin page
 
@@ -194,7 +196,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.smtpSettings', [AdminController::class, 'smtpSettings'])->name('admin.smtpSettings'); // Adjust SMTP settings
                 Route::get('/admin.smtpTemplate', [SmtpController::class, 'template'])->name('admin.smtpTemplate'); // view SMTP template
                 Route::post('/admin.smtpTest', [SmtpController::class, 'smtpTest'])->name('admin.smtpTest'); // SMTP test
-                Route::post('/admin.toggleNotification', [AdminController::class, 'toggleNotification'])->name('admin.toggleNotification'); // Adjust Notification settings
+                Route::post('/admin.toggleEmailNotification', [AdminController::class, 'toggleEmailNotification'])->name('admin.toggleEmailNotification'); // Adjust Notification settings
                 Route::post('/admin.stockLocationSettings', [AdminController::class, 'stockLocationSettings'])->name('admin.stockLocationSettings'); // Adjust Stock Location settings
                 Route::post('/admin.imageManagementSettings', [AdminController::class, 'imageManagementSettings'])->name('admin.imageManagementSettings'); // Adjust Image Management settings
                 Route::post('/admin.killUserSession', [AdminController::class, 'killUserSession'])->name('admin.killUserSession'); // kill a user session
@@ -202,6 +204,10 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::get('/admin.emailTemplatePreview', [SmtpController::class, 'emailTemplatePreview'])->name('admin.emailTemplatePreview'); // preview the email template
                 Route::get('/admin.getEmailTemplateUrl', [SmtpController::class, 'getEmailTemplateUrl'])->name('admin.getEmailTemplateUrl'); // preview the email template
                 Route::post('/admin.addLocalUser', [AdminController::class, 'addLocalUser'])->name('admin.addLocalUser'); // add Local User
+                Route::post('/admin.webhookSettings', [AdminController::class, 'webhookSettings'])->name('admin.webhookSettings'); // Adjust Webhook settings
+                Route::post('/admin.webhookTest', [WebhookController::class, 'webhookTest'])->name('admin.webhookTest'); // Webook test
+                Route::post('/admin.toggleWebhookNotification', [AdminController::class, 'toggleWebhookNotification'])->name('admin.toggleWebhookNotification'); // Adjust Notification settings
+                Route::post('/admin.webhookTemplate', [AdminController::class, 'webhookTemplate'])->name('admin.webhookTemplate'); // change an webhook template
             });
 
             // Changelog pages

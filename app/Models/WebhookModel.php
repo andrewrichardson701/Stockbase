@@ -90,6 +90,10 @@ class WebhookModel extends Model
                 $payload["content"] = $message; // plain text message
             }
 
+            if ($config['webhook_prefix_message']) {
+                $payload["content"] = $config['webhook_prefix_message'].' '.$payload["content"];
+            }
+
             if ($config['webhook_friendly_name']) {
                 $payload["username"] = $config['webhook_friendly_name']; // custom name
             }

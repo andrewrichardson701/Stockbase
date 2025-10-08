@@ -44,13 +44,13 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        SessionModel::expireOldSessions(); // expire any old sessions
+
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             // add login_log failure
             LoginLogModel::updateLoginLog('failed', 'local', $this->input('email'), null);
-
-            SessionModel::expireOldSessions(); // expire any old sessions
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),

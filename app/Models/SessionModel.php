@@ -120,7 +120,7 @@ class SessionModel extends Model
             foreach ($active_sessions as $session) {
                 if (strtotime($session['last_activity']) < time()-1800) {
                     // expire the session
-                    DB::table('session_log')->where('sessions_id', $session['id'])->update(['status' => 'expired', 'updated_at' => now()]);
+                    SessionModel::updateSessionLog('expired', $session['sessions_id']);
                 }
             }
         }

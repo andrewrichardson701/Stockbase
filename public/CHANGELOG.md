@@ -56,6 +56,7 @@
     <li>2FA now integrated using Google Authenticator. Tested and working.</li>
     <li>Middleware in place to prevent 2FA bypassing.</li>
     <li>Middleware in place to force a user password reset when their password expires.</li>
+    <li>Fixed the session expiry. The wrong session ID was being pulled.</li>
 </ul>
 <h3>1.3.0 - Asset management</h3>
 <ul>

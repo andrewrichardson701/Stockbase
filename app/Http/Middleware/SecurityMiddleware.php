@@ -31,6 +31,7 @@ class SecurityMiddleware
     {
         $response = $next($request);
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+
         return $response;
     }
     

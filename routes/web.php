@@ -28,6 +28,7 @@ use App\Http\Middleware\PermissionsMiddleware;
 use App\Http\Middleware\AddHeadData;
 use \App\Http\Middleware\TwoFactorRedirectMiddleware;
 use \App\Http\Middleware\PasswordExpiredMiddleware;
+use \App\Http\Middleware\CheckSessionMiddleware;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -42,7 +43,7 @@ Route::middleware([AddHeadData::class])->group(function () {
     })->middleware(['auth', 'verified'])->name('dashboard');
 
     Route::middleware([PasswordExpiredMiddleware::class, TwoFactorRedirectMiddleware::class, SecurityMiddleware::class])->group(function () {
-        Route::middleware('auth')->group(function () {
+        Route::middleware([CheckSessionMiddleware::class, 'auth'])->group(function () {
 
             //// Impersonation 
             Route::middleware(['auth', 'check.permission:root'])->group(function () { // Impersonation can only be done by the root user

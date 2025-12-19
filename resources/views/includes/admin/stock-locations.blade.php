@@ -74,12 +74,12 @@
                         <td class="stockTD theme-table-blank">
                         @if ($site['deleted'] != 1)
                             <button class="btn btn-danger cw nav-v-b" style="padding: 3px 6px 3px 6px;font-size: 12px" name="location-delete-submit" value="site" type="submit" 
-                            @if (!array_key_exists($site['id'], $site_links)) {
+                            @if (!array_key_exists($site['id'], $site_links)) 
                                 $site_links[$site['id']]['count'] = 0;
-                            }
-                            @if (!array_key_exists($site['id'], $site_links_optics)) {
+                            @endif
+                            @if (!array_key_exists($site['id'], $site_links_optics)) 
                                 $site_links_optics[$site['id']]['count'] = 0;
-                            }
+                            @endif
                             @if (array_key_exists($site['id'], $site_links_optics))
                                 @if (($site_links[$site['id']]['count'] + $site_links_optics[$site['id']]['count'] ?? 0) !== 0) 
                                     disabled title="Dependencies exist for this object." 

@@ -262,8 +262,8 @@ class SmtpModel extends Model
       
             '##IMAGE_NAME##'              => $params['img_name'] ?? '',
             '##IMAGE_ID##'                => $params['img_id'] ?? '',
-            '##IMAGE_URL##'               => '<a href="'.asset('img/stock/'.$params['img_name']).'">'.$params['img_name'].'</a>' ?? '',
-            '##IMAGE_URL_TEXT##'          => asset('img/stock/'.$params['img_name']) ?? '',
+            '##IMAGE_URL##'               => isset($params['img_name']) ? '<a href="' . asset('img/stock/' . $params['img_name']) . '">' . $params['img_name'] . '</a>' : '',
+            '##IMAGE_URL_TEXT##'          => isset($params['img_name']) ? asset('img/stock/'.$params['img_name']) : '',
       
             '##USER_NAME##'               => $user['name'] ?? '',
             '##USER_EMAIL##'              => $user['email'] ?? '',

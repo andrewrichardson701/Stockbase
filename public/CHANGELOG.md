@@ -1,7 +1,11 @@
 <h2>Changelog</h2>
+<h3>1.4.1 - Optics editing</h3>
+<ul>
+    <li>SMTP Model now checks if image_name is set intead of erroring.</li>
+</ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>
-    <li>Bullet points added to the Changelog on the about page</li>
+    <li>Bullet points added to the Changelog on the about page.</li>
     <li>Corrected the function to add initial locations.</li>
     <li>Changed the gitlab url in the update checker to the github url.</li>
     <li>Updated the about page to show the GitHub url not the GitLab.</li>

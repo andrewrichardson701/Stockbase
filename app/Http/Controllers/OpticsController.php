@@ -34,6 +34,8 @@ class OpticsController extends Controller
         $optic_mode = $request['mode'] ?? 0;
         $optic_connector = $request['connector'] ?? 0;
         $optic_distance = $request['distance'] ?? 0;
+        $optic_spectrum = $request['spectrum'] ?? 0;
+        $optic_vendor = $request['vendor'] ?? 0;
 
         $form_model = $request['form_model'] ?? null;
         $form_spectrum = $request['form_spectrum'] ?? null;
@@ -66,6 +68,8 @@ class OpticsController extends Controller
                     'optic_mode' => $optic_mode,
                     'optic_connector' => $optic_connector,
                     'optic_distance' => $optic_distance,
+                    'optic_spectrum' => $optic_spectrum,
+                    'optic_vendor' => $optic_vendor,
 
                     'form_model' => $form_model,
                     'form_spectrum' => $form_spectrum,
@@ -94,9 +98,9 @@ class OpticsController extends Controller
                         'count' => 4,
                         'deleted_rows' => 0,
                         ];
+        $optic_spectrums = GeneralModel::formatArrayOnFieldAndCount(GeneralModel::allDistinctField('spectrum', 'optic_item', 0), 'spectrum');
         $optic_models = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinctField('model', 'optic_item', 0));
-
-
+                        
         return view('optics', ['params' => $params,
                                 'nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
@@ -104,6 +108,7 @@ class OpticsController extends Controller
                                 'optic_types' => $optic_types,
                                 'optic_speeds' => $optic_speeds,
                                 'optic_modes' => $optic_modes,
+                                'optic_spectrums' => $optic_spectrums,
                                 'optic_connectors' => $optic_connectors,
                                 'optic_distances' => $optic_distances,
                                 'optic_vendors' => $optic_vendors,

@@ -163,6 +163,19 @@
                     </select>
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
+                    <label class="align-middle" style="padding-right:15px;padding-top:7px">Sepctrum:</label>
+                    <select name="spectrum" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'spectrum', this.value))">
+                        <option value="0" @if ($params['optic_spectrum'] == 0) selected @endif >All</option>
+                    @if ($optic_spectrums['count'] > 0)
+                        @foreach ($optic_spectrums['rows'] as $optic_spectrum) 
+                        <option value="{{ $optic_spectrum['spectrum'] }}" @if ($params['optic_spectrum'] == $optic_spectrum['spectrum']) selected @endif >{{ $optic_spectrum['spectrum'] }}</option>
+                        @endforeach
+                    @endif
+                    </select>
+                </div>
+            </div>
+            <div class="row centertable" style="max-width:max-content; margin-top:10px">
+                <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Connector:</label>
                     <select name="connector" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'connector', this.value))">
                         <option value="0" @if ($params['optic_connector'] == 0) selected @endif >All</option>
@@ -180,6 +193,17 @@
                     @if ($optic_distances['count'] > 0)
                         @foreach ($optic_distances['rows'] as $optic_distance) 
                         <option value="{{ $optic_distance['id'] }}" @if ($params['optic_distance'] == $optic_distance['id']) selected @endif >{{ $optic_distance['name'] }}</option>
+                        @endforeach
+                    @endif
+                    </select>
+                </div>
+                <div class="col align-middle" style="max-width:max-content">
+                    <label class="align-middle" style="padding-right:15px;padding-top:7px">Vendor:</label>
+                    <select name="vendor" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'vendor', this.value))">
+                        <option value="0" @if ($params['optic_vendor'] == 0) selected @endif >All</option>
+                    @if ($optic_vendors['count'] > 0)
+                        @foreach ($optic_vendors['rows'] as $optic_vendor) 
+                        <option value="{{ $optic_vendor['id'] }}" @if ($params['optic_vendor'] == $optic_vendor['id']) selected @endif >{{ $optic_vendor['name'] }}</option>
                         @endforeach
                     @endif
                     </select>

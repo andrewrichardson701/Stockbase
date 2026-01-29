@@ -19,7 +19,7 @@ class OpticsModel extends Model
     {
         
         $return = [];
-        $optic_keys = ['type', 'speed', 'mode', 'connector', 'distance'];
+        $optic_keys = ['type', 'speed', 'mode', 'connector', 'distance', 'spectrum', 'vendor'];
 
         if (!empty($array)) {
             foreach($array as $key => $row) {
@@ -40,6 +40,8 @@ class OpticsModel extends Model
                 } elseif (in_array($key, $optic_keys)) {
                     if ($key == "mode") {
                         $return[] = ['where' => "optic_item.mode = ?", 'value' => $array[$key]];
+                    } elseif ($key == "spectrum") {
+                        $return[] = ['where' => "optic_item.spectrum = ?", 'value' => $array[$key]];
                     } else {
                         $return[] = ['where' => "optic_$key.id = ?", 'value' => $array[$key]];
                     }
@@ -56,6 +58,7 @@ class OpticsModel extends Model
         if ($page == 0) { $page = 1; }
 
         $wheres = OpticsModel::generateOpticWhereArray($where_array) ;
+      
         $order = OpticsModel::getOpitcsOrderBy($orderby);
 
         $totalCount = count(OpticsModel::getOpticsList($wheres, $order, $deleted, 0, 0));

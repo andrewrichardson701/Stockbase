@@ -2,6 +2,8 @@
 <h3>1.4.1 - Optics editing</h3>
 <ul>
     <li>SMTP Model now checks if image_name is set intead of erroring.</li>
+    <li>Added a filter for spectrum and vendor on the optics page.</li>
+    <li>Fixed the ajax request for stock-properties loading area/site info when addding stock.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

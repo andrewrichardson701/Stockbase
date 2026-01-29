@@ -75,7 +75,7 @@ var site = document.getElementById("site-properties").value;
 
 // Make an AJAX request to retrieve the corresponding areas
 var xhr = new XMLHttpRequest();
-xhr.open("GET", "_ajax-selectBoxes?site=" + site, true);
+xhr.open("GET", "/_ajax-selectBoxes?site=" + site, true);
 xhr.onload = function() {
 if (xhr.status === 200) {
   // Parse the response and populate the area select box

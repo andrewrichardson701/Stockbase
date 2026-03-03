@@ -355,7 +355,7 @@ class AdminModel extends Model
                 return redirect(GeneralModel::previousURL())->with('error', 'Excluded field: '.$field.'.');
             }
         }
-        
+
         foreach($data as $field => $value) {
             if (!in_array($field, ['favicon_image', 'logo_image'])) {
                 // not an image 
@@ -364,7 +364,7 @@ class AdminModel extends Model
                 }
 
                 if (str_contains($field, 'password')) {
-                    if ($value == 'password' || $value == '' || $value == null) {
+                    if ($value == 'password') { // make sure the default isnt pushed into the DB
                         $current_data->$field;
                     } else {
                         if (str_contains($field, 'smtp') || str_contains($field, 'ldap')) {
@@ -378,7 +378,7 @@ class AdminModel extends Model
 
                 if ($current_data->$field !== $value) {
                     //update needed
-                    if (filled($value)) {
+                    if (filled($value) || $value == null) {
 
                         $update = DB::table('config')->where('id', 1)->update([$field => $value, 'updated_at' => now()]);
                         

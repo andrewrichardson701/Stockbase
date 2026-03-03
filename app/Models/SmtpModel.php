@@ -362,9 +362,9 @@ class SmtpModel extends Model
             return;
         }
 
-        echo "*Authentication successful* \n";
+        echo "*Authentication successful* \n\n";
     } else {
-        echo "*No authentication used* \n";
+        echo "*No authentication used* \n\n";
     }
 
     // QUIT
@@ -373,8 +373,8 @@ class SmtpModel extends Model
 
     if (substr($response, 0, 3) === '221') {
         $smtpConnectionOk = true;
+        echo "SMTP connection OK. \n";
     }
-
     fclose($connection);
 
     /*

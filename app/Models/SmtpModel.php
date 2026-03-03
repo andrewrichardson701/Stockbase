@@ -301,7 +301,7 @@ class SmtpModel extends Model
     $connection = fsockopen($host, $port, $errno, $errstr, $timeout);
 
     if (!$connection) {
-        echo "<p>Connection failed: $errstr ($errno)</p>";
+        echo "Connection failed: $errstr ($errno)";
         return;
     }
 
@@ -309,7 +309,7 @@ class SmtpModel extends Model
 
     $response = fgets($connection, 512);
     if (substr($response, 0, 3) !== '220') {
-        echo "<p>Invalid welcome response: $response</p>";
+        echo "Invalid welcome response: $response";
         fclose($connection);
         return;
     }
@@ -317,7 +317,7 @@ class SmtpModel extends Model
     // Use EHLO instead of HELO
     fputs($connection, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
     $response = fgets($connection, 512);
-    echo "<p>EHLO: $response</p>";
+    echo "EHLO: $response";
 
     // STARTTLS handling
     if ($encryption === 'starttls') {
@@ -325,7 +325,7 @@ class SmtpModel extends Model
         $response = fgets($connection, 512);
 
         if (substr($response, 0, 3) !== '220') {
-            echo "<p>STARTTLS failed: $response</p>";
+            echo "STARTTLS failed: $response";
             fclose($connection);
             return;
         }
@@ -339,7 +339,7 @@ class SmtpModel extends Model
         // EHLO again after TLS
         fputs($connection, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
         $response = fgets($connection, 512);
-        echo "<p>EHLO after TLS: $response</p>";
+        echo "EHLO after TLS: $response";
     }
 
     /*
@@ -357,14 +357,14 @@ class SmtpModel extends Model
         $response = fgets($connection, 512);
 
         if (substr($response, 0, 3) !== '235') {
-            echo "<p>Authentication failed: $response</p>";
+            echo "*Authentication failed: $response*";
             fclose($connection);
             return;
         }
 
-        echo "<p>Authentication successful</p>";
+        echo "*Authentication successful*";
     } else {
-        echo "<p>No authentication used</p>";
+        echo "*No authentication used*";
     }
 
     // QUIT
@@ -400,7 +400,7 @@ class SmtpModel extends Model
             $request
         );
     } else {
-        echo "<p>SMTP connection failed.</p>";
+        echo "SMTP connection failed.";
     }
 }
     // static public function smtpTest($request)

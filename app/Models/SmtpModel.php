@@ -305,7 +305,7 @@ class SmtpModel extends Model
         return;
     }
 
-    echo "Connected";
+    echo "Connected \n";
 
     $response = fgets($connection, 512);
     if (substr($response, 0, 3) !== '220') {

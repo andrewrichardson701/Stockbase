@@ -115,6 +115,7 @@ class IndexController extends Controller
             'img_name' => 'image.jpeg',
             'img_id' => 69,
         ];
+        SmtpModel::notificationEmail(1, 1, $data);
         // dd(
         //     WebhookModel::notificationWebhook(1, 1, $data), 
         //     WebhookModel::notificationWebhook(1, 2, $data),     

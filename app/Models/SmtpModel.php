@@ -301,7 +301,7 @@ class SmtpModel extends Model
     $connection = fsockopen($host, $port, $errno, $errstr, $timeout);
 
     if (!$connection) {
-        echo "Connection failed: $errstr ($errno)";
+        echo "Connection failed: $errstr ($errno) \n";
         return;
     }
 
@@ -317,7 +317,7 @@ class SmtpModel extends Model
     // Use EHLO instead of HELO
     fputs($connection, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
     $response = fgets($connection, 512);
-    echo "EHLO: $response";
+    echo "EHLO: $response \n";
 
     // STARTTLS handling
     if ($encryption === 'starttls') {
@@ -325,7 +325,7 @@ class SmtpModel extends Model
         $response = fgets($connection, 512);
 
         if (substr($response, 0, 3) !== '220') {
-            echo "STARTTLS failed: $response";
+            echo "STARTTLS failed: $response \n";
             fclose($connection);
             return;
         }
@@ -339,7 +339,7 @@ class SmtpModel extends Model
         // EHLO again after TLS
         fputs($connection, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
         $response = fgets($connection, 512);
-        echo "EHLO after TLS: $response";
+        echo "EHLO after TLS: $response \n";
     }
 
     /*
@@ -357,14 +357,14 @@ class SmtpModel extends Model
         $response = fgets($connection, 512);
 
         if (substr($response, 0, 3) !== '235') {
-            echo "*Authentication failed: $response*";
+            echo "*Authentication failed: $response* \n";
             fclose($connection);
             return;
         }
 
-        echo "*Authentication successful*";
+        echo "*Authentication successful* \n";
     } else {
-        echo "*No authentication used*";
+        echo "*No authentication used* \n";
     }
 
     // QUIT
@@ -400,7 +400,7 @@ class SmtpModel extends Model
             $request
         );
     } else {
-        echo "SMTP connection failed.";
+        echo "SMTP connection failed. \n";
     }
 }
     // static public function smtpTest($request)

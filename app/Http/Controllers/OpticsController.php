@@ -16,7 +16,7 @@ use App\Models\TransactionModel;
 class OpticsController extends Controller
 {
     //
-    static public function index(Request $request, $stock_id, $modify_type = null): View|RedirectResponse  
+    static public function index(Request $request): View|RedirectResponse  
     {
         $nav_highlight = 'assets'; // for the nav highlighting
 

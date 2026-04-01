@@ -413,4 +413,31 @@ class StockController extends Controller
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
     }
+
+    static public function importStock(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'import_file' => 'required|file|mimes:csv,txt',
+            ]);
+            
+            dd($request);
+            exit();
+
+            return StockModel::importStock($request);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function importStockView(Request $request)
+    {
+        $nav_highlight = 'stock'; // for the nav highlighting
+
+        $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
+        $response_handling = ResponseHandlingModel::responseHandling($request);
+
+        return view('importstock', ['nav_data' => $nav_data, 'response_handling' => $response_handling]);
+    }
 }

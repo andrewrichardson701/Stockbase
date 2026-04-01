@@ -4,6 +4,9 @@
     <li>SMTP Model now checks if image_name is set intead of erroring.</li>
     <li>Added a filter for spectrum and vendor on the optics page.</li>
     <li>Fixed the ajax request for stock-properties loading area/site info when addding stock.</li>
+    <li>Added the disks page and all associated files.</li>
+    <li>Added a "backend" checker to some functions, to remove the echo response.</li>
+    <li>Fixed some sanitisation on the the changelog.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

@@ -58,7 +58,16 @@ class ChangelogModel extends Model
                 ->toArray();
 
             if ($record && array_key_exists(0, $record)) {;
-                return $record[0];
+                $result = $record[0];
+
+                // hide passwords
+                foreach ($result as $key => $value) {
+                    if (stripos($key, 'password') !== false) {
+                        $result[$key] = '********'; 
+                    }
+                }   
+
+                return $result;
             } else {
                 return 'deleted';
             }

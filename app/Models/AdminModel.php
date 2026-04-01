@@ -1459,14 +1459,26 @@ class AdminModel extends Model
                 ];
 
                 GeneralModel::updateChangelog($changelog_info);
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.');
+                if (!$request['backend']) {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.');
+                } else {
+                    return ['status' => 'success', 'message' => ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.', 'id' => $insert, 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
+                }
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+                if (!$request['backend']) {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+                } else {
+                    return ['status' => 'error', 'message' => 'Unable to insert database entry.', 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
+                }
             }
         
         } else {
             // incorrect type
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+            if (!$request['backend']) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+            } else {
+                return ['status' => 'error', 'message' => 'Invalid type.', 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
+            }
         }
     }
 

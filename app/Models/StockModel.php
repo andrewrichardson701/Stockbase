@@ -2710,4 +2710,183 @@ class StockModel extends Model
         }
     }
 
+    static public function importStock($request)
+    {
+        $user = GeneralModel::getUser();
+
+        // validate and process the import
+        $import_data = $request->file('import_file');
+        if ($import_data) {
+            // process the file and import stock data
+            $imported = false;
+
+            $handle = fopen($import_data->getRealPath(), 'r');
+            if ($handle !== false) {
+                $headers = fgetcsv($handle); // reads first row
+                fclose($handle);
+            }
+
+            $completed_rows = [];
+            $errored_rows = [];
+            $headers = fgetcsv($handle);
+
+            while (($row = fgetcsv($handle)) !== false) {
+                $data = array_combine($headers, $row);
+
+                // check for serial number existing, if it does, error
+                $db_serial_number = GeneralModel::getFirstWhere('item', ['serial_number' => $data['serial_number']]);
+                if ($db_serial_number) {
+                    // serial number already exists - skip and log error
+                    $data['reason'] = 'Serial number already exists';
+                    $errored_rows[] = $data;
+                    continue;
+                }
+
+                // get shelf, area, site data - if not found add it and get the new record
+                $db_site = GeneralModel::getFirstWhere('site', ['name' => $data['site']]);
+                if (!$db_site) {
+                    // add site
+                    $add_site = AdminModel::stockLocationAdd(['type' => 'site', 'name' => $data['site'], 'description' => $data['site'].' - Added via stock import', 'parent' => null]);
+                    if (!$add_site) {
+                        $data['reason'] = 'Failed to add site';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_site = GeneralModel::getFirstWhere('site', ['name' => $data['site']]);
+                }
+
+                $db_area = GeneralModel::getFirstWhere('area', ['name' => $data['area'], 'site_id' => $db_site->id]);
+                 if (!$db_area) {
+                    // add area
+                    $add_area = AdminModel::stockLocationAdd(['type' => 'area', 'name' => $data['area'], 'description' => $data['area'].' - Added via stock import', 'parent' => $db_site->id]);
+                    if (!$add_area) {
+                        $data['reason'] = 'Failed to add area';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_area = GeneralModel::getFirstWhere('area', ['name' => $data['area']]);
+                }
+
+                $db_shelf = GeneralModel::getFirstWhere('shelf', ['name' => $data['shelf'], 'area_id' => $db_area->id]);
+                if (!$db_shelf) {
+                    // add shelf
+                    $add_shelf = AdminModel::stockLocationAdd(['type' => 'shelf', 'name' => $data['shelf'], 'description' => $data['shelf'].' - Added via stock import', 'parent' => $db_area->id]);
+                    if (!$add_shelf) {
+                        $data['reason'] = 'Failed to add shelf';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_shelf = GeneralModel::getFirstWhere('shelf', ['name' => $data['shelf']]);
+                }
+
+                $db_manufacturer = GeneralModel::getFirstWhere('manufacturer', ['name' => $data['manufacturer']]);
+                if (!$db_manufacturer) {
+                    // add manufacturer
+                    $add_manufacturer = PropertiesModel::addProperty('manufacturer', $data['manufacturer']);
+                    if (!$add_manufacturer || $add_manufacturer == 'Error: Property already exists.') {
+                        $data['reason'] = 'Failed to add manufacturer';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_manufacturer = GeneralModel::getFirstWhere('manufacturer', ['name' => $data['manufacturer']]);
+                }
+
+                $db_tag = GeneralModel::getFirstWhere('tag', ['name' => $data['tag']]);
+                if (!$db_tag) {
+                    // add tag
+                    $add_tag = PropertiesModel::addProperty('tag', $data['tag']);
+                    if (!$add_tag || $add_tag == 'Error: Property already exists.') {
+                        $data['reason'] = 'Failed to add tag';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_tag = GeneralModel::getFirstWhere('tag', ['name' => $data['tag']]);
+                }
+
+                $db_stock = GeneralModel::getFirstWhere('stock', ['name' => $data['stock']]);
+                if (!$db_stock) {
+                    // add stock
+                    $add_stock = StockModel::addNewStock(
+                                                ['name' => $data['stock'], 
+                                                'description' => $data['stock'].' - Added via stock import', 
+                                                'is_cable' => 0, 
+                                                'min_stock' => 0, 
+                                                'stock-add' => 1, 
+                                                'manufacturer' => $db_manufacturer->id, 
+                                                'site' => $db_site->id, 
+                                                'area' => $db_area->id, 
+                                                'shelf' => $db_shelf->id,
+                                                'quantity' => $data['quantity'] ?? 1,
+                                                'serial-number' => $data['serial_number'] ?? '',
+                                                'cost' => $data['cost'] ?? 0,
+                                                'reason' => 'Imported stock item '.date('Y-m-d H:i:s'),
+                                            ], 0);
+                    if (!$add_stock) {
+                        $data['reason'] = 'Failed to add stock';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_stock = GeneralModel::getFirstWhere('stock', ['name' => $data['stock']]);
+                } else {
+                    $add_stock = StockModel::addExistingStock(
+                                                ['id' => $db_stock->id,
+                                                'stock-add' => 1,
+                                                'manufacturer' => $db_manufacturer->id, 
+                                                'site' => $db_site->id, 
+                                                'area' => $db_area->id, 
+                                                'shelf' => $db_shelf->id,
+                                                'quantity' => $data['quantity'] ?? 1,
+                                                'serial-number' => $data['serial_number'] ?? '',
+                                                'cost' => $data['cost'] ?? 0,
+                                                'reason' => 'Imported stock item '.date('Y-m-d H:i:s'),
+                                            ], 0);
+                    if (!$add_stock) {
+                        $data['reason'] = 'Failed to add stock items to existing stock';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                }
+
+                // check if stock_tag link exists - if not add it
+                if (!GeneralModel::getFirstWhere('stock_tag', ['stock_id' => $db_stock->id, 'tag_id' => $db_tag->id])) {
+                    TagModel::addTagToStock($db_tag->id, $db_stock->id);    
+                } 
+                
+                $completed_rows[] = $data;
+            }
+
+            // 1 check if the site exists
+            // 2 if site doesnt exist - add it
+            // 3 check if area exists
+            // 4 if no area - add
+            // 5 check if shelf exists
+            // 6 if no shelf - add
+            // 7 check if manufacturer exists
+            // 8 if no manufacturer - add
+            // 9 check if tag(s) exists
+            // 10 if no tag(s) - add
+            // 11 check if stock exists
+            // 12 if no stock - add
+            // 13 add item and details
+            // 14 add the stock_tag link
+            // 15 add transaction
+            // 16 add changelog
+            // 17 display a list of all stock items and their info for reference
+            // 18 any errors list them and create a csv
+            // 19 add a csv of completed rows for reference
+
+
+
+
+
+            if ($imported) {
+                return redirect(GeneralModel::previousURL())->with('success', 'Stock imported successfully.');
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Failed to import stock.');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'No file uploaded.');
+        }
+    }
+
 }

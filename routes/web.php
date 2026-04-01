@@ -126,7 +126,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                     Route::get('/assets/memory', [AssetsController::class, 'incomplete'])->name('memory'); // assets > memory page
                 });
                 Route::middleware(['auth', 'check.permission:disks'])->group(function () { // Disks pages - locked behind disks permission
-                    Route::get('/assets/disks', [AssetsController::class, 'incomplete'])->name('disks'); // assets > disks page
+                    Route::get('/assets/disks', [AssetsController::class, 'disks'])->name('disks'); // assets > disks page
                 });
                 Route::middleware(['auth', 'check.permission:fans'])->group(function () { // Fans pages - locked behind fans permission
                     Route::get('/assets/fans', [AssetsController::class, 'incomplete'])->name('fans'); // assets > fans page
@@ -162,11 +162,14 @@ Route::middleware([AddHeadData::class])->group(function () {
                     
                 Route::get('/favourites', [FavouritesController::class, 'index'])->name('favourites'); // favourites page
                 Route::get('/tags', [TagController::class, 'index'])->name('tags'); // tags page
-                Route::post('/tags.editTag', [TagController::class, 'editTag'])->name('tags.editTag'); // edit tags
+                Route::get('/importstock', [StockController::class, 'importStockView'])->name('importstock'); // import stock page
+                
 
                 // POST REQUESTS
+                Route::post('/tags.editTag', [TagController::class, 'editTag'])->name('tags.editTag'); // edit tags
                 Route::post('/stock.add.existing', [StockController::class, 'addExistingStock'])->name('stock.add.existing'); // add existing stock quantity
                 Route::post('/stock.add.new', [StockController::class, 'addNewStock'])->name('stock.add.new'); // add new stock 
+                Route::post('/stock.add.import', [StockController::class, 'importStock'])->name('stock.add.import'); // import stock
                 Route::post('/stock.remove.existing', [StockController::class, 'removeExistingStock'])->name('stock.remove.existing'); // remove existing stock
                 Route::post('/stock.move', [StockController::class, 'moveStock'])->name('stock.move'); // move stock quantity
                 Route::post('/stock.move.container', [StockController::class, 'moveStockContainer'])->name('stock.move.container'); // move stock quantity when item is a container
@@ -177,6 +180,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/stock.edit.imageunlink', [StockController::class, 'unlinkStockImage'])->name('stock.edit.imageunlink'); // unlink stock image
                 Route::post('/stock.edit.item', [StockController::class, 'editItem'])->name('stock.edit.item'); // edit item info
                 Route::post('/stock.delete.existing', [StockController::class, 'deleteStock'])->name('stock.delete.existing'); // delete unused stock
+                
             });
             
             // Admin pages

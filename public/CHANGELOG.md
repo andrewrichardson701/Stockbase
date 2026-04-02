@@ -7,6 +7,9 @@
     <li>Added the disks page and all associated files.</li>
     <li>Added a "backend" checker to some functions, to remove the echo response.</li>
     <li>Fixed some sanitisation on the the changelog.</li>
+    <li>Migrations added for the disks tables and adding the shreeding info.</li>
+    <li>Added fucntions to collect disk data and view it on the page.</li>
+    <li>Added a 'destroy' field to the disk_items table to mark it as ready for shredding.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

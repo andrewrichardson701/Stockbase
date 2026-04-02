@@ -48,7 +48,6 @@ class OpticsController extends Controller
         $form_site = $request['form_site'] ?? 0;
 
         $sort = $request['sort'] ?? 'type';
-        $deleted = $request['deleted'] ?? 0;
         $rows = $request['rows'] ?? 20;
         $page = $request['page'] ?? 1;
 

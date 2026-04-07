@@ -10,6 +10,7 @@
     <li>Migrations added for the disks tables and adding the shreeding info.</li>
     <li>Added fucntions to collect disk data and view it on the page.</li>
     <li>Added a 'destroy' field to the disk_items table to mark it as ready for shredding.</li>
+    <li>Added a total asset count to the top of the assets page.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

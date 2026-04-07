@@ -109,6 +109,7 @@
                             <th hidden>ID</th>
                             <th>Make</th>
                             <th>Model</th>
+                            <th>Serial Number</th>
                             <th>Type</th>
                             <th>Capacity</th>
                             <th>Speed</th>
@@ -130,6 +131,7 @@
                             <td hidden>{{ $row['id'] }}</td>
                             <td>{{ $disk_vendors['rows'][$row['vendor_id']]['name'] ?? 'unknown' }}</td>
                             <td>{{ $row['model'] }}</td>
+                            <td>{{  $row['serial_number'] }}</td>
                             <td>{{ $disk_types['rows'][$row['type_id']]['name'] ?? 'unknown' }}</td>
                             <td>{{ $disk_capacities['rows'][$row['capacity_id']]['capacity'] ?? 'unknown' }}</td>
                             <td>{{ $disk_speeds['rows'][$row['speed_id']]['speed'] ?? 'unknown' }}</td>

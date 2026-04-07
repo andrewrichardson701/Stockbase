@@ -67,6 +67,8 @@ class AssetsController extends Controller
         $q_data = IndexModel::queryData($request); // query string data
 
         $site = $request['site'] ?? 0;
+        $area = $request['area'] ?? 0;
+        $shelf = $request['shelf'] ?? 0;
         $search = $request['search'] ?? null;
         $deleted = $request['deleted'] ?? 0;
 
@@ -81,6 +83,8 @@ class AssetsController extends Controller
         $params = ['asset_type' => 'disks', 
                 'page' => $page,
                 'site' => $site,
+                'area' => $area,
+                'shelf' => $shelf,
                 'search' => $search, 
                 'deleted' => $deleted,
                 'sort' => $sort,

@@ -18,6 +18,10 @@ class DiskModel extends Model
             foreach($array as $key => $row) {
                 if ($key == "site") {
                     $return[] = ['where' => "site.id = ?", 'value' => $array[$key]];
+                } elseif ($key == "area") {
+                    $return[] = ['where' => "area.id = ?", 'value' => $array[$key]];
+                } elseif ($key == "shelf") {
+                    $return[] = ['where' => "shelf.id = ?", 'value' => $array[$key]];
                 } elseif ($key == "search") {
                     $value = $array[$key];
                     $return[] = ['where' => "(disk_item.serial_number LIKE ? 

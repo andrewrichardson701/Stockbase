@@ -138,7 +138,17 @@
                             <td>{{ $row['ssd'] ? 'SSD' : 'HDD' }}</td>
                             <td>{{ $row['form_factor'] ?? 'unknown' }}</td>
                             <td>{{ $disk_caddies['rows'][$row['caddy_id']]['vendor'] ?? 'unknown' }}</td>
-                            <td>{{ $sites['rows'][$areas['rows'][$shelves['rows'][$row['shelf_id']]['area_id']]['site_id']]['name'] }}, {{ $areas['rows'][$shelves['rows'][$row['shelf_id']]['area_id']]['name'] }}, {{ $shelves['rows'][$row['shelf_id']]['name'] }}</td>
+                            <td>
+                                <or class="gold link" onclick="navPage(updateQueryParameter('', 'site', {{ $areas['rows'][$shelves['rows'][$row['shelf_id']]['area_id']]['site_id'] }}))">
+                                    {{ $sites['rows'][$areas['rows'][$shelves['rows'][$row['shelf_id']]['area_id']]['site_id']]['name'] }}
+                                </or>, 
+                                <or class="gold link" onclick="navPage(updateQueryParameter('', 'area', {{ $shelves['rows'][$row['shelf_id']]['area_id'] }}))">
+                                    {{ $areas['rows'][$shelves['rows'][$row['shelf_id']]['area_id']]['name'] }}
+                                </or>,
+                                <or class="gold link" onclick="navPage(updateQueryParameter('', 'shelf', {{ $row['shelf_id'] }}))">
+                                    {{ $shelves['rows'][$row['shelf_id']]['name'] }}
+                                </or>
+                            </td>
                             <td>{!! $row['destroy'] ? '<or class="red">SHRED</or>' : 'No' !!}</td>
                         </tr>
                         @endforeach

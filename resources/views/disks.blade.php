@@ -228,7 +228,7 @@
                         </tr>
                     </tbody>
                 </table>
-                @dd(get_defined_vars())
+                {{-- @dd(get_defined_vars()) --}}
         </div>
 
     </div>

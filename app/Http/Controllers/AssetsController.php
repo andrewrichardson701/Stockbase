@@ -10,6 +10,7 @@ use Illuminate\View\View;
 use App\Models\GeneralModel;
 use App\Models\IndexModel;
 use App\Models\FunctionsModel;
+use App\Models\AssetsModel;
 use App\Models\ResponseHandlingModel;
 use App\Models\DiskModel;
 
@@ -23,8 +24,11 @@ class AssetsController extends Controller
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
+        $assets = GeneralModel::formatArrayOnIdAndCount(AssetsModel::getAssets());
+
         return view('assets', ['nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
+                                'assets' => $assets
                             ]);
     }
 

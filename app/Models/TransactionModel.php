@@ -264,4 +264,16 @@ class TransactionModel extends Model
             return ['error' => 'non-numeric id'];
         }
     }
+
+    static public function addDiskTransaction($request)
+    {
+        $insert = DB::table('disk_transaction')->insertGetId($request);
+        $id = $insert;
+
+        if (is_numeric($id)) {
+            return ['success' => $id];
+        } else {
+            return ['error' => 'non-numeric id'];
+        }
+    }
 }

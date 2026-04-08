@@ -57,10 +57,6 @@
         ?>
 
     </div>
-    
-
-    <!-- Add the JS for the file -->
-    <!-- <script src={{ asset('js/assets.js') }}></script> -->
 
     @include('foot')
 </body>

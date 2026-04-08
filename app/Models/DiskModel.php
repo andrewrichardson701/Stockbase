@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class DiskModel extends Model
 {
@@ -12,7 +13,7 @@ class DiskModel extends Model
     {
         
         $return = [];
-        $disk_keys = ['type', 'speed', 'capacity', 'caddy', 'vendor'];
+        $disk_keys = ['type', 'speed', 'capacity', 'caddy', 'vendor', 'destroy', 'ssd', 'form_factor'];
 
         if (!empty($array)) {
             foreach($array as $key => $row) {
@@ -29,11 +30,21 @@ class DiskModel extends Model
                                                 OR disk_item.form_factor LIKE ?
                                                 OR disk_vendor.name LIKE ?
                                                 OR disk_type.name LIKE ? 
-                                                OR disk_capacity.capacity LIKE ?
-                                                OR disk_caddy.vendor LIKE ?
-                                                OR disk_speed.speed LIKE ?)", 
+                                                OR disk_capacity.name LIKE ?
+                                                OR disk_caddy.name LIKE ?
+                                                OR disk_speed.name LIKE ?)", 
                                                 'value' => ["%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%"]];
-                } 
+                } elseif (in_array($key, $disk_keys)) {
+                    if ($key == "form_factor") {
+                        $return[] = ['where' => "disk_item.form_factor = ?", 'value' => $array[$key]];
+                    } elseif ($key == "destroy") {
+                        $return[] = ['where' => "disk_item.destroy = ?", 'value' => $array[$key]];
+                    } elseif ($key == "ssd") {
+                        $return[] = ['where' => "disk_item.ssd = ?", 'value' => $array[$key]];
+                    } else {
+                        $return[] = ['where' => "disk_$key.id = ?", 'value' => $array[$key]];
+                    }
+                }
             }
         } 
         
@@ -43,34 +54,34 @@ class DiskModel extends Model
 
     static public function getDisksOrderBy($orderby) 
     {
-        $order = "disk_type.id, disk_vendor.name, disk_capacity.capacity, disk_caddy.vendor, disk_item.model, disk_item.serial_number";
+        $order = "disk_type.id, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
         switch ($orderby) {
             case 'type':
-                $order = "disk_type.name, disk_vendor.name, disk_capacity.capacity, disk_caddy.vendor, disk_item.model, disk_item.serial_number";
+                $order = "disk_type.name, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
                 break;
             case 'model':
-                $order = "disk_item.model, disk_vendor.name, disk_capacity.capacity, disk_caddy.vendor, disk_type.name, disk_item.serial_number";
+                $order = "disk_item.model, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_type.name, disk_item.serial_number";
                 break;
             case 'speed':
-                $order = "disk_speed.id, disk_type.name, disk_vendor.name, disk_capacity.capacity, disk_caddy.vendor, disk_item.model, disk_item.serial_number";
+                $order = "disk_speed.id, disk_type.name, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
                 break;
             case 'caddy':
-                $order = "disk_caddy.vendor, disk_type.name, disk_vendor.name, disk_capacity.capacity, disk_item.model, disk_item.serial_number";
+                $order = "disk_caddy.name, disk_type.name, disk_vendor.name, disk_capacity.name, disk_item.model, disk_item.serial_number";
                 break;
             case 'serial':
-                $order = "disk_item.serial_number, disk_type.name, disk_vendor.name, disk_capacity.capacity, disk_caddy.vendor, disk_item.model";
+                $order = "disk_item.serial_number, disk_type.name, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model";
                 break;
             case 'vendor':
-                $order = "disk_vendor.name, disk_type.name, disk_capacity.capacity, disk_caddy.vendor, disk_item.model, disk_item.serial_number";
+                $order = "disk_vendor.name, disk_type.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
                 break;
             case 'destroy':
-                $order = "disk_item.destroy DESC, disk_type.name, disk_vendor.name, disk_capacity.capacity, disk_caddy.vendor, disk_item.model, disk_item.serial_number";
+                $order = "disk_item.destroy DESC, disk_type.name, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
                 break;
             case 'capacity':
-                $order = "disk_capacity.capacity, disk_type.name, disk_vendor.name, disk_caddy.vendor, disk_item.model, disk_item.serial_number";
+                $order = "disk_capacity.name, disk_type.name, disk_vendor.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
                 break;
             default:
-                $order = "disk_type.id, disk_vendor.name, disk_capacity.capacity, disk_caddy.vendor, disk_item.model, disk_item.serial_number";
+                $order = "disk_type.id, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
                 break;
         }
 
@@ -92,12 +103,12 @@ class DiskModel extends Model
                         'disk_type.id AS type_id',
                         'disk_type.name AS type_name',
                         'disk_speed.id AS speed_id',
-                        'disk_speed.speed AS speed_name',
+                        'disk_speed.name AS speed_name',
                         'disk_item.form_factor AS form_factor',
                         'disk_caddy.id AS caddy_id',
-                        'disk_caddy.vendor AS caddy_vendor',
+                        'disk_caddy.name AS caddy_name',
                         'disk_capacity.id AS capacity_id',
-                        'disk_capacity.capacity AS capacity',
+                        'disk_capacity.name AS capacity',
                         'disk_item.ssd AS ssd',
                         'site.id AS site_id',
                         'site.name AS site_name',
@@ -149,6 +160,7 @@ class DiskModel extends Model
         if ($page == 0) { $page = 1; }
 
         $wheres = DiskModel::generateDiskWhereArray($where_array) ;
+        // dd($where_array);
       
         $order = DiskModel::getDisksOrderBy($orderby);
 
@@ -168,4 +180,320 @@ class DiskModel extends Model
 
         return $disks;
     }
+
+
+    static public function addDisk($request)
+    {
+        $previous = GeneralModel::previousURL();
+        $query = http_build_query(
+                [
+                    'form_serial' => $request['serial'] ?? '', 
+                    'form_model' => $request['model'] ?? '',
+                    'form_capacity' => $request['capacity'] ?? '',
+                    'form_vendor' => $request['vendor'] ?? '',
+                    'form_type' => $request['type'] ?? '',
+                    'form_speed' => $request['speed'] ?? '',
+                    'form_caddy' => $request['caddy'] ?? '',
+                    'form_site' => $request['site'] ?? '',
+                    'form_ssd' => $request['ssd'] ?? '',
+                    'form_form_factor' => $request['form_factor'] ?? '',
+                    'form_destroy' => $request['destroy'] ?? '',
+                    'form_area' => $request['area'] ?? '',
+                    'form_shelf' => $request['shelf'] ?? '',
+                ]
+            );
+        $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
+          
+        $user = GeneralModel::getUser();
+
+        // see if disk serial exists
+        $find = DB::table('disk_item')->where('serial_number', $request['serial'])->first();
+        
+        // check for ids of each field
+        foreach (['vendor', 'type', 'capacity', 'speed', 'caddy'] as $param) {
+           $find_params = DB::table('disk_'.$param)->where('id', $request[$param])->where('deleted', 0)->first();
+           if (!$find_params) {
+                return redirect()->to(route('disks', ['error' => 'Disk '.$param.' not found for id: '.$request[$param]]));
+            } 
+        }
+
+        // make sure shelf exists
+        $find_shelf = DB::table('shelf')->where('id', $request['shelf'])->where('deleted', 0)->first();
+        if (!$find_shelf) {
+            return redirect()->to(route('disks', ['error' => 'Shelf not found for id: '.$request['shelf']]));
+        } 
+        $values = [
+                    'model' => $request['model'],
+                    'vendor_id' => $request['vendor'],
+                    'serial_number' => $request['serial'],
+                    'type_id' => $request['type'],
+                    'caddy_id' => $request['caddy'],
+                    'capacity_id' => $request['capacity'],
+                    'ssd' => $request['ssd'],
+                    'speed_id' => $request['speed'],
+                    'destroy' => $request['destroy'],
+                    'shelf_id' => $request['shelf'],
+                    'form_factor' => $request['form_factor'],
+                    'quantity' => 1,
+                    'created_at' => now(), 
+                    'updated_at' => now()
+                ];
+        
+        if (!$find) {
+            // add disk
+
+            $insert = DB::table('disk_item')->insertGetId($values);
+
+            if ($insert) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'disk_item',
+                    'record_id' => $insert,
+                    'action' => 'New record',
+                    'field' => 'serial_number',
+                    'previous_value' => '',
+                    'new_value' => $request['serial']
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                $transaction = [
+                    'table_name' => 'disk_item',
+                    'item_id' => $insert,
+                    'type' => 'add',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'shelf_id' => $request['shelf'],
+                    'reason' => 'Item Added',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addDiskTransaction($transaction);
+                return redirect()->to($url)->with('success', 'Disk added: "'.$request['serial'].'" with id: '.$insert.'.');
+            } else {
+                if ($find->deleted == 1) {
+                    // remove delete, and update any changes.
+                    // update 
+                    unset($values['serial_number']);
+
+                    foreach (array_keys((array)$find) as $key) {
+                        if (!in_array($key, ['id', 'serial_number', 'updated_at', 'created_at'])) {
+                            if ($values[$key] !== $find->$key) {
+                                // update
+                                $update = DB::table('disk_item')->where('id', $find->id)->update([$key => $values[$key]]);
+
+                                if ($update) {
+                                    // changelog
+                                    $changelog_info = [
+                                        'user' => $user,
+                                        'table' => 'disk_item',
+                                        'record_id' => $find->id,
+                                        'action' => 'Update record',
+                                        'field' => $key,
+                                        'previous_value' => $find->$key,
+                                        'new_value' => $values[$key]
+                                    ];
+
+                                    GeneralModel::updateChangelog($changelog_info);
+                                    $transaction = [
+                                        'table_name' => 'disk_item',
+                                        'item_id' => $find->id,
+                                        'type' => 'restore',
+                                        'date' => date('Y-m-d'),
+                                        'time' => date('H:i:s'),
+                                        'username' => $user['username'],
+                                        'shelf_id' => $request['shelf'],
+                                        'reason' => 'Item Restored',
+                                        'created_at' => now(),
+                                        'updated_at' => now()
+                                    ];
+                                    TransactionModel::addDiskTransaction($transaction);
+                                } else {
+                                    return redirect()->to($url)->with('error', 'Unable to insert database entry.');
+                                }
+                            }
+                        }
+                    }   
+                    $data = ['id' => $find->id];
+                    return DiskModel::restore($data);
+ 
+                } else {
+                    return redirect()->to($url)->with('error', 'Disk already exists.');
+                }  
+            }
+        } else {
+            return redirect()->to(route('disks', ['error' => 'Disk already exists for serial number: '.$request['serial']]));
+        }
+    }
+
+
+
+    static public function restoreDisk($request)
+    {
+        $disk_id = $request['id'];
+        $user = GeneralModel::getUser();
+
+        $find = DB::table('disk_item')->where('id', $disk_id)->where('deleted', 1)->first();
+
+        if ($find) {
+            $update = DB::table('disk_item')->where('id', $find->id)->update(['deleted' => 0]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'disk_item',
+                    'record_id' => $disk_id,
+                    'action' => 'Restore record',
+                    'field' => 'deleted',
+                    'previous_value' => $find->deleted,
+                    'new_value' => 0
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+
+                $transaction = [
+                    'table_name' => 'disk_item',
+                    'item_id' => $disk_id,
+                    'type' => 'restore',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'shelf_id' => $find->shelf_id,
+                    'reason' => 'Item Restored',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addDiskTransaction($transaction);
+                return redirect()->to(GeneralModel::previousURL())->with('success', 'Disk restored, with id: '.$disk_id.'.');
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to insert database entry.');
+            }
+        } else {
+            // disk doesnt exist
+            return redirect()->to(GeneralModel::previousURL())->with('error', 'Disk not found with id: '.$disk_id.'.');
+        }
+    }
+
+    static public function deleteDisk($request)
+    {
+        $disk_id = $request['id'];
+        $reason = $request['reason'];
+        $user = GeneralModel::getUser();
+
+        // see if disk exists
+        $find = DB::table('disk_item')->where('id', $disk_id)->first();
+
+        if ($find && $find->deleted == 0) {
+            $update = DB::table('disk_item')->where('id', $disk_id)->update(['deleted' => 1]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'disk_item',
+                    'record_id' => $find->id,
+                    'action' => 'Delete record',
+                    'field' => 'deleted',
+                    'previous_value' => $find->deleted,
+                    'new_value' => 1
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                $transaction = [
+                    'table_name' => 'disk_item',
+                    'item_id' => $disk_id,
+                    'type' => 'delete',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'site_id' => $find->site_id,
+                    'reason' => $reason,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addDiskTransaction($transaction);
+                return redirect(GeneralModel::previousURL())->with('success', 'Disk with serial number: '.$find->serial_number.' and id: '.$disk_id.' delete.');
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to delete disk with id: '.$disk_id.'.');
+            }
+        } elseif ($find && $find->deleted == 1) {
+            return redirect()->to(route('disks', ['error' => 'Disk already deleted for id: '.$disk_id]));
+        } else {
+            return redirect()->to(route('disks', ['error' => 'Disk not found for id: '.$disk_id.'.']));
+        }
+    }
+
+    static public function moveDisk($request)
+    {
+        $disk_id = $request['id'];
+        $shelf_id = $request['shelf'];
+        $user = GeneralModel::getUser();
+
+        // see if disk exists
+        $find = DB::table('disk_item')->where('id', $disk_id)->first();
+
+        if ($find) {
+            // check if shelf exists
+            $find_shelf = DB::table('shelf')->where('id', $shelf_id)->where('deleted', 0)->first();
+
+            if ($find_shelf) {
+                $update = DB::table('disk_item')->where('id', $disk_id)->update(['shelf_id' => $shelf_id]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'disk_item',
+                        'record_id' => $disk_id,
+                        'action' => 'Move record',
+                        'field' => 'shelf_id',
+                        'previous_value' => $find->shelf_id,
+                        'new_value' => $shelf_id
+                    ];
+
+                    GeneralModel::updateChangelog($changelog_info);
+                    $transaction = [
+                        'table_name' => 'disk_item',
+                        'item_id' => $disk_id,
+                        'type' => 'move',
+                        'date' => date('Y-m-d'),
+                        'time' => date('H:i:s'),
+                        'username' => $user['username'],
+                        'shelf_id' => $shelf_id,
+                        'reason' => 'Move disk',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                    TransactionModel::addDiskTransaction($transaction);
+                    return redirect()->to(GeneralModel::previousURL())->with('success', 'Disk for id: '.$disk_id.' moved.');
+                } else {
+                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to move disk with id: '.$disk_id.'.');
+                }
+            } else {
+                return redirect()->to(route('disks', ['error' => 'Shelf not found for id: '.$shelf_id.'.']));
+            }
+        } else {
+            return redirect()->to(route('disks', ['error' => 'Disk not found for id: '.$disk_id.'.']));
+        }
+    }
+
+    static public function serialMatchChecker($request)
+    {
+        // search for the matching item
+        $find = DB::table('disk_item')->where('serial_number', $request['serial'])->first();
+        
+        if ($find) {
+            if ($find->deleted == 0) {
+                $results['error'] = "Disk already exists.";
+            } else {
+                $results['error'] = "Found a matching deleted disk. Please restore this disk instead of adding.";
+            }
+        } else {
+            $results['skip'] = 1;
+        }
+
+        return $results;
+    }  
 }

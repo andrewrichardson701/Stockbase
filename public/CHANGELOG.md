@@ -11,6 +11,8 @@
     <li>Added fucntions to collect disk data and view it on the page.</li>
     <li>Added a 'destroy' field to the disk_items table to mark it as ready for shredding.</li>
     <li>Added a total asset count to the top of the assets page.</li>
+    <li>Fixed the OpticsModel filling in 0 for site_id on transactions.</li>
+    <li>Added the Disk functions needed to have adding and removing of disks.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>
@@ -287,7 +289,7 @@
     <li>optics.php shows the list of optics in store for each site similar to how the index page shows the main stock.</li>
     <li>Comments can be added to the optics</li>
     <li>Searching for optics searches through all fields rather than just model.</li>
-    <li>New tables added: optic_item, optic_connector, optic_type, optic_speed, optic_vendor, optic_comment, optic_transaction, stock_audit</li>
+    <li>New tables added: optic_item, optic_connector, optic_type, optic_speed, optic_vendor, optic_comment, , stock_audit</li>
     <li>Due to new tables being added, there will need to be some SQL adjustments on updates/downgrades to this version</li>
     <li>users_roles table has a new field: is_optic</li>
     <li>Stock option added to the nav bar.</li>

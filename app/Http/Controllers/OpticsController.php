@@ -152,7 +152,7 @@ class OpticsController extends Controller
         $query = http_build_query(
             ['form_serial' => $request['serial'] ?? '', 
                     'form_model' => $request['model'] ?? '', 
-                    'form_sepctrum' => $request['spectrum'] ?? '',
+                    'form_spectrum' => $request['spectrum'] ?? '',
                     'form_type' => $request['type'] ?? '', 
                     'form_speed' => $request['speed'] ?? '', 
                     'form_connector' => $request['connector'] ?? '',

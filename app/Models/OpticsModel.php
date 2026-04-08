@@ -233,7 +233,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => 'Comment Added',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -282,7 +282,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => 'Delete comment',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -372,7 +372,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $request['site'],
                     'reason' => 'Item Added',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -386,7 +386,7 @@ class OpticsModel extends Model
                     unset($values['serial_number']);
 
                     foreach (array_keys((array)$find) as $key) {
-                        if (!in_array($key, ['id', 'serial_number', 'updated_at', 'creared_at'])) {
+                        if (!in_array($key, ['id', 'serial_number', 'updated_at', 'created_at'])) {
                             if ($values[$key] !== $find->$key) {
                                 // update
                                 $update = DB::table('optic_item')->where('id', $find->id)->update([$key => $values[$key]]);
@@ -411,7 +411,7 @@ class OpticsModel extends Model
                                         'date' => date('Y-m-d'),
                                         'time' => date('H:i:s'),
                                         'username' => $user['username'],
-                                        'site_id' => 0,
+                                        'site_id' => $request['site'],
                                         'reason' => 'Item Restored',
                                         'created_at' => now(),
                                         'updated_at' => now()
@@ -466,7 +466,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => 'Item Restored',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -514,7 +514,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => $reason,
                     'created_at' => now(),
                     'updated_at' => now()
@@ -567,7 +567,7 @@ class OpticsModel extends Model
                         'date' => date('Y-m-d'),
                         'time' => date('H:i:s'),
                         'username' => $user['username'],
-                        'site_id' => 0,
+                        'site_id' => $site_id,
                         'reason' => 'Move optic',
                         'created_at' => now(),
                         'updated_at' => now()

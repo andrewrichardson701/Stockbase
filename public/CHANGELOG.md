@@ -13,6 +13,7 @@
     <li>Added a total asset count to the top of the assets page.</li>
     <li>Fixed the OpticsModel filling in 0 for site_id on transactions.</li>
     <li>Added the Disk functions needed to have adding and removing of disks.</li>
+    <li>Disks can now be restored from deletion.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

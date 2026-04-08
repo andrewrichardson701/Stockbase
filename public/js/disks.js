@@ -127,7 +127,27 @@ modalCloseNewCaddy = function() {
     modal.style.display = "none";
 }
 
+function modalLoadDeleteOptic(id) {
+    console.log(id);
+    var modal = document.getElementById("modalDivDeleteOptic");
+    var serial = document.getElementById('optic-serial-'+id).innerHTML;
 
+    var deleteInputID = document.getElementById('delete-id');
+    var deleteHeadingSerial = document.getElementById('delete-optic-serial');
+
+
+    deleteHeadingSerial.innerText = serial+" (ID: "+id+")";
+    deleteInputID.value = id;
+    modal.style.display = "block";
+
+
+}
+
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseDeleteOptic = function() { 
+    var modal = document.getElementById("modalDivDeleteOptic");
+    modal.style.display = "none";
+}
 
 
 
@@ -207,8 +227,8 @@ function loadOpticProperty(property) {
 
 function searchSerial(search) {
 
-    var responseBox = document.getElementById('optic-add-response');
-    var btnAddSingle = document.getElementById('optic-add-single');
+    var responseBox = document.getElementById('disk-add-response');
+    var btnAddSingle = document.getElementById('disk-add-single');
     var csrf = document.querySelector('meta[name="csrf-token"]').content;
 
     responseBox.hidden = true;
@@ -217,9 +237,9 @@ function searchSerial(search) {
     if (search !== null && search !== '') {
         $.ajax({
             type: "POST",
-            url: "/assets/optics.serialSearch",
+            url: "/assets/disks.serialSearch",
             data: {
-                "request-optic": 1,
+                "request-disk": 1,
                 "serial": search,
                 _token: csrf
             },

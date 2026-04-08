@@ -423,17 +423,22 @@
                     @else
                         @foreach($disks_data['rows'] as $row)
                         <tr class="row-show align-middle text-center  @if($row['deleted'] == 1) red @endif">
-                            <td hidden>{{ $row['id'] }}</td>
-                            <td>{{ $disk_vendors['rows'][$row['vendor_id']]['name'] ?? 'unknown' }}</td>
-                            <td>{{ $row['model'] }}</td>
-                            <td>{{  $row['serial_number'] }}</td>
-                            <td>{{ $disk_types['rows'][$row['type_id']]['name'] ?? 'unknown' }}</td>
-                            <td>{{ $disk_capacities['rows'][$row['capacity_id']]['name'] ?? 'unknown' }}</td>
-                            <td>{{ $disk_speeds['rows'][$row['speed_id']]['name'] ?? 'unknown' }}</td>
-                            <td>{{ $row['ssd'] ? 'SSD' : 'HDD' }}</td>
-                            <td>{{ $row['form_factor'] ?? 'unknown' }}</td>
-                            <td>{{ $disk_caddies['rows'][$row['caddy_id']]['name'] ?? 'unknown' }}</td>
-                            <td>
+                            <form id="diskForm-{{ $row['id'] }}" action="{{ route('disks.restore') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                                <!-- Include CSRF token in the form -->
+                                @csrf
+                                <input type="hidden" form="diskForm-{{ $row['id'] }}" value="{{ $row['id'] }}" name="id"/>
+                            </form>
+                            <td class="align-middle" hidden>{{ $row['id'] }}</td>
+                            <td class="align-middle">{{ $disk_vendors['rows'][$row['vendor_id']]['name'] ?? 'unknown' }}</td>
+                            <td class="align-middle">{{ $row['model'] }}</td>
+                            <td class="align-middle" id="disk-serial-{{ $row['id'] }}">{{ $row['serial_number'] }}</td>
+                            <td class="align-middle">{{ $disk_types['rows'][$row['type_id']]['name'] ?? 'unknown' }}</td>
+                            <td class="align-middle">{{ $disk_capacities['rows'][$row['capacity_id']]['name'] ?? 'unknown' }}</td>
+                            <td class="align-middle">{{ $disk_speeds['rows'][$row['speed_id']]['name'] ?? 'unknown' }}</td>
+                            <td class="align-middle">{{ $row['ssd'] ? 'SSD' : 'HDD' }}</td>
+                            <td class="align-middle">{{ $row['form_factor'] ?? 'unknown' }}</td>
+                            <td class="align-middle">{{ $disk_caddies['rows'][$row['caddy_id']]['name'] ?? 'unknown' }}</td>
+                            <td class="align-middle">
                                 <or class="gold link" onclick="navPage(updateQueryParameter('', 'site', {{ $areas['rows'][$shelves['rows'][$row['shelf_id']]['area_id']]['site_id'] }}))">
                                     {{ $sites['rows'][$areas['rows'][$shelves['rows'][$row['shelf_id']]['area_id']]['site_id']]['name'] }}
                                 </or>, 
@@ -444,7 +449,7 @@
                                     {{ $shelves['rows'][$row['shelf_id']]['name'] }}
                                 </or>
                             </td>
-                            <td>{!! $row['destroy'] ? '<or class="red">SHRED</or>' : 'No' !!}</td>
+                            <td class="align-middle">{!! $row['destroy'] ? '<or class="red">SHRED</or>' : 'No' !!}</td>
                             <td class="align-middle" style="padding-right:5px">
                                 <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadEditDisk('{{ $row['id'] }}')">
                                     <i class="fa fa-pencil" style="color:white"></i>

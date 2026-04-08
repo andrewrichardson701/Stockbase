@@ -408,7 +408,7 @@ class DiskModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => $find->site_id,
+                    'shelf_id' => $find->shelf_id,
                     'reason' => $reason,
                     'created_at' => now(),
                     'updated_at' => now()

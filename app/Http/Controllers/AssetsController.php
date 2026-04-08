@@ -210,6 +210,50 @@ class AssetsController extends Controller
         return redirect($url)->with('error', 'Unknown request');
     }
 
+    static public function diskDelete(Request $request)
+    {
+        if (isset($request['disk-delete-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                    'reason' => 'string|required'
+                ]);
+                return DiskModel::deleteDisk($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function diskRestore(Request $request) 
+    {
+        if (isset($request['disk-restore-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                ]);
+                return DiskModel::restoreDisk($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function diskSerialSearch(Request $request)
+    {
+        // search for matching serial numbers
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'serial' => 'string|required',
+            ]);
+            return response()->json(DiskModel::serialMatchChecker($request->input()));
+        } else {
+            return response()->json(['error' => 'CSRF token missmatch.']);
+        }
+    }
+
     static public function incomplete(Request $request)
     {
         return dd('incomplete page.');

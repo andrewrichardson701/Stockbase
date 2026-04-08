@@ -13,7 +13,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-type-add" value="Add Type" class="btn btn-success" onclick="addOpticProperty('type')">Add Type</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="disk-type-add" value="Add Type" class="btn btn-success" onclick="addDiskProperty('type')">Add Type</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -36,7 +36,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-vendor-add" value="Add Vendor" class="btn btn-success" onclick="addOpticProperty('vendor')">Add Vendor</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="disk-vendor-add" value="Add Vendor" class="btn btn-success" onclick="addDiskProperty('vendor')">Add Vendor</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -59,7 +59,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-speed-add" value="Add Speed" class="btn btn-success"  onclick="addOpticProperty('speed')">Add Speed</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="disk-speed-add" value="Add Speed" class="btn btn-success"  onclick="addDiskProperty('speed')">Add Speed</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -81,7 +81,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-capacity-add" value="Add Capacity" class="btn btn-success" onclick="addOpticProperty('capacity')">Add Capacity</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="disk-capacity-add" value="Add Capacity" class="btn btn-success" onclick="addDiskProperty('capacity')">Add Capacity</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -103,7 +103,7 @@
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="optic-distance-add" value="Add Distance" class="btn btn-success" onclick="addOpticProperty('distance')">Add Distance</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="disk-distance-add" value="Add Distance" class="btn btn-success" onclick="addDiskProperty('distance')">Add Distance</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -111,18 +111,18 @@
     </div> 
 </div>
 <!-- End of Modal NewDistance Div -->
-<!-- Modal DeleteOptic Div -->
-<div id="modalDivDeleteOptic" class="modal">
-    <span class="close" onclick="modalCloseDeleteOptic()">&times;</span>
+<!-- Modal DeleteDisk Div -->
+<div id="modalDivDeleteDisk" class="modal">
+    <span class="close" onclick="modalCloseDeleteDisk()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form action="{{ route('optics.delete') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('disks.delete') }}" method="POST" enctype="multipart/form-data">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <table class="centertable" style="border:none">
                     <tbody style="border:none">
                         <tr>
-                            <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="delete-optic-serial" style="margin-bottom:20px"></h3></td>
+                            <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="delete-disk-serial" style="margin-bottom:20px"></h3></td>
                         </tr>
                         <tr>
                             <td class="align-middle text-center" colspan=100% style="border:none">
@@ -133,8 +133,8 @@
                                 <input id="delete-reason" type="text" class="form-control theme-input" placeholder="Reason..." name="reason" required/>
                                 <input type="hidden" id="delete-id" name="id" />
                             </td>
-                            <td class="align-middle text-center" style="border:none"><input type="submit" value="Delete" class="btn btn-danger" name="optic-delete-submit" /></td>
-                            <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseDeleteOptic()">Cancel</button></td>
+                            <td class="align-middle text-center" style="border:none"><input type="submit" value="Delete" class="btn btn-danger" name="disk-delete-submit" /></td>
+                            <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseDeleteDisk()">Cancel</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -142,19 +142,19 @@
         </div>  
     </div>
 </div>
-<!-- End of DeleteOptic Div -->
-<!-- Modal MoveOptic Div -->
-<div id="modalDivMoveOptic" class="modal">
-    <span class="close" onclick="modalCloseMoveOptic()">&times;</span>
+<!-- End of DeleteDisk Div -->
+<!-- Modal MoveDisk Div -->
+<div id="modalDivMoveDisk" class="modal">
+    <span class="close" onclick="modalCloseMoveDisk()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
-            <form action="{{ route('optics.move') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('disks.move') }}" method="POST" enctype="multipart/form-data">
                 <!-- Include CSRF token in the form -->
                 @csrf
                 <table class="centertable" style="border:none">
                     <tbody style="border:none">
                         <tr>
-                            <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="move-optic-serial" style="margin-bottom:20px"></h3></td>
+                            <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="move-disk-serial" style="margin-bottom:20px"></h3></td>
                         </tr>
                         <tr>
                             <td class="align-middle text-center" colspan=100% style="border:none">
@@ -171,8 +171,78 @@
                                 </select>
                                 <input type="hidden" id="move-id" name="id" />
                             </td>
-                            <td class="align-middle text-center" style="border:none"><input type="submit" value="Move" class="btn btn-success" name="optic-move-submit" /></td>
-                            <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseMoveOptic()">Cancel</button></td>
+                            <td class="align-middle text-center" style="border:none"><input type="submit" value="Move" class="btn btn-success" name="disk-move-submit" /></td>
+                            <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseMoveDisk()">Cancel</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>  
+    </div>
+</div>
+
+<!-- Modal DeleteDisk Div -->
+<div id="modalDivDeleteDisk" class="modal">
+    <span class="close" onclick="modalCloseDeleteDisk()">&times;</span>
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <form action="{{ route('disks.delete') }}" method="POST" enctype="multipart/form-data">
+                <!-- Include CSRF token in the form -->
+                @csrf
+                <table class="centertable" style="border:none">
+                    <tbody style="border:none">
+                        <tr>
+                            <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="delete-disk-serial" style="margin-bottom:20px"></h3></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle text-center" colspan=100% style="border:none">
+                            <p style="margin-bottom:5px">Reason for Deletion:</p></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle text-center" style="border:none; padding-right:0px;">
+                                <input id="delete-reason" type="text" class="form-control theme-input" placeholder="Reason..." name="reason" required/>
+                                <input type="hidden" id="delete-id" name="id" />
+                            </td>
+                            <td class="align-middle text-center" style="border:none"><input type="submit" value="Delete" class="btn btn-danger" name="disk-delete-submit" /></td>
+                            <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseDeleteDisk()">Cancel</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>  
+    </div>
+</div>
+<!-- End of DeleteDisk Div -->
+<!-- Modal MoveDisk Div -->
+<div id="modalDivMoveDisk" class="modal">
+    <span class="close" onclick="modalCloseMoveDisk()">&times;</span>
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <form action="{{ route('disks.move') }}" method="POST" enctype="multipart/form-data">
+                <!-- Include CSRF token in the form -->
+                @csrf
+                <table class="centertable" style="border:none">
+                    <tbody style="border:none">
+                        <tr>
+                            <td class="align-middle text-center" colspan=100% style="border:none"><h3 id="move-disk-serial" style="margin-bottom:20px"></h3></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle text-center" colspan=100% style="border:none">
+                            <p style="margin-bottom:5px">Move location:</p></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle text-center" style="border:none; padding-right:0px;">
+                                <select name="site" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">
+                                @if ($sites['count'] > 0)
+                                    @foreach ($sites['rows'] as $site) 
+                                    <option value="{{ $site['id'] }}">{{ $site['name'] }}</option>
+                                    @endforeach
+                                @endif
+                                </select>
+                                <input type="hidden" id="move-id" name="id" />
+                            </td>
+                            <td class="align-middle text-center" style="border:none"><input type="submit" value="Move" class="btn btn-success" name="disk-move-submit" /></td>
+                            <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseMoveDisk()">Cancel</button></td>
                         </tr>
                     </tbody>
                 </table>

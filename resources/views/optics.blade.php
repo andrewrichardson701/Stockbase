@@ -163,7 +163,7 @@
                     </select>
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
-                    <label class="align-middle" style="padding-right:15px;padding-top:7px">Sepctrum:</label>
+                    <label class="align-middle" style="padding-right:15px;padding-top:7px">Spectrum:</label>
                     <select name="spectrum" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'spectrum', this.value))">
                         <option value="0" @if ($params['optic_spectrum'] == 0) selected @endif >All</option>
                     @if ($optic_spectrums['count'] > 0)
@@ -657,7 +657,7 @@
     </div>  
     
 
-    @include('includes.optics.optics-modals')
+    @include('includes.assets.optics-modals')
 
     <!-- Add the JS for the file -->
     <script src="{{ asset('js/optics.js') }}"></script>

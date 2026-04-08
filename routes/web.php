@@ -127,6 +127,11 @@ Route::middleware([AddHeadData::class])->group(function () {
                 });
                 Route::middleware(['auth', 'check.permission:disks'])->group(function () { // Disks pages - locked behind disks permission
                     Route::get('/assets/disks', [AssetsController::class, 'disks'])->name('disks'); // assets > disks page
+                    Route::post('/assets/disks.add', [AssetsController::class, 'diskAdd'])->name('disks.add'); // adding disks
+                    Route::post('/assets/disks.move', [AssetsController::class, 'diskMove'])->name('disks.move'); // move disks
+                    Route::post('/assets/disks.restore', [AssetsController::class, 'diskRestore'])->name('disks.restore'); // restore disks
+                    Route::post('/assets/disks.delete', [AssetsController::class, 'diskDelete'])->name('disks.delete'); // deleting disks
+                    Route::post('/assets/disks.serialSearch', [AssetsController::class, 'diskSerialSearch'])->name('disks.serialSearch'); // Search for matching serials
                 });
                 Route::middleware(['auth', 'check.permission:fans'])->group(function () { // Fans pages - locked behind fans permission
                     Route::get('/assets/fans', [AssetsController::class, 'incomplete'])->name('fans'); // assets > fans page

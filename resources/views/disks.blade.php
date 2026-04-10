@@ -18,7 +18,6 @@
                 </h2>
             </div>
         </header>
-        @include('includes.response-handling')
 
         <div id="selection" class="viewport-selection" style="margin-top:20px; margin-bottom:15px">
             <div class="row centertable" style="max-width:max-content">
@@ -322,6 +321,9 @@
                                 <select id="area-add_disk" name="area" class="form-control text-center theme-dropdown" style="border-color:black;" disabled required>
                                 @if ($areas['count'] > 0)
                                     <option value="" @if ($params['form_area'] == 0) selected @endif >Select Area</option>
+                                    @foreach ($areas['rows'] as $area) 
+                                    <option value="{{ $area['id'] }}" @if ($params['form_area'] == $area['id']) selected @endif >{{ $area['name'] }}</option>
+                                    @endforeach
                                 @else
                                     <option selected disabled>No Areas Found</option>
                                 @endif
@@ -334,6 +336,9 @@
                                 <select id="shelf-add_disk" name="shelf" class="form-control text-center theme-dropdown" style="border-color:black;" disabled required>
                                 @if ($shelves['count'] > 0)
                                     <option value="" @if ($params['form_shelf'] == 0) selected @endif >Select Shelf</option>
+                                    @foreach ($shelves['rows'] as $shelf) 
+                                    <option value="{{ $shelf['id'] }}" @if ($params['form_shelf'] == $shelf['id']) selected @endif >{{ $shelf['name'] }}</option>
+                                    @endforeach
                                 @else
                                     <option selected disabled>No Shelves Found</option>
                                 @endif

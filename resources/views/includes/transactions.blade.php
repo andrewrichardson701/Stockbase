@@ -3,8 +3,8 @@
         <thead>
             <tr style="white-space: nowrap;" class="theme-tableOuter">
                 <th>ID</th>
-                <th @if($stock_id !== null) hidden @endif>Stock ID</th>
-                <th @if($stock_id !== null) hidden @endif>Stock Name</th>
+                <th @if(!isset($stock_id) || $stock_id !== null) hidden @endif>Stock ID</th>
+                <th @if(!isset($stock_id) || $stock_id !== null) hidden @endif>Stock Name</th>
                 <th>Item ID</th>
                 <th>Type</th>
                 <th>Date</th>
@@ -26,9 +26,9 @@
         @foreach ($transactions['rows'] as $transaction)
             <tr class="{{ $transaction['class'] }}">
                 <td id="t_id_{{ $transaction['id'] }}">{{ $transaction['id'] }}</td>
-                <td @if($stock_id !== null) hidden @endif id="t_stock_id_{{ $transaction['id'] }}">{{ $transaction['stock_id'] }}</td>
-                <td @if($stock_id !== null) hidden @endif id="t_stock_name_{{ $transaction['id'] }}">
-                    <a class="link" href="{{ url('stock') }}/{{ $transaction['stock_id'] }}">{{ $stock['rows'][$transaction['stock_id']]['name'] }}</a>
+                <td @if(!isset($stock_id) || $stock_id !== null) hidden @endif id="t_stock_id_{{ $transaction['id'] }}">{{ $transaction['stock_id'] }}</td>
+                <td @if(!isset($stock_id) || $stock_id !== null) hidden @endif id="t_stock_name_{{ $transaction['id'] }}">
+                    <a class="link" href="{{ url('stock') }}/{{ $transaction['stock_id'] }}">@if (isset($stock)){{ $stock['rows'][$transaction['stock_id']]['name'] }}@else N/A @endif</a>
                 </td>
                 <td id="t_item_id_{{ $transaction['id'] }}">{{ $transaction['item_id'] }}</td>
                 <td id="t_type_{{ $transaction['id'] }}">{{ ucwords($transaction['type']) }}</td>

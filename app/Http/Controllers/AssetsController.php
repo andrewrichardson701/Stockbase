@@ -101,7 +101,7 @@ class AssetsController extends Controller
         $form_shelf = $request['form_shelf'] ?? 0;
         $form_ssd = $request['form_ssd'] ?? '';
         $form_form_factor = $request['form_form_factor'] ?? 0;
-        $form_destroy = $request['form_destroy'] ?? 0;
+        $form_destroy = $request['form_destroy'] ?? '';
 
         $add_form = $request['add_form'] ?? null;
 

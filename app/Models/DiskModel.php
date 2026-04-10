@@ -17,6 +17,12 @@ class DiskModel extends Model
 
         if (!empty($array)) {
             foreach($array as $key => $row) {
+                if ($array[$key] == '' || $array[$key] == null) {
+                    continue;
+                }
+                if ($array[$key] === 0 && !in_array($key, ['destroy', 'ssd'])) {
+                    continue;
+                }
                 if ($key == "site") {
                     $return[] = ['where' => "site.id = ?", 'value' => $array[$key]];
                 } elseif ($key == "area") {
@@ -47,8 +53,8 @@ class DiskModel extends Model
                 }
             }
         } 
-        
-        return $return;
+
+        return $return;        
 
     }
 
@@ -160,7 +166,6 @@ class DiskModel extends Model
         if ($page == 0) { $page = 1; }
 
         $wheres = DiskModel::generateDiskWhereArray($where_array) ;
-        // dd($where_array);
       
         $order = DiskModel::getDisksOrderBy($orderby);
 

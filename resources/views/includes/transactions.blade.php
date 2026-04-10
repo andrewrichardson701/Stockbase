@@ -2,9 +2,10 @@
     <table class="table table-dark theme-table centertable" id="transactions">
         <thead>
             <tr style="white-space: nowrap;" class="theme-tableOuter">
-                <th hidden>ID</th>
-                <th hidden>Stock ID</th>
-                <th hidden>Item ID</th>
+                <th>ID</th>
+                <th @if($stock_id !== null) hidden @endif>Stock ID</th>
+                <th @if($stock_id !== null) hidden @endif>Stock Name</th>
+                <th>Item ID</th>
                 <th>Type</th>
                 <th>Date</th>
                 <th>Time</th>
@@ -24,9 +25,12 @@
 
         @foreach ($transactions['rows'] as $transaction)
             <tr class="{{ $transaction['class'] }}">
-                <td id="t_id_{{ $transaction['id'] }}" hidden>{{ $transaction['id'] }}</td>
-                <td id="t_stock_id_{{ $transaction['id'] }}" hidden>{{ $transaction['stock_id'] }}</td>
-                <td id="t_item_id_{{ $transaction['id'] }}" hidden>{{ $transaction['item_id'] }}</td>
+                <td id="t_id_{{ $transaction['id'] }}">{{ $transaction['id'] }}</td>
+                <td @if($stock_id !== null) hidden @endif id="t_stock_id_{{ $transaction['id'] }}">{{ $transaction['stock_id'] }}</td>
+                <td @if($stock_id !== null) hidden @endif id="t_stock_name_{{ $transaction['id'] }}">
+                    <a class="link" href="{{ url('stock') }}/{{ $transaction['stock_id'] }}">{{ $stock['rows'][$transaction['stock_id']]['name'] }}</a>
+                </td>
+                <td id="t_item_id_{{ $transaction['id'] }}">{{ $transaction['item_id'] }}</td>
                 <td id="t_type_{{ $transaction['id'] }}">{{ ucwords($transaction['type']) }}</td>
                 <td id="t_date_{{ $transaction['id'] }}" style="white-space: nowrap;">{{ $transaction['date'] }}</td>
                 <td id="t_time_{{ $transaction['id'] }}" style="white-space: nowrap;">{{ $transaction['time'] }}</td>

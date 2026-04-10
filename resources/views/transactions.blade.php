@@ -18,16 +18,16 @@
                 </h2>
             </div>
         </header>
-        <div class="container">
-            <div class="container" style="padding-bottom:25px">
-                <h2 class="header-small" style="padding-bottom:5px">
-                    @if(isset($stock_data['name'])) 
-                    <a class="link" href="{{ url('stock') }}/{{ $params['stock_id'] }}">{{ $stock_data['name'] }}</a> - Stock ID: {{ $params['stock_id'] }} @if ($stock_data['is_cable'] == 1)  (cable)@endif 
-                    @else
-                    All Stock
-                    @endif
-                </h2>
-            </div>
+        <div class="container" style="padding-bottom:25px">
+            <h2 class="header-small" style="padding-bottom:5px">
+                @if(isset($stock_data['name'])) 
+                <a class="link" href="{{ url('stock') }}/{{ $params['stock_id'] }}">{{ $stock_data['name'] }}</a> - Stock ID: {{ $params['stock_id'] }} @if ($stock_data['is_cable'] == 1)  (cable)@endif 
+                @else
+                All Stock
+                @endif
+            </h2>
+        </div>
+        <div id="transactions-table" class="text-center" style="max-width:max-content; margin:auto">
             @include('includes.transactions')
         </div>
     </div>

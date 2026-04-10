@@ -27,15 +27,23 @@ class TransactionController extends Controller
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
+        $stock = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('stock'));
+
         $stock_data = StockModel::getStockData($stock_id) ?? null;
+        if (!isset($stock_data['is_cable'])) {
+            $stock_data['is_cable'] = 0;
+        }
 
         $transactions = TransactionModel::getTransactions($stock_id, $stock_data['is_cable'], 100, $page);
+
         $transactions['view'] = 'transactions';
 
         return view('transactions', ['params' => $params,
                                     'nav_data' => $nav_data,
                                     'response_handling' => $response_handling,
                                     'stock_data' => $stock_data,
+                                    'stock_id' => $stock_id,
+                                    'stock' => $stock,
                                     'transactions' => $transactions
                                     ]);
     }

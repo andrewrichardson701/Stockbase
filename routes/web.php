@@ -131,6 +131,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                     Route::post('/assets/disks.move', [AssetsController::class, 'diskMove'])->name('disks.move'); // move disks
                     Route::post('/assets/disks.restore', [AssetsController::class, 'diskRestore'])->name('disks.restore'); // restore disks
                     Route::post('/assets/disks.delete', [AssetsController::class, 'diskDelete'])->name('disks.delete'); // deleting disks
+                    Route::post('/assets/disks.edit', [AssetsController::class, 'diskEdit'])->name('disks.edit'); // editing disks
                     Route::post('/assets/disks.serialSearch', [AssetsController::class, 'diskSerialSearch'])->name('disks.serialSearch'); // Search for matching serials
                 });
                 Route::middleware(['auth', 'check.permission:fans'])->group(function () { // Fans pages - locked behind fans permission
@@ -251,6 +252,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/_ajax-favouriteStock', [AjaxController::class, 'favouriteStock'])->name('_ajax-favouriteStock'); // for adding/removing favourites in the stock page
             //
             Route::post('/_ajax-nearbyContainers', [AjaxController::class, 'getNearbyContainersAjax'])->name('_ajax-nearbyContainers'); // get a list of nearby containers
+            //
+            Route::post('/_ajax-getDiskInfo', [AjaxController::class, 'getDiskInfoAjax'])->name('_ajax-getDiskInfo'); // get disk info
             ////
 
         });

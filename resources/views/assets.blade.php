@@ -22,7 +22,12 @@
         @include('includes.response-handling')
         
         <div class="container" style="margin-top:10px">
-            <div class="viewport-font">Total Asset Count: <or class="@if($assets['count'] > 0) green @else red @endif">{{ $assets['count'] }}</or></div>
+            <div class="viewport-font">
+                Total Asset Count: 
+                <or class="title @if($assets['all']['count'] > 0) green @else red @endif" title="Optics: {{ $assets['optics']['count'] }}, CPUs: {{ $assets['cpus']['count'] }}, Memory: {{ $assets['memory']['count'] }}, Disks: {{ $assets['disks']['count'] }}, Fans: {{ $assets['fans']['count'] }}, PSUs: {{ $assets['psus']['count'] }}">
+                    {{ $assets['all']['count'] }}
+                </or>
+            </div>
             <div class="row ">
                 <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['optics'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('optics') }}`)">
                     <h4>Optics</h4>

@@ -14,6 +14,11 @@
     <li>Fixed the OpticsModel filling in 0 for site_id on transactions.</li>
     <li>Added the Disk functions needed to have adding and removing of disks.</li>
     <li>Disks can now be restored from deletion.</li>
+    <li>The Asset total count on the assets page, now has a tooltip showing the individual count of each asset type.</li>
+    <li>Disks page: Area and Shelf now populate based on the the previous info (e.g. Site->Area).</li>
+    <li>Can now view all stock transactions in one screen with no stock_id specified on the transactions page.</li>
+    <li>Transactions now show the stock name and id in the table when </li>
+    <li>Transactions is now listed in the dropdown menu in the nav.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

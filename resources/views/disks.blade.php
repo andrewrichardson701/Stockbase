@@ -319,12 +319,9 @@
                         <div class="col">
                             <div>Area</div>
                             <div>
-                                <select id="area-add_disk" name="area" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="area-add_disk" name="area" class="form-control text-center theme-dropdown" style="border-color:black;" disabled required>
                                 @if ($areas['count'] > 0)
                                     <option value="" @if ($params['form_area'] == 0) selected @endif >Select Area</option>
-                                    @foreach ($areas['rows'] as $area) 
-                                    <option value="{{ $area['id'] }}" @if ($params['form_area'] == $area['id']) selected @endif >{{ $area['name'] }}</option>
-                                    @endforeach
                                 @else
                                     <option selected disabled>No Areas Found</option>
                                 @endif
@@ -334,12 +331,9 @@
                         <div class="col">
                             <div>Shelf</div>
                             <div>
-                                <select id="shelf-add_disk" name="shelf" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                <select id="shelf-add_disk" name="shelf" class="form-control text-center theme-dropdown" style="border-color:black;" disabled required>
                                 @if ($shelves['count'] > 0)
                                     <option value="" @if ($params['form_shelf'] == 0) selected @endif >Select Shelf</option>
-                                    @foreach ($shelves['rows'] as $shelf) 
-                                    <option value="{{ $shelf['id'] }}" @if ($params['form_shelf'] == $shelf['id']) selected @endif >{{ $shelf['name'] }}</option>
-                                    @endforeach
                                 @else
                                     <option selected disabled>No Shelves Found</option>
                                 @endif
@@ -412,7 +406,7 @@
                             <th>Caddy</th>
                             <th>Location</th>
                             <th>Destroy</th>
-                            <th colspan=3></th>
+                            <th colspan=2></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -422,7 +416,7 @@
                         </tr>
                     @else
                         @foreach($disks_data['rows'] as $row)
-                        <tr class="row-show align-middle text-center  @if($row['deleted'] == 1) red @endif">
+                        <tr class="row-show align-middle text-center  @if($row['deleted'] == 1) red @endif" id="disk-{{ $row['id'] }}">
                             <form id="diskForm-{{ $row['id'] }}" action="{{ route('disks.restore') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
                                 <!-- Include CSRF token in the form -->
                                 @csrf
@@ -453,11 +447,6 @@
                             <td class="align-middle" style="padding-right:5px">
                                 <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadEditDisk('{{ $row['id'] }}')">
                                     <i class="fa fa-pencil" style="color:white"></i>
-                                </button>
-                            </td>
-                            <td class="align-middle" style="padding-left:5px;padding-right:5px">
-                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-warning" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadMoveDisk('{{ $row['id'] }}')">
-                                    <i class="fa fa-arrows-h" style="color:black"></i>
                                 </button>
                             </td>
                             <td class="align-middle" style="padding-left:5px">

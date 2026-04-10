@@ -496,4 +496,90 @@ class DiskModel extends Model
 
         return $results;
     }  
+
+    public static function returnDiskInfoAjax($id, $request)
+    {
+        $find = DB::Table('disk_item')->where('id', $id)->first();
+
+        if ($find) {
+            $find_shelf = DB::Table('shelf')->where('id', $find->shelf_id)->first();
+            $find_area = DB::Table('area')->where('id', $find_shelf->area_id)->first();
+            $find->area_id = $find_area->id;
+            $find->site_id = $find_area->site_id;
+            return $find;
+        } else {
+            return ['error' => 'Disk not found for id: '.$id];
+        }
+    }
+
+    static public function editDisk($request)
+    {
+        $disk_id = $request['id'];
+        $user = GeneralModel::getUser();
+
+        // see if disk exists
+        $find = DB::table('disk_item')->where('id', $disk_id)->first();
+
+        if ($find) {
+            $update_data = [];
+            foreach ($request as $key => $value) {
+                if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'destroy', 'shelf_id', 'form_factor'])) {
+                    if ($value != $find->$key) {
+                        $update_data[$key] = $value;
+                    }
+                }
+            }
+
+            if (!empty($update_data)) {
+                $update_data['updated_at'] = now();
+                $update = DB::table('disk_item')->where('id', $disk_id)->update($update_data);
+
+                if ($update) {
+                    foreach ($update_data as $key => $value) {
+                        if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'destroy', 'shelf_id', 'form_factor'])) {
+                            if ($value != $find->$key) {
+                                $update_data[$key] = $value;
+
+                                // changelog
+                                $changelog_info = [
+                                    'user' => $user,
+                                    'table' => 'disk_item',
+                                    'record_id' => $disk_id,
+                                    'action' => 'Edit record',
+                                    'field' => $key,
+                                    'previous_value' => $find->$key,
+                                    'new_value' => $value
+                                ];
+
+                                GeneralModel::updateChangelog($changelog_info);
+
+                                if ($key == 'shelf_id') {
+                                    $transaction = [
+                                        'table_name' => 'disk_item',
+                                        'item_id' => $disk_id,
+                                        'type' => 'move',
+                                        'date' => date('Y-m-d'),
+                                        'time' => date('H:i:s'),
+                                        'username' => $user['username'],
+                                        'shelf_id' => $value,
+                                        'reason' => 'Move Disk',
+                                        'created_at' => now(),
+                                        'updated_at' => now()
+                                    ];
+                                    TransactionModel::addDiskTransaction($transaction);
+                                }
+                            }
+                        }
+                    }
+                    return redirect()->to(GeneralModel::previousURL())->with('success', 'Disk with id: '.$disk_id.' updated.');
+                } else {
+                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to update disk with id: '.$disk_id.'.');
+                }
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('info', 'No changes made to disk with id: '.$disk_id.'.');
+            }
+        } else {
+            return redirect()->to(route('disks', ['error' => 'Disk not found for id: '.$disk_id.'.']));
+        }
+    }
 }

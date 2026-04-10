@@ -99,7 +99,6 @@ modalCloseDeleteOptic = function() {
 }
 
 function modalLoadMoveOptic(id) {
-    console.log(id);
     var modal = document.getElementById("modalDivMoveOptic");
     var serial = document.getElementById('optic-serial-'+id).innerHTML;
 

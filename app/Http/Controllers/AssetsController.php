@@ -24,7 +24,7 @@ class AssetsController extends Controller
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
-        $assets = GeneralModel::formatArrayOnIdAndCount(AssetsModel::getAssets());
+        $assets = AssetsModel::getAssets();
 
         return view('assets', ['nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
@@ -142,7 +142,7 @@ class AssetsController extends Controller
                 'form_area' => $form_area,
                 'form_shelf' => $form_shelf,
             ];
-                    //  dd($optic_vendors);       
+                    ;       
         return view('disks', ['nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
                                 'sites' => $sites,
@@ -187,7 +187,6 @@ class AssetsController extends Controller
                                    
         if (isset($request['add-disk-submit'])) {
             if ($request['_token'] == csrf_token()) {
-                // dd($request->input());
                 $request->validate([
                     'serial' => 'string|required',
                     'model' => 'string|required',
@@ -201,7 +200,7 @@ class AssetsController extends Controller
                     'capacity' => 'integer|required', 
                     'shelf' => 'integer|required'
                 ]);
-                // dd($request->input()); 
+
                 return DiskModel::addDisk($request->input());
             } else {
                 return redirect($url)->with('error', 'CSRF missmatch');
@@ -252,6 +251,34 @@ class AssetsController extends Controller
         } else {
             return response()->json(['error' => 'CSRF token missmatch.']);
         }
+    }
+
+    static public function diskEdit(Request $request)
+    {
+        // dd($request->input());
+        if (isset($request['disk-edit-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'numeric|required',
+                    'model' => 'string|required',
+                    'serial_number' => 'string|required',
+                    'caddy_id' => 'integer|required',
+                    'vendor_id' => 'integer|required',
+                    'type_id' => 'integer|required', 
+                    'speed_id' => 'integer|required', 
+                    'form_factor' => 'string|required', 
+                    'destroy' => 'integer|nullable', 
+                    'ssd' => 'integer|required', 
+                    'capacity_id' => 'integer|required', 
+                    'shelf_id' => 'integer|required'
+                ]);
+                // dd($request->input());
+                return DiskModel::editDisk($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
     }
 
     static public function incomplete(Request $request)

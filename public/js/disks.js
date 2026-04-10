@@ -127,25 +127,112 @@ modalCloseNewCaddy = function() {
     modal.style.display = "none";
 }
 
-function modalLoadDeleteOptic(id) {
-    console.log(id);
-    var modal = document.getElementById("modalDivDeleteOptic");
-    var serial = document.getElementById('optic-serial-'+id).innerHTML;
+function modalLoadEditDisk(id) {
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+    // get the disk info
+    $.ajax({
+        
+        type: "POST",
+        url: "/_ajax-getDiskInfo",
+        data: {
+            id: id,
+            _token: csrf,
+            submit: '1'
+        },
+        dataType: "json",
+        success: function(response) {
+            console.log(response);
+            if (response['error'] !== undefined) {
+                alert('Error loading disk info - try refreshing the page');
+                return;
+            } 
+            if (!response['id']) {
+                alert('Disk not found - try refreshing the page');
+                return;
+            }         
 
-    var deleteInputID = document.getElementById('delete-id');
-    var deleteHeadingSerial = document.getElementById('delete-optic-serial');
+            var modal = document.getElementById("modalDivEditDisk");
+
+            var model = response['model'];
+            var serial = response['serial_number'];
+            var type_id = response['type_id'];
+            var vendor_id = response['vendor_id'];
+            var speed_id = response['speed_id'];
+            var caddy_id = response['caddy_id'];
+            var capacity_id = response['capacity_id'];
+            var form_factor = response['form_factor'];
+            var ssd = response['ssd'];
+            var site_id = response['site_id'];
+            var area_id = response['area_id'];
+            var shelf_id = response['shelf_id'];
+            var destroy = response['destroy'];
+
+            var editInputModel = document.getElementById('model_disk_edit');
+            var editInputType = document.getElementById('type_disk_edit');
+            var editInputSerial = document.getElementById('serial_disk_edit');
+            var editInputVendor = document.getElementById('vendor_disk_edit');
+            var editInputSpeed = document.getElementById('speed_disk_edit');
+            var editInputCaddy = document.getElementById('caddy_disk_edit');
+            var editInputCapacity = document.getElementById('capacity_disk_edit');
+            var editInputFormFactor = document.getElementById('form_factor_disk_edit');
+            var editInputSSD = document.getElementById('ssd_disk_edit');
+            var editInputSite = document.getElementById('site_disk_edit');
+            var editInputArea = document.getElementById('area_disk_edit');
+            var editInputShelf = document.getElementById('shelf_disk_edit');
+            var editInputDestroy = document.getElementById('destroy_disk_edit');
+
+            editInputModel.value = model;
+            editInputSerial.value = serial;
+            setSelectValue(editInputVendor, vendor_id);
+            setSelectValue(editInputType, type_id);
+            setSelectValue(editInputSpeed, speed_id);
+            setSelectValue(editInputCaddy, caddy_id);
+            setSelectValue(editInputCapacity, capacity_id);
+            setSelectValue(editInputFormFactor, form_factor);
+            setSelectValue(editInputSSD, ssd);
+            setSelectValue(editInputSite, site_id);
+            setSelectValue(editInputArea, area_id);
+            setSelectValue(editInputShelf, shelf_id);
+            setSelectValue(editInputDestroy, destroy);
+
+            var editInputID = document.getElementById('edit-id');
+            var editHeadingSerial = document.getElementById('edit-disk-serial');
 
 
-    deleteHeadingSerial.innerText = serial+" (ID: "+id+")";
-    deleteInputID.value = id;
-    modal.style.display = "block";
+            editHeadingSerial.innerText = serial+" (ID: "+id+")";
+            editInputID.value = id;
+            modal.style.display = "block";
+        },
+        async: true
+    });
+}
 
+function setSelectValue(selectEl, value) {
+    if (!selectEl) return;
 
+    value = String(value); // ensure type match
+
+    let found = false;
+
+    for (let i = 0; i < selectEl.options.length; i++) {
+        if (String(selectEl.options[i].value) === value) {
+            selectEl.selectedIndex = i;
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        console.warn("Value not found in select:", value, selectEl);
+    }
+
+    // trigger change (important for UI frameworks)
+    $(selectEl).trigger('change');
 }
 
 // When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseDeleteOptic = function() { 
-    var modal = document.getElementById("modalDivDeleteOptic");
+modalCloseEditDisk = function() { 
+    var modal = document.getElementById("modalDivEditDisk");
     modal.style.display = "none";
 }
 
@@ -154,11 +241,9 @@ modalCloseDeleteOptic = function() {
 
 
 
-
-
-function addOpticProperty(property) {
+function addDiskProperty(property) {
     if (property !== '') {
-        var optic_property = 'optic_'+property;
+        var disk_property = 'disk_'+property;
         var csrf = document.querySelector('meta[name="csrf-token"]').content;
         var name = document.getElementById(property+'_name') !== null ? document.getElementById(property+'_name').value : '';
         
@@ -167,7 +252,7 @@ function addOpticProperty(property) {
             url: "/_ajax-addProperty",
             data: {
                 _token: csrf,
-                type: optic_property,
+                type: disk_property,
                 property_name: name,
                 submit: '1'
             },
@@ -177,10 +262,12 @@ function addOpticProperty(property) {
                 modalCloseNewType();
                 modalCloseNewVendor();
                 modalCloseNewSpeed();
-                modalCloseNewConnector();
-                modalCloseNewDistance();
-                if (typeof loadOpticProperty === "function") {
-                    loadOpticProperty(property);
+                modalCloseNewCapacity();
+                modalCloseNewCaddy();
+                modalCloseDeleteDisk();
+                modalCloseMoveDisk();
+                if (typeof loadDiskProperty === "function") {
+                    loadDiskProperty(property);
                 } else {
                     location.reload()
                 }
@@ -192,9 +279,9 @@ function addOpticProperty(property) {
     }
 }
 
-function loadOpticProperty(property) {
-    var optic_property = 'optic_'+property;
-    var select = document.getElementById(optic_property+'-select');
+function loadDiskProperty(property) {
+    var disk_property = 'disk_'+property;
+    var select = document.getElementById(disk_property+'-select');
     var upperProperty = property[0].toUpperCase() + property.substring(1);
     var csrf = document.querySelector('meta[name="csrf-token"]').content;
     $.ajax({
@@ -202,7 +289,7 @@ function loadOpticProperty(property) {
         url: "/_ajax-loadProperty",
         data: {
             load_property: '1',
-            type: optic_property,
+            type: disk_property,
             submit: '1',
             _token: csrf
         },
@@ -263,4 +350,122 @@ function searchSerial(search) {
             async: true
         });
     }
+}
+
+
+
+// for the select boxes
+function populateAreas() {
+  // Get the selected site
+  var site = document.getElementById("site-add_disk").value;
+  
+  // Make an AJAX request to retrieve the corresponding areas
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/_ajax-selectBoxes?site=" + site, true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // Parse the response and populate the area select box
+      var areas = JSON.parse(xhr.responseText);
+      var select = document.getElementById("area-add_disk");
+      select.options.length = 0;
+      select.options[0] = new Option("Select Area", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
+      for (var i = 0; i < areas.length; i++) {
+        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+      }
+      select.disabled = (select.options.length === 1);
+    }
+  };
+  xhr.send();
+}
+function populateShelves() {
+  // Get the selected area
+  var area = document.getElementById("area-add_disk").value;
+
+  // Make an AJAX request to retrieve the corresponding shelves
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/_ajax-selectBoxes?area=" + area, true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // Parse the response and populate the shelf select box
+      var shelves = JSON.parse(xhr.responseText);
+      var select = document.getElementById("shelf-add_disk");
+      select.options.length = 0;
+      select.options[0] = new Option("Select Shelf", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
+      for (var i = 0; i < shelves.length; i++) {
+        select.options[select.options.length] = new Option(shelves[i].name, shelves[i].id);
+      }
+      select.disabled = (select.options.length === 1);
+    }
+  };
+  xhr.send();
+}
+
+
+// for the select boxes
+function populateAreasEdit() {
+  // Get the selected site
+  var site = document.getElementById("site_disk_edit").value;
+  
+  // Make an AJAX request to retrieve the corresponding areas
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/_ajax-selectBoxes?site=" + site, true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // Parse the response and populate the area select box
+      var areas = JSON.parse(xhr.responseText);
+      var select = document.getElementById("area_disk_edit");
+      select.options.length = 0;
+      select.options[0] = new Option("Select Area", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
+      for (var i = 0; i < areas.length; i++) {
+        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+      }
+      select.disabled = (select.options.length === 1);
+    }
+  };
+  xhr.send();
+}
+function populateShelvesEdit() {
+  // Get the selected area
+  var area = document.getElementById("area_disk_edit").value;
+
+  // Make an AJAX request to retrieve the corresponding shelves
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/_ajax-selectBoxes?area=" + area, true);
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // Parse the response and populate the shelf select box
+      var shelves = JSON.parse(xhr.responseText);
+      var select = document.getElementById("shelf_disk_edit");
+      select.options.length = 0;
+      select.options[0] = new Option("Select Shelf", "");
+      select.options[0].hidden = true;
+      select.options[0].disabled = true;
+      for (var i = 0; i < shelves.length; i++) {
+        select.options[select.options.length] = new Option(shelves[i].name, shelves[i].id);
+      }
+      select.disabled = (select.options.length === 1);
+    }
+  };
+  xhr.send();
+}
+
+
+if (document.getElementById("site-add_disk")) {
+    document.getElementById("site-add_disk").addEventListener("change", populateAreas);
+}
+if (document.getElementById("area-add_disk")) {
+    document.getElementById("area-add_disk").addEventListener("change", populateShelves);
+}
+
+if (document.getElementById("site_disk_edit")) {
+    document.getElementById("site_disk_edit").addEventListener("change", populateAreasEdit);
+}
+if (document.getElementById("area_disk_edit")) {
+    document.getElementById("area_disk_edit").addEventListener("change", populateShelvesEdit);
 }

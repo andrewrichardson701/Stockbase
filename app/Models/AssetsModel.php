@@ -19,32 +19,43 @@ class AssetsModel extends Model
         // $fans = GeneralModel::allDistinct('fan_item', 0);
         // $psus = GeneralModel::allDistinct('psu_item', 0);
 
-        $assets = [$disks, $optics, $cpus, $memory, $fans, $psus];
+        $assets = [
+            'disks' => GeneralModel::formatArrayOnIdAndCount($disks), 
+            'optics' => GeneralModel::formatArrayOnIdAndCount($optics), 
+            'cpus' => GeneralModel::formatArrayOnIdAndCount($cpus), 
+            'memory' => GeneralModel::formatArrayOnIdAndCount($memory), 
+            'fans' => GeneralModel::formatArrayOnIdAndCount($fans), 
+            'psus' => GeneralModel::formatArrayOnIdAndCount($psus)
+        ];
+
+        $temp = [];
 
         foreach ($disks as $key => $row) {
-           $assets['d-'.$row['id']] = $row;
+           $temp['d-'.$row['id']] = $row;
         }
         
          foreach ($optics as $key => $row) {
-           $assets['o-'.$row['id']] = $row;
+           $temp['o-'.$row['id']] = $row;
         }
 
          foreach ($cpus as $key => $row) {
-           $assets['c-'.$row['id']] = $row;
+           $temp['c-'.$row['id']] = $row;
         }
 
          foreach ($memory as $key => $row) {
-           $assets['m-'.$row['id']] = $row;
+           $temp['m-'.$row['id']] = $row;
         }
 
          foreach ($fans as $key => $row) {
-           $assets['f-'.$row['id']] = $row;
+           $temp['f-'.$row['id']] = $row;
         }
 
          foreach ($psus as $key => $row) {
-           $assets['p-'.$row['id']] = $row;
+           $temp['p-'.$row['id']] = $row;
         }
         
+        $assets['all'] = GeneralModel::formatArrayOnIdAndCount($temp);
+
         return $assets;
     }
 }

@@ -1,5 +1,5 @@
 <h2>Changelog</h2>
-<h3>1.4.1 - Optics editing</h3>
+<h3>1.4.1 - Disks</h3>
 <ul>
     <li>SMTP Model now checks if image_name is set intead of erroring.</li>
     <li>Added a filter for spectrum and vendor on the optics page.</li>
@@ -8,7 +8,7 @@
     <li>Added a "backend" checker to some functions, to remove the echo response.</li>
     <li>Fixed some sanitisation on the the changelog.</li>
     <li>Migrations added for the disks tables and adding the shreeding info.</li>
-    <li>Added fucntions to collect disk data and view it on the page.</li>
+    <li>Added functions to collect disk data and view it on the page.</li>
     <li>Added a 'destroy' field to the disk_items table to mark it as ready for shredding.</li>
     <li>Added a total asset count to the top of the assets page.</li>
     <li>Fixed the OpticsModel filling in 0 for site_id on transactions.</li>

@@ -89,6 +89,7 @@
                         @endif
                         @if ($head_data['user']['permissions']['changelog'] == 1) 
                         <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-list-ul"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('changelog') }}" @if ($nav_data['highlight_num'] == 8) style="text-decoration: underline !important" @endif>Changelog</a></li>
+                        <li><span class="text-center" style="display:inline-block;width:25px"><i class="fa-solid fa-arrows-left-right-to-line"></i></span><a class="clickable link" style="margin-left:5px" href="{{ route('transactions') }}" @if ($nav_data['highlight_num'] == 9) style="text-decoration: underline !important" @endif>Transactions</a></li>
                         @endif
                         <li class="align-middle text-center divider" style="margin-top:5px;height: 6px;">&nbsp;</li>
                     @endif

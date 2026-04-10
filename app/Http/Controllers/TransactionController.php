@@ -18,7 +18,7 @@ class TransactionController extends Controller
     //
     static public function index(Request $request, $stock_id = null): View|RedirectResponse
     {
-        $nav_highlight = 'stock'; // for the nav highlighting
+        $nav_highlight = 'transactions'; // for the nav highlighting
         
         $page = $request['page'];
         $params = ['stock_id' => $stock_id, 'page' => $page];

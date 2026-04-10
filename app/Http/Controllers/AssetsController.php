@@ -61,7 +61,7 @@ class AssetsController extends Controller
         
         $tags = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('tag', 0));
 
-        $disk_models = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_item', 0, 'model'));
+        $disk_models = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinctField('model', 'disk_item', 0));
         $disk_items = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_item'));
         $disk_caddies = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_caddy', 0, 'name'));
         $disk_capacities = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_capacity', 0, 'name'));

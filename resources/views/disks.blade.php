@@ -318,9 +318,9 @@
                         <div class="col">
                             <div>Area</div>
                             <div>
-                                <select id="area-add_disk" name="area" class="form-control text-center theme-dropdown" style="border-color:black;" disabled required>
+                                <select id="area-add_disk" name="area" class="form-control text-center theme-dropdown" style="border-color:black;"  @if ($params['form_area'] == 0) disabled @endif required>
                                 @if ($areas['count'] > 0)
-                                    <option value="" @if ($params['form_area'] == 0) selected @endif >Select Area</option>
+                                    <option value="" @if ($params['form_area'] == 0) selected @endif disabled>Select Area</option>
                                     @foreach ($areas['rows'] as $area) 
                                     <option value="{{ $area['id'] }}" @if ($params['form_area'] == $area['id']) selected @endif >{{ $area['name'] }}</option>
                                     @endforeach
@@ -333,9 +333,9 @@
                         <div class="col">
                             <div>Shelf</div>
                             <div>
-                                <select id="shelf-add_disk" name="shelf" class="form-control text-center theme-dropdown" style="border-color:black;" disabled required>
+                                <select id="shelf-add_disk" name="shelf" class="form-control text-center theme-dropdown" style="border-color:black;" @if ($params['form_shelf'] == 0) disabled @endif required>
                                 @if ($shelves['count'] > 0)
-                                    <option value="" @if ($params['form_shelf'] == 0) selected @endif >Select Shelf</option>
+                                    <option value="" @if ($params['form_shelf'] == 0) selected @endif disabled>Select Shelf</option>
                                     @foreach ($shelves['rows'] as $shelf) 
                                     <option value="{{ $shelf['id'] }}" @if ($params['form_shelf'] == $shelf['id']) selected @endif >{{ $shelf['name'] }}</option>
                                     @endforeach

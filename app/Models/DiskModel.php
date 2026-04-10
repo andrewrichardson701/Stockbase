@@ -20,7 +20,7 @@ class DiskModel extends Model
                 if ($array[$key] == '' || $array[$key] == null) {
                     continue;
                 }
-                if ($array[$key] === 0 && !in_array($key, ['destroy', 'ssd'])) {
+                if ($array[$key] === 0 && !in_array($key, ['destroy', 'ssd', 'form_factor'])) {
                     continue;
                 }
                 if ($key == "site") {

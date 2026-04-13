@@ -19,6 +19,7 @@
     <li>Can now view all stock transactions in one screen with no stock_id specified on the transactions page.</li>
     <li>Transactions now show the stock name and id in the table when </li>
     <li>Transactions is now listed in the dropdown menu in the nav.</li>
+    <li>Changelog now correctly filters the correct user_id.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

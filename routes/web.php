@@ -29,7 +29,8 @@ use App\Http\Middleware\AddHeadData;
 use \App\Http\Middleware\TwoFactorRedirectMiddleware;
 use \App\Http\Middleware\PasswordExpiredMiddleware;
 use \App\Http\Middleware\CheckSessionMiddleware;
-
+use Laravel\Fortify\Fortify;
+Fortify::ignoreRoutes();
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -162,7 +163,8 @@ Route::middleware([AddHeadData::class])->group(function () {
                     ->where('add_new', '[a-z\-]+') // allow text and -
                     ->name('stock');
 
-                Route::get('/transactions/{stock_id?}', [TransactionController::class, 'index']) // transactions page
+                Route::get('/transactions/{type}/{stock_id?}', [TransactionController::class, 'index']) // transactions page
+                    ->where('type', '[a-z\-]+') // type of transaction
                     ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric
                     ->name('transactions');
                     

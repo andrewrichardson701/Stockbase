@@ -48,16 +48,16 @@ class TransactionModel extends Model
     protected $table = 'transaction'; // Specify your table name
     protected $fillable = ['stock_id', 'item_id', 'type', 'quantity', 'price', 'serial_number', 'reason', 'comments', 'date', 'time', 'username', 'shelf_id'];
 
-    static public function getTransactions($stock_id, $is_cable = 0, $limit, $page)
+    static public function getTransactions($type, $stock_id, $is_cable = 0, $limit, $page)
     {
         if ($page == 0) { $page = 1; }
 
-        $totalCount = count(TransactionModel::getTransactionsList($stock_id, $is_cable, 0, 0));
+        $totalCount = count(TransactionModel::getTransactionsList($type, $stock_id, $is_cable, 0, 0));
         if ($limit == 0) { $limit = $totalCount; }
 
         $offset = $page*$limit-$limit > 0 ? $page*$limit-$limit : 0;
 
-        $transactions = GeneralModel::formatArrayOnIdAndCount(TransactionModel::getTransactionsList($stock_id, $is_cable, $limit, $offset));
+        $transactions = GeneralModel::formatArrayOnIdAndCount(TransactionModel::getTransactionsList($type, $stock_id, $is_cable, $limit, $offset));
         
         $transactions['total_count'] = $totalCount;
         $transactions['pages'] = (int)ceil($totalCount / $limit);
@@ -68,104 +68,181 @@ class TransactionModel extends Model
         return $transactions;
     }
 
-    static public function getTransactionsList($stock_id=null, $is_cable=0, $limit, $offset)
+    static public function getTransactionsList($type = null, $stock_id=null, $is_cable=0, $limit, $offset)
     {
         $instance = new self();
-        if ($is_cable == 0) {
-            $instance->setTable('transaction as t');
-
-            $query = $instance->select(
-                                    ['t.id as id',
-                                    't.stock_id AS stock_id',
-                                    't.item_id AS item_id',
-                                    't.type AS type',
-                                    't.quantity as quantity',
-                                    't.price AS price',
-                                    't.serial_number AS serial_number',
-                                    't.reason AS reason',
-                                    't.comments AS comments',
-                                    't.date AS date',
-                                    't.time AS time',
-                                    't.username AS username',
-                                    't.shelf_id AS shelf_id',
-                                    's.name AS shelf_name',
-                                    'a.id AS area_id',
-                                    'a.name AS area_name',
-                                    'si.id AS site_id',
-                                    'si.name AS site_name']
-                                )
-                                ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
-                                ->leftJoin('area as a', 'a.id', '=', 's.area_id')
-                                ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
-                                ->when($stock_id !== null, function ($query) use ($stock_id) {
-                                    $query->where('t.stock_id', '=', $stock_id);
-                                })
-                                ->groupBy('t.id',
-                                            't.item_id',
-                                            't.stock_id',
-                                            't.type',
-                                            't.price',
-                                            't.serial_number',
-                                            't.reason',
-                                            't.comments',
-                                            't.date',
-                                            't.time',
-                                            't.username',
-                                            't.shelf_id',
-                                            's.name',
-                                            'a.id',
-                                            'a.name',
-                                            'si.id',
-                                            'si.name',
-                                            'quantity') 
-                                ->orderBy('t.date', 'desc') 
-                                ->orderBy('t.time', 'desc')
-                                ->orderBy('quantity', 'desc');
-        } else {
-            $instance->setTable('cable_transaction as t');
-
-            $query = $instance->select(
-                                    ['t.id as id',
-                                    't.stock_id AS stock_id',
-                                    't.item_id AS item_id',
-                                    't.type AS type',
-                                    't.quantity as quantity',
-                                    't.reason AS reason',
-                                    't.date AS date',
-                                    't.time AS time',
-                                    't.username AS username',
-                                    't.shelf_id AS shelf_id',
-                                    's.name AS shelf_name',
-                                    'a.id AS area_id',
-                                    'a.name AS area_name',
-                                    'si.id AS site_id',
-                                    'si.name AS site_name']
-                                )
-                                ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
-                                ->leftJoin('area as a', 'a.id', '=', 's.area_id')
-                                ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
-                                ->when($stock_id !== null, function ($query) use ($stock_id) {
-                                    $query->where('t.stock_id', '=', $stock_id);
-                                })
-                                ->groupBy('t.id',
-                                            't.item_id',
-                                            't.stock_id',
-                                            't.type',
-                                            't.reason',
-                                            't.date',
-                                            't.time',
-                                            't.username',
-                                            't.shelf_id',
-                                            's.name',
-                                            'a.id',
-                                            'a.name',
-                                            'si.id',
-                                            'si.name',
-                                            'quantity') 
-                                ->orderBy('t.date', 'desc') 
-                                ->orderBy('t.time', 'desc')
-                                ->orderBy('quantity', 'desc');
+        if ($type == 'cables') {
+            $is_cable = 1;
         }
+        if ($type == null || $type == 'stock' || $type == 'cables') {
+            if ($is_cable == 0) {
+                $instance->setTable('transaction as t');
+
+                $query = $instance->select(
+                                        ['t.id as id',
+                                        't.stock_id AS stock_id',
+                                        't.item_id AS item_id',
+                                        't.type AS type',
+                                        't.quantity as quantity',
+                                        't.price AS price',
+                                        't.serial_number AS serial_number',
+                                        't.reason AS reason',
+                                        't.comments AS comments',
+                                        't.date AS date',
+                                        't.time AS time',
+                                        't.username AS username',
+                                        't.shelf_id AS shelf_id',
+                                        's.name AS shelf_name',
+                                        'a.id AS area_id',
+                                        'a.name AS area_name',
+                                        'si.id AS site_id',
+                                        'si.name AS site_name']
+                                    )
+                                    ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
+                                    ->leftJoin('area as a', 'a.id', '=', 's.area_id')
+                                    ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
+                                    ->when($stock_id !== null, function ($query) use ($stock_id) {
+                                        $query->where('t.stock_id', '=', $stock_id);
+                                    })
+                                    ->groupBy('t.id',
+                                                't.item_id',
+                                                't.stock_id',
+                                                't.type',
+                                                't.price',
+                                                't.serial_number',
+                                                't.reason',
+                                                't.comments',
+                                                't.date',
+                                                't.time',
+                                                't.username',
+                                                't.shelf_id',
+                                                's.name',
+                                                'a.id',
+                                                'a.name',
+                                                'si.id',
+                                                'si.name',
+                                                'quantity') 
+                                    ->orderBy('t.date', 'desc') 
+                                    ->orderBy('t.time', 'desc')
+                                    ->orderBy('quantity', 'desc');
+            } else {
+                $instance->setTable('cable_transaction as t');
+
+                $query = $instance->select(
+                                        ['t.id as id',
+                                        't.stock_id AS stock_id',
+                                        't.item_id AS item_id',
+                                        't.type AS type',
+                                        't.quantity as quantity',
+                                        't.reason AS reason',
+                                        't.date AS date',
+                                        't.time AS time',
+                                        't.username AS username',
+                                        't.shelf_id AS shelf_id',
+                                        's.name AS shelf_name',
+                                        'a.id AS area_id',
+                                        'a.name AS area_name',
+                                        'si.id AS site_id',
+                                        'si.name AS site_name']
+                                    )
+                                    ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
+                                    ->leftJoin('area as a', 'a.id', '=', 's.area_id')
+                                    ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
+                                    ->when($stock_id !== null, function ($query) use ($stock_id) {
+                                        $query->where('t.stock_id', '=', $stock_id);
+                                    })
+                                    ->groupBy('t.id',
+                                                't.item_id',
+                                                't.stock_id',
+                                                't.type',
+                                                't.reason',
+                                                't.date',
+                                                't.time',
+                                                't.username',
+                                                't.shelf_id',
+                                                's.name',
+                                                'a.id',
+                                                'a.name',
+                                                'si.id',
+                                                'si.name',
+                                                'quantity') 
+                                    ->orderBy('t.date', 'desc') 
+                                    ->orderBy('t.time', 'desc')
+                                    ->orderBy('quantity', 'desc');
+            }
+        } elseif ($type == 'optics') {
+            $instance->setTable('optic_transaction as t');
+
+                $query = $instance->select(
+                                        ['t.id as id',
+                                        't.table_name AS table_name',
+                                        't.item_id AS item_id',
+                                        't.type AS type',
+                                        't.reason AS reason',
+                                        't.date AS date',
+                                        't.time AS time',
+                                        't.username AS username',
+                                        't.site_id AS site_id',
+                                        'si.name AS site_name']
+                                    )
+                                    ->leftJoin('site as si', 'si.id', '=', 't.site_id')
+                                    ->when($stock_id !== null, function ($query) use ($stock_id) {
+                                        $query->where('t.item_id', '=', $stock_id);
+                                    })
+                                    ->groupBy('t.id',
+                                                't.item_id',
+                                                't.table_name',
+                                                't.type',
+                                                't.reason',
+                                                't.date',
+                                                't.time',
+                                                't.username',
+                                                't.site_id',
+                                                'si.name') 
+                                    ->orderBy('t.date', 'desc') 
+                                    ->orderBy('t.time', 'desc');
+        } elseif($type == 'disks') {
+            $instance->setTable('disk_transaction as t');
+            $query = $instance->select(
+                                        ['t.id as id',
+                                        't.table_name as table_name',
+                                        't.item_id AS item_id',
+                                        't.type AS type',
+                                        't.reason AS reason',
+                                        't.date AS date',
+                                        't.time AS time',
+                                        't.username AS username',
+                                        't.shelf_id AS shelf_id',
+                                        's.name AS shelf_name',
+                                        'a.id AS area_id',
+                                        'a.name AS area_name',
+                                        'si.id AS site_id',
+                                        'si.name AS site_name']
+                                    )
+                                    ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
+                                    ->leftJoin('area as a', 'a.id', '=', 's.area_id')
+                                    ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
+                                    ->when($stock_id !== null, function ($query) use ($stock_id) {
+                                        $query->where('t.stock_id', '=', $stock_id);
+                                    })
+                                    ->groupBy('t.id',
+                                                't.table_name',
+                                                't.item_id',
+                                                't.type',
+                                                't.reason',
+                                                't.date',
+                                                't.time',
+                                                't.username',
+                                                't.shelf_id',
+                                                's.name',
+                                                'a.id',
+                                                'a.name',
+                                                'si.id',
+                                                'si.name') 
+                                    ->orderBy('t.date', 'desc') 
+                                    ->orderBy('t.time', 'desc');
+        }
+        
 
         if ($limit != 0) {
             $query->limit($limit);
@@ -275,5 +352,21 @@ class TransactionModel extends Model
         } else {
             return ['error' => 'non-numeric id'];
         }
+    }
+    static public function queryData($request)
+    {
+        $q_type = isset($request['type']) ? $request['type'] : null;
+        $q_page = isset($request['page']) ? (int)$request['page'] : 1;
+
+        if ($q_page == '' || $q_page < 1) { $q_page = 1; }
+        $q_rows = isset($request['rows']) ? ($request['rows'] == 50 || $request['rows'] == 100 ? (int)$request['rows'] : 10) : 10 ;
+        
+        $q_data = [
+                    'page' => $q_page,
+                    'rows' => $q_rows,
+                    'type' => $q_type,
+                ];
+
+        return $q_data;
     }
 }

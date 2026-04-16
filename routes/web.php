@@ -163,7 +163,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                     ->where('add_new', '[a-z\-]+') // allow text and -
                     ->name('stock');
 
-                Route::get('/transactions/{type}/{stock_id?}', [TransactionController::class, 'index']) // transactions page
+                Route::get('/transactions/{type?}/{stock_id?}', [TransactionController::class, 'index']) // transactions page
                     ->where('type', '[a-z\-]+') // type of transaction
                     ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric
                     ->name('transactions');
@@ -179,6 +179,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/stock.add.new', [StockController::class, 'addNewStock'])->name('stock.add.new'); // add new stock 
                 Route::post('/stock.add.import', [StockController::class, 'importStock'])->name('stock.add.import'); // import stock
                 Route::post('/stock.remove.existing', [StockController::class, 'removeExistingStock'])->name('stock.remove.existing'); // remove existing stock
+                Route::post('/stock.remove.existing.id', [StockController::class, 'removeExistingStockById'])->name('stock.remove.existing.id'); // remove existing stock by ID
                 Route::post('/stock.move', [StockController::class, 'moveStock'])->name('stock.move'); // move stock quantity
                 Route::post('/stock.move.container', [StockController::class, 'moveStockContainer'])->name('stock.move.container'); // move stock quantity when item is a container
                 Route::post('/stock.move.cable', [StockController::class, 'moveStockCable'])->name('stock.move.cable'); // move cable stock quantity

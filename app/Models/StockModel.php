@@ -2488,9 +2488,137 @@ class StockModel extends Model
         return $data;
     }
 
+    static public function removeExistingStockById($request)
+    {
+        $user = GeneralModel::getUser();
+        if (isset($request['id']) && $request['id'] > 0) {
+            $find = DB::table('item')
+                    ->where('id', $request['id'])
+                    ->whereNotIn('id', function ($subquery) {
+                        $subquery->select('item_id')->from('item_container');
+                    })
+                    ->get()
+                    ->toArray();
+            if ($find && count($find) == 1) {
+                $stock_id = $find[0]->stock_id;
+                $shelf_id = $find[0]->shelf_id;
+                $errors = 0;
+                $rem_id = $find[0]->id;
+                $update = DB::table('item')->where('id', $rem_id)->update(['deleted' => 1, 'quantity' => 0, 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'item',
+                        'record_id' => $rem_id,
+                        'action' => 'Update record',
+                        'field' => 'deleted',
+                        'previous_value' => 0,
+                        'new_value' => 1
+                    ];
+
+                    $changelog = GeneralModel::updateChangelog($changelog_info);
+
+                    if (!$changelog) {
+                        $errors++;
+                    }
+
+                    // add Transaction
+                    $remove_transaction_data = new HttpRequest([
+                        'stock_id' => $stock_id,
+                        'item_id' => $rem_id,
+                        'type' => 'remove',
+                        'quantity' => -1,
+                        'price' => 0,
+                        'serial_number' => $find[0]->serial_number,
+                        'date' => date('Y-m-d'),
+                        'time' => date('h:i:s'),
+                        'username' => $user['username'],
+                        'shelf_id' => $shelf_id,
+                        'reason' => 'Remove Stock'
+                    ]);
+
+                    $transaction = TransactionModel::addTransaction($remove_transaction_data);
+
+                    if (!$transaction) {
+                        $errors++;
+                    }
+
+                    // remove from item_container too
+                    $item_container_find = DB::table('item_container')
+                                            ->where('item_id', '=', $rem_id)
+                                            ->first();
+                    
+                    if ($item_container_find) {
+                        $item_container_delete = DB::table('item_container')
+                                            ->where('item_id', '=', $rem_id)
+                                            ->delete();
+                        if ($item_container_delete) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => $user,
+                                'table' => 'item_container',
+                                'record_id' => $item_container_find->id,
+                                'action' => 'Delete record',
+                                'field' => 'item_id',
+                                'previous_value' => $rem_id,
+                                'new_value' => ''
+                            ];
+
+                            $changelog = GeneralModel::updateChangelog($changelog_info);
+                            if (!$changelog) {
+                                $errors++;
+                            }
+                        } else {
+                            $errors++;
+                        }
+                        
+                    }
+                } else {
+                    return redirect(GeneralModel::previousURL())->with('error', 'Failed to mark deleted item id: '.$rem_id.'.');
+                }
+
+                if ($errors == 0) {
+                    $stock_data = StockModel::getStockData($stock_id);
+                    $location_data = GeneralModel::getSiteAreaShelfData($shelf_id);
+                    $stock_count = count(DB::table('item')->where('stock_id', $stock_id)->where('shelf_id', $shelf_id)->get()->toArray());
+                    //remove stock email
+                    $mail_data = [
+                        'stock_id' => $stock_id,
+                        'site_id' => $location_data['site_data']['id'] ?? '',
+                        'area_id' => $location_data['area_data']['id'] ?? '', 
+                        'shelf_id' => $location_data['shelf_data']['id'] ?? '',
+                        'quantity' => 1,
+                        'new_quantity' => $stock_count,
+                    ];
+                    SmtpModel::notificationEmail(4, 4, $mail_data);
+                    WebhookModel::notificationWebhook(4, 4, $mail_data);
+                    // minimum stock email
+                    if ($stock_count < $stock_data['min_stock']) {    
+                        $mail_data = [
+                            'stock_id' => $stock_id,
+                            'site_id' => $location_data['site_data']['id'] ?? '',
+                            'area_id' => $location_data['area_data']['id'] ?? '', 
+                            'shelf_id' => $location_data['shelf_data']['id'] ?? '',
+                            'quantity' => $stock_count,
+                        ];
+                        SmtpModel::notificationEmail(9, 9, $mail_data);
+                        WebhookModel::notificationWebhook(9, 9, $mail_data);
+                    }
+                    return redirect(GeneralModel::previousURL())->with('success', 'Item(s) removed: 1.'); 
+                } else {
+                    return redirect(GeneralModel::previousURL())->with( 'error', 'Errors Found'); 
+                }
+                        
+                        
+            }
+        }
+    }
     static public function removeExistingStock($request)
     {
         $user = GeneralModel::getUser();
+
         // find a matching item
         $where = ['stock_id' => $request['stock_id'],
                     'manufacturer_id' => $request['manufacturer'],
@@ -2531,6 +2659,7 @@ class StockModel extends Model
                     
         if ($find && $request['quantity'] > 0) {
             // found them
+            
             if (count($find) >= $request['quantity']) {
                 // enough quantity
                 $errors = 0;
@@ -2538,7 +2667,7 @@ class StockModel extends Model
                 for ($r = 0; $r < $request['quantity']; $r++) {
                     $rem_id = $find[$r]->id;
 
-                    $update = DB::table('item')->where('id', $rem_id)->update(['deleted' => 1, 'updated_at' => now()]);
+                    $update = DB::table('item')->where('id', $rem_id)->update(['deleted' => 1, 'quantity' => 0, 'updated_at' => now()]);
 
                     if ($update) {
                         // changelog
@@ -2592,7 +2721,7 @@ class StockModel extends Model
                                 // changelog
                                 $changelog_info = [
                                     'user' => $user,
-                                    'table' => 'item_contianer',
+                                    'table' => 'item_container',
                                     'record_id' => $item_container_find->id,
                                     'action' => 'Delete record',
                                     'field' => 'item_id',
@@ -2617,12 +2746,12 @@ class StockModel extends Model
                 }
 
                 if ($errors == 0) {
-                    $stock_data = StockModel::getStockData($request['id']);
+                    $stock_data = StockModel::getStockData($request['stock_id']);
                     $location_data = GeneralModel::getSiteAreaShelfData($request['shelf']);
-                    $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+                    $stock_count = count(DB::table('item')->where('stock_id', $request['stock_id'])->where('shelf_id', $request['shelf'])->get()->toArray());
                     //remove stock email
                     $mail_data = [
-                        'stock_id' => $request['id'],
+                        'stock_id' => $request['stock_id'],
                         'site_id' => $location_data['site_data']['id'] ?? '',
                         'area_id' => $location_data['area_data']['id'] ?? '', 
                         'shelf_id' => $location_data['shelf_data']['id'] ?? '',
@@ -2634,7 +2763,7 @@ class StockModel extends Model
                     // minimum stock email
                     if ($stock_count < $stock_data['min_stock']) {    
                         $mail_data = [
-                            'stock_id' => $request['id'],
+                            'stock_id' => $request['stock_id'],
                             'site_id' => $location_data['site_data']['id'] ?? '',
                             'area_id' => $location_data['area_data']['id'] ?? '', 
                             'shelf_id' => $location_data['shelf_data']['id'] ?? '',

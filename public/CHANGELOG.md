@@ -20,6 +20,9 @@
     <li>Transactions now show the stock name and id in the table when </li>
     <li>Transactions is now listed in the dropdown menu in the nav.</li>
     <li>Changelog now correctly filters the correct user_id.</li>
+    <li>Fixed the removal of stock, when selecting an item id for removal.</li>
+    <li>Removal of stock now correctly sets the quantity to 0 as required for the stock view page.</li>
+    <li>Stock removal functions corrected to properly delete the information.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

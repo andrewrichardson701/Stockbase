@@ -8,7 +8,6 @@
         </button>
     </div>
     <div class="container stock-heading">
-        @include('includes.response-handling')
         <div class='row ' style='margin-top:5px;margin-top:10px;'>
             <div class='col' style='margin-top:auto;margin-bottom:auto;'>
                 <h3 style='font-size:22px;margin-bottom:0px;' id='stock-name'>{{ $stock_data['name'] }} ({{ $stock_data['sku'] }})</h3>
@@ -385,7 +384,12 @@
                                             @endif
                                             <td class="align-middle text-center">{{ (int)$item['quantity'] }}</td>
                                             <td style="padding-right:3px"><input type="submit" form="form-item-{{ $item['item_id'] }}" class="btn btn-success" name="stock-row-submit" value="Update" /></td>
-                                            <td style="padding-left:3px"><button class="btn btn-danger" onclick="navPage(updateQueryParameter('stock/{{ $stock_data['id'] }}?manufacturer={{ $item['manufacturer_id'] }}&shelf={{ $item['shelf_id'] }}&serial={{ $item['serial_number'] }}', 'modify', 'remove'))" @if ($item['is_container'] == 1 && isset($matchCount) && $matchCount > 0) disabled @endif><i class="fa fa-trash"></i></button></td>
+                                            <td style="padding-left:3px">
+                                                <form  action="{{ route('stock.remove.existing') }}" method="POST" id="form-item-{{ $item['item_id'] }}-delete" enctype="multipart/form-data">
+                                                    @csrf
+                                                </form>
+                                                <button class="btn btn-danger" onclick="modalLoadRemoveItem({{ $item['item_id'] }})" @if ($item['is_container'] == 1 && isset($matchCount) && $matchCount > 0) disabled @endif><i class="fa fa-trash"></i></button>
+                                            </td>
                                         </tr>
                                         @if ($item['is_container'] == 1 )
                                             <tr class="theme-th-selected">
@@ -447,5 +451,37 @@
         </table>
     </div>                 
 @endif
-
+<!-- Modal RemoveItem Div -->
+<div id="modalDivRemoveItem" class="modal">
+    <span class="close" onclick="modalCloseRemoveItem()">&times;</span>
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <div class="well-nopad theme-divBg property" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <form action="{{ route('stock.remove.existing.id') }}" method="POST" enctype="multipart/form-data">
+                <!-- Include CSRF token in the form -->
+                @csrf
+                <table class="centertable" style="border:none">
+                    <tbody style="border:none">
+                        <tr>
+                            <th class="text-right" style="padding-right:10px">Item ID:</h>
+                            <td id="remove_item_id_view"></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle text-center" colspan=100% style="border:none">
+                            <p style="margin-bottom:5px">Reason for Removal:</p></td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle text-center" style="border:none; padding-right:0px;">
+                                <input id="remove-reason" type="text" class="form-control theme-input" placeholder="Reason..." name="reason" required/>
+                                <input type="hidden" id="remove-id" name="id" />
+                            </td>
+                            <td class="align-middle text-center" style="border:none"><input type="submit" value="Remove" class="btn btn-danger" name="item-remove-submit" /></td>
+                            <td class="align-middle text-center" style="border:none"><button type="button" style="margin-left:20px"class="btn btn-warning" onclick="modalCloseRemoveItem()">Cancel</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>  
+    </div>
+</div>
+<!-- End of DeleteDisk Div -->
 @include('includes.stock.transactions')

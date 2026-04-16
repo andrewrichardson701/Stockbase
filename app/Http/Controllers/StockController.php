@@ -383,9 +383,10 @@ class StockController extends Controller
     
     static public function removeExistingStock(Request $request)
     {
-        // dd($request->input());
+        
         if ($request['_token'] == csrf_token()) {
             $request->validate([
+                'id' => 'integer|nullable',
                 'stock_id' => 'integer|required',
                 'manufacturer' => 'integer|required',
                 'shelf' => 'integer|required',
@@ -397,6 +398,20 @@ class StockController extends Controller
                 'reason' => 'string|required',
             ]);
             return StockModel::removeExistingStock($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function removeExistingStockById(Request $request)
+    {
+        
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'id' => 'integer|nullable',
+                'reason' => 'string|required',
+            ]);
+            return StockModel::removeExistingStockById($request->input());
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }

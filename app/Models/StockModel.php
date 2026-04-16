@@ -1481,7 +1481,7 @@ class StockModel extends Model
                             'price' => $request['cost'] ?? 0,
                             'serial_number' => $serial ?? '',
                             'date' => date('Y-m-d'),
-                            'time' => date('h:i:s'),
+                            'time' => date('H:i:s'),
                             'username' => $user['username'],
                             'shelf_id' => $request['shelf'],
                             'reason' => $request['reason']
@@ -1891,7 +1891,7 @@ class StockModel extends Model
                                 'price' => 0,
                                 'serial_number' => $find_current->serial_number,
                                 'date' => date('Y-m-d'),
-                                'time' => date('h:i:s'),
+                                'time' => date('H:i:s'),
                                 'username' => $user['username'],
                                 'shelf_id' => $find_current->shelf_id,
                                 'reason' => 'Move Stock'
@@ -1908,7 +1908,7 @@ class StockModel extends Model
                                     'price' => 0,
                                     'serial_number' => $find_current->serial_number,
                                     'date' => date('Y-m-d'),
-                                    'time' => date('h:i:s'),
+                                    'time' => date('H:i:s'),
                                     'username' => $user['username'],
                                     'shelf_id' => $new_shelf_id,
                                     'reason' => 'Move Stock'
@@ -1971,7 +1971,7 @@ class StockModel extends Model
                                                         'price' => 0,
                                                         'serial_number' => $child['serial_number'],
                                                         'date' => date('Y-m-d'),
-                                                        'time' => date('h:i:s'),
+                                                        'time' => date('H:i:s'),
                                                         'username' => $user['username'],
                                                         'shelf_id' => $child['shelf_id'],
                                                         'reason' => 'Move Stock'
@@ -1988,7 +1988,7 @@ class StockModel extends Model
                                                             'price' => 0,
                                                             'serial_number' => $child['serial_number'],
                                                             'date' => date('Y-m-d'),
-                                                            'time' => date('h:i:s'),
+                                                            'time' => date('H:i:s'),
                                                             'username' => $user['username'],
                                                             'shelf_id' => $new_shelf_id,
                                                             'reason' => 'Move Stock'
@@ -2439,7 +2439,7 @@ class StockModel extends Model
                     'price' => 0,
                     'serial_number' => '',
                     'date' => date('Y-m-d'),
-                    'time' => date('h:i:s'),
+                    'time' => date('H:i:s'),
                     'username' => $user['username'],
                     'shelf_id' => NULL,
                     'reason' => 'Stock restored by an admin.'
@@ -2533,7 +2533,7 @@ class StockModel extends Model
                         'price' => 0,
                         'serial_number' => $find[0]->serial_number,
                         'date' => date('Y-m-d'),
-                        'time' => date('h:i:s'),
+                        'time' => date('H:i:s'),
                         'username' => $user['username'],
                         'shelf_id' => $shelf_id,
                         'reason' => 'Remove Stock'
@@ -2696,7 +2696,7 @@ class StockModel extends Model
                             'price' => $request['price'],
                             'serial_number' => $request['serial-number'] ?? '',
                             'date' => $request['transaction_date'] ?? date('Y-m-d'),
-                            'time' => date('h:i:s'),
+                            'time' => date('H:i:s'),
                             'username' => $user['username'],
                             'shelf_id' => $request['shelf'],
                             'reason' => 'Remove Stock'

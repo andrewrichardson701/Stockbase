@@ -25,6 +25,7 @@
     <li>Stock removal functions corrected to properly delete the information.</li>
     <li>Changed the "shelf" search field to be serial number on the stock page.</li>
     <li>Serial number stock searching is now possible on the home page.</li>
+    <li>Backup command added to DB. run this with "php artisan backup:database".</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

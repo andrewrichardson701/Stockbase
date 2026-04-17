@@ -90,6 +90,17 @@
                     </select>
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
+                    <label class="align-middle" style="padding-right:15px;padding-top:7px">RPM:</label>
+                    <select name="rpm" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'rpm', this.value))">
+                        <option value="0" @if ($params['disk_rpm'] == 0) selected @endif >All</option>
+                    @if ($disk_rpms['count'] > 0)
+                        @foreach ($disk_rpms['rows'] as $disk_rpm) 
+                        <option value="{{ $disk_rpm['id'] }}" @if ($params['disk_rpm'] == $disk_rpm['id']) selected @endif >{{ $disk_rpm['name'] }}</option>
+                        @endforeach
+                    @endif
+                    </select>
+                </div>
+                <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Capacity:</label>
                     <select name="capacity" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'capacity', this.value))">
                         <option value="0" @if ($params['disk_capacity'] == 0) selected @endif >All</option>
@@ -275,6 +286,24 @@
                             </div>
                         </div>
                         <div class="col">
+                            <div>RPM</div>
+                            <div>
+                                <select id="disk_rpm-select" name="rpm" class="form-control text-center theme-dropdown" style="border-color:black;" required>
+                                @if ($disk_rpms['count'] > 0)
+                                    <option value="" @if ($params['form_rpm'] == 0) selected @endif >Select RPM</option>
+                                    @foreach ($disk_rpms['rows'] as $disk_rpm) 
+                                    <option value="{{ $disk_rpm['id'] }}" @if ($params['form_rpm'] == $disk_rpm['id']) selected @endif >{{ $disk_rpm['name'] }}</option>
+                                    @endforeach
+                                @else
+                                    <option selected disabled>No RPMs Found</option>
+                                @endif
+                                </select>
+                            </div>
+                            <div class="text-center">
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewRPM()">Add New</a>
+                            </div>
+                        </div>
+                        <div class="col">
                             <div>Caddy</div>
                             <div>
                                 <select id="disk_caddy-select" name="caddy" class="form-control text-center theme-dropdown" style="border-color:black;" required>
@@ -406,6 +435,7 @@
                             <th>Type</th>
                             <th>Capacity</th>
                             <th>Speed</th>
+                            <th>RPM</th>
                             <th>HDD/SSD</th>
                             <th>Form Factor</th>
                             <th>Caddy</th>
@@ -434,6 +464,7 @@
                             <td class="align-middle">{{ $disk_types['rows'][$row['type_id']]['name'] ?? 'unknown' }}</td>
                             <td class="align-middle">{{ $disk_capacities['rows'][$row['capacity_id']]['name'] ?? 'unknown' }}</td>
                             <td class="align-middle">{{ $disk_speeds['rows'][$row['speed_id']]['name'] ?? 'unknown' }}</td>
+                            <td class="align-middle">{{ $disk_rpms['rows'][$row['rpm_id']]['name'].' RPM' ?? 'unknown' }}</td>
                             <td class="align-middle">{{ $row['ssd'] ? 'SSD' : 'HDD' }}</td>
                             <td class="align-middle">{{ $row['form_factor'] ?? 'unknown' }}</td>
                             <td class="align-middle">{{ $disk_caddies['rows'][$row['caddy_id']]['name'] ?? 'unknown' }}</td>

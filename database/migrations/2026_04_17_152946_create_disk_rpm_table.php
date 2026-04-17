@@ -6,20 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('disk_rpm', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id(); // primary key, int, not null
+            $table->text('name'); // not nullable by default
+            $table->boolean('deleted')->default(0);
+            $table->timestamps(); // created_at & updated_at
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('disk_rpm');

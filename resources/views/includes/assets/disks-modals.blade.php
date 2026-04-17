@@ -66,6 +66,28 @@
         </div>
     </div> 
 </div>
+<!-- Modal NewRPM Div -->
+<div id="modalDivNewRPM" class="modal">
+<!-- <div id="modalDivNewRPM" style="display: block;"> -->
+    <span class="close" onclick="modalCloseNewRPM()">&times;</span>
+    <div class="container well-nopad theme-divBg" style="padding:25px">
+        <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
+            <table class="centertable">
+                <tbody>
+                    <tr class="nav-row">
+                        <td style="width: 150px"><label for="rpm_name" class="nav-v-c align-middle">RPM:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="rpm_name" name="rpm_name" /></td>
+                        <td></td>
+                    </tr>
+                    <tr class="nav-row">
+                        <td style="width:150px"></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="disk-rpm-add" value="Add RPM" class="btn btn-success"  onclick="addDiskProperty('rpm')">Add RPM</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div> 
+</div>
 <!-- Modal NewCapacity Div -->
 <div id="modalDivNewCapacity" class="modal">
 <!-- <div id="modalDivNewCapacity" style="display: block;"> -->
@@ -319,6 +341,25 @@
                                     @if ($disk_speeds['count'] > 0)
                                         @foreach ($disk_speeds['rows'] as $speed)
                                         <option value="{{ $speed['id'] }}">{{ $speed['name'] }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </td>
+                            <td class="align-middle text-right" colspan=1 style="border:none; padding-right:20px">Form Factor:</td>
+                            <td class="align-middle text-left" colspan=1 style="border:none; padding-right:0px;">
+                                <select name="form_factor" id="form_factor_disk_edit" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">
+                                    <option value="3.5">3.5"</option>
+                                    <option value="2.5">2.5"</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle text-right" colspan=3 style="border:none; padding-right:20px">RPM:</td>
+                            <td class="align-middle text-left" colspan=1 style="border:none; padding-right:0px;">
+                                <select name="rpm_id" id="rpm_disk_edit" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">
+                                    @if ($disk_rpms['count'] > 0)
+                                        @foreach ($disk_rpms['rows'] as $rpm)
+                                        <option value="{{ $rpm['id'] }}">{{ $rpm['name'] }}</option>
                                         @endforeach
                                     @endif
                                 </select>

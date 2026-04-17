@@ -115,6 +115,20 @@ modalCloseNewSpeed = function() {
 }
 
 // Get the modal
+function modalLoadNewRPM() {
+    //get the modal div with the property
+    var modal = document.getElementById("modalDivNewRPM");
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseNewRPM = function() { 
+    var modal = document.getElementById("modalDivNewRPM");
+    modal.style.display = "none";
+}
+
+
+// Get the modal
 function modalLoadNewCaddy() {
     //get the modal div with the property
     var modal = document.getElementById("modalDivNewCaddy");
@@ -266,6 +280,7 @@ function addDiskProperty(property) {
                 modalCloseNewCaddy();
                 modalCloseDeleteDisk();
                 modalCloseMoveDisk();
+                modalCloseNewRPM();
                 if (typeof loadDiskProperty === "function") {
                     loadDiskProperty(property);
                 } else {

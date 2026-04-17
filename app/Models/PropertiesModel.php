@@ -36,7 +36,8 @@ class PropertiesModel extends Model
                 'disk_type',
                 'disk_speed',
                 'disk_capacity',
-                'disk_caddy'
+                'disk_caddy',
+                'disk_rpm'
             ];
 
         if (in_array($request['type'], $valid_types)) {

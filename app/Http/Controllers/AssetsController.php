@@ -68,6 +68,7 @@ class AssetsController extends Controller
         $disk_speeds = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_speed', 0, 'name'));
         $disk_types = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_type', 0, 'name'));
         $disk_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_vendor', 0, 'name'));
+        $disk_rpms = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_rpm', 0, 'name'));
 
         $q_data = IndexModel::queryData($request); // query string data
 
@@ -85,6 +86,7 @@ class AssetsController extends Controller
         $disk_ssd = $request['ssd'] ?? '';
         $disk_vendor = $request['vendor'] ?? 0;
         $disk_destroy = $request['destroy'] ?? '';
+        $disk_rpm = $request['rpm'] ?? 0;
 
         $sort = $request['sort'] ?? 'vendor';
         $rows = $request['rows'] ?? 20;
@@ -102,6 +104,7 @@ class AssetsController extends Controller
         $form_ssd = $request['form_ssd'] ?? '';
         $form_form_factor = $request['form_form_factor'] ?? 0;
         $form_destroy = $request['form_destroy'] ?? '';
+        $form_rpm = $request['form_rpm'] ?? 0;
 
         $add_form = $request['add_form'] ?? null;
 
@@ -126,6 +129,7 @@ class AssetsController extends Controller
                 'disk_ssd' => $disk_ssd,
                 'disk_vendor' => $disk_vendor, 
                 'disk_destroy' => $disk_destroy,
+                'disk_rpm' => $disk_rpm,
 
                 'add_form' => $add_form,
 
@@ -139,6 +143,7 @@ class AssetsController extends Controller
                 'form_ssd' => $form_ssd,
                 'form_form_factor' => $form_form_factor,
                 'form_destroy' => $form_destroy,
+                'form_rpm' => $form_rpm,
                 'form_area' => $form_area,
                 'form_shelf' => $form_shelf,
             ];
@@ -158,6 +163,7 @@ class AssetsController extends Controller
                                 'disk_types' => $disk_types,
                                 'disk_vendors' => $disk_vendors,
                                 'disk_models' => $disk_models,
+                                'disk_rpms' => $disk_rpms,
                                 
                                 'q_data' => $q_data,
                                 'params' => $params
@@ -179,6 +185,7 @@ class AssetsController extends Controller
                     'form_ssd' => $request['ssd'] ?? '',
                     'form_form_factor' => $request['form_factor'] ?? '',
                     'form_destroy' => $request['destroy'] ?? '',
+                    'form_rpm' => $request['rpm'] ?? '',
                     'form_area' => $request['area'] ?? '',
                     'form_shelf' => $request['shelf'] ?? '',
                 ]
@@ -197,6 +204,7 @@ class AssetsController extends Controller
                     'form_factor' => 'string|required', 
                     'destroy' => 'integer|nullable', 
                     'ssd' => 'integer|required', 
+                    'rpm' => 'integer|required',
                     'capacity' => 'integer|required', 
                     'shelf' => 'integer|required'
                 ]);
@@ -266,6 +274,7 @@ class AssetsController extends Controller
                     'vendor_id' => 'integer|required',
                     'type_id' => 'integer|required', 
                     'speed_id' => 'integer|required', 
+                    'rpm_id' => 'integer|required',
                     'form_factor' => 'string|required', 
                     'destroy' => 'integer|nullable', 
                     'ssd' => 'integer|required', 

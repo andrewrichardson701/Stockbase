@@ -13,7 +13,7 @@ class DiskModel extends Model
     {
         
         $return = [];
-        $disk_keys = ['type', 'speed', 'capacity', 'caddy', 'vendor', 'destroy', 'ssd', 'form_factor'];
+        $disk_keys = ['type', 'speed', 'capacity', 'caddy', 'vendor', 'destroy', 'ssd', 'form_factor', 'rpm'];
 
         if (!empty($array)) {
             foreach($array as $key => $row) {
@@ -38,8 +38,9 @@ class DiskModel extends Model
                                                 OR disk_type.name LIKE ? 
                                                 OR disk_capacity.name LIKE ?
                                                 OR disk_caddy.name LIKE ?
-                                                OR disk_speed.name LIKE ?)", 
-                                                'value' => ["%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%"]];
+                                                OR disk_speed.name LIKE ?
+                                                OR disk_rpm.name LIKE ?)", 
+                                                'value' => ["%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%", "%$value%"]];
                 } elseif (in_array($key, $disk_keys)) {
                     if ($key == "form_factor") {
                         $return[] = ['where' => "disk_item.form_factor = ?", 'value' => $array[$key]];
@@ -70,6 +71,9 @@ class DiskModel extends Model
                 break;
             case 'speed':
                 $order = "disk_speed.id, disk_type.name, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
+                break;
+            case 'rpm':
+                $order = "disk_rpm.id, disk_type.name, disk_vendor.name, disk_capacity.name, disk_caddy.name, disk_item.model, disk_item.serial_number";
                 break;
             case 'caddy':
                 $order = "disk_caddy.name, disk_type.name, disk_vendor.name, disk_capacity.name, disk_item.model, disk_item.serial_number";
@@ -110,6 +114,8 @@ class DiskModel extends Model
                         'disk_type.name AS type_name',
                         'disk_speed.id AS speed_id',
                         'disk_speed.name AS speed_name',
+                        'disk_rpm.id AS rpm_id',
+                        'disk_rpm.name AS rpm_name',
                         'disk_item.form_factor AS form_factor',
                         'disk_caddy.id AS caddy_id',
                         'disk_caddy.name AS caddy_name',
@@ -130,6 +136,7 @@ class DiskModel extends Model
                     ->join('disk_type', 'disk_item.type_id', '=', 'disk_type.id')
                     ->join('disk_caddy', 'disk_item.caddy_id', '=', 'disk_caddy.id')
                     ->join('disk_speed', 'disk_item.speed_id', '=', 'disk_speed.id')
+                    ->join('disk_rpm', 'disk_item.rpm_id', '=', 'disk_rpm.id')
                     ->join('disk_capacity', 'disk_item.capacity_id', '=', 'disk_capacity.id')
                     ->join('shelf', 'disk_item.shelf_id', '=', 'shelf.id')
                     ->join('area', 'shelf.area_id', '=', 'area.id')
@@ -198,6 +205,7 @@ class DiskModel extends Model
                     'form_vendor' => $request['vendor'] ?? '',
                     'form_type' => $request['type'] ?? '',
                     'form_speed' => $request['speed'] ?? '',
+                    'form_rpm' => $request['rpm'] ?? '',
                     'form_caddy' => $request['caddy'] ?? '',
                     'form_site' => $request['site'] ?? '',
                     'form_ssd' => $request['ssd'] ?? '',
@@ -215,7 +223,7 @@ class DiskModel extends Model
         $find = DB::table('disk_item')->where('serial_number', $request['serial'])->first();
         
         // check for ids of each field
-        foreach (['vendor', 'type', 'capacity', 'speed', 'caddy'] as $param) {
+        foreach (['vendor', 'type', 'capacity', 'speed', 'caddy', 'rpm'] as $param) {
            $find_params = DB::table('disk_'.$param)->where('id', $request[$param])->where('deleted', 0)->first();
            if (!$find_params) {
                 return redirect()->to(route('disks', ['error' => 'Disk '.$param.' not found for id: '.$request[$param]]));
@@ -236,6 +244,7 @@ class DiskModel extends Model
                     'capacity_id' => $request['capacity'],
                     'ssd' => $request['ssd'],
                     'speed_id' => $request['speed'],
+                    'rpm_id' => $request['rpm'],
                     'destroy' => $request['destroy'],
                     'shelf_id' => $request['shelf'],
                     'form_factor' => $request['form_factor'],
@@ -528,7 +537,7 @@ class DiskModel extends Model
         if ($find) {
             $update_data = [];
             foreach ($request as $key => $value) {
-                if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'destroy', 'shelf_id', 'form_factor'])) {
+                if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'rpm_id', 'destroy', 'shelf_id', 'form_factor'])) {
                     if ($value != $find->$key) {
                         $update_data[$key] = $value;
                     }
@@ -541,7 +550,7 @@ class DiskModel extends Model
 
                 if ($update) {
                     foreach ($update_data as $key => $value) {
-                        if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'destroy', 'shelf_id', 'form_factor'])) {
+                        if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'rpm_id', 'destroy', 'shelf_id', 'form_factor'])) {
                             if ($value != $find->$key) {
                                 $update_data[$key] = $value;
 

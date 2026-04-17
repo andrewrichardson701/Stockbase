@@ -27,6 +27,9 @@
     <li>Serial number stock searching is now possible on the home page.</li>
     <li>Backup command added to DB. run this with "php artisan backup:database".</li>
     <li>Added a default timezone of London.</li>
+    <li>Debug page added.</li>
+    <li>Fixed the stock view page showing 0 quantity on same occasisons.</li>
+    <li>Fixed an issue when trying to re-add an item with a serial number that was already deleted.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

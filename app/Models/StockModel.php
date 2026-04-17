@@ -1881,17 +1881,20 @@ class StockModel extends Model
                                             ->where('serial_number', $serial)
                                             ->first();
 
-                        if ($find_serial->shelf_id == $request['shelf'] 
-                            && $find_serial->stock_id == $request['id']
+                        if ($find_serial->stock_id == $request['id']
                             && $find_serial->manufacturer_id == $request['manufacturer']
                             && $find_serial->quantity == 0
-                            && $find_serial->deleted == 1
-                            && $find_serial->cost == ($request['cost'] ?? 0)) {
+                            && $find_serial->deleted == 1) {
                             $id = $find_serial->id;
                             // already exists, re-add
                             $update = DB::table('item')
                                     ->where('id', $id)
-                                    ->update(['quantity' => 1, 'deleted' => 0]);
+                                    ->update(['quantity' => 1, 
+                                                'deleted' => 0,
+                                                'shelf_id' => $request['shelf'],
+                                                'cost' => $request['cost'] ?? 0
+
+                                    ]);
                             if ($update) {
                                 // changelog data for item
                                 $info = [

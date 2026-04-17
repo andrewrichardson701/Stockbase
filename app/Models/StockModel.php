@@ -1837,6 +1837,7 @@ class StockModel extends Model
     static public function addExistingStock($request, $redirect=null) 
     {
         if ($request['_token'] == csrf_token()) {
+            $serial_matches = [];
             if (GeneralModel::checkShelfAreaMatch($request['shelf'], $request['area']) && GeneralModel::checkAreaSiteMatch($request['area'], $request['site'])) {
                 $return = [];
                 $return['ids'] = [];

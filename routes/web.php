@@ -221,6 +221,8 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.webhookTest', [WebhookController::class, 'webhookTest'])->name('admin.webhookTest'); // Webook test
                 Route::post('/admin.toggleWebhookNotification', [AdminController::class, 'toggleWebhookNotification'])->name('admin.toggleWebhookNotification'); // Adjust Notification settings
                 Route::post('/admin.webhookTemplate', [AdminController::class, 'webhookTemplate'])->name('admin.webhookTemplate'); // change an webhook template
+                
+                Route::get('/debug', [AdminController::class, 'debug'])->name('debug'); // Debug info
             });
 
             // Changelog pages

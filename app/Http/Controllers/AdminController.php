@@ -685,4 +685,18 @@ class AdminController extends Controller
         }
     }
 
+    static public function debug(Request $request)
+    {
+        $nav_highlight = 'admin'; // for the nav highlighting
+
+        $nav_data = GeneralModel::navData($nav_highlight);
+
+        $request = $request->all(); // turn request into an array
+        $response_handling = ResponseHandlingModel::responseHandling($request);
+        return view('debug', [
+                            'nav_data' => $nav_data,
+                            'response_handling' => $response_handling,
+                            ]);
+    }
+
 }

@@ -1390,14 +1390,16 @@ class StockModel extends Model
                                     item.is_container AS item_is_container,
                                     (SELECT SUM(quantity) 
                                     FROM item AS i
-                                    WHERE i.stock_id = stock.id 
-                                    AND i.shelf_id = shelf.id 
-                                    AND i.manufacturer_id = manufacturer.id 
-                                    AND i.serial_number = item.serial_number 
+                                    WHERE i.stock_id = stock.id
+                                    AND i.shelf_id = shelf.id
+                                    AND i.manufacturer_id = manufacturer.id
+                                    AND i.serial_number = item.serial_number
                                     AND (
                                         i.upc = item.upc OR (i.upc IS NULL AND item.upc IS NULL)
                                     )
-                                    AND i.comments = item.comments 
+                                    AND (
+                                        i.comments = item.comments OR (i.comments IS NULL AND item.comments IS NULL)
+                                    )
                                     AND i.cost = item.cost) AS item_quantity, 
                                     manufacturer.id AS manufacturer_id, 
                                     manufacturer.name AS manufacturer_name, 
@@ -1428,7 +1430,7 @@ class StockModel extends Model
                                 ->leftJoin('site', 'area.site_id', '=', 'site.id')
                                 ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
                                 ->where('stock.id', $stock_id)
-                                ->where('quantity', '!=', 0)
+                                ->where('item.quantity', '!=', 0)
                                 ->groupBy([
                                     'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
                                     'site_id', 'site_name', 'site_description', 
@@ -1849,10 +1851,7 @@ class StockModel extends Model
                 foreach ($serials as $sn) {
                     if ($sn !== null && $sn !== '') {
                         if (StockModel::checkUniqueSerial($sn) == 0) {
-                            $redirect_array = ['stock_id'   => $request['id'],
-                                            'modify_type' => 'add',
-                                            'error' => 'non-unique serial found, aborted.'];
-                            return redirect()->route('stock', $redirect_array)->with('return', $return);
+                            $serial_matches[] = $sn;
                         }
                     }
                 }
@@ -1864,7 +1863,7 @@ class StockModel extends Model
                     } else {
                         $serial = '';
                     }
-                    
+
                     $data = [
                             'stock_id' => $request['id'], 
                             'upc' => $request['upc'],
@@ -1876,63 +1875,149 @@ class StockModel extends Model
                             'shelf_id' => $request['shelf'],
                             'is_container' => 0
                             ];
-                    /** @var ItemModel $insert */
-                    $insert = ItemModel::create($data);
-                    $id = $insert->id;
-                    
-                    // changelog data for item
-                    $info = [
-                        'user' => $user,
-                        'table' => 'item',
-                        'record_id' => $id,
-                        'field' => 'quantity',
-                        'new_value' => 1,
-                        'action' => 'Add quantity',
-                        'previous_value' => '',
-                    ];
 
-                    $return['insert'][] = ['item_id' => $id, 
-                                            'data' => $data, 
-                                            'changelog' => $info];
-                                            
-                    if ($id) {
-                        $counter++;
-                        GeneralModel::updateChangelog($info);
+                    if ($serial !== '') {
+                        $find_serial = DB::table('item')
+                                            ->where('serial_number', $serial)
+                                            ->first();
 
-                        // link to container if needed
-                        if (isset($request['container']) && is_numeric($request['container'])) {
-                            if ($request['container'] < 0) {
-                                $container_id = $request['container'] *-1;
-                                $container_is_item = 1;
-                            } else {
-                                $container_id = $request['container'];
-                                $container_is_item = 0;
+                        if ($find_serial->shelf_id == $request['shelf'] 
+                            && $find_serial->stock_id == $request['id']
+                            && $find_serial->manufacturer_id == $request['manufacturer']
+                            && $find_serial->quantity == 0
+                            && $find_serial->deleted == 1
+                            && $find_serial->cost == ($request['cost'] ?? 0)) {
+                            $id = $find_serial->id;
+                            // already exists, re-add
+                            $update = DB::table('item')
+                                    ->where('id', $id)
+                                    ->update(['quantity' => 1, 'deleted' => 0]);
+                            if ($update) {
+                                // changelog data for item
+                                $info = [
+                                    'user' => $user,
+                                    'table' => 'item',
+                                    'record_id' => $id,
+                                    'field' => 'quantity',
+                                    'new_value' => 1,
+                                    'action' => 'Add quantity',
+                                    'previous_value' => '',
+                                ];
+
+                                $return['insert'][] = ['item_id' => $find_serial->id, 
+                                                        'data' => $data, 
+                                                        'changelog' => $info];
+                                
+                                if ($id) {
+                                    $counter++;
+                                    GeneralModel::updateChangelog($info);
+
+                                    // link to container if needed
+                                    if (isset($request['container']) && is_numeric($request['container'])) {
+                                        if ($request['container'] < 0) {
+                                            $container_id = $request['container'] *-1;
+                                            $container_is_item = 1;
+                                        } else {
+                                            $container_id = $request['container'];
+                                            $container_is_item = 0;
+                                        }
+                                        $container_data = ['item_id' => $id, 
+                                                            'container_id' => $container_id, 
+                                                            'is_item' => $container_is_item];
+
+                                        // add the container link
+                                        ContainersModel::linkToContainer($container_data, 'no');
+                                    }
+
+                                    // update the transactions
+                                    $transaction_data = new HttpRequest([
+                                        'stock_id' => $request['id'],
+                                        'item_id' => $id,
+                                        'type' => 'add',
+                                        'quantity' => 1,
+                                        'price' => $request['cost'] ?? 0,
+                                        'serial_number' => $serial ?? '',
+                                        'date' => date('Y-m-d'),
+                                        'time' => date('H:i:s'),
+                                        'username' => $user['username'],
+                                        'shelf_id' => $request['shelf'],
+                                        'reason' => $request['reason']
+                                    ]);
+
+                                    TransactionModel::addTransaction($transaction_data);
+                                }
                             }
-                            $container_data = ['item_id' => $id, 
-                                                'container_id' => $container_id, 
-                                                'is_item' => $container_is_item];
-
-                            // add the container link
-                            ContainersModel::linkToContainer($container_data, 'no');
+                        } else {
+                            $not_added_sn[] = $serial;
                         }
+                    } else {
+                        /** @var ItemModel $insert */
+                        $insert = ItemModel::create($data);
+                        $id = $insert->id;
+                        
+                        // changelog data for item
+                        $info = [
+                            'user' => $user,
+                            'table' => 'item',
+                            'record_id' => $id,
+                            'field' => 'quantity',
+                            'new_value' => 1,
+                            'action' => 'Add quantity',
+                            'previous_value' => '',
+                        ];
 
-                        // update the transactions
-                        $transaction_data = new HttpRequest([
-                            'stock_id' => $request['id'],
-                            'item_id' => $id,
-                            'type' => 'add',
-                            'quantity' => 1,
-                            'price' => $request['cost'] ?? 0,
-                            'serial_number' => $serial ?? '',
-                            'date' => date('Y-m-d'),
-                            'time' => date('H:i:s'),
-                            'username' => $user['username'],
-                            'shelf_id' => $request['shelf'],
-                            'reason' => $request['reason']
-                        ]);
+                        $return['insert'][] = ['item_id' => $id, 
+                                                'data' => $data, 
+                                                'changelog' => $info];
+                                                
+                        if ($id) {
+                            $counter++;
+                            GeneralModel::updateChangelog($info);
 
-                        TransactionModel::addTransaction($transaction_data);
+                            // link to container if needed
+                            if (isset($request['container']) && is_numeric($request['container'])) {
+                                if ($request['container'] < 0) {
+                                    $container_id = $request['container'] *-1;
+                                    $container_is_item = 1;
+                                } else {
+                                    $container_id = $request['container'];
+                                    $container_is_item = 0;
+                                }
+                                $container_data = ['item_id' => $id, 
+                                                    'container_id' => $container_id, 
+                                                    'is_item' => $container_is_item];
+
+                                // add the container link
+                                ContainersModel::linkToContainer($container_data, 'no');
+                            }
+
+                            // update the transactions
+                            $transaction_data = new HttpRequest([
+                                'stock_id' => $request['id'],
+                                'item_id' => $id,
+                                'type' => 'add',
+                                'quantity' => 1,
+                                'price' => $request['cost'] ?? 0,
+                                'serial_number' => $serial ?? '',
+                                'date' => date('Y-m-d'),
+                                'time' => date('H:i:s'),
+                                'username' => $user['username'],
+                                'shelf_id' => $request['shelf'],
+                                'reason' => $request['reason']
+                            ]);
+
+                            TransactionModel::addTransaction($transaction_data);
+                        }
                     }
+
+                    if (!empty($not_added_sn)) {
+                        $redirect_array = ['stock_id'   => $request['id'],
+                                    'modify_type' => 'add',
+                                    'error' => 'non-unique serial(s) found, aborted. ['.implode(", ", $not_added_sn).']'];
+                                    return redirect()->route('stock', $redirect_array)->with('return', $return);
+
+                    }
+                    
                 }
                 
                 $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
@@ -2074,9 +2159,14 @@ class StockModel extends Model
         return $next_sku;
     }
 
-    public static function checkUniqueSerial($serial)
+    public static function checkUniqueSerial($serial, $deleted = null)
     {
-        $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial]);
+        if ($deleted) {
+            $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial, 'deleted' => $deleted]);
+        } else {
+            $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial]);
+        }
+        
         if (count($all) < 1) {
             return 1;
         } else {

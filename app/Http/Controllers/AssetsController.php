@@ -89,7 +89,7 @@ class AssetsController extends Controller
         $disk_rpm = $request['rpm'] ?? 0;
 
         $sort = $request['sort'] ?? 'vendor';
-        $rows = $request['rows'] ?? 20;
+        $rows = isset($request['rows']) ? (int)$request['rows'] : (GeneralModel::getUser()['table_row_count'] ? GeneralModel::getUser()['table_row_count'] : 20);
         $page = $request['page'] ?? 1;
 
         $form_model = $request['form_model'] ?? null;

@@ -26,6 +26,7 @@ class ProfileUpdateRequest extends FormRequest
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'theme_id' => ['required', 'int'],
+            'table_row_count' => ['required', 'int'],
         ];
     }
 }

@@ -250,6 +250,7 @@
                                                 <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
                                                     <select id="tableRowCount" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter('', 'rows', this.value))">
                                                         <option id="rows-10"  value="10" @if ($q_data['rows'] == 10) selected @endif >10</option>
+                                                        <option id="rows-20"  value="20" @if ($q_data['rows'] == 20) selected @endif >20</option>
                                                         <option id="rows-50"  value="50" @if ($q_data['rows'] == 50) selected @endif >50</option>
                                                         <option id="rows-100" value="100" @if ($q_data['rows'] == 100) selected @endif >100</option>
                                                     </select>

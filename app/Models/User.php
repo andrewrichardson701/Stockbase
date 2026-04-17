@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Session;
  * @property string|null $remember_token
  * @property string|null $auth
  * @property int $theme_id
+ * @property int $table_row_count
  * @property int $two_factor_enabled
  * @property int $enabled
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -83,6 +84,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at',
         'ldap_guid',
         'password_expired',
+        'table_row_count',
 
     ];
 

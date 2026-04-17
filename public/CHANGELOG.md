@@ -33,6 +33,7 @@
     <li>Webhook now shows the correct quantity of stock remaining.</li>
     <li>Added rpm_id field to disk_item.</li>
     <li>Added disk_rpm table.</li>
+    <li>Added a table row count preference in the users profile.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

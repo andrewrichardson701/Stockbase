@@ -2024,8 +2024,8 @@ class StockModel extends Model
                     }
                     
                 }
-                
-                $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+
+                $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->where('deleted', 0)->get()->toArray());
 
                 $mail_data = [
                     'stock_id' => $request['id'],
@@ -3121,7 +3121,7 @@ class StockModel extends Model
                 if ($errors == 0) {
                     $stock_data = StockModel::getStockData($stock_id);
                     $location_data = GeneralModel::getSiteAreaShelfData($shelf_id);
-                    $stock_count = count(DB::table('item')->where('stock_id', $stock_id)->where('shelf_id', $shelf_id)->get()->toArray());
+                    $stock_count = count(DB::table('item')->where('stock_id', $stock_id)->where('shelf_id', $shelf_id)->where('deleted', 0)->get()->toArray());
                     //remove stock email
                     $mail_data = [
                         'stock_id' => $stock_id,
@@ -3287,7 +3287,7 @@ class StockModel extends Model
                 if ($errors == 0) {
                     $stock_data = StockModel::getStockData($request['stock_id']);
                     $location_data = GeneralModel::getSiteAreaShelfData($request['shelf']);
-                    $stock_count = count(DB::table('item')->where('stock_id', $request['stock_id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+                    $stock_count = count(DB::table('item')->where('stock_id', $request['stock_id'])->where('shelf_id', $request['shelf'])->where('deleted', 0)->get()->toArray());
                     //remove stock email
                     $mail_data = [
                         'stock_id' => $request['stock_id'],

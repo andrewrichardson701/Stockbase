@@ -30,6 +30,7 @@
     <li>Debug page added.</li>
     <li>Fixed the stock view page showing 0 quantity on same occasisons.</li>
     <li>Fixed an issue when trying to re-add an item with a serial number that was already deleted.</li>
+    <li>Webhook now shows the correct quantity of stock remaining.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

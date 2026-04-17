@@ -9,8 +9,8 @@ function getInventory(search) {
     var site = document.getElementById('site-dropdown').value;
     var area = document.getElementById('area-dropdown').value;
     var name = document.getElementById('search-input-name').value;
+    var serial_number = document.getElementById('search-input-serial-number').value;
     var sku = document.getElementById('search-input-sku').value;
-    var shelf = document.getElementById('search-input-shelf').value;
     var manufacturer = document.getElementById('search-input-manufacturer').value;
     var tagSelect = document.getElementById('search-input-tag');
     var tag = document.getElementById('search-input-tag').value;
@@ -29,7 +29,7 @@ function getInventory(search) {
 
     //console.log("_ajax-stock?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page);
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/_ajax-stock?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&sku="+sku+"&shelf="+shelf+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
+    xhr.open("GET", "/_ajax-stock?request-inventory=1&oos="+oos+"&site="+site+"&area="+area+"&name="+name+"&serial_number="+serial_number+"&sku="+sku+"&manufacturer="+manufacturer+"&tag="+tag+"&rows="+rows+"&page="+page, true);
     xhr.onload = function() {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box

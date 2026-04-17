@@ -18,7 +18,7 @@ class IndexModel extends Model
         $q_oos = isset($request['oos']) ? (int)$request['oos'] : 0;
         $q_site = isset($request['site']) ? (int)$request['site'] : 0;
         $q_area = isset($request['area']) ? (int)$request['area'] : 0;
-        $q_shelf = isset($request['shelf']) ? $request['shelf'] : "";
+        $q_serial_number = isset($request['serial_number']) ? $request['serial_number'] : "";
         $q_name = isset($request['name']) ? $request['name'] : "";
         $q_sku = isset($request['sku']) ? $request['sku'] : "";
         $q_tag = isset($request['tag']) ? $request['tag'] : "";
@@ -30,7 +30,7 @@ class IndexModel extends Model
         $q_data = ['oos' => $q_oos,
                     'site' => $q_site,
                     'area' => $q_area,
-                    'shelf' => $q_shelf,
+                    'serial_number' => $q_serial_number,
                     'name' => $q_name,
                     'sku' => $q_sku,
                     'tag' => $q_tag,

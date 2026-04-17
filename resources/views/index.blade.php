@@ -130,13 +130,13 @@
                             <label for="search-input-name">Name</label><br>
                             <input id="search-input-name" type="text" name="name" class="form-control theme-input-alt" style="width:160px;display:inline-block" placeholder="Search by Name" oninput="getInventory(1)" value="{{$q_data['name']}}" />
                         </span>
+                        <span class="viewport-large-block" id="search-input-serial-number-span" style="margin-right:0.5em;margin-bottom:10px;">
+                            <label for="search-input-serial-number">Serial Number</label><br>
+                            <input id="search-input-serial-number" type="text" name="serial_number" class="form-control theme-input-alt" style="width:160px;display:inline-block" placeholder="Search by SN" oninput="getInventory(1)" value="{{$q_data['serial_number']}}" />
+                        </span>
                         <span class="viewport-large-block" id="search-input-sku-span" style="margin-right:0.5em;margin-bottom:10px;">
                             <label for="search-input-sku">SKU</label><br>
                             <input id="search-input-sku" type="text" name="sku" class="form-control theme-input-alt" style="width:160px;display:inline-block" placeholder="Search by SKU" oninput="getInventory(1)" value="{{$q_data['sku']}}" />
-                        </span>
-                        <span class="viewport-large-block" id="search-input-shelf-span" style="margin-right:0.5em;margin-bottom:10px;">
-                            <label for="search-input-shelf">Shelf</label><br>
-                            <input id="search-input-shelf" type="text" name="shelf" class="form-control theme-input-alt" style="width:160px;display:inline-block" placeholder="Search by Shelf" oninput="getInventory(1)" value="{{$q_data['shelf']}}" />
                         </span>
                         <span class="viewport-large-block" id="search-input-manufacturer-span" style="margin-right:0.5em;margin-bottom:10px;">
                             <label for="search-input-manufacturer">Manufacturer</label><br>

@@ -23,6 +23,8 @@
     <li>Fixed the removal of stock, when selecting an item id for removal.</li>
     <li>Removal of stock now correctly sets the quantity to 0 as required for the stock view page.</li>
     <li>Stock removal functions corrected to properly delete the information.</li>
+    <li>Changed the "shelf" search field to be serial number on the stock page.</li>
+    <li>Serial number stock searching is now possible on the home page.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

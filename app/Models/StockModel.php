@@ -1847,7 +1847,7 @@ class StockModel extends Model
 
                 $serials = array_map('trim', explode(',', $request['serial-number']));
 
-                // check for non=uniques.
+                // check for non-uniques.
                 foreach ($serials as $sn) {
                     if ($sn !== null && $sn !== '') {
                         if (StockModel::checkUniqueSerial($sn) == 0) {
@@ -1876,10 +1876,10 @@ class StockModel extends Model
                             'is_container' => 0
                             ];
 
-                    if ($serial !== '') {
+                    if ($serial !== '' && $serial !== null && in_array($serial, $serial_matches)) {
                         $find_serial = DB::table('item')
-                                            ->where('serial_number', $serial)
-                                            ->first();
+                                        ->where('serial_number', $serial)
+                                        ->first();
                         if ($find_serial
                             && $find_serial->stock_id == $request['id']
                             && $find_serial->manufacturer_id == $request['manufacturer']

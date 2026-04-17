@@ -335,7 +335,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="align-middle text-right" colspan=3 style="border:none; padding-right:20px">Speed:</td>
+                            <td class="align-middle text-right" colspan=1 style="border:none; padding-right:20px">Speed:</td>
                             <td class="align-middle text-left" colspan=1 style="border:none; padding-right:0px;">
                                 <select name="speed_id" id="speed_disk_edit" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">
                                     @if ($disk_speeds['count'] > 0)
@@ -345,16 +345,7 @@
                                     @endif
                                 </select>
                             </td>
-                            <td class="align-middle text-right" colspan=1 style="border:none; padding-right:20px">Form Factor:</td>
-                            <td class="align-middle text-left" colspan=1 style="border:none; padding-right:0px;">
-                                <select name="form_factor" id="form_factor_disk_edit" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">
-                                    <option value="3.5">3.5"</option>
-                                    <option value="2.5">2.5"</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle text-right" colspan=3 style="border:none; padding-right:20px">RPM:</td>
+                            <td class="align-middle text-right" colspan=1 style="border:none; padding-right:20px">RPM:</td>
                             <td class="align-middle text-left" colspan=1 style="border:none; padding-right:0px;">
                                 <select name="rpm_id" id="rpm_disk_edit" class="form-control theme-dropdown" style="display:inline !important; max-width:max-content">
                                     @if ($disk_rpms['count'] > 0)

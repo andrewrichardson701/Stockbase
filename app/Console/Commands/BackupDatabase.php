@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 class BackupDatabase extends Command
 {
@@ -25,7 +26,14 @@ class BackupDatabase extends Command
      */
     public function handle()
     {
-        $filename = storage_path('app/backups/stockbase_db_backup_full_' . now()->format('Y-m-d_H-i-s') . '.sql');
+        $directory = storage_path('app/backups');
+
+        // Ensure folder exists
+        if (!File::exists($directory)) {
+            File::makeDirectory($directory, 0755, true);
+        }
+
+        $filename = $directory . '/stockbase_db_backup_full_' . now()->format('Y-m-d_H-i-s') . '.sql';
 
         $command = sprintf(
             'mysqldump -u%s -p%s %s > %s',

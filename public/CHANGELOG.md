@@ -31,6 +31,8 @@
     <li>Fixed the stock view page showing 0 quantity on same occasisons.</li>
     <li>Fixed an issue when trying to re-add an item with a serial number that was already deleted.</li>
     <li>Webhook now shows the correct quantity of stock remaining.</li>
+    <li>Added rpm_id field to disk_item.</li>
+    <li>Added disk_rpm table.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

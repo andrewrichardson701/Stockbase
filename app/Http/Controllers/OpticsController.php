@@ -48,7 +48,7 @@ class OpticsController extends Controller
         $form_site = $request['form_site'] ?? 0;
 
         $sort = $request['sort'] ?? 'type';
-        $rows = $request['rows'] ? (GeneralModel::getUser()['table_row_count'] ? GeneralModel::getUser()['table_row_count'] : 20) : 20;
+        $rows = isset($request['rows']) ? $request['rows'] : (GeneralModel::getUser()['table_row_count'] ? GeneralModel::getUser()['table_row_count'] : 20);
         $page = $request['page'] ?? 1;
 
         $optics_data = OpticsModel::getOptics($request, $sort, $deleted, $rows, $page);

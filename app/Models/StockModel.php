@@ -1137,9 +1137,12 @@ class StockModel extends Model
                     sh.id AS shelf_id, sh.name AS shelf_name, 
                     si.id AS site_id, si.name AS site_name, si.description AS site_description,
 
-                    (SELECT SUM(i.quantity) 
-                    FROM item AS i 
-                    WHERE i.stock_id = s.id AND i.shelf_id = sh.id ANd i.deleted=0
+                    (SELECT SUM(i.quantity)
+                    FROM item AS i
+                    WHERE i.stock_id = s.id
+                        AND i.shelf_id = sh.id
+                        AND i.deleted = 0
+                        AND i.quantity > 0
                     ) AS item_quantity,
 
                     (SELECT GROUP_CONCAT(DISTINCT m.name ORDER BY m.name SEPARATOR ', ') 

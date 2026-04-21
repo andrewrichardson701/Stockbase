@@ -1378,83 +1378,83 @@ class StockModel extends Model
         $stock_item_data = $stock_tag_data = ['rows' => []];
         
         if ($is_cable == 0) {
-            $rows = $instance->selectRaw("
-                                    stock.id AS stock_id, 
-                                    stock.name AS stock_name, 
-                                    stock.description AS stock_description, 
-                                    stock.sku AS stock_sku, 
-                                    stock.min_stock AS stock_min_stock, 
-                                    area.id AS area_id, 
-                                    area.name AS area_name, 
-                                    shelf.id AS shelf_id, 
-                                    shelf.name AS shelf_name, 
-                                    site.id AS site_id, 
-                                    site.name AS site_name, 
-                                    site.description AS site_description, 
-                                    item.serial_number AS item_serial_number, 
-                                    item.upc AS item_upc, 
-                                    item.cost AS item_cost, 
-                                    item.comments AS item_comments, 
-                                    item.is_container AS item_is_container,
-                                    COALESCE(
-                                        (
-                                            SELECT SUM(i.quantity)
-                                            FROM item AS i
-                                            WHERE i.stock_id = stock.id
-                                            AND i.shelf_id = shelf.id
-                                            AND i.manufacturer_id = manufacturer.id
-                                            AND i.serial_number <=> item.serial_number
-                                            AND i.upc <=> item.upc
-                                            AND i.comments <=> item.comments
-                                            AND i.cost <=> item.cost
-                                            AND i.quantity != 0
-                                            AND i.deleted = 0
-                                        ),
-                                        0
-                                    ) AS item_quantity, 
-                                    manufacturer.id AS manufacturer_id, 
-                                    manufacturer.name AS manufacturer_name, 
-                                    (SELECT GROUP_CONCAT(DISTINCT manufacturer.id ORDER BY manufacturer.name SEPARATOR ', ') 
-                                        FROM item 
-                                        INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
-                                        WHERE item.stock_id = stock.id
-                                    ) AS manufacturer_ids,
-                                    (SELECT GROUP_CONCAT(DISTINCT manufacturer.name ORDER BY manufacturer.name SEPARATOR ', ') 
-                                        FROM item 
-                                        INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
-                                        WHERE item.stock_id = stock.id
-                                    ) AS manufacturer_names,
-                                    (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
-                                    FROM stock_tag 
-                                    INNER JOIN tag ON stock_tag.tag_id = tag.id 
-                                    WHERE stock_tag.stock_id = stock.id 
-                                    ORDER BY tag.name) AS tag_names, 
-                                    (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
-                                    FROM stock_tag 
-                                    INNER JOIN tag ON stock_tag.tag_id = tag.id 
-                                    WHERE stock_tag.stock_id = stock.id 
-                                    ORDER BY tag.name) AS tag_ids
-                                ")
-                                ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
-                                ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
-                                ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
-                                ->leftJoin('site', 'area.site_id', '=', 'site.id')
-                                ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
-                                ->where('stock.id', $stock_id)
-                                ->where('item.quantity', '!=', 0)
-                                ->groupBy([
-                                    'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
-                                    'site_id', 'site_name', 'site_description', 
-                                    'area_id', 'area_name', 
-                                    'shelf_id', 'shelf_name', 
-                                    'manufacturer_name', 'manufacturer_id', 
-                                    'item_serial_number', 'item_upc', 'item_comments', 'item_cost', 'item_is_container'
-                                ])
-                                ->orderBy('site.id')
-                                ->orderBy('area.name')
-                                ->orderBy('shelf.name')
-                                ->get()
-                                ->toArray();
+                $rows = $instance->selectRaw("
+                                        stock.id AS stock_id, 
+                                        stock.name AS stock_name, 
+                                        stock.description AS stock_description, 
+                                        stock.sku AS stock_sku, 
+                                        stock.min_stock AS stock_min_stock, 
+                                        area.id AS area_id, 
+                                        area.name AS area_name, 
+                                        shelf.id AS shelf_id, 
+                                        shelf.name AS shelf_name, 
+                                        site.id AS site_id, 
+                                        site.name AS site_name, 
+                                        site.description AS site_description, 
+                                        item.serial_number AS item_serial_number, 
+                                        item.upc AS item_upc, 
+                                        item.cost AS item_cost, 
+                                        item.comments AS item_comments, 
+                                        item.is_container AS item_is_container,
+                                        COALESCE(
+                                            (
+                                                SELECT SUM(i.quantity)
+                                                FROM item AS i
+                                                WHERE i.stock_id = stock.id
+                                                AND i.shelf_id = shelf.id
+                                                AND i.manufacturer_id = manufacturer.id
+                                                AND i.serial_number <=> item.serial_number
+                                                AND i.upc <=> item.upc
+                                                AND i.comments <=> item.comments
+                                                AND i.cost <=> item.cost
+                                                AND i.quantity != 0
+                                                AND i.deleted = 0
+                                            ),
+                                            0
+                                        ) AS item_quantity, 
+                                        manufacturer.id AS manufacturer_id, 
+                                        manufacturer.name AS manufacturer_name, 
+                                        (SELECT GROUP_CONCAT(DISTINCT manufacturer.id ORDER BY manufacturer.name SEPARATOR ', ') 
+                                            FROM item 
+                                            INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
+                                            WHERE item.stock_id = stock.id
+                                        ) AS manufacturer_ids,
+                                        (SELECT GROUP_CONCAT(DISTINCT manufacturer.name ORDER BY manufacturer.name SEPARATOR ', ') 
+                                            FROM item 
+                                            INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
+                                            WHERE item.stock_id = stock.id
+                                        ) AS manufacturer_names,
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                        FROM stock_tag 
+                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                        WHERE stock_tag.stock_id = stock.id 
+                                        ORDER BY tag.name) AS tag_names, 
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                        FROM stock_tag 
+                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                        WHERE stock_tag.stock_id = stock.id 
+                                        ORDER BY tag.name) AS tag_ids
+                                    ")
+                                    ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+                                    ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
+                                    ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
+                                    ->leftJoin('site', 'area.site_id', '=', 'site.id')
+                                    ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+                                    ->where('stock.id', $stock_id)
+                                    ->where('item.quantity', '!=', 0)
+                                    ->groupBy([
+                                        'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
+                                        'site_id', 'site_name', 'site_description', 
+                                        'area_id', 'area_name', 
+                                        'shelf_id', 'shelf_name', 
+                                        'manufacturer_name', 'manufacturer_id', 
+                                        'item_serial_number', 'item_upc', 'item_comments', 'item_cost', 'item_is_container'
+                                    ])
+                                    ->orderBy('site.id')
+                                    ->orderBy('area.name')
+                                    ->orderBy('shelf.name')
+                                    ->get()
+                                    ->toArray();
 
         } elseif ($is_cable == 1) {
             $rows = $instance->selectRaw("
@@ -1536,7 +1536,7 @@ class StockModel extends Model
             $stock_item_data['rows'][] = array('id' => $row['stock_id'],
                                         'name' => $row['stock_name'],
                                         'sku' => $row['stock_sku'],
-                                        'quantity' => $row['item_quantity'] ?? 0,
+                                        'quantity' => $row['item_quantity'],
                                         'min_stock' => $row['stock_min_stock'],
                                         'shelf_id' => $row['shelf_id'],
                                         'shelf_name' => $row['shelf_name'],

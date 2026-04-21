@@ -1136,7 +1136,6 @@ class StockModel extends Model
                     a.id AS area_id, a.name AS area_name, 
                     sh.id AS shelf_id, sh.name AS shelf_name, 
                     si.id AS site_id, si.name AS site_name, si.description AS site_description,
-
                     (SELECT SUM(i.quantity)
                     FROM item AS i
                     WHERE i.stock_id = s.id
@@ -1144,7 +1143,6 @@ class StockModel extends Model
                         AND i.deleted = 0
                         AND i.quantity > 0
                     ) AS item_quantity,
-
                     (SELECT GROUP_CONCAT(DISTINCT m.name ORDER BY m.name SEPARATOR ', ') 
                     FROM item AS i 
                     INNER JOIN manufacturer AS m ON m.id = i.manufacturer_id 
@@ -1197,9 +1195,16 @@ class StockModel extends Model
                     sh.id AS shelf_id, sh.name AS shelf_name, 
                     si.id AS site_id, si.name AS site_name, si.description AS site_description,
 
-                    (SELECT SUM(ci.quantity) 
-                    FROM cable_item AS ci
-                    WHERE ci.stock_id = s.id AND ci.shelf_id = sh.id
+                    COALESCE(
+                        (
+                            SELECT SUM(ci.quantity)
+                            FROM cable_item AS ci
+                            WHERE ci.stock_id = s.id
+                            AND ci.shelf_id = sh.id
+                            AND ci.quantity != 0
+                            AND ci.deleted = 0
+                        ),
+                        0
                     ) AS item_quantity
                 ")
                 ->leftJoin('cable_item AS ci', 's.id', '=', 'ci.stock_id')
@@ -1391,19 +1396,22 @@ class StockModel extends Model
                                     item.cost AS item_cost, 
                                     item.comments AS item_comments, 
                                     item.is_container AS item_is_container,
-                                    (SELECT SUM(quantity) 
-                                    FROM item AS i
-                                    WHERE i.stock_id = stock.id
-                                    AND i.shelf_id = shelf.id
-                                    AND i.manufacturer_id = manufacturer.id
-                                    AND i.serial_number = item.serial_number
-                                    AND (
-                                        i.upc = item.upc OR (i.upc IS NULL AND item.upc IS NULL)
-                                    )
-                                    AND (
-                                        i.comments = item.comments OR (i.comments IS NULL AND item.comments IS NULL)
-                                    )
-                                    AND i.cost = item.cost) AS item_quantity, 
+                                    COALESCE(
+                                        (
+                                            SELECT SUM(i.quantity)
+                                            FROM item AS i
+                                            WHERE i.stock_id = stock.id
+                                            AND i.shelf_id = shelf.id
+                                            AND i.manufacturer_id = manufacturer.id
+                                            AND i.serial_number <=> item.serial_number
+                                            AND i.upc <=> item.upc
+                                            AND i.comments <=> item.comments
+                                            AND i.cost <=> item.cost
+                                            AND i.quantity != 0
+                                            AND i.deleted = 0
+                                        ),
+                                        0
+                                    ) AS item_quantity, 
                                     manufacturer.id AS manufacturer_id, 
                                     manufacturer.name AS manufacturer_name, 
                                     (SELECT GROUP_CONCAT(DISTINCT manufacturer.id ORDER BY manufacturer.name SEPARATOR ', ') 
@@ -1463,9 +1471,17 @@ class StockModel extends Model
                         site.name AS site_name, 
                         site.description AS site_description, 
                         cable_item.cost AS item_cost, 
-                        (SELECT SUM(quantity) FROM cable_item 
-                            WHERE cable_item.stock_id = stock.id 
-                            AND cable_item.shelf_id = shelf.id) AS item_quantity, 
+                        COALESCE(
+                            (
+                                SELECT SUM(ci.quantity)
+                                FROM cable_item AS ci
+                                WHERE ci.stock_id = stock.id
+                                AND ci.shelf_id = shelf.id
+                                AND ci.cost <=> cable_item.cost
+                                AND ci.quantity != 0
+                            ),
+                            0
+                        ) AS item_quantity, 
                         (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
                             FROM stock_tag 
                             INNER JOIN tag ON stock_tag.tag_id = tag.id 
@@ -1481,7 +1497,7 @@ class StockModel extends Model
                     ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
                     ->leftJoin('site', 'area.site_id', '=', 'site.id')
                     ->where('stock.id', '=', $stock_id)
-                    ->where('quantity', '!=', 0)
+                    ->where('cable_item.quantity', '!=', 0)
                     ->groupBy([
                         'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
                         'site_id', 'site_name', 'site_description', 

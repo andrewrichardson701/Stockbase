@@ -250,7 +250,7 @@
                     <td id="item-{{ $loop->iteration }}-tags" class="align-middle text-center" hidden>{{ $row['tag_names'] }}</td>
                     <td id="item-{{ $loop->iteration }}-cost" class="viewport-large-empty align-middle text-center" @if ($head_data['config_compare']['cost_enable_normal'] == 0) hidden @endif >{{ $row['cost'] }}</td>
                     <td id="item-{{ $loop->iteration }}-comments" class="viewport-large-empty align-middle text-center">{{ $row['comments'] }}</td>
-                    <td id="item-{{ $loop->iteration }}-stock" class="align-middle text-center">{{ (int)$row['quantity'] }}</td>
+                    <td id="item-{{ $loop->iteration }}-stock" class="align-middle text-center">{{ $row['quantity'] }}</td>
                     @else
                     <td id="item-{{ $loop->iteration }}-cost" class="viewport-large-empty align-middle text-center" @if ($head_data['config_compare']['cost_enable_cable'] == 0) hidden @endif >{{ $row['cost'] }}</td>
                     <td id="item-{{ $loop->iteration }}-stock" @if((int)$row['quantity'] < $stock_data['min_stock']) class="red align-middle text-center" title="Below minimum stock count. Please re-order." @else class="align-middle text-center" @endif >{{ (int)$row['quantity'] }}</td>

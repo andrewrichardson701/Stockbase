@@ -108,7 +108,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="nav-row" id="cost-row" style="margin-top:25px">
+                    <div class="nav-row" id="cost-row" style="margin-top:25px" @if($head_data['config_compare']['cost_enable'] !== 1) hidden @endif>
                         <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="cost" id="cost-label">Item Cost ({{ $head_data['config_compare']['currency'] }})</label></div>
                         <div><input type="number" step=".01" name="cost" placeholder="0" id="cost" class="form-control nav-v-c stock-inputSize theme-input" value="0" value="'.$input_cost.'" required></input></div>
                     </div>

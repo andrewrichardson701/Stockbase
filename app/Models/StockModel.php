@@ -2342,6 +2342,9 @@ class StockModel extends Model
                     $new_tag_names[] = $tag['tag_name'];
                 }
             }
+            if (!isset($data['sku'])) {
+                $data['sku'] = $current['sku'];
+            }
             $mail_data = [
                 'stock_id' => $stock_id,
                 'stock_name_old' => $current['name'],

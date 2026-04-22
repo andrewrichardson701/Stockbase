@@ -34,6 +34,7 @@
     <li>Added rpm_id field to disk_item.</li>
     <li>Added disk_rpm table.</li>
     <li>Added a table row count preference in the users profile.</li>
+    <li>Disabling individual notifications for webhooks now actually works.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

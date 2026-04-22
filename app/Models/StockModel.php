@@ -2349,10 +2349,10 @@ class StockModel extends Model
                 'stock_description_old' => $current['description'],
                 'stock_min_stock_old' => $current['min_stock'],
                 'stock_tags_old' => implode(', ', $current_tag_names),
-                'stock_name_new' => $current['name'],
-                'stock_sku_new' => $current['sku'],
-                'stock_description_new' => $current['description'],
-                'stock_min_stock_new' => $current['min_stock'],
+                'stock_name_new' => $data['name'],
+                'stock_sku_new' => $data['sku'],
+                'stock_description_new' => $data['description'],
+                'stock_min_stock_new' => $data['min_stock'],
                 'stock_tags_new' => implode(', ', $new_tag_names),
             ];
             SmtpModel::notificationEmail(6, 6, $mail_data);

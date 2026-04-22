@@ -228,7 +228,7 @@ class WebhookModel extends Model
         if ($config['webhook_enabled'] == 1) { // make sure webhook is enabled
             $notification_data = DB::table('webhook_notifications')->find($notification_id);
             
-            if ($notification_data && $notification_data['enabled'] == 1) {
+            if ($notification_data && $notification_data->enabled == 1) {
             
                 if ($template_id == 0) {
                     $template_id = $notification_data->template_id;

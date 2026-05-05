@@ -35,6 +35,7 @@
     <li>Added disk_rpm table.</li>
     <li>Added a table row count preference in the users profile.</li>
     <li>Disabling individual notifications for webhooks now actually works.</li>
+    <li>Password reset permissions updated. Only Root user can update admin passwords.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

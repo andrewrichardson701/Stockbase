@@ -13,7 +13,7 @@ class PasswordExpiredMiddleware
     {
         $user = Auth::user();
 
-        if ($user && $user->password_expired == 1) {
+        if ($user && $user->password_expired == 1 && !Session::get('impersonate_id')) {
             Session::put('password_expired', true);
             return Redirect::route('password.expired');
         }

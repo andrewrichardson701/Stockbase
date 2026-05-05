@@ -50,14 +50,22 @@
                                 {{-- user to show is an ldap user, cant reset  --}}
                                 disabled
                             @elseif ((int)$head_data['user']['permissions']['root'] == 1 || (int)$head_data['user']['permissions']['admin'] == 1)
-                                {{-- role of user to show is 1 or 3 (root or admin) --}}
+                                {{-- role of user is admin or root --}}
                                 @if ((int)$user['id'] == 1)
                                     {{-- user to show is root user --}}
                                     disabled
+                                @elseif ((int)$head_data['user']['permissions']['admin'] == 1 && (int)$head_data['user']['permissions']['root'] == 0))
+                                    {{-- User is admin, not root --}}
+                                    @if ((int)$user['id'] == 1 || $users_permissions['rows'][$user['id']]['admin'] == 1 || $users_permissions['rows'][$user['id']]['root'] == 1)
+                                        {{-- user to show is root user or admin user --}}
+                                        disabled
+                                    @endif
                                 @elseif ((int)$head_data['user']['permissions']['root'] == 1)
-                                    {{-- current user isnt root --}}
-                                    disabled
-                                    {{-- This means admin user passwords can only be reset by the root user --}}
+                                     {{-- current user is root --}}
+                                     @if ((int)$user['id'] == 1)
+                                        {{-- user to show is root user --}}
+                                        disabled
+                                     @endif
                                 @endif
                             @endif
                         >Reset</button>

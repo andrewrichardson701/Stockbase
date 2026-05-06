@@ -186,6 +186,32 @@ class OpticsController extends Controller
         return redirect($url)->with('error', 'Unknown request');
     }
 
+    static public function edit(Request $request)
+    {
+        // dd($request->input());
+        if (isset($request['edit-optic-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                    'type_id' => 'integer|required',
+                    'connector_id' => 'integer|required',
+                    'model' => 'string|required',
+                    'speed_id' => 'integer|required',
+                    'mode' => 'string|required',
+                    'spectrum' => 'string|required',
+                    'distance_id' => 'integer|required',
+                    'serial_number' => 'string|required',
+                    'vendor_id' => 'integer|required',
+                    
+                ]);
+                return OpticsModel::editOptic($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
     static public function restore(Request $request) 
     {
         if (isset($request['optic-restore-submit'])) {

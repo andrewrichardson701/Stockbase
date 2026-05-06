@@ -585,6 +585,56 @@ class OpticsModel extends Model
         }
     }
 
+    static public function editOptic($request)
+    {
+        $optic_id = $request['id'];
+        $user = GeneralModel::getUser();
+
+        // see if optic exists
+        $find = DB::table('optic_item')->where('id', $optic_id)->first();
+
+        if ($find) {
+            $update_data = [];
+            foreach (['model', 'mode', 'spectrum', 'distance_id', 'connector_id', 'speed_id', 'vendor_id', 'type_id', 'serial_number'] as $field) {
+                if (isset($request[$field]) && $request[$field] != $find->$field) {
+                    $update_data[$field] = $request[$field];
+                }
+            }
+
+            if (!empty($update_data)) {
+                $update_data['updated_at'] = now();
+                $update = DB::table('optic_item')->where('id', $optic_id)->update($update_data);
+
+                if ($update) {
+                    // changelog
+                    foreach ($update_data as $key => $value) {
+                        if ($key != 'updated_at') {
+                            $changelog_info = [
+                                'user' => $user,
+                                'table' => 'optic_item',
+                                'record_id' => $optic_id,
+                                'action' => 'Edit record',
+                                'field' => $key,
+                                'previous_value' => $find->$key,
+                                'new_value' => $value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                        }
+                    }
+                    
+                    return redirect()->to(GeneralModel::previousURL())->with('success', 'Optic for id: '.$optic_id.' edited.');
+                } else {
+                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to edit optic with id: '.$optic_id.'.');
+                }
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('info', 'No changes made to optic with id: '.$optic_id.'.');
+            }
+        } else {
+            return redirect()->to(route('optics', ['error' => 'Optic not found for id: '.$optic_id.'.']));
+        }
+    }
+
     static public function serialMatchChecker($request)
     {
         // search for the matching item

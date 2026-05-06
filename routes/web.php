@@ -115,6 +115,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                     Route::post('/assets/optics.add', [OpticsController::class, 'add'])->name('optics.add'); // adding optics
                     Route::post('/assets/optics.move', [OpticsController::class, 'move'])->name('optics.move'); // move optics
                     Route::post('/assets/optics.restore', [OpticsController::class, 'restore'])->name('optics.restore'); // restore optics
+                    Route::post('/assets/optics.edit', [OpticsController::class, 'edit'])->name('optics.edit'); // edit optics
                     Route::post('/assets/optics.delete', [OpticsController::class, 'delete'])->name('optics.delete'); // deleting optics
                     Route::post('/assets/optics.comments', [OpticsController::class, 'comments'])->name('optics.comments'); // comment forms - adding/deleting
                     Route::post('/assets/optics.serialSearch', [OpticsController::class, 'serialSearch'])->name('optics.serialSearch'); // Search for matching serials

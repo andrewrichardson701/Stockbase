@@ -37,6 +37,7 @@
     <li>Disabling individual notifications for webhooks now actually works.</li>
     <li>Password reset permissions updated. Only Root user can update admin passwords.</li>
     <li>Impersonation now works when a user's password has expired, without needing to reset their password.</li>
+    <li>Can now edit optic information.</li>
 </ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>

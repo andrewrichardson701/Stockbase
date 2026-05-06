@@ -39,6 +39,24 @@ function toggleAddComment(id, com) {
     }
 }
 
+function toggleEditOptic(id, com) {
+    var Row = document.getElementById('item-'+id);
+    var hiddenID = 'item-'+id+'-edit';
+    var hiddenRow = document.getElementById(hiddenID);
+    if (hiddenRow.hidden == false) {
+        hiddenRow.hidden=true;
+        hiddenRow.classList.remove('theme-th-selected');
+        Row.hidden=false;
+    } else { 
+        hiddenRow.hidden=false;
+        hiddenRow.classList.add('theme-th-selected');
+        Row.hidden=true;
+    }
+    if (com > 0) {
+        toggleHidden(id);
+    }
+}
+
 
 function toggleAddDiv() {
     var div = document.getElementById('add-optic-section');

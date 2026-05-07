@@ -1,5 +1,5 @@
 <?php
-$app_version = '1.4.1';
+$app_version = '1.5.0';
 
 return [
 
@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Stockbase'),
 
     /*
     |--------------------------------------------------------------------------

@@ -106,7 +106,9 @@
                                             @endif
 
                                         </div>
-
+                                        <h2 class="text-lg font-medium " style="margin-top:40px">
+                                            {{ __('Preferences') }}
+                                        </h2>
                                         <div>
                                             <label class="block font-medium text-sm"
                                                 for="theme_id">{{ __('Theme') }}</label>
@@ -126,6 +128,23 @@
                                                 @endforeach
                                             @endif
                                             <a style="margin-left: 15px" class="link align-middle" href="{{ url('theme-testing') }}" target="_blank">Theme testing</a>
+                                        </div>
+                                        <div>
+                                            <label class="block font-medium text-sm"
+                                                for="table_row_count">{{ __('Table Rows') }}</label>
+                                            <select id="table_row_count" name="table_row_count"
+                                                class="mt-1 font-medium rounded-md text-gray-500 dark:text-gray-400  dark:bg-gray-900 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none theme-dropdown">
+                                                <option value="0">Default</option>
+                                                <option value="10" @if ($head_data['user']['table_row_count'] == 10) selected @endif>10</option>
+                                                <option value="20" @if ($head_data['user']['table_row_count'] == 20) selected @endif>20</option>
+                                                <option value="50" @if ($head_data['user']['table_row_count'] == 50) selected @endif>50</option>
+                                                <option value="100" @if ($head_data['user']['table_row_count'] == 100) selected @endif>100</option>
+                                            </select>
+                                            @if ($errors->get('table_row_count'))
+                                                @foreach($errors->get('table_row_count') as $error)
+                                                <p class="red">{{ $error }}</p>
+                                                @endforeach
+                                            @endif
                                         </div>
                                         <div class="flex items-center gap-4">
                                             <button type="submit"

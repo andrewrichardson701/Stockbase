@@ -71,7 +71,7 @@
                         <tr class="nav-row">
                             <td style="width:100px"><label for="area_name" class="nav-v-c align-middle">Site:</label></td>
                             <td style="margin-left:10px">
-                                <select class="form-control theme-dropdown" name="site_id">
+                                <select class="form-control theme-dropdown" id="area_site_id" name="site_id">
                                     @if ($sites['rows'] !== null && count($sites['rows']) > 0) 
                                         <option value="" selected disabled hidden>Select Site</option>
                                         @foreach ($sites['rows'] as $site)

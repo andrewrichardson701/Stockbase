@@ -1,15 +1,21 @@
 @if (isset($transactions) && $transactions['count'] > 0)
+
     <table class="table table-dark theme-table centertable" id="transactions">
         <thead>
             <tr style="white-space: nowrap;" class="theme-tableOuter">
-                <th hidden>ID</th>
-                <th hidden>Stock ID</th>
-                <th hidden>Item ID</th>
+                <th>ID</th>
+                <th @if(isset($stock_id) && $stock_id !== null || isset($stock_data['id'])) hidden @endif>Stock ID</th>
+                <th @if(isset($stock_id) && $stock_id !== null || isset($stock_data['id'])) hidden @endif>Stock Name</th>
+                <th>Item ID</th>
                 <th>Type</th>
                 <th>Date</th>
                 <th>Time</th>
-                <th>Location</th>
-                <th class="viewport-mid-large">Shelf</th>
+                @if ($stock_data['is_cable'] == 0)
+                    <th>Location</th>
+                    <th class="viewport-mid-large">Shelf</th>
+                @else
+                    <th>Site</th>
+                @endif
                 <th class="viewport-mid-large">Username</th>
                 <th>Quantity</th>
                 @if ($stock_data['is_cable'] == 0)
@@ -21,17 +27,26 @@
             </tr>
         </thead>
         <tbody>
-
+{{-- {{ dd($transactions) }} --}}
         @foreach ($transactions['rows'] as $transaction)
             <tr class="{{ $transaction['class'] }}">
-                <td id="t_id_{{ $transaction['id'] }}" hidden>{{ $transaction['id'] }}</td>
-                <td id="t_stock_id_{{ $transaction['id'] }}" hidden>{{ $transaction['stock_id'] }}</td>
-                <td id="t_item_id_{{ $transaction['id'] }}" hidden>{{ $transaction['item_id'] }}</td>
+                <td id="t_id_{{ $transaction['id'] }}">{{ $transaction['id'] }}</td>
+                <td @if(isset($stock_id) && $stock_id !== null || isset($stock_data['id'])) hidden @endif id="t_stock_id_{{ $transaction['id'] }}">
+                    <a class="link" href="{{ url('transactions') }}/{{ $params['type'] }}/{{ $transaction['stock_id'] }}">@if (isset($stock)){{ $transaction['stock_id'] }}@else N/A @endif</a>
+                </td>
+                <td @if(isset($stock_id) && $stock_id !== null || isset($stock_data['id'])) hidden @endif id="t_stock_name_{{ $transaction['id'] }}">
+                    <a class="link" href="{{ url('transactions') }}/{{ $params['type'] }}/{{ $transaction['stock_id'] }}">@if (isset($stock)){{ $stock['rows'][$transaction['stock_id']]['name'] }}@else N/A @endif</a>
+                </td>
+                <td id="t_item_id_{{ $transaction['id'] }}">{{ $transaction['item_id'] }}</td>
                 <td id="t_type_{{ $transaction['id'] }}">{{ ucwords($transaction['type']) }}</td>
                 <td id="t_date_{{ $transaction['id'] }}" style="white-space: nowrap;">{{ $transaction['date'] }}</td>
                 <td id="t_time_{{ $transaction['id'] }}" style="white-space: nowrap;">{{ $transaction['time'] }}</td>
-                <td id="a_name_{{ $transaction['id'] }}">{{ $transaction['area_name'] }}</td>
-                <td id="s_name_{{ $transaction['id'] }}" class="viewport-mid-large">{{ $transaction['shelf_name'] }}</td>
+                @if ($stock_data['is_cable'] == 0)
+                    <td id="a_name_{{ $transaction['id'] }}">{{ $transaction['area_name'] }}</td>
+                    <td id="s_name_{{ $transaction['id'] }}" class="viewport-mid-large">{{ $transaction['shelf_name'] }}</td>
+                @else 
+                    <td id="si_name_{{ $transaction['id'] }}" class="viewport-mid-large">{{ $transaction['site_name'] }}</td>
+                @endif
                 <td id="t_username_{{ $transaction['id'] }}" class="viewport-mid-large">{{ $transaction['username'] }}</td>
                 <td id="t_quantity_{{ $transaction['id'] }}">{{ $transaction['quantity'] }}</td>
                 @if ($stock_data['is_cable'] == 0)
@@ -94,7 +109,7 @@
                                 </select>
                             </td>
                             @if (isset($transactions['view']) && $transactions['view'] !== 'transactions')
-                            <td><or class="specialColor clickable" onclick="navPage('{{ url('transactions') }}/{{ $params['stock_id'] }}')">view all</or></td>
+                            <td><or class="specialColor clickable" onclick="navPage('{{ url('transactions') }}/stock/{{ $params['stock_id'] }}')">view all</or></td>
                             @endif
                         <tr>
                     </tbody>

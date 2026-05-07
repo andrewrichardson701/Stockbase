@@ -351,7 +351,7 @@ class AdminController extends Controller
 
         if (isset($request['smtp-submit']) || isset($request['smtp-restore-defaults'])) {
             if ($request['_token'] == csrf_token()) {
-                $request->validate([
+                $validated = $request->validate([
                         'smtp_host' => 'string|required',
                         'smtp_port' => 'integer|required',
                         'smtp_encryption' => 'string|required',
@@ -366,7 +366,21 @@ class AdminController extends Controller
                         'smtp_from_name' => 'string|required',
                         'smtp_to_email' => 'string|required',
                 ]);
-                return AdminModel::updateConfigSettings($request->input());
+
+                // set any nullable fields to null if empty
+                $validated = array_merge(
+                    array_fill_keys([
+                        'smtp_client_id',
+                        'smtp_client_secret',
+                        'smtp_oauth_provider',
+                        'smtp_refresh_token',
+                        'smtp_username',
+                        'smtp_password',
+                    ], null),
+                    $validated
+                );
+
+                return AdminModel::updateConfigSettings($validated);
             } else {
                 return 'Error: CSRF token missmatch.';
             }
@@ -669,6 +683,20 @@ class AdminController extends Controller
         } else {
             return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'CSRF missmatch');
         }
+    }
+
+    static public function debug(Request $request)
+    {
+        $nav_highlight = 'admin'; // for the nav highlighting
+
+        $nav_data = GeneralModel::navData($nav_highlight);
+
+        $request = $request->all(); // turn request into an array
+        $response_handling = ResponseHandlingModel::responseHandling($request);
+        return view('debug', [
+                            'nav_data' => $nav_data,
+                            'response_handling' => $response_handling,
+                            ]);
     }
 
 }

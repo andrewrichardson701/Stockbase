@@ -13,6 +13,23 @@ function toggleSection(element, section) {
     }
 }
 
+
+function modalLoadRemoveItem(id) {
+    //get the modal div with the property
+    var modal = document.getElementById("modalDivRemoveItem");
+    var item_view = document.getElementById("remove_item_id_view");
+    var itemIDInput = document.getElementById("remove-id");
+    item_view.innerHTML = id;
+    itemIDInput.value = id;
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal or if they click the image.
+modalCloseRemoveItem = function() { 
+    var modal = document.getElementById("modalDivRemoveItem");
+    modal.style.display = "none";
+}
+
 // #########
 
 // Carousel

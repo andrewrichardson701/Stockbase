@@ -51,7 +51,7 @@ class ChangelogController extends Controller
             }
         }
         if ($user !== 'all') {
-            if (array_key_exists($user, $db_users)) {
+            if (array_key_exists($user, $db_users['rows'])) {
                 $changelog_params['user_id'] = ['key' => 'user_id', 'operator' => '=', 'value' => $user];
             }
         }

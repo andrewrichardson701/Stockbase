@@ -1,7 +1,47 @@
 <h2>Changelog</h2>
+<h3>1.4.1 - Disks</h3>
+<ul>
+    <li>SMTP Model now checks if image_name is set intead of erroring.</li>
+    <li>Added a filter for spectrum and vendor on the optics page.</li>
+    <li>Fixed the ajax request for stock-properties loading area/site info when addding stock.</li>
+    <li>Added the disks page and all associated files.</li>
+    <li>Added a "backend" checker to some functions, to remove the echo response.</li>
+    <li>Fixed some sanitisation on the the changelog.</li>
+    <li>Migrations added for the disks tables and adding the shreeding info.</li>
+    <li>Added functions to collect disk data and view it on the page.</li>
+    <li>Added a 'destroy' field to the disk_items table to mark it as ready for shredding.</li>
+    <li>Added a total asset count to the top of the assets page.</li>
+    <li>Fixed the OpticsModel filling in 0 for site_id on transactions.</li>
+    <li>Added the Disk functions needed to have adding and removing of disks.</li>
+    <li>Disks can now be restored from deletion.</li>
+    <li>The Asset total count on the assets page, now has a tooltip showing the individual count of each asset type.</li>
+    <li>Disks page: Area and Shelf now populate based on the the previous info (e.g. Site->Area).</li>
+    <li>Can now view all stock transactions in one screen with no stock_id specified on the transactions page.</li>
+    <li>Transactions now show the stock name and id in the table when </li>
+    <li>Transactions is now listed in the dropdown menu in the nav.</li>
+    <li>Changelog now correctly filters the correct user_id.</li>
+    <li>Fixed the removal of stock, when selecting an item id for removal.</li>
+    <li>Removal of stock now correctly sets the quantity to 0 as required for the stock view page.</li>
+    <li>Stock removal functions corrected to properly delete the information.</li>
+    <li>Changed the "shelf" search field to be serial number on the stock page.</li>
+    <li>Serial number stock searching is now possible on the home page.</li>
+    <li>Backup command added to DB. run this with "php artisan backup:database".</li>
+    <li>Added a default timezone of London.</li>
+    <li>Debug page added.</li>
+    <li>Fixed the stock view page showing 0 quantity on same occasisons.</li>
+    <li>Fixed an issue when trying to re-add an item with a serial number that was already deleted.</li>
+    <li>Webhook now shows the correct quantity of stock remaining.</li>
+    <li>Added rpm_id field to disk_item.</li>
+    <li>Added disk_rpm table.</li>
+    <li>Added a table row count preference in the users profile.</li>
+    <li>Disabling individual notifications for webhooks now actually works.</li>
+    <li>Password reset permissions updated. Only Root user can update admin passwords.</li>
+    <li>Impersonation now works when a user's password has expired, without needing to reset their password.</li>
+    <li>Can now edit optic information.</li>
+</ul>
 <h3>1.4.0 - Webhooks</h3>
 <ul>
-    <li>Bullet points added to the Changelog on the about page</li>
+    <li>Bullet points added to the Changelog on the about page.</li>
     <li>Corrected the function to add initial locations.</li>
     <li>Changed the gitlab url in the update checker to the github url.</li>
     <li>Updated the about page to show the GitHub url not the GitLab.</li>
@@ -274,7 +314,7 @@
     <li>optics.php shows the list of optics in store for each site similar to how the index page shows the main stock.</li>
     <li>Comments can be added to the optics</li>
     <li>Searching for optics searches through all fields rather than just model.</li>
-    <li>New tables added: optic_item, optic_connector, optic_type, optic_speed, optic_vendor, optic_comment, optic_transaction, stock_audit</li>
+    <li>New tables added: optic_item, optic_connector, optic_type, optic_speed, optic_vendor, optic_comment, , stock_audit</li>
     <li>Due to new tables being added, there will need to be some SQL adjustments on updates/downgrades to this version</li>
     <li>users_roles table has a new field: is_optic</li>
     <li>Stock option added to the nav bar.</li>

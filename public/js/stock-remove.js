@@ -164,24 +164,45 @@ async function populateContainers(elem) {
         if (xhr.status === 200) {
             // Parse the response and populate the shelf select box
             var containers = JSON.parse(xhr.responseText);
-            // console.log(containers);
+            console.log(containers);
             var select = document.getElementById('container');
             select.options.length = 0;
             if (containers.length === 0) {
                 select.options[0] = new Option("", "0");
             }
+            var container_ids = [];
             for (var i = 0; i < containers.length; i++) {
                 if (i == 0) {
-                    if (containers[i].ic_container_is_item == 0) {
-                        select.options[select.options.length] = new Option(containers[i].c_name, containers[i].c_id, true, true);
+                    if (isNaN(containers[i].c_id) || containers[i].c_id == null) {
+                        containers[i].c_id = 0;
+                    }
+                    if (isNaN(containers[i].ic_container_id) || containers[i].ic_container_id == null) {
+                        containers[i].ic_container_id = 0;
+                    }
+                    if (containers[i].ic_container_is_item == 0 || containers[i].ic_container_is_item == null) {
+                        if (!container_ids.includes(containers[i].c_id)) {
+                            container_ids.push(containers[i].c_id);
+                            select.options[select.options.length] = new Option(containers[i].c_name, containers[i].c_id, true, true);
+                        }
+
                     } else {
-                        select.options[select.options.length] = new Option(containers[i].s_name, containers[i].ic_container_id*-1, true, true);
+                        if (!container_ids.includes(containers[i].ic_container_id)) {
+                            container_ids.push(containers[i].ic_container_id);
+                            select.options[select.options.length] = new Option(containers[i].scontainer_name, containers[i].ic_container_id*-1, true, true);
+                        }
                     }
                 } else {
                     if (containers[i].ic_container_is_item == 0) {
-                        select.options[select.options.length] = new Option(containers[i].c_name, containers[i].c_id);
+                        if(!container_ids.includes(containers[i].c_id)) {
+                            container_ids.push(containers[i].c_id);
+                            select.options[select.options.length] = new Option(containers[i].c_name, containers[i].c_id);
+                        }
+                        
                     } else {
-                        select.options[select.options.length] = new Option(containers[i].s_name, containers[i].ic_container_id*-1);
+                        if (!container_ids.includes(containers[i].ic_container_id)) {
+                            container_ids.push(containers[i].ic_container_id);
+                            select.options[select.options.length] = new Option(containers[i].scontainer_name, containers[i].ic_container_id*-1);
+                        }
                     }
                 }
             }
@@ -219,15 +240,21 @@ async function populateSerials(elem) {
             if (serials.length === 0) {
                 select.options[0] = new Option("", "");
             }
+            var serials_unique = [];
             for (var i = 0; i < serials.length; i++) {
-                if (i == 0) {
-                    select.options[select.options.length] = new Option(serials[i].serial_number, serials[i].serial_number, true, true);
-                } else {
-                    select.options[select.options.length] = new Option(serials[i].serial_number, serials[i].serial_number);
+                if (!serials_unique.includes(serials[i].serial_number)) {
+                    serials_unique.push(serials[i].serial_number);
+                    if (i == 0) {
+                        select.options[select.options.length] = new Option(serials[i].serial_number, serials[i].serial_number, true, true);
+                    } else {
+                        select.options[select.options.length] = new Option(serials[i].serial_number, serials[i].serial_number);
+                    }
                 }
             }
             // select.disabled = (select.options.length === 1);
-            getQuantity();
+            if (select.options.length > 0) {
+                select.disabled = false;
+            }
         }
     };
     xhr.send();
@@ -259,7 +286,7 @@ function getQuantity() {
             } else {
                 quantity.value = 0;
             }
-            console.log(quantityArr);
+            // console.log(quantityArr);
 
             if (quantity.min === quantity.max) {
                 quantity.disabled = true;

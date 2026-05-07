@@ -527,6 +527,14 @@ class GeneralModel extends Model
                     $highlight = 7;
                     $dim = 1;
                     break;
+                case 'changelog':
+                    $highlight = 8;
+                    $dim = 1;
+                    break;
+                case 'transactions':
+                    $highlight = 9;
+                    $dim = 1;
+                    break;
                 case 'about':
                     $dim = 1;
                     break;

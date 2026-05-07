@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 @endif
-                    <div class="nav-row" id="price-row" style="margin-top:25px">
+                    <div class="nav-row" id="price-row" style="margin-top:25px" @if($head_data['config_compare']['cost_enable_normal'] !== 1) hidden @endif>
                             <div class="stock-inputLabelSize"><label class="nav-v-c text-right" style="width:100%" for="price" id="price-label">Sale Price ({{ $head_data['config_compare']['currency'] }})</label></div>
                             <div>
                                 <input type="number" step=".01" name="price" placeholder="0" id="price" class="form-control nav-v-c stock-inputSize theme-input" value="0" value="{{ $params['request']['cost'] ?? null }}" required @if($stock_item_data['count'] == 0) disabled @endif></input>

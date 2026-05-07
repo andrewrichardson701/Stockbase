@@ -163,6 +163,19 @@
                     </select>
                 </div>
                 <div class="col align-middle" style="max-width:max-content">
+                    <label class="align-middle" style="padding-right:15px;padding-top:7px">Spectrum:</label>
+                    <select name="spectrum" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'spectrum', this.value))">
+                        <option value="0" @if ($params['optic_spectrum'] == 0) selected @endif >All</option>
+                    @if ($optic_spectrums['count'] > 0)
+                        @foreach ($optic_spectrums['rows'] as $optic_spectrum) 
+                        <option value="{{ $optic_spectrum['spectrum'] }}" @if ($params['optic_spectrum'] == $optic_spectrum['spectrum']) selected @endif >{{ $optic_spectrum['spectrum'] }}</option>
+                        @endforeach
+                    @endif
+                    </select>
+                </div>
+            </div>
+            <div class="row centertable" style="max-width:max-content; margin-top:10px">
+                <div class="col align-middle" style="max-width:max-content">
                     <label class="align-middle" style="padding-right:15px;padding-top:7px">Connector:</label>
                     <select name="connector" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'connector', this.value))">
                         <option value="0" @if ($params['optic_connector'] == 0) selected @endif >All</option>
@@ -180,6 +193,17 @@
                     @if ($optic_distances['count'] > 0)
                         @foreach ($optic_distances['rows'] as $optic_distance) 
                         <option value="{{ $optic_distance['id'] }}" @if ($params['optic_distance'] == $optic_distance['id']) selected @endif >{{ $optic_distance['name'] }}</option>
+                        @endforeach
+                    @endif
+                    </select>
+                </div>
+                <div class="col align-middle" style="max-width:max-content">
+                    <label class="align-middle" style="padding-right:15px;padding-top:7px">Vendor:</label>
+                    <select name="vendor" class="form-control theme-dropdown-alt" style="display:inline !important; max-width:max-content" onchange="navPage(updateQueryParameter('', 'vendor', this.value))">
+                        <option value="0" @if ($params['optic_vendor'] == 0) selected @endif >All</option>
+                    @if ($optic_vendors['count'] > 0)
+                        @foreach ($optic_vendors['rows'] as $optic_vendor) 
+                        <option value="{{ $optic_vendor['id'] }}" @if ($params['optic_vendor'] == $optic_vendor['id']) selected @endif >{{ $optic_vendor['name'] }}</option>
                         @endforeach
                     @endif
                     </select>
@@ -409,7 +433,7 @@
                             <th @if($params['site'] !== 0) hidden @endif>Site</th>
                             <th>Comments</th>
                             <th hidden>Quantity</th>
-                            <th colspan=2></th>
+                            <th colspan=3></th>
                         <tr>
                         <tr class="align-middle text-center theme-tableOuter viewport-small-empty">
                             <th hidden>ID</th>
@@ -425,7 +449,7 @@
                             <th @if($params['site'] !== 0) hidden @endif>Site</th>
                             <th>Comm.</th>
                             <th hidden>Quantity</th>
-                            <th colspan=2></th>
+                            <th colspan=3></th>
                         <tr>
                     </thead>
                     <tbody>
@@ -465,8 +489,127 @@
                             </td>
                             <td class="align-middle" hidden>{{ $row['quantity'] }}</td>
                             <td class="align-middle" style="padding-right:5px">
+                                <button id="edit-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Edit?" onclick="toggleEditOptic('{{ $row['id'] }}', 1)">
+                                    <i class="fa fa-pencil" style="color:black"></i>
+                                </button>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px; padding-right:5px">
                                 <button id="move-btn-{{ $row['id'] }}" class="btn btn-warning" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadMoveOptic('{{ $row['id'] }}')">
                                     <i class="fa fa-arrows-h" style="color:black"></i>
+                                </button>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px">
+                            @if ($row['deleted'] == 1) 
+                                <button class="btn btn-success" type="submit" form="opticForm-{{ $row['id'] }}" name="optic-restore-submit" value="1" title="Restore?">
+                                    <i class="fa fa-trash-restore"></i>
+                                </button>
+                            @else 
+                                <button class="btn btn-danger" type="button" value="1" title="Delete?" onclick="modalLoadDeleteOptic('{{ $row['id'] }}')">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            @endif
+                            </td>
+                        </tr>
+                        <tr id="item-{{ $row['id'] }}-edit" class="row-show align-middle text-center @if($row['deleted'] == 1) red @endif" hidden>
+                            <form id="opticForm-edit-{{ $row['id'] }}"action="{{ route('optics.edit') }}" method="POST" enctype="multipart/form-data" style="margin-bottom:0px">
+                                <!-- Include CSRF token in the form -->
+                                @csrf
+                                <input type="hidden" form="opticForm-edit-{{ $row['id'] }}" value="{{ $row['id'] }}" name="id"/>
+                            </form>
+                            <td class="align-middle" hidden>{{ $row['id'] }}</td>
+                            <td class="align-middle">
+                                <select name="type_id" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown">
+                                    @if (array_key_exists('count', $optic_types) && $optic_types['count'] > 0)
+                                        @foreach ($optic_types['rows'] as $type)
+                                            <option value="{{ $type['id'] }}" @if($type['id'] == $row['type_id']) selected @endif>{{ $type['name'] }}</option>
+                                        @endforeach
+                                    @else
+                                        <option disabled>No Types Found</option>
+                                    @endif
+                                </select>
+                            </td>
+                            <td class="align-middle">
+                                <select name="connector_id" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown">
+                                    @if (array_key_exists('count', $optic_connectors) && $optic_connectors['count'] > 0)
+                                        @foreach ($optic_connectors['rows'] as $connector)
+                                            <option value="{{ $connector['id'] }}" @if($connector['id'] == $row['connector_id']) selected @endif>{{ $connector['name'] }}</option>
+                                        @endforeach
+                                    @else
+                                        <option disabled>No Connectors Found</option>
+                                    @endif
+                                </select>
+                            </td>
+                            <td class="align-middle">
+                                <input type="text" name="model" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown" style="max-width:150px" value="{{ $row['model'] }}"/>
+                            </td>
+                            <td class="align-middle">
+                                <select name="speed_id" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown">
+                                    @if (array_key_exists('count', $optic_speeds) && $optic_speeds['count'] > 0)
+                                        @foreach ($optic_speeds['rows'] as $speed)
+                                            <option value="{{ $speed['id'] }}" @if($speed['id'] == $row['speed_id']) selected @endif>{{ $speed['name'] }}</option>
+                                        @endforeach
+                                    @else
+                                        <option disabled>No Speeds Found</option>
+                                    @endif
+                                </select>
+                            </td>
+                            <td class="align-middle">
+                                <select name="mode" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown">
+                                    <option value="MM" @if($row['mode'] == 'MM') selected @endif>MM</option>
+                                    <option value="SM" @if($row['mode'] == 'SM') selected @endif>SM</option>
+                                    <option value="Copper" @if($row['mode'] == 'Copper') selected @endif>Copper</option>
+                                    <option value="N/A" @if($row['mode'] == 'N/A') selected @endif>N/A</option>
+                                </select>
+                            </td>
+                            <td class="align-middle">
+                                <input type="text" name="spectrum" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown" style="max-width:100px" value="{{ $row['spectrum'] }}"/>
+                            </td>
+                            <td class="align-middle">
+                                <select name="distance_id" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown">
+                                    @if (array_key_exists('count', $optic_distances) && $optic_distances['count'] > 0)
+                                        @foreach ($optic_distances['rows'] as $distance)
+                                            <option value="{{ $distance['id'] }}" @if($distance['id'] == $row['distance_id']) selected @endif>{{ $distance['name'] }}</option>
+                                        @endforeach
+                                    @else
+                                        <option disabled>No Distances Found</option>
+                                    @endif
+                                </select>
+                            </td>
+                            <td class="align-middle">
+                                <input type="text" name="serial_number" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown" style="max-width:150px" value="{{ $row['serial_number'] }}"/>
+                            </td>
+                            <td class="align-middle">
+                                <select name="vendor_id" form="opticForm-edit-{{ $row['id'] }}" class="form-control row-dropdown">
+                                    @if (array_key_exists('count', $optic_vendors) && $optic_vendors['count'] > 0)
+                                        @foreach ($optic_vendors['rows'] as $vendor)
+                                            <option value="{{ $vendor['id'] }}" @if($vendor['id'] == $row['vendor_id']) selected @endif>{{ $vendor['name'] }}</option>
+                                        @endforeach
+                                    @else
+                                        <option disabled>No Vendors Found</option>
+                                    @endif
+                                </select>
+                            </td>
+                            <td class="align-middle link gold" style="white-space: nowrap !important;" onclick="navPage(updateQueryParameter('', 'site', {{ $row['site_id'] }}))" @if($params['site'] !== 0) hidden @endif>{{ $row['site_name'] }}</td>
+                            <td class="align-middle">
+                                <div style="position: relative; display: inline-block;">
+                                    @if ($row['comment_data']['count'] > 0)
+                                    <i class="fa-solid fa-message clickable gold" style="font-size:20; padding:5px" onclick="toggleAddComment('{{ $row['id'] }}', 1)"></i>
+                                    <span class="uni theme-inv-textColor" style="pointer-events: none; font-size:10px; position: absolute; top: 3px; right: 5px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment('{{ $row['id'] }}', 1)">{{ $row['comment_data']['count'] }}</span>
+                                    @else
+                                    <i class="fa-regular fa-message clickable gold" style="font-size:18px; padding:5px" onclick="toggleAddComment('{{ $row['id'] }}', 0)"></i>
+                                    <span class="uni gold" style="pointer-events: none; font-size:12px; position: absolute; top: 1px; right: 6px; border-radius: 50%; padding: 2px 5px;" onclick="toggleAddComment('{{ $row['id'] }}', 0)">+</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="align-middle" hidden>{{ $row['quantity'] }}</td>
+                            <td class="align-middle" style="padding-right:5px">
+                                <button id="edit-btn-{{ $row['id'] }}" class="btn btn-success" name="edit-optic-submit" style="padding-left:10px;padding-right:10px" type="submit" value="move" form="opticForm-edit-{{ $row['id'] }}" title="Save?">
+                                    <i class="fa fa-save" style="color:black"></i>
+                                </button>
+                            </td>
+                            <td class="align-middle" style="padding-left:5px; padding-right:5px">
+                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-warning" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Cancel" onclick="toggleEditOptic('{{ $row['id'] }}', 0)">
+                                    <i class="fa fa-ban fa-rotate-90" style="color:black"></i>
                                 </button>
                             </td>
                             <td class="align-middle" style="padding-left:5px">
@@ -615,6 +758,7 @@
                                                 </td>
                                                 <td class="align-middle" style="border:none;padding-top:4px;padding-bottom:4px">
                                                     <select id="tableRowCount" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" name="rows" onchange="navPage(updateQueryParameter('', 'rows', this.value))">
+                                                        <option id="rows-10"  value="10" @if($params['rows'] == 10) selected @endif>10</option>
                                                         <option id="rows-20"  value="20" @if($params['rows'] == 20) selected @endif>20</option>
                                                         <option id="rows-50"  value="50" @if($params['rows'] == 50) selected @endif>50</option>
                                                         <option id="rows-100" value="100" @if($params['rows'] == 100) selected @endif>100</option>
@@ -633,7 +777,7 @@
     </div>  
     
 
-    @include('includes.optics.optics-modals')
+    @include('includes.assets.optics-modals')
 
     <!-- Add the JS for the file -->
     <script src="{{ asset('js/optics.js') }}"></script>

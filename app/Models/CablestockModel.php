@@ -399,8 +399,8 @@ class CablestockModel extends Model
         $q_type = isset($request['type']) ? (int)$request['type'] : "";
 
         if ($q_page == '' || $q_page < 1) { $q_page = 1; }
-        $q_rows = isset($request['rows']) ? ($request['rows'] == 50 || $request['rows'] == 100 ? (int)$request['rows'] : 10) : 10 ;
-        
+        $q_rows = isset($request['rows']) ? ($request['rows'] == 50 || $request['rows'] == 100 ? (int)$request['rows'] : 10) : (GeneralModel::getUser()['table_row_count'] ? GeneralModel::getUser()['table_row_count'] : 10);
+
         $q_data = ['oos' => $q_oos,
                     'site' => $q_site,
                     'name' => $q_name,

@@ -29,7 +29,8 @@ use App\Http\Middleware\AddHeadData;
 use \App\Http\Middleware\TwoFactorRedirectMiddleware;
 use \App\Http\Middleware\PasswordExpiredMiddleware;
 use \App\Http\Middleware\CheckSessionMiddleware;
-
+use Laravel\Fortify\Fortify;
+Fortify::ignoreRoutes();
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -114,6 +115,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                     Route::post('/assets/optics.add', [OpticsController::class, 'add'])->name('optics.add'); // adding optics
                     Route::post('/assets/optics.move', [OpticsController::class, 'move'])->name('optics.move'); // move optics
                     Route::post('/assets/optics.restore', [OpticsController::class, 'restore'])->name('optics.restore'); // restore optics
+                    Route::post('/assets/optics.edit', [OpticsController::class, 'edit'])->name('optics.edit'); // edit optics
                     Route::post('/assets/optics.delete', [OpticsController::class, 'delete'])->name('optics.delete'); // deleting optics
                     Route::post('/assets/optics.comments', [OpticsController::class, 'comments'])->name('optics.comments'); // comment forms - adding/deleting
                     Route::post('/assets/optics.serialSearch', [OpticsController::class, 'serialSearch'])->name('optics.serialSearch'); // Search for matching serials
@@ -126,7 +128,13 @@ Route::middleware([AddHeadData::class])->group(function () {
                     Route::get('/assets/memory', [AssetsController::class, 'incomplete'])->name('memory'); // assets > memory page
                 });
                 Route::middleware(['auth', 'check.permission:disks'])->group(function () { // Disks pages - locked behind disks permission
-                    Route::get('/assets/disks', [AssetsController::class, 'incomplete'])->name('disks'); // assets > disks page
+                    Route::get('/assets/disks', [AssetsController::class, 'disks'])->name('disks'); // assets > disks page
+                    Route::post('/assets/disks.add', [AssetsController::class, 'diskAdd'])->name('disks.add'); // adding disks
+                    Route::post('/assets/disks.move', [AssetsController::class, 'diskMove'])->name('disks.move'); // move disks
+                    Route::post('/assets/disks.restore', [AssetsController::class, 'diskRestore'])->name('disks.restore'); // restore disks
+                    Route::post('/assets/disks.delete', [AssetsController::class, 'diskDelete'])->name('disks.delete'); // deleting disks
+                    Route::post('/assets/disks.edit', [AssetsController::class, 'diskEdit'])->name('disks.edit'); // editing disks
+                    Route::post('/assets/disks.serialSearch', [AssetsController::class, 'diskSerialSearch'])->name('disks.serialSearch'); // Search for matching serials
                 });
                 Route::middleware(['auth', 'check.permission:fans'])->group(function () { // Fans pages - locked behind fans permission
                     Route::get('/assets/fans', [AssetsController::class, 'incomplete'])->name('fans'); // assets > fans page
@@ -156,18 +164,23 @@ Route::middleware([AddHeadData::class])->group(function () {
                     ->where('add_new', '[a-z\-]+') // allow text and -
                     ->name('stock');
 
-                Route::get('/transactions/{stock_id?}', [TransactionController::class, 'index']) // transactions page
+                Route::get('/transactions/{type?}/{stock_id?}', [TransactionController::class, 'index']) // transactions page
+                    ->where('type', '[a-z\-]+') // type of transaction
                     ->where('stock_id', '[0-9]+') // Ensure stock_id is numeric
                     ->name('transactions');
                     
                 Route::get('/favourites', [FavouritesController::class, 'index'])->name('favourites'); // favourites page
                 Route::get('/tags', [TagController::class, 'index'])->name('tags'); // tags page
-                Route::post('/tags.editTag', [TagController::class, 'editTag'])->name('tags.editTag'); // edit tags
+                Route::get('/importstock', [StockController::class, 'importStockView'])->name('importstock'); // import stock page
+                
 
                 // POST REQUESTS
+                Route::post('/tags.editTag', [TagController::class, 'editTag'])->name('tags.editTag'); // edit tags
                 Route::post('/stock.add.existing', [StockController::class, 'addExistingStock'])->name('stock.add.existing'); // add existing stock quantity
                 Route::post('/stock.add.new', [StockController::class, 'addNewStock'])->name('stock.add.new'); // add new stock 
+                Route::post('/stock.add.import', [StockController::class, 'importStock'])->name('stock.add.import'); // import stock
                 Route::post('/stock.remove.existing', [StockController::class, 'removeExistingStock'])->name('stock.remove.existing'); // remove existing stock
+                Route::post('/stock.remove.existing.id', [StockController::class, 'removeExistingStockById'])->name('stock.remove.existing.id'); // remove existing stock by ID
                 Route::post('/stock.move', [StockController::class, 'moveStock'])->name('stock.move'); // move stock quantity
                 Route::post('/stock.move.container', [StockController::class, 'moveStockContainer'])->name('stock.move.container'); // move stock quantity when item is a container
                 Route::post('/stock.move.cable', [StockController::class, 'moveStockCable'])->name('stock.move.cable'); // move cable stock quantity
@@ -177,6 +190,7 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/stock.edit.imageunlink', [StockController::class, 'unlinkStockImage'])->name('stock.edit.imageunlink'); // unlink stock image
                 Route::post('/stock.edit.item', [StockController::class, 'editItem'])->name('stock.edit.item'); // edit item info
                 Route::post('/stock.delete.existing', [StockController::class, 'deleteStock'])->name('stock.delete.existing'); // delete unused stock
+                
             });
             
             // Admin pages
@@ -208,6 +222,8 @@ Route::middleware([AddHeadData::class])->group(function () {
                 Route::post('/admin.webhookTest', [WebhookController::class, 'webhookTest'])->name('admin.webhookTest'); // Webook test
                 Route::post('/admin.toggleWebhookNotification', [AdminController::class, 'toggleWebhookNotification'])->name('admin.toggleWebhookNotification'); // Adjust Notification settings
                 Route::post('/admin.webhookTemplate', [AdminController::class, 'webhookTemplate'])->name('admin.webhookTemplate'); // change an webhook template
+                
+                Route::get('/debug', [AdminController::class, 'debug'])->name('debug'); // Debug info
             });
 
             // Changelog pages
@@ -242,6 +258,8 @@ Route::middleware([AddHeadData::class])->group(function () {
             Route::post('/_ajax-favouriteStock', [AjaxController::class, 'favouriteStock'])->name('_ajax-favouriteStock'); // for adding/removing favourites in the stock page
             //
             Route::post('/_ajax-nearbyContainers', [AjaxController::class, 'getNearbyContainersAjax'])->name('_ajax-nearbyContainers'); // get a list of nearby containers
+            //
+            Route::post('/_ajax-getDiskInfo', [AjaxController::class, 'getDiskInfoAjax'])->name('_ajax-getDiskInfo'); // get disk info
             ////
 
         });

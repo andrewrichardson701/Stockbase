@@ -1,5 +1,5 @@
 <?php
-$app_version = '1.4.0';
+$app_version = '1.4.1';
 
 return [
 
@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
+    'timezone' => env('APP_TIMEZONE', date_default_timezone_get()),
 
     /*
     |--------------------------------------------------------------------------

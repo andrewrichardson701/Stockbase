@@ -41,6 +41,479 @@ class StockModel extends Model
     protected $table = 'stock'; // Specify your table name
     protected $fillable = ['name', 'description', 'sku', 'min_stock', 'is_cable', 'deleted'];
 
+    // fall back function if the serial number searching doesnt work
+    // static public function getStockAjax($request, $limit, $offset)
+    // {
+    //     $oos = isset($request['oos']) ? (int)$request['oos'] : 0;
+    //     $site = isset($request['site']) ? $request['site'] : "0";
+    //     $area = isset($request['area']) && !empty($request['area']) ? $request['area'] : "0";
+    //     $name = isset($request['name']) ? $request['name'] : "";
+    //     $sku = isset($request['sku']) ? $request['sku'] : "";
+    //     $location = isset($request['location']) ? $request['location'] : "";
+    //     $shelf = isset($request['shelf']) ? $request['shelf'] : "";
+    //     $tag = isset($request['tag']) ? $request['tag'] : "";
+    //     $manufacturer = isset($request['manufacturer']) ? $request['manufacturer'] : "";
+    //     $type = isset($request['type']) ? $request['type'] : null; // for checking if this is a normal search or for the add / remove query
+
+    //     // Confirm the site and area are a match
+    //     if (($site !== "0" && $site !== '' && $site !== 0) && ($area !== "0" && $area !== '' && $area !== 0)) {
+    //         if (GeneralModel::checkAreaSiteMatch($area, $site) == 0) {
+    //             $area = 0;
+    //         }
+    //     }
+
+    //     $instance = new self();
+    //     $instance->setTable('stock');
+
+    //     // Define the subquery for calculating item quantities (CTE equivalent)
+    //     $quantityCTE = DB::table('item')
+    //         ->select([
+    //             'item.stock_id',
+    //             'area.site_id',
+    //             DB::raw('SUM(quantity) AS total_item_quantity'),
+    //         ])
+    //         ->join('shelf', 'item.shelf_id', '=', 'shelf.id')
+    //         ->join('area', 'shelf.area_id', '=', 'area.id')
+    //         ->where('item.deleted', 0)
+    //         ->groupBy('item.stock_id', 'area.site_id');
+
+    //     // Main query
+    //     if ($type == null) {
+    //         $query = $instance->select([
+    //                 'stock.id AS stock_id',
+    //                 'stock.name AS stock_name',
+    //                 'stock.description AS stock_description',
+    //                 'stock.sku AS stock_sku',
+    //                 'stock.min_stock AS stock_min_stock',
+    //                 'stock.is_cable AS stock_is_cable',
+    //                 DB::raw("GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names"),
+    //                 'site.id AS site_id',
+    //                 'site.name AS site_name',
+    //                 'site.description AS site_description',
+    //                 DB::raw('COALESCE(quantity_cte.total_item_quantity, 0) AS item_quantity'),
+    //                 'tag_names.tag_names AS tag_names',
+    //                 'tag_ids.tag_ids AS tag_ids',
+    //                 'stock_img_image.stock_img_image',
+    //             ])
+    //             // ->distinct()
+    //             ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+    //             ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
+    //             ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
+    //             ->leftJoin('site', 'area.site_id', '=', 'site.id')
+    //             ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+    //             ->leftJoinSub(
+    //                 DB::table('stock_img')
+    //                     ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+    //                     ->groupBy('stock_id'),
+    //                 'stock_img_image',
+    //                 'stock_img_image.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(
+    //                 DB::table('stock_tag')
+    //                     ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+    //                     ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+    //                     ->groupBy('stock_tag.stock_id'),
+    //                 'tag_names',
+    //                 'tag_names.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(
+    //                 DB::table('stock_tag')
+    //                     ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+    //                     ->groupBy('stock_tag.stock_id'),
+    //                 'tag_ids',
+    //                 'tag_ids.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub($quantityCTE, 'quantity_cte', function ($join) {
+    //                 $join->on('stock.id', '=', 'quantity_cte.stock_id')
+    //                     ->on('site.id', '=', 'quantity_cte.site_id');
+    //             })
+    //             ->where('stock.is_cable', 0)
+    //             ->where('stock.deleted', 0)
+    //             ->when($oos === 0, function ($query) {
+    //                 $query->where('item.deleted', 0);
+    //             })
+    //             ->when($site !== '0', function ($query) use ($site) {
+    //                 $query->where('site.id', $site);
+    //             })
+    //             ->when($area !== '0', function ($query) use ($area) {
+    //                 $query->where('area.id', $area);
+    //             })
+    //             ->when(!empty($name), function ($query) use ($name) {
+    //                 $query->where(function ($subQuery) use ($name) {
+    //                     $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhere('stock.name', 'LIKE', "%{$name}%");
+    //                 });
+    //             })
+    //             ->when(!empty($sku), function ($query) use ($sku) {
+    //                 $query->where('stock.sku', 'LIKE', "%{$sku}%");
+    //             })
+    //             ->when(!empty($location), function ($query) use ($location) {
+    //                 $query->where('area.name', 'LIKE', "%{$location}%");
+    //             })
+    //             ->when(!empty($shelf), function ($query) use ($shelf) {
+    //                 $query->where('shelf.name', 'LIKE', "%{$shelf}%");
+    //             })
+    //             ->when(!empty($tag), function ($query) use ($tag) {
+    //                 $query->where('tag_names', 'LIKE', "%{$tag}%");
+    //             })
+    //             ->when(!empty($manufacturer), function ($query) use ($manufacturer) {
+    //                 $query->where('manufacturer.name', $manufacturer);
+    //             })
+    //             ->when($oos === 1, function ($query) {
+    //                 $query->havingRaw('item_quantity IS NULL OR item_quantity = 0');
+    //             })
+    //             ->when($limit !== 0, function ($query) use ($limit) {
+    //                 $query->limit($limit);
+    //             })
+    //             ->when($offset > 0, function ($query) use ($offset) {
+    //                 $query->offset($offset);
+    //             })
+    //             ->groupBy([
+    //                 'stock.id', 'stock.name', 'stock.description', 'stock.sku',
+    //                 'stock.min_stock', 'stock.is_cable', 'site.id', 'site.name',
+    //                 'site.description', 'stock_img_image.stock_img_image', 'quantity_cte.total_item_quantity',
+    //             ])
+    //             ->when($area != 0, function ($query) {
+    //                 $query->groupBy('area.id');
+    //             })
+    //             ->orderBy('stock.name');
+    //     } else {
+    //         $query = $instance->select([
+    //                 'stock.id AS stock_id',
+    //                 'stock.name AS stock_name',
+    //                 'stock.description AS stock_description',
+    //                 'stock.sku AS stock_sku',
+    //                 'stock.min_stock AS stock_min_stock',
+    //                 'stock.is_cable AS stock_is_cable',
+    //                 DB::raw("SUM(item.quantity) AS item_quantity"),
+    //                 'tag_names.tag_names AS tag_names',
+    //                 'tag_ids.tag_ids AS tag_ids',
+    //                 'stock_img_image.stock_img_image',
+    //                 ])
+    //             // ->distinct()
+    //             ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+    //             ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+    //             ->leftJoinSub(
+    //                 DB::table('stock_img')
+    //                     ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+    //                     ->groupBy('stock_id'),
+    //                 'stock_img_image',
+    //                 'stock_img_image.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(
+    //                 DB::table('stock_tag')
+    //                     ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+    //                     ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+    //                     ->groupBy('stock_tag.stock_id'),
+    //                 'tag_names',
+    //                 'tag_names.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(
+    //                 DB::table('stock_tag')
+    //                     ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+    //                     ->groupBy('stock_tag.stock_id'),
+    //                 'tag_ids',
+    //                 'tag_ids.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->where('stock.is_cable', 0)
+    //             ->where('stock.deleted', 0)
+    //             ->when($oos === 0, function ($query) {
+    //                 $query->where('item.deleted', 0);
+    //             })
+    //             ->when(!empty($name), function ($query) use ($name) {
+    //                 $query->where(function ($subQuery) use ($name) {
+    //                     $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhere('stock.name', 'LIKE', "%{$name}%");
+    //                 });
+    //             })
+    //             ->when(!empty($sku), function ($query) use ($sku) {
+    //                 $query->where('stock.sku', 'LIKE', "%{$sku}%");
+    //             })
+    //             ->when(!empty($tag), function ($query) use ($tag) {
+    //                 $query->where('tag_names', 'LIKE', "%{$tag}%");
+    //             })
+    //             ->when(!empty($manufacturer), function ($query) use ($manufacturer) {
+    //                 $query->where('manufacturer.name', $manufacturer);
+    //             })
+    //             ->when($oos === 1, function ($query) {
+    //                 $query->havingRaw('item_quantity IS NULL OR item_quantity = 0');
+    //             })
+    //             ->when($limit !== 0, function ($query) use ($limit) {
+    //                 $query->limit($limit);
+    //             })
+    //             ->when($offset > 0, function ($query) use ($offset) {
+    //                 $query->offset($offset);
+    //             })
+    //             ->groupBy([
+    //                 'stock.id', 'stock.name', 'stock.description', 'stock.sku',
+    //                 'stock.min_stock', 'stock.is_cable',
+    //                 'stock_img_image.stock_img_image',
+    //             ])
+    //             ->orderBy('stock.name');
+    //     }
+    //     return [
+    //         'query' => $query,
+    //         'data' => [
+    //             'site' => $site,
+    //             'area' => $area,
+    //             'shelf' => $shelf,
+    //             'name' => $name,
+    //             'sku' => $sku,
+    //             'tag' => $tag,
+    //             'location' => $location,
+    //             'manufacturer' => $manufacturer,
+    //             'oos' => $oos,
+    //         ],
+    //     ];
+    // }
+
+    
+    // search name and serial in one field
+    // static public function getStockAjax($request, $limit, $offset)
+    // {
+    //     $oos = isset($request['oos']) ? (int)$request['oos'] : 0;
+    //     $site = isset($request['site']) ? $request['site'] : "0";
+    //     $area = isset($request['area']) && !empty($request['area']) ? $request['area'] : "0";
+    //     $name = isset($request['name']) ? $request['name'] : "";
+    //     $sku = isset($request['sku']) ? $request['sku'] : "";
+    //     $location = isset($request['location']) ? $request['location'] : "";
+    //     $shelf = isset($request['shelf']) ? $request['shelf'] : "";
+    //     $tag = isset($request['tag']) ? $request['tag'] : "";
+    //     $manufacturer = isset($request['manufacturer']) ? $request['manufacturer'] : "";
+    //     $type = isset($request['type']) ? $request['type'] : null;
+
+    //     // Detect if input is likely a serial
+    //     $isSerialSearch = !empty($name) && preg_match('/^[A-Z0-9\-]+$/i', $name);
+
+    //     if (($site !== "0" && $site !== '' && $site !== 0) && ($area !== "0" && $area !== '' && $area !== 0)) {
+    //         if (GeneralModel::checkAreaSiteMatch($area, $site) == 0) {
+    //             $area = 0;
+    //         }
+    //     }
+
+    //     $instance = new self();
+    //     $instance->setTable('stock');
+
+    //     $quantityCTE = DB::table('item')
+    //         ->select([
+    //             'item.stock_id',
+    //             'area.site_id',
+    //             DB::raw('SUM(quantity) AS total_item_quantity'),
+    //         ])
+    //         ->join('shelf', 'item.shelf_id', '=', 'shelf.id')
+    //         ->join('area', 'shelf.area_id', '=', 'area.id')
+    //         ->where('item.deleted', 0)
+    //         ->groupBy('item.stock_id', 'area.site_id');
+
+    //     if ($type == null) {
+
+    //         $query = $instance->select([
+    //                 'stock.id AS stock_id',
+    //                 'stock.name AS stock_name',
+    //                 'stock.description AS stock_description',
+    //                 'stock.sku AS stock_sku',
+    //                 'stock.min_stock AS stock_min_stock',
+    //                 'stock.is_cable AS stock_is_cable',
+    //                 DB::raw("GROUP_CONCAT(DISTINCT area.name SEPARATOR ', ') AS area_names"),
+    //                 'site.id AS site_id',
+    //                 'site.name AS site_name',
+    //                 'site.description AS site_description',
+    //                 DB::raw('COALESCE(quantity_cte.total_item_quantity, 0) AS item_quantity'),
+    //                 'tag_names.tag_names AS tag_names',
+    //                 'tag_ids.tag_ids AS tag_ids',
+    //                 'stock_img_image.stock_img_image',
+    //             ])
+    //             ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+    //             ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
+    //             ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
+    //             ->leftJoin('site', 'area.site_id', '=', 'site.id')
+    //             ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+    //             ->leftJoinSub(
+    //                 DB::table('stock_img')
+    //                     ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+    //                     ->groupBy('stock_id'),
+    //                 'stock_img_image',
+    //                 'stock_img_image.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(
+    //                 DB::table('stock_tag')
+    //                     ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+    //                     ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+    //                     ->groupBy('stock_tag.stock_id'),
+    //                 'tag_names',
+    //                 'tag_names.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(
+    //                 DB::table('stock_tag')
+    //                     ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+    //                     ->groupBy('stock_tag.stock_id'),
+    //                 'tag_ids',
+    //                 'tag_ids.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub($quantityCTE, 'quantity_cte', function ($join) {
+    //                 $join->on('stock.id', '=', 'quantity_cte.stock_id')
+    //                     ->on('site.id', '=', 'quantity_cte.site_id');
+    //             })
+    //             ->where('stock.is_cable', 0)
+    //             ->where('stock.deleted', 0)
+    //             ->when($oos === 0, fn($q) => $q->where('item.deleted', 0))
+    //             ->when($site !== '0', fn($q) => $q->where('site.id', $site))
+    //             ->when($area !== '0', fn($q) => $q->where('area.id', $area))
+
+    //             // SEARCH LOGIC
+    //             ->when(!empty($name), function ($query) use ($name, $isSerialSearch) {
+
+    //                 if ($isSerialSearch) {
+    //                     // HARD FILTER FOR SERIAL
+    //                     $query->where('item.serial_number', 'LIKE', "%{$name}%");
+    //                 } else {
+    //                     // NORMAL SEARCH + serial fallback
+    //                     $query->where(function ($subQuery) use ($name) {
+    //                         $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhere('stock.name', 'LIKE', "%{$name}%")
+    //                             ->orWhereExists(function ($sub) use ($name) {
+    //                                 $sub->select(DB::raw(1))
+    //                                     ->from('item')
+    //                                     ->whereColumn('item.stock_id', 'stock.id')
+    //                                     ->where('item.serial_number', 'LIKE', "%{$name}%")
+    //                                     ->where('item.deleted', 0);
+    //                             });
+    //                     });
+    //                 }
+    //             })
+
+    //             ->when(!empty($sku), fn($q) => $q->where('stock.sku', 'LIKE', "%{$sku}%"))
+    //             ->when(!empty($location), fn($q) => $q->where('area.name', 'LIKE', "%{$location}%"))
+    //             ->when(!empty($shelf), fn($q) => $q->where('shelf.name', 'LIKE', "%{$shelf}%"))
+    //             ->when(!empty($tag), fn($q) => $q->where('tag_names', 'LIKE', "%{$tag}%"))
+    //             ->when(!empty($manufacturer), fn($q) => $q->where('manufacturer.name', $manufacturer))
+    //             ->when($oos === 1, fn($q) => $q->havingRaw('item_quantity IS NULL OR item_quantity = 0'))
+    //             ->when($limit !== 0, fn($q) => $q->limit($limit))
+    //             ->when($offset > 0, fn($q) => $q->offset($offset))
+    //             ->groupBy([
+    //                 'stock.id','stock.name','stock.description','stock.sku',
+    //                 'stock.min_stock','stock.is_cable','site.id','site.name',
+    //                 'site.description','stock_img_image.stock_img_image','quantity_cte.total_item_quantity',
+    //             ])
+    //             ->when($area != 0, fn($q) => $q->groupBy('area.id'))
+    //             ->orderBy('stock.name');
+
+    //     } else {
+
+    //         $query = $instance->select([
+    //                 'stock.id AS stock_id',
+    //                 'stock.name AS stock_name',
+    //                 'stock.description AS stock_description',
+    //                 'stock.sku AS stock_sku',
+    //                 'stock.min_stock AS stock_min_stock',
+    //                 'stock.is_cable AS stock_is_cable',
+    //                 DB::raw("SUM(item.quantity) AS item_quantity"),
+    //                 'tag_names.tag_names AS tag_names',
+    //                 'tag_ids.tag_ids AS tag_ids',
+    //                 'stock_img_image.stock_img_image',
+    //             ])
+    //             ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+    //             ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+    //             ->leftJoinSub(/* same as before */ DB::table('stock_img')
+    //                 ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+    //                 ->groupBy('stock_id'),
+    //                 'stock_img_image',
+    //                 'stock_img_image.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(/* tag_names */ DB::table('stock_tag')
+    //                 ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+    //                 ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+    //                 ->groupBy('stock_tag.stock_id'),
+    //                 'tag_names',
+    //                 'tag_names.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->leftJoinSub(/* tag_ids */ DB::table('stock_tag')
+    //                 ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+    //                 ->groupBy('stock_tag.stock_id'),
+    //                 'tag_ids',
+    //                 'tag_ids.stock_id',
+    //                 '=',
+    //                 'stock.id'
+    //             )
+    //             ->where('stock.is_cable', 0)
+    //             ->where('stock.deleted', 0)
+    //             ->when($oos === 0, fn($q) => $q->where('item.deleted', 0))
+
+    //             ->when(!empty($name), function ($query) use ($name, $isSerialSearch) {
+
+    //                 if ($isSerialSearch) {
+    //                     $query->where('item.serial_number', 'LIKE', "%{$name}%");
+    //                 } else {
+    //                     $query->where(function ($subQuery) use ($name) {
+    //                         $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+    //                             ->orWhere('stock.name', 'LIKE', "%{$name}%")
+    //                             ->orWhereExists(function ($sub) use ($name) {
+    //                                 $sub->select(DB::raw(1))
+    //                                     ->from('item')
+    //                                     ->whereColumn('item.stock_id', 'stock.id')
+    //                                     ->where('item.serial_number', 'LIKE', "%{$name}%")
+    //                                     ->where('item.deleted', 0);
+    //                             });
+    //                     });
+    //                 }
+    //             })
+
+    //             ->when(!empty($sku), fn($q) => $q->where('stock.sku', 'LIKE', "%{$sku}%"))
+    //             ->when(!empty($tag), fn($q) => $q->where('tag_names', 'LIKE', "%{$tag}%"))
+    //             ->when(!empty($manufacturer), fn($q) => $q->where('manufacturer.name', $manufacturer))
+    //             ->when($oos === 1, fn($q) => $q->havingRaw('item_quantity IS NULL OR item_quantity = 0'))
+    //             ->when($limit !== 0, fn($q) => $q->limit($limit))
+    //             ->when($offset > 0, fn($q) => $q->offset($offset))
+    //             ->groupBy([
+    //                 'stock.id','stock.name','stock.description','stock.sku',
+    //                 'stock.min_stock','stock.is_cable','stock_img_image.stock_img_image',
+    //             ])
+    //             ->orderBy('stock.name');
+    //     }
+
+    //     return [
+    //         'query' => $query,
+    //         'data' => [
+    //             'site' => $site,
+    //             'area' => $area,
+    //             'shelf' => $shelf,
+    //             'name' => $name,
+    //             'sku' => $sku,
+    //             'tag' => $tag,
+    //             'location' => $location,
+    //             'manufacturer' => $manufacturer,
+    //             'oos' => $oos,
+    //         ],
+    //     ];
+    // }
+
+    // search name and serial serparately
     static public function getStockAjax($request, $limit, $offset)
     {
         $oos = isset($request['oos']) ? (int)$request['oos'] : 0;
@@ -48,13 +521,13 @@ class StockModel extends Model
         $area = isset($request['area']) && !empty($request['area']) ? $request['area'] : "0";
         $name = isset($request['name']) ? $request['name'] : "";
         $sku = isset($request['sku']) ? $request['sku'] : "";
+        $serial_number = isset($request['serial_number']) ? $request['serial_number'] : "";
         $location = isset($request['location']) ? $request['location'] : "";
         $shelf = isset($request['shelf']) ? $request['shelf'] : "";
         $tag = isset($request['tag']) ? $request['tag'] : "";
         $manufacturer = isset($request['manufacturer']) ? $request['manufacturer'] : "";
-        $type = isset($request['type']) ? $request['type'] : null; // for checking if this is a normal search or for the add / remove query
+        $type = isset($request['type']) ? $request['type'] : null;
 
-        // Confirm the site and area are a match
         if (($site !== "0" && $site !== '' && $site !== 0) && ($area !== "0" && $area !== '' && $area !== 0)) {
             if (GeneralModel::checkAreaSiteMatch($area, $site) == 0) {
                 $area = 0;
@@ -64,7 +537,6 @@ class StockModel extends Model
         $instance = new self();
         $instance->setTable('stock');
 
-        // Define the subquery for calculating item quantities (CTE equivalent)
         $quantityCTE = DB::table('item')
             ->select([
                 'item.stock_id',
@@ -76,8 +548,8 @@ class StockModel extends Model
             ->where('item.deleted', 0)
             ->groupBy('item.stock_id', 'area.site_id');
 
-        // Main query
         if ($type == null) {
+
             $query = $instance->select([
                     'stock.id AS stock_id',
                     'stock.name AS stock_name',
@@ -94,35 +566,31 @@ class StockModel extends Model
                     'tag_ids.tag_ids AS tag_ids',
                     'stock_img_image.stock_img_image',
                 ])
-                // ->distinct()
                 ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
                 ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
                 ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
                 ->leftJoin('site', 'area.site_id', '=', 'site.id')
                 ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
-                ->leftJoinSub(
-                    DB::table('stock_img')
-                        ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
-                        ->groupBy('stock_id'),
+                ->leftJoinSub(/* stock_img */ DB::table('stock_img')
+                    ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+                    ->groupBy('stock_id'),
                     'stock_img_image',
                     'stock_img_image.stock_id',
                     '=',
                     'stock.id'
                 )
-                ->leftJoinSub(
-                    DB::table('stock_tag')
-                        ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
-                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
-                        ->groupBy('stock_tag.stock_id'),
+                ->leftJoinSub(/* tag_names */ DB::table('stock_tag')
+                    ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+                    ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+                    ->groupBy('stock_tag.stock_id'),
                     'tag_names',
                     'tag_names.stock_id',
                     '=',
                     'stock.id'
                 )
-                ->leftJoinSub(
-                    DB::table('stock_tag')
-                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
-                        ->groupBy('stock_tag.stock_id'),
+                ->leftJoinSub(/* tag_ids */ DB::table('stock_tag')
+                    ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+                    ->groupBy('stock_tag.stock_id'),
                     'tag_ids',
                     'tag_ids.stock_id',
                     '=',
@@ -134,56 +602,42 @@ class StockModel extends Model
                 })
                 ->where('stock.is_cable', 0)
                 ->where('stock.deleted', 0)
-                ->when($oos === 0, function ($query) {
-                    $query->where('item.deleted', 0);
-                })
-                ->when($site !== '0', function ($query) use ($site) {
-                    $query->where('site.id', $site);
-                })
-                ->when($area !== '0', function ($query) use ($area) {
-                    $query->where('area.id', $area);
-                })
+                ->when($oos === 0, fn($q) => $q->where('item.deleted', 0))
+                ->when($site !== '0', fn($q) => $q->where('site.id', $site))
+                ->when($area !== '0', fn($q) => $q->where('area.id', $area))
+
+                // ✅ NAME SEARCH (clean now)
                 ->when(!empty($name), function ($query) use ($name) {
                     $query->where(function ($subQuery) use ($name) {
                         $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
-                                ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
-                                ->orWhere('stock.name', 'LIKE', "%{$name}%");
+                            ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+                            ->orWhere('stock.name', 'LIKE', "%{$name}%");
                     });
                 })
-                ->when(!empty($sku), function ($query) use ($sku) {
-                    $query->where('stock.sku', 'LIKE', "%{$sku}%");
+
+                // ✅ SERIAL NUMBER FILTER (THIS FIXES YOUR ISSUE)
+                ->when(!empty($serial_number), function ($query) use ($serial_number) {
+                    $query->where('item.serial_number', 'LIKE', "%{$serial_number}%");
                 })
-                ->when(!empty($location), function ($query) use ($location) {
-                    $query->where('area.name', 'LIKE', "%{$location}%");
-                })
-                ->when(!empty($shelf), function ($query) use ($shelf) {
-                    $query->where('shelf.name', 'LIKE', "%{$shelf}%");
-                })
-                ->when(!empty($tag), function ($query) use ($tag) {
-                    $query->where('tag_names', 'LIKE', "%{$tag}%");
-                })
-                ->when(!empty($manufacturer), function ($query) use ($manufacturer) {
-                    $query->where('manufacturer.name', $manufacturer);
-                })
-                ->when($oos === 1, function ($query) {
-                    $query->havingRaw('item_quantity IS NULL OR item_quantity = 0');
-                })
-                ->when($limit !== 0, function ($query) use ($limit) {
-                    $query->limit($limit);
-                })
-                ->when($offset > 0, function ($query) use ($offset) {
-                    $query->offset($offset);
-                })
+
+                ->when(!empty($sku), fn($q) => $q->where('stock.sku', 'LIKE', "%{$sku}%"))
+                ->when(!empty($location), fn($q) => $q->where('area.name', 'LIKE', "%{$location}%"))
+                ->when(!empty($shelf), fn($q) => $q->where('shelf.name', 'LIKE', "%{$shelf}%"))
+                ->when(!empty($tag), fn($q) => $q->where('tag_names', 'LIKE', "%{$tag}%"))
+                ->when(!empty($manufacturer), fn($q) => $q->where('manufacturer.name', $manufacturer))
+                ->when($oos === 1, fn($q) => $q->havingRaw('item_quantity IS NULL OR item_quantity = 0'))
+                ->when($limit !== 0, fn($q) => $q->limit($limit))
+                ->when($offset > 0, fn($q) => $q->offset($offset))
                 ->groupBy([
-                    'stock.id', 'stock.name', 'stock.description', 'stock.sku',
-                    'stock.min_stock', 'stock.is_cable', 'site.id', 'site.name',
-                    'site.description', 'stock_img_image.stock_img_image', 'quantity_cte.total_item_quantity',
+                    'stock.id','stock.name','stock.description','stock.sku',
+                    'stock.min_stock','stock.is_cable','site.id','site.name',
+                    'site.description','stock_img_image.stock_img_image','quantity_cte.total_item_quantity',
                 ])
-                ->when($area != 0, function ($query) {
-                    $query->groupBy('area.id');
-                })
+                ->when($area != 0, fn($q) => $q->groupBy('area.id'))
                 ->orderBy('stock.name');
+
         } else {
+
             $query = $instance->select([
                     'stock.id AS stock_id',
                     'stock.name AS stock_name',
@@ -195,33 +649,29 @@ class StockModel extends Model
                     'tag_names.tag_names AS tag_names',
                     'tag_ids.tag_ids AS tag_ids',
                     'stock_img_image.stock_img_image',
-                    ])
-                // ->distinct()
+                ])
                 ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
                 ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
-                ->leftJoinSub(
-                    DB::table('stock_img')
-                        ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
-                        ->groupBy('stock_id'),
+                ->leftJoinSub(/* same as above */ DB::table('stock_img')
+                    ->select(['stock_id', DB::raw('MIN(image) AS stock_img_image')])
+                    ->groupBy('stock_id'),
                     'stock_img_image',
                     'stock_img_image.stock_id',
                     '=',
                     'stock.id'
                 )
-                ->leftJoinSub(
-                    DB::table('stock_tag')
-                        ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
-                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
-                        ->groupBy('stock_tag.stock_id'),
+                ->leftJoinSub(/* tag_names */ DB::table('stock_tag')
+                    ->join('tag', 'stock_tag.tag_id', '=', 'tag.id')
+                    ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag.name SEPARATOR ', ') AS tag_names")])
+                    ->groupBy('stock_tag.stock_id'),
                     'tag_names',
                     'tag_names.stock_id',
                     '=',
                     'stock.id'
                 )
-                ->leftJoinSub(
-                    DB::table('stock_tag')
-                        ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
-                        ->groupBy('stock_tag.stock_id'),
+                ->leftJoinSub(/* tag_ids */ DB::table('stock_tag')
+                    ->select(['stock_tag.stock_id', DB::raw("GROUP_CONCAT(DISTINCT tag_id SEPARATOR ', ') AS tag_ids")])
+                    ->groupBy('stock_tag.stock_id'),
                     'tag_ids',
                     'tag_ids.stock_id',
                     '=',
@@ -229,41 +679,34 @@ class StockModel extends Model
                 )
                 ->where('stock.is_cable', 0)
                 ->where('stock.deleted', 0)
-                ->when($oos === 0, function ($query) {
-                    $query->where('item.deleted', 0);
-                })
+                ->when($oos === 0, fn($q) => $q->where('item.deleted', 0))
+
                 ->when(!empty($name), function ($query) use ($name) {
                     $query->where(function ($subQuery) use ($name) {
                         $subQuery->whereRaw("MATCH(stock.name) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
-                                ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
-                                ->orWhere('stock.name', 'LIKE', "%{$name}%");
+                            ->orWhereRaw("MATCH(stock.description) AGAINST (? IN NATURAL LANGUAGE MODE)", [$name])
+                            ->orWhere('stock.name', 'LIKE', "%{$name}%");
                     });
                 })
-                ->when(!empty($sku), function ($query) use ($sku) {
-                    $query->where('stock.sku', 'LIKE', "%{$sku}%");
+
+                // ✅ SERIAL HERE TOO
+                ->when(!empty($serial_number), function ($query) use ($serial_number) {
+                    $query->where('item.serial_number', 'LIKE', "%{$serial_number}%");
                 })
-                ->when(!empty($tag), function ($query) use ($tag) {
-                    $query->where('tag_names', 'LIKE', "%{$tag}%");
-                })
-                ->when(!empty($manufacturer), function ($query) use ($manufacturer) {
-                    $query->where('manufacturer.name', $manufacturer);
-                })
-                ->when($oos === 1, function ($query) {
-                    $query->havingRaw('item_quantity IS NULL OR item_quantity = 0');
-                })
-                ->when($limit !== 0, function ($query) use ($limit) {
-                    $query->limit($limit);
-                })
-                ->when($offset > 0, function ($query) use ($offset) {
-                    $query->offset($offset);
-                })
+
+                ->when(!empty($sku), fn($q) => $q->where('stock.sku', 'LIKE', "%{$sku}%"))
+                ->when(!empty($tag), fn($q) => $q->where('tag_names', 'LIKE', "%{$tag}%"))
+                ->when(!empty($manufacturer), fn($q) => $q->where('manufacturer.name', $manufacturer))
+                ->when($oos === 1, fn($q) => $q->havingRaw('item_quantity IS NULL OR item_quantity = 0'))
+                ->when($limit !== 0, fn($q) => $q->limit($limit))
+                ->when($offset > 0, fn($q) => $q->offset($offset))
                 ->groupBy([
-                    'stock.id', 'stock.name', 'stock.description', 'stock.sku',
-                    'stock.min_stock', 'stock.is_cable',
-                    'stock_img_image.stock_img_image',
+                    'stock.id','stock.name','stock.description','stock.sku',
+                    'stock.min_stock','stock.is_cable','stock_img_image.stock_img_image',
                 ])
                 ->orderBy('stock.name');
         }
+
         return [
             'query' => $query,
             'data' => [
@@ -272,6 +715,7 @@ class StockModel extends Model
                 'shelf' => $shelf,
                 'name' => $name,
                 'sku' => $sku,
+                'serial_number' => $serial_number, // ✅ RETURN IT
                 'tag' => $tag,
                 'location' => $location,
                 'manufacturer' => $manufacturer,
@@ -279,7 +723,7 @@ class StockModel extends Model
             ],
         ];
     }
-
+    
     static public function returnStockAjax($request) 
     {
         $results = []; // to return
@@ -692,12 +1136,13 @@ class StockModel extends Model
                     a.id AS area_id, a.name AS area_name, 
                     sh.id AS shelf_id, sh.name AS shelf_name, 
                     si.id AS site_id, si.name AS site_name, si.description AS site_description,
-
-                    (SELECT SUM(i.quantity) 
-                    FROM item AS i 
-                    WHERE i.stock_id = s.id AND i.shelf_id = sh.id ANd i.deleted=0
+                    (SELECT SUM(i.quantity)
+                    FROM item AS i
+                    WHERE i.stock_id = s.id
+                        AND i.shelf_id = sh.id
+                        AND i.deleted = 0
+                        AND i.quantity > 0
                     ) AS item_quantity,
-
                     (SELECT GROUP_CONCAT(DISTINCT m.name ORDER BY m.name SEPARATOR ', ') 
                     FROM item AS i 
                     INNER JOIN manufacturer AS m ON m.id = i.manufacturer_id 
@@ -750,9 +1195,16 @@ class StockModel extends Model
                     sh.id AS shelf_id, sh.name AS shelf_name, 
                     si.id AS site_id, si.name AS site_name, si.description AS site_description,
 
-                    (SELECT SUM(ci.quantity) 
-                    FROM cable_item AS ci
-                    WHERE ci.stock_id = s.id AND ci.shelf_id = sh.id
+                    COALESCE(
+                        (
+                            SELECT SUM(ci.quantity)
+                            FROM cable_item AS ci
+                            WHERE ci.stock_id = s.id
+                            AND ci.shelf_id = sh.id
+                            AND ci.quantity != 0
+                            AND ci.deleted = 0
+                        ),
+                        0
                     ) AS item_quantity
                 ")
                 ->leftJoin('cable_item AS ci', 's.id', '=', 'ci.stock_id')
@@ -926,78 +1378,83 @@ class StockModel extends Model
         $stock_item_data = $stock_tag_data = ['rows' => []];
         
         if ($is_cable == 0) {
-            $rows = $instance->selectRaw("
-                                    stock.id AS stock_id, 
-                                    stock.name AS stock_name, 
-                                    stock.description AS stock_description, 
-                                    stock.sku AS stock_sku, 
-                                    stock.min_stock AS stock_min_stock, 
-                                    area.id AS area_id, 
-                                    area.name AS area_name, 
-                                    shelf.id AS shelf_id, 
-                                    shelf.name AS shelf_name, 
-                                    site.id AS site_id, 
-                                    site.name AS site_name, 
-                                    site.description AS site_description, 
-                                    item.serial_number AS item_serial_number, 
-                                    item.upc AS item_upc, 
-                                    item.cost AS item_cost, 
-                                    item.comments AS item_comments, 
-                                    item.is_container AS item_is_container,
-                                    (SELECT SUM(quantity) 
-                                    FROM item AS i
-                                    WHERE i.stock_id = stock.id 
-                                    AND i.shelf_id = shelf.id 
-                                    AND i.manufacturer_id = manufacturer.id 
-                                    AND i.serial_number = item.serial_number 
-                                    AND (
-                                        i.upc = item.upc OR (i.upc IS NULL AND item.upc IS NULL)
-                                    )
-                                    AND i.comments = item.comments 
-                                    AND i.cost = item.cost) AS item_quantity, 
-                                    manufacturer.id AS manufacturer_id, 
-                                    manufacturer.name AS manufacturer_name, 
-                                    (SELECT GROUP_CONCAT(DISTINCT manufacturer.id ORDER BY manufacturer.name SEPARATOR ', ') 
-                                        FROM item 
-                                        INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
-                                        WHERE item.stock_id = stock.id
-                                    ) AS manufacturer_ids,
-                                    (SELECT GROUP_CONCAT(DISTINCT manufacturer.name ORDER BY manufacturer.name SEPARATOR ', ') 
-                                        FROM item 
-                                        INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
-                                        WHERE item.stock_id = stock.id
-                                    ) AS manufacturer_names,
-                                    (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
-                                    FROM stock_tag 
-                                    INNER JOIN tag ON stock_tag.tag_id = tag.id 
-                                    WHERE stock_tag.stock_id = stock.id 
-                                    ORDER BY tag.name) AS tag_names, 
-                                    (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
-                                    FROM stock_tag 
-                                    INNER JOIN tag ON stock_tag.tag_id = tag.id 
-                                    WHERE stock_tag.stock_id = stock.id 
-                                    ORDER BY tag.name) AS tag_ids
-                                ")
-                                ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
-                                ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
-                                ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
-                                ->leftJoin('site', 'area.site_id', '=', 'site.id')
-                                ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
-                                ->where('stock.id', $stock_id)
-                                ->where('quantity', '!=', 0)
-                                ->groupBy([
-                                    'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
-                                    'site_id', 'site_name', 'site_description', 
-                                    'area_id', 'area_name', 
-                                    'shelf_id', 'shelf_name', 
-                                    'manufacturer_name', 'manufacturer_id', 
-                                    'item_serial_number', 'item_upc', 'item_comments', 'item_cost', 'item_is_container'
-                                ])
-                                ->orderBy('site.id')
-                                ->orderBy('area.name')
-                                ->orderBy('shelf.name')
-                                ->get()
-                                ->toArray();
+                $rows = $instance->selectRaw("
+                                        stock.id AS stock_id, 
+                                        stock.name AS stock_name, 
+                                        stock.description AS stock_description, 
+                                        stock.sku AS stock_sku, 
+                                        stock.min_stock AS stock_min_stock, 
+                                        area.id AS area_id, 
+                                        area.name AS area_name, 
+                                        shelf.id AS shelf_id, 
+                                        shelf.name AS shelf_name, 
+                                        site.id AS site_id, 
+                                        site.name AS site_name, 
+                                        site.description AS site_description, 
+                                        item.serial_number AS item_serial_number, 
+                                        item.upc AS item_upc, 
+                                        item.cost AS item_cost, 
+                                        item.comments AS item_comments, 
+                                        item.is_container AS item_is_container,
+                                        COALESCE(
+                                            (
+                                                SELECT SUM(i.quantity)
+                                                FROM item AS i
+                                                WHERE i.stock_id = stock.id
+                                                AND i.shelf_id = shelf.id
+                                                AND i.manufacturer_id = manufacturer.id
+                                                AND i.serial_number <=> item.serial_number
+                                                AND i.upc <=> item.upc
+                                                AND i.comments <=> item.comments
+                                                AND i.cost <=> item.cost
+                                                AND i.quantity != 0
+                                                AND i.deleted = 0
+                                            ),
+                                            0
+                                        ) AS item_quantity, 
+                                        manufacturer.id AS manufacturer_id, 
+                                        manufacturer.name AS manufacturer_name, 
+                                        (SELECT GROUP_CONCAT(DISTINCT manufacturer.id ORDER BY manufacturer.name SEPARATOR ', ') 
+                                            FROM item 
+                                            INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
+                                            WHERE item.stock_id = stock.id
+                                        ) AS manufacturer_ids,
+                                        (SELECT GROUP_CONCAT(DISTINCT manufacturer.name ORDER BY manufacturer.name SEPARATOR ', ') 
+                                            FROM item 
+                                            INNER JOIN manufacturer ON manufacturer.id = item.manufacturer_id 
+                                            WHERE item.stock_id = stock.id
+                                        ) AS manufacturer_names,
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
+                                        FROM stock_tag 
+                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                        WHERE stock_tag.stock_id = stock.id 
+                                        ORDER BY tag.name) AS tag_names, 
+                                        (SELECT GROUP_CONCAT(DISTINCT tag.id ORDER BY tag.name SEPARATOR ', ') 
+                                        FROM stock_tag 
+                                        INNER JOIN tag ON stock_tag.tag_id = tag.id 
+                                        WHERE stock_tag.stock_id = stock.id 
+                                        ORDER BY tag.name) AS tag_ids
+                                    ")
+                                    ->leftJoin('item', 'stock.id', '=', 'item.stock_id')
+                                    ->leftJoin('shelf', 'item.shelf_id', '=', 'shelf.id')
+                                    ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
+                                    ->leftJoin('site', 'area.site_id', '=', 'site.id')
+                                    ->leftJoin('manufacturer', 'item.manufacturer_id', '=', 'manufacturer.id')
+                                    ->where('stock.id', $stock_id)
+                                    ->where('item.quantity', '!=', 0)
+                                    ->groupBy([
+                                        'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
+                                        'site_id', 'site_name', 'site_description', 
+                                        'area_id', 'area_name', 
+                                        'shelf_id', 'shelf_name', 
+                                        'manufacturer_name', 'manufacturer_id', 
+                                        'item_serial_number', 'item_upc', 'item_comments', 'item_cost', 'item_is_container'
+                                    ])
+                                    ->orderBy('site.id')
+                                    ->orderBy('area.name')
+                                    ->orderBy('shelf.name')
+                                    ->get()
+                                    ->toArray();
 
         } elseif ($is_cable == 1) {
             $rows = $instance->selectRaw("
@@ -1014,9 +1471,17 @@ class StockModel extends Model
                         site.name AS site_name, 
                         site.description AS site_description, 
                         cable_item.cost AS item_cost, 
-                        (SELECT SUM(quantity) FROM cable_item 
-                            WHERE cable_item.stock_id = stock.id 
-                            AND cable_item.shelf_id = shelf.id) AS item_quantity, 
+                        COALESCE(
+                            (
+                                SELECT SUM(ci.quantity)
+                                FROM cable_item AS ci
+                                WHERE ci.stock_id = stock.id
+                                AND ci.shelf_id = shelf.id
+                                AND ci.cost <=> cable_item.cost
+                                AND ci.quantity != 0
+                            ),
+                            0
+                        ) AS item_quantity, 
                         (SELECT GROUP_CONCAT(DISTINCT tag.name ORDER BY tag.name SEPARATOR ', ') 
                             FROM stock_tag 
                             INNER JOIN tag ON stock_tag.tag_id = tag.id 
@@ -1032,7 +1497,7 @@ class StockModel extends Model
                     ->leftJoin('area', 'shelf.area_id', '=', 'area.id')
                     ->leftJoin('site', 'area.site_id', '=', 'site.id')
                     ->where('stock.id', '=', $stock_id)
-                    ->where('quantity', '!=', 0)
+                    ->where('cable_item.quantity', '!=', 0)
                     ->groupBy([
                         'stock.id', 'stock_name', 'stock_description', 'stock_sku', 'stock_min_stock', 
                         'site_id', 'site_name', 'site_description', 
@@ -1071,7 +1536,7 @@ class StockModel extends Model
             $stock_item_data['rows'][] = array('id' => $row['stock_id'],
                                         'name' => $row['stock_name'],
                                         'sku' => $row['stock_sku'],
-                                        'quantity' => $row['item_quantity'] ?? 0,
+                                        'quantity' => $row['item_quantity'],
                                         'min_stock' => $row['stock_min_stock'],
                                         'shelf_id' => $row['shelf_id'],
                                         'shelf_name' => $row['shelf_name'],
@@ -1391,6 +1856,7 @@ class StockModel extends Model
     static public function addExistingStock($request, $redirect=null) 
     {
         if ($request['_token'] == csrf_token()) {
+            $serial_matches = [];
             if (GeneralModel::checkShelfAreaMatch($request['shelf'], $request['area']) && GeneralModel::checkAreaSiteMatch($request['area'], $request['site'])) {
                 $return = [];
                 $return['ids'] = [];
@@ -1401,14 +1867,11 @@ class StockModel extends Model
 
                 $serials = array_map('trim', explode(',', $request['serial-number']));
 
-                // check for non=uniques.
+                // check for non-uniques.
                 foreach ($serials as $sn) {
                     if ($sn !== null && $sn !== '') {
                         if (StockModel::checkUniqueSerial($sn) == 0) {
-                            $redirect_array = ['stock_id'   => $request['id'],
-                                            'modify_type' => 'add',
-                                            'error' => 'non-unique serial found, aborted.'];
-                            return redirect()->route('stock', $redirect_array)->with('return', $return);
+                            $serial_matches[] = $sn;
                         }
                     }
                 }
@@ -1420,7 +1883,7 @@ class StockModel extends Model
                     } else {
                         $serial = '';
                     }
-                    
+
                     $data = [
                             'stock_id' => $request['id'], 
                             'upc' => $request['upc'],
@@ -1432,66 +1895,156 @@ class StockModel extends Model
                             'shelf_id' => $request['shelf'],
                             'is_container' => 0
                             ];
-                    /** @var ItemModel $insert */
-                    $insert = ItemModel::create($data);
-                    $id = $insert->id;
-                    
-                    // changelog data for item
-                    $info = [
-                        'user' => $user,
-                        'table' => 'item',
-                        'record_id' => $id,
-                        'field' => 'quantity',
-                        'new_value' => 1,
-                        'action' => 'Add quantity',
-                        'previous_value' => '',
-                    ];
 
-                    $return['insert'][] = ['item_id' => $id, 
-                                            'data' => $data, 
-                                            'changelog' => $info];
-                                            
-                    if ($id) {
-                        $counter++;
-                        GeneralModel::updateChangelog($info);
+                    if ($serial !== '' && $serial !== null && in_array($serial, $serial_matches)) {
+                        $find_serial = DB::table('item')
+                                        ->where('serial_number', $serial)
+                                        ->first();
+                        if ($find_serial
+                            && $find_serial->stock_id == $request['id']
+                            && $find_serial->manufacturer_id == $request['manufacturer']
+                            && $find_serial->quantity == 0
+                            && $find_serial->deleted == 1) {
 
-                        // link to container if needed
-                        if (isset($request['container']) && is_numeric($request['container'])) {
-                            if ($request['container'] < 0) {
-                                $container_id = $request['container'] *-1;
-                                $container_is_item = 1;
-                            } else {
-                                $container_id = $request['container'];
-                                $container_is_item = 0;
+                            $id = $find_serial->id;
+                            // already exists, re-add
+                            $update = DB::table('item')
+                                    ->where('id', $id)
+                                    ->update(['quantity' => 1, 
+                                                'deleted' => 0,
+                                                'shelf_id' => $request['shelf'],
+                                                'cost' => $request['cost'] ?? 0
+
+                                    ]);
+                            if ($update) {
+                                // changelog data for item
+                                $info = [
+                                    'user' => $user,
+                                    'table' => 'item',
+                                    'record_id' => $id,
+                                    'field' => 'quantity',
+                                    'new_value' => 1,
+                                    'action' => 'Add quantity',
+                                    'previous_value' => '',
+                                ];
+
+                                $return['insert'][] = ['item_id' => $find_serial->id, 
+                                                        'data' => $data, 
+                                                        'changelog' => $info];
+                                
+                                if ($id) {
+                                    $counter++;
+                                    GeneralModel::updateChangelog($info);
+
+                                    // link to container if needed
+                                    if (isset($request['container']) && is_numeric($request['container'])) {
+                                        if ($request['container'] < 0) {
+                                            $container_id = $request['container'] *-1;
+                                            $container_is_item = 1;
+                                        } else {
+                                            $container_id = $request['container'];
+                                            $container_is_item = 0;
+                                        }
+                                        $container_data = ['item_id' => $id, 
+                                                            'container_id' => $container_id, 
+                                                            'is_item' => $container_is_item];
+
+                                        // add the container link
+                                        ContainersModel::linkToContainer($container_data, 'no');
+                                    }
+
+                                    // update the transactions
+                                    $transaction_data = new HttpRequest([
+                                        'stock_id' => $request['id'],
+                                        'item_id' => $id,
+                                        'type' => 'add',
+                                        'quantity' => 1,
+                                        'price' => $request['cost'] ?? 0,
+                                        'serial_number' => $serial ?? '',
+                                        'date' => date('Y-m-d'),
+                                        'time' => date('H:i:s'),
+                                        'username' => $user['username'],
+                                        'shelf_id' => $request['shelf'],
+                                        'reason' => $request['reason']
+                                    ]);
+
+                                    TransactionModel::addTransaction($transaction_data);
+                                }
                             }
-                            $container_data = ['item_id' => $id, 
-                                                'container_id' => $container_id, 
-                                                'is_item' => $container_is_item];
-
-                            // add the container link
-                            ContainersModel::linkToContainer($container_data, 'no');
+                        } else {
+                            $not_added_sn[] = $serial;
                         }
+                    } else {
+                        /** @var ItemModel $insert */
+                        $insert = ItemModel::create($data);
+                        $id = $insert->id;
+                        
+                        // changelog data for item
+                        $info = [
+                            'user' => $user,
+                            'table' => 'item',
+                            'record_id' => $id,
+                            'field' => 'quantity',
+                            'new_value' => 1,
+                            'action' => 'Add quantity',
+                            'previous_value' => '',
+                        ];
 
-                        // update the transactions
-                        $transaction_data = new HttpRequest([
-                            'stock_id' => $request['id'],
-                            'item_id' => $id,
-                            'type' => 'add',
-                            'quantity' => 1,
-                            'price' => $request['cost'] ?? 0,
-                            'serial_number' => $serial ?? '',
-                            'date' => date('Y-m-d'),
-                            'time' => date('h:i:s'),
-                            'username' => $user['username'],
-                            'shelf_id' => $request['shelf'],
-                            'reason' => $request['reason']
-                        ]);
+                        $return['insert'][] = ['item_id' => $id, 
+                                                'data' => $data, 
+                                                'changelog' => $info];
+                                                
+                        if ($id) {
+                            $counter++;
+                            GeneralModel::updateChangelog($info);
 
-                        TransactionModel::addTransaction($transaction_data);
+                            // link to container if needed
+                            if (isset($request['container']) && is_numeric($request['container'])) {
+                                if ($request['container'] < 0) {
+                                    $container_id = $request['container'] *-1;
+                                    $container_is_item = 1;
+                                } else {
+                                    $container_id = $request['container'];
+                                    $container_is_item = 0;
+                                }
+                                $container_data = ['item_id' => $id, 
+                                                    'container_id' => $container_id, 
+                                                    'is_item' => $container_is_item];
+
+                                // add the container link
+                                ContainersModel::linkToContainer($container_data, 'no');
+                            }
+
+                            // update the transactions
+                            $transaction_data = new HttpRequest([
+                                'stock_id' => $request['id'],
+                                'item_id' => $id,
+                                'type' => 'add',
+                                'quantity' => 1,
+                                'price' => $request['cost'] ?? 0,
+                                'serial_number' => $serial ?? '',
+                                'date' => date('Y-m-d'),
+                                'time' => date('H:i:s'),
+                                'username' => $user['username'],
+                                'shelf_id' => $request['shelf'],
+                                'reason' => $request['reason']
+                            ]);
+
+                            TransactionModel::addTransaction($transaction_data);
+                        }
                     }
+
+                    if (!empty($not_added_sn)) {
+                        $redirect_array = ['stock_id'   => $request['id'],
+                                    'modify_type' => 'add',
+                                    'error' => 'non-unique serial(s) found, aborted. ['.implode(", ", $not_added_sn).']'];
+                                    return redirect()->route('stock', $redirect_array)->with('return', $return);
+
+                    }
+                    
                 }
-                
-                $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+
+                $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->where('deleted', 0)->get()->toArray());
 
                 $mail_data = [
                     'stock_id' => $request['id'],
@@ -1630,9 +2183,14 @@ class StockModel extends Model
         return $next_sku;
     }
 
-    public static function checkUniqueSerial($serial)
+    public static function checkUniqueSerial($serial, $deleted = null)
     {
-        $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial]);
+        if ($deleted) {
+            $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial, 'deleted' => $deleted]);
+        } else {
+            $all = GeneralModel::getAllWhere('item', ['serial_number' => $serial]);
+        }
+        
         if (count($all) < 1) {
             return 1;
         } else {
@@ -1784,6 +2342,9 @@ class StockModel extends Model
                     $new_tag_names[] = $tag['tag_name'];
                 }
             }
+            if (!isset($data['sku'])) {
+                $data['sku'] = $current['sku'];
+            }
             $mail_data = [
                 'stock_id' => $stock_id,
                 'stock_name_old' => $current['name'],
@@ -1791,10 +2352,10 @@ class StockModel extends Model
                 'stock_description_old' => $current['description'],
                 'stock_min_stock_old' => $current['min_stock'],
                 'stock_tags_old' => implode(', ', $current_tag_names),
-                'stock_name_new' => $current['name'],
-                'stock_sku_new' => $current['sku'],
-                'stock_description_new' => $current['description'],
-                'stock_min_stock_new' => $current['min_stock'],
+                'stock_name_new' => $data['name'],
+                'stock_sku_new' => $data['sku'],
+                'stock_description_new' => $data['description'],
+                'stock_min_stock_new' => $data['min_stock'],
                 'stock_tags_new' => implode(', ', $new_tag_names),
             ];
             SmtpModel::notificationEmail(6, 6, $mail_data);
@@ -1891,7 +2452,7 @@ class StockModel extends Model
                                 'price' => 0,
                                 'serial_number' => $find_current->serial_number,
                                 'date' => date('Y-m-d'),
-                                'time' => date('h:i:s'),
+                                'time' => date('H:i:s'),
                                 'username' => $user['username'],
                                 'shelf_id' => $find_current->shelf_id,
                                 'reason' => 'Move Stock'
@@ -1908,7 +2469,7 @@ class StockModel extends Model
                                     'price' => 0,
                                     'serial_number' => $find_current->serial_number,
                                     'date' => date('Y-m-d'),
-                                    'time' => date('h:i:s'),
+                                    'time' => date('H:i:s'),
                                     'username' => $user['username'],
                                     'shelf_id' => $new_shelf_id,
                                     'reason' => 'Move Stock'
@@ -1971,7 +2532,7 @@ class StockModel extends Model
                                                         'price' => 0,
                                                         'serial_number' => $child['serial_number'],
                                                         'date' => date('Y-m-d'),
-                                                        'time' => date('h:i:s'),
+                                                        'time' => date('H:i:s'),
                                                         'username' => $user['username'],
                                                         'shelf_id' => $child['shelf_id'],
                                                         'reason' => 'Move Stock'
@@ -1988,7 +2549,7 @@ class StockModel extends Model
                                                             'price' => 0,
                                                             'serial_number' => $child['serial_number'],
                                                             'date' => date('Y-m-d'),
-                                                            'time' => date('h:i:s'),
+                                                            'time' => date('H:i:s'),
                                                             'username' => $user['username'],
                                                             'shelf_id' => $new_shelf_id,
                                                             'reason' => 'Move Stock'
@@ -2439,7 +3000,7 @@ class StockModel extends Model
                     'price' => 0,
                     'serial_number' => '',
                     'date' => date('Y-m-d'),
-                    'time' => date('h:i:s'),
+                    'time' => date('H:i:s'),
                     'username' => $user['username'],
                     'shelf_id' => NULL,
                     'reason' => 'Stock restored by an admin.'
@@ -2488,9 +3049,137 @@ class StockModel extends Model
         return $data;
     }
 
+    static public function removeExistingStockById($request)
+    {
+        $user = GeneralModel::getUser();
+        if (isset($request['id']) && $request['id'] > 0) {
+            $find = DB::table('item')
+                    ->where('id', $request['id'])
+                    ->whereNotIn('id', function ($subquery) {
+                        $subquery->select('item_id')->from('item_container');
+                    })
+                    ->get()
+                    ->toArray();
+            if ($find && count($find) == 1) {
+                $stock_id = $find[0]->stock_id;
+                $shelf_id = $find[0]->shelf_id;
+                $errors = 0;
+                $rem_id = $find[0]->id;
+                $update = DB::table('item')->where('id', $rem_id)->update(['deleted' => 1, 'quantity' => 0, 'updated_at' => now()]);
+
+                if ($update) {
+                    // changelog
+                    $changelog_info = [
+                        'user' => $user,
+                        'table' => 'item',
+                        'record_id' => $rem_id,
+                        'action' => 'Update record',
+                        'field' => 'deleted',
+                        'previous_value' => 0,
+                        'new_value' => 1
+                    ];
+
+                    $changelog = GeneralModel::updateChangelog($changelog_info);
+
+                    if (!$changelog) {
+                        $errors++;
+                    }
+
+                    // add Transaction
+                    $remove_transaction_data = new HttpRequest([
+                        'stock_id' => $stock_id,
+                        'item_id' => $rem_id,
+                        'type' => 'remove',
+                        'quantity' => -1,
+                        'price' => 0,
+                        'serial_number' => $find[0]->serial_number,
+                        'date' => date('Y-m-d'),
+                        'time' => date('H:i:s'),
+                        'username' => $user['username'],
+                        'shelf_id' => $shelf_id,
+                        'reason' => 'Remove Stock'
+                    ]);
+
+                    $transaction = TransactionModel::addTransaction($remove_transaction_data);
+
+                    if (!$transaction) {
+                        $errors++;
+                    }
+
+                    // remove from item_container too
+                    $item_container_find = DB::table('item_container')
+                                            ->where('item_id', '=', $rem_id)
+                                            ->first();
+                    
+                    if ($item_container_find) {
+                        $item_container_delete = DB::table('item_container')
+                                            ->where('item_id', '=', $rem_id)
+                                            ->delete();
+                        if ($item_container_delete) {
+                            // changelog
+                            $changelog_info = [
+                                'user' => $user,
+                                'table' => 'item_container',
+                                'record_id' => $item_container_find->id,
+                                'action' => 'Delete record',
+                                'field' => 'item_id',
+                                'previous_value' => $rem_id,
+                                'new_value' => ''
+                            ];
+
+                            $changelog = GeneralModel::updateChangelog($changelog_info);
+                            if (!$changelog) {
+                                $errors++;
+                            }
+                        } else {
+                            $errors++;
+                        }
+                        
+                    }
+                } else {
+                    return redirect(GeneralModel::previousURL())->with('error', 'Failed to mark deleted item id: '.$rem_id.'.');
+                }
+
+                if ($errors == 0) {
+                    $stock_data = StockModel::getStockData($stock_id);
+                    $location_data = GeneralModel::getSiteAreaShelfData($shelf_id);
+                    $stock_count = count(DB::table('item')->where('stock_id', $stock_id)->where('shelf_id', $shelf_id)->where('deleted', 0)->get()->toArray());
+                    //remove stock email
+                    $mail_data = [
+                        'stock_id' => $stock_id,
+                        'site_id' => $location_data['site_data']['id'] ?? '',
+                        'area_id' => $location_data['area_data']['id'] ?? '', 
+                        'shelf_id' => $location_data['shelf_data']['id'] ?? '',
+                        'quantity' => 1,
+                        'new_quantity' => $stock_count,
+                    ];
+                    SmtpModel::notificationEmail(4, 4, $mail_data);
+                    WebhookModel::notificationWebhook(4, 4, $mail_data);
+                    // minimum stock email
+                    if ($stock_count < $stock_data['min_stock']) {    
+                        $mail_data = [
+                            'stock_id' => $stock_id,
+                            'site_id' => $location_data['site_data']['id'] ?? '',
+                            'area_id' => $location_data['area_data']['id'] ?? '', 
+                            'shelf_id' => $location_data['shelf_data']['id'] ?? '',
+                            'quantity' => $stock_count,
+                        ];
+                        SmtpModel::notificationEmail(9, 9, $mail_data);
+                        WebhookModel::notificationWebhook(9, 9, $mail_data);
+                    }
+                    return redirect(GeneralModel::previousURL())->with('success', 'Item(s) removed: 1.'); 
+                } else {
+                    return redirect(GeneralModel::previousURL())->with( 'error', 'Errors Found'); 
+                }
+                        
+                        
+            }
+        }
+    }
     static public function removeExistingStock($request)
     {
         $user = GeneralModel::getUser();
+
         // find a matching item
         $where = ['stock_id' => $request['stock_id'],
                     'manufacturer_id' => $request['manufacturer'],
@@ -2531,6 +3220,7 @@ class StockModel extends Model
                     
         if ($find && $request['quantity'] > 0) {
             // found them
+            
             if (count($find) >= $request['quantity']) {
                 // enough quantity
                 $errors = 0;
@@ -2538,7 +3228,7 @@ class StockModel extends Model
                 for ($r = 0; $r < $request['quantity']; $r++) {
                     $rem_id = $find[$r]->id;
 
-                    $update = DB::table('item')->where('id', $rem_id)->update(['deleted' => 1, 'updated_at' => now()]);
+                    $update = DB::table('item')->where('id', $rem_id)->update(['deleted' => 1, 'quantity' => 0, 'updated_at' => now()]);
 
                     if ($update) {
                         // changelog
@@ -2567,7 +3257,7 @@ class StockModel extends Model
                             'price' => $request['price'],
                             'serial_number' => $request['serial-number'] ?? '',
                             'date' => $request['transaction_date'] ?? date('Y-m-d'),
-                            'time' => date('h:i:s'),
+                            'time' => date('H:i:s'),
                             'username' => $user['username'],
                             'shelf_id' => $request['shelf'],
                             'reason' => 'Remove Stock'
@@ -2592,7 +3282,7 @@ class StockModel extends Model
                                 // changelog
                                 $changelog_info = [
                                     'user' => $user,
-                                    'table' => 'item_contianer',
+                                    'table' => 'item_container',
                                     'record_id' => $item_container_find->id,
                                     'action' => 'Delete record',
                                     'field' => 'item_id',
@@ -2617,12 +3307,12 @@ class StockModel extends Model
                 }
 
                 if ($errors == 0) {
-                    $stock_data = StockModel::getStockData($request['id']);
+                    $stock_data = StockModel::getStockData($request['stock_id']);
                     $location_data = GeneralModel::getSiteAreaShelfData($request['shelf']);
-                    $stock_count = count(DB::table('item')->where('stock_id', $request['id'])->where('shelf_id', $request['shelf'])->get()->toArray());
+                    $stock_count = count(DB::table('item')->where('stock_id', $request['stock_id'])->where('shelf_id', $request['shelf'])->where('deleted', 0)->get()->toArray());
                     //remove stock email
                     $mail_data = [
-                        'stock_id' => $request['id'],
+                        'stock_id' => $request['stock_id'],
                         'site_id' => $location_data['site_data']['id'] ?? '',
                         'area_id' => $location_data['area_data']['id'] ?? '', 
                         'shelf_id' => $location_data['shelf_data']['id'] ?? '',
@@ -2634,7 +3324,7 @@ class StockModel extends Model
                     // minimum stock email
                     if ($stock_count < $stock_data['min_stock']) {    
                         $mail_data = [
-                            'stock_id' => $request['id'],
+                            'stock_id' => $request['stock_id'],
                             'site_id' => $location_data['site_data']['id'] ?? '',
                             'area_id' => $location_data['area_data']['id'] ?? '', 
                             'shelf_id' => $location_data['shelf_data']['id'] ?? '',
@@ -2707,6 +3397,185 @@ class StockModel extends Model
         } else {
             // dependancies found - no delete
             return redirect(GeneralModel::previousURL())->with('error', 'Dependencies found, could not delete.');
+        }
+    }
+
+    static public function importStock($request)
+    {
+        $user = GeneralModel::getUser();
+
+        // validate and process the import
+        $import_data = $request->file('import_file');
+        if ($import_data) {
+            // process the file and import stock data
+            $imported = false;
+
+            $handle = fopen($import_data->getRealPath(), 'r');
+            if ($handle !== false) {
+                $headers = fgetcsv($handle); // reads first row
+                fclose($handle);
+            }
+
+            $completed_rows = [];
+            $errored_rows = [];
+            $headers = fgetcsv($handle);
+
+            while (($row = fgetcsv($handle)) !== false) {
+                $data = array_combine($headers, $row);
+
+                // check for serial number existing, if it does, error
+                $db_serial_number = GeneralModel::getFirstWhere('item', ['serial_number' => $data['serial_number']]);
+                if ($db_serial_number) {
+                    // serial number already exists - skip and log error
+                    $data['reason'] = 'Serial number already exists';
+                    $errored_rows[] = $data;
+                    continue;
+                }
+
+                // get shelf, area, site data - if not found add it and get the new record
+                $db_site = GeneralModel::getFirstWhere('site', ['name' => $data['site']]);
+                if (!$db_site) {
+                    // add site
+                    $add_site = AdminModel::stockLocationAdd(['type' => 'site', 'name' => $data['site'], 'description' => $data['site'].' - Added via stock import', 'parent' => null]);
+                    if (!$add_site) {
+                        $data['reason'] = 'Failed to add site';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_site = GeneralModel::getFirstWhere('site', ['name' => $data['site']]);
+                }
+
+                $db_area = GeneralModel::getFirstWhere('area', ['name' => $data['area'], 'site_id' => $db_site->id]);
+                 if (!$db_area) {
+                    // add area
+                    $add_area = AdminModel::stockLocationAdd(['type' => 'area', 'name' => $data['area'], 'description' => $data['area'].' - Added via stock import', 'parent' => $db_site->id]);
+                    if (!$add_area) {
+                        $data['reason'] = 'Failed to add area';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_area = GeneralModel::getFirstWhere('area', ['name' => $data['area']]);
+                }
+
+                $db_shelf = GeneralModel::getFirstWhere('shelf', ['name' => $data['shelf'], 'area_id' => $db_area->id]);
+                if (!$db_shelf) {
+                    // add shelf
+                    $add_shelf = AdminModel::stockLocationAdd(['type' => 'shelf', 'name' => $data['shelf'], 'description' => $data['shelf'].' - Added via stock import', 'parent' => $db_area->id]);
+                    if (!$add_shelf) {
+                        $data['reason'] = 'Failed to add shelf';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_shelf = GeneralModel::getFirstWhere('shelf', ['name' => $data['shelf']]);
+                }
+
+                $db_manufacturer = GeneralModel::getFirstWhere('manufacturer', ['name' => $data['manufacturer']]);
+                if (!$db_manufacturer) {
+                    // add manufacturer
+                    $add_manufacturer = PropertiesModel::addProperty('manufacturer', $data['manufacturer']);
+                    if (!$add_manufacturer || $add_manufacturer == 'Error: Property already exists.') {
+                        $data['reason'] = 'Failed to add manufacturer';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_manufacturer = GeneralModel::getFirstWhere('manufacturer', ['name' => $data['manufacturer']]);
+                }
+
+                $db_tag = GeneralModel::getFirstWhere('tag', ['name' => $data['tag']]);
+                if (!$db_tag) {
+                    // add tag
+                    $add_tag = PropertiesModel::addProperty('tag', $data['tag']);
+                    if (!$add_tag || $add_tag == 'Error: Property already exists.') {
+                        $data['reason'] = 'Failed to add tag';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_tag = GeneralModel::getFirstWhere('tag', ['name' => $data['tag']]);
+                }
+
+                $db_stock = GeneralModel::getFirstWhere('stock', ['name' => $data['stock']]);
+                if (!$db_stock) {
+                    // add stock
+                    $add_stock = StockModel::addNewStock(
+                                                ['name' => $data['stock'], 
+                                                'description' => $data['stock'].' - Added via stock import', 
+                                                'is_cable' => 0, 
+                                                'min_stock' => 0, 
+                                                'stock-add' => 1, 
+                                                'manufacturer' => $db_manufacturer->id, 
+                                                'site' => $db_site->id, 
+                                                'area' => $db_area->id, 
+                                                'shelf' => $db_shelf->id,
+                                                'quantity' => $data['quantity'] ?? 1,
+                                                'serial-number' => $data['serial_number'] ?? '',
+                                                'cost' => $data['cost'] ?? 0,
+                                                'reason' => 'Imported stock item '.date('Y-m-d H:i:s'),
+                                            ], 0);
+                    if (!$add_stock) {
+                        $data['reason'] = 'Failed to add stock';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                    $db_stock = GeneralModel::getFirstWhere('stock', ['name' => $data['stock']]);
+                } else {
+                    $add_stock = StockModel::addExistingStock(
+                                                ['id' => $db_stock->id,
+                                                'stock-add' => 1,
+                                                'manufacturer' => $db_manufacturer->id, 
+                                                'site' => $db_site->id, 
+                                                'area' => $db_area->id, 
+                                                'shelf' => $db_shelf->id,
+                                                'quantity' => $data['quantity'] ?? 1,
+                                                'serial-number' => $data['serial_number'] ?? '',
+                                                'cost' => $data['cost'] ?? 0,
+                                                'reason' => 'Imported stock item '.date('Y-m-d H:i:s'),
+                                            ], 0);
+                    if (!$add_stock) {
+                        $data['reason'] = 'Failed to add stock items to existing stock';
+                        $errored_rows[] = $data;
+                        continue;
+                    }
+                }
+
+                // check if stock_tag link exists - if not add it
+                if (!GeneralModel::getFirstWhere('stock_tag', ['stock_id' => $db_stock->id, 'tag_id' => $db_tag->id])) {
+                    TagModel::addTagToStock($db_tag->id, $db_stock->id);    
+                } 
+                
+                $completed_rows[] = $data;
+            }
+
+            // 1 check if the site exists
+            // 2 if site doesnt exist - add it
+            // 3 check if area exists
+            // 4 if no area - add
+            // 5 check if shelf exists
+            // 6 if no shelf - add
+            // 7 check if manufacturer exists
+            // 8 if no manufacturer - add
+            // 9 check if tag(s) exists
+            // 10 if no tag(s) - add
+            // 11 check if stock exists
+            // 12 if no stock - add
+            // 13 add item and details
+            // 14 add the stock_tag link
+            // 15 add transaction
+            // 16 add changelog
+            // 17 display a list of all stock items and their info for reference
+            // 18 any errors list them and create a csv
+            // 19 add a csv of completed rows for reference
+
+
+
+
+
+            if ($imported) {
+                return redirect(GeneralModel::previousURL())->with('success', 'Stock imported successfully.');
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'Failed to import stock.');
+            }
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'No file uploaded.');
         }
     }
 

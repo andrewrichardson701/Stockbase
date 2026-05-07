@@ -262,8 +262,8 @@ class SmtpModel extends Model
       
             '##IMAGE_NAME##'              => $params['img_name'] ?? '',
             '##IMAGE_ID##'                => $params['img_id'] ?? '',
-            '##IMAGE_URL##'               => '<a href="'.asset('img/stock/'.$params['img_name']).'">'.$params['img_name'].'</a>' ?? '',
-            '##IMAGE_URL_TEXT##'          => asset('img/stock/'.$params['img_name']) ?? '',
+            '##IMAGE_URL##'               => isset($params['img_name']) ? '<a href="' . asset('img/stock/' . $params['img_name']) . '">' . $params['img_name'] . '</a>' : '',
+            '##IMAGE_URL_TEXT##'          => isset($params['img_name']) ? asset('img/stock/'.$params['img_name']) : '',
       
             '##USER_NAME##'               => $user['name'] ?? '',
             '##USER_EMAIL##'              => $user['email'] ?? '',
@@ -281,151 +281,274 @@ class SmtpModel extends Model
     }
 
     static public function smtpTest($request)
-    {
-        $mailer = App::make(EmailService::class);
-        $smtpConnectionOk = false;
+{
+    $mailer = App::make(EmailService::class);
+    $smtpConnectionOk = false;
 
-        if ($request['smtp_encryption'] == 'starttls') {
-            $host = $request['smtp_host'];
-            $port = $request['smtp_port'];
-            $timeout = 5;
+    $host = $request['smtp_host'] ?? '';
+    $port = $request['smtp_port'] ?? 25;
+    $encryption = $request['smtp_encryption'] ?? 'none';
+    $username = $request['smtp_username'] ?? null;
+    $password = $request['smtp_password'] ?? null;
 
-            function get($socket,$length=1024){
-                $send = '';
-                $sr = fgets($socket,$length);
-                while( $sr ){
-                    $send .= $sr;
-                    if( $sr[3] != '-' ){ break; }
-                    $sr = fgets($socket,$length);
-                }
-                return $send;
-            }
-            function put($socket,$cmd,$length=1024){
-                fputs($socket,$cmd."\r\n",$length);
-            }
-            if (!($smtp = fsockopen($host, $port, $errno, $errstr, $timeout))) {
-                die("Error: Unable to connect");
-            }
-            // echo "<pre>\n";
-            echo get($smtp); // should return a 220 if you want to check
-            
-            $cmd = "EHLO ".$_SERVER['HTTP_HOST'];
-            echo $cmd."\r\n";
-            put($smtp,$cmd);
-            echo get($smtp); // 250
-            
-            $cmd = "STARTTLS";
-            echo $cmd."\r\n";
-            put($smtp,$cmd);
-            echo get($smtp); // 220
-            if(false == stream_socket_enable_crypto($smtp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)){
-                // fclose($smtp); // unsure if you need to close as I haven't run into a security fail at this point
-                die("Error: Unable to start tls encryption");
-            }
-            
-            $cmd = "EHLO ".$_SERVER['HTTP_HOST'];
-            echo $cmd."\r\n";
-            put($smtp,$cmd);
-            echo get($smtp); // 250
-            
-            $cmd = "QUIT";
-            echo $cmd."\r\n";
-            put($smtp, $cmd);
-            $response = get($smtp);
-            echo $response;
+    $timeout = 5;
 
-            if (substr($response, 0, 3) === '221') {
-                $smtpConnectionOk = true;
-            }
-            // echo "</pre>";
-            
-            fclose($smtp);
-        } else {
-            if ($request['smtp_encryption'] == 'none') {
-                $smtp_encryption = '';
-                $prefix = '';
-            } else {
-                $prefix="://";
-            }
-            $prefix = $smtp_encryption.$prefix;
-            $host = $prefix.$request['smtp_host'];
-            $port = $request['smtp_port'];
-            // $errorNumber;
-            // $error;
-            $timeout = 5;
-            $enableLog = true;
-            $logFile = 'smtp_tester.log';
-            $now = new \DateTime('now');
-
-            if ($enableLog) {
-                $fp = fopen($logFile, 'a');
-            }
-
-            $ret = '<p>Host: ' . $host . ', Port: ' . $port . ', Timeout: ' . $timeout . '</p>';
-
-            $mTime = microtime(true);
-            $connection = fsockopen($host, $port, $errorNumber, $error, $timeout);
-            if (!$connection) {
-                echo '<p>Connection ERROR</p>';
-                echo '<p>Error no.: ' . $errorNumber . '</p>';
-                echo '<p>Error: ' . $error . '</p>';
-                if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR ' . $errorNumber . ' ' . $error . chr(10));
-            } else {
-                echo '<p>Connection established</p>';
-                if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' SUCCESS Connection established' . chr(10));
-                $res = fgets($connection, 256);
-                echo '<p>Welcome res: ' . $res . '</p>';
-                if (substr($res, 0, 3) !== '220') {
-                    echo 'Error. Status has to be 220';
-                    if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR Welcome status <> 220' . chr(10));
-                }
-
-                fputs($connection, "HELO " . $_SERVER['HTTP_HOST'] . "\n");
-                $res = fgets($connection,256);
-                echo '<p>HELO res: ' . $res . '</p>';
-                if (substr($res, 0, 3) !== '250') {
-                    echo 'Error. HELO was not responded with status 250';
-                    if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR HELO status <> 250' . chr(10));
-                }
-
-                fputs($connection, "QUIT\n");
-                $res = fgets($connection, 256);
-                echo '<p>QUIT res: ' . $res . '</p>';
-                if (substr($res, 0, 3) !== '221') {
-                    echo 'Error. QUIT was not responded with status 221';
-                    if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR QUIT status <> 221' . chr(10));
-                } else {
-                    $smtpConnectionOk = true;
-                }
-            }
-
-            echo '<p>Dump SMTP connection</p><pre>';
-            var_dump($connection);
-            echo '</pre>';
-
-            fclose($connection);
-            echo '<p>Execution time: ' . (microtime(true) - $mTime) . '</p>';
-            if ($enableLog) fclose($fp);
-        } 
-
-        
-        
-        if ($smtpConnectionOk && isset($request['smtp_from_email']) && isset($request['smtp_from_name']) && isset($request['smtp_to_email'])) {
-
-            $testBody = "<p>This is a test of the Inventory mail system. <br>You're all set!</p>";
-            $mailer->sendEmail(
-                $request['smtp_to_email'], 
-                $request['smtp_to_name'], 
-                $request['smtp_from_name'], 
-                'SMTP Test Email', 
-                SmtpModel::buildEmail(SmtpModel::convertVariables($testBody)),
-                $request['notif_id'],
-                $request
-            );
-        } else {
-            echo('<p>SMTP connection failed.</p>');
-        }
+    // Add SSL prefix if needed
+    if ($encryption === 'ssl') {
+        $host = "ssl://{$host}";
     }
+
+    $connection = fsockopen($host, $port, $errno, $errstr, $timeout);
+
+    if (!$connection) {
+        echo "Connection failed: $errstr ($errno) \n";
+        return;
+    }
+
+    echo "Connected \n";
+
+    $response = fgets($connection, 512);
+    if (substr($response, 0, 3) !== '220') {
+        echo "Invalid welcome response: $response";
+        fclose($connection);
+        return;
+    }
+
+    // Use EHLO instead of HELO
+    fputs($connection, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
+    $response = fgets($connection, 512);
+    echo "EHLO: $response \n";
+
+    // STARTTLS handling
+    if ($encryption === 'starttls') {
+        fputs($connection, "STARTTLS\r\n");
+        $response = fgets($connection, 512);
+
+        if (substr($response, 0, 3) !== '220') {
+            echo "STARTTLS failed: $response \n";
+            fclose($connection);
+            return;
+        }
+
+        stream_socket_enable_crypto(
+            $connection,
+            true,
+            STREAM_CRYPTO_METHOD_TLS_CLIENT
+        );
+
+        // EHLO again after TLS
+        fputs($connection, "EHLO " . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n");
+        $response = fgets($connection, 512);
+        echo "EHLO after TLS: $response \n";
+    }
+
+    /*
+     * ✅ OPTIONAL AUTHENTICATION
+     * Only attempt AUTH if BOTH username and password are provided
+     */
+    if (!empty($username) && !empty($password)) {
+        fputs($connection, "AUTH LOGIN\r\n");
+        $response = fgets($connection, 512);
+
+        fputs($connection, base64_encode($username) . "\r\n");
+        $response = fgets($connection, 512);
+
+        fputs($connection, base64_encode($password) . "\r\n");
+        $response = fgets($connection, 512);
+
+        if (substr($response, 0, 3) !== '235') {
+            echo "*Authentication failed: $response* \n";
+            fclose($connection);
+            return;
+        }
+
+        echo "*Authentication successful* \n\n";
+    } else {
+        echo "*No authentication used* \n\n";
+    }
+
+    // QUIT
+    fputs($connection, "QUIT\r\n");
+    $response = fgets($connection, 512);
+
+    if (substr($response, 0, 3) === '221') {
+        $smtpConnectionOk = true;
+        echo "SMTP connection OK. \n";
+    }
+    fclose($connection);
+
+    /*
+     * SEND TEST EMAIL IF CONNECTION OK
+     */
+    if (
+        $smtpConnectionOk &&
+        !empty($request['smtp_from_email']) &&
+        !empty($request['smtp_from_name']) &&
+        !empty($request['smtp_to_email'])
+    ) {
+        $testBody = "<p>This is a test of the Inventory mail system.<br>You're all set!</p>";
+
+        $mailer->sendEmail(
+            $request['smtp_to_email'],
+            $request['smtp_to_name'] ?? '',
+            $request['smtp_from_name'],
+            'SMTP Test Email',
+            SmtpModel::buildEmail(
+                SmtpModel::convertVariables($testBody)
+            ),
+            $request['notif_id'] ?? null,
+            $request
+        );
+    } else {
+        echo "SMTP connection failed. \n";
+    }
+}
+    // static public function smtpTest($request)
+    // {
+    //     $mailer = App::make(EmailService::class);
+    //     $smtpConnectionOk = false;
+
+    //     if ($request['smtp_encryption'] == 'starttls') {
+    //         $host = $request['smtp_host'];
+    //         $port = $request['smtp_port'];
+    //         $timeout = 5;
+
+    //         function get($socket,$length=1024){
+    //             $send = '';
+    //             $sr = fgets($socket,$length);
+    //             while( $sr ){
+    //                 $send .= $sr;
+    //                 if( $sr[3] != '-' ){ break; }
+    //                 $sr = fgets($socket,$length);
+    //             }
+    //             return $send;
+    //         }
+    //         function put($socket,$cmd,$length=1024){
+    //             fputs($socket,$cmd."\r\n",$length);
+    //         }
+    //         if (!($smtp = fsockopen($host, $port, $errno, $errstr, $timeout))) {
+    //             die("Error: Unable to connect");
+    //         }
+    //         // echo "<pre>\n";
+    //         echo get($smtp); // should return a 220 if you want to check
+            
+    //         $cmd = "EHLO ".$_SERVER['HTTP_HOST'];
+    //         echo $cmd."\r\n";
+    //         put($smtp,$cmd);
+    //         echo get($smtp); // 250
+            
+    //         $cmd = "STARTTLS";
+    //         echo $cmd."\r\n";
+    //         put($smtp,$cmd);
+    //         echo get($smtp); // 220
+    //         if(false == stream_socket_enable_crypto($smtp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)){
+    //             // fclose($smtp); // unsure if you need to close as I haven't run into a security fail at this point
+    //             die("Error: Unable to start tls encryption");
+    //         }
+            
+    //         $cmd = "EHLO ".$_SERVER['HTTP_HOST'];
+    //         echo $cmd."\r\n";
+    //         put($smtp,$cmd);
+    //         echo get($smtp); // 250
+            
+    //         $cmd = "QUIT";
+    //         echo $cmd."\r\n";
+    //         put($smtp, $cmd);
+    //         $response = get($smtp);
+    //         echo $response;
+
+    //         if (substr($response, 0, 3) === '221') {
+    //             $smtpConnectionOk = true;
+    //         }
+    //         // echo "</pre>";
+            
+    //         fclose($smtp);
+    //     } else {
+    //         if ($request['smtp_encryption'] == 'none') {
+    //             $smtp_encryption = '';
+    //             $prefix = '';
+    //         } else {
+    //             $prefix="://";
+    //         }
+    //         $prefix = $smtp_encryption.$prefix;
+    //         $host = $prefix.$request['smtp_host'];
+    //         $port = $request['smtp_port'];
+    //         // $errorNumber;
+    //         // $error;
+    //         $timeout = 5;
+    //         $enableLog = true;
+    //         $logFile = 'smtp_tester.log';
+    //         $now = new \DateTime('now');
+
+    //         if ($enableLog) {
+    //             $fp = fopen($logFile, 'a');
+    //         }
+
+    //         $ret = '<p>Host: ' . $host . ', Port: ' . $port . ', Timeout: ' . $timeout . '</p>';
+
+    //         $mTime = microtime(true);
+    //         $connection = fsockopen($host, $port, $errorNumber, $error, $timeout);
+    //         if (!$connection) {
+    //             echo '<p>Connection ERROR</p>';
+    //             echo '<p>Error no.: ' . $errorNumber . '</p>';
+    //             echo '<p>Error: ' . $error . '</p>';
+    //             if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR ' . $errorNumber . ' ' . $error . chr(10));
+    //         } else {
+    //             echo '<p>Connection established</p>';
+    //             if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' SUCCESS Connection established' . chr(10));
+    //             $res = fgets($connection, 256);
+    //             echo '<p>Welcome res: ' . $res . '</p>';
+    //             if (substr($res, 0, 3) !== '220') {
+    //                 echo 'Error. Status has to be 220';
+    //                 if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR Welcome status <> 220' . chr(10));
+    //             }
+
+    //             fputs($connection, "HELO " . $_SERVER['HTTP_HOST'] . "\n");
+    //             $res = fgets($connection,256);
+    //             echo '<p>HELO res: ' . $res . '</p>';
+    //             if (substr($res, 0, 3) !== '250') {
+    //                 echo 'Error. HELO was not responded with status 250';
+    //                 if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR HELO status <> 250' . chr(10));
+    //             }
+
+    //             fputs($connection, "QUIT\n");
+    //             $res = fgets($connection, 256);
+    //             echo '<p>QUIT res: ' . $res . '</p>';
+    //             if (substr($res, 0, 3) !== '221') {
+    //                 echo 'Error. QUIT was not responded with status 221';
+    //                 if ($enableLog) fwrite($fp, $now->format('d.m.Y H:i:s') . ' ERROR QUIT status <> 221' . chr(10));
+    //             } else {
+    //                 $smtpConnectionOk = true;
+    //             }
+    //         }
+
+    //         echo '<p>Dump SMTP connection</p><pre>';
+    //         var_dump($connection);
+    //         echo '</pre>';
+
+    //         fclose($connection);
+    //         echo '<p>Execution time: ' . (microtime(true) - $mTime) . '</p>';
+    //         if ($enableLog) fclose($fp);
+    //     } 
+
+        
+        
+    //     if ($smtpConnectionOk && isset($request['smtp_from_email']) && isset($request['smtp_from_name']) && isset($request['smtp_to_email'])) {
+
+    //         $testBody = "<p>This is a test of the Inventory mail system. <br>You're all set!</p>";
+    //         $mailer->sendEmail(
+    //             $request['smtp_to_email'], 
+    //             $request['smtp_to_name'], 
+    //             $request['smtp_from_name'], 
+    //             'SMTP Test Email', 
+    //             SmtpModel::buildEmail(SmtpModel::convertVariables($testBody)),
+    //             $request['notif_id'],
+    //             $request
+    //         );
+    //     } else {
+    //         echo('<p>SMTP connection failed.</p>');
+    //     }
+    // }
 
     public static function notificationEmail($notification_id, $template_id, $data)
     {

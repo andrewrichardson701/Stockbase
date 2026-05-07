@@ -89,7 +89,7 @@ class StockController extends Controller
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
 
-        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type, 'page' => $page, 'add_new' => $add_new, 'search' => $search, 'request' => $request];
+        $params = ['stock_id' => $stock_id, 'modify_type' => $modify_type, 'page' => $page, 'add_new' => $add_new, 'search' => $search, 'request' => $request, 'type' => 'stock'];
         
         if ($stock_id > 0 && is_numeric($stock_id)) {
             $stock_data = StockModel::getStockData($stock_id);
@@ -100,7 +100,7 @@ class StockController extends Controller
                 $stock_distinct_item_data = StockModel::getDistinctStockItemData($stock_id, (int)$stock_data['is_cable']);
                 $serial_numbers = StockModel::getDistinctSerials($stock_id);
                 $container_data = StockModel::getAllContainerData($stock_id);
-                $transactions = TransactionModel::getTransactions($stock_id, (int)$stock_data['is_cable'], 5, $page);
+                $transactions = TransactionModel::getTransactions('stock', $stock_id, (int)$stock_data['is_cable'], 5, $page);
                 $tagged = GeneralModel::formatArrayOnIdAndCount($stock_inv_data['tags']) ?? [];
                 $untagged = GeneralModel::formatArrayOnIdAndCount(GeneralModel::getAllWhereNotIn('tag', ['id' => array_keys($tagged) ?? []]));
                 $tag_data = ['tagged' => $tagged, 'untagged' => $untagged];
@@ -383,9 +383,10 @@ class StockController extends Controller
     
     static public function removeExistingStock(Request $request)
     {
-        // dd($request->input());
+        
         if ($request['_token'] == csrf_token()) {
             $request->validate([
+                'id' => 'integer|nullable',
                 'stock_id' => 'integer|required',
                 'manufacturer' => 'integer|required',
                 'shelf' => 'integer|required',
@@ -402,6 +403,20 @@ class StockController extends Controller
         }
     }
 
+    static public function removeExistingStockById(Request $request)
+    {
+        
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'id' => 'integer|nullable',
+                'reason' => 'string|required',
+            ]);
+            return StockModel::removeExistingStockById($request->input());
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
     static public function deleteStock(Request $request)
     {
         if ($request['_token'] == csrf_token()) {
@@ -412,5 +427,32 @@ class StockController extends Controller
         } else {
             return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
         }
+    }
+
+    static public function importStock(Request $request)
+    {
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'import_file' => 'required|file|mimes:csv,txt',
+            ]);
+
+            dd($request);
+            exit();
+
+            return StockModel::importStock($request);
+        } else {
+            return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+        }
+    }
+
+    static public function importStockView(Request $request)
+    {
+        $nav_highlight = 'stock'; // for the nav highlighting
+
+        $nav_data = GeneralModel::navData($nav_highlight);
+        $request = $request->all(); // turn request into an array
+        $response_handling = ResponseHandlingModel::responseHandling($request);
+
+        return view('importstock', ['nav_data' => $nav_data, 'response_handling' => $response_handling]);
     }
 }

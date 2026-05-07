@@ -20,8 +20,26 @@ class PropertiesModel extends Model
     //
     static public function addProperty($request)
     {
-        $valid_types = ['tag', 'manufacturer', 'site', 'area', 'shelf', 'optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance', 'cable_types'];
-        
+        $valid_types = [
+                'tag', 
+                'manufacturer', 
+                'site', 
+                'area', 
+                'shelf', 
+                'optic_vendor', 
+                'optic_type', 
+                'optic_speed', 
+                'optic_connector', 
+                'optic_distance', 
+                'cable_types',
+                'disk_vendor',
+                'disk_type',
+                'disk_speed',
+                'disk_capacity',
+                'disk_caddy',
+                'disk_rpm'
+            ];
+
         if (in_array($request['type'], $valid_types)) {
             $table = $request['type'];
         } else {

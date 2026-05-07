@@ -45,7 +45,7 @@
                                 <option value="" selected>-- Add Tags --</option>
                             @if ($tag_data['untagged']['count'] > 0)
                                 @foreach($tag_data['untagged']['rows'] as $untagged) 
-                                <option class="btn-stock clickable" style="margin-top:1px;border:1px solid gray" value="{{ $untagged['id'] }}" selected>{{ $untagged['name'] }}</option>
+                                <option class="btn-stock clickable" style="margin-top:1px;border:1px solid gray" value="{{ $untagged['id'] }}">{{ $untagged['name'] }}</option>
                                 @endforeach
                             @else
                                 <option value="0" selected disabled>No Tags Remaining</option>

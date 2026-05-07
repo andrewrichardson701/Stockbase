@@ -19,7 +19,7 @@ class OpticsModel extends Model
     {
         
         $return = [];
-        $optic_keys = ['type', 'speed', 'mode', 'connector', 'distance'];
+        $optic_keys = ['type', 'speed', 'mode', 'connector', 'distance', 'spectrum', 'vendor'];
 
         if (!empty($array)) {
             foreach($array as $key => $row) {
@@ -40,6 +40,8 @@ class OpticsModel extends Model
                 } elseif (in_array($key, $optic_keys)) {
                     if ($key == "mode") {
                         $return[] = ['where' => "optic_item.mode = ?", 'value' => $array[$key]];
+                    } elseif ($key == "spectrum") {
+                        $return[] = ['where' => "optic_item.spectrum = ?", 'value' => $array[$key]];
                     } else {
                         $return[] = ['where' => "optic_$key.id = ?", 'value' => $array[$key]];
                     }
@@ -56,6 +58,7 @@ class OpticsModel extends Model
         if ($page == 0) { $page = 1; }
 
         $wheres = OpticsModel::generateOpticWhereArray($where_array) ;
+      
         $order = OpticsModel::getOpitcsOrderBy($orderby);
 
         $totalCount = count(OpticsModel::getOpticsList($wheres, $order, $deleted, 0, 0));
@@ -230,7 +233,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => 'Comment Added',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -279,7 +282,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => 'Delete comment',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -369,7 +372,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $request['site'],
                     'reason' => 'Item Added',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -383,7 +386,7 @@ class OpticsModel extends Model
                     unset($values['serial_number']);
 
                     foreach (array_keys((array)$find) as $key) {
-                        if (!in_array($key, ['id', 'serial_number', 'updated_at', 'creared_at'])) {
+                        if (!in_array($key, ['id', 'serial_number', 'updated_at', 'created_at'])) {
                             if ($values[$key] !== $find->$key) {
                                 // update
                                 $update = DB::table('optic_item')->where('id', $find->id)->update([$key => $values[$key]]);
@@ -408,7 +411,7 @@ class OpticsModel extends Model
                                         'date' => date('Y-m-d'),
                                         'time' => date('H:i:s'),
                                         'username' => $user['username'],
-                                        'site_id' => 0,
+                                        'site_id' => $request['site'],
                                         'reason' => 'Item Restored',
                                         'created_at' => now(),
                                         'updated_at' => now()
@@ -463,7 +466,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => 'Item Restored',
                     'created_at' => now(),
                     'updated_at' => now()
@@ -511,7 +514,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => 0,
+                    'site_id' => $find->site_id,
                     'reason' => $reason,
                     'created_at' => now(),
                     'updated_at' => now()
@@ -564,7 +567,7 @@ class OpticsModel extends Model
                         'date' => date('Y-m-d'),
                         'time' => date('H:i:s'),
                         'username' => $user['username'],
-                        'site_id' => 0,
+                        'site_id' => $site_id,
                         'reason' => 'Move optic',
                         'created_at' => now(),
                         'updated_at' => now()
@@ -576,6 +579,56 @@ class OpticsModel extends Model
                 }
             } else {
                 return redirect()->to(route('optics', ['error' => 'Site not found for id: '.$site_id.'.']));
+            }
+        } else {
+            return redirect()->to(route('optics', ['error' => 'Optic not found for id: '.$optic_id.'.']));
+        }
+    }
+
+    static public function editOptic($request)
+    {
+        $optic_id = $request['id'];
+        $user = GeneralModel::getUser();
+
+        // see if optic exists
+        $find = DB::table('optic_item')->where('id', $optic_id)->first();
+
+        if ($find) {
+            $update_data = [];
+            foreach (['model', 'mode', 'spectrum', 'distance_id', 'connector_id', 'speed_id', 'vendor_id', 'type_id', 'serial_number'] as $field) {
+                if (isset($request[$field]) && $request[$field] != $find->$field) {
+                    $update_data[$field] = $request[$field];
+                }
+            }
+
+            if (!empty($update_data)) {
+                $update_data['updated_at'] = now();
+                $update = DB::table('optic_item')->where('id', $optic_id)->update($update_data);
+
+                if ($update) {
+                    // changelog
+                    foreach ($update_data as $key => $value) {
+                        if ($key != 'updated_at') {
+                            $changelog_info = [
+                                'user' => $user,
+                                'table' => 'optic_item',
+                                'record_id' => $optic_id,
+                                'action' => 'Edit record',
+                                'field' => $key,
+                                'previous_value' => $find->$key,
+                                'new_value' => $value
+                            ];
+
+                            GeneralModel::updateChangelog($changelog_info);
+                        }
+                    }
+                    
+                    return redirect()->to(GeneralModel::previousURL())->with('success', 'Optic for id: '.$optic_id.' edited.');
+                } else {
+                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to edit optic with id: '.$optic_id.'.');
+                }
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('info', 'No changes made to optic with id: '.$optic_id.'.');
             }
         } else {
             return redirect()->to(route('optics', ['error' => 'Optic not found for id: '.$optic_id.'.']));

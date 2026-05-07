@@ -269,6 +269,7 @@ class AdminModel extends Model
         $user = GeneralModel::getUser();
         $config_fields = Schema::getColumnListing('config');
         $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit', 'webhook-submit'];
+        $not_null_keys = ['system_name', 'SKU_prefix', 'base_url', 'banner_color', 'currency'];
 
         if (isset($data['global-submit'])) {
             $anchor = 'global-settings';
@@ -355,7 +356,7 @@ class AdminModel extends Model
                 return redirect(GeneralModel::previousURL())->with('error', 'Excluded field: '.$field.'.');
             }
         }
-        
+
         foreach($data as $field => $value) {
             if (!in_array($field, ['favicon_image', 'logo_image'])) {
                 // not an image 
@@ -364,7 +365,7 @@ class AdminModel extends Model
                 }
 
                 if (str_contains($field, 'password')) {
-                    if ($value == 'password' || $value == '' || $value == null) {
+                    if ($value == 'password') { // make sure the default isnt pushed into the DB
                         $current_data->$field;
                     } else {
                         if (str_contains($field, 'smtp') || str_contains($field, 'ldap')) {
@@ -377,27 +378,30 @@ class AdminModel extends Model
                 }
 
                 if ($current_data->$field !== $value) {
-                    //update needed
-                    if (filled($value)) {
 
-                        $update = DB::table('config')->where('id', 1)->update([$field => $value, 'updated_at' => now()]);
-                        
-                        if ($update) {
-                            // changelog needed
-                            $changelog_info['field'] = $field;
-                            $changelog_info['previous_value'] = $current_data->$field;
-                            $changelog_info['new_value'] = $value;
+                    if (!in_array($field, $not_null_keys) || ($value !== null && $value !== '')) { // make sure the value is not "" and not null
+                        //update needed
+                        if (filled($value) || $value == null) {
 
-                            $changed[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'updated'];
+                            $update = DB::table('config')->where('id', 1)->update([$field => $value, 'updated_at' => now()]);
+                            
+                            if ($update) {
+                                // changelog needed
+                                $changelog_info['field'] = $field;
+                                $changelog_info['previous_value'] = $current_data->$field;
+                                $changelog_info['new_value'] = $value;
 
-                            GeneralModel::updateChangelog($changelog_info);
+                                $changed[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'updated'];
+
+                                GeneralModel::updateChangelog($changelog_info);
+                            } else {
+                                // failed to update DB
+                                $errors[$field] = 'failed to update';
+                                $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'unable to push data to DB'];
+                            }
                         } else {
-                            // failed to update DB
-                            $errors[$field] = 'failed to update';
-                            $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'unable to push data to DB'];
+                            $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'null data'];
                         }
-                    } else {
-                        $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'null data'];
                     }
                 } else {
                     $unchanged[$field] = ['current' => $current_data->$field, 'new_data' => $value, 'reason' => 'matching data'];
@@ -1459,14 +1463,26 @@ class AdminModel extends Model
                 ];
 
                 GeneralModel::updateChangelog($changelog_info);
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.');
+                if (!isset($request['backend']) || $request['backend'] == 0) {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.');
+                } else {
+                    return ['status' => 'success', 'message' => ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.', 'id' => $insert, 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
+                }
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+                if (!isset($request['backend']) || $request['backend'] == 0) {
+                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+                } else {
+                    return ['status' => 'error', 'message' => 'Unable to insert database entry.', 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
+                }
             }
         
         } else {
             // incorrect type
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+            if (!isset($request['backend']) || $request['backend'] == 0) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+            } else {
+                return ['status' => 'error', 'message' => 'Invalid type.', 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
+            }
         }
     }
 

@@ -16,7 +16,7 @@ use App\Models\TransactionModel;
 class OpticsController extends Controller
 {
     //
-    static public function index(Request $request, $stock_id, $modify_type = null): View|RedirectResponse  
+    static public function index(Request $request): View|RedirectResponse  
     {
         $nav_highlight = 'assets'; // for the nav highlighting
 
@@ -34,6 +34,8 @@ class OpticsController extends Controller
         $optic_mode = $request['mode'] ?? 0;
         $optic_connector = $request['connector'] ?? 0;
         $optic_distance = $request['distance'] ?? 0;
+        $optic_spectrum = $request['spectrum'] ?? 0;
+        $optic_vendor = $request['vendor'] ?? 0;
 
         $form_model = $request['form_model'] ?? null;
         $form_spectrum = $request['form_spectrum'] ?? null;
@@ -46,8 +48,7 @@ class OpticsController extends Controller
         $form_site = $request['form_site'] ?? 0;
 
         $sort = $request['sort'] ?? 'type';
-        $deleted = $request['deleted'] ?? 0;
-        $rows = $request['rows'] ?? 20;
+        $rows = isset($request['rows']) ? $request['rows'] : (GeneralModel::getUser()['table_row_count'] ? GeneralModel::getUser()['table_row_count'] : 20);
         $page = $request['page'] ?? 1;
 
         $optics_data = OpticsModel::getOptics($request, $sort, $deleted, $rows, $page);
@@ -66,6 +67,8 @@ class OpticsController extends Controller
                     'optic_mode' => $optic_mode,
                     'optic_connector' => $optic_connector,
                     'optic_distance' => $optic_distance,
+                    'optic_spectrum' => $optic_spectrum,
+                    'optic_vendor' => $optic_vendor,
 
                     'form_model' => $form_model,
                     'form_spectrum' => $form_spectrum,
@@ -94,9 +97,9 @@ class OpticsController extends Controller
                         'count' => 4,
                         'deleted_rows' => 0,
                         ];
+        $optic_spectrums = GeneralModel::formatArrayOnFieldAndCount(GeneralModel::allDistinctField('spectrum', 'optic_item', 0), 'spectrum');
         $optic_models = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinctField('model', 'optic_item', 0));
-
-
+                        
         return view('optics', ['params' => $params,
                                 'nav_data' => $nav_data,
                                 'response_handling' => $response_handling,
@@ -104,6 +107,7 @@ class OpticsController extends Controller
                                 'optic_types' => $optic_types,
                                 'optic_speeds' => $optic_speeds,
                                 'optic_modes' => $optic_modes,
+                                'optic_spectrums' => $optic_spectrums,
                                 'optic_connectors' => $optic_connectors,
                                 'optic_distances' => $optic_distances,
                                 'optic_vendors' => $optic_vendors,
@@ -148,7 +152,7 @@ class OpticsController extends Controller
         $query = http_build_query(
             ['form_serial' => $request['serial'] ?? '', 
                     'form_model' => $request['model'] ?? '', 
-                    'form_sepctrum' => $request['spectrum'] ?? '',
+                    'form_spectrum' => $request['spectrum'] ?? '',
                     'form_type' => $request['type'] ?? '', 
                     'form_speed' => $request['speed'] ?? '', 
                     'form_connector' => $request['connector'] ?? '',
@@ -180,6 +184,32 @@ class OpticsController extends Controller
             }
         }
         return redirect($url)->with('error', 'Unknown request');
+    }
+
+    static public function edit(Request $request)
+    {
+        // dd($request->input());
+        if (isset($request['edit-optic-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                    'type_id' => 'integer|required',
+                    'connector_id' => 'integer|required',
+                    'model' => 'string|required',
+                    'speed_id' => 'integer|required',
+                    'mode' => 'string|required',
+                    'spectrum' => 'string|required',
+                    'distance_id' => 'integer|required',
+                    'serial_number' => 'string|required',
+                    'vendor_id' => 'integer|required',
+                    
+                ]);
+                return OpticsModel::editOptic($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
     }
 
     static public function restore(Request $request) 

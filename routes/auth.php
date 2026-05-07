@@ -77,7 +77,7 @@ Route::middleware([AddHeadData::class])->group(function () {
             ->name('password.expired');
 
         Route::post('password-expired', [ProfileController::class, 'sendPasswordResetEmail'])
-            ->name('password.expired');
+            ->name('password.expired.reset');
 
 
         // 2fa

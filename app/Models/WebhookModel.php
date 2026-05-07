@@ -227,26 +227,31 @@ class WebhookModel extends Model
 
         if ($config['webhook_enabled'] == 1) { // make sure webhook is enabled
             $notification_data = DB::table('webhook_notifications')->find($notification_id);
+            
+            if ($notification_data && $notification_data->enabled == 1) {
+            
+                if ($template_id == 0) {
+                    $template_id = $notification_data->template_id;
+                }
 
-            if ($template_id == 0) {
-                $template_id = $notification_data->template_id;
-            }
+                $template_info = WebhookModel::getTemplateInfo($template_id);
 
-            $template_info = WebhookModel::getTemplateInfo($template_id);
-
-            if ($template_info !== false) {
-                // get the embeds
-                $embeds_raw = $template_info->body;
-                // covnert variables
-                $converted_embeds = SmtpModel::convertVariables($embeds_raw, $data);
-                // sanitize the embeds
-                $sanitized_embeds = WebhookModel::sanitizeEmbedString($converted_embeds);
-                // json the embeds
-                $embeds = WebhookModel::convertJsonEmbeds($sanitized_embeds);
-                // send the webhook
-                WebhookModel::sendWebhook(SmtpModel::convertVariables($template_info->subject, $data), $embeds);
+                if ($template_info !== false) {
+                    // get the embeds
+                    $embeds_raw = $template_info->body;
+                    // covnert variables
+                    $converted_embeds = SmtpModel::convertVariables($embeds_raw, $data);
+                    // sanitize the embeds
+                    $sanitized_embeds = WebhookModel::sanitizeEmbedString($converted_embeds);
+                    // json the embeds
+                    $embeds = WebhookModel::convertJsonEmbeds($sanitized_embeds);
+                    // send the webhook
+                    WebhookModel::sendWebhook(SmtpModel::convertVariables($template_info->subject, $data), $embeds);
+                } else {
+                    return 'Unable to find template';
+                }
             } else {
-                return 'Unable to find template';
+                return 'disabled';
             }
         } else {
             return 'disabled';

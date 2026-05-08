@@ -1,4 +1,10 @@
 <h2>Changelog</h2>
+<h3>1.5.0 - SSO</h3>
+<ul>
+    <li>Added SSO functions.</li>
+    <li>Added some routes to the debug page.</li>
+    <li>Distributed the routes into seperate files for permissions.</li>
+</ul>
 <h3>1.4.1 - Disks</h3>
 <ul>
     <li>SMTP Model now checks if image_name is set intead of erroring.</li>

@@ -49,7 +49,18 @@
         </div>
     </div> 
     <div class="align-right popupBox-owner" style="display: block;position: absolute;bottom: 4px;right: 20px;z-index: 99;font-size: 18px;border: none;outline: none;cursor: pointer;overflow: hidden;">
-        <a href="{{ route('about') }}" style="font-size:12px" id="version-about">@if (isset($head_data['update_data']['update_available']) && $head_data['update_data']['update_available'] ==1) <i class="fa-solid fa-circle-exclamation" style="color: #ff3000; margin-right:7px"></i> @endif {{$head_data['version_number']}}</a>
+        <a href="{{ route('about') }}" style="font-size:12px" id="version-about">
+            @if (isset($head_data['update_data']['update_available'])) 
+                @if ($head_data['update_data']['update_available'] == 1)
+                    <i class="fa-solid fa-circle-exclamation" style="color: #ff3000; margin-right:7px"></i> 
+                @elseif ($head_data['update_data']['update_available'] == -1)
+                    <i class="fa-solid fa-circle-exclamation" style="color: #FFFF00; margin-right:7px"></i>
+                @elseif ($head_data['update_data']['update_available'] == -2)
+                    <i class="fa-solid fa-skull-crossbones" style="color: #ff0000; margin-right:7px"></i>
+                @endif
+            @endif 
+            {{$head_data['version_number']}}
+        </a>
     </div>
 </div>
     @if (isset($head_data['user']['id']) && ($head_data['user']['permissions']['root'] == 1 || $head_data['user']['permissions']['admin'] == 1))

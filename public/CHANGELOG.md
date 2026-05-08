@@ -4,6 +4,7 @@
     <li>Added SSO functions.</li>
     <li>Added some routes to the debug page.</li>
     <li>Distributed the routes into seperate files for permissions.</li>
+    <li>Corrected the update checker for when it fails and when somehow you are on a newer version than the main branch.</li>
 </ul>
 <h3>1.4.1 - Disks</h3>
 <ul>

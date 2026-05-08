@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col">
                     <h3 style="font-size:22px">StockBase Debug ({{$head_data['version_number']}})</h3>
-                    <div style="padding-top: 20px;">
+                    <div class="text-center p-4 sm:p-8  theme-divBg shadow sm:rounded-lg"style="padding-top: 20px;">
                         <table class="table table-dark theme-table">
                             <tr>
                                 <th>Key</th>
@@ -162,8 +162,36 @@
                 </div>
             </div>
         </div>
+        <div class="mx-auto sm:px-6 lg:px-8 space-y-6" style="margin-top: 50px"">
+            <div class="p-4 sm:p-8  theme-divBg shadow sm:rounded-lg">
+                <div class="container text-center"><h2 style="text-center">Routes</h2></div>
+                <table class="table table-dark theme-table centertable" style="max-width:max-content">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>URI</th>
+                            <th>Name</th>
+                            <th hidden>Action</th>
+                            <th hidden>Middleware</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach ($routes as $route)
+                            <tr>
+                                <td>{{ implode('|', $route->methods()) }}</td>
+                                <td>/{{ $route->uri() }}</td>
+                                <td>{{ $route->getName() ?? '-' }}</td>
+                                <td hidden>{{ $route->getActionName() }}</td>
+                                <td hidden>{{ implode(', ', $route->middleware()) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-        
+
 @include('foot')
 
 </body>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 use App\Models\IndexModel;
@@ -693,9 +693,12 @@ class AdminController extends Controller
 
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
+        $routes = Route::getRoutes();
+        
         return view('debug', [
                             'nav_data' => $nav_data,
                             'response_handling' => $response_handling,
+                            'routes' => $routes,
                             ]);
     }
 

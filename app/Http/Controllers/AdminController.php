@@ -19,6 +19,7 @@ use App\Models\ChangelogModel;
 use App\Models\StockModel;
 use App\Models\SessionModel;
 use App\Models\WebhookModel;
+use App\Models\SsoModel;
 
 class AdminController extends Controller
 {
@@ -449,6 +450,34 @@ class AdminController extends Controller
                         'ldap_basedn' => 'string|nullable',
                         'ldap_usergroup' => 'string|nullable',
                         'ldap_userfilter' => 'string|nullable',
+                ]);
+                return AdminModel::updateConfigSettings($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+        return 'unknown request';
+    }
+
+    static public function ssoToggle(Request $request)
+    {
+        if (isset($request['sso-toggle-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                if (isset($request['saml_enabled']) && in_array($request['saml_enabled'], ['on', 'off'])) {
+                    $enabled = $request['saml_enabled'];
+                } else {
+                    $enabled = 'off';
+                }
+                return SsoModel::toggleSso($enabled);
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        if (isset($request['sso-submit']) || isset($request['sso-restore-defaults'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'saml_tenant_id' => 'string|required'
                 ]);
                 return AdminModel::updateConfigSettings($request->input());
             } else {

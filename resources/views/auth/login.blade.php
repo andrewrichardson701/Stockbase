@@ -67,8 +67,8 @@
         @if ($head_data['config_compare']['saml_enabled'] == 1)
         <div class="flex" style="margin-top:10px">
             <div class="flex items-center justify-center mt-4" style="width:100%">
-                <x-primary-button class="ms-3">
-                    {{ __('Sign in with SSO') }}
+                <x-primary-button type="button" onclick="window.location.href='{{ route('saml.login', ['uuid' => 'm365']) }}'" class="ms-3">
+                    {{ __('Log in with SSO') }}
                 </x-primary-button>
             </div>
         </div>

@@ -61,7 +61,10 @@
             
             <!-- ldap -->
             @include('includes.admin.ldap')
-            
+
+            <!-- sso -->
+            @include('includes.admin.sso')
+
             <!-- smtp -->
             @include('includes.admin.smtp')
             

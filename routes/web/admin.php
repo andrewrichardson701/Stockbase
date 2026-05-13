@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LdapController;
 use App\Http\Controllers\SmtpController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\SSOController;
 
 // Admin pages
 Route::middleware(['auth', 'check.permission:admin'])->group(function () { // Admin pages - locked behind the admin or root permission
@@ -23,6 +24,8 @@ Route::middleware(['auth', 'check.permission:admin'])->group(function () { // Ad
     Route::post('/admin.stockManagementSettings', [AdminController::class, 'stockManagementSettings'])->name('admin.stockManagementSettings'); // Adjust Stock Management Settings
     Route::post('/admin.ldapSettings', [AdminController::class, 'ldapSettings'])->name('admin.ldapSettings'); // Adjust LDAP settings
     Route::post('/admin.ldapTest', [LdapController::class, 'testLdap'])->name('admin.ldapTest'); // test LDAP
+    Route::post('/admin.ssoToggle', [AdminController::class, 'ssoToggle'])->name('admin.ssoToggle'); // Adjust SSO settings
+    Route::post('/admin.ssoSettings', [SSOController::class, 'saveSettings'])->name('admin.ssoSettings'); // Adjust SSO settings
     Route::post('/admin.smtpSettings', [AdminController::class, 'smtpSettings'])->name('admin.smtpSettings'); // Adjust SMTP settings
     Route::post('/admin.smtpTest', [SmtpController::class, 'smtpTest'])->name('admin.smtpTest'); // SMTP test
     Route::post('/admin.toggleEmailNotification', [AdminController::class, 'toggleEmailNotification'])->name('admin.toggleEmailNotification'); // Adjust Notification settings

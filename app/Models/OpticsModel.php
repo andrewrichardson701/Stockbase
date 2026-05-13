@@ -300,21 +300,46 @@ class OpticsModel extends Model
     static public function addOptic($request)
     {
         $previous = GeneralModel::previousURL();
-        $query = http_build_query(
-            ['form_serial' => $request['serial'] ?? '', 
-                    'form_model' => $request['model'] ?? '', 
-                    'form_spectrum' => $request['spectrum'] ?? '',
-                    'form_type' => $request['type'] ?? '', 
-                    'form_speed' => $request['speed'] ?? '', 
-                    'form_connector' => $request['connector'] ?? '',
-                    'form_distance' => $request['distance'] ?? '', 
-                    'form_mode' => $request['mode'] ?? '', 
-                    'form_site' => $request['site'] ?? '',
-                    'form_vendor' => $request['vendor'] ?? '',
-                ]
-            );
-        $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
-          
+
+        // 1. Extract existing components
+        $urlParts = parse_url($previous);
+        $existingParams = [];
+
+        // 2. Parse the existing query string into an array
+        if (isset($urlParts['query'])) {
+            parse_str($urlParts['query'], $existingParams);
+        }
+
+        // 3. Filter out any keys starting with 'form_'
+        $filteredParams = array_filter($existingParams, function($key) {
+            return strpos($key, 'form_') !== 0;
+        }, ARRAY_FILTER_USE_KEY);
+
+        // 4. Build your new data
+        $newData = [
+            'form_serial'    => $request['serial'] ?? '', 
+            'form_model'     => $request['model'] ?? '', 
+            'form_spectrum' => $request['spectrum'] ?? '',
+            'form_type' => $request['type'] ?? '', 
+            'form_speed' => $request['speed'] ?? '', 
+            'form_connector' => $request['connector'] ?? '',
+            'form_distance' => $request['distance'] ?? '', 
+            'form_mode' => $request['mode'] ?? '', 
+            'form_site' => $request['site'] ?? '',
+            'form_vendor' => $request['vendor'] ?? '',
+        ];
+
+        if ($request['multiple'] ?? false) {
+            $newData['add_form'] = 1;
+        }
+
+        // 5. Merge filtered old params with new data
+        $finalQuery = http_build_query(array_merge($filteredParams, $newData));
+
+        // 6. Reconstruct the URL
+        $url = $urlParts['scheme'] . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
+        $url .= '?' . $finalQuery;
+
         $user = GeneralModel::getUser();
 
         // see if optic serial exists

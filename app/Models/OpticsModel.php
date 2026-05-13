@@ -331,6 +331,8 @@ class OpticsModel extends Model
 
         if ($request['multiple'] ?? false) {
             $newData['add_form'] = 1;
+        } else {
+            $newData['add_form'] = 0;
         }
 
         // 5. Merge filtered old params with new data

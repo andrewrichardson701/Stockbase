@@ -2,6 +2,9 @@
 <h3>1.5.0 - SSO</h3>
 <ul>
     <li>Added SSO functions.</li>
+    <li>Added SSO Provider and Listener. SSO package has also been added.</li>
+    <li>New fields added to the config table to allow SSO.</li>
+    <li>SSO login button as been added to the login page when enabled.</li>
     <li>Added some routes to the debug page.</li>
     <li>Distributed the routes into seperate files for permissions.</li>
     <li>Corrected the update checker for when it fails and when somehow you are on a newer version than the main branch.</li>

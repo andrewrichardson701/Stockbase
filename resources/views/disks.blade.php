@@ -549,7 +549,7 @@
                                                 <tr>
                                                     <td style="padding-right:10px">Page:</td>
                                                     <td style="padding-right:10px">
-                                                        <select id="page-select" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" onchange="navPage(updateQueryParameter('', 'page', document.getElementById('page-select').value + '#disks_data'))" name="page">
+                                                        <select id="page-select" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" onchange="navPage(updateQueryParameter('', 'page', document.getElementById('page-select').value))" name="page">
                                                         @for ($i = 1; $i <= $disks_data['pages']; $i++) 
                                                             <option value="{{ $i }}" @if ($i == $disks_data['page']) selected @endif>{{ $i }}</option>
                                                         @endfor

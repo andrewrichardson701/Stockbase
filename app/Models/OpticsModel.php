@@ -255,10 +255,13 @@ class OpticsModel extends Model
 
         $user = GeneralModel::getUser();
 
-        // check optic exists 
+        // check comment exists 
         $find = DB::table('optic_comment')->where('id', $comment_id)->first();
 
-        if ($find) {
+        // check optic exists
+        $find_optic = DB::table('optic_item')->where('id', $optic_id)->first();
+
+        if ($find && $find_optic) {
             // delete comment
             $update = DB::table('optic_comment')->where('id', $comment_id)->update(['deleted' => 1, 'updated_at' => now()]);
 
@@ -282,7 +285,7 @@ class OpticsModel extends Model
                     'date' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'username' => $user['username'],
-                    'site_id' => $find->site_id,
+                    'site_id' => $find_optic->site_id,
                     'reason' => 'Delete comment',
                     'created_at' => now(),
                     'updated_at' => now()

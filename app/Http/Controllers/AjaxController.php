@@ -12,6 +12,7 @@ use Illuminate\View\View;
 use App\Models\GeneralModel;
 use App\Models\PropertiesModel;
 use App\Models\DiskModel;
+use App\Models\MemoryModel;
 use App\Models\StockModel;
 use App\Models\CablestockModel;
 use App\Models\ContainersModel;
@@ -64,6 +65,24 @@ class AjaxController extends Controller
             $request = $request->all(); // turn request into an array
             $disk = DiskModel::returnDiskInfoAjax($id, $request);
             return $disk;
+        } else {
+            return 'error';
+        }
+    }
+
+    public function getMemoryInfoAjax(Request $request)
+    {
+        // get all to check for a match
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'id' => 'integer|required',
+                'submit' => 'integer|required'
+            ]);
+
+            $id = $request->input('id');            
+            $request = $request->all(); // turn request into an array
+            $memory = MemoryModel::returnMemoryInfoAjax($id, $request);
+            return $memory;
         } else {
             return 'error';
         }

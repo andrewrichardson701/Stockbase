@@ -241,6 +241,43 @@ class TransactionModel extends Model
                                                 'si.name') 
                                     ->orderBy('t.date', 'desc') 
                                     ->orderBy('t.time', 'desc');
+        } elseif($type == 'memory') {
+            $instance->setTable('memory_transaction as t');
+            $query = $instance->select(
+                                        ['t.id as id',
+                                        't.table_name as table_name',
+                                        't.item_id AS item_id',
+                                        't.type AS type',
+                                        't.reason AS reason',
+                                        't.date AS date',
+                                        't.time AS time',
+                                        't.username AS username',
+                                        't.shelf_id AS shelf_id',
+                                        's.name AS shelf_name',
+                                        'a.id AS area_id',
+                                        'a.name AS area_name',
+                                        'si.id AS site_id',
+                                        'si.name AS site_name']
+                                    )
+                                    ->leftJoin('shelf as s', 's.id', '=', 't.shelf_id')
+                                    ->leftJoin('area as a', 'a.id', '=', 's.area_id')
+                                    ->leftJoin('site as si', 'si.id', '=', 'a.site_id')
+                                    ->groupBy('t.id',
+                                                't.table_name',
+                                                't.item_id',
+                                                't.type',
+                                                't.reason',
+                                                't.date',
+                                                't.time',
+                                                't.username',
+                                                't.shelf_id',
+                                                's.name',
+                                                'a.id',
+                                                'a.name',
+                                                'si.id',
+                                                'si.name') 
+                                    ->orderBy('t.date', 'desc') 
+                                    ->orderBy('t.time', 'desc');
         }
         
 
@@ -345,6 +382,18 @@ class TransactionModel extends Model
     static public function addDiskTransaction($request)
     {
         $insert = DB::table('disk_transaction')->insertGetId($request);
+        $id = $insert;
+
+        if (is_numeric($id)) {
+            return ['success' => $id];
+        } else {
+            return ['error' => 'non-numeric id'];
+        }
+    }
+
+    static public function addMemoryTransaction($request)
+    {
+        $insert = DB::table('memory_transaction')->insertGetId($request);
         $id = $insert;
 
         if (is_numeric($id)) {

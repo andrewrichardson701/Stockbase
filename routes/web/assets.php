@@ -32,7 +32,13 @@ Route::middleware(['auth', 'check.permission:optics,cpus,memory,psus,disks,fans'
 
     // Memory pages - locked behind memory permission
     Route::middleware(['auth', 'check.permission:memory'])->group(function () { // Memory pages - locked behind memory permission
-        Route::get('/assets/memory', [AssetsController::class, 'incomplete'])->name('memory'); // assets > memory page
+        Route::get('/assets/memory', [AssetsController::class, 'memory'])->name('memory'); // assets > memory page
+        Route::post('/assets/memory.add', [AssetsController::class, 'memoryAdd'])->name('memory.add'); // adding memory
+        Route::post('/assets/memory.move', [AssetsController::class, 'memoryMove'])->name('memory.move'); // move memory
+        Route::post('/assets/memory.restore', [AssetsController::class, 'memoryRestore'])->name('memory.restore'); // restore memory
+        Route::post('/assets/memory.delete', [AssetsController::class, 'memoryDelete'])->name('memory.delete'); // deleting memory
+        Route::post('/assets/memory.edit', [AssetsController::class, 'memoryEdit'])->name('memory.edit'); // editing memory
+        Route::post('/assets/memory.serialSearch', [AssetsController::class, 'memorySerialSearch'])->name('memory.serialSearch'); // Search for matching serials
     });
 
     // Disks pages - locked behind disks permission

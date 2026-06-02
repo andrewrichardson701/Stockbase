@@ -28,7 +28,7 @@ class TransactionController extends Controller
             'cables', 
             'optics', 
             // 'cpus', 
-            // 'memory', 
+            'memory', 
             'disks', 
             // 'fans', 
             // 'cpus'

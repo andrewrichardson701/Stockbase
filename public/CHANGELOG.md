@@ -1,5 +1,5 @@
 <h2>Changelog</h2>
-<h3>1.5.0 - SSO</h3>
+<h3>1.5.0 - SSO and Memory</h3>
 <ul>
     <li>Added SSO functions.</li>
     <li>Added SSO Provider and Listener. SSO package has also been added.</li>
@@ -10,6 +10,11 @@
     <li>Corrected the update checker for when it fails and when somehow you are on a newer version than the main branch.</li>
     <li>Reintroduced the add multiple optic button.</li>
     <li>Optic comment deletion was broken due to incorrect used site_id. Fixed.</li>
+    <li>Memory database migrations added to create the database tables.</li>
+    <li>Added the MemoryModel and AssetController functions to enable memory storage and editing.</li>
+    <li>Adding Memory works</li>
+    <li>Deleteing Memory works</li>
+    <li>Memory Transactions work</li>
 </ul>
 <h3>1.4.1 - Disks</h3>
 <ul>

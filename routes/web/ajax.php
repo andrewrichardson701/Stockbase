@@ -17,4 +17,6 @@ Route::post('/_ajax-favouriteStock', [AjaxController::class, 'favouriteStock'])-
 Route::post('/_ajax-nearbyContainers', [AjaxController::class, 'getNearbyContainersAjax'])->name('_ajax-nearbyContainers'); // get a list of nearby containers
 //
 Route::post('/_ajax-getDiskInfo', [AjaxController::class, 'getDiskInfoAjax'])->name('_ajax-getDiskInfo'); // get disk info
+//
+Route::post('/_ajax-getMemoryInfo', [AjaxController::class, 'getMemoryInfoAjax'])->name('_ajax-getMemoryInfo'); // get memory info
 ////

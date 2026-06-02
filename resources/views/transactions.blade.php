@@ -52,6 +52,8 @@
                                 @include('includes.transactions.optics')
                             @elseif ($params['type'] == 'disks') 
                                 @include('includes.transactions.disks')
+                            @elseif ($params['type'] == 'memory') 
+                                @include('includes.transactions.memory')
                             @else
                                 <p class="red">Nothing to display.</p>
                             @endif

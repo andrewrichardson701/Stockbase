@@ -28,7 +28,7 @@
                     {{ $assets['all']['count'] }}
                 </or>
             </div>
-            <div class="row ">
+            {{-- <div class="row ">
                 <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['optics'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('optics') }}`)">
                     <h4>Optics</h4>
                     <img style="max-width:100px;overflow:hidden;" src="/img/assets/SFP.png">
@@ -54,6 +54,27 @@
                 <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['psus'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('psus') }}`)">
                     <h4>PSUs</h4> 
                     <img style="max-width:100px;overflow:hidden;" src="/img/assets/PSU.png">
+                </div>
+            </div> --}}
+
+            <div class="row">
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['optics'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('optics') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">Optics</h4>
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;" src="/img/assets/SFP.png">
+                </div>
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['cpus'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('cpus') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">CPUs</h4> 
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;" src="/img/assets/CPU.png">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['memory'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('memory') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">Memory</h4>
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;height:max-content" src="/img/assets/RAM.png">
+                </div>
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['disks'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('disks') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">Disks</h4>
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;height:max-content" src="/img/assets/HDD.png">
                 </div>
             </div>
         </div>

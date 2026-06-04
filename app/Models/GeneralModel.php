@@ -563,7 +563,7 @@ class GeneralModel extends Model
         $user_data['permissions'] = GeneralModel::getAllWhere('users_permissions', ['id' => $user_data['id']], 'id')[0] ?? [];
         $user_data['theme_data'] = GeneralModel::getAllWhere('theme', ['id' => $user_data['theme_id'] ?? 1])[0] ?? [];
         
-        $assets_permissions = ['optics', 'cpus', 'memory', 'disks', 'psus', 'fans'];
+        $assets_permissions = ['optics', 'cpus', 'memory', 'disks'];
         $user_data['permissions']['assets'] = 0;
         foreach ($assets_permissions as $permission) {
             if ($user_data['permissions'][$permission] == 1) {

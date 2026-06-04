@@ -106,8 +106,6 @@
                                         <th>CPUs</th>
                                         <th>Memory</th>
                                         <th>Disks</th>
-                                        <th>Fans</th>
-                                        <th>PSUs</th>
                                         <th>Containers</th>
                                         <th>Changelog</th>
                                         <th>Preset</th>
@@ -214,8 +212,6 @@
                                                 <th>CPUs</th>
                                                 <th>Memory</th>
                                                 <th>Disks</th>
-                                                <th>Fans</th>
-                                                <th>PSUs</th>
                                                 <th>Containers</th>
                                                 <th>Changelog</th>
                                             </tr>
@@ -231,8 +227,6 @@
                                                 <td><input type="checkbox" name="permission_cpus"></td>
                                                 <td><input type="checkbox" name="permission_memory"></td>
                                                 <td><input type="checkbox" name="permission_disks"></td>
-                                                <td><input type="checkbox" name="permission_fans"></td>
-                                                <td><input type="checkbox" name="permission_psus"></td>
                                                 <td><input type="checkbox" name="permission_containers"></td>
                                                 <td><input type="checkbox" name="permission_changelog"></td>
                                             </tr>

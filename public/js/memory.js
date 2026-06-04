@@ -245,14 +245,14 @@ function addMemoryProperty(property) {
             dataType: "html",
             success: function(response) {
                 console.log(response);
-                modalCloseNewType();
+                modalCloseNewEccType();
                 modalCloseNewVendor();
                 modalCloseNewSpeed();
                 modalCloseNewCapacity();
-                modalCloseNewCaddy();
+                modalCloseNewGeneration();
                 modalCloseDeleteMemory();
                 modalCloseMoveMemory();
-                modalCloseNewRPM();
+                modalCloseNewFormFactor();
                 if (typeof loadMemoryProperty === "function") {
                     loadMemoryProperty(property);
                 } else {

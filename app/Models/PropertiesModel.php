@@ -37,7 +37,13 @@ class PropertiesModel extends Model
                 'disk_speed',
                 'disk_capacity',
                 'disk_caddy',
-                'disk_rpm'
+                'disk_rpm',
+                'memory_vendor',
+                'memory_capacity',
+                'memory_speed',
+                'memory_form_factor',
+                'memory_ecc_type',
+                'memory_generation'
             ];
 
         if (in_array($request['type'], $valid_types)) {

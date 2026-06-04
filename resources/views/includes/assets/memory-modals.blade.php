@@ -1,19 +1,19 @@
 <!-- Modal NewType Div -->
-<div id="modalDivNewType" class="modal">
+<div id="modalDivNewEccType" class="modal">
 <!-- <div id="modalDivNewType" style="display: block;"> -->
-    <span class="close" onclick="modalCloseNewType()">&times;</span>
+    <span class="close" onclick="modalCloseNewEccType()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
             <table class="centertable">
                 <tbody>
                     <tr class="nav-row">
-                        <td style="width: 150px"><label for="type_name" class="nav-v-c align-middle">Type Name:</label></td>
-                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="type_name" name="type_name" /></td>
+                        <td style="width: 150px"><label for="ecc_type_name" class="nav-v-c align-middle">ECC Type Name:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="ecc_type_name" name="ecc_type_name" /></td>
                         <td></td>
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="memory-type-add" value="Add Type" class="btn btn-success" onclick="addMemoryProperty('type')">Add Type</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="memory-type-add" value="Add ECC Type" class="btn btn-success" onclick="addMemoryProperty('ecc_type')">Add ECCType</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -66,22 +66,22 @@
         </div>
     </div> 
 </div>
-<!-- Modal NewRPM Div -->
-<div id="modalDivNewRPM" class="modal">
-<!-- <div id="modalDivNewRPM" style="display: block;"> -->
-    <span class="close" onclick="modalCloseNewRPM()">&times;</span>
+<!-- Modal NewFormFactor Div -->
+<div id="modalDivNewFormFactor" class="modal">
+<!-- <div id="modalDivNewFormFactor" style="display: block;"> -->
+    <span class="close" onclick="modalCloseNewFormFactor()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
             <table class="centertable">
                 <tbody>
                     <tr class="nav-row">
-                        <td style="width: 150px"><label for="rpm_name" class="nav-v-c align-middle">RPM:</label></td>
-                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="rpm_name" name="rpm_name" /></td>
+                        <td style="width: 150px"><label for="form_factor_name" class="nav-v-c align-middle">Form Factor:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="form_factor_name" name="form_factor_name" /></td>
                         <td></td>
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="memory-rpm-add" value="Add RPM" class="btn btn-success"  onclick="addMemoryProperty('rpm')">Add RPM</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="memory-form-factor-add" value="Add Form Factor" class="btn btn-success"  onclick="addMemoryProperty('form_factor')">Add Form Factor</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -111,20 +111,20 @@
     </div> 
 </div>
 <!-- Modal NewCaddy Div -->
-<div id="modalDivNewCaddy" class="modal">
-    <span class="close" onclick="modalCloseNewCaddy()">&times;</span>
+<div id="modalDivNewGeneration" class="modal">
+    <span class="close" onclick="modalCloseNewGeneration()">&times;</span>
     <div class="container well-nopad theme-divBg" style="padding:25px">
         <div class="well-nopad theme-divBg" style="overflow-y:auto; height:450px; display:flex;justify-content:center;align-items:center;">
             <table class="centertable">
                 <tbody>
                     <tr class="nav-row">
-                        <td style="width: 150px"><label for="caddy_name" class="nav-v-c align-middle">Caddy Name:</label></td>
-                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="caddy_name" name="caddy_name" /></td>
+                        <td style="width: 150px"><label for="generation_name" class="nav-v-c align-middle">Generation Name:</label></td>
+                        <td style="margin-left:10px"><input type="text" class="form-control nav-v-c align-middle theme-input" id="generation_name" name="generation_name" /></td>
                         <td></td>
                     </tr>
                     <tr class="nav-row">
                         <td style="width:150px"></td>
-                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="memory-caddy-add" value="Add Caddy" class="btn btn-success" onclick="addMemoryProperty('caddy')">Add Caddy</button></td>
+                        <td style="margin-top:10px;margin-left:10px"><button type="button" name="memory-generation-add" value="Add Generation" class="btn btn-success" onclick="addMemoryProperty('generation')">Add Generation</button></td>
                     </tr>
                 </tbody>
             </table>

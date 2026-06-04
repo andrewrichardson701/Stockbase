@@ -5,7 +5,7 @@ use App\Http\Controllers\AssetsController;
 use App\Http\Controllers\OpticsController;
 
 // Assets pages - can be any asset page to allow the assets page
-Route::middleware(['auth', 'check.permission:optics,cpus,memory,psus,disks,fans'])->group(function () { // Assets pages - locked behind one of the assets permissions
+Route::middleware(['auth', 'check.permission:optics,cpus,memory,disks'])->group(function () { // Assets pages - locked behind one of the assets permissions
     
     // main assets page - only visible if one of the assets is permitted
     Route::get('/assets', [AssetsController::class, 'index'])->name('assets'); // assets page
@@ -51,14 +51,5 @@ Route::middleware(['auth', 'check.permission:optics,cpus,memory,psus,disks,fans'
         Route::post('/assets/disks.edit', [AssetsController::class, 'diskEdit'])->name('disks.edit'); // editing disks
         Route::post('/assets/disks.serialSearch', [AssetsController::class, 'diskSerialSearch'])->name('disks.serialSearch'); // Search for matching serials
     });
-
-    // Fans pages - locked behind fans permission
-    Route::middleware(['auth', 'check.permission:fans'])->group(function () { // Fans pages - locked behind fans permission
-        Route::get('/assets/fans', [AssetsController::class, 'incomplete'])->name('fans'); // assets > fans page
-    });
-
-    // PSUs pages - locked behind psus permission
-    Route::middleware(['auth', 'check.permission:psus'])->group(function () { // PSUs pages - locked behind psus permission
-        Route::get('/assets/psus', [AssetsController::class, 'incomplete'])->name('psus'); // assets > psus page
-    });                    
+              
 });

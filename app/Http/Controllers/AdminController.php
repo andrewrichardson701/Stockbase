@@ -205,8 +205,6 @@ class AdminController extends Controller
                         'cpus' => 'string|nullable',
                         'memory' => 'string|nullable',
                         'disks' => 'string|nullable',
-                        'fans' => 'string|nullable',
-                        'psus' => 'string|nullable',
                         'containers' => 'string|nullable',
                         'changelog' => 'string|nullable',
                 ]);
@@ -701,8 +699,6 @@ class AdminController extends Controller
                 'cpus' => $request['permissions_cpus'] ?? 'off',
                 'memory' => $request['permissions_memory'] ?? 'off',
                 'disks' => $request['permissions_disks'] ?? 'off',
-                'fans' => $request['permissions_fans'] ?? 'off',
-                'psus' => $request['permissions_psus'] ?? 'off',
                 'containers' => $request['permissions_containers'] ?? 'off',
                 'changelog' => $request['permissions_changelog'] ?? 'off'
             ];

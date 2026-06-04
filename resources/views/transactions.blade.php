@@ -37,8 +37,6 @@
                         <th class="clickable @if ($params['type'] == 'cpus') theme-th-selected @else th-noBorder @endif " onclick="window.location='{{ route('transactions', ['type' => 'cpus', 'stock_id' => null]) }}'">CPUs</th>
                         <th class="clickable @if ($params['type'] == 'memory') theme-th-selected @else th-noBorder @endif " onclick="window.location='{{ route('transactions', ['type' => 'memory', 'stock_id' => null]) }}'">Memory</th>
                         <th class="clickable @if ($params['type'] == 'disks') theme-th-selected @else th-noBorder @endif " onclick="window.location='{{ route('transactions', ['type' => 'disks', 'stock_id' => null]) }}'">Disks</th>
-                        <th class="clickable @if ($params['type'] == 'fans') theme-th-selected @else th-noBorder @endif " onclick="window.location='{{ route('transactions', ['type' => 'fans', 'stock_id' => null]) }}'">Fans</th>
-                        <th class="clickable @if ($params['type'] == 'psus') theme-th-selected @else th-noBorder @endif " onclick="window.location='{{ route('transactions', ['type' => 'psus', 'stock_id' => null]) }}'">PSUs</th>
                     </tr>
                 </thead>
                 <tbody>

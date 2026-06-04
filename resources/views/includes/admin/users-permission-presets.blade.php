@@ -20,8 +20,6 @@
                         <th>CPUs</th>
                         <th>Memory</th>
                         <th>Disks</th>
-                        <th>Fans</th>
-                        <th>PSUs</th>
                         <th>Containers</th>
                         <th>Changelog</th>
                     </tr>

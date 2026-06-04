@@ -452,6 +452,47 @@ class AssetsController extends Controller
         return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
     }
 
+    static public function memoryEdit(Request $request)
+    {
+        // dd($request->input());
+        if (isset($request['memory-edit-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'numeric|required',
+                    'model' => 'string|required',
+                    'serial_number' => 'string|required',
+                    'vendor_id' => 'integer|required',
+                    'ecc_type_id' => 'integer|required', 
+                    'speed_id' => 'integer|required', 
+                    'generation_id' => 'integer|required',
+                    'form_factor_id' => 'integer|required', 
+                    'capacity_id' => 'integer|required', 
+                    'shelf_id' => 'integer|required'
+                ]);
+                // dd($request->input());
+                return MemoryModel::editMemory($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function memoryRestore(Request $request) 
+    {
+        if (isset($request['memory-restore-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                ]);
+                return MemoryModel::restoreMemory($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
     static public function incomplete(Request $request)
     {
         return dd('incomplete page.');

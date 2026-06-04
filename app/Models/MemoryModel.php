@@ -383,7 +383,121 @@ class MemoryModel extends Model
         }
     }
 
+    static public function editMemory($request)
+    {
+        $memory_id = $request['id'];
+        $user = GeneralModel::getUser();
 
+        // see if memory exists
+        $find = DB::table('memory_item')->where('id', $memory_id)->first();
 
+        if ($find) {
+            $update_data = [];
+            foreach ($request as $key => $value) {
+                if (in_array($key, ['model', 'vendor_id', 'serial_number', 'ecc_type_id', 'capacity_id', 'generation_id', 'speed_id', 'shelf_id', 'form_factor_id'])) {
+                    if ($value != $find->$key) {
+                        $update_data[$key] = $value;
+                    }
+                }
+            }
 
+            if (!empty($update_data)) {
+                $update_data['updated_at'] = now();
+                $update = DB::table('memory_item')->where('id', $memory_id)->update($update_data);
+
+                if ($update) {
+                    foreach ($update_data as $key => $value) {
+                        if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'rpm_id', 'destroy', 'shelf_id', 'form_factor'])) {
+                            if ($value != $find->$key) {
+                                $update_data[$key] = $value;
+
+                                // changelog
+                                $changelog_info = [
+                                    'user' => $user,
+                                    'table' => 'memory_item',
+                                    'record_id' => $memory_id,
+                                    'action' => 'Edit record',
+                                    'field' => $key,
+                                    'previous_value' => $find->$key,
+                                    'new_value' => $value
+                                ];
+
+                                GeneralModel::updateChangelog($changelog_info);
+
+                                if ($key == 'shelf_id') {
+                                    $transaction = [
+                                        'table_name' => 'memory_item',
+                                        'item_id' => $memory_id,
+                                        'type' => 'move',
+                                        'date' => date('Y-m-d'),
+                                        'time' => date('H:i:s'),
+                                        'username' => $user['username'],
+                                        'shelf_id' => $value,
+                                        'reason' => 'Move Memory',
+                                        'created_at' => now(),
+                                        'updated_at' => now()
+                                    ];
+                                    TransactionModel::addMemoryTransaction($transaction);
+                                }
+                            }
+                        }
+                    }
+                    return redirect()->to(GeneralModel::previousURL())->with('success', 'Memory with id: '.$memory_id.' updated.');
+                } else {
+                    return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to update memory with id: '.$memory_id.'.');
+                }
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('info', 'No changes made to memory with id: '.$memory_id.'.');
+            }
+        } else {
+            return redirect()->to(route('memory', ['error' => 'Memory not found for id: '.$memory_id.'.']));
+        }
+    }
+
+    static public function restoreMemory($request)
+    {
+        $memory_id = $request['id'];
+        $user = GeneralModel::getUser();
+
+        $find = DB::table('memory_item')->where('id', $memory_id)->where('deleted', 1)->first();
+
+        if ($find) {
+            $update = DB::table('memory_item')->where('id', $find->id)->update(['deleted' => 0]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'memory_item',
+                    'record_id' => $memory_id,
+                    'action' => 'Restore record',
+                    'field' => 'deleted',
+                    'previous_value' => $find->deleted,
+                    'new_value' => 0
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+
+                $transaction = [
+                    'table_name' => 'memory_item',
+                    'item_id' => $memory_id,
+                    'type' => 'restore',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'shelf_id' => $find->shelf_id,
+                    'reason' => 'Item Restored',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addMemoryTransaction($transaction);
+                return redirect()->to(GeneralModel::previousURL())->with('success', 'Memory restored, with id: '.$memory_id.'.');
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to insert database entry.');
+            }
+        } else {
+            // memory doesnt exist
+            return redirect()->to(GeneralModel::previousURL())->with('error', 'Memory not found with id: '.$memory_id.'.');
+        }
+    }
 }

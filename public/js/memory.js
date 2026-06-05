@@ -147,7 +147,7 @@ function modalLoadEditMemory(id) {
 
             var model = response['model'];
             var serial = response['serial_number'];
-            var type_id = response['type_id'];
+            var ecc_type_id = response['ecc_type_id'];
             var vendor_id = response['vendor_id'];
             var speed_id = response['speed_id'];
             var generation_id = response['generation_id'];
@@ -158,7 +158,7 @@ function modalLoadEditMemory(id) {
             var shelf_id = response['shelf_id'];
 
             var editInputModel = document.getElementById('model_memory_edit');
-            var editInputType = document.getElementById('type_memory_edit');
+            var editInputEccType = document.getElementById('ecc_type_memory_edit');
             var editInputSerial = document.getElementById('serial_memory_edit');
             var editInputVendor = document.getElementById('vendor_memory_edit');
             var editInputSpeed = document.getElementById('speed_memory_edit');
@@ -172,7 +172,7 @@ function modalLoadEditMemory(id) {
             editInputModel.value = model;
             editInputSerial.value = serial;
             setSelectValue(editInputVendor, vendor_id);
-            setSelectValue(editInputType, type_id);
+            setSelectValue(editInputEccType, ecc_type_id);
             setSelectValue(editInputSpeed, speed_id);
             setSelectValue(editInputGeneration, generation_id);
             setSelectValue(editInputCapacity, capacity_id);

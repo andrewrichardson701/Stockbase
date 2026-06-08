@@ -423,6 +423,19 @@ class AssetsController extends Controller
         }
     }
 
+    static public function memorySerialSearch(Request $request)
+    {
+        // search for matching serial numbers
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'serial' => 'string|required',
+            ]);
+            return response()->json(MemoryModel::serialMatchChecker($request->input()));
+        } else {
+            return response()->json(['error' => 'CSRF token missmatch.']);
+        }
+    }
+
     static public function diskEdit(Request $request)
     {
         // dd($request->input());

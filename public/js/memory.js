@@ -319,7 +319,7 @@ function searchSerial(search) {
             },
             dataType: "json",
             success: function(data) {
-                // console.log(data);
+                console.log(data);
                 if (data["skip"] === undefined) {
                     if (data["error"] === undefined) {
                         if (data["success"] !== undefined) {

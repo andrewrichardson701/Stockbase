@@ -201,7 +201,7 @@ class MemoryModel extends Model
         $user = GeneralModel::getUser();
 
         // see if memory serial exists
-        if ($request['serial'] && notNullValue($request['serial'])) {
+        if ($request['serial'] && $request['serial'] !== '') {
             $find = DB::table('memory_item')->where('serial_number', $request['serial'])->first();
         } else {
             $find = null;
@@ -504,4 +504,27 @@ class MemoryModel extends Model
             return redirect()->to(GeneralModel::previousURL())->with('error', 'Memory not found with id: '.$memory_id.'.');
         }
     }
+
+    static public function serialMatchChecker($request)
+    {
+        // search for the matching item
+
+        if ($request['serial'] && $request['serial'] !== '') {
+            $find = DB::table('memory_item')->where('serial_number', $request['serial'])->first();
+        } else {
+            $find = null;
+        }
+        
+        if ($find) {
+            if ($find->deleted == 0) {
+                $results['error'] = "Memory already exists.";
+            } else {
+                $results['error'] = "Found matching deleted memory. Please restore this memory instead of adding.";
+            }
+        } else {
+            $results['skip'] = 1;
+        }
+
+        return $results;
+    }  
 }

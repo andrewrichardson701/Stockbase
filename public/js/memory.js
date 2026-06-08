@@ -251,7 +251,7 @@ function addMemoryProperty(property) {
                 modalCloseNewCapacity();
                 modalCloseNewGeneration();
                 modalCloseDeleteMemory();
-                modalCloseMoveMemory();
+                // modalCloseMoveMemory();
                 modalCloseNewFormFactor();
                 if (typeof loadMemoryProperty === "function") {
                     loadMemoryProperty(property);

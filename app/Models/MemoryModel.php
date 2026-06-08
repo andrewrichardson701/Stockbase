@@ -201,8 +201,12 @@ class MemoryModel extends Model
         $user = GeneralModel::getUser();
 
         // see if memory serial exists
-        $find = DB::table('memory_item')->where('serial_number', $request['serial'])->first();
-        
+        if ($request['serial'] && notNullValue($request['serial'])) {
+            $find = DB::table('memory_item')->where('serial_number', $request['serial'])->first();
+        } else {
+            $find = null;
+        }
+
         // check for ids of each field
         foreach (['vendor', 'ecc_type', 'capacity', 'speed', 'generation', 'form_factor'] as $param) {
            $find_params = DB::table('memory_'.$param)->where('id', $request[$param])->where('deleted', 0)->first();
@@ -407,7 +411,7 @@ class MemoryModel extends Model
 
                 if ($update) {
                     foreach ($update_data as $key => $value) {
-                        if (in_array($key, ['model', 'vendor_id', 'serial_number', 'type_id', 'caddy_id', 'capacity_id', 'ssd', 'speed_id', 'rpm_id', 'destroy', 'shelf_id', 'form_factor'])) {
+                        if (in_array($key, ['model', 'vendor_id', 'serial_number', 'ecc_type_id', 'capacity_id', 'generation_id', 'speed_id', 'shelf_id', 'form_factor_id'])) {
                             if ($value != $find->$key) {
                                 $update_data[$key] = $value;
 

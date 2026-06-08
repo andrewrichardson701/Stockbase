@@ -175,7 +175,7 @@ class AssetsController extends Controller
         if (isset($request['add-memory-submit'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
-                    'serial' => 'string|required',
+                    'serial' => 'string|nullable',
                     'model' => 'string|required',
                     'generation' => 'integer|required',
                     'vendor' => 'integer|required',
@@ -460,7 +460,7 @@ class AssetsController extends Controller
                 $request->validate([
                     'id' => 'numeric|required',
                     'model' => 'string|required',
-                    'serial_number' => 'string|required',
+                    'serial_number' => 'string|nullable',
                     'vendor_id' => 'integer|required',
                     'ecc_type_id' => 'integer|required', 
                     'speed_id' => 'integer|required', 

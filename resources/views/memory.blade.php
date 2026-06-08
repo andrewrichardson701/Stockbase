@@ -149,7 +149,7 @@
                     <div class="row" style="margin-right:25px;margin-top:5px">
                         <div class="col">
                             <div>Serial Number</div>
-                            <div><input class="form-control text-center theme-input" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" oninput="searchSerial(this.value)" required/></div>
+                            <div><input class="form-control text-center theme-input" type="text" id="serial" name="serial" style="min-width:120px" placeholder="Serial" oninput="searchSerial(this.value)"/></div>
                         </div>
                         <div class="col">
                             <div>Vendor</div>

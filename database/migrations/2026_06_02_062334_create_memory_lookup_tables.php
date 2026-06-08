@@ -62,7 +62,8 @@ return new class extends Migration
         Schema::dropIfExists('memory_ecc_type');
         Schema::dropIfExists('memory_form_factor');
         Schema::dropIfExists('memory_speed');
-        Schema::dropIfExists('memory_capacitie');
+        Schema::dropIfExists('memory_capacity');
         Schema::dropIfExists('memory_generation');
+        Schema::dropIfExists('memory_vendor');
     }
 };

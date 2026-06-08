@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('memory_transaction', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->text('table_name');
             $table->bigInteger('item_id');
             $table->text('type');

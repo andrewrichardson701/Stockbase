@@ -266,38 +266,38 @@ function addMemoryProperty(property) {
     }
 }
 
-function loadMemoryProperty(property) {
-    var memory_property = 'memory_'+property;
-    var select = document.getElementById(memory_property+'-select');
-    var upperProperty = property[0].toUpperCase() + property.substring(1);
-    var csrf = document.querySelector('meta[name="csrf-token"]').content;
-    $.ajax({
-        type: "POST",
-        url: "/_ajax-loadProperty",
-        data: {
-            load_property: '1',
-            type: memory_property,
-            submit: '1',
-            _token: csrf
-        },
-        dataType: "json",
-        success: function(response) {
-            var rows = response;
-            if (Array.isArray(rows)) {
-                select.options.length = 0;
-                select.options[0] = new Option('Select '+upperProperty, '');
-                for (var j = 0; j < rows.length; j++) {
-                    select.options[j+1] = new Option(rows[j].name, rows[j].id);
-                }
-                select.options[0].disaled = true;
-                select.options[0].selected = true;
-            } else {
-                console.log('error - check loadProperty function');
-            }
-        },
-        async: true
-    });
-}
+// function loadMemoryProperty(property) {
+//     var memory_property = 'memory_'+property;
+//     var select = document.getElementById(memory_property+'-select');
+//     var upperProperty = property[0].toUpperCase() + property.substring(1);
+//     var csrf = document.querySelector('meta[name="csrf-token"]').content;
+//     $.ajax({
+//         type: "POST",
+//         url: "/_ajax-loadProperty",
+//         data: {
+//             load_property: '1',
+//             type: memory_property,
+//             submit: '1',
+//             _token: csrf
+//         },
+//         dataType: "json",
+//         success: function(response) {
+//             var rows = response;
+//             if (Array.isArray(rows)) {
+//                 select.options.length = 0;
+//                 select.options[0] = new Option('Select '+upperProperty, '');
+//                 for (var j = 0; j < rows.length; j++) {
+//                     select.options[j+1] = new Option(rows[j].name, rows[j].id);
+//                 }
+//                 select.options[0].disaled = true;
+//                 select.options[0].selected = true;
+//             } else {
+//                 console.log('error - check loadProperty function');
+//             }
+//         },
+//         async: true
+//     });
+// }
 
 function searchSerial(search) {
 

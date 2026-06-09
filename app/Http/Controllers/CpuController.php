@@ -163,7 +163,7 @@ class CpuController extends Controller
         }
     }
 
-    static public function cpuEdit(Request $request)
+    static public function cpusEdit(Request $request)
     {
         // dd($request->input());
         if (isset($request['cpu-edit-submit'])) {

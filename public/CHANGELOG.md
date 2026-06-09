@@ -1,5 +1,5 @@
 <h2>Changelog</h2>
-<h3>1.5.0 - SSO and Memory</h3>
+<h3>1.5.0 - SSO, CPUs and Memory</h3>
 <ul>
     <li>Added SSO functions.</li>
     <li>Added SSO Provider and Listener. SSO package has also been added.</li>

@@ -342,7 +342,7 @@
                                     <i class="fa fa-trash-restore"></i>
                                 </button>
                             @else 
-                                <button class="btn btn-danger" type="button" value="1" title="Delete?" onclick="modalLoadDeleteCPU('{{ $row['id'] }}')">
+                                <button class="btn btn-danger" type="button" value="1" title="Delete?" onclick="modalLoadDeleteCpu('{{ $row['id'] }}')">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             @endif

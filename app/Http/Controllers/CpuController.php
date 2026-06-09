@@ -119,7 +119,7 @@ class CpuController extends Controller
                             ]);
     }
 
-    static public function cpusAdd(Request $request)
+    static public function cpuAdd(Request $request)
     {
         $previous = GeneralModel::previousURL();
         $query = http_build_query(
@@ -163,7 +163,7 @@ class CpuController extends Controller
         }
     }
 
-    static public function cpusEdit(Request $request)
+    static public function cpuEdit(Request $request)
     {
         // dd($request->input());
         if (isset($request['cpu-edit-submit'])) {
@@ -177,6 +177,37 @@ class CpuController extends Controller
                 ]);
                 // dd($request->input());
                 return CpuModel::editCpu($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function cpuDelete(Request $request)
+    {
+        if (isset($request['cpu-delete-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                    'reason' => 'string|required'
+                ]);
+                return CpuModel::deleteCpu($request->input());
+            } else {
+                return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
+            }
+        }
+        return redirect(GeneralModel::previousURL())->with('error', 'Unknown request');
+    }
+
+    static public function cpuRestore(Request $request) 
+    {
+        if (isset($request['cpu-restore-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                    'id' => 'integer|required',
+                ]);
+                return CpuModel::restoreCpu($request->input());
             } else {
                 return redirect(GeneralModel::previousURL())->with('error', 'CSRF missmatch');
             }

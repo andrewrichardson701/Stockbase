@@ -31,12 +31,12 @@ Route::middleware(['auth', 'check.permission:optics,cpus,memory,disks'])->group(
     // CPUs pages - locked behind cpus permission
     Route::middleware(['auth', 'check.permission:cpus'])->group(function () { // CPUs pages - locked behind cpus permission
         Route::get('/assets/cpus', [CpuController::class, 'cpus'])->name('cpus'); // assets > cpus page
-        Route::post('/assets/cpus.add', [CpuController::class, 'cpusAdd'])->name('cpus.add'); // adding cpus
-        Route::post('/assets/cpus.move', [CpuController::class, 'cpusMove'])->name('cpus.move'); // move cpus
-        Route::post('/assets/cpus.restore', [CpuController::class, 'cpusRestore'])->name('cpus.restore'); // restore cpus
-        Route::post('/assets/cpus.delete', [CpuController::class, 'cpusDelete'])->name('cpus.delete'); // deleting cpus
-        Route::post('/assets/cpus.edit', [CpuController::class, 'cpusEdit'])->name('cpus.edit'); // editing cpus
-        Route::post('/assets/cpus.serialSearch', [CpuController::class, 'cpusSerialSearch'])->name('cpus.serialSearch'); // Search for matching serials
+        Route::post('/assets/cpus.add', [CpuController::class, 'cpuAdd'])->name('cpus.add'); // adding cpus
+        Route::post('/assets/cpus.move', [CpuController::class, 'cpuMove'])->name('cpus.move'); // move cpus
+        Route::post('/assets/cpus.restore', [CpuController::class, 'cpuRestore'])->name('cpus.restore'); // restore cpus
+        Route::post('/assets/cpus.delete', [CpuController::class, 'cpuDelete'])->name('cpus.delete'); // deleting cpus
+        Route::post('/assets/cpus.edit', [CpuController::class, 'cpuEdit'])->name('cpus.edit'); // editing cpus
+        Route::post('/assets/cpus.serialSearch', [CpuController::class, 'cpuSerialSearch'])->name('cpus.serialSearch'); // Search for matching serials
     });
 
     // Memory pages - locked behind memory permission

@@ -312,7 +312,7 @@ class MemoryModel extends Model
                         }
                     }   
                     $data = ['id' => $find->id];
-                    return MemoryModel::restore($data);
+                    return MemoryModel::restoreMemory($data);
  
                 } else {
                     return redirect()->to($url)->with('error', 'Memory already exists.');
@@ -348,7 +348,7 @@ class MemoryModel extends Model
         $find = DB::table('memory_item')->where('id', $memory_id)->first();
 
         if ($find && $find->deleted == 0) {
-            $update = DB::table('memory_item')->where('id', $memory_id)->update(['deleted' => 1]);
+            $update = DB::table('memory_item')->where('id', $memory_id)->update(['deleted' => 1, 'quantity' => 0, 'updated_at' => now()]);
 
             if ($update) {
                 // changelog
@@ -466,7 +466,7 @@ class MemoryModel extends Model
         $find = DB::table('memory_item')->where('id', $memory_id)->where('deleted', 1)->first();
 
         if ($find) {
-            $update = DB::table('memory_item')->where('id', $find->id)->update(['deleted' => 0]);
+            $update = DB::table('memory_item')->where('id', $find->id)->update(['deleted' => 0, 'quantity' => 1, 'updated_at' => now()]);
 
             if ($update) {
                 // changelog

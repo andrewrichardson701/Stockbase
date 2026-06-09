@@ -282,7 +282,7 @@ class CpuModel extends Model
                         }
                     }   
                     $data = ['id' => $find->id];
-                    return CpuModel::restore($data);
+                    return CpuModel::restoreCpu($data);
  
                 } else {
                     return redirect()->to($url)->with('error', 'CPU already exists.');
@@ -392,6 +392,102 @@ class CpuModel extends Model
             } else {
                 return redirect()->to(GeneralModel::previousURL())->with('info', 'No changes made to CPU with id: '.$cpu_id.'.');
             }
+        } else {
+            return redirect()->to(route('cpus', ['error' => 'CPU not found for id: '.$cpu_id.'.']));
+        }
+    }
+
+    static public function restoreCpu($request)
+    {
+        $cpu_id = $request['id'];
+        $user = GeneralModel::getUser();
+
+        $find = DB::table('cpu_item')->where('id', $cpu_id)->where('deleted', 1)->first();
+
+        if ($find) {
+            $update = DB::table('cpu_item')->where('id', $find->id)->update(['deleted' => 0, 'quantity' => 1, 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'cpu_item',
+                    'record_id' => $cpu_id,
+                    'action' => 'Restore record',
+                    'field' => 'deleted',
+                    'previous_value' => $find->deleted,
+                    'new_value' => 0
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+
+                $transaction = [
+                    'table_name' => 'cpu_item',
+                    'item_id' => $cpu_id,
+                    'type' => 'restore',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'shelf_id' => $find->shelf_id,
+                    'reason' => 'Item Restored',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addCpuTransaction($transaction);
+                return redirect()->to(GeneralModel::previousURL())->with('success', 'CPU restored, with id: '.$cpu_id.'.');
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to insert database entry.');
+            }
+        } else {
+            // cpu doesnt exist
+            return redirect()->to(GeneralModel::previousURL())->with('error', 'CPU not found with id: '.$cpu_id.'.');
+        }
+    }
+
+    static public function deleteCpu($request)
+    {
+        $cpu_id = $request['id'];
+        $reason = $request['reason'];
+        $user = GeneralModel::getUser();
+
+        // see if cpu exists
+        $find = DB::table('cpu_item')->where('id', $cpu_id)->first();
+
+        if ($find && $find->deleted == 0) {
+            $update = DB::table('cpu_item')->where('id', $cpu_id)->update(['deleted' => 1, 'quantity' => 0, 'updated_at' => now()]);
+
+            if ($update) {
+                // changelog
+                $changelog_info = [
+                    'user' => $user,
+                    'table' => 'cpu_item',
+                    'record_id' => $find->id,
+                    'action' => 'Delete record',
+                    'field' => 'deleted',
+                    'previous_value' => $find->deleted,
+                    'new_value' => 1
+                ];
+
+                GeneralModel::updateChangelog($changelog_info);
+                $transaction = [
+                    'table_name' => 'cpu_item',
+                    'item_id' => $cpu_id,
+                    'type' => 'delete',
+                    'date' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'username' => $user['username'],
+                    'shelf_id' => $find->shelf_id,
+                    'reason' => $reason,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionModel::addCpuTransaction($transaction);
+                return redirect(GeneralModel::previousURL())->with('success', 'CPU with serial number: '.$find->serial_number.' and id: '.$cpu_id.' delete.');
+            } else {
+                return redirect()->to(GeneralModel::previousURL())->with('error', 'Unable to delete CPU with id: '.$cpu_id.'.');
+            }
+        } elseif ($find && $find->deleted == 1) {
+            return redirect()->to(route('cpus', ['error' => 'CPU already deleted for id: '.$cpu_id]));
         } else {
             return redirect()->to(route('cpus', ['error' => 'CPU not found for id: '.$cpu_id.'.']));
         }

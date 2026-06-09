@@ -24,6 +24,7 @@
     <li>Editing CPUs is working.</li>
     <li>CPU transactions are working.</li>
     <li>Split the AssetsController out into individual asset controllers e.g. DisksController.</li>
+    <li>Deleting and Restoring CPUs works.</li>
 </ul>
 <h3>1.4.1 - Disks</h3>
 <ul>

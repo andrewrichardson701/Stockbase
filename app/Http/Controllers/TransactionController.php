@@ -27,11 +27,9 @@ class TransactionController extends Controller
             'stock', 
             'cables', 
             'optics', 
-            // 'cpus', 
+            'cpus', 
             'memory', 
-            'disks', 
-            // 'fans', 
-            // 'cpus'
+            'disks',
         ];
         
         $nav_data = GeneralModel::navData($nav_highlight);

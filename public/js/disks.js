@@ -205,7 +205,9 @@ function modalLoadEditDisk(id) {
             setSelectValue(editInputFormFactor, form_factor);
             setSelectValue(editInputSSD, ssd);
             setSelectValue(editInputSite, site_id);
+            populateAreasEdit(); // populate areas based on site selection before setting area value
             setSelectValue(editInputArea, area_id);
+            populateShelvesEdit(); // populate shelves based on area selection before setting shelf value
             setSelectValue(editInputShelf, shelf_id);
             setSelectValue(editInputDestroy, destroy);
 

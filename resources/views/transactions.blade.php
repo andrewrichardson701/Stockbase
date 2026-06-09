@@ -52,6 +52,8 @@
                                 @include('includes.transactions.disks')
                             @elseif ($params['type'] == 'memory') 
                                 @include('includes.transactions.memory')
+                            @elseif ($params['type'] == 'cpus') 
+                                @include('includes.transactions.cpus')
                             @else
                                 <p class="red">Nothing to display.</p>
                             @endif

@@ -415,7 +415,7 @@
                                         <option value="vendor" @if($params['sort'] == "vendor") selected @endif>Vendor</option>
                                         <option value="model" @if($params['sort'] == "model") selected @endif>Model</option>
                                         <option value="serial" @if($params['sort'] == "serial") selected @endif>Serial</option>
-                                        <option value="serial" @if($params['sort'] == "destroy") selected @endif>Destroy</option>
+                                        <option value="destroy" @if($params['sort'] == "destroy") selected @endif>Destroy</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -481,7 +481,7 @@
                             </td>
                             <td class="align-middle">{!! $row['destroy'] ? '<or class="red">SHRED</or>' : 'No' !!}</td>
                             <td class="align-middle" style="padding-right:5px">
-                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadEditDisk('{{ $row['id'] }}')">
+                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="edit" title="Edit?" onclick="modalLoadEditDisk('{{ $row['id'] }}')">
                                     <i class="fa fa-pencil" style="color:white"></i>
                                 </button>
                             </td>

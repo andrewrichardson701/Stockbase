@@ -19,4 +19,6 @@ Route::post('/_ajax-nearbyContainers', [AjaxController::class, 'getNearbyContain
 Route::post('/_ajax-getDiskInfo', [AjaxController::class, 'getDiskInfoAjax'])->name('_ajax-getDiskInfo'); // get disk info
 //
 Route::post('/_ajax-getMemoryInfo', [AjaxController::class, 'getMemoryInfoAjax'])->name('_ajax-getMemoryInfo'); // get memory info
+//
+Route::post('/_ajax-getCpuInfo', [AjaxController::class, 'getCpuInfoAjax'])->name('_ajax-getCpuInfo'); // get cpu info
 ////

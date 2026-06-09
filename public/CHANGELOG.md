@@ -15,6 +15,14 @@
     <li>Adding Memory works</li>
     <li>Deleteing Memory works</li>
     <li>Memory Transactions work</li>
+    <li>Disk/Memory/CPU edit modals now load the area and shelf information back into the form before presenting the info.</li>
+    <li>CPU page added.</li>
+    <li>CPU DB tables added via migrations.</li>
+    <li>CPU Controller and Model added with functions.</li>
+    <li>CPU adding is now functional.</li>
+    <li>Adding new CPU models is working.</li>
+    <li>Editing CPUs is working.</li>
+    <li>CPU transactions are working.</li>
 </ul>
 <h3>1.4.1 - Disks</h3>
 <ul>

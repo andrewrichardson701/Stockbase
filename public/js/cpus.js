@@ -1,7 +1,7 @@
 function toggleAddDiv() {
-    var div = document.getElementById('add-memory-section');
-    var addButton = document.getElementById('add-memory');
-    var addButtonHide = document.getElementById('add-memory-hide');
+    var div = document.getElementById('add-cpu-section');
+    var addButton = document.getElementById('add-cpu');
+    var addButtonHide = document.getElementById('add-cpu-hide');
     var serial = document.getElementById('serial');
     if (div.hidden === true) {
         div.hidden = false;
@@ -16,13 +16,13 @@ function toggleAddDiv() {
 
 }
 
-function modalLoadDeleteMemory(id) {
+function modalLoadDeleteCpu(id) {
     console.log(id);
-    var modal = document.getElementById("modalDivDeleteMemory");
-    var serial = document.getElementById('memory-serial-'+id).innerHTML;
+    var modal = document.getElementById("modalDivDeleteCpu");
+    var serial = document.getElementById('cpu-serial-'+id).innerHTML;
 
     var deleteInputID = document.getElementById('delete-id');
-    var deleteHeadingSerial = document.getElementById('delete-memory-serial');
+    var deleteHeadingSerial = document.getElementById('delete-cpu-serial');
 
 
     deleteHeadingSerial.innerText = serial+" (ID: "+id+")";
@@ -33,26 +33,13 @@ function modalLoadDeleteMemory(id) {
 }
 
 // When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseDeleteMemory = function() { 
-    var modal = document.getElementById("modalDivDeleteMemory");
+modalCloseDeleteCpu = function() { 
+    var modal = document.getElementById("modalDivDeleteCpu");
     modal.style.display = "none";
 }
 
 
 // MODAL SCRIPT
-// Get the modal
-function modalLoadNewEccType() {
-    //get the modal div with the property
-    var modal = document.getElementById("modalDivNewEccType");
-    modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseNewEccType = function() { 
-    var modal = document.getElementById("modalDivNewEccType");
-    modal.style.display = "none";
-}
-
 // Get the modal
 function modalLoadNewVendor() {
     //get the modal div with the property
@@ -67,65 +54,26 @@ modalCloseNewVendor = function() {
 }
 
 // Get the modal
-function modalLoadNewCapacity() {
+function modalLoadNewModel() {
     //get the modal div with the property
-    var modal = document.getElementById("modalDivNewCapacity");
+    var modal = document.getElementById("modalDivNewModel");
     modal.style.display = "block";
 }
 
 // When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseNewCapacity = function() { 
-    var modal = document.getElementById("modalDivNewCapacity");
-    modal.style.display = "none";
-}
-
-// Get the modal
-function modalLoadNewSpeed() {
-    //get the modal div with the property
-    var modal = document.getElementById("modalDivNewSpeed");
-    modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseNewSpeed = function() { 
-    var modal = document.getElementById("modalDivNewSpeed");
+modalCloseNewModel = function() { 
+    var modal = document.getElementById("modalDivNewModel");
     modal.style.display = "none";
 }
 
 
-// Get the modal
-function modalLoadNewGeneration() {
-    //get the modal div with the property
-    var modal = document.getElementById("modalDivNewGeneration");
-    modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseNewGeneration = function() { 
-    var modal = document.getElementById("modalDivNewGeneration");
-    modal.style.display = "none";
-}
-
-// Get the modal
-function modalLoadNewFormFactor() {
-    //get the modal div with the property
-    var modal = document.getElementById("modalDivNewFormFactor");
-    modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseNewFormFactor = function() { 
-    var modal = document.getElementById("modalDivNewFormFactor");
-    modal.style.display = "none";
-}
-
-function modalLoadEditMemory(id) {
+function modalLoadEditCpu(id) {
     var csrf = document.querySelector('meta[name="csrf-token"]').content;
-    // get the memory info
+    // get the cpu info
     $.ajax({
         
         type: "POST",
-        url: "/_ajax-getMemoryInfo",
+        url: "/_ajax-getCpuInfo",
         data: {
             id: id,
             _token: csrf,
@@ -135,48 +83,33 @@ function modalLoadEditMemory(id) {
         success: function(response) {
             console.log(response);
             if (response['error'] !== undefined) {
-                alert('Error loading memory info - try refreshing the page');
+                alert('Error loading cpu info - try refreshing the page');
                 return;
             } 
             if (!response['id']) {
-                alert('Memory not found - try refreshing the page');
+                alert('Cpu not found - try refreshing the page');
                 return;
             }         
 
-            var modal = document.getElementById("modalDivEditMemory");
+            var modal = document.getElementById("modalDivEditCpu");
 
-            var model = response['model'];
+            var model_id = response['model_id'];
             var serial = response['serial_number'];
-            var ecc_type_id = response['ecc_type_id'];
             var vendor_id = response['vendor_id'];
-            var speed_id = response['speed_id'];
-            var generation_id = response['generation_id'];
-            var capacity_id = response['capacity_id'];
-            var form_factor_id = response['form_factor_id'];
             var site_id = response['site_id'];
             var area_id = response['area_id'];
             var shelf_id = response['shelf_id'];
 
-            var editInputModel = document.getElementById('model_memory_edit');
-            var editInputEccType = document.getElementById('ecc_type_memory_edit');
-            var editInputSerial = document.getElementById('serial_memory_edit');
-            var editInputVendor = document.getElementById('vendor_memory_edit');
-            var editInputSpeed = document.getElementById('speed_memory_edit');
-            var editInputGeneration = document.getElementById('generation_memory_edit');
-            var editInputCapacity = document.getElementById('capacity_memory_edit');
-            var editInputFormFactor = document.getElementById('form_factor_memory_edit');
-            var editInputSite = document.getElementById('site_memory_edit');
-            var editInputArea = document.getElementById('area_memory_edit');
-            var editInputShelf = document.getElementById('shelf_memory_edit');
+            var editInputModel = document.getElementById('model_cpu_edit');
+            var editInputSerial = document.getElementById('serial_cpu_edit');
+            var editInputVendor = document.getElementById('vendor_cpu_edit');
+            var editInputSite = document.getElementById('site_cpu_edit');
+            var editInputArea = document.getElementById('area_cpu_edit');
+            var editInputShelf = document.getElementById('shelf_cpu_edit');
 
-            editInputModel.value = model;
             editInputSerial.value = serial;
             setSelectValue(editInputVendor, vendor_id);
-            setSelectValue(editInputEccType, ecc_type_id);
-            setSelectValue(editInputSpeed, speed_id);
-            setSelectValue(editInputGeneration, generation_id);
-            setSelectValue(editInputCapacity, capacity_id);
-            setSelectValue(editInputFormFactor, form_factor_id);
+            setSelectValue(editInputModel, model_id);
             setSelectValue(editInputSite, site_id);
             populateAreasEdit(); // populate areas based on site selection before setting area value
             setSelectValue(editInputArea, area_id);
@@ -184,7 +117,7 @@ function modalLoadEditMemory(id) {
             setSelectValue(editInputShelf, shelf_id);
 
             var editInputID = document.getElementById('edit-id');
-            var editHeadingSerial = document.getElementById('edit-memory-serial');
+            var editHeadingSerial = document.getElementById('edit-cpu-serial');
 
 
             editHeadingSerial.innerText = serial+" (ID: "+id+")";
@@ -219,48 +152,52 @@ function setSelectValue(selectEl, value) {
 }
 
 // When the user clicks on <span> (x), close the modal or if they click the image.
-modalCloseEditMemory = function() { 
-    var modal = document.getElementById("modalDivEditMemory");
+modalCloseEditCpu = function() { 
+    var modal = document.getElementById("modalDivEditCpu");
     modal.style.display = "none";
 }
 
 
-
-
-
-
-function addMemoryProperty(property) {
+function addCpuProperty(property) {
     if (property !== '') {
-        var memory_property = 'memory_'+property;
+        var cpu_property = property;
         var csrf = document.querySelector('meta[name="csrf-token"]').content;
         var name = document.getElementById(property+'_name') !== null ? document.getElementById(property+'_name').value : '';
+
+        if (property === 'cpu_model') {
+            var socket = document.getElementById('socket').value;
+            var cpu_family = document.getElementById('cpu_family').value;
+            var core_count = document.getElementById('core_count').value;
+            var clock_speed = document.getElementById('clock_speed').value;
+        } else {
+            var socket = null;
+            var cpu_family = null;
+            var core_count = null;
+            var clock_speed = null;
+        }
         
         $.ajax({
             type: "POST",
             url: "/_ajax-addProperty",
             data: {
                 _token: csrf,
-                type: memory_property,
+                type: cpu_property,
                 property_name: name,
+                socket: socket,
+                cpu_family: cpu_family,
+                core_count: core_count,
+                clock_speed: clock_speed,
                 submit: '1'
             },
             dataType: "html",
             success: function(response) {
                 console.log(response);
-                modalCloseNewEccType();
                 modalCloseNewVendor();
-                modalCloseNewSpeed();
-                modalCloseNewCapacity();
-                modalCloseNewGeneration();
-                modalCloseDeleteMemory();
-                // modalCloseMoveMemory();
-                modalCloseNewFormFactor();
-                if (typeof loadMemoryProperty === "function") {
-                    loadMemoryProperty(property);
-                } else {
-                    location.reload()
-                }
+                modalCloseNewModel();
+                modalCloseDeleteCpu();
+                // modalCloseMoveCpu();
 
+                location.reload()
                 
             },
             async: true
@@ -268,43 +205,10 @@ function addMemoryProperty(property) {
     }
 }
 
-// function loadMemoryProperty(property) {
-//     var memory_property = 'memory_'+property;
-//     var select = document.getElementById(memory_property+'-select');
-//     var upperProperty = property[0].toUpperCase() + property.substring(1);
-//     var csrf = document.querySelector('meta[name="csrf-token"]').content;
-//     $.ajax({
-//         type: "POST",
-//         url: "/_ajax-loadProperty",
-//         data: {
-//             load_property: '1',
-//             type: memory_property,
-//             submit: '1',
-//             _token: csrf
-//         },
-//         dataType: "json",
-//         success: function(response) {
-//             var rows = response;
-//             if (Array.isArray(rows)) {
-//                 select.options.length = 0;
-//                 select.options[0] = new Option('Select '+upperProperty, '');
-//                 for (var j = 0; j < rows.length; j++) {
-//                     select.options[j+1] = new Option(rows[j].name, rows[j].id);
-//                 }
-//                 select.options[0].disaled = true;
-//                 select.options[0].selected = true;
-//             } else {
-//                 console.log('error - check loadProperty function');
-//             }
-//         },
-//         async: true
-//     });
-// }
-
 function searchSerial(search) {
 
-    var responseBox = document.getElementById('memory-add-response');
-    var btnAddSingle = document.getElementById('memory-add-single');
+    var responseBox = document.getElementById('cpu-add-response');
+    var btnAddSingle = document.getElementById('cpu-add-single');
     var csrf = document.querySelector('meta[name="csrf-token"]').content;
 
     responseBox.hidden = true;
@@ -313,9 +217,9 @@ function searchSerial(search) {
     if (search !== null && search !== '') {
         $.ajax({
             type: "POST",
-            url: "/assets/memory.serialSearch",
+            url: "/assets/cpu.serialSearch",
             data: {
-                "request-memory": 1,
+                "request-cpu": 1,
                 "serial": search,
                 _token: csrf
             },
@@ -346,7 +250,7 @@ function searchSerial(search) {
 // for the select boxes
 function populateAreas() {
   // Get the selected site
-  var site = document.getElementById("site-add_memory").value;
+  var site = document.getElementById("site-add_cpu").value;
   
   // Make an AJAX request to retrieve the corresponding areas
   var xhr = new XMLHttpRequest();
@@ -355,7 +259,7 @@ function populateAreas() {
     if (xhr.status === 200) {
       // Parse the response and populate the area select box
       var areas = JSON.parse(xhr.responseText);
-      var select = document.getElementById("area-add_memory");
+      var select = document.getElementById("area-add_cpu");
       select.options.length = 0;
       select.options[0] = new Option("Select Area", "");
       select.options[0].hidden = true;
@@ -370,7 +274,7 @@ function populateAreas() {
 }
 function populateShelves() {
   // Get the selected area
-  var area = document.getElementById("area-add_memory").value;
+  var area = document.getElementById("area-add_cpu").value;
 
   // Make an AJAX request to retrieve the corresponding shelves
   var xhr = new XMLHttpRequest();
@@ -379,7 +283,7 @@ function populateShelves() {
     if (xhr.status === 200) {
       // Parse the response and populate the shelf select box
       var shelves = JSON.parse(xhr.responseText);
-      var select = document.getElementById("shelf-add_memory");
+      var select = document.getElementById("shelf-add_cpu");
       select.options.length = 0;
       select.options[0] = new Option("Select Shelf", "");
       select.options[0].hidden = true;
@@ -397,7 +301,7 @@ function populateShelves() {
 // for the select boxes
 function populateAreasEdit() {
   // Get the selected site
-  var site = document.getElementById("site_memory_edit").value;
+  var site = document.getElementById("site_cpu_edit").value;
   
   // Make an AJAX request to retrieve the corresponding areas
   var xhr = new XMLHttpRequest();
@@ -406,7 +310,7 @@ function populateAreasEdit() {
     if (xhr.status === 200) {
       // Parse the response and populate the area select box
       var areas = JSON.parse(xhr.responseText);
-      var select = document.getElementById("area_memory_edit");
+      var select = document.getElementById("area_cpu_edit");
       select.options.length = 0;
       select.options[0] = new Option("Select Area", "");
       select.options[0].hidden = true;
@@ -419,9 +323,10 @@ function populateAreasEdit() {
   };
   xhr.send();
 }
+
 function populateShelvesEdit() {
   // Get the selected area
-  var area = document.getElementById("area_memory_edit").value;
+  var area = document.getElementById("area_cpu_edit").value;
 
   // Make an AJAX request to retrieve the corresponding shelves
   var xhr = new XMLHttpRequest();
@@ -430,7 +335,7 @@ function populateShelvesEdit() {
     if (xhr.status === 200) {
       // Parse the response and populate the shelf select box
       var shelves = JSON.parse(xhr.responseText);
-      var select = document.getElementById("shelf_memory_edit");
+      var select = document.getElementById("shelf_cpu_edit");
       select.options.length = 0;
       select.options[0] = new Option("Select Shelf", "");
       select.options[0].hidden = true;
@@ -445,16 +350,16 @@ function populateShelvesEdit() {
 }
 
 
-if (document.getElementById("site-add_memory")) {
-    document.getElementById("site-add_memory").addEventListener("change", populateAreas);
+if (document.getElementById("site-add_cpu")) {
+    document.getElementById("site-add_cpu").addEventListener("change", populateAreas);
 }
-if (document.getElementById("area-add_memory")) {
-    document.getElementById("area-add_memory").addEventListener("change", populateShelves);
+if (document.getElementById("area-add_cpu")) {
+    document.getElementById("area-add_cpu").addEventListener("change", populateShelves);
 }
 
-if (document.getElementById("site_memory_edit")) {
-    document.getElementById("site_memory_edit").addEventListener("change", populateAreasEdit);
+if (document.getElementById("site_cpu_edit")) {
+    document.getElementById("site_cpu_edit").addEventListener("change", populateAreasEdit);
 }
-if (document.getElementById("area_memory_edit")) {
-    document.getElementById("area_memory_edit").addEventListener("change", populateShelvesEdit);
+if (document.getElementById("area_cpu_edit")) {
+    document.getElementById("area_cpu_edit").addEventListener("change", populateShelvesEdit);
 }

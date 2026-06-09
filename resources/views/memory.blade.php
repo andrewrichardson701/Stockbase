@@ -422,7 +422,7 @@
                                 </or>
                             </td>
                             <td class="align-middle" style="padding-right:5px">
-                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadEditMemory('{{ $row['id'] }}')">
+                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="edit" title="Edit?" onclick="modalLoadEditMemory('{{ $row['id'] }}')">
                                     <i class="fa fa-pencil" style="color:white"></i>
                                 </button>
                             </td>

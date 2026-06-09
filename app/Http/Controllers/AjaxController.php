@@ -17,6 +17,7 @@ use App\Models\StockModel;
 use App\Models\CablestockModel;
 use App\Models\ContainersModel;
 use App\Models\FavouritesModel;
+use App\Models\CpuModel;
 // use App\Models\ResponseHandlingModel;
 
 class AjaxController extends Controller
@@ -65,6 +66,24 @@ class AjaxController extends Controller
             $request = $request->all(); // turn request into an array
             $disk = DiskModel::returnDiskInfoAjax($id, $request);
             return $disk;
+        } else {
+            return 'error';
+        }
+    }
+
+    public function getCpuInfoAjax(Request $request)
+    {
+        // get all to check for a match
+        if ($request['_token'] == csrf_token()) {
+            $request->validate([
+                'id' => 'integer|required',
+                'submit' => 'integer|required'
+            ]);
+
+            $id = $request->input('id');            
+            $request = $request->all(); // turn request into an array
+            $cpu = CpuModel::returnCpuInfoAjax($id, $request);
+            return $cpu;
         } else {
             return 'error';
         }
@@ -141,7 +160,7 @@ class AjaxController extends Controller
 
     public function getSelectBoxAreas($site) 
     {
-        if (is_numeric($site) && $site > 0) {
+        if (is_numeric($site)) {
             $areas = [];
 
             $areas = GeneralModel::allDistinctAreas($site, 0);
@@ -156,7 +175,7 @@ class AjaxController extends Controller
 
     public function getSelectBoxShelves($area) 
     {
-        if (is_numeric($area) && $area > 0) {
+        if (is_numeric($area)) {
             $shelves = [];
 
             $shelves = GeneralModel::allDistinctShelves($area, 0);

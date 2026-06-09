@@ -1,4 +1,8 @@
 <h2>Changelog</h2>
+<h3>1.5.1 - Admin Page Attributes</h3>
+<ul>
+    <li></li>
+</ul>
 <h3>1.5.0 - SSO, CPUs and Memory</h3>
 <ul>
     <li>Added SSO functions.</li>

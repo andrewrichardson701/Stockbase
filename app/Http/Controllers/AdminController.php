@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 use App\Models\IndexModel;
@@ -19,6 +19,7 @@ use App\Models\ChangelogModel;
 use App\Models\StockModel;
 use App\Models\SessionModel;
 use App\Models\WebhookModel;
+use App\Models\SsoModel;
 
 class AdminController extends Controller
 {
@@ -204,8 +205,6 @@ class AdminController extends Controller
                         'cpus' => 'string|nullable',
                         'memory' => 'string|nullable',
                         'disks' => 'string|nullable',
-                        'fans' => 'string|nullable',
-                        'psus' => 'string|nullable',
                         'containers' => 'string|nullable',
                         'changelog' => 'string|nullable',
                 ]);
@@ -458,6 +457,34 @@ class AdminController extends Controller
         return 'unknown request';
     }
 
+    static public function ssoToggle(Request $request)
+    {
+        if (isset($request['sso-toggle-submit'])) {
+            if ($request['_token'] == csrf_token()) {
+                if (isset($request['saml_enabled']) && in_array($request['saml_enabled'], ['on', 'off'])) {
+                    $enabled = $request['saml_enabled'];
+                } else {
+                    $enabled = 'off';
+                }
+                return SsoModel::toggleSso($enabled);
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+
+        if (isset($request['sso-submit']) || isset($request['sso-restore-defaults'])) {
+            if ($request['_token'] == csrf_token()) {
+                $request->validate([
+                        'saml_tenant_id' => 'string|required'
+                ]);
+                return AdminModel::updateConfigSettings($request->input());
+            } else {
+                return 'Error: CSRF token missmatch.';
+            }
+        }
+        return 'unknown request';
+    }
+
     static public function toggleEmailNotification(Request $request)
     {
         if ($request['_token'] == csrf_token()) {
@@ -672,8 +699,6 @@ class AdminController extends Controller
                 'cpus' => $request['permissions_cpus'] ?? 'off',
                 'memory' => $request['permissions_memory'] ?? 'off',
                 'disks' => $request['permissions_disks'] ?? 'off',
-                'fans' => $request['permissions_fans'] ?? 'off',
-                'psus' => $request['permissions_psus'] ?? 'off',
                 'containers' => $request['permissions_containers'] ?? 'off',
                 'changelog' => $request['permissions_changelog'] ?? 'off'
             ];
@@ -693,9 +718,12 @@ class AdminController extends Controller
 
         $request = $request->all(); // turn request into an array
         $response_handling = ResponseHandlingModel::responseHandling($request);
+        $routes = Route::getRoutes();
+        
         return view('debug', [
                             'nav_data' => $nav_data,
                             'response_handling' => $response_handling,
+                            'routes' => $routes,
                             ]);
     }
 

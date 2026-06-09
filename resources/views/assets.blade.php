@@ -24,36 +24,29 @@
         <div class="container" style="margin-top:10px">
             <div class="viewport-font">
                 Total Asset Count: 
-                <or class="title @if($assets['all']['count'] > 0) green @else red @endif" title="Optics: {{ $assets['optics']['count'] }}, CPUs: {{ $assets['cpus']['count'] }}, Memory: {{ $assets['memory']['count'] }}, Disks: {{ $assets['disks']['count'] }}, Fans: {{ $assets['fans']['count'] }}, PSUs: {{ $assets['psus']['count'] }}">
+                <or class="title @if($assets['all']['count'] > 0) green @else red @endif" title="Optics: {{ $assets['optics']['count'] }}, CPUs: {{ $assets['cpus']['count'] }}, Memory: {{ $assets['memory']['count'] }}, Disks: {{ $assets['disks']['count'] }}">
                     {{ $assets['all']['count'] }}
                 </or>
             </div>
-            <div class="row ">
-                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['optics'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('optics') }}`)">
-                    <h4>Optics</h4>
-                    <img style="max-width:100px;overflow:hidden;" src="/img/assets/SFP.png">
+
+            <div class="row">
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['optics'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('optics') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">Optics</h4>
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;" src="/img/assets/SFP.png">
                 </div>
-                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['cpus'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('cpus') }}`)">
-                    <h4>CPUs</h4> 
-                    <img style="max-width:100px;overflow:hidden;" src="/img/assets/CPU.png">
-                </div>
-                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['memory'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('memory') }}`)">
-                    <h4>Memory</h4> 
-                    <img style="max-width:100px;overflow:hidden;" src="/img/assets/RAM.png">
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['cpus'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('cpus') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">CPUs</h4> 
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;" src="/img/assets/CPU.png">
                 </div>
             </div>
-            <div class="row ">
-                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['disks'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('disks') }}`)">
-                    <h4>Disks</h4>
-                    <img style="max-width:100px;overflow:hidden;" src="/img/assets/HDD.png">
+            <div class="row">
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['memory'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('memory') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">Memory</h4>
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;height:max-content" src="/img/assets/RAM.png">
                 </div>
-                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['fans'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('fans') }}`)">
-                    <h4>Fans</h4> 
-                    <img style="max-width:100px;overflow:hidden;" src="/img/assets/Fan.png">
-                </div>
-                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['psus'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('psus') }}`)">
-                    <h4>PSUs</h4> 
-                    <img style="max-width:100px;overflow:hidden;" src="/img/assets/PSU.png">
+                <div class="col text-center well-nopad theme-divBg @if($head_data['user']['permissions']['disks'] == 0) no-perms" disabled title="No permission. @else clickable @endif" style="margin:5px" onclick="navPage(`{{ route('disks') }}`)" style="max-height:170px" >
+                    <h4 style="padding-bottom:10px">Disks</h4>
+                    <img style="max-width:150px;max-height:100px;overflow:hidden;margin:auto;height:max-content" src="/img/assets/HDD.png">
                 </div>
             </div>
         </div>

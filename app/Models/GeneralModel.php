@@ -563,7 +563,7 @@ class GeneralModel extends Model
         $user_data['permissions'] = GeneralModel::getAllWhere('users_permissions', ['id' => $user_data['id']], 'id')[0] ?? [];
         $user_data['theme_data'] = GeneralModel::getAllWhere('theme', ['id' => $user_data['theme_id'] ?? 1])[0] ?? [];
         
-        $assets_permissions = ['optics', 'cpus', 'memory', 'disks', 'psus', 'fans'];
+        $assets_permissions = ['optics', 'cpus', 'memory', 'disks'];
         $user_data['permissions']['assets'] = 0;
         foreach ($assets_permissions as $permission) {
             if ($user_data['permissions'][$permission] == 1) {
@@ -596,7 +596,7 @@ class GeneralModel extends Model
         $latestVersion = null;
 
         // Remote GitLab file
-        $remoteHeadFileUrl = 'https://github.com/andrewrichardson701/Stockbase/blob/master/config/app.php';
+        $remoteHeadFileUrl = 'https://raw.githubusercontent.com/andrewrichardson701/Stockbase/master/config/app.php';
 
         // Get session version check time
         $versionCheckTime = Session::get('version_check_time');
@@ -607,14 +607,28 @@ class GeneralModel extends Model
             $versionCheckTime = $time;
         }
 
+        // get previously checked version from session, to test against current version and decide if we need to fetch remote version
+        $previouslyCheckedVersion = Session::get('version_current');
+
         // Store current version in session
         Session::put('version_current', $version);
         $currentVersion = ltrim($version, 'v');
 
         // Check if we need to fetch remote version (every 15 minutes)
-        if ($versionCheckTime < $time - (60*15) || $versionCheckTime === $time) {
-            $remoteHeadContent = @file_get_contents($remoteHeadFileUrl);
-            if ($remoteHeadContent === false) {
+        if ($previouslyCheckedVersion !== $version || ($time - $versionCheckTime) >= 900) {
+            $ch = curl_init($remoteHeadFileUrl);
+
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_TIMEOUT => 10,
+                CURLOPT_USERAGENT => 'VersionChecker/1.0'
+            ]);
+
+            $remoteHeadContent = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+            if ($httpCode !== 200 || !$remoteHeadContent) {
                 $return['error'][] = "Could not retrieve the latest version information.";
             } else {
                 // Flexible regex to match single or double quotes
@@ -622,6 +636,7 @@ class GeneralModel extends Model
                     $latestVersion = ltrim($matches[1], 'v');
                     Session::put('version_latest', $latestVersion);
                 } else {
+                    $return['update'] = -2;
                     $return['error'][] = "Could not parse the latest version from remote file.";
                 }
             }
@@ -637,35 +652,81 @@ class GeneralModel extends Model
 
         if (!isset($return['error'])) {
             $current = GeneralModel::parseVersion($currentVersion);
-            $latest = GeneralModel::parseVersion($latestVersion);
+            $latest  = GeneralModel::parseVersion($latestVersion);
 
-            $majorDiff = max($latest['major'] - $current['major'], 0);
-            $minorDiff = max($latest['minor'] - $current['minor'], 0);
-            $patchDiff = max($latest['patch'] - $current['patch'], 0);
+            $majorDiff = $latest['major'] - $current['major'];
+            $minorDiff = $latest['minor'] - $current['minor'];
+            $patchDiff = $latest['patch'] - $current['patch'];
 
-            $return['message'][] = "You are using <or class='green'>v$currentVersion</or>.";
+            $type = null;
 
-            if ($majorDiff || $minorDiff || $patchDiff) {
+            if ($latest['major'] > $current['major']) {
+                $type = 'major';
+            } elseif ($latest['minor'] > $current['minor']) {
+                $type = 'minor';
+            } elseif ($latest['patch'] > $current['patch']) {
+                $type = 'patch';
+            }
+
+            switch ($type) {
+                case 'major':
+                    $return['update_type'] = 'major';
+                    $message_header = "<or class='red'>A major update is available!</or>";
+                    break;
+                case 'minor':
+                    $return['update_type'] = 'minor';
+                    $message_header = "<or class='red'>A minor update is available!</or>";
+                    break;
+                case 'patch':
+                    $return['update_type'] = 'patch';
+                    $message_header = "<or class='red'>A patch update is available!</or>";
+                    break;
+                default:
+                    $return['update_type'] = 'up-to-date';
+            }
+
+            $comparison = version_compare($latestVersion, $currentVersion);
+            
+            if ($comparison > 0) {
                 $return['update'] = 1;
+                if (isset($message_header)) { 
+                    $return['message'][] = $message_header."<br>"; 
+                }
+                $return['message'][] = "You are using <or class='green'>v$currentVersion</or>.";
                 $return['message'][] = "The latest version is <or class='green'>v$latestVersion</or>.";
                 $return['message'][] = "<br>You are behind by:";
 
                 if ($majorDiff > 0) {
                     $return['message'][] = "&#8226; <or class='red'>$majorDiff</or> major release(s)";
-                    $return['major'] = $majorDiff;
                 }
                 if ($minorDiff > 0) {
                     $return['message'][] = "&#8226; <or class='red'>$minorDiff</or> minor release(s)";
-                    $return['minor'] = $minorDiff;
                 }
                 if ($patchDiff > 0) {
                     $return['message'][] = "&#8226; <or class='red'>$patchDiff</or> patch(es)";
-                    $return['patch'] = $patchDiff;
                 }
 
                 $return['message'][] = "<br>Please update to the latest version.";
+
+            } elseif ($comparison < 0) {
+                $return['update'] = -1;
+                $return['message'][] = "You are using <or class='green'>v$currentVersion</or>.";
+                $return['message'][] = "The latest version is <or class='green'>v$latestVersion</or>.";
+                $return['message'][] = "<br>Somehow, you are ahead of<br> the latest public release by:";
+
+                if ($majorDiff < 0) {
+                    $return['message'][] = "&#8226; <or class='red'>" . abs($majorDiff) . "</or> major release(s)";
+                }
+                if ($minorDiff < 0) {
+                    $return['message'][] = "&#8226; <or class='red'>" . abs($minorDiff) . "</or> minor release(s)";
+                }
+                if ($patchDiff < 0) {
+                    $return['message'][] = "&#8226; <or class='red'>" . abs($patchDiff) . "</or> patch(es)";
+                }
+
             } else {
                 $return['update'] = 0;
+                $return['message'][] = "You are using <or class='green'>v$currentVersion</or>.";
                 $return['message'][] = "You are up to date!";
             }
         }
@@ -677,7 +738,7 @@ class GeneralModel extends Model
     static public function updateChecker($versionNumber) {
         $updateCheck = GeneralModel::checkUpdates($versionNumber);
         $updateText = '';
-        $updateAvailable = -1;
+        $updateAvailable = -2;
 
         if (!empty($updateCheck['error'])) {
             $errorString = '<or class="red">';
@@ -687,7 +748,7 @@ class GeneralModel extends Model
             $errorString .= '</or>';
             $updateText = $errorString;
         } else {
-            $updateAvailable = !empty($updateCheck['update']) ? 1 : 0;
+            $updateAvailable = !empty($updateCheck['update']) ? $updateCheck['update'] : 0;
             if (!empty($updateCheck['message'])) {
                 $updateText = implode('<br>', $updateCheck['message']);
             }

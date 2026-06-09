@@ -1,4 +1,31 @@
 <h2>Changelog</h2>
+<h3>1.5.0 - SSO, CPUs and Memory</h3>
+<ul>
+    <li>Added SSO functions.</li>
+    <li>Added SSO Provider and Listener. SSO package has also been added.</li>
+    <li>New fields added to the config table to allow SSO.</li>
+    <li>SSO login button as been added to the login page when enabled.</li>
+    <li>Added some routes to the debug page.</li>
+    <li>Distributed the routes into seperate files for permissions.</li>
+    <li>Corrected the update checker for when it fails and when somehow you are on a newer version than the main branch.</li>
+    <li>Reintroduced the add multiple optic button.</li>
+    <li>Optic comment deletion was broken due to incorrect used site_id. Fixed.</li>
+    <li>Memory database migrations added to create the database tables.</li>
+    <li>Added the MemoryModel and AssetController functions to enable memory storage and editing.</li>
+    <li>Adding Memory works</li>
+    <li>Deleteing Memory works</li>
+    <li>Memory Transactions work</li>
+    <li>Disk/Memory/CPU edit modals now load the area and shelf information back into the form before presenting the info.</li>
+    <li>CPU page added.</li>
+    <li>CPU DB tables added via migrations.</li>
+    <li>CPU Controller and Model added with functions.</li>
+    <li>CPU adding is now functional.</li>
+    <li>Adding new CPU models is working.</li>
+    <li>Editing CPUs is working.</li>
+    <li>CPU transactions are working.</li>
+    <li>Split the AssetsController out into individual asset controllers e.g. DisksController.</li>
+    <li>Deleting and Restoring CPUs works.</li>
+</ul>
 <h3>1.4.1 - Disks</h3>
 <ul>
     <li>SMTP Model now checks if image_name is set intead of erroring.</li>

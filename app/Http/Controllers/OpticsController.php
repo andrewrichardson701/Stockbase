@@ -164,7 +164,7 @@ class OpticsController extends Controller
             );
         $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
                                     
-        if (isset($request['add-optic-submit'])) {
+        if (isset($request['add-optic-submit']) || isset($request['add-optic-submit-multiple'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
                     'serial' => 'string|required',
@@ -178,7 +178,11 @@ class OpticsController extends Controller
                     'mode' => 'string|required', 
                     'site' => 'integer|required'
                 ]);
-                return OpticsModel::addOptic($request->input());
+                if ($request->has('add-optic-submit-multiple')) {
+                    $request->merge(['multiple' => true]);
+                }
+
+                return OpticsModel::addOptic($request->all());
             } else {
                 return redirect($url)->with('error', 'CSRF missmatch');
             }

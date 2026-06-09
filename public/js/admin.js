@@ -251,6 +251,36 @@ document.getElementById("ldap-enabled-toggle").addEventListener("change", functi
     document.getElementById("ldapToggleForm").submit();
 });
 
+// SSO TOGGLE ENABLE STUFF
+
+// Get the initial state of the SSO enable toggle checkbox
+let isSsoCheckboxChecked = document.getElementById("sso-enabled-toggle").checked;
+
+// Add an event listener to the checkbox
+document.getElementById("sso-enabled-toggle").addEventListener("change", function (event) {
+    // Check if the checkbox is being unchecked
+    const isUncheck = !this.checked;
+
+    // If the checkbox is being unchecked, display the confirmation popup
+    if (isUncheck) {
+        const confirmed = confirm(
+            'Disabling SSO will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
+        );
+
+        // If the user cancels, revert the checkbox back to its previous state
+        if (!confirmed) {
+            this.checked = true; // Revert the checkbox back to checked state
+            return;
+        }
+    }
+
+    // Update the initial state of the checkbox for the next change event
+    isSsoCheckboxChecked = this.checked;
+
+    // If the checkbox is not being unchecked or the user confirmed, submit the form
+    document.getElementById("ssoToggleForm").submit();
+});
+
 // ############
 
 // SMTP TOGGLE ENABLE STUFF

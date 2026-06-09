@@ -268,7 +268,7 @@ class AdminModel extends Model
 
         $user = GeneralModel::getUser();
         $config_fields = Schema::getColumnListing('config');
-        $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit', 'webhook-submit'];
+        $excluded_keys = ['_token', 'global-submit', 'smtp-submit', 'ldap-submit', 'sso-submit', 'webhook-submit'];
         $not_null_keys = ['system_name', 'SKU_prefix', 'base_url', 'banner_color', 'currency'];
 
         if (isset($data['global-submit'])) {
@@ -277,6 +277,8 @@ class AdminModel extends Model
             $anchor = 'smtp-settings';
         } elseif (isset($data['ldap-submit']) || isset($data['ldap-restore-defaults'])) {
             $anchor = 'ldap-settings';
+        } elseif (isset($data['sso-submit']) || isset($data['sso-restore-defaults'])) {
+            $anchor = 'sso-settings';
         } elseif (isset($data['webhook-submit']) || isset($data['webhook-restore-defaults'])) {
             $anchor = 'webhook-settings';
         } else {
@@ -326,6 +328,18 @@ class AdminModel extends Model
             }
         } 
 
+        if (isset($data['sso-restore-defaults'])) {
+
+            $reset_array = ['saml_tenant_id', 'saml_settings'];
+            $reset = AdminModel::resetConfig($reset_array);
+
+            if ($reset == 1) {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+            } else {
+                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+            }
+        } 
+
         if (isset($data['webhook-restore-defaults'])) {
         
             $reset_array = ['webhook_type', 'webhook_friendly_name', 'webhook_url', 'webhook_display_name', 'webhook_prefix_message'];
@@ -345,7 +359,7 @@ class AdminModel extends Model
                 'action' => 'Update record',
             ];
 
-        unset($data['_token'], $data['global-submit'], $data['smtp-submit'], $data['ldap-submit'], $data['webhook-submit']); // remove these to stop them being queried
+        unset($data['_token'], $data['global-submit'], $data['smtp-submit'], $data['ldap-submit'], $data['sso-submit'], $data['webhook-submit']); // remove these to stop them being queried
 
         foreach($data as $field => $value) {
             if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys

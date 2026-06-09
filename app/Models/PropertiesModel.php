@@ -37,7 +37,15 @@ class PropertiesModel extends Model
                 'disk_speed',
                 'disk_capacity',
                 'disk_caddy',
-                'disk_rpm'
+                'disk_rpm',
+                'memory_vendor',
+                'memory_capacity',
+                'memory_speed',
+                'memory_form_factor',
+                'memory_ecc_type',
+                'memory_generation',
+                'cpu_vendor',
+                'cpu_model',
             ];
 
         if (in_array($request['type'], $valid_types)) {
@@ -87,6 +95,13 @@ class PropertiesModel extends Model
                 case 'cable_types':
                     $insert_data['description'] = $description;
                     $insert_data['parent'] = $request['parent'];
+                    break;
+                case 'cpu_model':
+                    $insert_data['socket'] = $request['socket'];
+                    $insert_data['cpu_family'] = $request['cpu_family'];
+                    $insert_data['core_count'] = $request['core_count'];
+                    $insert_data['clock_speed'] = $request['clock_speed'];
+                    break;
                 default:
 
             }

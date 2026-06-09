@@ -330,7 +330,7 @@ class DiskModel extends Model
                         }
                     }   
                     $data = ['id' => $find->id];
-                    return DiskModel::restore($data);
+                    return DiskModel::restoreDisk($data);
  
                 } else {
                     return redirect()->to($url)->with('error', 'Disk already exists.');
@@ -351,7 +351,7 @@ class DiskModel extends Model
         $find = DB::table('disk_item')->where('id', $disk_id)->where('deleted', 1)->first();
 
         if ($find) {
-            $update = DB::table('disk_item')->where('id', $find->id)->update(['deleted' => 0]);
+            $update = DB::table('disk_item')->where('id', $find->id)->update(['deleted' => 0, 'quantity' => 1, 'updated_at' => now()]);
 
             if ($update) {
                 // changelog
@@ -400,7 +400,7 @@ class DiskModel extends Model
         $find = DB::table('disk_item')->where('id', $disk_id)->first();
 
         if ($find && $find->deleted == 0) {
-            $update = DB::table('disk_item')->where('id', $disk_id)->update(['deleted' => 1]);
+            $update = DB::table('disk_item')->where('id', $disk_id)->update(['deleted' => 1, 'quantity' => 0, 'updated_at' => now()]);
 
             if ($update) {
                 // changelog

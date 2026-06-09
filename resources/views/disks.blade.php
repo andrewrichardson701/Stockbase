@@ -192,7 +192,7 @@
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewVendor()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewVendor()">Add New</label>
                             </div>
                         </div>
                         <div class="col">
@@ -224,7 +224,7 @@
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewType()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewType()">Add New</label>
                             </div>
                         </div>
                         <div class="col">
@@ -242,7 +242,7 @@
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewCapacity()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewCapacity()">Add New</label>
                             </div>
                         </div>
                     </div>
@@ -282,7 +282,7 @@
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewSpeed()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewSpeed()">Add New</label>
                             </div>
                         </div>
                         <div class="col">
@@ -300,7 +300,7 @@
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewRPM()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewRPM()">Add New</label>
                             </div>
                         </div>
                         <div class="col">
@@ -318,7 +318,7 @@
                                 </select>
                             </div>
                             <div class="text-center">
-                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewCaddy()">Add New</a>
+                                <label class="gold clickable" style="margin-top:5px;font-size:14px" onclick="modalLoadNewCaddy()">Add New</label>
                             </div>
                         </div>
                         <div class="col">
@@ -415,7 +415,7 @@
                                         <option value="vendor" @if($params['sort'] == "vendor") selected @endif>Vendor</option>
                                         <option value="model" @if($params['sort'] == "model") selected @endif>Model</option>
                                         <option value="serial" @if($params['sort'] == "serial") selected @endif>Serial</option>
-                                        <option value="serial" @if($params['sort'] == "destroy") selected @endif>Destroy</option>
+                                        <option value="destroy" @if($params['sort'] == "destroy") selected @endif>Destroy</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -481,7 +481,7 @@
                             </td>
                             <td class="align-middle">{!! $row['destroy'] ? '<or class="red">SHRED</or>' : 'No' !!}</td>
                             <td class="align-middle" style="padding-right:5px">
-                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="move" title="Move?" onclick="modalLoadEditDisk('{{ $row['id'] }}')">
+                                <button id="move-btn-{{ $row['id'] }}" class="btn btn-info" style="padding-left:10px;padding-right:10px" type="button" value="edit" title="Edit?" onclick="modalLoadEditDisk('{{ $row['id'] }}')">
                                     <i class="fa fa-pencil" style="color:white"></i>
                                 </button>
                             </td>
@@ -549,7 +549,7 @@
                                                 <tr>
                                                     <td style="padding-right:10px">Page:</td>
                                                     <td style="padding-right:10px">
-                                                        <select id="page-select" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" onchange="navPage(updateQueryParameter('', 'page', document.getElementById('page-select').value + '#disks_data'))" name="page">
+                                                        <select id="page-select" class="form-control row-dropdown" style="width:50px;height:25px; padding:0px" onchange="navPage(updateQueryParameter('', 'page', document.getElementById('page-select').value))" name="page">
                                                         @for ($i = 1; $i <= $disks_data['pages']; $i++) 
                                                             <option value="{{ $i }}" @if ($i == $disks_data['page']) selected @endif>{{ $i }}</option>
                                                         @endfor

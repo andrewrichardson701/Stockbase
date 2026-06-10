@@ -1,7 +1,8 @@
 <h2>Changelog</h2>
 <h3>1.5.1 - Admin Page Attributes</h3>
 <ul>
-    <li></li>
+    <li>Added asset attributes to the admin page, so that they can be deleted when needed.</li>
+    <li>Fixed the DiskModel not correctly applying the destroy filter as a 0 when unset.</li>
 </ul>
 <h3>1.5.0 - SSO, CPUs and Memory</h3>
 <ul>

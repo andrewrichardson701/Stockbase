@@ -842,14 +842,23 @@ class AdminModel extends Model
         $attribute = $request['attribute-type'];
         $id = $request['id'];
         $allowed_types = ['tag', 'manufacturer'];
-        $allowed_optic_types = ['optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
+        $allowed_attribute_types = [
+            'optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance',
+            'cpu_vendor', 'cpu_model',
+            'memory_vendor', 'memory_ecc_type', 'memory_speed', 'memory_generation', 'memory_capacity', 'memory_form_factor',
+            'disk_vendor', 'disk_type', 'disk_capacity', 'disk_seed', 'disk_rpm', 'disk_caddy'
+        ];
         
         if (in_array($attribute, $allowed_types)) {
             $anchor = "attributemanagement-settings";
             $search_table = 'item';
-        } elseif (in_array($attribute, $allowed_optic_types)) {
-            $anchor = "opticattributemanagement-settings";
-            $search_table = 'optic_item';
+        } elseif (in_array($attribute, $allowed_attribute_types)) {
+            $sub = explode("_", $attribute)[0];
+            if (!$sub) {
+                $sub = '';
+            }
+            $anchor = "{$sub}attributemanagement-settings";
+            $search_table = "{$sub}_item";
         } else {
             return redirect()->to(route('admin'))->with('error', 'Unknown attribute field');
         }
@@ -873,11 +882,10 @@ class AdminModel extends Model
 
         if ($current_data) {
             //remove the optic_ from the attribute
-            if (str_contains($attribute, 'optic_')) {
-                $clean_attribute = str_replace('optic_', '', $attribute);
-            } else {
-                $clean_attribute = $attribute;
-            }
+            // check if the string cotains text from the cleaning array
+            $prefixes = ['optic_', 'disk_', 'memory_', 'cpu_'];
+
+            $clean_attribute = str_replace($prefixes, '', $attribute);
 
             // check for any links
             $links = DB::table($search_table)
@@ -920,12 +928,20 @@ class AdminModel extends Model
         $attribute = $request['attribute-type'];
         $id = $request['id'];
         $allowed_types = ['tag', 'manufacturer'];
-        $allowed_optic_types = ['optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance'];
-        
+        $allowed_attribute_types = [
+            'optic_vendor', 'optic_type', 'optic_speed', 'optic_connector', 'optic_distance',
+            'cpu_vendor', 'cpu_model',
+            'memory_vendor', 'memory_ecc_type', 'memory_speed', 'memory_generation', 'memory_capacity', 'memory_form_factor',
+            'disk_vendor', 'disk_type', 'disk_capacity', 'disk_seed', 'disk_rpm', 'disk_caddy'
+        ];
         if (in_array($attribute, $allowed_types)) {
             $anchor = "attributemanagement-settings";
-        } elseif (in_array($attribute, $allowed_optic_types)) {
-            $anchor = "opticattributemanagement-settings";
+        } elseif (in_array($attribute, $allowed_attribute_types)) {
+            $sub = explode("_", $attribute)[0];
+            if (!$sub) {
+                $sub = '';
+            }
+            $anchor = "{$sub}attributemanagement-settings";
         } else {
             return redirect()->to(route('admin'))->with('error', 'Unknown attribute field');
         }

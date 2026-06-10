@@ -245,7 +245,7 @@ class DiskModel extends Model
                     'ssd' => $request['ssd'],
                     'speed_id' => $request['speed'],
                     'rpm_id' => $request['rpm'],
-                    'destroy' => $request['destroy'],
+                    'destroy' => $request['destroy'] ?? 0,
                     'shelf_id' => $request['shelf'],
                     'form_factor' => $request['form_factor'],
                     'quantity' => 1,

@@ -246,9 +246,9 @@
                         @else 
                         <tr id="optic_speed-row-{{ $optic_speed['id'] }}" class="align-middle">
                         @endif
-                        <form encspeed="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
+                        <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
-                            <input type="hidden" name="attribute-speed" value="optic_speed"/>
+                            <input type="hidden" name="attribute-type" value="optic_speed"/>
                             <input type="hidden" name="id" value="{{ $optic_speed['id'] }}">
                             <td id="optic_speed-{{ $optic_speed['id'] }}-id" class="text-center align-middle">{{ $optic_speed['id'] }}</td>
                             <td id="optic_speed-{{ $optic_speed['id'] }}-name" class="text-center align-middle">{{ $optic_speed['name'] }}</td>
@@ -266,7 +266,7 @@
                             <td class="text-center align-middle">
                                 @if ((int)$optic_speed['deleted'] !== 1) 
                                     @if (array_key_exists($optic_speed['id'], $optic_speed_links) && ((int)$optic_speed_links[$optic_speed['id']]['count'] ?? 0) !== 0) 
-                                        <button class="btn btn-warning" id="optic_speed-{{ $optic_speed['id'] }}-links" type="button onclick="showLinks('optic_speed', '{{ $optic_speed['id'] }}')">Show Links</button> 
+                                        <button class="btn btn-warning" id="optic_speed-{{ $optic_speed['id'] }}-links" type="button" onclick="showLinks('optic_speed', '{{ $optic_speed['id'] }}')">Show Links</button> 
                                     @endif
                                 @else 
                                     <or class="green">Restore?</or>
@@ -350,7 +350,7 @@
                         @endif
                         <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
-                            <input type="hidden" name="attribute-connector" value="optic_connector"/>
+                            <input type="hidden" name="attribute-type" value="optic_connector"/>
                             <input type="hidden" name="id" value="{{ $optic_connector['id'] }}">
                             <td id="optic_connector-{{ $optic_connector['id'] }}-id" class="text-center align-middle">{{ $optic_connector['id'] }}</td>
                             <td id="optic_connector-{{ $optic_connector['id'] }}-name" class="text-center align-middle">{{ $optic_connector['name'] }}</td>
@@ -452,7 +452,7 @@
                         @endif
                         <form enctype="multipart/form-data" action="{{ route('admin.attributeSettings') }}" method="POST">
                             @csrf
-                            <input type="hidden" name="attribute-distance" value="optic_distance"/>
+                            <input type="hidden" name="attribute-type" value="optic_distance"/>
                             <input type="hidden" name="id" value="{{ $optic_distance['id'] }}">
                             <td id="optic_distance-{{ $optic_distance['id'] }}-id" class="text-center align-middle">{{ $optic_distance['id'] }}</td>
                             <td id="optic_distance-{{ $optic_distance['id'] }}-name" class="text-center align-middle">{{ $optic_distance['name'] }}</td>

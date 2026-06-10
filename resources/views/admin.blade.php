@@ -53,6 +53,15 @@
             <!-- optic attribute management -->
             @include('includes.admin.optic-attribute-management')
 
+            <!-- cpu attribute management -->
+            @include('includes.admin.cpu-attribute-management')
+
+            <!-- memory attribute management -->
+            @include('includes.admin.memory-attribute-management')
+
+            <!-- disk attribute management -->
+            @include('includes.admin.disk-attribute-management')
+
             <!-- stock management -->
             @include('includes.admin.stock-management')
 

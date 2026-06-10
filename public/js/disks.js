@@ -175,6 +175,7 @@ function modalLoadEditDisk(id) {
             var caddy_id = response['caddy_id'];
             var capacity_id = response['capacity_id'];
             var form_factor = response['form_factor'];
+            var rpm_id = response['form_rpm_id'];
             var ssd = response['ssd'];
             var site_id = response['site_id'];
             var area_id = response['area_id'];
@@ -187,6 +188,7 @@ function modalLoadEditDisk(id) {
             var editInputVendor = document.getElementById('vendor_disk_edit');
             var editInputSpeed = document.getElementById('speed_disk_edit');
             var editInputCaddy = document.getElementById('caddy_disk_edit');
+            var editInputRPM = document.getElementById('rpm_disk_edit');
             var editInputCapacity = document.getElementById('capacity_disk_edit');
             var editInputFormFactor = document.getElementById('form_factor_disk_edit');
             var editInputSSD = document.getElementById('ssd_disk_edit');
@@ -202,6 +204,7 @@ function modalLoadEditDisk(id) {
             setSelectValue(editInputSpeed, speed_id);
             setSelectValue(editInputCaddy, caddy_id);
             setSelectValue(editInputCapacity, capacity_id);
+            setSelectValue(editInputRPM, rpm_id);
             setSelectValue(editInputFormFactor, form_factor);
             setSelectValue(editInputSSD, ssd);
             setSelectValue(editInputSite, site_id);

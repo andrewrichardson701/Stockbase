@@ -260,12 +260,14 @@ function populateAreas() {
       // Parse the response and populate the area select box
       var areas = JSON.parse(xhr.responseText);
       var select = document.getElementById("area-add_cpu");
+      var selectValue = select.value; // Store the current value of the select box
       select.options.length = 0;
       select.options[0] = new Option("Select Area", "");
       select.options[0].hidden = true;
       select.options[0].disabled = true;
       for (var i = 0; i < areas.length; i++) {
-        select.options[select.options.length] = new Option(areas[i].name, areas[i].id);
+        var isSelected = (areas[i].id == selectValue);
+        select.options[select.options.length] = new Option(areas[i].name, areas[i].id, false, isSelected);
       }
       select.disabled = (select.options.length === 1);
     }

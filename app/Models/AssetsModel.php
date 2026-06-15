@@ -14,7 +14,7 @@ class AssetsModel extends Model
 
         $disks = GeneralModel::allDistinct('disk_item', 0);
         $optics = GeneralModel::allDistinct('optic_item', 0);
-        // $cpus = GeneralModel::allDistinct('cpu_item', 0);
+        $cpus = GeneralModel::allDistinct('cpu_item', 0);
         $memory = GeneralModel::allDistinct('memory_item', 0);
 
         $assets = [

@@ -165,17 +165,45 @@ class CpuModel extends Model
     static public function addCpu($request)
     {
         $previous = GeneralModel::previousURL();
-        $query = http_build_query(
-                [
-                    'form_serial' => $request['serial'] ?? '', 
-                    'form_model' => $request['model'] ?? '',
-                    'form_vendor' => $request['vendor'] ?? '',
-                    'form_site' => $request['site'] ?? '',
-                    'form_area' => $request['area'] ?? '',
-                    'form_shelf' => $request['shelf'] ?? '',
-                ]
-            );
-        $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
+
+        // Extract existing components
+        $urlParts = parse_url($previous);
+        $existingParams = [];
+
+        // Parse the existing query string into an array
+        if (isset($urlParts['query'])) {
+            parse_str($urlParts['query'], $existingParams);
+        }
+
+        // Filter out any keys starting with 'form_'
+        $filteredParams = array_filter($existingParams, function($key) {
+            return strpos($key, 'form_') !== 0;
+        }, ARRAY_FILTER_USE_KEY);
+
+        unset($filteredParams['error'], $filteredParams['success']); // remove multiple if it exists
+        
+        // Build your new data
+        $newData = [
+            'form_serial' => $request['serial'] ?? '', 
+            'form_model' => $request['model'] ?? '',
+            'form_vendor' => $request['vendor'] ?? '',
+            'form_site' => $request['site'] ?? '',
+            'form_area' => $request['area'] ?? '',
+            'form_shelf' => $request['shelf'] ?? '',
+        ];
+
+        if ($request['multiple'] ?? false) {
+            $newData['add_form'] = 1;
+        } else {
+            $newData['add_form'] = 0;
+        }
+
+        // Merge filtered old params with new data
+        $finalQuery = http_build_query(array_merge($filteredParams, $newData));
+
+        // Reconstruct the URL
+        $url = $urlParts['scheme'] . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
+        $url .= '?' . $finalQuery;
           
         $user = GeneralModel::getUser();
 

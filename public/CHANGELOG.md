@@ -3,7 +3,9 @@
 <ul>
     <li>Added asset attributes to the admin page, so that they can be deleted when needed.</li>
     <li>Fixed the DiskModel not correctly applying the destroy filter as a 0 when unset.</li>
-    <li>Fixed the asset js files not actually loading the area/shelf when editing an asset</li>
+    <li>Fixed the asset js files not actually loading the area/shelf when editing an asset.</li>
+    <li>Fixed the asset pages now clearing the error/success messages from the last submit.</li>
+    <li>Fixed the asset pages url getting larger when adding items.</li>
 </ul>
 <h3>1.5.0 - SSO, CPUs and Memory</h3>
 <ul>

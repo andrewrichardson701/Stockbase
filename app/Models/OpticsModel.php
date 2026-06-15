@@ -304,21 +304,23 @@ class OpticsModel extends Model
     {
         $previous = GeneralModel::previousURL();
 
-        // 1. Extract existing components
+        // Extract existing components
         $urlParts = parse_url($previous);
         $existingParams = [];
 
-        // 2. Parse the existing query string into an array
+        // Parse the existing query string into an array
         if (isset($urlParts['query'])) {
             parse_str($urlParts['query'], $existingParams);
         }
 
-        // 3. Filter out any keys starting with 'form_'
+        // Filter out any keys starting with 'form_'
         $filteredParams = array_filter($existingParams, function($key) {
             return strpos($key, 'form_') !== 0;
         }, ARRAY_FILTER_USE_KEY);
 
-        // 4. Build your new data
+        unset($filteredParams['error'], $filteredParams['success']); // remove multiple if it exists
+
+        // Build your new data
         $newData = [
             'form_serial'    => $request['serial'] ?? '', 
             'form_model'     => $request['model'] ?? '', 
@@ -338,10 +340,10 @@ class OpticsModel extends Model
             $newData['add_form'] = 0;
         }
 
-        // 5. Merge filtered old params with new data
+        // Merge filtered old params with new data
         $finalQuery = http_build_query(array_merge($filteredParams, $newData));
 
-        // 6. Reconstruct the URL
+        // Reconstruct the URL
         $url = $urlParts['scheme'] . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
         $url .= '?' . $finalQuery;
 

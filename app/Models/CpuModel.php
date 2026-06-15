@@ -181,7 +181,7 @@ class CpuModel extends Model
         }, ARRAY_FILTER_USE_KEY);
 
         unset($filteredParams['error'], $filteredParams['success']); // remove multiple if it exists
-        
+
         // Build your new data
         $newData = [
             'form_serial' => $request['serial'] ?? '', 
@@ -202,7 +202,7 @@ class CpuModel extends Model
         $finalQuery = http_build_query(array_merge($filteredParams, $newData));
 
         // Reconstruct the URL
-        $url = $urlParts['scheme'] . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
+        $url = $urlParts['scheme'] ?? 'http' . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
         $url .= '?' . $finalQuery;
           
         $user = GeneralModel::getUser();

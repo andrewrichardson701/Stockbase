@@ -202,7 +202,7 @@ class CpuModel extends Model
         $finalQuery = http_build_query(array_merge($filteredParams, $newData));
 
         // Reconstruct the URL
-        $url = $urlParts['scheme'] ?? 'http' . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
+        $url = $urlParts['scheme'] . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
         $url .= '?' . $finalQuery;
           
         $user = GeneralModel::getUser();

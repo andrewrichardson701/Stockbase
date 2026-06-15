@@ -192,7 +192,11 @@ class CpuModel extends Model
             'form_shelf' => $request['shelf'] ?? '',
         ];
 
-        $newData['add_form'] = ($request['multiple'] ?? false) ? 1 : 0;
+        if (isset($existingParams['add_form'])){
+            $newData['add_form'] = $existingParams['add_form'];
+        } else {
+            $newData['add_form'] = ($request['multiple'] ?? false) ? 1 : 0;
+        }
 
         // Merge filtered old params with new data
         $finalQuery = http_build_query(array_merge($filteredParams, $newData));

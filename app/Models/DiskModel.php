@@ -212,38 +212,34 @@ class DiskModel extends Model
             return strpos($key, 'form_') !== 0;
         }, ARRAY_FILTER_USE_KEY);
 
-        unset($filteredParams['error'], $filteredParams['success']); // remove multiple if it exists
+        unset($filteredParams['error'], $filteredParams['success']); 
 
         // Build your new data
         $newData = [
-            'form_serial' => $request['serial'] ?? '', 
-            'form_model' => $request['model'] ?? '',
-            'form_capacity' => $request['capacity'] ?? '',
-            'form_vendor' => $request['vendor'] ?? '',
-            'form_type' => $request['type'] ?? '',
-            'form_speed' => $request['speed'] ?? '',
-            'form_rpm' => $request['rpm'] ?? '',
-            'form_caddy' => $request['caddy'] ?? '',
-            'form_site' => $request['site'] ?? '',
-            'form_ssd' => $request['ssd'] ?? '',
+            'form_serial'      => $request['serial'] ?? '', 
+            'form_model'       => $request['model'] ?? '',
+            'form_capacity'    => $request['capacity'] ?? '',
+            'form_vendor'      => $request['vendor'] ?? '',
+            'form_type'        => $request['type'] ?? '',
+            'form_speed'       => $request['speed'] ?? '',
+            'form_rpm'         => $request['rpm'] ?? '',
+            'form_caddy'       => $request['caddy'] ?? '',
+            'form_site'        => $request['site'] ?? '',
+            'form_ssd'         => $request['ssd'] ?? '',
             'form_form_factor' => $request['form_factor'] ?? '',
-            'form_destroy' => $request['destroy'] ?? '',
-            'form_area' => $request['area'] ?? '',
-            'form_shelf' => $request['shelf'] ?? '',
+            'form_destroy'     => $request['destroy'] ?? '',
+            'form_area'        => $request['area'] ?? '',
+            'form_shelf'       => $request['shelf'] ?? '',
         ];
 
-        if ($request['multiple'] ?? false) {
-            $newData['add_form'] = 1;
-        } else {
-            $newData['add_form'] = 0;
-        }
+        $newData['add_form'] = ($request['multiple'] ?? false) ? 1 : 0;
 
         // Merge filtered old params with new data
         $finalQuery = http_build_query(array_merge($filteredParams, $newData));
 
-        // Reconstruct the URL
-        $url = $urlParts['scheme'] . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
-        $url .= '?' . $finalQuery;
+        // Reconstruct the URL using ONLY the path
+        $path = $urlParts['path'] ?? '/';
+        $url = $path . '?' . $finalQuery;
           
         $user = GeneralModel::getUser();
 

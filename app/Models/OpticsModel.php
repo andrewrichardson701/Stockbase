@@ -318,7 +318,7 @@ class OpticsModel extends Model
             return strpos($key, 'form_') !== 0;
         }, ARRAY_FILTER_USE_KEY);
 
-        unset($filteredParams['error'], $filteredParams['success']); // remove multiple if it exists
+        unset($filteredParams['error'], $filteredParams['success']); 
 
         // Build your new data
         $newData = [
@@ -334,18 +334,14 @@ class OpticsModel extends Model
             'form_vendor' => $request['vendor'] ?? '',
         ];
 
-        if ($request['multiple'] ?? false) {
-            $newData['add_form'] = 1;
-        } else {
-            $newData['add_form'] = 0;
-        }
+        $newData['add_form'] = ($request['multiple'] ?? false) ? 1 : 0;
 
         // Merge filtered old params with new data
         $finalQuery = http_build_query(array_merge($filteredParams, $newData));
 
-        // Reconstruct the URL
-        $url = $urlParts['scheme'] . '://' . $urlParts['host'] . ($urlParts['path'] ?? '');
-        $url .= '?' . $finalQuery;
+        // Reconstruct the URL using ONLY the path
+        $path = $urlParts['path'] ?? '/';
+        $url = $path . '?' . $finalQuery;
 
         $user = GeneralModel::getUser();
 

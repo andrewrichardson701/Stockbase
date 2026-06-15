@@ -155,7 +155,7 @@ function modalLoadEditDisk(id) {
         },
         dataType: "json",
         success: function(response) {
-            console.log(response);
+            // console.log(response);
             if (response['error'] !== undefined) {
                 alert('Error loading disk info - try refreshing the page');
                 return;
@@ -175,7 +175,7 @@ function modalLoadEditDisk(id) {
             var caddy_id = response['caddy_id'];
             var capacity_id = response['capacity_id'];
             var form_factor = response['form_factor'];
-            var rpm_id = response['form_rpm_id'];
+            var rpm_id = response['rpm_id'];
             var ssd = response['ssd'];
             var site_id = response['site_id'];
             var area_id = response['area_id'];
@@ -277,7 +277,7 @@ function addDiskProperty(property) {
             },
             dataType: "html",
             success: function(response) {
-                console.log(response);
+                // console.log(response);
                 modalCloseNewType();
                 modalCloseNewVendor();
                 modalCloseNewSpeed();

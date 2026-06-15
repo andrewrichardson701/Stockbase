@@ -138,7 +138,7 @@ class MemoryController extends Controller
             );
         $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
                              
-        if (isset($request['add-memory-submit'])) {
+        if (isset($request['add-memory-submit']) || isset($request['add-memory-multiple-submit'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
                     'serial' => 'string|nullable',
@@ -151,6 +151,9 @@ class MemoryController extends Controller
                     'capacity' => 'integer|required', 
                     'shelf' => 'integer|required'
                 ]);
+                if ($request->has('add-memory-submit-multiple')) {
+                    $request->merge(['multiple' => true]);
+                }
 
                 return MemoryModel::addMemory($request->input());
             } else {

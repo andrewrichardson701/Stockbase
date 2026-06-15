@@ -156,7 +156,7 @@ class DiskController extends Controller
             );
         $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
                                    
-        if (isset($request['add-disk-submit'])) {
+        if (isset($request['add-disk-submit']) || isset($request['add-disk-submit-multiple'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
                     'serial' => 'string|required',
@@ -172,6 +172,9 @@ class DiskController extends Controller
                     'capacity' => 'integer|required', 
                     'shelf' => 'integer|required'
                 ]);
+                if ($request->has('add-disk-submit-multiple')) {
+                    $request->merge(['multiple' => true]);
+                }
 
                 return DiskModel::addDisk($request->input());
             } else {

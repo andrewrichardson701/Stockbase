@@ -380,6 +380,7 @@
                         </div>
                         <div class="col" style="margin-top:10px">
                             <button id="disk-add-single" class="btn btn-success align-bottom" type="submit" name="add-disk-submit" style="" value="1">Add</button>
+                            <button id="disk-add-multiple" class="btn btn-success align-bottom" type="submit" name="add-disk-submit-multiple" style="margin-left:20px" value="2">Add Multiple</button>
                         </div>
                         <div class="col-sm text-right" style="margin-top:10px">
                             <a href="disk-import.php" class="link" style="font-size:12px; padding-bottom:10px" hidden>Import from CSV</a>

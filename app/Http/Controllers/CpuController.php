@@ -133,7 +133,7 @@ class CpuController extends Controller
             );
         $url = $previous . (parse_url($previous, PHP_URL_QUERY) ? '&' : '?') . $query;
                                    
-        if (isset($request['add-cpu-submit'])) {
+        if (isset($request['add-cpu-submit']) || isset($request['add-cpu-submit-multiple'])) {
             if ($request['_token'] == csrf_token()) {
                 $request->validate([
                     'serial' => 'string|nullable',
@@ -141,6 +141,9 @@ class CpuController extends Controller
                     'vendor' => 'integer|required',
                     'shelf' => 'integer|required'
                 ]);
+                if ($request->has('add-cpu-submit-multiple')) {
+                    $request->merge(['multiple' => true]);
+                }
 
                 return CpuModel::addCpu($request->input());
             } else {

@@ -1570,7 +1570,7 @@ class AdminModel extends Model
                                     <input type="hidden" name="_token" form="image-row-'.$f.'-form" value="'.csrf_token().'" />
                                     <input type="hidden" name="file-name" form="image-row-'.$f.'-form" value="'.$filename.'" />
                                     <input type="hidden" name="file-links" form="image-row-'.$f.'-form" value="'.$link_count.'" />
-                                    <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.$path.'/'.$filename.'" onclick="modalLoad(this)"></td>
+                                    <td id="image-'.$f.'-thumb" class="text-center align-middle" style="width:130px"><img id="image-'.$f.'-img" class="inv-img-main thumb" alt="'.$filename.'" src="'.asset($path.'/'.$filename).'" onclick="modalLoad(this)"></td>
                                     <td id="image-'.$f.'-name" class="text-center align-middle">'.$path.'/'.$filename.'</td>
                                     <td class="text-center align-middle">'.$link_count.'</td>
                                     <td class="text-center align-middle"><button class="btn btn-danger" type="submit" form="image-row-'.$f.'-form" name="imagemanagement-delete-submit" '.$disabled.'><i class="fa fa-trash"></i></button></td>

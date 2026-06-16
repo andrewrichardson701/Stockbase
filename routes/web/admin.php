@@ -10,7 +10,9 @@ use App\Http\Controllers\SSOController;
 // Admin pages
 Route::middleware(['auth', 'check.permission:admin'])->group(function () { // Admin pages - locked behind the admin or root permission
     // admin routes
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin'); // admin page
+    Route::get('/admin/{setting?}', [AdminController::class, 'index']) // admin page - setting from the left hand menu
+        ->where('setting', '[a-z\-]+')
+        ->name('admin'); 
     Route::get('/admin.smtpTemplate', [SmtpController::class, 'template'])->name('admin.smtpTemplate'); // view SMTP template
     Route::get('/admin.emailTemplatePreview', [SmtpController::class, 'emailTemplatePreview'])->name('admin.emailTemplatePreview'); // preview the email template
     Route::get('/admin.getEmailTemplateUrl', [SmtpController::class, 'getEmailTemplateUrl'])->name('admin.getEmailTemplateUrl'); // preview the email template

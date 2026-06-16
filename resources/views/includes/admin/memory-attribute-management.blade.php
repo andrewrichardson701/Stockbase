@@ -1,7 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="memoryattributemanagement-settings" onclick="toggleSection(this, 'memoryattributemanagement')">Memory Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="memoryattributemanagement-settings">Memory Attribute Management</h3> 
     <!-- Memory Attribute Management Settings -->
-    <div style="padding-top: 20px" id="memoryattributemanagement" hidden>
+    <div class="adminContent" id="memoryattributemanagement">
 
         @include('includes.response-handling', ['section' => 'memoryattributemanagement-settings'])
 

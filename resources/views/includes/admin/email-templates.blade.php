@@ -1,9 +1,9 @@
 <div style="padding-bottom:0px">
-    <div class="container">
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="emailtemplates-settings" onclick="toggleSection(this, 'emailtemplates')">Email Templates <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+    <div class="container-fluid">
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="emailtemplates-settings">Email Templates</h3> 
     </div>
     <!-- Notification Settings -->
-    <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="emailtemplates" hidden>
+    <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="emailtemplates">
 
         @include('includes.response-handling', ['section' => 'emailtemplates-settings'])
 

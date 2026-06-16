@@ -1,13 +1,8 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="ldap-settings" onclick="toggleSection(this, 'ldap')">LDAP Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="ldap-settings">LDAP Settings</h3> 
 
     <!-- LDAP Settings -->
-    <div style="padding-top: 20px" id="ldap" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'ldap-settings')) {
-        //     showResponse();
-        // }
-        ?>
+    <div class="adminContent" id="ldap">
         @include('includes.response-handling', ['section' => 'ldap-settings'])
 
         <form id="ldapToggleForm" enctype="multipart/form-data" action="{{ route('admin.ldapSettings') }}" method="POST">

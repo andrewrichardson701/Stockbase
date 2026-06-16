@@ -1,7 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="cpuattributemanagement-settings" onclick="toggleSection(this, 'cpuattributemanagement')">CPU Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="cpuattributemanagement-settings">CPU Attribute Management</h3> 
     <!-- CPU Attribute Management Settings -->
-    <div style="padding-top: 20px" id="cpuattributemanagement" hidden>
+    <div class="adminContent" id="cpuattributemanagement">
 
         @include('includes.response-handling', ['section' => 'cpuattributemanagement-settings'])
 

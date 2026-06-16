@@ -1,13 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings" onclick="toggleSection(this, 'stocklocations')">Stock Location Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings">Stock Location Settings</h3> 
     <!-- Stock Location Settings -->
-    <div style="padding-top: 20px" id="stocklocations" hidden>
-
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'stocklocation-settings')) {
-        //     showResponse();
-        // }
-        ?>
+    <div class="adminContent" id="stocklocations">
         @include('includes.response-handling', ['section' => 'stocklocations-settings'])
         <table class="table table-dark theme-table text-center" style="max-width:max-content; vertical-align: middle;">
             <thead>

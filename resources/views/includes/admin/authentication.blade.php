@@ -1,12 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="authentication-settings" onclick="toggleSection(this, 'authentication')">Authentication <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="authentication-settings">Authentication</h3> 
     <!-- Authentication -->
-    <div style="padding-top: 20px" id="authentication" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'authentication')) {
-        //     showResponse();
-        // }
-        ?>
+    <div class="adminContent" id="authentication">
         @include('includes.response-handling', ['section' => 'authentication-settings'])
         <p id="authentication-output" class="last-edit-T" hidden></p>
         <table>

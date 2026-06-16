@@ -1,9 +1,9 @@
 <div style="padding-bottom:0px">
-    <div class="container" style="padding-bottom:0px">
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="webhooktemplates-settings" onclick="toggleSection(this, 'webhooktemplates')">Webhook Templates <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+    <div class="container-fluid" style="padding-bottom:0px">
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="webhooktemplates-settings">Webhook Templates</h3> 
     </div>
     <!-- Webhook Settings -->
-    <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="webhooktemplates" hidden>
+    <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="webhooktemplates">
 
         @include('includes.response-handling', ['section' => 'webhooktemplates-settings'])
 

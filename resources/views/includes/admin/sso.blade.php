@@ -1,13 +1,8 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sso-settings" onclick="toggleSection(this, 'sso')">SSO Settings <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sso-settings">SSO Settings</h3> 
 
     <!-- SSO Settings -->
-    <div style="padding-top: 20px" id="sso" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'sso-settings')) {
-        //     showResponse();
-        // }
-        ?>
+    <div class="adminContent" id="sso">
         @include('includes.response-handling', ['section' => 'sso-settings'])
 
         <form id="ssoToggleForm" enctype="multipart/form-data" action="{{ route('admin.ssoToggle') }}" method="POST">

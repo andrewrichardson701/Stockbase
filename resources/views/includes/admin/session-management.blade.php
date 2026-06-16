@@ -1,7 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sessionmanagement-settings" onclick="toggleSection(this, 'sessionmanagement')">Session Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sessionmanagement-settings">Session Management</h3> 
     <!-- Session Management -->
-    <div style="padding-top: 20px" id="sessionmanagement" hidden>
+    <div style="padding-top: 20px" id="sessionmanagement">
 
         @include('includes.response-handling', ['section' => 'sessionmanagement-settings'])
         <table id="sessionsTable" class="table table-dark theme-table" style="max-width:max-content">

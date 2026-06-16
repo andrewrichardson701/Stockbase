@@ -1,12 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="footer-settings" onclick="toggleSection(this, 'footer')">Footer <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 style="margin-top:50px;font-size:22px" id="footer-settings">Footer</h3> 
     <!-- Footer -->
-    <div style="padding-top: 20px" id="footer" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'footer')) {
-        //     showResponse();
-        // }
-        ?>
+    <div class="adminContent" id="footer">
         @include('includes.response-handling', ['section' => 'footer-settings'])
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">
             <p id="footer-output" class="last-edit-T" hidden></p>

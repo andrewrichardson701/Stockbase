@@ -1,16 +1,11 @@
 <div style="padding-bottom:0px">
-    <div class="container">
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" onclick="toggleSection(this, 'users')">Users <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+    <div class="container-fluid">
+        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="users-settings" >Users</h3> 
     </div>
     <!-- Users Settings -->
-    <div class="align-middle text-center" style="margin-left:5vw;margin-right:5vw; padding-top: 20px" id="users" hidden>
-        <?php
-        // if ((isset($_GET['section']) && $_GET['section'] == 'users')) {
-        //     showResponse();
-        // }
-        ?>
+    <div class="align-middle text-center" style="margin-left:5vw;margin-right:5vw; padding-top: 20px" id="users">
         @include('includes.response-handling', ['section' => 'users-settings'])
-        <table id="usersTable" class="table table-dark theme-table centertable" style="max-width:max-content">
+        <table id="usersTable" class="table table-dark theme-table" style="max-width:max-content">
             <thead>
                 <tr id="users_table_info_tr" hidden>
                     <td colspan=8 id="users_table_info_td"></td>

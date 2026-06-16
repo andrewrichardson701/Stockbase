@@ -1,7 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="attributemanagement-settings" onclick="toggleSection(this, 'attributemanagement')">Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="attributemanagement-settings">Attribute Management</h3> 
     <!-- Attribute Management Settings -->
-    <div style="padding-top: 20px" id="attributemanagement" hidden>
+    <div class="adminContent" id="attributemanagement">
         @include('includes.response-handling', ['section' => 'attributemanagement-settings'])
         <h4 style="margin-left:10px; margin-right:10px; font-size:20px; margin-bottom:10px">Tags<a class="align-middle link" style="margin-left:30px;font-size:12px" href="{{ route('tags') }}">View all</a></h4>
 

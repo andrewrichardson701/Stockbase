@@ -1,7 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="diskattributemanagement-settings" onclick="toggleSection(this, 'diskattributemanagement')">Disk Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="diskattributemanagement-settings">Disk Attribute Management</h3> 
     <!-- Disk Attribute Management Settings -->
-    <div style="padding-top: 20px" id="diskattributemanagement" hidden>
+    <div class="adminContent" id="diskattributemanagement">
 
         @include('includes.response-handling', ['section' => 'diskattributemanagement-settings'])
 

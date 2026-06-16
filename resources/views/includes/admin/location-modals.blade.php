@@ -1,4 +1,4 @@
-<div class="container" style="padding-bottom:0px">
+<div class="container-fluid" style="padding-bottom:0px">
     @include('includes.response-handling', ['section' => 'modals'])
     
     <div id="modalDivAdd" class="modal">

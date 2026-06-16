@@ -1,7 +1,7 @@
-<div class="container" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings" onclick="toggleSection(this, 'imagemanagement')">Image Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px"></i></h3> 
+<div class="container-fluid" style="padding-bottom:0px">
+    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="imagemanagement-settings">Image Management</h3> 
     <!-- Image Management Settings -->
-    <div style="padding-top: 20px" id="imagemanagement" hidden>
+    <div class="adminContent" id="imagemanagement">
 
         @include('includes.response-handling', ['section' => 'imagemanagement-settings'])
         <div style="max-height:60vh;overflow-x: hidden;overflow-y: auto; margin-left:10px; margin-right:10px">

@@ -13,6 +13,22 @@ function toggleSection(element, section) {
     }
 }
 
+function toggleMainSection(element, section) {
+    var div = document.getElementById(section);
+    var icon = element.children[0].children[0].children[0];
+    if (div.hidden == false) {
+        div.hidden=true;
+        // div.classList.remove("theme-th-selected");
+        icon.classList.remove("fa-chevron-up");
+        icon.classList.add("fa-chevron-down");
+    } else {
+        div.hidden=false;
+        // div.classList.add("theme-th-selected");
+        icon.classList.remove("fa-chevron-down");
+        icon.classList.add("fa-chevron-up");
+    }
+}
+
 
 function testLDAP() {
     var csrf = document.querySelector('meta[name="csrf-token"]').content;
@@ -204,9 +220,7 @@ window.onload = function () {
     const anchor = window.location.hash.substring(1); // Remove the leading '#'
     if (anchor) {
         const { param1, param2 } = extractParamsFromAnchor(anchor);
-        // console.log(param1);
-        // console.log(param2);
-        toggleSection(document.getElementById(param1), param2);
+        // toggleSection(document.getElementById(param1), param2);
 
         // Scroll to the anchor ID after the toggleSection function is done
         const anchorElement = document.getElementById(anchor);
@@ -214,7 +228,7 @@ window.onload = function () {
             anchorElement.scrollIntoView({ behavior: 'smooth' });
         }
     } else {
-        toggleSection(document.getElementById("global-settings"), "global");
+        // toggleSection(document.getElementById("global-settings"), "global");
 
     }
 };
@@ -224,126 +238,134 @@ window.onload = function () {
 // LDAP TOGGLE ENABLE STUFF
 
 // Get the initial state of the LDAP enable toggle checkbox
-let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
+if (document.getElementById("ldap-enabled-toggle")) {
+    let isLdapCheckboxChecked = document.getElementById("ldap-enabled-toggle").checked;
 
-// Add an event listener to the checkbox
-document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
-    // Check if the checkbox is being unchecked
-    const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("ldap-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-    // If the checkbox is being unchecked, display the confirmation popup
-    if (isUncheck) {
-        const confirmed = confirm(
-            'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
-        );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling LDAP will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
+            );
 
-        // If the user cancels, revert the checkbox back to its previous state
-        if (!confirmed) {
-            this.checked = true; // Revert the checkbox back to checked state
-            return;
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
+            }
         }
-    }
 
-    // Update the initial state of the checkbox for the next change event
-    isLdapCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isLdapCheckboxChecked = this.checked;
 
-    // If the checkbox is not being unchecked or the user confirmed, submit the form
-    document.getElementById("ldapToggleForm").submit();
-});
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("ldapToggleForm").submit();
+    });
+}
 
 // SSO TOGGLE ENABLE STUFF
 
 // Get the initial state of the SSO enable toggle checkbox
-let isSsoCheckboxChecked = document.getElementById("sso-enabled-toggle").checked;
+if (document.getElementById("sso-enabled-toggle")) {
+    let isSsoCheckboxChecked = document.getElementById("sso-enabled-toggle").checked;
 
-// Add an event listener to the checkbox
-document.getElementById("sso-enabled-toggle").addEventListener("change", function (event) {
-    // Check if the checkbox is being unchecked
-    const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("sso-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-    // If the checkbox is being unchecked, display the confirmation popup
-    if (isUncheck) {
-        const confirmed = confirm(
-            'Disabling SSO will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
-        );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling SSO will force local user login.\nMake sure you have a local user available.\nAre you sure you want to do this?'
+            );
 
-        // If the user cancels, revert the checkbox back to its previous state
-        if (!confirmed) {
-            this.checked = true; // Revert the checkbox back to checked state
-            return;
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
+            }
         }
-    }
 
-    // Update the initial state of the checkbox for the next change event
-    isSsoCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isSsoCheckboxChecked = this.checked;
 
-    // If the checkbox is not being unchecked or the user confirmed, submit the form
-    document.getElementById("ssoToggleForm").submit();
-});
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("ssoToggleForm").submit();
+    });
+}
 
 // ############
 
 // SMTP TOGGLE ENABLE STUFF
 
 // Get the initial state of the SMTP enable toggle checkbox
-let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
+if (document.getElementById("smtp-enabled-toggle")) {
+    let isSmtpCheckboxChecked = document.getElementById("smtp-enabled-toggle").checked;
 
-// Add an event listener to the checkbox
-document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
-    // Check if the checkbox is being unchecked
-    const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("smtp-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-    // If the checkbox is being unchecked, display the confirmation popup
-    if (isUncheck) {
-        const confirmed = confirm(
-            'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
-        );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling SMTP will stop ALL email notifications.\nAre you sure you want to do this?'
+            );
 
-        // If the user cancels, revert the checkbox back to its previous state
-        if (!confirmed) {
-            this.checked = true; // Revert the checkbox back to checked state
-            return;
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
+            }
         }
-    }
 
-    // Update the initial state of the checkbox for the next change event
-    isSmtpCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isSmtpCheckboxChecked = this.checked;
 
-    // If the checkbox is not being unchecked or the user confirmed, submit the form
-    document.getElementById("smtpToggleForm").submit();
-});
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("smtpToggleForm").submit();
+    });
+}
 
 // ##########
 
 // Webhook TOGGLE ENABLE STUFF
 
 // Get the initial state of the SMTP enable toggle checkbox
-let isWebhookCheckboxChecked = document.getElementById("webhook-enabled-toggle").checked;
+if (document.getElementById("webhook-enabled-toggle")) {
+    let isWebhookCheckboxChecked = document.getElementById("webhook-enabled-toggle").checked;
 
-// Add an event listener to the checkbox
-document.getElementById("webhook-enabled-toggle").addEventListener("change", function (event) {
-    // Check if the checkbox is being unchecked
-    const isUncheck = !this.checked;
+    // Add an event listener to the checkbox
+    document.getElementById("webhook-enabled-toggle").addEventListener("change", function (event) {
+        // Check if the checkbox is being unchecked
+        const isUncheck = !this.checked;
 
-    // If the checkbox is being unchecked, display the confirmation popup
-    if (isUncheck) {
-        const confirmed = confirm(
-            'Disabling Webhoks will stop ALL webhook notifications to Slack / Discord / Teams.\nAre you sure you want to do this?'
-        );
+        // If the checkbox is being unchecked, display the confirmation popup
+        if (isUncheck) {
+            const confirmed = confirm(
+                'Disabling Webhoks will stop ALL webhook notifications to Slack / Discord / Teams.\nAre you sure you want to do this?'
+            );
 
-        // If the user cancels, revert the checkbox back to its previous state
-        if (!confirmed) {
-            this.checked = true; // Revert the checkbox back to checked state
-            return;
+            // If the user cancels, revert the checkbox back to its previous state
+            if (!confirmed) {
+                this.checked = true; // Revert the checkbox back to checked state
+                return;
+            }
         }
-    }
 
-    // Update the initial state of the checkbox for the next change event
-    isWebhookCheckboxChecked = this.checked;
+        // Update the initial state of the checkbox for the next change event
+        isWebhookCheckboxChecked = this.checked;
 
-    // If the checkbox is not being unchecked or the user confirmed, submit the form
-    document.getElementById("webhookToggleForm").submit();
-});
+        // If the checkbox is not being unchecked or the user confirmed, submit the form
+        document.getElementById("webhookToggleForm").submit();
+    });
+}
 
 // ##########
 
@@ -764,7 +786,10 @@ function populateAreasUpdate() {
         xhr.send();
     }
 }
-document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
+
+if (document.getElementById("location-parent-site-input")) {
+    document.getElementById("location-parent-site-input").addEventListener("change", populateAreasUpdate);
+}
 
 // ############
 
@@ -821,7 +846,9 @@ function populateParent() {
         xhr.send();
     }
 }
-document.getElementById("addLocation-type").addEventListener("change", populateParent);
+if (document.getElementById("addLocation-type")) {
+    document.getElementById("addLocation-type").addEventListener("change", populateParent);
+}
 
 function showLinks(type, num) {
     var button = document.getElementById(type+'-'+num+'-links');

@@ -7,6 +7,7 @@
     <li>Fixed the asset pages now clearing the error/success messages from the last submit.</li>
     <li>Fixed the asset pages url getting larger when adding items.</li>
     <li>Added the "Add Multiple" button to the cpu/disk/memory pages.</li>
+    <li>Re-designed the admin page to have a side navigation.</li>
 </ul>
 <h3>1.5.0 - SSO, CPUs and Memory</h3>
 <ul>

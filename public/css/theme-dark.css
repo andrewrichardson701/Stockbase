@@ -89,6 +89,11 @@ body {
     border: 0px !important;
 }
 
+.theme-th-selected-secondary { 
+    background-color: #14161a;
+    border: 0px !important;
+}
+
 /* Was gold, now changes based on theme - same as url links */
 .gold, a { 
 	color: #e1b12c !important; 

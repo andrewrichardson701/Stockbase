@@ -125,9 +125,9 @@ class ResponseHandlingModel extends Model
         $successPsuffix = '</p>';
 
         // Get values from query string
-        $errorKey = $request['error'] ?? null;
-        $sqlErrorKey = $request['sqlerror'] ?? null;
-        $successKey = $request['success'] ?? null;
+        $errorKey = session('error') ?? $request['error'] ?? null;
+        $sqlErrorKey = session('sqlerror') ?? $request['sqlerror'] ?? null;
+        $successKey = session('success') ?? $request['success'] ?? null;
 
         // Check Laravel session (if available in global helpers)
         if (session()->has('error')) {

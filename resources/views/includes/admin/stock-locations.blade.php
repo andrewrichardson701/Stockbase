@@ -1,5 +1,5 @@
 <div class="container-fluid" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stocklocations-settings">Stock Location Settings</h3> 
+    <h3 style="margin-top:50px;font-size:22px" id="stocklocations-settings">Stock Location Settings</h3> 
     <!-- Stock Location Settings -->
     <div class="adminContent" id="stocklocations">
         @include('includes.response-handling', ['section' => 'stocklocations-settings'])

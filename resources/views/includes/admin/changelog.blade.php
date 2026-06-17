@@ -1,6 +1,6 @@
 <div style="padding-bottom:0px">
     <div class="container-fluid">
-        <h3 class="clickable" style="margin-top:50px;font-size:22px" id="changelog-settings">Changelog</h3> 
+        <h3 style="margin-top:50px;font-size:22px" id="changelog-settings">Changelog</h3> 
     </div>
     <!-- Changelog -->
     <div class="text-center align-middle" style="margin-left:5vw; margin-right:5vw; padding-top: 20px" id="changelog">

@@ -1,5 +1,5 @@
 <div class="container-fluid" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="notification-settings">Email Notification Settings</h3> 
+    <h3 style="margin-top:50px;font-size:22px" id="notification-settings">Email Notification Settings</h3> 
 
     <!-- Email Notification Settings -->
     <div class="adminContent" id="notification">

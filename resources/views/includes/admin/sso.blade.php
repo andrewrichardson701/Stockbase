@@ -1,5 +1,5 @@
 <div class="container-fluid" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sso-settings">SSO Settings</h3> 
+    <h3 style="margin-top:50px;font-size:22px" id="sso-settings">SSO Settings</h3> 
 
     <!-- SSO Settings -->
     <div class="adminContent" id="sso">

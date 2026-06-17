@@ -1,5 +1,5 @@
 <div class="container-fluid" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="authentication-settings">Authentication</h3> 
+    <h3 style="margin-top:50px;font-size:22px" id="authentication-settings">Authentication</h3> 
     <!-- Authentication -->
     <div class="adminContent" id="authentication">
         @include('includes.response-handling', ['section' => 'authentication-settings'])

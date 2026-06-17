@@ -1,5 +1,5 @@
 <div class="container-fluid" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="cpuattributemanagement-settings">CPU Attribute Management</h3> 
+    <h3 style="margin-top:50px;font-size:22px" id="cpuattributemanagement-settings">CPU Attribute Management</h3> 
     <!-- CPU Attribute Management Settings -->
     <div class="adminContent" id="cpuattributemanagement">
 

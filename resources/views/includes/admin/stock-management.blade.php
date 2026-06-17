@@ -1,5 +1,5 @@
 <div class="container-fluid" style="padding-bottom:0px">       
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="stockmanagement-settings">Stock Management</h3> 
+    <h3 style="margin-top:50px;font-size:22px" id="stockmanagement-settings">Stock Management</h3> 
     <!-- Stock Management Settings -->
     <div class="adminContent" id="stockmanagement">
         <h4 style="margin-left:10px; margin-right:10px; margin-top:5px; font-size:20px; margin-bottom:10px">Cost Enablement</h4>

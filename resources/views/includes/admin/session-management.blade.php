@@ -1,5 +1,5 @@
 <div class="container-fluid" style="padding-bottom:0px">
-    <h3 class="clickable" style="margin-top:50px;font-size:22px" id="sessionmanagement-settings">Session Management</h3> 
+    <h3 style="margin-top:50px;font-size:22px" id="sessionmanagement-settings">Session Management</h3> 
     <!-- Session Management -->
     <div style="padding-top: 20px" id="sessionmanagement">
 

@@ -816,7 +816,7 @@
                                                                 <option value="1" selected>Dark</option>
                                                                 <option value="2">Light</option>
                                                             </select>
-                                                            <a style="margin-left: 15px" class="link align-middle" href="https://laravel.ajrich.co.uk/theme-testing" target="_blank">Theme testing</a>
+                                                            <a style="margin-left: 15px" class="link align-middle" href="" target="_blank">Theme testing</a>
                                                         </div>
 
                                                         <div class="row">

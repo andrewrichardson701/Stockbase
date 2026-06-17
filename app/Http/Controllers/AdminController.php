@@ -313,7 +313,7 @@ class AdminController extends Controller
             }
         }
 
-        return redirect()->to(route('admin', ['section' => 'attribute-settings']) . '#attribute-settings')->with('error', 'Unknown selection');
+        return redirect()->to(route('admin', ['setting' => 'stock-attributes']) . '#attribute-settings')->with('error', 'Unknown selection');
     }
 
     static public function stockManagementSettings(Request $request)
@@ -342,7 +342,7 @@ class AdminController extends Controller
             }
         }
 
-        return redirect()->to(route('admin', ['section' => 'stockmanagement-settings']) . '#stockmanagement-settings')->with('error', 'Unknown selection');
+        return redirect()->to(route('admin', ['setting' => 'stock-management']) . '#stockmanagement-settings')->with('error', 'Unknown selection');
     }
 
     static public function smtpSettings(Request $request)
@@ -541,7 +541,7 @@ class AdminController extends Controller
                 ]);
                 return AdminModel::stockLocationEdit($request->input());
             } else {
-                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
+                return redirect()->to(route('admin', ['setting' => 'stock-locations']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
             }
         }
 
@@ -553,7 +553,7 @@ class AdminController extends Controller
                 ]);
                 return AdminModel::stockLocationDelete($request->input());
             } else {
-                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
+                return redirect()->to(route('admin', ['setting' => 'stock-locations']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
             }
         }
 
@@ -565,7 +565,7 @@ class AdminController extends Controller
                 ]);
                 return AdminModel::stockLocationRestore($request->input());
             } else {
-                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
+                return redirect()->to(route('admin', ['setting' => 'stock-locations']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
             }
         }
 
@@ -579,7 +579,7 @@ class AdminController extends Controller
                 ]);
                 return AdminModel::stockLocationAdd($request->input());
             } else {
-                return redirect()->to(route('admin', ['section' => 'stocklocations-settings']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
+                return redirect()->to(route('admin', ['setting' => 'stock-locations']) . '#stocklocations-settings')->with('error', 'CSRF missmatch');
             }
         }
         
@@ -608,7 +608,7 @@ class AdminController extends Controller
                 ]);
                 return AdminModel::imageManagementDelete($request->input());
             } else {
-                return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'CSRF missmatch');
+                return redirect()->to(route('admin', ['setting' => 'image-management']) . '#imagemanagement-settings')->with('error', 'CSRF missmatch');
             }
         }
         
@@ -691,7 +691,7 @@ class AdminController extends Controller
             ]);
 
             if ($request['password'] !== $request['password_confirm']) {
-                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Password and password_confirm did not match.');
+                return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Password and password_confirm did not match.');
             }
             
             $user_data = [
@@ -718,7 +718,7 @@ class AdminController extends Controller
             return AdminModel::addLocalUser($user_data, $permissions_data);
             
         } else {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'CSRF missmatch');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'CSRF missmatch');
         }
     }
 

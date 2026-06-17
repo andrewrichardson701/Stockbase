@@ -100,7 +100,7 @@ class SmtpModel extends Model
     {
         $user = GeneralModel::getUser();
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => 'email']) . '#smtp-settings')->with('error', 'Permission denied.');
         }
 
         if (in_array($enabled, ['on', 'off'])) {
@@ -136,19 +136,19 @@ class SmtpModel extends Model
                         ];
 
                         GeneralModel::updateChangelog($changelog_info);
-                        return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('success', 'SMTP '.$state.'!');
+                        return redirect()->to(route('admin', ['setting' => 'email']) . '#smtp-settings')->with('success', 'SMTP '.$state.'!');
                     } else {
-                        return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('error', 'No changes made. Unable to toggle SMTP');
+                        return redirect()->to(route('admin', ['setting' => 'email']) . '#smtp-settings')->with('error', 'No changes made. Unable to toggle SMTP');
                     }
                     
                 } else {
-                    return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('error', 'Unable to get current config.');
+                    return redirect()->to(route('admin', ['setting' => 'email']) . '#smtp-settings')->with('error', 'Unable to get current config.');
                 }
             } else {
-                return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('error', 'Invalid value.');
+                return redirect()->to(route('admin', ['setting' => 'email']) . '#smtp-settings')->with('error', 'Invalid value.');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => 'smtp-settings']) . '#smtp-settings')->with('error', 'Invalid value.');
+            return redirect()->to(route('admin', ['setting' => 'email']) . '#smtp-settings')->with('error', 'Invalid value.');
         }
     }
 

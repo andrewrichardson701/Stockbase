@@ -2957,16 +2957,17 @@ class StockModel extends Model
         $attribute = $request['stockmanagement-type'];
         $id = $request['id'];
         $anchor = 'stockmanagement-settings';
+        $setting = 'stock-attributes';
 
         if ($attribute !== 'deleted') {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Incorrect type.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Incorrect type.');
         }
 
         // check permissions
         $user = GeneralModel::getUser();
 
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Permission denied.');
         }
 
         // get current data
@@ -3013,13 +3014,13 @@ class StockModel extends Model
                 ];
                 SmtpModel::notificationEmail(8, 8, $mail_data);
                 WebhookModel::notificationWebhook(8, 8, $mail_data);
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Stock restored: '.$current_data->name);
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Stock restored: '.$current_data->name);
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
             }
             
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm stock data.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to confirm stock data.');
         }
     }
 

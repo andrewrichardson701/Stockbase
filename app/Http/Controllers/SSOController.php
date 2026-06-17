@@ -82,7 +82,7 @@ class SSOController extends Controller
             return back()->withErrors(['update' => 'Failed to update SSO settings.']);
         }
 
-        return redirect()->to(route('admin', ['section' => 'sso-settings']) . '#sso-settings')->with('success', 'Updated fields: saml_tenant_id');
+        return redirect()->to(route('admin', ['setting' => 'authentication']) . '#sso-settings')->with('success', 'Updated fields: saml_tenant_id');
     }
 
     public function extractMicrosoftCert($tenantId)

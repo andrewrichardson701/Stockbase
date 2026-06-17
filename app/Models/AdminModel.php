@@ -273,16 +273,22 @@ class AdminModel extends Model
 
         if (isset($data['global-submit'])) {
             $anchor = 'global-settings';
+            $setting = 'global';
         } elseif (isset($data['smtp-submit']) || isset($data['smtp-restore-defaults'])) {
             $anchor = 'smtp-settings';
+            $setting = 'email';
         } elseif (isset($data['ldap-submit']) || isset($data['ldap-restore-defaults'])) {
             $anchor = 'ldap-settings';
+            $setting = 'authentication';
         } elseif (isset($data['sso-submit']) || isset($data['sso-restore-defaults'])) {
             $anchor = 'sso-settings';
+            $setting = 'authentication';
         } elseif (isset($data['webhook-submit']) || isset($data['webhook-restore-defaults'])) {
             $anchor = 'webhook-settings';
+            $setting = 'webhook';
         } else {
             $anchor = '';
+            $setting = '';
         }
 
         $current_data = DB::table('config')
@@ -295,9 +301,9 @@ class AdminModel extends Model
             $reset = AdminModel::resetConfig($reset_array);
 
             if ($reset == 1) {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Config Reset.');
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Reset failed.');
             }
         } 
 
@@ -309,9 +315,9 @@ class AdminModel extends Model
             $reset = AdminModel::resetConfig($reset_array);
 
             if ($reset == 1) {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Config Reset.');
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Reset failed.');
             }
         } 
 
@@ -322,9 +328,9 @@ class AdminModel extends Model
             $reset = AdminModel::resetConfig($reset_array);
 
             if ($reset == 1) {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Config Reset.');
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Reset failed.');
             }
         } 
 
@@ -334,9 +340,9 @@ class AdminModel extends Model
             $reset = AdminModel::resetConfig($reset_array);
 
             if ($reset == 1) {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Config Reset.');
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Reset failed.');
             }
         } 
 
@@ -346,9 +352,9 @@ class AdminModel extends Model
             $reset = AdminModel::resetConfig($reset_array);
 
             if ($reset == 1) {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Config Reset.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Config Reset.');
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Reset failed.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Reset failed.');
             }
         } 
 
@@ -450,9 +456,9 @@ class AdminModel extends Model
         if (!empty($changed)) {
             //success
             $changed_fields = implode(', ', array_keys($changed));
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'No changes made.');
         }
     }
 
@@ -579,6 +585,7 @@ class AdminModel extends Model
     {
         $user_id = $request['user_id'];
         $anchor = 'users-settings';
+        $setting = 'users';
         $errors = [];
         $unchanged = [];
         $changed = [];
@@ -620,7 +627,7 @@ class AdminModel extends Model
                 foreach($request as $key => $value) {
                     if (!in_array($key, $permissions_fields)) {
                         // throw an error
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified: '.$key.'.');
+                        return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unknown key specified: '.$key.'.');
                     }
                 }
 
@@ -668,12 +675,12 @@ class AdminModel extends Model
 
             } else {
                 // error - no permissions found
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'User\'s permissions not found in DB.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'User\'s permissions not found in DB.');
             }
             
 
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'User not found in DB.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'User not found in DB.');
         }
 
         if (!empty($errors)) {
@@ -684,9 +691,9 @@ class AdminModel extends Model
             if (!empty($changed)) {
                 //success
                 $changed_fields = implode(', ', array_keys($changed));
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'No changes made.');
             }
     }
 
@@ -752,13 +759,13 @@ class AdminModel extends Model
 
         $user_id = $request['user_id'];
         if ($user_id == 1) {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Cannot update root user.');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Cannot update root user.');
         }
 
         $user = GeneralModel::getUser();
 
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Permission denied.');
         }
 
         $new_password = Hash::make($request['password']);
@@ -784,12 +791,12 @@ class AdminModel extends Model
                 ];
 
                 GeneralModel::updateChangelog($changelog_info);
-                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', 'Password reset for user: '.$current_data->username);
+                return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('success', 'Password reset for user: '.$current_data->username);
             } else {
-                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to update password');
+                return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'No changes made. Unable to update password');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Unable to confirm user.');
         }
     }
 
@@ -798,13 +805,13 @@ class AdminModel extends Model
 
         $user_id = $request['user_id'];
         if ($user_id == 1) {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Cannot update root user.');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Cannot update root user.');
         }
 
         $user = GeneralModel::getUser();
 
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Permission denied.');
         }
 
         // get current user
@@ -828,12 +835,12 @@ class AdminModel extends Model
                 ];
                 
                 GeneralModel::updateChangelog($changelog_info);
-                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', '2FA secret reset for user: '.$current_data->username);
+                return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('success', '2FA secret reset for user: '.$current_data->username);
             } else {
-                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'No changes made. Unable to reset 2FA secret');
+                return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'No changes made. Unable to reset 2FA secret');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to confirm user.');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Unable to confirm user.');
         }
     }
 
@@ -851,6 +858,7 @@ class AdminModel extends Model
         
         if (in_array($attribute, $allowed_types)) {
             $anchor = "attributemanagement-settings";
+            $setting = 'stock-attributes';
             $search_table = 'item';
         } elseif (in_array($attribute, $allowed_attribute_types)) {
             $sub = explode("_", $attribute)[0];
@@ -858,6 +866,7 @@ class AdminModel extends Model
                 $sub = '';
             }
             $anchor = "{$sub}attributemanagement-settings";
+            $setting = "{$sub}-attributes";
             $search_table = "{$sub}_item";
         } else {
             return redirect()->to(route('admin'))->with('error', 'Unknown attribute field');
@@ -871,7 +880,7 @@ class AdminModel extends Model
         $user = GeneralModel::getUser();
 
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Permission denied.');
         }
 
         // get current data
@@ -910,16 +919,16 @@ class AdminModel extends Model
                     ];
 
                     GeneralModel::updateChangelog($changelog_info);
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($attribute).' attribute deleted: '.$current_data->name);
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', ucwords($attribute).' attribute deleted: '.$current_data->name);
                 } else {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable to delete attribute');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'No changes made. Unable to delete attribute');
                 }
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Links still present.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'No changes made. Links still present.');
             }
             
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm attribute data.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to confirm attribute data.');
         }
     }
 
@@ -936,12 +945,14 @@ class AdminModel extends Model
         ];
         if (in_array($attribute, $allowed_types)) {
             $anchor = "attributemanagement-settings";
+            $setting = 'stock-attributes';
         } elseif (in_array($attribute, $allowed_attribute_types)) {
             $sub = explode("_", $attribute)[0];
             if (!$sub) {
                 $sub = '';
             }
             $anchor = "{$sub}attributemanagement-settings";
+            $setting = "{$sub}-attributes";
         } else {
             return redirect()->to(route('admin'))->with('error', 'Unknown attribute field');
         }
@@ -950,7 +961,7 @@ class AdminModel extends Model
         $user = GeneralModel::getUser();
 
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Permission denied.');
         }
 
         // get current data
@@ -976,13 +987,13 @@ class AdminModel extends Model
                 ];
 
                 GeneralModel::updateChangelog($changelog_info);
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($attribute).' attribute restored: '.$current_data->name);
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', ucwords($attribute).' attribute restored: '.$current_data->name);
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'No changes made. Unable restore attribute');
             }
             
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to confirm attribute data.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to confirm attribute data.');
         }
     }
 
@@ -1167,6 +1178,7 @@ class AdminModel extends Model
     static public function stockLocationEdit($request)
     {
         $anchor = 'stocklocations-settings';
+        $setting = 'stock-locations';
         $errors = [];
         $unchanged = [];
         $changed = [];
@@ -1177,7 +1189,7 @@ class AdminModel extends Model
         // check permissions
         $user = GeneralModel::getUser();
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Permission denied.');
         }        
 
         if (in_array($type, ['site','area','shelf'])) {        
@@ -1200,10 +1212,10 @@ class AdminModel extends Model
             foreach($request as $field => $value) {
                 if (!in_array($field, $excluded_keys)) { // to stop the _token and submit keys
                     if (!in_array($field, $table_fields)) {
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown table field: '.$field.'.');
+                        return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unknown table field: '.$field.'.');
                     }
                 } else {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Excluded field: '.$field.'.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Excluded field: '.$field.'.');
                 }
             }
 
@@ -1239,10 +1251,10 @@ class AdminModel extends Model
                     }
                 }
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to get current data.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to get current data.');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Invalid type.');
         }
 
         if (!empty($errors)) {
@@ -1253,15 +1265,16 @@ class AdminModel extends Model
         if (!empty($changed)) {
             //success
             $changed_fields = implode(', ', array_keys($changed));
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Updated fields: '.$changed_fields);
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'No changes made.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'No changes made.');
         }
     }
 
     static public function stockLocationDelete($request)
     {
         $anchor = 'stocklocations-settings';
+        $setting = 'stock-locations';
 
         $id = $request['id'];
         $type = $request['type'];
@@ -1269,7 +1282,7 @@ class AdminModel extends Model
         // check permissions
         $user = GeneralModel::getUser();
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Permission denied.');
         }     
 
         if (in_array($type, ['site', 'area', 'shelf'])) {
@@ -1280,7 +1293,7 @@ class AdminModel extends Model
             if ($current_data) {
                 // check if shelf is already deleted
                 if ((int)$current_data->deleted == 1) {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Delete failed: '.ucwords($type).' already deleted.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Delete failed: '.ucwords($type).' already deleted.');
                 }
 
                 // check for any existing links
@@ -1301,7 +1314,7 @@ class AdminModel extends Model
                 foreach($search_tables as $table) {
                     $links = AdminModel::attributeLinks($table, $type.'_id', null, 1, [$type.'_id' => $id]);
                     if (array_key_exists($id, $links) && $links[$id]['count'] > 0) {
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to delete: Links still present in '.$table.' table.');
+                        return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to delete: Links still present in '.$table.' table.');
                     }
                 }
 
@@ -1323,24 +1336,25 @@ class AdminModel extends Model
                         ];
 
                         GeneralModel::updateChangelog($changelog_info);
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).': '.$current_data->name.' deleted.');
+                        return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', ucwords($type).': '.$current_data->name.' deleted.');
                     } else {
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to update database entry.');
+                        return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to update database entry.');
                     }
                 } else {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to delete: '.ucwords($type).' already deleted.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to delete: '.ucwords($type).' already deleted.');
                 }
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to get current data.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to get current data.');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Invalid type.');
         }
     }
 
     static public function stockLocationRestore($request)
     {
         $anchor = 'stocklocations-settings';
+        $setting = 'stock-locations';
 
         $id = $request['id'];
         $type = $request['type'];
@@ -1348,7 +1362,7 @@ class AdminModel extends Model
         // check permissions
         $user = GeneralModel::getUser();
         if ($user['permissions']['root'] !== 1 && $user['permissions']['admin'] !== 1) {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Permission denied.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Permission denied.');
         }     
 
         if (in_array($type, ['site', 'area', 'shelf'])) {
@@ -1359,7 +1373,7 @@ class AdminModel extends Model
             if ($current_data) {
                 // check if shelf is already active
                 if ((int)$current_data->deleted == 0) {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Restore failed: '.ucwords($type).' already ative.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Restore failed: '.ucwords($type).' already ative.');
                 }
 
                 // check for any existing links
@@ -1387,7 +1401,7 @@ class AdminModel extends Model
                                 ->where('deleted', 0)
                                 ->first();
                         if (!$data) {
-                            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Restore failed: Parent is deleted.');
+                            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Restore failed: Parent is deleted.');
                         }
                     }
                 }
@@ -1410,18 +1424,18 @@ class AdminModel extends Model
                         ];
 
                         GeneralModel::updateChangelog($changelog_info);
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).': '.$current_data->name.' restored.');
+                        return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', ucwords($type).': '.$current_data->name.' restored.');
                     } else {
-                        return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to update database entry.');
+                        return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to update database entry.');
                     }
                 } else {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to delete: '.ucwords($type).' already active.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to delete: '.ucwords($type).' already active.');
                 }
             } else {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to get current data.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to get current data.');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Invalid type.');
         }
     }
 
@@ -1429,6 +1443,7 @@ class AdminModel extends Model
     {
         $authorized = 0;
         $anchor = 'stocklocations-settings';
+        $setting = 'stock-locations';
         $type = $request['type'];
         $parent_id = $request['parent'] ?? '';
 
@@ -1442,7 +1457,7 @@ class AdminModel extends Model
             // correct type
             if ($type == 'site' && $authorized == 0) {
                 // unauthorized.
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid permissions.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Invalid permissions.');
             }
 
             $values = ['name' => $request['name'], 'deleted' => 0, 'created_at' => now(), 'updated_at' => now()];
@@ -1473,7 +1488,7 @@ class AdminModel extends Model
                                 ->first();
                 if (!$parent) {
                     // parent doesnt exist or is deleted.
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid parent.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Invalid parent.');
                 }
             }
 
@@ -1494,13 +1509,13 @@ class AdminModel extends Model
 
                 GeneralModel::updateChangelog($changelog_info);
                 if (!isset($request['backend']) || $request['backend'] == 0) {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.');
                 } else {
                     return ['status' => 'success', 'message' => ucwords($type).' added: '.$request['name'].' with id: '.$insert.'.', 'id' => $insert, 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
                 }
             } else {
                 if (!isset($request['backend']) || $request['backend'] == 0) {
-                    return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+                    return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
                 } else {
                     return ['status' => 'error', 'message' => 'Unable to insert database entry.', 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
                 }
@@ -1509,7 +1524,7 @@ class AdminModel extends Model
         } else {
             // incorrect type
             if (!isset($request['backend']) || $request['backend'] == 0) {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Invalid type.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Invalid type.');
             } else {
                 return ['status' => 'error', 'message' => 'Invalid type.', 'name' => $request['name'], 'description' => $request['description'], 'parent_id' => $parent_id ?? null];
             }
@@ -1566,7 +1581,7 @@ class AdminModel extends Model
         
 
             $table_rows[] = '<tr id="image-row-'.$f.'" class="align-middle">
-                                <form enctype="multipart/form-data" id="image-row-'.$f.'-form" action="'.route('admin.imageManagementSettings').'" method="POST">
+                                <form enctype="multipart/form-data" id="image-row-'.$f.'-form" action="'.route('admin', ['setting' => 'image-management']).'" method="POST">
                                     <input type="hidden" name="_token" form="image-row-'.$f.'-form" value="'.csrf_token().'" />
                                     <input type="hidden" name="file-name" form="image-row-'.$f.'-form" value="'.$filename.'" />
                                     <input type="hidden" name="file-links" form="image-row-'.$f.'-form" value="'.$link_count.'" />
@@ -1657,16 +1672,16 @@ class AdminModel extends Model
             if (file_exists($path_name)) {
                 // file exists
                 if (File::delete($path_name)) {
-                    return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('success', 'File deleted: '.$filename.'.');
+                    return redirect()->to(route('admin', ['setting' => 'image-management']) . '#imagemanagement-settings')->with('success', 'File deleted: '.$filename.'.');
                 } else {
-                    return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'Failed to delete file: '.$path_name.'.');
+                    return redirect()->to(route('admin', ['setting' => 'image-management']) . '#imagemanagement-settings')->with('error', 'Failed to delete file: '.$path_name.'.');
                 }
             } else {
                 // file doesnt exists
-                return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'File doesnt exist.');
+                return redirect()->to(route('admin', ['setting' => 'image-management']) . '#imagemanagement-settings')->with('error', 'File doesnt exist.');
             }
         } else {
-             return redirect()->to(route('admin', ['section' => 'imagemanagement-settings']) . '#imagemanagement-settings')->with('error', 'Image not delete. Links exist.');
+             return redirect()->to(route('admin', ['setting' => 'image-management']) . '#imagemanagement-settings')->with('error', 'Image not delete. Links exist.');
         }
     }
 
@@ -1698,6 +1713,7 @@ class AdminModel extends Model
     {
        
         $anchor = 'userspermissionspresets-settings';
+        $setting = 'users';
 
         $user = GeneralModel::getUser();
 
@@ -1710,7 +1726,7 @@ class AdminModel extends Model
 
         foreach($request as $key => $value) {
             if (!in_array($key, $permissions_fields)) {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unknown key specified.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unknown key specified.');
             }
 
             if ($value == 'on') {
@@ -1748,12 +1764,12 @@ class AdminModel extends Model
                 ];
 
                 GeneralModel::updateChangelog($changelog_info);
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('success', 'Preset added: '.$request['name'].' with id: '.$insert.'.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('success', 'Preset added: '.$request['name'].' with id: '.$insert.'.');
             } else {
-                return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
+                return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Unable to insert database entry.');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => $anchor]) . '#'.$anchor)->with('error', 'Name in use.');
+            return redirect()->to(route('admin', ['setting' => $setting]) . '#'.$anchor)->with('error', 'Name in use.');
         }
     }
 
@@ -1807,13 +1823,13 @@ class AdminModel extends Model
             }
 
             if ($update_count > 0) {
-                return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('success', 'Template updated.');
+                return redirect()->to(route('admin', ['setting' => 'email']) . '#emailtemplates-settings')->with('success', 'Template updated.');
             } else {
-                return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Nothing to update.');
+                return redirect()->to(route('admin', ['setting' => 'email']) . '#emailtemplates-settings')->with('error', 'Nothing to update.');
             }
 
         } else {
-            return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Unable to find current template data.');
+            return redirect()->to(route('admin', ['setting' => 'email']) . '#emailtemplates-settings')->with('error', 'Unable to find current template data.');
         }
     }
 
@@ -1869,16 +1885,16 @@ class AdminModel extends Model
                 }
 
                 if ($update_count > 0) {
-                    return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('success', 'Template restored to default.');
+                    return redirect()->to(route('admin', ['setting' => 'email']) . '#emailtemplates-settings')->with('success', 'Template restored to default.');
                 } else {
-                    return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Template is already the default.');
+                    return redirect()->to(route('admin', ['setting' => 'email']) . '#emailtemplates-settings')->with('error', 'Template is already the default.');
                 }
 
             } else {
-                return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Unable to find default template data.');
+                return redirect()->to(route('admin', ['setting' => 'email']) . '#emailtemplates-settings')->with('error', 'Unable to find default template data.');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => 'emailtemplates-settings']) . '#emailtemplates-settings')->with('error', 'Unable to find current template data.');
+            return redirect()->to(route('admin', ['setting' => 'email']) . '#emailtemplates-settings')->with('error', 'Unable to find current template data.');
         }
     }
 
@@ -1932,13 +1948,13 @@ class AdminModel extends Model
             }
 
             if ($update_count > 0) {
-                return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('success', 'Template updated.');
+                return redirect()->to(route('admin', ['setting' => 'webhook']) . '#webhooktemplates-settings')->with('success', 'Template updated.');
             } else {
-                return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Nothing to update.');
+                return redirect()->to(route('admin', ['setting' => 'webhook']) . '#webhooktemplates-settings')->with('error', 'Nothing to update.');
             }
 
         } else {
-            return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Unable to find current template data.');
+            return redirect()->to(route('admin', ['setting' => 'webhook']) . '#webhooktemplates-settings')->with('error', 'Unable to find current template data.');
         }
     }
 
@@ -1994,16 +2010,16 @@ class AdminModel extends Model
                 }
 
                 if ($update_count > 0) {
-                    return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('success', 'Template restored to default.');
+                    return redirect()->to(route('admin', ['setting' => 'webhook']) . '#webhooktemplates-settings')->with('success', 'Template restored to default.');
                 } else {
-                    return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Template is already the default.');
+                    return redirect()->to(route('admin', ['setting' => 'webhook']) . '#webhooktemplates-settings')->with('error', 'Template is already the default.');
                 }
 
             } else {
-                return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Unable to find default template data.');
+                return redirect()->to(route('admin', ['setting' => 'webhook']) . '#webhooktemplates-settings')->with('error', 'Unable to find default template data.');
             }
         } else {
-            return redirect()->to(route('admin', ['section' => 'webhooktemplates-settings']) . '#webhooktemplates-settings')->with('error', 'Unable to find current template data.');
+            return redirect()->to(route('admin', ['setting' => 'webhook']) . '#webhooktemplates-settings')->with('error', 'Unable to find current template data.');
         }
     }
 
@@ -2073,20 +2089,20 @@ class AdminModel extends Model
                     }
 
                     // redirect
-                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('success', 'User added.');
+                    return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('success', 'User added.');
                 } else {
                     // incorrect id
-                    return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'User id ('.$user_id.') and permissions id ('.$insert.') do not match.');
+                    return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'User id ('.$user_id.') and permissions id ('.$insert.') do not match.');
 
                 }
 
             } else {
                 // didnt insert
-                return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Permissions failed to add for user.');
+                return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Permissions failed to add for user.');
             }
         } else {
             // user wasnt added. error return
-            return redirect()->to(route('admin', ['section' => 'users-settings']) . '#users-settings')->with('error', 'Unable to add user.');
+            return redirect()->to(route('admin', ['setting' => 'users']) . '#users-settings')->with('error', 'Unable to add user.');
         }
     }
 

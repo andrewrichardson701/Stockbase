@@ -48,8 +48,8 @@ body {
         <li class="clickable @if($nav_secondary == 'image-management') theme-th-selected @endif">
             <a href="{{ route('admin', ['setting'=>'image-management']) }}"><h3>Image Management</h3></a>
         </li>
-        <li class=" @if(in_array($nav_secondary, ['stock-attributes','optic-attributes','cpu-attributes','memory-attributes','disk-attributes'])) theme-th-selected @endif"  onclick="toggleMainSection(this, 'attribute-pages')">
-            <div class="clickable">
+        <li class=" @if(in_array($nav_secondary, ['stock-attributes','optic-attributes','cpu-attributes','memory-attributes','disk-attributes'])) theme-th-selected @endif">
+            <div class="clickable"  onclick="toggleMainSection(this, 'attribute-pages')">
                 <h3 style="margin-bottom:0px">Attribute Management <i class="fa-solid fa-chevron-down fa-2xs" style="margin-left:10px;"></i></h3>
             </div>
             <div id="attribute-pages" class="container" style="width:100%; padding-bottom:20px" @if(!in_array($nav_secondary, ['stock-attributes','optic-attributes','cpu-attributes','memory-attributes','disk-attributes'])) hidden @endif>

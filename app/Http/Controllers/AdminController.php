@@ -7,11 +7,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
-use App\Models\IndexModel;
 use App\Models\GeneralModel;
-use App\Models\FunctionsModel;
 use App\Models\ResponseHandlingModel;
-use App\Models\CablestockModel;
 use App\Models\AdminModel;
 use App\Models\LdapModel;
 use App\Models\SmtpModel;
@@ -54,7 +51,7 @@ class AdminController extends Controller
                 $view_array['active_sessions'] = GeneralModel::formatArrayOnIdAndCount(AdminModel::getActiveSessionLog());
                 break;
             case 'authentication':
-
+                // all based on the config in $head_data which is provided by middleware
                 break;
             case 'image-management':
                 $view_array['image_management_count'] = AdminModel::imageManagementCount();
@@ -150,179 +147,7 @@ class AdminController extends Controller
                 return redirect()->route('admin', ['setting' => 'global']);
         }
 
-        $sites = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('site'));
-        $site_links = AdminModel::attributeLinks('area', 'site_id', null, 1);
-        $site_links_optics = AdminModel::attributeLinks('optic_item', 'site_id', null, 1);
-        $areas = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('area'));
-        $area_links = AdminModel::attributeLinks('shelf', 'area_id', null, 1);
-        $shelves = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('shelf'));
-        $shelf_links = AdminModel::attributeLinks('item', 'shelf_id', null, 1);
-        $shelf_links_containers = AdminModel::attributeLinks('container', 'shelf_id', null, 1);
-
-        $location_colors = [
-                            0 => ['site' => '#F4BB44', 'area' => '#FFE47A', 'shelf' => '#FFDEAD'],
-                            1 => ['site' => '#6ABAD6', 'area' => '#99D4EF', 'shelf' => '#C1E9FC'],
-                            'deleted' => '#7E1515'
-                            ];
-        
-        $themes = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('theme'));
-        
-        $users = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users')); //update this to the correct users table
-        $users_permissions = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_permissions'));
-        $users_permissions_roles = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('users_permissions_roles'));
-        
-        $active_sessions = GeneralModel::formatArrayOnIdAndCount(AdminModel::getActiveSessionLog());
-        
-        $image_management_count = AdminModel::imageManagementCount();
-        
-        $stock = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('stock'));
-        $tags = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('tag'));
-        $tag_links = AdminModel::taggedStockByTagId();
-        $manufacturers = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('manufacturer'));
-        $manufacturer_links = AdminModel::attributeLinks('item', 'manufacturer_id', null, 1);
-        
-        $optics = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_item'));
-        $optic_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_vendor'));
-        $optic_vendor_links = AdminModel::attributeLinks('optic_item', 'vendor_id', 'id, vendor_id, model, serial_number', 1);
-        $optic_types = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_type'));
-        $optic_type_links = AdminModel::attributeLinks('optic_item', 'type_id', 'id, type_id, model, serial_number', 1);
-        $optic_speeds = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_speed'));
-        $optic_speed_links = AdminModel::attributeLinks('optic_item', 'speed_id', 'id, speed_id, model, serial_number', 1);
-        $optic_connectors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_connector'));
-        $optic_connector_links = AdminModel::attributeLinks('optic_item', 'connector_id', 'id, connector_id, model, serial_number', 1);
-        $optic_distances = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('optic_distance'));
-        $optic_distance_links = AdminModel::attributeLinks('optic_item', 'distance_id', 'id, distance_id, model, serial_number', 1);
-
-        $cpus = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('cpu_item'));
-        $cpu_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('cpu_vendor'));
-        $cpu_vendor_links = AdminModel::attributeLinks('cpu_item', 'vendor_id', 'id, vendor_id, model_id, serial_number', 1);
-        $cpu_models = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('cpu_model'));
-        $cpu_model_links = AdminModel::attributeLinks('cpu_item', 'model_id', 'id, vendor_id, model_id, model_id, serial_number', 1);
-
-        $memory = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('memory_item'));
-        $memory_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('memory_vendor'));
-        $memory_vendor_links = AdminModel::attributeLinks('memory_item', 'vendor_id', 'id, vendor_id, model, serial_number', 1);
-        $memory_generations = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('memory_generation'));
-        $memory_generation_links = AdminModel::attributeLinks('memory_item', 'generation_id', 'id, generation_id, model, serial_number', 1);
-        $memory_ecc_types = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('memory_ecc_type'));
-        $memory_ecc_type_links = AdminModel::attributeLinks('memory_item', 'ecc_type_id', 'id, ecc_type_id, model, serial_number', 1);
-        $memory_capacities = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('memory_capacity'));
-        $memory_capacity_links = AdminModel::attributeLinks('memory_item', 'capacity_id', 'id, capacity_id, model, serial_number', 1);
-        $memory_form_factors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('memory_form_factor'));
-        $memory_form_factor_links = AdminModel::attributeLinks('memory_item', 'form_factor_id', 'id, form_factor_id, model, serial_number', 1);
-        $memory_speeds = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('memory_speed'));
-        $memory_speed_links = AdminModel::attributeLinks('memory_item', 'speed_id', 'id, speed_id, model, serial_number', 1);
-
-        $disks = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_item'));
-        $disk_vendors = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_vendor'));
-        $disk_vendor_links = AdminModel::attributeLinks('disk_item', 'vendor_id', 'id, vendor_id, model, serial_number', 1);
-        $disk_types = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_type'));
-        $disk_type_links = AdminModel::attributeLinks('disk_item', 'type_id', 'id, type_id, model, serial_number', 1);
-        $disk_speeds = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_speed'));
-        $disk_speed_links = AdminModel::attributeLinks('disk_item', 'speed_id', 'id, speed_id, model, serial_number', 1);
-        $disk_capacities = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_capacity'));
-        $disk_capacity_links = AdminModel::attributeLinks('disk_item', 'capacity_id', 'id, capacity_id, model, serial_number', 1);
-        $disk_rpms = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_rpm'));
-        $disk_rpm_links = AdminModel::attributeLinks('disk_item', 'rpm_id', 'id, rpm_id, model, serial_number', 1);
-        $disk_caddies = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('disk_caddy'));
-        $disk_caddy_links = AdminModel::attributeLinks('disk_item', 'caddy_id', 'id, caddy_id, model, serial_number', 1);
-
-        $deleted_stock = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('stock', 1));
-
-        $email_notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_notifications'));
-        $email_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('email_templates'));
-        
-        $webhook_notifications = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_notifications'));
-        $webhook_templates = GeneralModel::formatArrayOnIdAndCount(GeneralModel::allDistinct('webhook_templates'));
-
-        $changelog = GeneralModel::formatArrayOnIdAndCount(ChangelogModel::getChangelog(10));
-        // $q_data = IndexModel::queryData($request); // query string data
-                    //  dd($optic_vendors);  
         return view('admin', $view_array);     
-        // return view('admin', ['nav_data' => $nav_data,
-        //                         'response_handling' => $response_handling,
-        //                         'sites' => $sites,
-        //                         'site_links' => $site_links,
-        //                         'site_links_optics' => $site_links_optics,
-        //                         'areas' => $areas,
-        //                         'area_links' => $area_links,
-        //                         'shelves' => $shelves,
-        //                         'shelf_links' => $shelf_links,
-        //                         'shelf_links_containers' => $shelf_links_containers,
-        //                         'themes' => $themes,
-                                
-        //                         'users' => $users,
-        //                         'users_permissions' => $users_permissions,
-        //                         'users_permissions_roles' => $users_permissions_roles,
-                                
-        //                         'active_sessions' => $active_sessions,
-                                
-        //                         'image_management_count' => $image_management_count,
-                                
-        //                         'stock' => $stock,
-        //                         'tags' => $tags,
-        //                         'tag_links' => $tag_links,
-        //                         'manufacturers' => $manufacturers,
-        //                         'manufacturer_links' => $manufacturer_links,
-                                
-        //                         'optics' => $optics,
-        //                         'optic_vendors' => $optic_vendors,
-        //                         'optic_vendor_links' => $optic_vendor_links,
-        //                         'optic_types' => $optic_types,
-        //                         'optic_type_links' => $optic_type_links,
-        //                         'optic_speeds' => $optic_speeds,
-        //                         'optic_speed_links' => $optic_speed_links,
-        //                         'optic_connectors' => $optic_connectors,
-        //                         'optic_connector_links' => $optic_connector_links,
-        //                         'optic_distances' => $optic_distances,
-        //                         'optic_distance_links' => $optic_distance_links,
-
-        //                         'cpus' => $cpus,
-        //                         'cpu_vendors' => $cpu_vendors,
-        //                         'cpu_vendor_links' => $cpu_vendor_links,
-        //                         'cpu_models' => $cpu_models,
-        //                         'cpu_model_links' => $cpu_model_links,
-
-        //                         'memory' => $memory,
-        //                         'memory_vendors' => $memory_vendors,
-        //                         'memory_vendor_links' => $memory_vendor_links,
-        //                         'memory_generations' => $memory_generations,
-        //                         'memory_generation_links' => $memory_generation_links,
-        //                         'memory_ecc_types' => $memory_ecc_types,
-        //                         'memory_ecc_type_links' => $memory_ecc_type_links,
-        //                         'memory_capacities' => $memory_capacities,
-        //                         'memory_capacity_links' => $memory_capacity_links,
-        //                         'memory_form_factors' => $memory_form_factors,
-        //                         'memory_form_factor_links' => $memory_form_factor_links,
-        //                         'memory_speeds' => $memory_speeds,
-        //                         'memory_speed_links' => $memory_speed_links,
-
-        //                         'disks' => $disks,
-        //                         'disk_vendors' => $disk_vendors,
-        //                         'disk_vendor_links' => $disk_vendor_links,
-        //                         'disk_types' => $disk_types,
-        //                         'disk_type_links' => $disk_type_links,
-        //                         'disk_speeds' => $disk_speeds,
-        //                         'disk_speed_links' => $disk_speed_links,
-        //                         'disk_capacities' => $disk_capacities,
-        //                         'disk_capacity_links' => $disk_capacity_links,
-        //                         'disk_rpms' => $disk_rpms,
-        //                         'disk_rpm_links' => $disk_rpm_links,
-        //                         'disk_caddies' => $disk_caddies,
-        //                         'disk_caddy_links' => $disk_caddy_links,
-
-        //                         'deleted_stock' => $deleted_stock,
-        //                         'location_colors' => $location_colors,
-
-        //                         'email_notifications' => $email_notifications,
-        //                         'email_templates' => $email_templates,
-
-        //                         'webhook_notifications' => $webhook_notifications,
-        //                         'webhook_templates' => $webhook_templates,
-
-        //                         'changelog' => $changelog,
-        //                         // 'q_data' => $q_data,
-        //                     ]);
     }
 
     static public function updateConfigSettings(Request $request)

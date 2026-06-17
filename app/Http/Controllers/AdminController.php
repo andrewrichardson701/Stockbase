@@ -504,7 +504,7 @@ class AdminController extends Controller
                     'id' => 'integer|required',
                     'value' => 'integer|required',
             ]);
-            AdminModel::toggleEmailNotification($request->input());
+            return AdminModel::toggleEmailNotification($request->input());
         } else {
             return 'Error: CSRF token missmatch.';
         }
@@ -519,7 +519,7 @@ class AdminController extends Controller
                     'id' => 'integer|required',
                     'value' => 'integer|required',
             ]);
-            AdminModel::toggleWebhookNotification($request->input());
+            return AdminModel::toggleWebhookNotification($request->input());
         } else {
             return 'Error: CSRF token missmatch.';
         }
